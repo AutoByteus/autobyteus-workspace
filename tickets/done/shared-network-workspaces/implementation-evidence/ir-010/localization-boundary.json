@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "pnpm",
+    "-C",
+    "autobyteus-web",
+    "guard:localization-boundary"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+  "envKeys": [
+    "PATH",
+    "HOME",
+    "TMPDIR",
+    "LANG",
+    "CI",
+    "NO_COLOR"
+  ],
+  "scratch": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-ir010-check-lqqa8zii",
+  "exitCode": 0,
+  "cleanup": true,
+  "seconds": 1.09
+}

@@ -1,0 +1,67 @@
+{
+  "review": "ARCH-REV-004",
+  "date": "2026-10-14",
+  "reviewedCommit": "957b052f4b222b7ddb14e148fd5439ba10122379",
+  "scope": "Independent static source/evidence/provenance and artifact audit; no product execution",
+  "incomingReferenceCount": 328,
+  "allReferencesExist": true,
+  "protectedInputHashes": {
+    "tickets/in-progress/shared-network-workspaces/requirements-doc.md": "62ea50f35b12843a61b287602b843b5050a88b4261de2999d70381bb6755470d",
+    "tickets/in-progress/shared-network-workspaces/approval-record-sr018.md": "64399a81bda50aadd8f883930fa9c9fef1c6a3dd46c87fe74e2ed5b38223e249",
+    "tickets/in-progress/shared-network-workspaces/approval-record-sr017.md": "dc033fc3641b80e13d3de052eed4e289ee4a3f36b9870f317a72ed102660ebbf",
+    "tickets/in-progress/shared-network-workspaces/code-review-report.md": "ff71c798490207296cbcbda6a7b2bb309d8c6ab34e5930ab2f89f85dd5c946d9",
+    "tickets/in-progress/shared-network-workspaces/code-review-revision-record.md": "8bc6243e147f59637040b7c33808bd467f472fe79c88b36dc8bd26e4a18c446c",
+    "tickets/in-progress/shared-network-workspaces/api-e2e-execution-coverage-report.md": "ecaf990c9d5c988ca52f9a7f2225f85a9cdb8a2f3beb2786d47ba0fcc8ad604b",
+    "tickets/in-progress/shared-network-workspaces/implementation-handoff.md": "81d28f4c9d55bb7a67b1062bd7817c701de236d4c359a393a609d723f2bc1562",
+    "tickets/in-progress/shared-network-workspaces/design-review-report.md": "fb1687991301bafee18e68c7fd1f1aea583acc9814fd235acdd52f9f934a2f5e"
+  },
+  "approvedBasisByteIdenticalTo": "5251ab48bc",
+  "productionSourceHash": "497efd6abb0c2cfa4c740a87f005c529cbf026a6fa218b3acd345826f4a923da",
+  "solutionRecoveryDeltaTicketOnly": true,
+  "rawReceiptChecks": {
+    "createSeconds": 1.154,
+    "reconnectSeconds": [
+      0.445,
+      0.619
+    ],
+    "sameUUID": true,
+    "defaultDelegationsY": true,
+    "hardNFS41": true,
+    "nonrootDirectoryReplayRecorded": 60,
+    "packagePreinstalled": true,
+    "copiedTreeDelta": [
+      "cmd/autobyteus-nfs/release.json"
+    ]
+  },
+  "cleanupReceiptsReviewed": [
+    {
+      "attempt": "attempt-1",
+      "recordedResult": "Prototype Incomplete",
+      "recordedStopDeleteSuccess": true,
+      "scratchStillAbsent": true
+    },
+    {
+      "attempt": "attempt-2",
+      "recordedResult": "Prototype Incomplete",
+      "recordedStopDeleteSuccess": true,
+      "scratchStillAbsent": true
+    },
+    {
+      "attempt": ".",
+      "recordedResult": "Prototype Pass, not product qualification",
+      "recordedStopDeleteSuccess": true,
+      "scratchStillAbsent": true
+    }
+  ],
+  "primarySourcesVerified": [
+    "https://github.com/nfs-ganesha/nfs-ganesha/commit/98eb77c4fd94effa6882b214698a77752ec79f6e",
+    "https://github.com/nfs-ganesha/nfs-ganesha/blob/V4.3/src/Protocols/NFS/nfs4_op_illegal.c",
+    "https://launchpad.net/ubuntu/+source/nfs-ganesha/4.3-8ubuntu1"
+  ],
+  "limits": [
+    "Historical wire cause remains inferred",
+    "No reviewer VM/build/package/product/runtime/physical or provider test",
+    "Candidate packages were preinstalled; clean public installation remains unproved",
+    "Five preexisting untracked dist trees untouched"
+  ]
+}

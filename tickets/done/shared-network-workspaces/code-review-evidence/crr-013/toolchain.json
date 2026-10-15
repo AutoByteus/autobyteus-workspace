@@ -1,0 +1,8 @@
+{
+  "url": "https://go.dev/dl/go1.27.2.darwin-arm64.tar.gz",
+  "sha256": "76812b213b1b2302c978d28fa52fa92d541704b9e7d9d5db8002c50e4018c4c5",
+  "bytes": 68195916,
+  "uid": 501,
+  "gid": 20,
+  "scratch": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr013-vhmry3ej"
+}

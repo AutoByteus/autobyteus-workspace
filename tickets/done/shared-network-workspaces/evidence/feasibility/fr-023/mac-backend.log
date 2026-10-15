@@ -1,0 +1,7 @@
+[1013/082830.422298:ERROR:electron/shell/common/mac/codesign_util.cc:79] task_name_for_pid: (os/kern) failure (5)
+Platform detection: Windows=false
+App root directory: /Users/admin/.ab-sf-ab-sf-fr023-db476448/AutoByteus.app/Contents/Resources/server
+App data directory: /Users/admin/.ab-sf-ab-sf-fr023-db476448/AutoByteus.app/Contents/Resources/server
+ERROR: Configuration file not found: Error: Configuration file not found: /Users/admin/.ab-sf-ab-sf-fr023-db476448/AutoByteus.app/Contents/Resources/server/.env
+Failed to initialize AppConfig: AppConfigError: Configuration file not found: Error: Configuration file not found: /Users/admin/.ab-sf-ab-sf-fr023-db476448/AutoByteus.app/Contents/Resources/server/.env
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_CONFIG_INITIALIZATION_FAILED","summary":"Failed to initialize AppConfig: AppConfigError: Configuration file not found: Error: Configuration file not found: /Users/admin/.ab-sf-ab-sf-fr023-db476448/AutoByteus.app/Contents/Resources/server/.env","logPath":null}

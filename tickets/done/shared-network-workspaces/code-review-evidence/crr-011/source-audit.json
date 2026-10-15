@@ -1,0 +1,177 @@
+{
+  "inputHead": "1840ab1389728dd1ed733587732f2abf3fb8641b",
+  "sourceCommit": "d65aeda24fc4b9a534a3941b194dd4a55b88c00c",
+  "base": "391d65a993fbb0ca891e043d6a7eea5e4981eebc",
+  "reviewScope": "Targeted Delta Review",
+  "delta": [
+    {
+      "path": "autobyteus-nfs/README.md",
+      "added": 22,
+      "removed": 0,
+      "beforeNonempty": 135,
+      "afterNonempty": 154,
+      "production": false,
+      "sha256": "f0eeb04e0d3adc8636c16e3c857f3d6e29a3cec14b6e15a1bd12f4ca94bce254"
+    },
+    {
+      "path": "autobyteus-nfs/internal/backend/backend_test.go",
+      "added": 5,
+      "removed": 0,
+      "beforeNonempty": 67,
+      "afterNonempty": 72,
+      "production": false,
+      "sha256": "7a6eebdc6371149f44dcf40a2aed76014984681d07efcbc6fd71020049564532"
+    },
+    {
+      "path": "autobyteus-nfs/internal/backend/cleanup_test.go",
+      "added": 84,
+      "removed": 0,
+      "beforeNonempty": 83,
+      "afterNonempty": 166,
+      "production": false,
+      "sha256": "667223a3853c80baa7f65e08a4388b2b11865631633a6edf8981763b7f7f4af8"
+    },
+    {
+      "path": "autobyteus-nfs/internal/backend/ganesha.go",
+      "added": 1,
+      "removed": 0,
+      "beforeNonempty": 54,
+      "afterNonempty": 55,
+      "production": true,
+      "sha256": "e636bdb4e12cb939c727a5833f51518da8568d50606503b108b0d273d677f996",
+      "finalizationBaseNonempty": 0,
+      "newSinceFinalizationBase": true
+    },
+    {
+      "path": "autobyteus-nfs/internal/backend/ganesha_native.go",
+      "added": 11,
+      "removed": 0,
+      "beforeNonempty": 133,
+      "afterNonempty": 143,
+      "production": true,
+      "sha256": "60db97f2c703ddd01c03232d70676a38541609cac7a6a35e3edf051459218137",
+      "finalizationBaseNonempty": 0,
+      "newSinceFinalizationBase": true
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/hosted_config_test.go",
+      "added": 187,
+      "removed": 0,
+      "beforeNonempty": 0,
+      "afterNonempty": 177,
+      "production": false,
+      "sha256": "c49864a97d06f23f7c5c6c45c9cf637214c25ebe0dc929de4b96bd0f422fff56"
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/lifecycle.go",
+      "added": 5,
+      "removed": 0,
+      "beforeNonempty": 152,
+      "afterNonempty": 157,
+      "production": true,
+      "sha256": "45c8767300339ecff2ba64e9ffbdd791ebe4662f5d996b78ec9bf01446fad54e",
+      "finalizationBaseNonempty": 0,
+      "newSinceFinalizationBase": true
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/status.go",
+      "added": 8,
+      "removed": 1,
+      "beforeNonempty": 70,
+      "afterNonempty": 76,
+      "production": true,
+      "sha256": "a3e8aac3d87617eca4fa487e4e6503371d4d7abec85c1e3c6d59dd2baf6e56ef",
+      "finalizationBaseNonempty": 0,
+      "newSinceFinalizationBase": true
+    }
+  ],
+  "strictFunctionsByteIdentical": {
+    "WriteGanesha": "2865ca7a14845442055fa478c5da2045577456333951719fc91909550eb4dca0",
+    "VerifyGanesha": "7491f2001a1d2d0ac642fe8586da7e84c40394c19eca56bcfc5878443c22dd20",
+    "EnsureGanesha": "b5a2bb8cf317c64c00cb9275f6b4b09bdc71d4ae6ed3483cad1b26a9d34b584c",
+    "RemoveGaneshaConfiguration": "d1357b8a04fa1ade20c1d9ec27e67c7c8e08f627e88c1141a9ebb9644f4b2ad1"
+  },
+  "unaffectedInputCount": 1083,
+  "retainedFiles": {
+    "autobyteus-nfs/out/ir005-local-candidate/autobyteus-nfs-linux-arm64": {
+      "sha256": "20022a9e553ce3d898531e66e48a843d9fd10fb2fd044474f1a471ed070b219e",
+      "bytes": 11033781
+    },
+    "autobyteus-nfs/out/ir005-local-candidate/release.json": {
+      "sha256": "7d647fa2d41f6916221af53a79d3a0bfc9bc296383d747fe837744c6f3ba7e9f",
+      "bytes": 2493
+    },
+    "autobyteus-nfs/out/ir005-local-candidate/README.txt": {
+      "sha256": "9b5429541f972b6d432b903e48b5a525d2147a0d879e8caa4f969f8b2ccc6685",
+      "bytes": 366
+    },
+    "autobyteus-nfs/out/ir005-local-candidate/engine-candidate/engine-manifest.json": {
+      "sha256": "4488fccf14574d27931429d4c2529c34620de575bacce63383254808f97c39a5",
+      "bytes": 2134
+    },
+    "autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/autobyteus-nfs-ganesha-source-4.3-8ubuntu1+autobyteus1-arm64.tar.gz": {
+      "sha256": "eed35ab4b732ac05d2afc3531e70cdc27031fb414fdb52a0daf093f33daaec0a",
+      "bytes": 1930105
+    },
+    "autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/engine-manifest.json": {
+      "sha256": "4488fccf14574d27931429d4c2529c34620de575bacce63383254808f97c39a5",
+      "bytes": 2134
+    },
+    "autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/engine-build-arm64.txt": {
+      "sha256": "56fad63c43f85091d84df347564dfd962a9afaafe519539849860b1807695761",
+      "bytes": 57836
+    },
+    "autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/nfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb": {
+      "sha256": "0b5c78911cfc1b299e9894e1f841e74176fbb2cb45b158008e4530713549ebc8",
+      "bytes": 613976
+    },
+    "autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/COPYRIGHT": {
+      "sha256": "f005d5cee9e5c771ac65f2cd2401a7259fc0cf71961275044adfd804d6b66bf7",
+      "bytes": 30807
+    },
+    "autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/SHA256SUMS": {
+      "sha256": "59100b94a86df4f03d3720daf4c65466b4f10ad447ab41d91163023001a63735",
+      "bytes": 453
+    },
+    "autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/nfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb": {
+      "sha256": "3bf06769646d93ea85f0277fe0726eb42d0d29a70c0108505706954e5e8d2ac6",
+      "bytes": 48626
+    },
+    "autobyteus-nfs/out/ir007-local-candidate/autobyteus-nfs-linux-arm64": {
+      "sha256": "0036ccef0bbb2a2510064f2e882b692687a2288eb25563d89f9c4ac9150c860c",
+      "bytes": 11047219
+    },
+    "autobyteus-nfs/out/ir007-local-candidate/release.json": {
+      "sha256": "03c13f53da662b436827df34e96b38c24d30aa9457cc0fa9e6ecb24df11d5386",
+      "bytes": 2493
+    },
+    "autobyteus-nfs/out/ir007-local-candidate/README.txt": {
+      "sha256": "3ad926e0c21fa6dc0140b6c2d69776592f8a4492186d7cfa94486544171b36cc",
+      "bytes": 420
+    },
+    "autobyteus-nfs/out/ir007-local-candidate/autobyteus-nfs-darwin-arm64": {
+      "sha256": "64085e451774b99666ae272c78111d3f3c3972a619aa4cf7e4da657abb79df04",
+      "bytes": 10580770
+    },
+    "autobyteus-nfs/out/ir008-local-candidate/autobyteus-nfs-linux-arm64": {
+      "sha256": "32772499817bccc6dc8c8bd01b15a457457848e17321af6053544adf53803a64",
+      "bytes": 11046973
+    },
+    "autobyteus-nfs/out/ir008-local-candidate/release.json": {
+      "sha256": "481edc071d27e64a94ce0a02c9ee076e0c556c5eed8d11e2a59a29766e2bab53",
+      "bytes": 2493
+    },
+    "autobyteus-nfs/out/ir008-local-candidate/README.txt": {
+      "sha256": "b070a69ad290222dae05ff86abcd2ddaa751d25f23d687fc88963db38031bb5a",
+      "bytes": 420
+    },
+    "autobyteus-nfs/out/ir008-local-candidate/autobyteus-nfs-darwin-arm64": {
+      "sha256": "5908c8229010102d7a1708c65e50b8674766a6c8356c4362588c0fed36167a57",
+      "bytes": 10580882
+    }
+  },
+  "oldDistFiles": 286,
+  "sourceChangesAfterSourceCommit": [],
+  "incomingReferencesRetained": 1088,
+  "finalizationMergeBase": "f13bdd0eb79aacc63dffa5995b9c86f359001468"
+}

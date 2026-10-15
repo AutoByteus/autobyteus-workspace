@@ -1,0 +1,6 @@
+PASS direct MOUNT3 accepts exact allowed network peer and denies reachable excluded peer
+PASS ordinary NFS source ownership stays UID10001 for both clients under a root daemon with all-squashed data requests
+PASS client root cannot read server-root private directory and creates only squashed nonroot files
+PASS binary-verifier candidate has exactly one winner in every concurrent mounted exclusive-create trial
+PASS root daemon with squashed data preserves cross-UID Git file-close semantics and exact-process-only trusted workspace
+{"run": "ab-sf-fr051-51270571", "passes": 5, "fatal": null}

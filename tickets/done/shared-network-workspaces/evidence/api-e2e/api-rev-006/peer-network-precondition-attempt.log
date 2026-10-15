@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-006/probe-peer-confirm.py", line 2, in <module>
+    exec((__import__('pathlib').Path(__file__).resolve().parent/'mac-common.py').read_text());OUT='peer-network-confirm-result.json';linux=json.loads((E/'linux-new-source-result.json').read_text());assert linux['result'].startswith('Pass');ip=linux['endpoint'];r['linuxEndpoint']=ip;r['scope']='TCP prerequisite only; same-host guests never physical qualification'
+AssertionError

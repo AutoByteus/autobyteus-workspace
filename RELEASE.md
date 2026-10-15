@@ -251,3 +251,11 @@ What the release workflows build, validate and need.
   - `IOS_ARTIFACT_PREFIX`
   - `IOS_XCODE_APP_PATH`
 - No git submodules are required in this workspace.
+
+### AutoByteus NFS assets
+
+The standalone service shares this repository's release tag/version; it is not an
+independent release stream. See [NFS distribution and qualification](autobyteus-nfs/packaging/RELEASE.md).
+Its manual build-only workflow does not publish. Public NFS assets remain unavailable
+until its current-source, physical topology and explicit user-verification gates pass;
+do not enable a working Nodes Guide command based on candidate/feasibility artifacts.

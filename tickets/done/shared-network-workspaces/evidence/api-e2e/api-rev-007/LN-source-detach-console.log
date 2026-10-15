@@ -1,0 +1,17 @@
+Started L21 LN replace source pathname with actual new directory and copied marker
+L21 LN replace source pathname with actual new directory and copied marker: Pass
+Started L21 LN public reconnect refuses copied-marker replacement without rebinding
+L21 LN public reconnect refuses copied-marker replacement without rebinding: Pass
+Started L21 LN restore exact original source without copying data
+L21 LN restore exact original source without copying data: Pass
+Started L21 LN restored original public reconnect and actual fresh status
+L21 LN restored original public reconnect and actual fresh status: Pass
+Started L25 LN no-drain public detach refusal leaves both running unchanged
+L25 LN no-drain public detach refusal leaves both running unchanged: Fail
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/run-source-detach.py", line 30, in <module>
+    case('L25 '+MODE+' no-drain public detach refusal leaves both running unchanged',refused_no_drain)
+  File "<string>", line 23, in case
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/run-source-detach.py", line 26, in refused_no_drain
+    z=nongroups(B+' detach --yes --json',check=False,timeout=30);assert z['rc']!=0 and 'drain' in (z['stderr']+z['stdout']).lower(),z
+AssertionError: {'argv': ['/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart', 'exec', 'ab-nfs-api007-linux-b72ac1ef', '/usr/bin/env', '-i', 'HOME=/home/admin', 'PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin', 'LANG=C', '/bin/sh', '-c', "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c '/home/admin/ab-nfs-api007-linux-b72ac1ef-binary detach --yes --json'"], 'rc': 1, 'seconds': 0.101, 'stdout': '', 'stderr': 'AutoByteus NFS incomplete: detach declined; nothing changed\nAutoByteus NFS incomplete: exit status 1\n'}

@@ -1,0 +1,193 @@
+{
+  "scope": "personal narrow cold-activation regression, not broad API/mode/physical coverage",
+  "runs": [
+    {
+      "record": "baseline-trace-result.json",
+      "vm": "ab-nfs-ir004-2b38faee",
+      "result": "Fail",
+      "create": {
+        "name": "normal create under077 with real sudo/root/nonroot probe",
+        "status": "Fail",
+        "error": "RuntimeError('Detected private addresses: 192.168.128.2\\nNo reachable local Docker daemon; no Docker nodes will be attached.\\nAutoByteus NFS plan:\\n - Apple nfsd: TCP2049 + RPC111 + mountd20048; exact export/settings to apply:\\n# BEGIN AutoByteus NFS 64567286-193c-4493-98f6-922c16c4708e\\n\"/Users/admin/ab-nfs-ir004-2b38faee-source\" -mapall=501:20 192.168.128.2\\n\"/Users/admin/ab-nfs-ir004-2b38faee-source\" -mapall=501:20 192.168.128.1\\n# END AutoByteus NFS 64567286-193c-4493-98f6-922c16c4708e\\n# BEGIN AutoByteus NFS 64567286-193c-4493-98f6-922c16c4708e\\nnfs.server.mount.port=20048\\nnfs.server.bonjour=0\\nnfs.server.udp=0\\nnfs.server.mount.require_resv_port=0\\n# END AutoByteus NFS 64567286-193c-4493-98f6-922c16c4708e\\n\\n - Export chosen source in place: /Users/admin/ab-nfs-ir004-2b38faee-source\\n - Map ALL clients to nonroot 501:20; no recursive ownership change\\n - Trust private hosts/subnets: 192.168.128.2, 192.168.128.1\\n - Attach 192.168.128.2:/Users/admin/ab-nfs-ir004-2b38faee-source at /Volumes/autobyteus-shared\\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\\nAutoByteus NFS incomplete: mount_nfs failed: exit status 74: mount_nfs: can\\'t mount with remote locks when server (192.168.128.2) is not running rpc.statd: RPC prog. not avail\\n\\nAutoByteus NFS incomplete: exit status 1\\n')",
+        "seconds": 25.445
+      },
+      "sourceHash": "c80ec19ffc7e496687b341738796f8c7c915af829209081779e43cffc88f5a85",
+      "fatal": "RuntimeError('Detected private addresses: 192.168.128.2\\nNo reachable local Docker daemon; no Docker nodes will be attached.\\nAutoByteus NFS plan:\\n - Apple nfsd: TCP2049 + RPC111 + mountd20048; exact export/settings to apply:\\n# BEGIN AutoByteus NFS 64567286-193c-4493-98f6-922c16c4708e\\n\"/Users/admin/ab-nfs-ir004-2b38faee-source\" -mapall=501:20 192.168.128.2\\n\"/Users/admin/ab-nfs-ir004-2b38faee-source\" -mapall=501:20 192.168.128.1\\n# END AutoByteus NFS 64567286-193c-4493-98f6-922c16c4708e\\n# BEGIN AutoByteus NFS 64567286-193c-4493-98f6-922c16c4708e\\nnfs.server.mount.port=20048\\nnfs.server.bonjour=0\\nnfs.server.udp=0\\nnfs.server.mount.require_resv_port=0\\n# END AutoByteus NFS 64567286-193c-4493-98f6-922c16c4708e\\n\\n - Export chosen source in place: /Users/admin/ab-nfs-ir004-2b38faee-source\\n - Map ALL clients to nonroot 501:20; no recursive ownership change\\n - Trust private hosts/subnets: 192.168.128.2, 192.168.128.1\\n - Attach 192.168.128.2:/Users/admin/ab-nfs-ir004-2b38faee-source at /Volumes/autobyteus-shared\\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\\nAutoByteus NFS incomplete: mount_nfs failed: exit status 74: mount_nfs: can\\'t mount with remote locks when server (192.168.128.2) is not running rpc.statd: RPC prog. not avail\\n\\nAutoByteus NFS incomplete: exit status 1\\n')",
+      "cloneAbsent": true,
+      "processExited": true
+    },
+    {
+      "record": "final-trace-result.json",
+      "vm": "ab-nfs-ir004-81e6464a",
+      "result": "Fail",
+      "create": {
+        "name": "normal create under077 with real sudo/root/nonroot probe",
+        "status": "Fail",
+        "error": "RuntimeError('Detected private addresses: 192.168.128.2\\nNo reachable local Docker daemon; no Docker nodes will be attached.\\nAutoByteus NFS plan:\\n - Apple nfsd: TCP2049 + RPC111 + mountd20048; exact export/settings to apply:\\n# BEGIN AutoByteus NFS 3cd90a61-4c00-4bc1-ba0a-53f5f9673394\\n\"/Users/admin/ab-nfs-ir004-81e6464a-source\" -mapall=501:20 192.168.128.2\\n\"/Users/admin/ab-nfs-ir004-81e6464a-source\" -mapall=501:20 192.168.128.1\\n# END AutoByteus NFS 3cd90a61-4c00-4bc1-ba0a-53f5f9673394\\n# BEGIN AutoByteus NFS 3cd90a61-4c00-4bc1-ba0a-53f5f9673394\\nnfs.server.mount.port=20048\\nnfs.server.bonjour=0\\nnfs.server.udp=0\\nnfs.server.mount.require_resv_port=0\\n# END AutoByteus NFS 3cd90a61-4c00-4bc1-ba0a-53f5f9673394\\n\\n - Export chosen source in place: /Users/admin/ab-nfs-ir004-81e6464a-source\\n - Map ALL clients to nonroot 501:20; no recursive ownership change\\n - Trust private hosts/subnets: 192.168.128.2, 192.168.128.1\\n - Attach 192.168.128.2:/Users/admin/ab-nfs-ir004-81e6464a-source at /Volumes/autobyteus-shared\\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\\nAutoByteus NFS incomplete: Apple NFS startup at 192.168.128.2 (TCP program 100003 v3): rpcinfo failed: exit status 1: rpcinfo: RPC: Procedure unavailable\\nprogram 100003 version 3 is not available\\n\\nAutoByteus NFS incomplete: exit status 1\\n')",
+        "seconds": 14.455
+      },
+      "sourceHash": "4a375b37075c4604be59033428de0af7b38a518e74d6c22cc58d5d5c94725c90",
+      "fatal": "RuntimeError('Detected private addresses: 192.168.128.2\\nNo reachable local Docker daemon; no Docker nodes will be attached.\\nAutoByteus NFS plan:\\n - Apple nfsd: TCP2049 + RPC111 + mountd20048; exact export/settings to apply:\\n# BEGIN AutoByteus NFS 3cd90a61-4c00-4bc1-ba0a-53f5f9673394\\n\"/Users/admin/ab-nfs-ir004-81e6464a-source\" -mapall=501:20 192.168.128.2\\n\"/Users/admin/ab-nfs-ir004-81e6464a-source\" -mapall=501:20 192.168.128.1\\n# END AutoByteus NFS 3cd90a61-4c00-4bc1-ba0a-53f5f9673394\\n# BEGIN AutoByteus NFS 3cd90a61-4c00-4bc1-ba0a-53f5f9673394\\nnfs.server.mount.port=20048\\nnfs.server.bonjour=0\\nnfs.server.udp=0\\nnfs.server.mount.require_resv_port=0\\n# END AutoByteus NFS 3cd90a61-4c00-4bc1-ba0a-53f5f9673394\\n\\n - Export chosen source in place: /Users/admin/ab-nfs-ir004-81e6464a-source\\n - Map ALL clients to nonroot 501:20; no recursive ownership change\\n - Trust private hosts/subnets: 192.168.128.2, 192.168.128.1\\n - Attach 192.168.128.2:/Users/admin/ab-nfs-ir004-81e6464a-source at /Volumes/autobyteus-shared\\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\\nAutoByteus NFS incomplete: Apple NFS startup at 192.168.128.2 (TCP program 100003 v3): rpcinfo failed: exit status 1: rpcinfo: RPC: Procedure unavailable\\nprogram 100003 version 3 is not available\\n\\nAutoByteus NFS incomplete: exit status 1\\n')",
+      "cloneAbsent": true,
+      "processExited": true
+    },
+    {
+      "record": "fixed-plain-result.json",
+      "vm": "ab-nfs-ir004-0e6d1d39",
+      "result": "Fail",
+      "create": {
+        "name": "normal create under077 with real sudo/root/nonroot probe",
+        "status": "Fail",
+        "error": "RuntimeError('Detected private addresses: 192.168.128.2\\nNo reachable local Docker daemon; no Docker nodes will be attached.\\nAutoByteus NFS plan:\\n - Apple nfsd: TCP2049 + RPC111 + mountd20048; exact export/settings to apply:\\n# BEGIN AutoByteus NFS d27bd04c-dda3-4cf8-81b2-1da49f176756\\n\"/Users/admin/ab-nfs-ir004-0e6d1d39-source\" -mapall=501:20 192.168.128.2\\n\"/Users/admin/ab-nfs-ir004-0e6d1d39-source\" -mapall=501:20 192.168.128.1\\n# END AutoByteus NFS d27bd04c-dda3-4cf8-81b2-1da49f176756\\n# BEGIN AutoByteus NFS d27bd04c-dda3-4cf8-81b2-1da49f176756\\nnfs.server.mount.port=20048\\nnfs.server.bonjour=0\\nnfs.server.udp=0\\nnfs.server.mount.require_resv_port=0\\n# END AutoByteus NFS d27bd04c-dda3-4cf8-81b2-1da49f176756\\n\\n - Export chosen source in place: /Users/admin/ab-nfs-ir004-0e6d1d39-source\\n - Map ALL clients to nonroot 501:20; no recursive ownership change\\n - Trust private hosts/subnets: 192.168.128.2, 192.168.128.1\\n - Attach 192.168.128.2:/Users/admin/ab-nfs-ir004-0e6d1d39-source at /Volumes/autobyteus-shared\\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\\nAutoByteus NFS incomplete: Apple NFS startup at 192.168.128.2 (TCP program 100003 v3): rpcinfo failed: exit status 1: rpcinfo: RPC: Unable to send; errno = Broken pipe\\nprogram 100003 version 3 is not available\\n\\nAutoByteus NFS incomplete: exit status 1\\n')",
+        "seconds": 10.916
+      },
+      "sourceHash": "e217e5afdb7973751dbfb69523fc951e3802e37a301f8f8ae76132659388e69a",
+      "fatal": "RuntimeError('Detected private addresses: 192.168.128.2\\nNo reachable local Docker daemon; no Docker nodes will be attached.\\nAutoByteus NFS plan:\\n - Apple nfsd: TCP2049 + RPC111 + mountd20048; exact export/settings to apply:\\n# BEGIN AutoByteus NFS d27bd04c-dda3-4cf8-81b2-1da49f176756\\n\"/Users/admin/ab-nfs-ir004-0e6d1d39-source\" -mapall=501:20 192.168.128.2\\n\"/Users/admin/ab-nfs-ir004-0e6d1d39-source\" -mapall=501:20 192.168.128.1\\n# END AutoByteus NFS d27bd04c-dda3-4cf8-81b2-1da49f176756\\n# BEGIN AutoByteus NFS d27bd04c-dda3-4cf8-81b2-1da49f176756\\nnfs.server.mount.port=20048\\nnfs.server.bonjour=0\\nnfs.server.udp=0\\nnfs.server.mount.require_resv_port=0\\n# END AutoByteus NFS d27bd04c-dda3-4cf8-81b2-1da49f176756\\n\\n - Export chosen source in place: /Users/admin/ab-nfs-ir004-0e6d1d39-source\\n - Map ALL clients to nonroot 501:20; no recursive ownership change\\n - Trust private hosts/subnets: 192.168.128.2, 192.168.128.1\\n - Attach 192.168.128.2:/Users/admin/ab-nfs-ir004-0e6d1d39-source at /Volumes/autobyteus-shared\\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\\nAutoByteus NFS incomplete: Apple NFS startup at 192.168.128.2 (TCP program 100003 v3): rpcinfo failed: exit status 1: rpcinfo: RPC: Unable to send; errno = Broken pipe\\nprogram 100003 version 3 is not available\\n\\nAutoByteus NFS incomplete: exit status 1\\n')",
+      "cloneAbsent": true,
+      "processExited": true
+    },
+    {
+      "record": "fixed-trace-result.json",
+      "vm": "ab-nfs-ir004-52b2643e",
+      "result": "Pass",
+      "create": {
+        "name": "normal create under077 with real sudo/root/nonroot probe",
+        "evidence": {
+          "argv": [
+            "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+            "exec",
+            "ab-nfs-ir004-52b2643e",
+            "/usr/bin/sudo",
+            "-n",
+            "-u",
+            "admin",
+            "/bin/sh",
+            "-c",
+            "umask 077; exec /Users/admin/ab-nfs-ir004-52b2643e-binary create --source /Users/admin/ab-nfs-ir004-52b2643e-source --endpoint 192.168.128.2 --allow 192.168.128.2,192.168.128.1 --nodes none --yes --json"
+          ],
+          "rc": 0,
+          "seconds": 12.438,
+          "stdout": "{\n  \"connection\": {\n    \"storageId\": \"90dcee4c-3bfd-41b7-835a-94803939453c\",\n    \"endpoint\": \"192.168.128.2\",\n    \"export\": \"/Users/admin/ab-nfs-ir004-52b2643e-source\",\n    \"protocol\": \"3\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\"\n  },\n  \"status\": {\n    \"storageId\": \"90dcee4c-3bfd-41b7-835a-94803939453c\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\",\n    \"hostReady\": true,\n    \"nodes\": {},\n    \"limitation\": \"Hard NFS checks may stall; no outage deadline or local substitute\"\n  }\n}\n",
+          "stderr": "Detected private addresses: 192.168.128.2\nNo reachable local Docker daemon; no Docker nodes will be attached.\nAutoByteus NFS plan:\n - Apple nfsd: TCP2049 + RPC111 + mountd20048; exact export/settings to apply:\n# BEGIN AutoByteus NFS e2b0b8a4-a392-4bcd-84c1-870e78762366\n\"/Users/admin/ab-nfs-ir004-52b2643e-source\" -mapall=501:20 192.168.128.2\n\"/Users/admin/ab-nfs-ir004-52b2643e-source\" -mapall=501:20 192.168.128.1\n# END AutoByteus NFS e2b0b8a4-a392-4bcd-84c1-870e78762366\n# BEGIN AutoByteus NFS e2b0b8a4-a392-4bcd-84c1-870e78762366\nnfs.server.mount.port=20048\nnfs.server.bonjour=0\nnfs.server.udp=0\nnfs.server.mount.require_resv_port=0\n# END AutoByteus NFS e2b0b8a4-a392-4bcd-84c1-870e78762366\n\n - Export chosen source in place: /Users/admin/ab-nfs-ir004-52b2643e-source\n - Map ALL clients to nonroot 501:20; no recursive ownership change\n - Trust private hosts/subnets: 192.168.128.2, 192.168.128.1\n - Attach 192.168.128.2:/Users/admin/ab-nfs-ir004-52b2643e-source at /Volumes/autobyteus-shared\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\nChecking actual host and selected-node readiness; this may wait for storage.\n"
+        },
+        "status": "Pass",
+        "seconds": 12.439
+      },
+      "sourceHash": "e217e5afdb7973751dbfb69523fc951e3802e37a301f8f8ae76132659388e69a",
+      "fatal": null,
+      "cloneAbsent": true,
+      "processExited": true
+    },
+    {
+      "record": "ports-confirm-trace-result.json",
+      "vm": "ab-nfs-ir004-90fab912",
+      "result": "Pass",
+      "create": {
+        "name": "normal create under077 with real sudo/root/nonroot probe",
+        "evidence": {
+          "argv": [
+            "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+            "exec",
+            "ab-nfs-ir004-90fab912",
+            "/usr/bin/sudo",
+            "-n",
+            "-u",
+            "admin",
+            "/bin/sh",
+            "-c",
+            "umask 077; exec /Users/admin/ab-nfs-ir004-90fab912-binary create --source /Users/admin/ab-nfs-ir004-90fab912-source --endpoint 192.168.128.2 --allow 192.168.128.2,192.168.128.1 --nodes none --yes --json"
+          ],
+          "rc": 0,
+          "seconds": 11.495,
+          "stdout": "{\n  \"connection\": {\n    \"storageId\": \"6aa69fc6-d58d-4f02-8da1-bc31caa5bdf0\",\n    \"endpoint\": \"192.168.128.2\",\n    \"export\": \"/Users/admin/ab-nfs-ir004-90fab912-source\",\n    \"protocol\": \"3\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\"\n  },\n  \"status\": {\n    \"storageId\": \"6aa69fc6-d58d-4f02-8da1-bc31caa5bdf0\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\",\n    \"hostReady\": true,\n    \"nodes\": {},\n    \"limitation\": \"Hard NFS checks may stall; no outage deadline or local substitute\"\n  }\n}\n",
+          "stderr": "Detected private addresses: 192.168.128.2\nNo reachable local Docker daemon; no Docker nodes will be attached.\nAutoByteus NFS plan:\n - Apple nfsd: TCP2049 + RPC111 + mountd20048; exact export/settings to apply:\n# BEGIN AutoByteus NFS bb0d2701-676e-49cb-92fd-d05f56892010\n\"/Users/admin/ab-nfs-ir004-90fab912-source\" -mapall=501:20 192.168.128.2\n\"/Users/admin/ab-nfs-ir004-90fab912-source\" -mapall=501:20 192.168.128.1\n# END AutoByteus NFS bb0d2701-676e-49cb-92fd-d05f56892010\n# BEGIN AutoByteus NFS bb0d2701-676e-49cb-92fd-d05f56892010\nnfs.server.mount.port=20048\nnfs.server.bonjour=0\nnfs.server.udp=0\nnfs.server.mount.require_resv_port=0\n# END AutoByteus NFS bb0d2701-676e-49cb-92fd-d05f56892010\n\n - Export chosen source in place: /Users/admin/ab-nfs-ir004-90fab912-source\n - Map ALL clients to nonroot 501:20; no recursive ownership change\n - Trust private hosts/subnets: 192.168.128.2, 192.168.128.1\n - Attach 192.168.128.2:/Users/admin/ab-nfs-ir004-90fab912-source at /Volumes/autobyteus-shared\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\nChecking actual host and selected-node readiness; this may wait for storage.\n"
+        },
+        "status": "Pass",
+        "seconds": 11.496
+      },
+      "sourceHash": "497efd6abb0c2cfa4c740a87f005c529cbf026a6fa218b3acd345826f4a923da",
+      "fatal": null,
+      "cloneAbsent": true,
+      "processExited": true
+    },
+    {
+      "record": "ports-plain-result.json",
+      "vm": "ab-nfs-ir004-b4ae4a95",
+      "result": "Pass",
+      "create": {
+        "name": "normal create under077 with real sudo/root/nonroot probe",
+        "evidence": {
+          "argv": [
+            "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+            "exec",
+            "ab-nfs-ir004-b4ae4a95",
+            "/usr/bin/sudo",
+            "-n",
+            "-u",
+            "admin",
+            "/bin/sh",
+            "-c",
+            "umask 077; exec /Users/admin/ab-nfs-ir004-b4ae4a95-binary create --source /Users/admin/ab-nfs-ir004-b4ae4a95-source --endpoint 192.168.128.2 --allow 192.168.128.2,192.168.128.1 --nodes none --yes --json"
+          ],
+          "rc": 0,
+          "seconds": 13.406,
+          "stdout": "{\n  \"connection\": {\n    \"storageId\": \"2f3799de-00a4-42a7-b1d0-0c6838746e2b\",\n    \"endpoint\": \"192.168.128.2\",\n    \"export\": \"/Users/admin/ab-nfs-ir004-b4ae4a95-source\",\n    \"protocol\": \"3\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\"\n  },\n  \"status\": {\n    \"storageId\": \"2f3799de-00a4-42a7-b1d0-0c6838746e2b\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\",\n    \"hostReady\": true,\n    \"nodes\": {},\n    \"limitation\": \"Hard NFS checks may stall; no outage deadline or local substitute\"\n  }\n}\n",
+          "stderr": "Detected private addresses: 192.168.128.2\nNo reachable local Docker daemon; no Docker nodes will be attached.\nAutoByteus NFS plan:\n - Apple nfsd: TCP2049 + RPC111 + mountd20048; exact export/settings to apply:\n# BEGIN AutoByteus NFS c6f02d6b-32d2-409e-adc3-c97d778215f1\n\"/Users/admin/ab-nfs-ir004-b4ae4a95-source\" -mapall=501:20 192.168.128.2\n\"/Users/admin/ab-nfs-ir004-b4ae4a95-source\" -mapall=501:20 192.168.128.1\n# END AutoByteus NFS c6f02d6b-32d2-409e-adc3-c97d778215f1\n# BEGIN AutoByteus NFS c6f02d6b-32d2-409e-adc3-c97d778215f1\nnfs.server.mount.port=20048\nnfs.server.bonjour=0\nnfs.server.udp=0\nnfs.server.mount.require_resv_port=0\n# END AutoByteus NFS c6f02d6b-32d2-409e-adc3-c97d778215f1\n\n - Export chosen source in place: /Users/admin/ab-nfs-ir004-b4ae4a95-source\n - Map ALL clients to nonroot 501:20; no recursive ownership change\n - Trust private hosts/subnets: 192.168.128.2, 192.168.128.1\n - Attach 192.168.128.2:/Users/admin/ab-nfs-ir004-b4ae4a95-source at /Volumes/autobyteus-shared\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\nChecking actual host and selected-node readiness; this may wait for storage.\n"
+        },
+        "status": "Pass",
+        "seconds": 13.407
+      },
+      "sourceHash": "497efd6abb0c2cfa4c740a87f005c529cbf026a6fa218b3acd345826f4a923da",
+      "fatal": null,
+      "cloneAbsent": true,
+      "processExited": true
+    },
+    {
+      "record": "ports-trace-result.json",
+      "vm": "ab-nfs-ir004-f5c5581c",
+      "result": "Fail",
+      "create": {
+        "name": "normal create under077 with real sudo/root/nonroot probe",
+        "evidence": {
+          "argv": [
+            "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+            "exec",
+            "ab-nfs-ir004-f5c5581c",
+            "/usr/bin/sudo",
+            "-n",
+            "-u",
+            "admin",
+            "/bin/sh",
+            "-c",
+            "umask 077; exec /Users/admin/ab-nfs-ir004-f5c5581c-binary create --source /Users/admin/ab-nfs-ir004-f5c5581c-source --endpoint 192.168.128.2 --allow 192.168.128.2,192.168.128.1 --nodes none --yes --json"
+          ],
+          "rc": 0,
+          "seconds": 16.975,
+          "stdout": "{\n  \"connection\": {\n    \"storageId\": \"a39d8107-3620-420b-9126-9d45aeb4f5b7\",\n    \"endpoint\": \"192.168.128.2\",\n    \"export\": \"/Users/admin/ab-nfs-ir004-f5c5581c-source\",\n    \"protocol\": \"3\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\"\n  },\n  \"status\": {\n    \"storageId\": \"a39d8107-3620-420b-9126-9d45aeb4f5b7\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\",\n    \"hostReady\": true,\n    \"nodes\": {},\n    \"limitation\": \"Hard NFS checks may stall; no outage deadline or local substitute\"\n  }\n}\n",
+          "stderr": "Detected private addresses: 192.168.128.2\nNo reachable local Docker daemon; no Docker nodes will be attached.\nAutoByteus NFS plan:\n - Apple nfsd: TCP2049 + RPC111 + mountd20048; exact export/settings to apply:\n# BEGIN AutoByteus NFS 9d2d812e-93a3-4bf0-a32a-954f42ec06e7\n\"/Users/admin/ab-nfs-ir004-f5c5581c-source\" -mapall=501:20 192.168.128.2\n\"/Users/admin/ab-nfs-ir004-f5c5581c-source\" -mapall=501:20 192.168.128.1\n# END AutoByteus NFS 9d2d812e-93a3-4bf0-a32a-954f42ec06e7\n# BEGIN AutoByteus NFS 9d2d812e-93a3-4bf0-a32a-954f42ec06e7\nnfs.server.mount.port=20048\nnfs.server.bonjour=0\nnfs.server.udp=0\nnfs.server.mount.require_resv_port=0\n# END AutoByteus NFS 9d2d812e-93a3-4bf0-a32a-954f42ec06e7\n\n - Export chosen source in place: /Users/admin/ab-nfs-ir004-f5c5581c-source\n - Map ALL clients to nonroot 501:20; no recursive ownership change\n - Trust private hosts/subnets: 192.168.128.2, 192.168.128.1\n - Attach 192.168.128.2:/Users/admin/ab-nfs-ir004-f5c5581c-source at /Volumes/autobyteus-shared\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\nChecking actual host and selected-node readiness; this may wait for storage.\n"
+        },
+        "status": "Pass",
+        "seconds": 16.975
+      },
+      "sourceHash": "497efd6abb0c2cfa4c740a87f005c529cbf026a6fa218b3acd345826f4a923da",
+      "fatal": "AssertionError()",
+      "cloneAbsent": true,
+      "processExited": true
+    },
+    {
+      "record": "transport-trace-result.json",
+      "vm": "ab-nfs-ir004-d751336f",
+      "result": "Fail",
+      "create": {
+        "name": "normal create under077 with real sudo/root/nonroot probe",
+        "status": "Fail",
+        "error": "RuntimeError('Detected private addresses: 192.168.128.2\\nNo reachable local Docker daemon; no Docker nodes will be attached.\\nAutoByteus NFS plan:\\n - Apple nfsd: TCP2049 + RPC111 + mountd20048; exact export/settings to apply:\\n# BEGIN AutoByteus NFS ab43fa26-9be1-4f02-9d40-380898ac3035\\n\"/Users/admin/ab-nfs-ir004-d751336f-source\" -mapall=501:20 192.168.128.2\\n\"/Users/admin/ab-nfs-ir004-d751336f-source\" -mapall=501:20 192.168.128.1\\n# END AutoByteus NFS ab43fa26-9be1-4f02-9d40-380898ac3035\\n# BEGIN AutoByteus NFS ab43fa26-9be1-4f02-9d40-380898ac3035\\nnfs.server.mount.port=20048\\nnfs.server.bonjour=0\\nnfs.server.udp=0\\nnfs.server.mount.require_resv_port=0\\n# END AutoByteus NFS ab43fa26-9be1-4f02-9d40-380898ac3035\\n\\n - Export chosen source in place: /Users/admin/ab-nfs-ir004-d751336f-source\\n - Map ALL clients to nonroot 501:20; no recursive ownership change\\n - Trust private hosts/subnets: 192.168.128.2, 192.168.128.1\\n - Attach 192.168.128.2:/Users/admin/ab-nfs-ir004-d751336f-source at /Volumes/autobyteus-shared\\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\\nAutoByteus NFS incomplete: Apple NFS startup at 192.168.128.2 (TCP program 100003 v3): rpcinfo failed: exit status 1: rpcinfo: RPC: Procedure unavailable\\nprogram 100003 version 3 is not available\\n\\nAutoByteus NFS incomplete: exit status 1\\n')",
+        "seconds": 12.949
+      },
+      "sourceHash": "b28254c58bd0f5e77b007dda475880731e4e2faf2214c8e02b4799ed444c459e",
+      "fatal": "RuntimeError('Detected private addresses: 192.168.128.2\\nNo reachable local Docker daemon; no Docker nodes will be attached.\\nAutoByteus NFS plan:\\n - Apple nfsd: TCP2049 + RPC111 + mountd20048; exact export/settings to apply:\\n# BEGIN AutoByteus NFS ab43fa26-9be1-4f02-9d40-380898ac3035\\n\"/Users/admin/ab-nfs-ir004-d751336f-source\" -mapall=501:20 192.168.128.2\\n\"/Users/admin/ab-nfs-ir004-d751336f-source\" -mapall=501:20 192.168.128.1\\n# END AutoByteus NFS ab43fa26-9be1-4f02-9d40-380898ac3035\\n# BEGIN AutoByteus NFS ab43fa26-9be1-4f02-9d40-380898ac3035\\nnfs.server.mount.port=20048\\nnfs.server.bonjour=0\\nnfs.server.udp=0\\nnfs.server.mount.require_resv_port=0\\n# END AutoByteus NFS ab43fa26-9be1-4f02-9d40-380898ac3035\\n\\n - Export chosen source in place: /Users/admin/ab-nfs-ir004-d751336f-source\\n - Map ALL clients to nonroot 501:20; no recursive ownership change\\n - Trust private hosts/subnets: 192.168.128.2, 192.168.128.1\\n - Attach 192.168.128.2:/Users/admin/ab-nfs-ir004-d751336f-source at /Volumes/autobyteus-shared\\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\\nAutoByteus NFS incomplete: Apple NFS startup at 192.168.128.2 (TCP program 100003 v3): rpcinfo failed: exit status 1: rpcinfo: RPC: Procedure unavailable\\nprogram 100003 version 3 is not available\\n\\nAutoByteus NFS incomplete: exit status 1\\n')",
+      "cloneAbsent": true,
+      "processExited": true
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+go version go1.27.2 darwin/arm64
+CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 ['/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-go-mad03ry9/go/bin/go', 'build', '-trimpath', '-o', '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-cross-build-6l5nyj3r/darwin-arm64', './cmd/autobyteus-nfs']
+/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-cross-build-6l5nyj3r/darwin-arm64: Mach-O 64-bit executable arm64
+CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 ['/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-go-mad03ry9/go/bin/go', 'build', '-trimpath', '-o', '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-cross-build-6l5nyj3r/darwin-amd64', './cmd/autobyteus-nfs']
+/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-cross-build-6l5nyj3r/darwin-amd64: Mach-O 64-bit executable x86_64
+CGO_ENABLED=0 GOOS=linux GOARCH=arm64 ['/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-go-mad03ry9/go/bin/go', 'build', '-trimpath', '-o', '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-cross-build-6l5nyj3r/linux-arm64', './cmd/autobyteus-nfs']
+/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-cross-build-6l5nyj3r/linux-arm64: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), statically linked, Go BuildID=66jUx7tOctZroXtwsPrd/dQ8TU1z25AQJSZNm31Rz/4hn7F8hQemUlc3wGTQg0/1u6rnDmE_GYwT2L2RVZY, BuildID[sha1]=986745d3aa5fe0bac7399ef702636bbf33be9a54, with debug_info, not stripped
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 ['/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-go-mad03ry9/go/bin/go', 'build', '-trimpath', '-o', '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-cross-build-6l5nyj3r/linux-amd64', './cmd/autobyteus-nfs']
+/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-cross-build-6l5nyj3r/linux-amd64: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, Go BuildID=MaDvRRs8CTBr5D5SV8tk/6aqot10Mp95qTYLg-fhY/2svJch_baGNb6ZmUN4Un/zFhK5VpQ9laFyUKhIgne, BuildID[sha1]=9577ea5ea02b71a4fd6a3a64b1d59dd10330f0cb, with debug_info, not stripped
+AutoByteus NFS incomplete: this release has not qualified the current computer/CPU; no installation performed
+PASS native version; unqualified release refused; four cross-targets compiled (foreign binaries not executed)

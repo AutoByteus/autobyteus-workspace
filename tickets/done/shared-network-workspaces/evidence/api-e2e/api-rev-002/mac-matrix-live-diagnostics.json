@@ -1,0 +1,32 @@
+[
+  {
+    "role": "server",
+    "vm": "ab-nfs-api002-ebe8a71b-server",
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-api002-ebe8a71b-server",
+      "/bin/sh",
+      "-c",
+      "/bin/ps -axo pid,ppid,stat,etime,command | grep -E \"autobyteus-nfs|mount_nfs\"; /sbin/mount; /sbin/route -n get 192.168.64.2; /sbin/ping -c 1 -W 1000 192.168.64.2; /usr/bin/nc -z -G 2 192.168.64.2 111 2049 20048"
+    ],
+    "rc": 0,
+    "stdout": "  808     1 Ss     01:46 /Library/AutoByteusNFS/libexec/autobyteus-nfs service\n  869   436 S      00:00 /bin/sh -c /bin/ps -axo pid,ppid,stat,etime,command | grep -E \"autobyteus-nfs|mount_nfs\"; /sbin/mount; /sbin/route -n get 192.168.64.2; /sbin/ping -c 1 -W 1000 192.168.64.2; /usr/bin/nc -z -G 2 192.168.64.2 111 2049 20048\n  871   869 R      00:00 grep -E autobyteus-nfs|mount_nfs\n/dev/disk2s1s1 on / (apfs, sealed, local, read-only, journaled)\ndevfs on /dev (devfs, local, nobrowse)\n/dev/disk2s6 on /System/Volumes/VM (apfs, local, noexec, journaled, noatime, nobrowse)\n/dev/disk2s2 on /System/Volumes/Preboot (apfs, local, journaled, nobrowse)\n/dev/disk2s4 on /System/Volumes/Update (apfs, local, journaled, nobrowse)\n/dev/disk1s2 on /System/Volumes/xarts (apfs, local, noexec, journaled, noatime, nobrowse)\n/dev/disk1s1 on /System/Volumes/iSCPreboot (apfs, local, journaled, nobrowse)\n/dev/disk1s3 on /System/Volumes/Hardware (apfs, local, journaled, nobrowse)\n/dev/disk2s5 on /System/Volumes/Data (apfs, NFS exported, local, journaled, nobrowse, root data)\n/dev/disk4s1 on /System/Library/AssetsV2/com_apple_MobileAsset_UAF_Siri_Understanding/purpose_auto/c10eb90af2d4996616c3cd0f6bac0833eb4925fa.asset/.AssetData (apfs, sealed, local, read-only, journaled, nobrowse)\n/dev/disk6s1 on /System/Library/AssetsV2/com_apple_MobileAsset_PKITrustStore/purpose_auto/6dd55b0d06633a00de6f57ccb910a66a5ba2409a.asset/.AssetData (apfs, sealed, local, read-only, journaled, nobrowse)\nmap auto_home on /System/Volumes/Data/home (autofs, automounted, nobrowse)\n192.168.64.2:/Users/admin/ab-nfs-api002-ebe8a71b-source on /Volumes/autobyteus-shared (nfs)\n   route to: 192.168.64.2\ndestination: 192.168.64.2\n  interface: lo0\n      flags: <UP,HOST,DONE,LLINFO,WASCLONED,LOCAL,IFSCOPE,IFREF>\n recvpipe  sendpipe  ssthresh  rtt,msec    rttvar  hopcount      mtu     expire\n       0         0         0         0         0         0     16384         0 \nPING 192.168.64.2 (192.168.64.2): 56 data bytes\n64 bytes from 192.168.64.2: icmp_seq=0 ttl=64 time=0.097 ms\n\n--- 192.168.64.2 ping statistics ---\n1 packets transmitted, 1 packets received, 0.0% packet loss\nround-trip min/avg/max/stddev = 0.097/0.097/0.097/0.000 ms\n",
+    "stderr": "Connection to 192.168.64.2 port 111 [tcp/sunrpc] succeeded!\n"
+  },
+  {
+    "role": "nativeClient",
+    "vm": "ab-nfs-api002-ebe8a71b-client",
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-api002-ebe8a71b-client",
+      "/bin/sh",
+      "-c",
+      "/bin/ps -axo pid,ppid,stat,etime,command | grep -E \"autobyteus-nfs|mount_nfs\"; /sbin/mount; /sbin/route -n get 192.168.64.2; /sbin/ping -c 1 -W 1000 192.168.64.2; /usr/bin/nc -z -G 2 192.168.64.2 111 2049 20048"
+    ],
+    "rc": 1,
+    "stdout": "  725   724 S      01:45 /Library/AutoByteusNFS/libexec/autobyteus-nfs connect --connection {\"storageId\": \"a277ea43-795c-4ce0-9ebe-f15a740488ee\", \"endpoint\": \"192.168.64.2\", \"export\": \"/Users/admin/ab-nfs-api002-ebe8a71b-source\", \"protocol\": \"3\", \"mountRoot\": \"/Volumes/autobyteus-shared\"} --nodes none --yes --json\n  735   725 U      01:45 /sbin/mount_nfs -o hard,tcp,vers=3,actimeo=1,locallocks,mountport=20048,resvport 192.168.64.2:/Users/admin/ab-nfs-api002-ebe8a71b-source /Volumes/autobyteus-shared\n  790   457 S      00:00 /bin/sh -c /bin/ps -axo pid,ppid,stat,etime,command | grep -E \"autobyteus-nfs|mount_nfs\"; /sbin/mount; /sbin/route -n get 192.168.64.2; /sbin/ping -c 1 -W 1000 192.168.64.2; /usr/bin/nc -z -G 2 192.168.64.2 111 2049 20048\n  792   790 R      00:00 grep -E autobyteus-nfs|mount_nfs\n/dev/disk2s1s1 on / (apfs, sealed, local, read-only, journaled)\ndevfs on /dev (devfs, local, nobrowse)\n/dev/disk2s6 on /System/Volumes/VM (apfs, local, noexec, journaled, noatime, nobrowse)\n/dev/disk2s2 on /System/Volumes/Preboot (apfs, local, journaled, nobrowse)\n/dev/disk2s4 on /System/Volumes/Update (apfs, local, journaled, nobrowse)\n/dev/disk1s2 on /System/Volumes/xarts (apfs, local, noexec, journaled, noatime, nobrowse)\n/dev/disk1s1 on /System/Volumes/iSCPreboot (apfs, local, journaled, nobrowse)\n/dev/disk1s3 on /System/Volumes/Hardware (apfs, local, journaled, nobrowse)\n/dev/disk2s5 on /System/Volumes/Data (apfs, local, journaled, nobrowse, root data)\n/dev/disk4s1 on /System/Library/AssetsV2/com_apple_MobileAsset_UAF_Siri_Understanding/purpose_auto/c10eb90af2d4996616c3cd0f6bac0833eb4925fa.asset/.AssetData (apfs, sealed, local, read-only, journaled, nobrowse)\n/dev/disk6s1 on /System/Library/AssetsV2/com_apple_MobileAsset_PKITrustStore/purpose_auto/6dd55b0d06633a00de6f57ccb910a66a5ba2409a.asset/.AssetData (apfs, sealed, local, read-only, journaled, nobrowse)\nmap auto_home on /System/Volumes/Data/home (autofs, automounted, nobrowse)\n   route to: 192.168.64.2\ndestination: 192.168.64.2\n  interface: en0\n      flags: <UP,HOST,REJECT,DONE,LLINFO,WASCLONED,IFSCOPE,IFREF>\n recvpipe  sendpipe  ssthresh  rtt,msec    rttvar  hopcount      mtu     expire\n       0         0         0         0         0         0      1500        20 \nPING 192.168.64.2 (192.168.64.2): 56 data bytes\n\n--- 192.168.64.2 ping statistics ---\n1 packets transmitted, 0 packets received, 100.0% packet loss\n",
+    "stderr": "ping: sendto: Host is down\n"
+  }
+]

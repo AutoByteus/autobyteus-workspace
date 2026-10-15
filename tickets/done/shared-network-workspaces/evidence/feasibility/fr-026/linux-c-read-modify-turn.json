@@ -1,0 +1,1728 @@
+{
+  "node": {
+    "name": "ab-sf-fr026-6af2e9d4-app-b",
+    "port": 54147,
+    "nfs_volume": "ab-sf-fr026-6af2e9d4-nfs-b",
+    "workspace": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106"
+  },
+  "actorRunId": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5",
+  "runtime": "claude_agent_sdk",
+  "receipt": {
+    "url": "ws://127.0.0.1:54147/ws/agent/ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5",
+    "commandId": "ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+    "prompt": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete content, not provided here. Append exactly LINUX_C_28cf2a5267344a1fa5c75be3a23537f9 followed by one LF newline without overwriting prior bytes. Fsync and close using normal filesystem tools, not MCP/sharing APIs.",
+    "seconds": 9.428,
+    "tools": 2,
+    "succeeded": 2,
+    "events": [
+      {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "idle",
+          "recoverableBlock": null,
+          "agent_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "03be9c28-4f3c-41f1-9d32-898c49f0c43a",
+          "revision": 1,
+          "entries": [],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "initializing",
+          "recoverableBlock": null,
+          "agent_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "03be9c28-4f3c-41f1-9d32-898c49f0c43a",
+          "revision": 2,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "turn_id": null,
+              "state": "queued",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete content, not provided here. Append exactly LINUX_C_28cf2a5267344a1fa5c75be3a23537f9 followed by one LF newline without overwriting prior bytes. Fsync and close using normal filesystem tools, not MCP/sharing APIs.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "running",
+          "recoverableBlock": null,
+          "agent_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5"
+        }
+      },
+      {
+        "type": "TURN_STARTED",
+        "payload": {
+          "turnId": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+          "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "03be9c28-4f3c-41f1-9d32-898c49f0c43a",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+              "state": "queued",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete content, not provided here. Append exactly LINUX_C_28cf2a5267344a1fa5c75be3a23537f9 followed by one LF newline without overwriting prior bytes. Fsync and close using normal filesystem tools, not MCP/sharing APIs.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "AGENT_COMMAND_ACK",
+        "payload": {
+          "command_type": "SEND_MESSAGE",
+          "run_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5",
+          "message_id": "ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+          "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+          "state": "accepted",
+          "accepted": true,
+          "duplicate": false,
+          "status": {
+            "status": "running",
+            "recoverableBlock": null,
+            "agent_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5"
+          }
+        }
+      },
+      {
+        "type": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+        "payload": {
+          "trace_id": "rt_1791882625343_6632dc1f-5426-4b68-8c68-efc5778acb25",
+          "content": "## Agent Identity\n\n- Name: ab-sf-fr026-6af2e9d4-claude_agent_sdk-628d7\n- Description: Owned cross-OS native filesystem feasibility\n\n### Responsibilities and Boundaries\n\nUse real native terminal/Bash/read/write tools for the requested ordinary project file. Never simulate. Work only in selected workspace, never read home/config/credentials or environment, never call network/delegation or MCP filesystem/sharing tools. Print pwd and actual file contents when requested.\n\n## Collaboration\n\n### Work Requests and Outcomes\n\nOn receiving a work request, follow your own agent instructions and applicable skills. Do not send acknowledgements or promises to work. Use `send_message_to` only at a workflow-defined handoff point or when blocked and needing external input. Follow applicable handoff rules; otherwise, return the result or specific blocker to the requesting agent.\n\nYou can work with other agents and agent teams: the ones the user brings into this run, and any available agent or team.\n\n- A user message may end with a `[Mentioned collaborators]` note that lists each mentioned Agent or Agent Team with its address. Each one is already in the run.\n- `send_message_to` with an exact address as `recipient_address` reaches the one instance at that address; an available agent or team that is not yet in the run is brought in on first use and keeps its conversation. A message to an Agent Team goes to its coordinator.\n- `delegate_task` with an address spawns a new, separate copy with your work description as its first message; copies can work in parallel. It returns the copy's IDs: `target_agent_run_id` for an Agent copy, or `target_team_run_id` and `target_team_coordinator_agent_run_id` for a Team copy. Message a copy with `send_message_to` and its agent run ID (a Team copy's coordinator). To give a copy a follow-up Task once its current Task is DONE or CANCELLED, call `delegate_task` with its `target_team_run_id` or `target_agent_run_id` and the new `task_id`.\n- If you have `list_available_agents`, it lists the available agents and teams with their addresses.\n- Do not claim that a message or delegation succeeded unless the tool confirms it.\n\nYour address in this run is `/ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7`.",
+          "ts": 1791882625.343
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "03be9c28-4f3c-41f1-9d32-898c49f0c43a",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+              "state": "queued",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete content, not provided here. Append exactly LINUX_C_28cf2a5267344a1fa5c75be3a23537f9 followed by one LF newline without overwriting prior bytes. Fsync and close using normal filesystem tools, not MCP/sharing APIs.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "03be9c28-4f3c-41f1-9d32-898c49f0c43a",
+          "revision": 4,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete content, not provided here. Append exactly LINUX_C_28cf2a5267344a1fa5c75be3a23537f9 followed by one LF newline without overwriting prior bytes. Fsync and close using normal filesystem tools, not MCP/sharing APIs.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_START",
+        "payload": {
+          "id": "toolu_01Ryh2Gsb3vXpNmTjYjV2LMS",
+          "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+          "segment_type": "tool_call",
+          "metadata": {
+            "tool_name": "Bash",
+            "arguments": {
+              "command": "pwd && ls -la -- mac-linux-agents-aaca0a6d.txt && cat -- mac-linux-agents-aaca0a6d.txt",
+              "description": "Print working directory and read the target file"
+            }
+          }
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "03be9c28-4f3c-41f1-9d32-898c49f0c43a",
+          "revision": 4,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete content, not provided here. Append exactly LINUX_C_28cf2a5267344a1fa5c75be3a23537f9 followed by one LF newline without overwriting prior bytes. Fsync and close using normal filesystem tools, not MCP/sharing APIs.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "TOOL_EXECUTION_STARTED",
+        "payload": {
+          "invocation_id": "toolu_01Ryh2Gsb3vXpNmTjYjV2LMS",
+          "tool_name": "Bash",
+          "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+          "arguments": {
+            "command": "pwd && ls -la -- mac-linux-agents-aaca0a6d.txt && cat -- mac-linux-agents-aaca0a6d.txt",
+            "description": "Print working directory and read the target file"
+          }
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "03be9c28-4f3c-41f1-9d32-898c49f0c43a",
+          "revision": 4,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete content, not provided here. Append exactly LINUX_C_28cf2a5267344a1fa5c75be3a23537f9 followed by one LF newline without overwriting prior bytes. Fsync and close using normal filesystem tools, not MCP/sharing APIs.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "usage_event_id": "08b774be-40c2-4d80-b47b-31ee0eeddef4",
+          "idempotency_key": "claude_sdk_call:cf29b2b5-cc88-4c99-9e0b-9cd8872baf00:msg_011CfyyZgxZmiXzxw9YgndEB",
+          "observed_at": "2026-10-13T09:10:29.684Z",
+          "run_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5",
+          "root_team_run_id": null,
+          "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+          "llm_call_id": "msg_011CfyyZgxZmiXzxw9YgndEB",
+          "call_sequence": null,
+          "agent_definition_id": "ab-sf-fr026-6af2e9d4-claude-agent-sdk-628d7",
+          "workspace_id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+          "task_id": null,
+          "team_name": null,
+          "agent_name": "ab-sf-fr026-6af2e9d4-claude_agent_sdk-628d7",
+          "run_summary": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete c...",
+          "run_created_at": "2026-10-13T09:10:02.725Z",
+          "member_display_name": null,
+          "runtime_kind": "claude_agent_sdk",
+          "model_provider": "ANTHROPIC",
+          "provider_name": null,
+          "model_identifier": "claude-haiku-5-5",
+          "model_value": "claude-haiku-5-5",
+          "selected_match_state": null,
+          "selected_model_value": null,
+          "selected_resolved_raw_model_id": null,
+          "claude_sdk_model_usage": [],
+          "claude_sdk_session_id": "cf29b2b5-cc88-4c99-9e0b-9cd8872baf00",
+          "claude_sdk_query_kind": null,
+          "ingestion_kind": "claude_sdk_call",
+          "usage_scope": "per_call",
+          "reports_model_call": true,
+          "snapshot_series_key": null,
+          "previous_snapshot_event_id": null,
+          "input_token_semantic": "base_excludes_cache",
+          "reported_input_tokens": 2,
+          "reported_output_tokens": 466,
+          "reported_total_tokens": 21269,
+          "accounting_input_tokens": 20803,
+          "accounting_output_tokens": 466,
+          "accounting_total_tokens": 21269,
+          "standard_input_tokens": 2,
+          "cache_miss_input_tokens": 2,
+          "cache_read_input_tokens": 12710,
+          "cache_creation_input_tokens": 8091,
+          "cache_creation_5m_input_tokens": 0,
+          "cache_creation_1h_input_tokens": 8091,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 336,
+          "billable_input_tokens": 20803,
+          "billable_output_tokens": 466,
+          "cost_basis": "api_price_estimate",
+          "currency": "USD",
+          "input_price_per_million": 0.1,
+          "output_price_per_million": 0.5,
+          "cached_input_read_price_per_million": 0.01,
+          "cached_input_write_price_per_million": null,
+          "cached_input_write_5m_price_per_million": 0.125,
+          "cached_input_write_1h_price_per_million": 0.2,
+          "pricing_source": "autobyteus_model_catalog",
+          "pricing_status": "trusted",
+          "pricing_missing_reason": null,
+          "pricing_snapshot_json": {
+            "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:claude-haiku-5-5",
+            "price_config_id": "autobyteus_model_catalog:ANTHROPIC:claude-haiku-5-5",
+            "model_provider": "ANTHROPIC",
+            "model_identifier": "claude-haiku-5-5",
+            "model_value": "claude-haiku-5-5",
+            "canonical_name": "claude-haiku-5-5",
+            "currency": "USD",
+            "input_price_per_million": 0.1,
+            "output_price_per_million": 0.5,
+            "cached_input_read_price_per_million": 0.01,
+            "cached_input_write_price_per_million": null,
+            "cached_input_write_5m_price_per_million": 0.125,
+            "cached_input_write_1h_price_per_million": 0.2,
+            "input_price_tiers": [
+              {
+                "tier_id": "prompt_le_100k",
+                "max_input_tokens": 100000,
+                "input_price_per_million": 0.1,
+                "output_price_per_million": 0.5,
+                "cached_input_read_price_per_million": 0.01,
+                "cached_input_write_price_per_million": null,
+                "cached_input_write_5m_price_per_million": 0.125,
+                "cached_input_write_1h_price_per_million": 0.2,
+                "trusted_dimensions": {
+                  "input": true,
+                  "output": true,
+                  "cached_input_read": true,
+                  "cached_input_write": false,
+                  "cached_input_write_5m": true,
+                  "cached_input_write_1h": true
+                }
+              },
+              {
+                "tier_id": "prompt_gt_100k",
+                "max_input_tokens": null,
+                "input_price_per_million": 0.5,
+                "output_price_per_million": 2.5,
+                "cached_input_read_price_per_million": 0.05,
+                "cached_input_write_price_per_million": null,
+                "cached_input_write_5m_price_per_million": 0.625,
+                "cached_input_write_1h_price_per_million": 1,
+                "trusted_dimensions": {
+                  "input": true,
+                  "output": true,
+                  "cached_input_read": true,
+                  "cached_input_write": false,
+                  "cached_input_write_5m": true,
+                  "cached_input_write_1h": true
+                }
+              }
+            ],
+            "pricing_status": "trusted",
+            "trusted_dimensions": {
+              "input": true,
+              "output": true,
+              "cached_input_read": true,
+              "cached_input_write": false,
+              "cached_input_write_5m": true,
+              "cached_input_write_1h": true
+            },
+            "missing_reason": null,
+            "source": "autobyteus_model_catalog",
+            "effective_from": null,
+            "effective_to": null,
+            "version": null,
+            "pricing_schedule_id": null,
+            "pricing_schedule_period_id": null,
+            "pricing_schedule_effective_from": null,
+            "pricing_schedule_window_timezone": null,
+            "pricing_schedule_peak_days": null,
+            "pricing_schedule_peak_days_timezone": null,
+            "selected_tier_id": "prompt_le_100k"
+          },
+          "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:claude-haiku-5-5",
+          "selected_pricing_tier_id": "prompt_le_100k",
+          "missing_price_dimensions": [],
+          "estimated_api_input_cost": 0.0017455,
+          "estimated_api_standard_input_cost": 2e-07,
+          "estimated_api_cache_read_input_cost": 0.0001271,
+          "estimated_api_cache_creation_input_cost": 0.0016182,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": 0.0016182,
+          "estimated_api_output_cost": 0.000233,
+          "estimated_api_reasoning_output_cost": 0.000168,
+          "estimated_api_total_cost": 0.0019785000000000002,
+          "api_cost_status": "estimated",
+          "meter_delta_input_tokens": 20803,
+          "meter_delta_output_tokens": 466,
+          "meter_delta_total_tokens": 21269,
+          "run_summary_after_event": {
+            "run_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5",
+            "root_team_run_id": null,
+            "agent_definition_id": "ab-sf-fr026-6af2e9d4-claude-agent-sdk-628d7",
+            "workspace_id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+            "gross_input_tokens": 20803,
+            "standard_input_tokens": 2,
+            "cache_miss_input_tokens": 2,
+            "cache_read_input_tokens": 12710,
+            "cache_creation_input_tokens": 8091,
+            "cache_creation_5m_input_tokens": 0,
+            "cache_creation_1h_input_tokens": 8091,
+            "output_tokens": 466,
+            "reasoning_output_tokens": 336,
+            "billable_output_tokens": 466,
+            "total_tokens": 21269,
+            "cache_read_input_token_rate": 0.61096957169639,
+            "standard_input_token_rate": 9.613997981060424e-05,
+            "cache_creation_input_token_rate": 0.38893428832379945,
+            "cache_state": "positive",
+            "estimated_api_input_cost": 0.0017455,
+            "estimated_api_standard_input_cost": 2e-07,
+            "estimated_api_cache_read_input_cost": 0.0001271,
+            "estimated_api_cache_creation_input_cost": 0.0016182,
+            "estimated_api_cache_creation_5m_input_cost": null,
+            "estimated_api_cache_creation_1h_input_cost": 0.0016182,
+            "estimated_api_output_cost": 0.000233,
+            "estimated_api_reasoning_output_cost": 0.000168,
+            "estimated_api_total_cost": 0.0019785,
+            "currency": "USD",
+            "api_cost_status": "estimated",
+            "missing_price_dimensions": [],
+            "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:claude-haiku-5-5",
+            "selected_pricing_tier_id": "prompt_le_100k",
+            "unit_prices": {
+              "standard_input": {
+                "status": "single",
+                "price_per_million": 0.1
+              },
+              "cache_read_input": {
+                "status": "single",
+                "price_per_million": 0.01
+              },
+              "cache_creation_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_5m_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_1h_input": {
+                "status": "single",
+                "price_per_million": 0.2
+              },
+              "output": {
+                "status": "single",
+                "price_per_million": 0.5
+              },
+              "reasoning_output": {
+                "status": "single",
+                "price_per_million": 0.5
+              }
+            },
+            "usage_report_count": 1,
+            "revision": 1,
+            "updated_at": "2026-10-13T09:10:29.684Z",
+            "latest_prompt_tokens": 20859,
+            "effective_context_window_tokens": 1000000,
+            "context_window_usage_percent": 2.0859,
+            "context_compaction_threshold_tokens": 967000,
+            "latest_model_provider": "ANTHROPIC",
+            "latest_model_identifier": "claude-haiku-5-5",
+            "latest_runtime_kind": "claude_agent_sdk",
+            "latest_selected_raw_model_id": null,
+            "has_cache_write_rate_assumption": false
+          },
+          "latest_prompt_tokens": 20859,
+          "effective_context_window_tokens": 1000000,
+          "context_window_usage_percent": 2.0859,
+          "context_compaction_threshold_tokens": 967000,
+          "raw_usage_json": null,
+          "raw_event_json": null,
+          "quality_flags": [
+            "model_identifier_differs_from_run_context"
+          ]
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "03be9c28-4f3c-41f1-9d32-898c49f0c43a",
+          "revision": 4,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete content, not provided here. Append exactly LINUX_C_28cf2a5267344a1fa5c75be3a23537f9 followed by one LF newline without overwriting prior bytes. Fsync and close using normal filesystem tools, not MCP/sharing APIs.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_END",
+        "payload": {
+          "id": "toolu_01Ryh2Gsb3vXpNmTjYjV2LMS",
+          "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+          "metadata": {
+            "tool_name": "Bash",
+            "arguments": {
+              "command": "pwd && ls -la -- mac-linux-agents-aaca0a6d.txt && cat -- mac-linux-agents-aaca0a6d.txt",
+              "description": "Print working directory and read the target file"
+            },
+            "result": "/Volumes/autobyteus-shared/project\n-rw-r--r-- 1 10001 10001 84 Oct 13 09:10 mac-linux-agents-aaca0a6d.txt\nMAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\nLINUX_B_f8a27d180fe3433490a70b6f22bdca4f"
+          },
+          "interrupted": false,
+          "reason": null,
+          "failed": false,
+          "error": null
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "03be9c28-4f3c-41f1-9d32-898c49f0c43a",
+          "revision": 4,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete content, not provided here. Append exactly LINUX_C_28cf2a5267344a1fa5c75be3a23537f9 followed by one LF newline without overwriting prior bytes. Fsync and close using normal filesystem tools, not MCP/sharing APIs.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "TOOL_EXECUTION_SUCCEEDED",
+        "payload": {
+          "invocation_id": "toolu_01Ryh2Gsb3vXpNmTjYjV2LMS",
+          "tool_name": "Bash",
+          "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+          "arguments": {
+            "command": "pwd && ls -la -- mac-linux-agents-aaca0a6d.txt && cat -- mac-linux-agents-aaca0a6d.txt",
+            "description": "Print working directory and read the target file"
+          },
+          "result": "/Volumes/autobyteus-shared/project\n-rw-r--r-- 1 10001 10001 84 Oct 13 09:10 mac-linux-agents-aaca0a6d.txt\nMAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\nLINUX_B_f8a27d180fe3433490a70b6f22bdca4f"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "03be9c28-4f3c-41f1-9d32-898c49f0c43a",
+          "revision": 4,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete content, not provided here. Append exactly LINUX_C_28cf2a5267344a1fa5c75be3a23537f9 followed by one LF newline without overwriting prior bytes. Fsync and close using normal filesystem tools, not MCP/sharing APIs.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_START",
+        "payload": {
+          "id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1:claude-text:msg_011CfyyZtoTxX9ehvQHtW2c8:0",
+          "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+          "segment_type": "text",
+          "metadata": null
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "03be9c28-4f3c-41f1-9d32-898c49f0c43a",
+          "revision": 4,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete content, not provided here. Append exactly LINUX_C_28cf2a5267344a1fa5c75be3a23537f9 followed by one LF newline without overwriting prior bytes. Fsync and close using normal filesystem tools, not MCP/sharing APIs.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1:claude-text:msg_011CfyyZtoTxX9ehvQHtW2c8:0",
+          "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+          "segment_type": "text",
+          "delta": "The file is 84 bytes and ends with a newline. Now I'll append the marker with a single line, then sync it to disk."
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "03be9c28-4f3c-41f1-9d32-898c49f0c43a",
+          "revision": 4,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete content, not provided here. Append exactly LINUX_C_28cf2a5267344a1fa5c75be3a23537f9 followed by one LF newline without overwriting prior bytes. Fsync and close using normal filesystem tools, not MCP/sharing APIs.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_END",
+        "payload": {
+          "id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1:claude-text:msg_011CfyyZtoTxX9ehvQHtW2c8:0",
+          "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+          "metadata": null,
+          "interrupted": false,
+          "reason": null,
+          "failed": false,
+          "error": null
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "03be9c28-4f3c-41f1-9d32-898c49f0c43a",
+          "revision": 4,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete content, not provided here. Append exactly LINUX_C_28cf2a5267344a1fa5c75be3a23537f9 followed by one LF newline without overwriting prior bytes. Fsync and close using normal filesystem tools, not MCP/sharing APIs.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_START",
+        "payload": {
+          "id": "toolu_01FAWUN9Y4ZFAysMsnTnEhUi",
+          "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+          "segment_type": "tool_call",
+          "metadata": {
+            "tool_name": "Bash",
+            "arguments": {
+              "command": "printf '%s\\n' 'LINUX_C_28cf2a5267344a1fa5c75be3a23537f9' >> /Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt && sync && tail -c 200 /Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt | od -c | tail -n 3 && cat /Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt",
+              "description": "Append marker line, sync to disk, and verify contents"
+            }
+          }
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "03be9c28-4f3c-41f1-9d32-898c49f0c43a",
+          "revision": 4,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete content, not provided here. Append exactly LINUX_C_28cf2a5267344a1fa5c75be3a23537f9 followed by one LF newline without overwriting prior bytes. Fsync and close using normal filesystem tools, not MCP/sharing APIs.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "TOOL_EXECUTION_STARTED",
+        "payload": {
+          "invocation_id": "toolu_01FAWUN9Y4ZFAysMsnTnEhUi",
+          "tool_name": "Bash",
+          "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+          "arguments": {
+            "command": "printf '%s\\n' 'LINUX_C_28cf2a5267344a1fa5c75be3a23537f9' >> /Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt && sync && tail -c 200 /Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt | od -c | tail -n 3 && cat /Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt",
+            "description": "Append marker line, sync to disk, and verify contents"
+          }
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "03be9c28-4f3c-41f1-9d32-898c49f0c43a",
+          "revision": 4,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete content, not provided here. Append exactly LINUX_C_28cf2a5267344a1fa5c75be3a23537f9 followed by one LF newline without overwriting prior bytes. Fsync and close using normal filesystem tools, not MCP/sharing APIs.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "TOOL_APPROVED",
+        "payload": {
+          "invocation_id": "toolu_01FAWUN9Y4ZFAysMsnTnEhUi",
+          "tool_name": "Bash",
+          "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+          "arguments": {
+            "command": "printf '%s\\n' 'LINUX_C_28cf2a5267344a1fa5c75be3a23537f9' >> /Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt && sync && tail -c 200 /Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt | od -c | tail -n 3 && cat /Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt",
+            "description": "Append marker line, sync to disk, and verify contents"
+          },
+          "reason": "auto_execute_tools_enabled"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "03be9c28-4f3c-41f1-9d32-898c49f0c43a",
+          "revision": 4,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete content, not provided here. Append exactly LINUX_C_28cf2a5267344a1fa5c75be3a23537f9 followed by one LF newline without overwriting prior bytes. Fsync and close using normal filesystem tools, not MCP/sharing APIs.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "usage_event_id": "26723aad-a8cd-4880-9b06-4202acc61cfc",
+          "idempotency_key": "claude_sdk_call:cf29b2b5-cc88-4c99-9e0b-9cd8872baf00:msg_011CfyyZtoTxX9ehvQHtW2c8",
+          "observed_at": "2026-10-13T09:10:32.209Z",
+          "run_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5",
+          "root_team_run_id": null,
+          "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+          "llm_call_id": "msg_011CfyyZtoTxX9ehvQHtW2c8",
+          "call_sequence": null,
+          "agent_definition_id": "ab-sf-fr026-6af2e9d4-claude-agent-sdk-628d7",
+          "workspace_id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+          "task_id": null,
+          "team_name": null,
+          "agent_name": "ab-sf-fr026-6af2e9d4-claude_agent_sdk-628d7",
+          "run_summary": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete c...",
+          "run_created_at": "2026-10-13T09:10:02.725Z",
+          "member_display_name": null,
+          "runtime_kind": "claude_agent_sdk",
+          "model_provider": "ANTHROPIC",
+          "provider_name": null,
+          "model_identifier": "claude-haiku-5-5",
+          "model_value": "claude-haiku-5-5",
+          "selected_match_state": null,
+          "selected_model_value": null,
+          "selected_resolved_raw_model_id": null,
+          "claude_sdk_model_usage": [],
+          "claude_sdk_session_id": "cf29b2b5-cc88-4c99-9e0b-9cd8872baf00",
+          "claude_sdk_query_kind": null,
+          "ingestion_kind": "claude_sdk_call",
+          "usage_scope": "per_call",
+          "reports_model_call": true,
+          "snapshot_series_key": null,
+          "previous_snapshot_event_id": null,
+          "input_token_semantic": "base_excludes_cache",
+          "reported_input_tokens": 2,
+          "reported_output_tokens": 493,
+          "reported_total_tokens": 21918,
+          "accounting_input_tokens": 21425,
+          "accounting_output_tokens": 493,
+          "accounting_total_tokens": 21918,
+          "standard_input_tokens": 2,
+          "cache_miss_input_tokens": 2,
+          "cache_read_input_tokens": 20801,
+          "cache_creation_input_tokens": 622,
+          "cache_creation_5m_input_tokens": 0,
+          "cache_creation_1h_input_tokens": 622,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 194,
+          "billable_input_tokens": 21425,
+          "billable_output_tokens": 493,
+          "cost_basis": "api_price_estimate",
+          "currency": "USD",
+          "input_price_per_million": 0.1,
+          "output_price_per_million": 0.5,
+          "cached_input_read_price_per_million": 0.01,
+          "cached_input_write_price_per_million": null,
+          "cached_input_write_5m_price_per_million": 0.125,
+          "cached_input_write_1h_price_per_million": 0.2,
+          "pricing_source": "autobyteus_model_catalog",
+          "pricing_status": "trusted",
+          "pricing_missing_reason": null,
+          "pricing_snapshot_json": {
+            "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:claude-haiku-5-5",
+            "price_config_id": "autobyteus_model_catalog:ANTHROPIC:claude-haiku-5-5",
+            "model_provider": "ANTHROPIC",
+            "model_identifier": "claude-haiku-5-5",
+            "model_value": "claude-haiku-5-5",
+            "canonical_name": "claude-haiku-5-5",
+            "currency": "USD",
+            "input_price_per_million": 0.1,
+            "output_price_per_million": 0.5,
+            "cached_input_read_price_per_million": 0.01,
+            "cached_input_write_price_per_million": null,
+            "cached_input_write_5m_price_per_million": 0.125,
+            "cached_input_write_1h_price_per_million": 0.2,
+            "input_price_tiers": [
+              {
+                "tier_id": "prompt_le_100k",
+                "max_input_tokens": 100000,
+                "input_price_per_million": 0.1,
+                "output_price_per_million": 0.5,
+                "cached_input_read_price_per_million": 0.01,
+                "cached_input_write_price_per_million": null,
+                "cached_input_write_5m_price_per_million": 0.125,
+                "cached_input_write_1h_price_per_million": 0.2,
+                "trusted_dimensions": {
+                  "input": true,
+                  "output": true,
+                  "cached_input_read": true,
+                  "cached_input_write": false,
+                  "cached_input_write_5m": true,
+                  "cached_input_write_1h": true
+                }
+              },
+              {
+                "tier_id": "prompt_gt_100k",
+                "max_input_tokens": null,
+                "input_price_per_million": 0.5,
+                "output_price_per_million": 2.5,
+                "cached_input_read_price_per_million": 0.05,
+                "cached_input_write_price_per_million": null,
+                "cached_input_write_5m_price_per_million": 0.625,
+                "cached_input_write_1h_price_per_million": 1,
+                "trusted_dimensions": {
+                  "input": true,
+                  "output": true,
+                  "cached_input_read": true,
+                  "cached_input_write": false,
+                  "cached_input_write_5m": true,
+                  "cached_input_write_1h": true
+                }
+              }
+            ],
+            "pricing_status": "trusted",
+            "trusted_dimensions": {
+              "input": true,
+              "output": true,
+              "cached_input_read": true,
+              "cached_input_write": false,
+              "cached_input_write_5m": true,
+              "cached_input_write_1h": true
+            },
+            "missing_reason": null,
+            "source": "autobyteus_model_catalog",
+            "effective_from": null,
+            "effective_to": null,
+            "version": null,
+            "pricing_schedule_id": null,
+            "pricing_schedule_period_id": null,
+            "pricing_schedule_effective_from": null,
+            "pricing_schedule_window_timezone": null,
+            "pricing_schedule_peak_days": null,
+            "pricing_schedule_peak_days_timezone": null,
+            "selected_tier_id": "prompt_le_100k"
+          },
+          "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:claude-haiku-5-5",
+          "selected_pricing_tier_id": "prompt_le_100k",
+          "missing_price_dimensions": [],
+          "estimated_api_input_cost": 0.00033261,
+          "estimated_api_standard_input_cost": 2e-07,
+          "estimated_api_cache_read_input_cost": 0.00020801,
+          "estimated_api_cache_creation_input_cost": 0.00012440000000000002,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": 0.00012440000000000002,
+          "estimated_api_output_cost": 0.0002465,
+          "estimated_api_reasoning_output_cost": 9.7e-05,
+          "estimated_api_total_cost": 0.00057911,
+          "api_cost_status": "estimated",
+          "meter_delta_input_tokens": 21425,
+          "meter_delta_output_tokens": 493,
+          "meter_delta_total_tokens": 21918,
+          "run_summary_after_event": {
+            "run_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5",
+            "root_team_run_id": null,
+            "agent_definition_id": "ab-sf-fr026-6af2e9d4-claude-agent-sdk-628d7",
+            "workspace_id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+            "gross_input_tokens": 42228,
+            "standard_input_tokens": 4,
+            "cache_miss_input_tokens": 4,
+            "cache_read_input_tokens": 33511,
+            "cache_creation_input_tokens": 8713,
+            "cache_creation_5m_input_tokens": 0,
+            "cache_creation_1h_input_tokens": 8713,
+            "output_tokens": 959,
+            "reasoning_output_tokens": 530,
+            "billable_output_tokens": 959,
+            "total_tokens": 43187,
+            "cache_read_input_token_rate": 0.7935729847494554,
+            "standard_input_token_rate": 9.47238798901203e-05,
+            "cache_creation_input_token_rate": 0.20633229137065454,
+            "cache_state": "positive",
+            "estimated_api_input_cost": 0.00207811,
+            "estimated_api_standard_input_cost": 4e-07,
+            "estimated_api_cache_read_input_cost": 0.00033511,
+            "estimated_api_cache_creation_input_cost": 0.0017426,
+            "estimated_api_cache_creation_5m_input_cost": null,
+            "estimated_api_cache_creation_1h_input_cost": 0.0017426,
+            "estimated_api_output_cost": 0.0004795,
+            "estimated_api_reasoning_output_cost": 0.000265,
+            "estimated_api_total_cost": 0.00255761,
+            "currency": "USD",
+            "api_cost_status": "estimated",
+            "missing_price_dimensions": [],
+            "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:claude-haiku-5-5",
+            "selected_pricing_tier_id": "prompt_le_100k",
+            "unit_prices": {
+              "standard_input": {
+                "status": "single",
+                "price_per_million": 0.1
+              },
+              "cache_read_input": {
+                "status": "single",
+                "price_per_million": 0.01
+              },
+              "cache_creation_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_5m_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_1h_input": {
+                "status": "single",
+                "price_per_million": 0.2
+              },
+              "output": {
+                "status": "single",
+                "price_per_million": 0.5
+              },
+              "reasoning_output": {
+                "status": "single",
+                "price_per_million": 0.5
+              }
+            },
+            "usage_report_count": 2,
+            "revision": 2,
+            "updated_at": "2026-10-13T09:10:32.209Z",
+            "latest_prompt_tokens": 21594,
+            "effective_context_window_tokens": 1000000,
+            "context_window_usage_percent": 2.1594,
+            "context_compaction_threshold_tokens": 967000,
+            "latest_model_provider": "ANTHROPIC",
+            "latest_model_identifier": "claude-haiku-5-5",
+            "latest_runtime_kind": "claude_agent_sdk",
+            "latest_selected_raw_model_id": null,
+            "has_cache_write_rate_assumption": false
+          },
+          "latest_prompt_tokens": 21594,
+          "effective_context_window_tokens": 1000000,
+          "context_window_usage_percent": 2.1593999999999998,
+          "context_compaction_threshold_tokens": 967000,
+          "raw_usage_json": null,
+          "raw_event_json": null,
+          "quality_flags": [
+            "model_identifier_differs_from_run_context"
+          ]
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "03be9c28-4f3c-41f1-9d32-898c49f0c43a",
+          "revision": 4,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete content, not provided here. Append exactly LINUX_C_28cf2a5267344a1fa5c75be3a23537f9 followed by one LF newline without overwriting prior bytes. Fsync and close using normal filesystem tools, not MCP/sharing APIs.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_END",
+        "payload": {
+          "id": "toolu_01FAWUN9Y4ZFAysMsnTnEhUi",
+          "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+          "metadata": {
+            "tool_name": "Bash",
+            "arguments": {
+              "command": "printf '%s\\n' 'LINUX_C_28cf2a5267344a1fa5c75be3a23537f9' >> /Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt && sync && tail -c 200 /Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt | od -c | tail -n 3 && cat /Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt",
+              "description": "Append marker line, sync to disk, and verify contents"
+            },
+            "result": "0000140   2   a   5   2   6   7   3   4   4   a   1   f   a   5   c   7\n0000160   5   b   e   3   a   2   3   5   3   7   f   9  \\n\n0000175\nMAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\nLINUX_B_f8a27d180fe3433490a70b6f22bdca4f\nLINUX_C_28cf2a5267344a1fa5c75be3a23537f9"
+          },
+          "interrupted": false,
+          "reason": null,
+          "failed": false,
+          "error": null
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "03be9c28-4f3c-41f1-9d32-898c49f0c43a",
+          "revision": 4,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete content, not provided here. Append exactly LINUX_C_28cf2a5267344a1fa5c75be3a23537f9 followed by one LF newline without overwriting prior bytes. Fsync and close using normal filesystem tools, not MCP/sharing APIs.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "TOOL_EXECUTION_SUCCEEDED",
+        "payload": {
+          "invocation_id": "toolu_01FAWUN9Y4ZFAysMsnTnEhUi",
+          "tool_name": "Bash",
+          "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+          "arguments": {
+            "command": "printf '%s\\n' 'LINUX_C_28cf2a5267344a1fa5c75be3a23537f9' >> /Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt && sync && tail -c 200 /Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt | od -c | tail -n 3 && cat /Volumes/autobyteus-shared/project/mac-linux-agents-aaca0a6d.txt",
+            "description": "Append marker line, sync to disk, and verify contents"
+          },
+          "result": "0000140   2   a   5   2   6   7   3   4   4   a   1   f   a   5   c   7\n0000160   5   b   e   3   a   2   3   5   3   7   f   9  \\n\n0000175\nMAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\nLINUX_B_f8a27d180fe3433490a70b6f22bdca4f\nLINUX_C_28cf2a5267344a1fa5c75be3a23537f9"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "03be9c28-4f3c-41f1-9d32-898c49f0c43a",
+          "revision": 4,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete content, not provided here. Append exactly LINUX_C_28cf2a5267344a1fa5c75be3a23537f9 followed by one LF newline without overwriting prior bytes. Fsync and close using normal filesystem tools, not MCP/sharing APIs.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_START",
+        "payload": {
+          "id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1:claude-text:msg_011Cfyya5pFhY45fvvPyzGC7:0",
+          "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+          "segment_type": "text",
+          "metadata": null
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "03be9c28-4f3c-41f1-9d32-898c49f0c43a",
+          "revision": 4,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete content, not provided here. Append exactly LINUX_C_28cf2a5267344a1fa5c75be3a23537f9 followed by one LF newline without overwriting prior bytes. Fsync and close using normal filesystem tools, not MCP/sharing APIs.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1:claude-text:msg_011Cfyya5pFhY45fvvPyzGC7:0",
+          "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+          "segment_type": "text",
+          "delta": "Working directory: `/Volumes/autobyteus-shared/project`\n\nComplete content of `mac-linux-agents-aaca0a6d.txt` before the append (84 bytes):\n\n```\nMAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\nLINUX_B_f8a27d180fe3433490a70b6f22bdca4f\n```\n\nI appended `LINUX_C_28cf2a5267344a1fa5c75be3a23537f9` followed by one LF, using `>>` so no prior bytes were overwritten. I then ran `sync` to flush to disk. The file now reads:\n\n```\nMAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\nLINUX_B_f8a27d180fe3433490a70b6f22bdca4f\nLINUX_C_28cf2a5267344a1fa5c75be3a23537f9\n```\n\nThe tail bytes confirm the new line ends with `\\n`. I used shell redirection and `sync` rather than an explicit fsync call, since the `sync` command flushes all filesystem buffers. The file descriptor was closed when the shell redirection ended."
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "03be9c28-4f3c-41f1-9d32-898c49f0c43a",
+          "revision": 4,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete content, not provided here. Append exactly LINUX_C_28cf2a5267344a1fa5c75be3a23537f9 followed by one LF newline without overwriting prior bytes. Fsync and close using normal filesystem tools, not MCP/sharing APIs.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_END",
+        "payload": {
+          "id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1:claude-text:msg_011Cfyya5pFhY45fvvPyzGC7:0",
+          "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+          "metadata": null,
+          "interrupted": false,
+          "reason": null,
+          "failed": false,
+          "error": null
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "03be9c28-4f3c-41f1-9d32-898c49f0c43a",
+          "revision": 4,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete content, not provided here. Append exactly LINUX_C_28cf2a5267344a1fa5c75be3a23537f9 followed by one LF newline without overwriting prior bytes. Fsync and close using normal filesystem tools, not MCP/sharing APIs.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "usage_event_id": "d33728d5-67c7-4b45-9799-05b4c2b12d7d",
+          "idempotency_key": "claude_sdk_call:cf29b2b5-cc88-4c99-9e0b-9cd8872baf00:msg_011Cfyya5pFhY45fvvPyzGC7",
+          "observed_at": "2026-10-13T09:10:34.211Z",
+          "run_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5",
+          "root_team_run_id": null,
+          "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+          "llm_call_id": "msg_011Cfyya5pFhY45fvvPyzGC7",
+          "call_sequence": null,
+          "agent_definition_id": "ab-sf-fr026-6af2e9d4-claude-agent-sdk-628d7",
+          "workspace_id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+          "task_id": null,
+          "team_name": null,
+          "agent_name": "ab-sf-fr026-6af2e9d4-claude_agent_sdk-628d7",
+          "run_summary": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete c...",
+          "run_created_at": "2026-10-13T09:10:02.725Z",
+          "member_display_name": null,
+          "runtime_kind": "claude_agent_sdk",
+          "model_provider": "ANTHROPIC",
+          "provider_name": null,
+          "model_identifier": "claude-haiku-5-5",
+          "model_value": "claude-haiku-5-5",
+          "selected_match_state": null,
+          "selected_model_value": null,
+          "selected_resolved_raw_model_id": null,
+          "claude_sdk_model_usage": [],
+          "claude_sdk_session_id": "cf29b2b5-cc88-4c99-9e0b-9cd8872baf00",
+          "claude_sdk_query_kind": null,
+          "ingestion_kind": "claude_sdk_call",
+          "usage_scope": "per_call",
+          "reports_model_call": true,
+          "snapshot_series_key": null,
+          "previous_snapshot_event_id": null,
+          "input_token_semantic": "base_excludes_cache",
+          "reported_input_tokens": 2,
+          "reported_output_tokens": 386,
+          "reported_total_tokens": 22494,
+          "accounting_input_tokens": 22108,
+          "accounting_output_tokens": 386,
+          "accounting_total_tokens": 22494,
+          "standard_input_tokens": 2,
+          "cache_miss_input_tokens": 2,
+          "cache_read_input_tokens": 21423,
+          "cache_creation_input_tokens": 683,
+          "cache_creation_5m_input_tokens": 0,
+          "cache_creation_1h_input_tokens": 683,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 0,
+          "billable_input_tokens": 22108,
+          "billable_output_tokens": 386,
+          "cost_basis": "api_price_estimate",
+          "currency": "USD",
+          "input_price_per_million": 0.1,
+          "output_price_per_million": 0.5,
+          "cached_input_read_price_per_million": 0.01,
+          "cached_input_write_price_per_million": null,
+          "cached_input_write_5m_price_per_million": 0.125,
+          "cached_input_write_1h_price_per_million": 0.2,
+          "pricing_source": "autobyteus_model_catalog",
+          "pricing_status": "trusted",
+          "pricing_missing_reason": null,
+          "pricing_snapshot_json": {
+            "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:claude-haiku-5-5",
+            "price_config_id": "autobyteus_model_catalog:ANTHROPIC:claude-haiku-5-5",
+            "model_provider": "ANTHROPIC",
+            "model_identifier": "claude-haiku-5-5",
+            "model_value": "claude-haiku-5-5",
+            "canonical_name": "claude-haiku-5-5",
+            "currency": "USD",
+            "input_price_per_million": 0.1,
+            "output_price_per_million": 0.5,
+            "cached_input_read_price_per_million": 0.01,
+            "cached_input_write_price_per_million": null,
+            "cached_input_write_5m_price_per_million": 0.125,
+            "cached_input_write_1h_price_per_million": 0.2,
+            "input_price_tiers": [
+              {
+                "tier_id": "prompt_le_100k",
+                "max_input_tokens": 100000,
+                "input_price_per_million": 0.1,
+                "output_price_per_million": 0.5,
+                "cached_input_read_price_per_million": 0.01,
+                "cached_input_write_price_per_million": null,
+                "cached_input_write_5m_price_per_million": 0.125,
+                "cached_input_write_1h_price_per_million": 0.2,
+                "trusted_dimensions": {
+                  "input": true,
+                  "output": true,
+                  "cached_input_read": true,
+                  "cached_input_write": false,
+                  "cached_input_write_5m": true,
+                  "cached_input_write_1h": true
+                }
+              },
+              {
+                "tier_id": "prompt_gt_100k",
+                "max_input_tokens": null,
+                "input_price_per_million": 0.5,
+                "output_price_per_million": 2.5,
+                "cached_input_read_price_per_million": 0.05,
+                "cached_input_write_price_per_million": null,
+                "cached_input_write_5m_price_per_million": 0.625,
+                "cached_input_write_1h_price_per_million": 1,
+                "trusted_dimensions": {
+                  "input": true,
+                  "output": true,
+                  "cached_input_read": true,
+                  "cached_input_write": false,
+                  "cached_input_write_5m": true,
+                  "cached_input_write_1h": true
+                }
+              }
+            ],
+            "pricing_status": "trusted",
+            "trusted_dimensions": {
+              "input": true,
+              "output": true,
+              "cached_input_read": true,
+              "cached_input_write": false,
+              "cached_input_write_5m": true,
+              "cached_input_write_1h": true
+            },
+            "missing_reason": null,
+            "source": "autobyteus_model_catalog",
+            "effective_from": null,
+            "effective_to": null,
+            "version": null,
+            "pricing_schedule_id": null,
+            "pricing_schedule_period_id": null,
+            "pricing_schedule_effective_from": null,
+            "pricing_schedule_window_timezone": null,
+            "pricing_schedule_peak_days": null,
+            "pricing_schedule_peak_days_timezone": null,
+            "selected_tier_id": "prompt_le_100k"
+          },
+          "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:claude-haiku-5-5",
+          "selected_pricing_tier_id": "prompt_le_100k",
+          "missing_price_dimensions": [],
+          "estimated_api_input_cost": 0.00035103,
+          "estimated_api_standard_input_cost": 2e-07,
+          "estimated_api_cache_read_input_cost": 0.00021423000000000001,
+          "estimated_api_cache_creation_input_cost": 0.0001366,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": 0.0001366,
+          "estimated_api_output_cost": 0.000193,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": 0.00054403,
+          "api_cost_status": "estimated",
+          "meter_delta_input_tokens": 22108,
+          "meter_delta_output_tokens": 386,
+          "meter_delta_total_tokens": 22494,
+          "run_summary_after_event": {
+            "run_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5",
+            "root_team_run_id": null,
+            "agent_definition_id": "ab-sf-fr026-6af2e9d4-claude-agent-sdk-628d7",
+            "workspace_id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+            "gross_input_tokens": 64336,
+            "standard_input_tokens": 6,
+            "cache_miss_input_tokens": 6,
+            "cache_read_input_tokens": 54934,
+            "cache_creation_input_tokens": 9396,
+            "cache_creation_5m_input_tokens": 0,
+            "cache_creation_1h_input_tokens": 9396,
+            "output_tokens": 1345,
+            "reasoning_output_tokens": 530,
+            "billable_output_tokens": 1345,
+            "total_tokens": 65681,
+            "cache_read_input_token_rate": 0.8538609798557573,
+            "standard_input_token_rate": 9.326038298930615e-05,
+            "cache_creation_input_token_rate": 0.14604575976125342,
+            "cache_state": "positive",
+            "estimated_api_input_cost": 0.00242914,
+            "estimated_api_standard_input_cost": 6e-07,
+            "estimated_api_cache_read_input_cost": 0.00054934,
+            "estimated_api_cache_creation_input_cost": 0.0018792,
+            "estimated_api_cache_creation_5m_input_cost": null,
+            "estimated_api_cache_creation_1h_input_cost": 0.0018792,
+            "estimated_api_output_cost": 0.0006725,
+            "estimated_api_reasoning_output_cost": 0.000265,
+            "estimated_api_total_cost": 0.00310164,
+            "currency": "USD",
+            "api_cost_status": "estimated",
+            "missing_price_dimensions": [],
+            "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:claude-haiku-5-5",
+            "selected_pricing_tier_id": "prompt_le_100k",
+            "unit_prices": {
+              "standard_input": {
+                "status": "single",
+                "price_per_million": 0.1
+              },
+              "cache_read_input": {
+                "status": "single",
+                "price_per_million": 0.01
+              },
+              "cache_creation_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_5m_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_1h_input": {
+                "status": "single",
+                "price_per_million": 0.2
+              },
+              "output": {
+                "status": "single",
+                "price_per_million": 0.5
+              },
+              "reasoning_output": {
+                "status": "single",
+                "price_per_million": 0.5
+              }
+            },
+            "usage_report_count": 3,
+            "revision": 3,
+            "updated_at": "2026-10-13T09:10:34.211Z",
+            "latest_prompt_tokens": 22108,
+            "effective_context_window_tokens": 1000000,
+            "context_window_usage_percent": 2.2108,
+            "context_compaction_threshold_tokens": 967000,
+            "latest_model_provider": "ANTHROPIC",
+            "latest_model_identifier": "claude-haiku-5-5",
+            "latest_runtime_kind": "claude_agent_sdk",
+            "latest_selected_raw_model_id": null,
+            "has_cache_write_rate_assumption": false
+          },
+          "latest_prompt_tokens": 22108,
+          "effective_context_window_tokens": 1000000,
+          "context_window_usage_percent": 2.2108,
+          "context_compaction_threshold_tokens": 967000,
+          "raw_usage_json": null,
+          "raw_event_json": null,
+          "quality_flags": [
+            "model_identifier_differs_from_run_context"
+          ]
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "03be9c28-4f3c-41f1-9d32-898c49f0c43a",
+          "revision": 4,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete content, not provided here. Append exactly LINUX_C_28cf2a5267344a1fa5c75be3a23537f9 followed by one LF newline without overwriting prior bytes. Fsync and close using normal filesystem tools, not MCP/sharing APIs.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "usage_event_id": "7687c6de-4b45-4bfb-8020-9638c0143b6e",
+          "idempotency_key": "claude_sdk_result:bd132c48-3dbb-4d41-80d6-258b7df0b4a6",
+          "observed_at": "2026-10-13T09:10:34.227Z",
+          "run_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5",
+          "root_team_run_id": null,
+          "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+          "llm_call_id": null,
+          "call_sequence": null,
+          "agent_definition_id": "ab-sf-fr026-6af2e9d4-claude-agent-sdk-628d7",
+          "workspace_id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+          "task_id": null,
+          "team_name": null,
+          "agent_name": "ab-sf-fr026-6af2e9d4-claude_agent_sdk-628d7",
+          "run_summary": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete c...",
+          "run_created_at": "2026-10-13T09:10:02.725Z",
+          "member_display_name": null,
+          "runtime_kind": "claude_agent_sdk",
+          "model_provider": "ANTHROPIC",
+          "provider_name": null,
+          "model_identifier": "claude-haiku-5-5",
+          "model_value": "claude-haiku-5-5",
+          "selected_match_state": "matched",
+          "selected_model_value": "haiku",
+          "selected_resolved_raw_model_id": "claude-haiku-5-5",
+          "claude_sdk_model_usage": [],
+          "claude_sdk_session_id": "cf29b2b5-cc88-4c99-9e0b-9cd8872baf00",
+          "claude_sdk_query_kind": "create",
+          "ingestion_kind": "claude_sdk_result",
+          "usage_scope": "per_turn",
+          "reports_model_call": false,
+          "snapshot_series_key": null,
+          "previous_snapshot_event_id": null,
+          "input_token_semantic": "unknown",
+          "reported_input_tokens": 1291,
+          "reported_output_tokens": 31,
+          "reported_total_tokens": 1322,
+          "accounting_input_tokens": 1291,
+          "accounting_output_tokens": 31,
+          "accounting_total_tokens": 1322,
+          "standard_input_tokens": 1291,
+          "cache_miss_input_tokens": 1291,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "cache_creation_5m_input_tokens": 0,
+          "cache_creation_1h_input_tokens": 0,
+          "cache_state": "zero_reported",
+          "reasoning_output_tokens": null,
+          "billable_input_tokens": 1291,
+          "billable_output_tokens": 31,
+          "cost_basis": "api_price_estimate",
+          "currency": "USD",
+          "input_price_per_million": 0.1,
+          "output_price_per_million": 0.5,
+          "cached_input_read_price_per_million": 0.01,
+          "cached_input_write_price_per_million": null,
+          "cached_input_write_5m_price_per_million": 0.125,
+          "cached_input_write_1h_price_per_million": 0.2,
+          "pricing_source": "autobyteus_model_catalog",
+          "pricing_status": "trusted",
+          "pricing_missing_reason": null,
+          "pricing_snapshot_json": {
+            "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:claude-haiku-5-5",
+            "price_config_id": "autobyteus_model_catalog:ANTHROPIC:claude-haiku-5-5",
+            "model_provider": "ANTHROPIC",
+            "model_identifier": "claude-haiku-5-5",
+            "model_value": "claude-haiku-5-5",
+            "canonical_name": "claude-haiku-5-5",
+            "currency": "USD",
+            "input_price_per_million": 0.1,
+            "output_price_per_million": 0.5,
+            "cached_input_read_price_per_million": 0.01,
+            "cached_input_write_price_per_million": null,
+            "cached_input_write_5m_price_per_million": 0.125,
+            "cached_input_write_1h_price_per_million": 0.2,
+            "input_price_tiers": [
+              {
+                "tier_id": "prompt_le_100k",
+                "max_input_tokens": 100000,
+                "input_price_per_million": 0.1,
+                "output_price_per_million": 0.5,
+                "cached_input_read_price_per_million": 0.01,
+                "cached_input_write_price_per_million": null,
+                "cached_input_write_5m_price_per_million": 0.125,
+                "cached_input_write_1h_price_per_million": 0.2,
+                "trusted_dimensions": {
+                  "input": true,
+                  "output": true,
+                  "cached_input_read": true,
+                  "cached_input_write": false,
+                  "cached_input_write_5m": true,
+                  "cached_input_write_1h": true
+                }
+              },
+              {
+                "tier_id": "prompt_gt_100k",
+                "max_input_tokens": null,
+                "input_price_per_million": 0.5,
+                "output_price_per_million": 2.5,
+                "cached_input_read_price_per_million": 0.05,
+                "cached_input_write_price_per_million": null,
+                "cached_input_write_5m_price_per_million": 0.625,
+                "cached_input_write_1h_price_per_million": 1,
+                "trusted_dimensions": {
+                  "input": true,
+                  "output": true,
+                  "cached_input_read": true,
+                  "cached_input_write": false,
+                  "cached_input_write_5m": true,
+                  "cached_input_write_1h": true
+                }
+              }
+            ],
+            "pricing_status": "trusted",
+            "trusted_dimensions": {
+              "input": true,
+              "output": true,
+              "cached_input_read": true,
+              "cached_input_write": false,
+              "cached_input_write_5m": true,
+              "cached_input_write_1h": true
+            },
+            "missing_reason": null,
+            "source": "autobyteus_model_catalog",
+            "effective_from": null,
+            "effective_to": null,
+            "version": null,
+            "pricing_schedule_id": null,
+            "pricing_schedule_period_id": null,
+            "pricing_schedule_effective_from": null,
+            "pricing_schedule_window_timezone": null,
+            "pricing_schedule_peak_days": null,
+            "pricing_schedule_peak_days_timezone": null,
+            "selected_tier_id": "prompt_le_100k"
+          },
+          "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:claude-haiku-5-5",
+          "selected_pricing_tier_id": "prompt_le_100k",
+          "missing_price_dimensions": [],
+          "estimated_api_input_cost": 0.00012910000000000002,
+          "estimated_api_standard_input_cost": 0.00012910000000000002,
+          "estimated_api_cache_read_input_cost": null,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 1.55e-05,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": 0.00014460000000000002,
+          "api_cost_status": "estimated",
+          "meter_delta_input_tokens": 1291,
+          "meter_delta_output_tokens": 31,
+          "meter_delta_total_tokens": 1322,
+          "run_summary_after_event": {
+            "run_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5",
+            "root_team_run_id": null,
+            "agent_definition_id": "ab-sf-fr026-6af2e9d4-claude-agent-sdk-628d7",
+            "workspace_id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+            "gross_input_tokens": 65627,
+            "standard_input_tokens": 1297,
+            "cache_miss_input_tokens": 1297,
+            "cache_read_input_tokens": 54934,
+            "cache_creation_input_tokens": 9396,
+            "cache_creation_5m_input_tokens": 0,
+            "cache_creation_1h_input_tokens": 9396,
+            "output_tokens": 1376,
+            "reasoning_output_tokens": 530,
+            "billable_output_tokens": 1376,
+            "total_tokens": 67003,
+            "cache_read_input_token_rate": 0.8370640132872141,
+            "standard_input_token_rate": 0.019763207216541973,
+            "cache_creation_input_token_rate": 0.14317277949624393,
+            "cache_state": "positive",
+            "estimated_api_input_cost": 0.00255824,
+            "estimated_api_standard_input_cost": 0.0001297,
+            "estimated_api_cache_read_input_cost": 0.00054934,
+            "estimated_api_cache_creation_input_cost": 0.0018792,
+            "estimated_api_cache_creation_5m_input_cost": null,
+            "estimated_api_cache_creation_1h_input_cost": 0.0018792,
+            "estimated_api_output_cost": 0.000688,
+            "estimated_api_reasoning_output_cost": 0.000265,
+            "estimated_api_total_cost": 0.00324624,
+            "currency": "USD",
+            "api_cost_status": "estimated",
+            "missing_price_dimensions": [],
+            "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:claude-haiku-5-5",
+            "selected_pricing_tier_id": "prompt_le_100k",
+            "unit_prices": {
+              "standard_input": {
+                "status": "single",
+                "price_per_million": 0.1
+              },
+              "cache_read_input": {
+                "status": "single",
+                "price_per_million": 0.01
+              },
+              "cache_creation_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_5m_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_1h_input": {
+                "status": "single",
+                "price_per_million": 0.2
+              },
+              "output": {
+                "status": "single",
+                "price_per_million": 0.5
+              },
+              "reasoning_output": {
+                "status": "single",
+                "price_per_million": 0.5
+              }
+            },
+            "usage_report_count": 3,
+            "revision": 4,
+            "updated_at": "2026-10-13T09:10:34.227Z",
+            "latest_prompt_tokens": 22108,
+            "effective_context_window_tokens": 1000000,
+            "context_window_usage_percent": 2.2108,
+            "context_compaction_threshold_tokens": 967000,
+            "latest_model_provider": "ANTHROPIC",
+            "latest_model_identifier": "claude-haiku-5-5",
+            "latest_runtime_kind": "claude_agent_sdk",
+            "latest_selected_raw_model_id": "claude-haiku-5-5",
+            "has_cache_write_rate_assumption": false
+          },
+          "latest_prompt_tokens": null,
+          "effective_context_window_tokens": null,
+          "context_window_usage_percent": null,
+          "context_compaction_threshold_tokens": null,
+          "raw_usage_json": null,
+          "raw_event_json": null,
+          "quality_flags": [
+            "reported_input_tokens_missing",
+            "reported_output_tokens_missing",
+            "reported_total_tokens_missing",
+            "input_token_semantic_unknown"
+          ]
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "03be9c28-4f3c-41f1-9d32-898c49f0c43a",
+          "revision": 4,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-c-read-modify",
+              "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt with native tools; report its complete content, not provided here. Append exactly LINUX_C_28cf2a5267344a1fa5c75be3a23537f9 followed by one LF newline without overwriting prior bytes. Fsync and close using normal filesystem tools, not MCP/sharing APIs.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "TURN_COMPLETED",
+        "payload": {
+          "turnId": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1",
+          "turn_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5:turn:2c4af64e-e19b-4dfa-b0df-65527799dbe1"
+        }
+      },
+      {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "idle",
+          "recoverableBlock": null,
+          "agent_id": "ab_sf_fr026_6af2e9d4_claude_agent_sdk_628d7_bb53782a4b9543c885287f45cdd926e5"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "03be9c28-4f3c-41f1-9d32-898c49f0c43a",
+          "revision": 5,
+          "entries": [],
+          "recoverableBlock": null
+        }
+      }
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "review": "CRR-018",
+  "result": "Pass",
+  "checks": {
+    "inputHeadUnchanged": true,
+    "priorHistoryPrefixPreserved": true,
+    "sourceReviewUnchanged": true,
+    "protectedInputsUnchanged": true,
+    "reviewedTestUnchanged": true,
+    "onlyOwnTrackedDocsChanged": true,
+    "nineChecksPass": true,
+    "oneCRR018Entry": true,
+    "relativeLinksExist": true,
+    "whitespacePass": true
+  },
+  "reviewerRuntimeResources": "None",
+  "sourceEdits": "None",
+  "reportSha256": "681221cb4fe29a82240ee31ec5e63e5267fdeffd9e4856f64c8374cccdb8af10"
+}

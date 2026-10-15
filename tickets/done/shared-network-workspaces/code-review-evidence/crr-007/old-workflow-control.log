@@ -1,0 +1,122 @@
+test_build_only_runs_all_build_gates_without_publishing (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) ... ok
+test_each_gate_rejects_bad_direct_needs_and_cancellation (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) ... FAIL
+test_existing_candidate_skip_rebuild_reaches_publication (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) ... FAIL
+test_failed_or_skipped_applicable_prerequisites_block_dependents (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) ... test_qualification_candidate_and_signing_gates_remain_required (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) ... ok
+
+======================================================================
+FAIL: test_each_gate_rejects_bad_direct_needs_and_cancellation (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) (publish=False, job='engine-inputs', cancelled=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/scripts/tests/test_nfs_release_workflow.py", line 123, in test_each_gate_rejects_bad_direct_needs_and_cancellation
+    self.assertFalse(eligible(self.jobs, name, results, publish, cancelled=True))
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_each_gate_rejects_bad_direct_needs_and_cancellation (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) (publish=True, job='engine-inputs', cancelled=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/scripts/tests/test_nfs_release_workflow.py", line 123, in test_each_gate_rejects_bad_direct_needs_and_cancellation
+    self.assertFalse(eligible(self.jobs, name, results, publish, cancelled=True))
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_each_gate_rejects_bad_direct_needs_and_cancellation (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) (publish=True, job='engine-inputs', dep='engine-packages', state='failure')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/scripts/tests/test_nfs_release_workflow.py", line 131, in test_each_gate_rejects_bad_direct_needs_and_cancellation
+    self.assertFalse(eligible(self.jobs, name, changed, publish))
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_each_gate_rejects_bad_direct_needs_and_cancellation (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) (publish=True, job='engine-inputs', dep='engine-packages', state='cancelled')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/scripts/tests/test_nfs_release_workflow.py", line 131, in test_each_gate_rejects_bad_direct_needs_and_cancellation
+    self.assertFalse(eligible(self.jobs, name, changed, publish))
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_each_gate_rejects_bad_direct_needs_and_cancellation (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/scripts/tests/test_nfs_release_workflow.py", line 132, in test_each_gate_rejects_bad_direct_needs_and_cancellation
+    self.assertFalse(eligible(self.jobs, 'engine-inputs',
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_existing_candidate_skip_rebuild_reaches_publication (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/scripts/tests/test_nfs_release_workflow.py", line 103, in test_existing_candidate_skip_rebuild_reaches_publication
+    self.assertEqual(schedule(self.jobs, True), dict(zip(ORDER,
+AssertionError: {'pre[78 chars]ngine': 'skipped', 'binaries': 'skipped', 'publish': 'skipped'} != {'pre[78 chars]ngine': 'success', 'binaries': 'success', 'publish': 'success'}
+- {'binaries': 'skipped',
+?                ^^^^ ^
+
++ {'binaries': 'success',
+?                ^^^ ^^
+
+-  'engine': 'skipped',
+?              ^^^^ ^
+
++  'engine': 'success',
+?              ^^^ ^^
+
+   'engine-inputs': 'success',
+   'engine-packages': 'skipped',
+   'prepare': 'success',
+-  'publish': 'skipped'}
+?               ^^^^ ^
+
++  'publish': 'success'}
+?               ^^^ ^^
+
+
+======================================================================
+FAIL: test_failed_or_skipped_applicable_prerequisites_block_dependents (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) (publish=True, prerequisite='engine', state='failure')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/scripts/tests/test_nfs_release_workflow.py", line 114, in test_failed_or_skipped_applicable_prerequisites_block_dependents
+    self.assertEqual(results[name], state)
+AssertionError: 'skipped' != 'failure'
+- skipped
++ failure
+
+
+======================================================================
+FAIL: test_failed_or_skipped_applicable_prerequisites_block_dependents (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) (publish=True, prerequisite='engine', state='cancelled')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/scripts/tests/test_nfs_release_workflow.py", line 114, in test_failed_or_skipped_applicable_prerequisites_block_dependents
+    self.assertEqual(results[name], state)
+AssertionError: 'skipped' != 'cancelled'
+- skipped
++ cancelled
+
+
+======================================================================
+FAIL: test_failed_or_skipped_applicable_prerequisites_block_dependents (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) (publish=True, prerequisite='binaries', state='failure')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/scripts/tests/test_nfs_release_workflow.py", line 114, in test_failed_or_skipped_applicable_prerequisites_block_dependents
+    self.assertEqual(results[name], state)
+AssertionError: 'skipped' != 'failure'
+- skipped
++ failure
+
+
+======================================================================
+FAIL: test_failed_or_skipped_applicable_prerequisites_block_dependents (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) (publish=True, prerequisite='binaries', state='cancelled')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/scripts/tests/test_nfs_release_workflow.py", line 114, in test_failed_or_skipped_applicable_prerequisites_block_dependents
+    self.assertEqual(results[name], state)
+AssertionError: 'skipped' != 'cancelled'
+- skipped
++ cancelled
+
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.007s
+
+FAILED (failures=10)

@@ -1,0 +1,6 @@
+Started fresh owned guest has no NFS installation or attachment
+fresh owned guest has no NFS installation or attachment: Pass
+Started Docker only prerequisite in own fresh guest
+Docker only prerequisite in own fresh guest: Pass
+Started private guest loopback registry for current candidate image only
+private guest loopback registry for current candidate image only: Pass

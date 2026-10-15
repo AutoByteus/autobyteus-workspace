@@ -1,0 +1,6 @@
+build-docker-variant.py Ready None
+run-docker-selected-create.py Fail AssertionError({'configChangedKeys': ['Labels']})
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/run-docker-sequence.py", line 7, in <module>
+    r=json.loads((E/result).read_text());print(script,r['result'],r.get('fatal'),flush=True);assert p.returncode==0 and r['result'] in ['Ready','Pass']
+AssertionError

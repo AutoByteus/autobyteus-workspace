@@ -1,0 +1,29 @@
+Started L17 LD repeated actual status and explicit reconnect preserve source UUID
+L17 LD repeated actual status and explicit reconnect preserve source UUID: Pass
+Started L18 LD ordinary whole-host boot automatic both node readiness before any manual reconnect
+L18 LD ordinary whole-host boot automatic both node readiness before any manual reconnect: Pass
+Started L18 LD automatic same ID image config private/source and reciprocal bytes
+L18 LD automatic same ID image config private/source and reciprocal bytes: Pass
+Started L18 LD separate explicit reconnect after automatic proof
+L18 LD separate explicit reconnect after automatic proof: Pass
+Started L19 LD public launcher normal Stop on healthy node A
+L19 LD public launcher normal Stop on healthy node A: Pass
+Started L19 LD stopped A healthy B immediate
+L19 LD stopped A healthy B immediate: Pass
+L19 LD observing two normal30-second supervisor ticks
+Started L19 LD normal Stop persists through ticks and explicit reconnect
+L19 LD normal Stop persists through ticks and explicit reconnect: Pass
+Started L19 LD ordinary boot while A intentionally stopped
+L19 LD ordinary boot while A intentionally stopped: Pass
+Started L19 LD stopped A persists after boot while B automatically healthy
+L19 LD stopped A persists after boot while B automatically healthy: Pass
+Started L20 LD explicit operator starts A then ordinary node restart both
+L20 LD explicit operator starts A then ordinary node restart both: Pass
+Started L20 LD ordinary restart preserved both selected nodes
+L20 LD ordinary restart preserved both selected nodes: Pass
+Started L20 LD public launcher upgrade --all immutable current worktree image
+L20 LD public launcher upgrade --all immutable current worktree image: Pass
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/run-lifecycle-v2.py", line 102, in <module>
+    assert a['Id']!=b['Id'] and a['Image']==b['Image'] and b['Config']['Labels']['com.autobyteus.nfs.storageId']==UUID
+AssertionError

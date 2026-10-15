@@ -1,0 +1,8 @@
+{
+  "classification": "Harness setup correction, not product failure",
+  "initial": "native-client-result.json",
+  "observed": "create refused already configured native no-node attachment before attempting selected setup",
+  "authority": "autobyteus-nfs README installed flow and CLI already-configured guard; change selected set by normal detach/create, not repeated create",
+  "correction": "public drained detach existing no-node attachment, then public create with same source/UUID and selected node; no internal-state edits",
+  "followup": "native-client-v2-result.json"
+}

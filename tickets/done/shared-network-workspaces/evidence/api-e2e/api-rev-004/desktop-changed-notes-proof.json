@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "F39CBF24AEE7CEC3D3F97A2834E38841",
+    "--script",
+    "() => {const t=document.body.innerText.replaceAll(\"\\u00a0\",\" \");if(!t.includes(\"API004 EXTERNAL SOURCE CHANGE\")||t.includes(\"API004 UNSAVED BUFFER\"))throw Error(\"file fresh reopen incorrect\");return {freshExternalContent:true,deliberatelyDiscardedOwnedBuffer:true,text:t}}"
+  ],
+  "rc": 0,
+  "stdout": "{\"schema_version\":\"1\",\"ok\":true,\"command\":\"run-script\",\"result\":{\"tab_id\":\"F39CBF24AEE7CEC3D3F97A2834E38841\",\"url\":\"file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat\",\"output_mode\":\"inline\",\"result\":{\"freshExternalContent\":true,\"deliberatelyDiscardedOwnedBuffer\":true,\"text\":\"Chat\\nAgents\\nAgent Teams\\nAgent Orgs\\nProjects\\nSkills\\nMemory\\nNodes\\nWorkspaces\\npreviews-api004\\nNo task history in this workspace.\\nproject\\nTemp Workspace\\nSettings\\nDaily Assistant\\n\\nAll your skills are available. Type / to use a skill, or @ to delegate to an agent or team.\\n\\nContext Files (0)\\n(drag, paste, or upload)\\npreviews-api004\\nAuto-approve\\nclaude-fable-5\\nAutoByteus\\nOff\\nProjects\\nFiles\\nTerminal\\nActivity\\nToken\\nArtifacts\\nBrowser\\nVNC Viewer\\nclip.mp4\\ndocument.pdf\\nexternal-added.txt\\nimage.png\\nindex.html\\nnotes.txt\\nREADME.md\\nstyle.css\\ntone.wav\\nvisibility-d3f108eedd3f48ebb44f9b86c3155066.bin\\nnotes.txt\\n1\\n2\\nAPI004 EXTERNAL SOURCE CHANGE\"}}}\n",
+  "stderr": ""
+}

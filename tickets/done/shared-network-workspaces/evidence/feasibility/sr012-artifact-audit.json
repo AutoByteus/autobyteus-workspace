@@ -1,0 +1,43 @@
+{
+  "checkedUtc": "2026-10-13T12:57:59.633031+00:00",
+  "scope": "new SR012 designer prototype/evidence artifacts only, not production/security/E2E validation",
+  "filesScanned": 79,
+  "strictValuePatternHits": [],
+  "jsonFilesParsed": 24,
+  "pythonAstParsed": [
+    "evidence/feasibility/fr-034/vm-client.py",
+    "evidence/feasibility/fr-034/run-probe.py",
+    "evidence/feasibility/fr-035/vm-client.py",
+    "evidence/feasibility/fr-035/run-probe.py",
+    "evidence/feasibility/fr-036/vm-client.py",
+    "evidence/feasibility/fr-036/run-probe.py",
+    "evidence/feasibility/fr-037/vm-client.py",
+    "evidence/feasibility/fr-037/run-probe.py",
+    "evidence/feasibility/fr-039/vm-client.py",
+    "evidence/feasibility/fr-039/run-probe.py",
+    "evidence/feasibility/fr-040/run-probe.py",
+    "evidence/feasibility/fr-041/vm-client.py",
+    "evidence/feasibility/fr-041/run-probe.py",
+    "evidence/feasibility/fr-042/vm-client.py",
+    "evidence/feasibility/fr-042/run-probe.py",
+    "evidence/feasibility/fr-043/vm-client.py",
+    "evidence/feasibility/fr-043/build-native.py",
+    "evidence/feasibility/fr-044/vm-client.py",
+    "evidence/feasibility/fr-044/run-probe.py",
+    "evidence/feasibility/fr-045/vm-client.py",
+    "evidence/feasibility/fr-045/run-probe.py",
+    "evidence/feasibility/fr-046/vm-client.py",
+    "evidence/feasibility/fr-046/run-probe.py",
+    "evidence/feasibility/fr-047/vm-client.py",
+    "evidence/feasibility/fr-047/run-probe.py"
+  ],
+  "noPythonCaches": true,
+  "gitProseWhitespace": "PASS separate diff-check",
+  "rawLogWhitespace": "literal captures preserved; no blanket whitespace-green claim",
+  "repositoryArtifactHygiene": {
+    "status": "PASS",
+    "command": "python3 scripts/check_repository_artifact_hygiene.py",
+    "trackedFilesScanned": 61749,
+    "maxPathLength": 200
+  }
+}

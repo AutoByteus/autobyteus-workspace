@@ -1,0 +1,6 @@
+--- FAIL: TestSourceCaptureCorrelationAndClosure (0.01s)
+    --- FAIL: TestSourceCaptureCorrelationAndClosure/directory-replaced (0.00s)
+        source_darwin_test.go:99: accepted changed/invalid observation {0 a19fe379-be62-4297-9a39-3934cc88214b 520855724}
+FAIL
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/platform	0.467s
+FAIL

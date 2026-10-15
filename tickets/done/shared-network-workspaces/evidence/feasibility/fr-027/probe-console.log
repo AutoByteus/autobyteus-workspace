@@ -1,0 +1,8 @@
+PASS two fresh real application-image nodes serve independent GraphQL endpoints
+PASS daemon mounts one export into both application nodes; private state and credentials isolated
+PASS each application registers the ordinary mounted project through its public workspace API
+PASS native macOS guest mounts the same Linux export and reads its independent storage identity
+PASS normal unprivileged macOS file write is read through both registered Linux workspace APIs
+FAIL Linux application file modification is freshly read through native macOS mount and peer API AssertionError(('MAC_NATIVE_659845f5b44448dcbe082a2d9152da65\n', 'MAC_NATIVE_659845f5b44448dcbe082a2d9152da65\nLINUX_NODE_B_3e9723668a464698843e374dc71335aa\n', 'MAC_NATIVE_659845f5b44448dcbe082a2d9152da65\nLINUX_NODE_B_3e9723668a464698843e374dc71335aa\n'))
+PROBE FAILURE AssertionError(('MAC_NATIVE_659845f5b44448dcbe082a2d9152da65\n', 'MAC_NATIVE_659845f5b44448dcbe082a2d9152da65\nLINUX_NODE_B_3e9723668a464698843e374dc71335aa\n', 'MAC_NATIVE_659845f5b44448dcbe082a2d9152da65\nLINUX_NODE_B_3e9723668a464698843e374dc71335aa\n'))
+{"run": "ab-sf-fr027-19d964a7", "passes": 5, "fatal": "AssertionError(('MAC_NATIVE_659845f5b44448dcbe082a2d9152da65\\n', 'MAC_NATIVE_659845f5b44448dcbe082a2d9152da65\\nLINUX_NODE_B_3e9723668a464698843e374dc71335aa\\n', 'MAC_NATIVE_659845f5b44448dcbe082a2d9152da65\\nLINUX_NODE_B_3e9723668a464698843e374dc71335aa\\n'))", "cleanup_ok": true}

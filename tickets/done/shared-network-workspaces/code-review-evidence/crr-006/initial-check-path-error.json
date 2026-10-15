@@ -1,0 +1,7 @@
+{
+  "result": "Reviewer harness error before checks/resources",
+  "error": "root parents[4] selected tickets instead of worktree; assertion stopped",
+  "correction": "parents[5]",
+  "productionDefect": false,
+  "resourcesCreated": false
+}

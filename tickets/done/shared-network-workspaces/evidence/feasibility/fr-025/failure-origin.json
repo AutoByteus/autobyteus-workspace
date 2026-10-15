@@ -1,0 +1,8 @@
+{
+  "origin": "owned native client provisioning incomplete",
+  "observation": "actual Mac model turn ran, but router could not spawn co-located codex-code-mode-host; only main codex binary was copied",
+  "nativeTurnReceipt": "mac-a-write-turn.json",
+  "nativeToolCommandsSucceeded": false,
+  "filesystemFailureClaim": false,
+  "next": "copy both public executable bundle members, not lone binary; retain failed round. Retire credential-bearing VM clone; new clone from public immutable cache."
+}

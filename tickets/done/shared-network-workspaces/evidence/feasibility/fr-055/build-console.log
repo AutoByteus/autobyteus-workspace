@@ -1,0 +1,362 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 987B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/ab-sf-fr040-unfs:probe
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 DONE 0.0s
+
+#5 [1/3] FROM docker.io/library/ab-sf-fr040-unfs:probe@sha256:951795d5b29890feada3af4e2773690404a85a37065bd89eb0729327a13f2b60
+#5 resolve docker.io/library/ab-sf-fr040-unfs:probe@sha256:951795d5b29890feada3af4e2773690404a85a37065bd89eb0729327a13f2b60 0.0s done
+#5 DONE 0.0s
+
+#5 [1/3] FROM docker.io/library/ab-sf-fr040-unfs:probe@sha256:951795d5b29890feada3af4e2773690404a85a37065bd89eb0729327a13f2b60
+#5 CACHED
+
+#4 [internal] load build context
+#4 transferring context: 1.81kB done
+#4 DONE 0.0s
+
+#6 [2/3] COPY fix-verifier.py trace-handles.py /tmp/
+#6 DONE 0.0s
+
+#7 [3/3] RUN mkdir /tmp/verifier-source && curl -fL --retry 2 https://codeload.github.com/unfs3/unfs3/tar.gz/ec1660ba33c80d5c67131e163e68834c1a10e243 -o /tmp/verifier-source/source.tar.gz  && echo '1fb13de8a15f535c3fea92cc6aaa731b42936a3a29839ec9db4d2833b216ecb5  /tmp/verifier-source/source.tar.gz' | sha256sum -c -  && tar -xzf /tmp/verifier-source/source.tar.gz -C /tmp/verifier-source  && cd /tmp/verifier-source/unfs3-*  && cp nfs.c nfs.c.original  && python3 /tmp/fix-verifier.py nfs.c  && python3 /tmp/trace-handles.py nfs.c  && (diff -u nfs.c.original nfs.c || test "$?" = 1)  && autoreconf -fi && ./configure --prefix=/opt/ab-probe-unfs && make -j2 && make install  && rm -rf /tmp/verifier-source /tmp/fix-verifier.py /tmp/trace-handles.py
+#7 0.120   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+#7 0.120                                  Dload  Upload   Total   Spent    Left  Speed
+#7 0.120   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100 12951    0 12951    0     0  43066      0 --:--:-- --:--:-- --:--:-- 43026100  108k    0  108k    0     0   307k      0 --:--:-- --:--:-- --:--:--  307k
+#7 0.480 /tmp/verifier-source/source.tar.gz: OK
+#7 0.543 --- nfs.c.original	2026-10-13 15:10:17.678395000 +0000
+#7 0.543 +++ nfs.c	2026-10-13 15:10:17.722395000 +0000
+#7 0.543 @@ -57,7 +57,7 @@
+#7 0.543  #define PREP(p,f) do {						\
+#7 0.543                        unfs3_fh_t fh = fh_decode(&f); \
+#7 0.543                        switch_to_root();				\
+#7 0.543 -                      p = fh_decomp(f);				\
+#7 0.543 +                      p = fh_decomp(f); fprintf(stderr, "ABTRACE proc=%u uid=%u dev=%u ino=%llu path=%s\n", (unsigned)rqstp->rq_proc,(unsigned)geteuid(),(unsigned)fh.dev,(unsigned long long)fh.ino,p?p:"NULL");				\
+#7 0.543                        if (exports_options(p, rqstp, NULL, NULL) == -1) { \
+#7 0.543                            memset(&result, 0, sizeof(result));	\
+#7 0.543                            if (p)				\
+#7 0.543 @@ -66,7 +66,7 @@
+#7 0.543                                result.status = NFS3ERR_STALE;	\
+#7 0.543                            return &result;			\
+#7 0.543                        }						\
+#7 0.543 -                      if (fh.pwhash != export_password_hash) { \
+#7 0.543 +                      if (fh.pwhash != export_password_hash) { fprintf(stderr, "ABTRACE PASSWORD_MISMATCH\n"); \
+#7 0.543                            memset(&result, 0, sizeof(result));	\
+#7 0.543                            result.status = NFS3ERR_STALE;        \
+#7 0.543                            return &result;                       \
+#7 0.543 @@ -428,6 +428,18 @@
+#7 0.543      return &result;
+#7 0.543  }
+#7 0.543  
+#7 0.543 +/* Probe-only binary-safe hash for the NFS3 CREATE verifier. */
+#7 0.543 +static uint32 create_verifier_hash(createverf3 verf)
+#7 0.543 +{
+#7 0.543 +    uint32 hash = 0x811c9dc5;
+#7 0.543 +    unsigned int i;
+#7 0.543 +    for (i = 0; i < NFS3_CREATEVERFSIZE; i++) {
+#7 0.543 +        hash ^= (unsigned char)verf[i];
+#7 0.543 +        hash *= 0x01000193;
+#7 0.543 +    }
+#7 0.543 +    return hash;
+#7 0.543 +}
+#7 0.543 +
+#7 0.543  /* seconds between 1970-01-01 and 1980-01-01 */
+#7 0.543  static const unsigned FT80SEC = 315532800;
+#7 0.543  
+#7 0.543 @@ -436,7 +448,6 @@
+#7 0.543   */
+#7 0.543  static int store_create_verifier(char *obj, createverf3 verf)
+#7 0.543  {
+#7 0.543 -    char hashbuf[9];
+#7 0.543      uint32 hash;
+#7 0.543      struct timeval stamps[2];
+#7 0.543  
+#7 0.543 @@ -444,9 +455,7 @@
+#7 0.543         the verifier down to 32 bits to be able to fit it in. This
+#7 0.543         increases the risk of collisions a bit, but we should hopefully
+#7 0.543         not have the kind of load where this is a problem. */
+#7 0.543 -    memcpy(hashbuf, verf, 8);
+#7 0.543 -    hashbuf[8] = '\0';
+#7 0.543 -    hash = fnv1a_32(hashbuf);
+#7 0.543 +    hash = create_verifier_hash(verf);
+#7 0.543  
+#7 0.543      /* FAT can only store dates in the interval 1980-01-01 to 2107-12-31.
+#7 0.543         However, since the utime interface uses Epoch time, we are further
+#7 0.543 @@ -477,13 +486,10 @@
+#7 0.543   */
+#7 0.543  static int check_create_verifier(backend_statstruct * buf, createverf3 verf)
+#7 0.543  {
+#7 0.543 -    char hashbuf[9];
+#7 0.543      uint32 hash, expected;
+#7 0.543  
+#7 0.543      /* Compute the expected value, same as above */
+#7 0.543 -    memcpy(hashbuf, verf, 8);
+#7 0.543 -    hashbuf[8] = '\0';
+#7 0.543 -    expected = fnv1a_32(hashbuf);
+#7 0.543 +    expected = create_verifier_hash(verf);
+#7 0.543  
+#7 0.543      /* Extract the hash from the file, strategically dropping bits where
+#7 0.543         the file system might have messed things up for us (see above). */
+#7 2.318 checking build system type... aarch64-unknown-linux-gnu
+#7 2.350 checking host system type... aarch64-unknown-linux-gnu
+#7 2.350 checking for a BSD-compatible install... /usr/bin/install -c
+#7 2.356 checking for gcc... gcc
+#7 2.370 checking whether the C compiler works... yes
+#7 2.397 checking for C compiler default output file name... a.out
+#7 2.397 checking for suffix of executables... 
+#7 2.421 checking whether we are cross compiling... no
+#7 2.445 checking for suffix of object files... o
+#7 2.459 checking whether the compiler supports GNU C... yes
+#7 2.471 checking whether gcc accepts -g... yes
+#7 2.484 checking for gcc option to enable C11 features... none needed
+#7 2.519 checking for ar... ar
+#7 2.519 checking for flex... flex
+#7 2.520 checking for lex output file root... lex.yy
+#7 2.525 checking for lex library... none needed
+#7 2.686 checking whether yytext is a pointer... yes
+#7 2.833 checking for bison... bison -y
+#7 2.833 checking for special C compiler options needed for large files... no
+#7 2.833 checking for _FILE_OFFSET_BITS value needed for large files... no
+#7 2.848 checking for library containing xdr_int... no
+#7 2.898 checking for library containing socket... none required
+#7 2.925 checking for libproc.h... no
+#7 2.938 checking for mntent.h... yes
+#7 2.952 checking for stdint.h... yes
+#7 2.966 checking for sys/mnttab.h... no
+#7 2.979 checking for sys/mount.h... yes
+#7 2.996 checking for sys/vmount.h... no
+#7 3.009 checking for rpc/svc_soc.h... no
+#7 3.020 checking for linux/ext2_fs.h... no
+#7 3.035 checking for int32... no
+#7 3.046 checking for uint32... no
+#7 3.056 checking for int64... no
+#7 3.066 checking for uint64... no
+#7 3.077 checking for struct rpcent... yes
+#7 3.112 checking for struct stat.st_gen... no
+#7 3.136 checking for statvfs... yes
+#7 3.162 checking for seteuid... yes
+#7 3.188 checking for setegid... yes
+#7 3.214 checking for setresuid... yes
+#7 3.241 checking for setresgid... yes
+#7 3.268 checking for vsyslog... yes
+#7 3.295 checking for lchown... yes
+#7 3.322 checking for setgroups... yes
+#7 3.350 checking for lutimes... yes
+#7 3.378 checking for pkg-config... /usr/bin/pkg-config
+#7 3.378 checking pkg-config is at least version 0.9.0... yes
+#7 3.381 checking for libtirpc... yes
+#7 3.385 checking for svc_getreq_poll... yes
+#7 3.419 checking for gcc options needed to detect all undeclared functions... none needed
+#7 3.447 checking whether svc_pollfd is declared... yes
+#7 3.489 configure: creating ./config.status
+#7 3.529 config.status: creating Makefile
+#7 3.535 config.status: creating Config/Makefile
+#7 3.543 config.status: creating Extras/Makefile
+#7 3.550 config.status: creating config.h
+#7 3.564 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o afsgettimes.o afsgettimes.c
+#7 3.564 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o afssupport.o afssupport.c
+#7 3.572 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o attr.o attr.c
+#7 3.572 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o daemon.o daemon.c
+#7 3.600 daemon.c: In function ‘nfs3_program_3’:
+#7 3.600 daemon.c:457:29: warning: cast between incompatible function types from ‘bool_t (*)(void)’ {aka ‘int (*)(void)’} to ‘bool_t (*)(XDR *, ...)’ {aka ‘int (*)(struct __rpc_xdr *, ...)’} [-Wcast-function-type]
+#7 3.600   457 |             _xdr_argument = (xdrproc_t) xdr_void;
+#7 3.600       |                             ^
+#7 3.600 daemon.c:458:27: warning: cast between incompatible function types from ‘bool_t (*)(void)’ {aka ‘int (*)(void)’} to ‘bool_t (*)(XDR *, ...)’ {aka ‘int (*)(struct __rpc_xdr *, ...)’} [-Wcast-function-type]
+#7 3.600   458 |             _xdr_result = (xdrproc_t) xdr_void;
+#7 3.600       |                           ^
+#7 3.600 daemon.c: In function ‘mountprog_3’:
+#7 3.600 daemon.c:645:29: warning: cast between incompatible function types from ‘bool_t (*)(void)’ {aka ‘int (*)(void)’} to ‘bool_t (*)(XDR *, ...)’ {aka ‘int (*)(struct __rpc_xdr *, ...)’} [-Wcast-function-type]
+#7 3.600   645 |             _xdr_argument = (xdrproc_t) xdr_void;
+#7 3.600       |                             ^
+#7 3.601 daemon.c:646:27: warning: cast between incompatible function types from ‘bool_t (*)(void)’ {aka ‘int (*)(void)’} to ‘bool_t (*)(XDR *, ...)’ {aka ‘int (*)(struct __rpc_xdr *, ...)’} [-Wcast-function-type]
+#7 3.601   646 |             _xdr_result = (xdrproc_t) xdr_void;
+#7 3.601       |                           ^
+#7 3.601 daemon.c:658:29: warning: cast between incompatible function types from ‘bool_t (*)(void)’ {aka ‘int (*)(void)’} to ‘bool_t (*)(XDR *, ...)’ {aka ‘int (*)(struct __rpc_xdr *, ...)’} [-Wcast-function-type]
+#7 3.601   658 |             _xdr_argument = (xdrproc_t) xdr_void;
+#7 3.601       |                             ^
+#7 3.601 daemon.c:666:27: warning: cast between incompatible function types from ‘bool_t (*)(void)’ {aka ‘int (*)(void)’} to ‘bool_t (*)(XDR *, ...)’ {aka ‘int (*)(struct __rpc_xdr *, ...)’} [-Wcast-function-type]
+#7 3.601   666 |             _xdr_result = (xdrproc_t) xdr_void;
+#7 3.601       |                           ^
+#7 3.601 daemon.c:672:29: warning: cast between incompatible function types from ‘bool_t (*)(void)’ {aka ‘int (*)(void)’} to ‘bool_t (*)(XDR *, ...)’ {aka ‘int (*)(struct __rpc_xdr *, ...)’} [-Wcast-function-type]
+#7 3.601   672 |             _xdr_argument = (xdrproc_t) xdr_void;
+#7 3.601       |                             ^
+#7 3.601 daemon.c:673:27: warning: cast between incompatible function types from ‘bool_t (*)(void)’ {aka ‘int (*)(void)’} to ‘bool_t (*)(XDR *, ...)’ {aka ‘int (*)(struct __rpc_xdr *, ...)’} [-Wcast-function-type]
+#7 3.601   673 |             _xdr_result = (xdrproc_t) xdr_void;
+#7 3.601       |                           ^
+#7 3.602 daemon.c:679:29: warning: cast between incompatible function types from ‘bool_t (*)(void)’ {aka ‘int (*)(void)’} to ‘bool_t (*)(XDR *, ...)’ {aka ‘int (*)(struct __rpc_xdr *, ...)’} [-Wcast-function-type]
+#7 3.602   679 |             _xdr_argument = (xdrproc_t) xdr_void;
+#7 3.602       |                             ^
+#7 3.604 daemon.c: In function ‘main’:
+#7 3.605 daemon.c:1283:13: warning: ignoring return value of ‘write’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+#7 3.605  1283 |             write(pipefd[1], "1", 1);
+#7 3.605       |             ^~~~~~~~~~~~~~~~~~~~~~~~
+#7 3.676 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o error.o error.c
+#7 3.732 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o fd_cache.o fd_cache.c
+#7 3.735 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o fh.o fh.c
+#7 3.761 In file included from fh.c:23:
+#7 3.761 fh.c: In function ‘fh_decode’:
+#7 3.761 fh.c:505:30: warning: comparison of integer expressions of different signedness: ‘u_int’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+#7 3.761   505 |     assert(fh->data.data_len == (FH_MINLEN + obj.len));
+#7 3.761       |                              ^~
+#7 3.771 fh.c: In function ‘fh_rec.constprop’:
+#7 3.771 fh.c:401:30: warning: ‘%s’ directive writing up to 255 bytes into a region of size between 1 and 1023 [-Wformat-overflow=]
+#7 3.771   401 |             sprintf(obj, "%s/%s", lead, entry->d_name);
+#7 3.771       |                              ^~
+#7 3.771 In file included from /usr/include/stdio.h:980,
+#7 3.771                  from /usr/include/tirpc/rpc/xdr.h:43,
+#7 3.771                  from /usr/include/tirpc/rpc/rpc.h:43,
+#7 3.771                  from fh.c:16:
+#7 3.771 In function ‘sprintf’,
+#7 3.771     inlined from ‘fh_rec.constprop’ at fh.c:401:13:
+#7 3.771 /usr/include/aarch64-linux-gnu/bits/stdio2.h:30:10: note: ‘__builtin___sprintf_chk’ output between 2 and 1279 bytes into a destination of size 1024
+#7 3.771    30 |   return __builtin___sprintf_chk (__s, __USE_FORTIFY_LEVEL - 1,
+#7 3.771       |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#7 3.771    31 |                                   __glibc_objsize (__s), __fmt,
+#7 3.771       |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#7 3.771    32 |                                   __va_arg_pack ());
+#7 3.771       |                                   ~~~~~~~~~~~~~~~~~
+#7 3.802 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o fh_cache.o fh_cache.c
+#7 3.823 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o locate.o locate.c
+#7 3.852 locate.c: In function ‘locate_pfx.constprop’:
+#7 3.852 locate.c:64:27: warning: ‘%s’ directive writing up to 255 bytes into a region of size between 2 and 1023 [-Wformat-overflow=]
+#7 3.852    64 |         sprintf(path, "%s/%s", pfx, ent->d_name);
+#7 3.852       |                           ^~
+#7 3.852 In file included from /usr/include/stdio.h:980,
+#7 3.852                  from /usr/include/tirpc/rpc/xdr.h:43,
+#7 3.852                  from /usr/include/tirpc/rpc/rpc.h:43,
+#7 3.852                  from locate.c:12:
+#7 3.852 In function ‘sprintf’,
+#7 3.852     inlined from ‘locate_pfx.constprop’ at locate.c:64:9:
+#7 3.852 /usr/include/aarch64-linux-gnu/bits/stdio2.h:30:10: note: ‘__builtin___sprintf_chk’ output between 2 and 1278 bytes into a destination of size 1024
+#7 3.852    30 |   return __builtin___sprintf_chk (__s, __USE_FORTIFY_LEVEL - 1,
+#7 3.852       |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#7 3.852    31 |                                   __glibc_objsize (__s), __fmt,
+#7 3.852       |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#7 3.852    32 |                                   __va_arg_pack ());
+#7 3.852       |                                   ~~~~~~~~~~~~~~~~~
+#7 3.865 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o md5.o md5.c
+#7 3.868 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o mount.o mount.c
+#7 3.908 mount.c: In function ‘mountproc_mnt_3_svc’:
+#7 3.908 mount.c:229:9: warning: ‘__builtin_strncpy’ specified bound 4096 equals destination size [-Wstringop-truncation]
+#7 3.908   229 |         strncpy(buf, dpath, PATH_MAX);
+#7 3.908       |         ^
+#7 3.934 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o nfs.o nfs.c
+#7 3.935 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o password.o password.c
+#7 3.960 nfs.c: In function ‘nfsproc3_access_3_svc’:
+#7 3.960 nfs.c:240:12: warning: variable ‘mode’ set but not used [-Wunused-but-set-variable]
+#7 3.960   240 |     mode_t mode;
+#7 3.960       |            ^~~~
+#7 3.981 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o readdir.o readdir.c
+#7 4.016 readdir.c: In function ‘read_dir’:
+#7 4.016 readdir.c:148:38: warning: ‘%s’ directive writing up to 255 bytes into a region of size between 1 and 1023 [-Wformat-overflow=]
+#7 4.016   148 |                 sprintf(scratch, "%s/%s", path, this->d_name);
+#7 4.016       |                                      ^~
+#7 4.016 In file included from /usr/include/stdio.h:980,
+#7 4.016                  from /usr/include/tirpc/rpc/xdr.h:43,
+#7 4.016                  from /usr/include/tirpc/rpc/rpc.h:43,
+#7 4.016                  from readdir.c:12:
+#7 4.016 In function ‘sprintf’,
+#7 4.016     inlined from ‘read_dir’ at readdir.c:148:17:
+#7 4.016 /usr/include/aarch64-linux-gnu/bits/stdio2.h:30:10: note: ‘__builtin___sprintf_chk’ output between 2 and 1279 bytes into a destination of size 1024
+#7 4.016    30 |   return __builtin___sprintf_chk (__s, __USE_FORTIFY_LEVEL - 1,
+#7 4.016       |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#7 4.016    31 |                                   __glibc_objsize (__s), __fmt,
+#7 4.016       |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#7 4.016    32 |                                   __va_arg_pack ());
+#7 4.016       |                                   ~~~~~~~~~~~~~~~~~
+#7 4.036 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o user.o user.c
+#7 4.062 In file included from backend.h:13,
+#7 4.062                  from user.h:10,
+#7 4.062                  from user.c:24:
+#7 4.062 user.c: In function ‘switch_to_root’:
+#7 4.062 backend_unix.h:56:25: warning: ignoring return value of ‘setegid’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+#7 4.062    56 | #define backend_setegid setegid
+#7 4.062 user.c:166:5: note: in expansion of macro ‘backend_setegid’
+#7 4.062   166 |     backend_setegid(0);
+#7 4.062       |     ^~~~~~~~~~~~~~~
+#7 4.062 backend_unix.h:57:25: warning: ignoring return value of ‘seteuid’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+#7 4.062    57 | #define backend_seteuid seteuid
+#7 4.062 user.c:167:5: note: in expansion of macro ‘backend_seteuid’
+#7 4.062   167 |     backend_seteuid(0);
+#7 4.062       |     ^~~~~~~~~~~~~~~
+#7 4.062 user.c: In function ‘switch_user’:
+#7 4.062 backend_unix.h:56:25: warning: ignoring return value of ‘setegid’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+#7 4.062    56 | #define backend_setegid setegid
+#7 4.062 user.c:211:5: note: in expansion of macro ‘backend_setegid’
+#7 4.062   211 |     backend_setegid(0);
+#7 4.062       |     ^~~~~~~~~~~~~~~
+#7 4.062 backend_unix.h:57:25: warning: ignoring return value of ‘seteuid’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+#7 4.062    57 | #define backend_seteuid seteuid
+#7 4.062 user.c:212:5: note: in expansion of macro ‘backend_seteuid’
+#7 4.062   212 |     backend_seteuid(0);
+#7 4.062       |     ^~~~~~~~~~~~~~~
+#7 4.062 user.c: In function ‘read_executable’:
+#7 4.062 backend_unix.h:56:25: warning: ignoring return value of ‘setegid’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+#7 4.062    56 | #define backend_setegid setegid
+#7 4.062 user.c:242:9: note: in expansion of macro ‘backend_setegid’
+#7 4.062   242 |         backend_setegid(0);
+#7 4.062       |         ^~~~~~~~~~~~~~~
+#7 4.062 backend_unix.h:57:25: warning: ignoring return value of ‘seteuid’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+#7 4.062    57 | #define backend_seteuid seteuid
+#7 4.062 user.c:243:9: note: in expansion of macro ‘backend_seteuid’
+#7 4.062   243 |         backend_seteuid(0);
+#7 4.062       |         ^~~~~~~~~~~~~~~
+#7 4.062 user.c: In function ‘read_by_owner’:
+#7 4.062 backend_unix.h:56:25: warning: ignoring return value of ‘setegid’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+#7 4.062    56 | #define backend_setegid setegid
+#7 4.062 user.c:266:9: note: in expansion of macro ‘backend_setegid’
+#7 4.062   266 |         backend_setegid(0);
+#7 4.062       |         ^~~~~~~~~~~~~~~
+#7 4.062 backend_unix.h:57:25: warning: ignoring return value of ‘seteuid’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+#7 4.062    57 | #define backend_seteuid seteuid
+#7 4.062 user.c:267:9: note: in expansion of macro ‘backend_seteuid’
+#7 4.062   267 |         backend_seteuid(0);
+#7 4.062       |         ^~~~~~~~~~~~~~~
+#7 4.062 user.c: In function ‘write_by_owner’:
+#7 4.062 backend_unix.h:56:25: warning: ignoring return value of ‘setegid’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+#7 4.062    56 | #define backend_setegid setegid
+#7 4.062 user.c:290:9: note: in expansion of macro ‘backend_setegid’
+#7 4.062   290 |         backend_setegid(0);
+#7 4.062       |         ^~~~~~~~~~~~~~~
+#7 4.062 backend_unix.h:57:25: warning: ignoring return value of ‘seteuid’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+#7 4.062    57 | #define backend_seteuid seteuid
+#7 4.062 user.c:291:9: note: in expansion of macro ‘backend_seteuid’
+#7 4.062   291 |         backend_seteuid(0);
+#7 4.062       |         ^~~~~~~~~~~~~~~
+#7 4.109 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o xdr.o xdr.c
+#7 4.229 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o winsupport.o winsupport.c
+#7 4.237 make -C Config
+#7 4.238 make[1]: Entering directory '/tmp/verifier-source/unfs3-ec1660ba33c80d5c67131e163e68834c1a10e243/Config'
+#7 4.238 flex ./exports.l
+#7 4.245 bison -y -d ./exports.y
+#7 4.281 gcc -g -O2 -Wall -W -I/usr/include/tirpc  -I.. -I. -I..   -c -o lex.yy.o lex.yy.c
+#7 4.394 gcc -g -O2 -Wall -W -I/usr/include/tirpc  -I.. -I. -I..   -c -o y.tab.o y.tab.c
+#7 4.564 ar crs lib.a lex.yy.o y.tab.o
+#7 4.568 make[1]: Leaving directory '/tmp/verifier-source/unfs3-ec1660ba33c80d5c67131e163e68834c1a10e243/Config'
+#7 4.568 gcc -o unfsd afsgettimes.o afssupport.o attr.o daemon.o error.o fd_cache.o fh.o fh_cache.o locate.o md5.o mount.o nfs.o password.o readdir.o user.o xdr.o winsupport.o Config/lib.a  -ltirpc 
+#7 4.589 /usr/bin/install -c -d /opt/ab-probe-unfs/sbin
+#7 4.590 /usr/bin/install -c -d /opt/ab-probe-unfs/share/man/man7
+#7 4.590 /usr/bin/install -c -d /opt/ab-probe-unfs/share/man/man8
+#7 4.591 /usr/bin/install -c unfsd /opt/ab-probe-unfs/sbin/unfsd
+#7 4.603 /usr/bin/install -c -m 644 ./Extras/tags.7 /opt/ab-probe-unfs/share/man/man7/tags.7
+#7 4.606 /usr/bin/install -c -m 644 ./unfsd.8       /opt/ab-probe-unfs/share/man/man8/unfsd.8
+#7 DONE 4.6s
+
+#8 exporting to image
+#8 exporting layers 0.1s done
+#8 exporting manifest sha256:0e5b40c3645c8e9b3f73462d52e760946a954ecb58d1d009c62a06c96c589d18 done
+#8 exporting config sha256:27b8e5585817e2ab03294962324772e3f45a362a315b2544f2189b7b38c0681e done
+#8 exporting attestation manifest sha256:c3c3af0362146c4c87863584ae602948bce9692360e812c519244ebb2f56ba96 done
+#8 exporting manifest list sha256:fc831a3b615b70d6cb7c1672c7ed5365bee3f02c296c389797a52b7eac5704cf done
+#8 naming to docker.io/library/ab-sf-fr055-unfs:probe done
+#8 unpacking to docker.io/library/ab-sf-fr055-unfs:probe 0.0s done
+#8 DONE 0.2s

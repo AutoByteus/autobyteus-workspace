@@ -1,0 +1,7 @@
+{
+  "origin": "test transport discovery assumption",
+  "observation": "host-only VM intentionally has no default route; helper tried to index a nonexistent default gateway",
+  "nativeMacMountAttempted": false,
+  "DockerStorageCreated": false,
+  "next": "discover only actual owned VM address and its specific host bridge route; no LAN scan or public networking; retain failed round"
+}

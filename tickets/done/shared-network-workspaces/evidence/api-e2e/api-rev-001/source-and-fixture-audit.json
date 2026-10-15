@@ -1,0 +1,10 @@
+{
+  "currentHead": "af9f23df93a63ca6c8305f51439a855acc2133c7",
+  "inputHead": "3b7dd9a2895f4b8fedc5e1bcdd00c913d97fae2f",
+  "changedPreviouslyAuditedSourcePaths": [],
+  "durableCoverageChanged": "autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts",
+  "fixtureBaseEqualsInput": true,
+  "fixtureBeforeSha256": "208c3711cfb63c5e6b812b8f83212a98eab01e61695b904ac69406d235950c82",
+  "fixtureAfterSha256": "2036b2e7e104395a7a5635d057b062aa60e4532448564008797f5ebd486da35a",
+  "newCoverageCommit": "af9f23df93"
+}

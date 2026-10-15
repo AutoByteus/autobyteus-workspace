@@ -1,0 +1,494 @@
+{
+  "run": "ab-sf-fr035-0a3142a1",
+  "scope": "native Mac kernel NFSv3 server selected APFS source and two real Linux kernel Docker-client mounts on one physical Mac; component capability only, not final service/source/UI/LAN/agents",
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "set",
+        "ab-sf-fr035-macos",
+        "--cpu",
+        "2",
+        "--memory",
+        "4096"
+      ],
+      "rc": 0,
+      "seconds": 0.018,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr035-macos",
+        "/usr/bin/sw_vers"
+      ],
+      "rc": 2,
+      "seconds": 0.014,
+      "stdout": "",
+      "stderr": "VM \"ab-sf-fr035-macos\" is not running\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr035-macos",
+        "/usr/bin/sw_vers"
+      ],
+      "rc": 0,
+      "seconds": 1.081,
+      "stdout": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "ip",
+        "ab-sf-fr035-macos"
+      ],
+      "rc": 0,
+      "seconds": 0.02,
+      "stdout": "192.168.128.2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr035-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/usr/sbin/ipconfig getifaddr en0"
+      ],
+      "rc": 0,
+      "seconds": 0.372,
+      "stdout": "192.168.128.2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/sbin/route",
+        "-n",
+        "get",
+        "192.168.128.2"
+      ],
+      "rc": 0,
+      "stdout": "   route to: 192.168.128.2\ndestination: 192.168.128.2\n  interface: bridge100\n      flags: <UP,HOST,DONE,LLINFO,WASCLONED,IFSCOPE,IFREF>\n recvpipe  sendpipe  ssthresh  rtt,msec    rttvar  hopcount      mtu     expire\n       0         0         0         0         0         0      1500      1175 \n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/sbin/ifconfig",
+        "bridge100"
+      ],
+      "rc": 0,
+      "stdout": "bridge100: flags=8a63<UP,BROADCAST,SMART,RUNNING,ALLMULTI,SIMPLEX,MULTICAST> mtu 1500\n\toptions=63<RXCSUM,TXCSUM,TSO4,TSO6>\n\tether be:d0:74:32:81:64\n\tinet 192.168.128.1 netmask 0xffffff00 broadcast 192.168.128.255\n\tinet6 fe80::bcd0:74ff:fe32:8164%bridge100 prefixlen 64 scopeid 0x1a \n\tinet6 fd88:b29f:b1ba:498e:1c46:41e:af05:ac07 prefixlen 64 autoconf secured \n\tConfiguration:\n\t\tid 0:0:0:0:0:0 priority 0 hellotime 0 fwddelay 0\n\t\tmaxage 0 holdcnt 0 proto stp maxaddr 100 timeout 1200\n\t\troot id 0:0:0:0:0:0 priority 0 ifcost 0 port 0\n\t\tipfilter disabled flags 0x0\n\tmember: vmenet0 flags=20003<LEARNING,DISCOVER,VIRTIO>\n\t        ifmaxaddr 0 port 25 priority 0 path cost 0\n\tAddress cache:\n\t\t72:76:f4:5e:d8:14 Vlan1 vmenet0 1199 flags=0<>\n\tnd6 options=201<PERFORMNUD,DAD>\n\tmedia: autoselect\n\tstatus: active\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr035-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "uname -sm; id; sw_vers"
+      ],
+      "rc": 0,
+      "seconds": 0.382,
+      "stdout": "Darwin arm64\nuid=501(admin) gid=20(staff) groups=20(staff),12(everyone),61(localaccounts),79(_appserverusr),80(admin),81(_appserveradm),264(_webdeveloper),701(com.apple.sharepoint.group.1),33(_appstore),98(_lpadmin),100(_lpoperator),204(_developer),250(_analyticsusers),395(com.apple.access_ftp),398(com.apple.access_screensharing),399(com.apple.access_ssh),400(com.apple.access_remote_ae)\nProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr035-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "test ! -e /etc/exports; test ! -e /Users/admin/.ab-sf-native-source-ab-sf-fr035-0a3142a1; mkdir /Users/admin/.ab-sf-native-source-ab-sf-fr035-0a3142a1; mkdir /Users/admin/.ab-sf-native-source-ab-sf-fr035-0a3142a1/project /Users/admin/.ab-sf-native-source-ab-sf-fr035-0a3142a1/.owned-identity"
+      ],
+      "rc": 0,
+      "seconds": 0.049,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr035-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/python3",
+        "-c",
+        "import json;open('/Users/admin/.ab-sf-native-source-ab-sf-fr035-0a3142a1/.owned-identity/storage.json','w').write('{\"storageId\": \"2f88163db32a4bd58046e7cf82d746f4\"}');open('/Users/admin/.ab-sf-native-source-ab-sf-fr035-0a3142a1/project/preexisting.txt','w').write('KEEP_NATIVE_SOURCE')"
+      ],
+      "rc": 0,
+      "seconds": 0.236,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr035-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "/sbin/nfsd",
+        "checkexports"
+      ],
+      "rc": 0,
+      "seconds": 0.078,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr035-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "/sbin/nfsd",
+        "enable"
+      ],
+      "rc": 0,
+      "seconds": 0.035,
+      "stdout": "The nfsd service is already enabled.\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr035-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "/sbin/nfsd",
+        "status"
+      ],
+      "rc": 0,
+      "seconds": 0.034,
+      "stdout": "nfsd service is enabled\nnfsd is running (pid 665, 8 threads)\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr035-0a3142a1-route-check",
+        "--label",
+        "org.autobyteus.probe=fr-035",
+        "--entrypoint",
+        "tail",
+        "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1",
+        "-f",
+        "/dev/null"
+      ],
+      "rc": 0,
+      "stdout": "61d3b1e7d5172f5201ab902ebecd8f2e700ae673ae4037ec8b166ef7dac0e023\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr035-0a3142a1-route-check",
+        "python3",
+        "-c",
+        "import socket,json;z=[]\nfor p in [111,2049,20048]:\n s=socket.create_connection(('192.168.128.2',p),3);z.append(p);s.close()\nprint(json.dumps({'reachable':z}))"
+      ],
+      "rc": 0,
+      "stdout": "{\"reachable\": [111, 2049, 20048]}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.probe=fr-035",
+        "--driver",
+        "local",
+        "--opt",
+        "type=nfs",
+        "--opt",
+        "device=:/Users/admin/.ab-sf-native-source-ab-sf-fr035-0a3142a1",
+        "--opt",
+        "o=addr=192.168.128.2,vers=3,proto=tcp,mountport=20048,nolock,hard,timeo=50,retrans=2,actimeo=1,nosharecache",
+        "ab-sf-fr035-0a3142a1-nfs-a"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr035-0a3142a1-nfs-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr035-0a3142a1-client-a",
+        "--label",
+        "org.autobyteus.probe=fr-035",
+        "--user",
+        "10001:10001",
+        "--entrypoint",
+        "tail",
+        "--mount",
+        "type=volume,src=ab-sf-fr035-0a3142a1-nfs-a,dst=/Volumes/autobyteus-shared,volume-nocopy",
+        "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1",
+        "-f",
+        "/dev/null"
+      ],
+      "rc": 125,
+      "stdout": "312c9739055db944fe2611211227b38347f930d89bda85fa573e723be64be02e\n",
+      "stderr": "docker: Error response from daemon: error while mounting volume '/var/lib/docker/volumes/ab-sf-fr035-0a3142a1-nfs-a/_data': failed to mount local volume: mount :/Users/admin/.ab-sf-native-source-ab-sf-fr035-0a3142a1:/var/lib/docker/volumes/ab-sf-fr035-0a3142a1-nfs-a/_data, data: addr=192.168.128.2,vers=3,proto=tcp,mountport=20048,nolock,hard,timeo=50,retrans=2,actimeo=1,nosharecache: operation not supported\n\nRun 'docker run --help' for more information\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr035-0a3142a1-client-a"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr035-0a3142a1-client-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr035-0a3142a1-route-check"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr035-0a3142a1-route-check\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr035-0a3142a1-nfs-a"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr035-0a3142a1-nfs-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr035-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "/sbin/nfsd",
+        "disable"
+      ],
+      "rc": 0,
+      "seconds": 0.082,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "stop",
+        "ab-sf-fr035-macos",
+        "--timeout",
+        "10"
+      ],
+      "rc": 0,
+      "seconds": 0.228,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr035-0a3142a1-route-check"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr035-0a3142a1-route-check\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr035-0a3142a1-client-a"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr035-0a3142a1-client-a\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr035-0a3142a1-nfs-a"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr035-0a3142a1-nfs-a: no such volume\n"
+    }
+  ],
+  "cases": [
+    {
+      "name": "fresh native macOS nfsd serves a selected nonempty local APFS folder with exact peer allowlist",
+      "status": "PASS",
+      "result": {
+        "node": "ab-sf-fr035-macos",
+        "sourceFolder": "/Users/admin/.ab-sf-native-source-ab-sf-fr035-0a3142a1",
+        "storageId": "2f88163db32a4bd58046e7cf82d746f4",
+        "protocol": 3,
+        "export": "/Users/admin/.ab-sf-native-source-ab-sf-fr035-0a3142a1 -mapall=501:20 192.168.128.1 127.0.0.1\n",
+        "configuration": "nfs.server.mount.port=20048\nnfs.server.bonjour=0\nnfs.server.udp=0\nnfs.server.mount.require_resv_port=0\nnfs.lockd.port=32803\nnfs.lockd.send_using_tcp=1\n",
+        "mapAll": "501:20",
+        "allowedPeers": [
+          "192.168.128.1",
+          "127.0.0.1"
+        ],
+        "mountReservedPortCheckDisabledForDockerDesktopProxy": true,
+        "notFinalSecurityPolicy": true,
+        "status": "nfsd service is enabled\nnfsd is running (pid 665, 8 threads)\n",
+        "hostMacServiceUntouched": true
+      },
+      "seconds": 0.68
+    },
+    {
+      "name": "Docker client reaches exact native Mac guest RPC/NFS/MOUNT ports through existing private route",
+      "status": "PASS",
+      "result": {
+        "dockerProbe": "ab-sf-fr035-0a3142a1-route-check",
+        "exactOwnedMacGuest": "192.168.128.2",
+        "ports": [
+          111,
+          2049,
+          20048
+        ],
+        "noHostRelayNeeded": true,
+        "notPhysicalLan": true
+      },
+      "seconds": 0.086
+    },
+    {
+      "name": "native Mac and two unprivileged Docker clients mount same Mac-served storage at identical root",
+      "status": "FAIL",
+      "error": "RuntimeError(\"('docker', 'run', '-d', '--name'): docker: Error response from daemon: error while mounting volume '/var/lib/docker/volumes/ab-sf-fr035-0a3142a1-nfs-a/_data': failed to mount local volume: mount :/Users/admin/.ab-sf-native-source-ab-sf-fr035-0a3142a1:/var/lib/docker/volumes/ab-sf-fr035-0a3142a1-nfs-a/_data, data: addr=192.168.128.2,vers=3,proto=tcp,mountport=20048,nolock,hard,timeo=50,retrans=2,actimeo=1,nosharecache: operation not supported\\n\\nRun 'docker run --help' for more information\\n\")",
+      "seconds": 9.869
+    }
+  ],
+  "cleanup": [
+    {
+      "container": "ab-sf-fr035-0a3142a1-client-a",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr035-0a3142a1-route-check",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr035-0a3142a1-nfs-a",
+      "rc": 0
+    },
+    {
+      "guestNfsdDisableRc": 0
+    },
+    {
+      "exactVmStopRc": 0
+    },
+    {
+      "exactOwnedVmProcessExited": true
+    },
+    {
+      "absence_kind": "container",
+      "name": "ab-sf-fr035-0a3142a1-route-check",
+      "absent": true
+    },
+    {
+      "absence_kind": "container",
+      "name": "ab-sf-fr035-0a3142a1-client-a",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr035-0a3142a1-nfs-a",
+      "absent": true
+    }
+  ],
+  "nativeMacVm": {
+    "node": "ab-sf-fr035-macos",
+    "hostUid": 501,
+    "runArgv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "run",
+      "ab-sf-fr035-macos",
+      "--no-graphics",
+      "--no-audio",
+      "--no-clipboard",
+      "--no-usb-accessories",
+      "--net-host"
+    ],
+    "hostProcessPid": 7100,
+    "hostShares": false,
+    "guestProviderCredentials": false,
+    "ip": "192.168.128.2",
+    "gateway": "192.168.128.1",
+    "identity": "Darwin arm64\nuid=501(admin) gid=20(staff) groups=20(staff),12(everyone),61(localaccounts),79(_appserverusr),80(admin),81(_appserveradm),264(_webdeveloper),701(com.apple.sharepoint.group.1),33(_appstore),98(_lpadmin),100(_lpoperator),204(_developer),250(_analyticsusers),395(com.apple.access_ftp),398(com.apple.access_screensharing),399(com.apple.access_ssh),400(com.apple.access_remote_ae)\nProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n"
+  },
+  "vmHostOnlyRoute": {
+    "ownedGuestIp": "192.168.128.2",
+    "hostInterface": "bridge100",
+    "hostAddress": "192.168.128.1",
+    "noDefaultGatewayRequired": true,
+    "hostRoute": "   route to: 192.168.128.2\ndestination: 192.168.128.2\n  interface: bridge100\n      flags: <UP,HOST,DONE,LLINFO,WASCLONED,IFSCOPE,IFREF>\n recvpipe  sendpipe  ssthresh  rtt,msec    rttvar  hopcount      mtu     expire\n       0         0         0         0         0         0      1500      1175 \n",
+    "hostInterfaceInfo": "bridge100: flags=8a63<UP,BROADCAST,SMART,RUNNING,ALLMULTI,SIMPLEX,MULTICAST> mtu 1500\n\toptions=63<RXCSUM,TXCSUM,TSO4,TSO6>\n\tether be:d0:74:32:81:64\n\tinet 192.168.128.1 netmask 0xffffff00 broadcast 192.168.128.255\n\tinet6 fe80::bcd0:74ff:fe32:8164%bridge100 prefixlen 64 scopeid 0x1a \n\tinet6 fd88:b29f:b1ba:498e:1c46:41e:af05:ac07 prefixlen 64 autoconf secured \n\tConfiguration:\n\t\tid 0:0:0:0:0:0 priority 0 hellotime 0 fwddelay 0\n\t\tmaxage 0 holdcnt 0 proto stp maxaddr 100 timeout 1200\n\t\troot id 0:0:0:0:0:0 priority 0 ifcost 0 port 0\n\t\tipfilter disabled flags 0x0\n\tmember: vmenet0 flags=20003<LEARNING,DISCOVER,VIRTIO>\n\t        ifmaxaddr 0 port 25 priority 0 path cost 0\n\tAddress cache:\n\t\t72:76:f4:5e:d8:14 Vlan1 vmenet0 1199 flags=0<>\n\tnd6 options=201<PERFORMNUD,DAD>\n\tmedia: autoselect\n\tstatus: active\n"
+  },
+  "nativeMacServer": {
+    "node": "ab-sf-fr035-macos",
+    "sourceFolder": "/Users/admin/.ab-sf-native-source-ab-sf-fr035-0a3142a1",
+    "storageId": "2f88163db32a4bd58046e7cf82d746f4",
+    "protocol": 3,
+    "export": "/Users/admin/.ab-sf-native-source-ab-sf-fr035-0a3142a1 -mapall=501:20 192.168.128.1 127.0.0.1\n",
+    "configuration": "nfs.server.mount.port=20048\nnfs.server.bonjour=0\nnfs.server.udp=0\nnfs.server.mount.require_resv_port=0\nnfs.lockd.port=32803\nnfs.lockd.send_using_tcp=1\n",
+    "mapAll": "501:20",
+    "allowedPeers": [
+      "192.168.128.1",
+      "127.0.0.1"
+    ],
+    "mountReservedPortCheckDisabledForDockerDesktopProxy": true,
+    "notFinalSecurityPolicy": true
+  },
+  "fatal": "RuntimeError(\"('docker', 'run', '-d', '--name'): docker: Error response from daemon: error while mounting volume '/var/lib/docker/volumes/ab-sf-fr035-0a3142a1-nfs-a/_data': failed to mount local volume: mount :/Users/admin/.ab-sf-native-source-ab-sf-fr035-0a3142a1:/var/lib/docker/volumes/ab-sf-fr035-0a3142a1-nfs-a/_data, data: addr=192.168.128.2,vers=3,proto=tcp,mountport=20048,nolock,hard,timeo=50,retrans=2,actimeo=1,nosharecache: operation not supported\\n\\nRun 'docker run --help' for more information\\n\")",
+  "retainedStoppedCredentialFreeVm": "ab-sf-fr035-macos"
+}

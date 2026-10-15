@@ -1,0 +1,20 @@
+{
+  "baseline": "65b0e6e57a0f93d8343ccbefc1b5227642d7e557",
+  "cause": "Network regex searched Error.stack. The unchanged spec stack contains shared-network-workspaces/.../appUpdateErrorClassifier.spec.ts and falsely matches network.*error; three non-network category cases fail.",
+  "failedRuns": [
+    "web-unit-all.log",
+    "electron-unit-all.log"
+  ],
+  "files": [
+    {
+      "path": "autobyteus-web/electron/updater/appUpdateErrorClassifier.ts",
+      "baselineEqualsFailedSource": true,
+      "sha256": "53c98145bca1d9c0dd61969a9e3d5456b93454ddfd18761824766822737d4eb0"
+    },
+    {
+      "path": "autobyteus-web/electron/updater/__tests__/appUpdateErrorClassifier.spec.ts",
+      "baselineEqualsFailedSource": true,
+      "sha256": "b6db485ccfae05c11e66bc0b1b2535f5e614a38fff6a78cdbc3f3918fe47ea01"
+    }
+  ]
+}

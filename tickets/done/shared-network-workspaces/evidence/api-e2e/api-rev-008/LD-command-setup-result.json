@@ -1,0 +1,756 @@
+{
+  "vm": "ab-nfs-api008-linux-0c05c8d7",
+  "source": "/home/admin/ab-nfs-api008-linux-0c05c8d7-native-source",
+  "mountRoot": "/Volumes/autobyteus-shared",
+  "binary": {
+    "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api008-0frlwk0o/autobyteus-nfs-docker-linux-arm64",
+    "sha256": "79925fc8cc589f8f922b2a32111b14f1a2fa5099b1642153754e7c0db8f32661",
+    "size": 11049466
+  },
+  "metadata": {
+    "version": "v1.5.3-beta.2",
+    "sourceHash": "f0d71675d3d9b70d89969a8071b8de03287cff0676669ddab295f14568041c88",
+    "ubuntuPackages": {
+      "nfs-common": "1:2.6.4-3ubuntu5.1"
+    },
+    "engineImage": "127.0.0.1:5000/ab-nfs-api008@sha256:aff2bc8eb9124ffc3ae802e3254cd5682a3d34535cf58da7ef5bcda50b4a6a8d",
+    "qualifiedTargets": [],
+    "engine": {
+      "source": {
+        "version": "4.3-8ubuntu1",
+        "files": [
+          {
+            "file": "nfs-ganesha_4.3-8ubuntu1.dsc",
+            "sha256": "ffa76c26b12d23b67dcda184d7ec7ae55a42d1d14bf84bb7c0cf0134156ba3ca",
+            "size": 3576
+          },
+          {
+            "file": "nfs-ganesha_4.3.orig.tar.gz",
+            "sha256": "d4efd020edf4dfe65abfd0f0f66eb4390613360f99dce4354467ab297e0e1c0f",
+            "size": 1895017
+          },
+          {
+            "file": "nfs-ganesha_4.3-8ubuntu1.debian.tar.xz",
+            "sha256": "ef35d130e1b37149b156d201b70e6c2804bebbfbee1713c5bd6d938dd433fe03",
+            "size": 19224
+          }
+        ],
+        "patchCommit": "98eb77c4fd94effa6882b214698a77752ec79f6e",
+        "patchSha256": "ba682b5c64e7f800c927f4c90b2a7bfb4b8d2a323ddc48c3d591db3d75799031",
+        "sourceDateEpoch": 1791936000,
+        "recipeSha256": "34e28c622f598487af74a545115fa8dffe94e8f1aa5d85c091515aa187d66e4f",
+        "buildBase": "ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e"
+      },
+      "architectures": {
+        "arm64": {
+          "packages": [
+            {
+              "file": "nfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb",
+              "sha256": "0b5c78911cfc1b299e9894e1f841e74176fbb2cb45b158008e4530713549ebc8",
+              "size": 613976,
+              "name": "nfs-ganesha",
+              "version": "4.3-8ubuntu1+autobyteus1",
+              "architecture": "arm64"
+            },
+            {
+              "file": "nfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb",
+              "sha256": "3bf06769646d93ea85f0277fe0726eb42d0d29a70c0108505706954e5e8d2ac6",
+              "size": 48626,
+              "name": "nfs-ganesha-vfs",
+              "version": "4.3-8ubuntu1+autobyteus1",
+              "architecture": "arm64"
+            }
+          ],
+          "correspondingSource": {
+            "file": "autobyteus-nfs-ganesha-source-4.3-8ubuntu1+autobyteus1-arm64.tar.gz",
+            "sha256": "eed35ab4b732ac05d2afc3531e70cdc27031fb414fdb52a0daf093f33daaec0a",
+            "size": 1930105
+          },
+          "buildInventory": {
+            "file": "engine-build-arm64.txt",
+            "sha256": "56fad63c43f85091d84df347564dfd962a9afaafe519539849860b1807695761",
+            "size": 57836
+          }
+        }
+      }
+    }
+  },
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api008-linux-0c05c8d7",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "stat -c \"%d:%i:%u:%g:%a\" /home/admin/ab-nfs-api008-linux-0c05c8d7-native-source"
+      ],
+      "rc": 0,
+      "seconds": 0.889,
+      "stdout": "64769:786445:1000:109:755\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api008-linux-0c05c8d7",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "ip -4 -j addr show scope global"
+      ],
+      "rc": 0,
+      "seconds": 0.072,
+      "stdout": "[{\"ifindex\":2,\"ifname\":\"enp0s1\",\"flags\":[\"BROADCAST\",\"MULTICAST\",\"UP\",\"LOWER_UP\"],\"mtu\":1500,\"qdisc\":\"fq_codel\",\"operstate\":\"UP\",\"group\":\"default\",\"txqlen\":1000,\"addr_info\":[{\"family\":\"inet\",\"local\":\"192.168.64.4\",\"prefixlen\":24,\"metric\":100,\"broadcast\":\"192.168.64.255\",\"scope\":\"global\",\"dynamic\":true,\"label\":\"enp0s1\",\"valid_life_time\":3393,\"preferred_life_time\":3393}]},{\"ifindex\":3,\"ifname\":\"docker0\",\"flags\":[\"BROADCAST\",\"MULTICAST\",\"UP\",\"LOWER_UP\"],\"mtu\":1500,\"qdisc\":\"noqueue\",\"operstate\":\"UP\",\"group\":\"default\",\"addr_info\":[{\"family\":\"inet\",\"local\":\"172.17.0.1\",\"prefixlen\":16,\"broadcast\":\"172.17.255.255\",\"scope\":\"global\",\"label\":\"docker0\",\"valid_life_time\":4294967295,\"preferred_life_time\":4294967295}]}]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "-i",
+        "ab-nfs-api008-linux-0c05c8d7",
+        "sh",
+        "-c",
+        "cat > /home/admin/ab-nfs-api008-linux-0c05c8d7-docker-binary; chmod 755 /home/admin/ab-nfs-api008-linux-0c05c8d7-docker-binary"
+      ],
+      "rc": 0,
+      "seconds": 0.132,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api008-linux-0c05c8d7",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c '/home/admin/ab-nfs-api008-linux-0c05c8d7-docker-binary create --source /home/admin/ab-nfs-api008-linux-0c05c8d7-native-source --backend ganesha-docker --endpoint 192.168.64.4 --allow 192.168.64.4 --nodes none --yes --drained --json'"
+      ],
+      "rc": 0,
+      "seconds": 1.336,
+      "stdout": "{\n  \"connection\": {\n    \"storageId\": \"8bab521e-5c65-4e34-a5ca-4d8d79f06367\",\n    \"endpoint\": \"192.168.64.4\",\n    \"export\": \"/autobyteus/8bab521e-5c65-4e34-a5ca-4d8d79f06367\",\n    \"protocol\": \"4.1\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\"\n  },\n  \"status\": {\n    \"storageId\": \"8bab521e-5c65-4e34-a5ca-4d8d79f06367\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\",\n    \"hostReady\": true,\n    \"nodes\": {},\n    \"limitation\": \"Hard NFS checks may stall; no outage deadline or local substitute\"\n  }\n}\n",
+      "stderr": "Detected private addresses: 192.168.64.4, 172.17.0.1\nLocal managed Docker nodes: \nAutoByteus NFS plan:\n - Ganesha NFSv4.1 TCP2049 only; persistent private recovery state\n - Export chosen source in place: /home/admin/ab-nfs-api008-linux-0c05c8d7-native-source\n - Map ALL clients to nonroot 1000:109; no recursive ownership change\n - Trust private hosts/subnets: 192.168.64.4\n - Attach 192.168.64.4:/autobyteus/8bab521e-5c65-4e34-a5ca-4d8d79f06367 at /Volumes/autobyteus-shared\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\n - Install exact Ubuntu NFS package versions from this release, if needed\nChecking actual host and selected-node readiness; this may wait for storage.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api008-linux-0c05c8d7",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "findmnt -T /Volumes/autobyteus-shared -o TARGET,SOURCE,FSTYPE,OPTIONS"
+      ],
+      "rc": 0,
+      "seconds": 1.019,
+      "stdout": "TARGET                     SOURCE                                                        FSTYPE OPTIONS\n/Volumes/autobyteus-shared 192.168.64.4:/autobyteus/8bab521e-5c65-4e34-a5ca-4d8d79f06367 nfs4   rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,fatal_neterrors=none,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=192.168.64.4,local_lock=none,addr=192.168.64.4\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api008-linux-0c05c8d7",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "stat -c \"%d:%i:%u:%g:%a\" /home/admin/ab-nfs-api008-linux-0c05c8d7-native-source"
+      ],
+      "rc": 0,
+      "seconds": 0.074,
+      "stdout": "64769:786445:1000:109:755\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api008-linux-0c05c8d7",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n docker run -d --name ab-nfs-api008-cmd-a --network none --label validation.owner=api008 --mount type=bind,src=/Volumes/autobyteus-shared,dst=/Volumes/autobyteus-shared ab-nfs-api008-command-client:local"
+      ],
+      "rc": 0,
+      "seconds": 0.398,
+      "stdout": "25d0815620e915e5844e1861093c0e5a0acf280aa8bdccc68b04990ebe2537c7\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api008-linux-0c05c8d7",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n docker run -d --name ab-nfs-api008-cmd-b --network none --label validation.owner=api008 --mount type=bind,src=/Volumes/autobyteus-shared,dst=/Volumes/autobyteus-shared ab-nfs-api008-command-client:local"
+      ],
+      "rc": 0,
+      "seconds": 0.705,
+      "stdout": "0596cd38d93b5622e5bdfa4baf517b64577b4af36e2e37ba7e36115d01210499\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api008-linux-0c05c8d7",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n docker inspect ab-nfs-api008-cmd-a ab-nfs-api008-cmd-b"
+      ],
+      "rc": 0,
+      "seconds": 0.254,
+      "stdout": "[\n    {\n        \"Id\": \"25d0815620e915e5844e1861093c0e5a0acf280aa8bdccc68b04990ebe2537c7\",\n        \"Created\": \"2026-10-15T16:03:05.123081159Z\",\n        \"Path\": \"sleep\",\n        \"Args\": [\n            \"infinity\"\n        ],\n        \"State\": {\n            \"Status\": \"running\",\n            \"Running\": true,\n            \"Paused\": false,\n            \"Restarting\": false,\n            \"OOMKilled\": false,\n            \"Dead\": false,\n            \"Pid\": 11041,\n            \"ExitCode\": 0,\n            \"Error\": \"\",\n            \"StartedAt\": \"2026-10-15T16:03:05.345279321Z\",\n            \"FinishedAt\": \"0001-01-01T00:00:00Z\"\n        },\n        \"Image\": \"sha256:b7d5b4112a5c930a8d1a313d80e1f8f3a98627aa0209c84310e35618f00b0f53\",\n        \"ResolvConfPath\": \"/var/lib/docker/containers/25d0815620e915e5844e1861093c0e5a0acf280aa8bdccc68b04990ebe2537c7/resolv.conf\",\n        \"HostnamePath\": \"/var/lib/docker/containers/25d0815620e915e5844e1861093c0e5a0acf280aa8bdccc68b04990ebe2537c7/hostname\",\n        \"HostsPath\": \"/var/lib/docker/containers/25d0815620e915e5844e1861093c0e5a0acf280aa8bdccc68b04990ebe2537c7/hosts\",\n        \"LogPath\": \"/var/lib/docker/containers/25d0815620e915e5844e1861093c0e5a0acf280aa8bdccc68b04990ebe2537c7/25d0815620e915e5844e1861093c0e5a0acf280aa8bdccc68b04990ebe2537c7-json.log\",\n        \"Name\": \"/ab-nfs-api008-cmd-a\",\n        \"RestartCount\": 0,\n        \"Driver\": \"overlayfs\",\n        \"Platform\": \"linux\",\n        \"MountLabel\": \"\",\n        \"ProcessLabel\": \"\",\n        \"AppArmorProfile\": \"docker-default\",\n        \"ExecIDs\": null,\n        \"HostConfig\": {\n            \"Binds\": null,\n            \"ContainerIDFile\": \"\",\n            \"LogConfig\": {\n                \"Type\": \"json-file\",\n                \"Config\": {}\n            },\n            \"NetworkMode\": \"none\",\n            \"PortBindings\": {},\n            \"RestartPolicy\": {\n                \"Name\": \"no\",\n                \"MaximumRetryCount\": 0\n            },\n            \"AutoRemove\": false,\n            \"VolumeDriver\": \"\",\n            \"VolumesFrom\": null,\n            \"ConsoleSize\": [\n                0,\n                0\n            ],\n            \"CapAdd\": null,\n            \"CapDrop\": null,\n            \"CgroupnsMode\": \"private\",\n            \"Dns\": null,\n            \"DnsOptions\": [],\n            \"DnsSearch\": [],\n            \"ExtraHosts\": null,\n            \"GroupAdd\": null,\n            \"IpcMode\": \"private\",\n            \"Cgroup\": \"\",\n            \"Links\": null,\n            \"OomScoreAdj\": 0,\n            \"PidMode\": \"\",\n            \"Privileged\": false,\n            \"PublishAllPorts\": false,\n            \"ReadonlyRootfs\": false,\n            \"SecurityOpt\": null,\n            \"UTSMode\": \"\",\n            \"UsernsMode\": \"\",\n            \"ShmSize\": 67108864,\n            \"Runtime\": \"runc\",\n            \"Isolation\": \"\",\n            \"CpuShares\": 0,\n            \"Memory\": 0,\n            \"NanoCpus\": 0,\n            \"CgroupParent\": \"\",\n            \"BlkioWeight\": 0,\n            \"BlkioWeightDevice\": [],\n            \"BlkioDeviceReadBps\": [],\n            \"BlkioDeviceWriteBps\": [],\n            \"BlkioDeviceReadIOps\": [],\n            \"BlkioDeviceWriteIOps\": [],\n            \"CpuPeriod\": 0,\n            \"CpuQuota\": 0,\n            \"CpuRealtimePeriod\": 0,\n            \"CpuRealtimeRuntime\": 0,\n            \"CpusetCpus\": \"\",\n            \"CpusetMems\": \"\",\n            \"Devices\": [],\n            \"DeviceCgroupRules\": null,\n            \"DeviceRequests\": null,\n            \"MemoryReservation\": 0,\n            \"MemorySwap\": 0,\n            \"MemorySwappiness\": null,\n            \"OomKillDisable\": null,\n            \"PidsLimit\": null,\n            \"Ulimits\": [],\n            \"CpuCount\": 0,\n            \"CpuPercent\": 0,\n            \"IOMaximumIOps\": 0,\n            \"IOMaximumBandwidth\": 0,\n            \"Mounts\": [\n                {\n                    \"Type\": \"bind\",\n                    \"Source\": \"/Volumes/autobyteus-shared\",\n                    \"Target\": \"/Volumes/autobyteus-shared\"\n                }\n            ],\n            \"MaskedPaths\": [\n                \"/proc/acpi\",\n                \"/proc/asound\",\n                \"/proc/interrupts\",\n                \"/proc/kcore\",\n                \"/proc/keys\",\n                \"/proc/latency_stats\",\n                \"/proc/sched_debug\",\n                \"/proc/scsi\",\n                \"/proc/timer_list\",\n                \"/proc/timer_stats\",\n                \"/sys/devices/virtual/powercap\",\n                \"/sys/firmware\"\n            ],\n            \"ReadonlyPaths\": [\n                \"/proc/bus\",\n                \"/proc/fs\",\n                \"/proc/irq\",\n                \"/proc/sys\",\n                \"/proc/sysrq-trigger\"\n            ]\n        },\n        \"Storage\": {\n            \"RootFS\": {\n                \"Snapshot\": {\n                    \"Name\": \"overlayfs\"\n                }\n            }\n        },\n        \"Mounts\": [\n            {\n                \"Type\": \"bind\",\n                \"Source\": \"/Volumes/autobyteus-shared\",\n                \"Destination\": \"/Volumes/autobyteus-shared\",\n                \"Mode\": \"\",\n                \"RW\": true,\n                \"Propagation\": \"rprivate\"\n            }\n        ],\n        \"Config\": {\n            \"Hostname\": \"25d0815620e9\",\n            \"Domainname\": \"\",\n            \"User\": \"\",\n            \"AttachStdin\": false,\n            \"AttachStdout\": false,\n            \"AttachStderr\": false,\n            \"Tty\": false,\n            \"OpenStdin\": false,\n            \"StdinOnce\": false,\n            \"Env\": [\n                \"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\"\n            ],\n            \"Cmd\": [\n                \"sleep\",\n                \"infinity\"\n            ],\n            \"Image\": \"ab-nfs-api008-command-client:local\",\n            \"Volumes\": null,\n            \"WorkingDir\": \"\",\n            \"Entrypoint\": null,\n            \"Labels\": {\n                \"org.opencontainers.image.version\": \"24.04\",\n                \"validation.owner\": \"api008\"\n            }\n        },\n        \"NetworkSettings\": {\n            \"SandboxID\": \"ddb1f3461f050c9284b0b3c4679de227f9b52cc6cb1d4f7b5e70fb42f7105f48\",\n            \"SandboxKey\": \"/var/run/docker/netns/ddb1f3461f05\",\n            \"Ports\": {},\n            \"Networks\": {\n                \"none\": {\n                    \"IPAMConfig\": null,\n                    \"Links\": null,\n                    \"Aliases\": null,\n                    \"DriverOpts\": null,\n                    \"GwPriority\": 0,\n                    \"NetworkID\": \"81c37be93d4fb94d4b9cf6bd4bb1e533c4c3cb4d6a3fb4fcc3d521b39be51878\",\n                    \"EndpointID\": \"361acef966d85310fb291a3fd6de301bb014c83036ae3a55573da08001237118\",\n                    \"Gateway\": \"\",\n                    \"IPAddress\": \"\",\n                    \"MacAddress\": \"\",\n                    \"IPPrefixLen\": 0,\n                    \"IPv6Gateway\": \"\",\n                    \"GlobalIPv6Address\": \"\",\n                    \"GlobalIPv6PrefixLen\": 0,\n                    \"DNSNames\": null\n                }\n            }\n        },\n        \"ImageManifestDescriptor\": {\n            \"mediaType\": \"application/vnd.oci.image.manifest.v1+json\",\n            \"digest\": \"sha256:b7d5b4112a5c930a8d1a313d80e1f8f3a98627aa0209c84310e35618f00b0f53\",\n            \"size\": 751,\n            \"platform\": {\n                \"architecture\": \"arm64\",\n                \"os\": \"linux\"\n            }\n        }\n    },\n    {\n        \"Id\": \"0596cd38d93b5622e5bdfa4baf517b64577b4af36e2e37ba7e36115d01210499\",\n        \"Created\": \"2026-10-15T16:03:05.783855166Z\",\n        \"Path\": \"sleep\",\n        \"Args\": [\n            \"infinity\"\n        ],\n        \"State\": {\n            \"Status\": \"running\",\n            \"Running\": true,\n            \"Paused\": false,\n            \"Restarting\": false,\n            \"OOMKilled\": false,\n            \"Dead\": false,\n            \"Pid\": 11097,\n            \"ExitCode\": 0,\n            \"Error\": \"\",\n            \"StartedAt\": \"2026-10-15T16:03:06.05392458Z\",\n            \"FinishedAt\": \"0001-01-01T00:00:00Z\"\n        },\n        \"Image\": \"sha256:b7d5b4112a5c930a8d1a313d80e1f8f3a98627aa0209c84310e35618f00b0f53\",\n        \"ResolvConfPath\": \"/var/lib/docker/containers/0596cd38d93b5622e5bdfa4baf517b64577b4af36e2e37ba7e36115d01210499/resolv.conf\",\n        \"HostnamePath\": \"/var/lib/docker/containers/0596cd38d93b5622e5bdfa4baf517b64577b4af36e2e37ba7e36115d01210499/hostname\",\n        \"HostsPath\": \"/var/lib/docker/containers/0596cd38d93b5622e5bdfa4baf517b64577b4af36e2e37ba7e36115d01210499/hosts\",\n        \"LogPath\": \"/var/lib/docker/containers/0596cd38d93b5622e5bdfa4baf517b64577b4af36e2e37ba7e36115d01210499/0596cd38d93b5622e5bdfa4baf517b64577b4af36e2e37ba7e36115d01210499-json.log\",\n        \"Name\": \"/ab-nfs-api008-cmd-b\",\n        \"RestartCount\": 0,\n        \"Driver\": \"overlayfs\",\n        \"Platform\": \"linux\",\n        \"MountLabel\": \"\",\n        \"ProcessLabel\": \"\",\n        \"AppArmorProfile\": \"docker-default\",\n        \"ExecIDs\": null,\n        \"HostConfig\": {\n            \"Binds\": null,\n            \"ContainerIDFile\": \"\",\n            \"LogConfig\": {\n                \"Type\": \"json-file\",\n                \"Config\": {}\n            },\n            \"NetworkMode\": \"none\",\n            \"PortBindings\": {},\n            \"RestartPolicy\": {\n                \"Name\": \"no\",\n                \"MaximumRetryCount\": 0\n            },\n            \"AutoRemove\": false,\n            \"VolumeDriver\": \"\",\n            \"VolumesFrom\": null,\n            \"ConsoleSize\": [\n                0,\n                0\n            ],\n            \"CapAdd\": null,\n            \"CapDrop\": null,\n            \"CgroupnsMode\": \"private\",\n            \"Dns\": null,\n            \"DnsOptions\": [],\n            \"DnsSearch\": [],\n            \"ExtraHosts\": null,\n            \"GroupAdd\": null,\n            \"IpcMode\": \"private\",\n            \"Cgroup\": \"\",\n            \"Links\": null,\n            \"OomScoreAdj\": 0,\n            \"PidMode\": \"\",\n            \"Privileged\": false,\n            \"PublishAllPorts\": false,\n            \"ReadonlyRootfs\": false,\n            \"SecurityOpt\": null,\n            \"UTSMode\": \"\",\n            \"UsernsMode\": \"\",\n            \"ShmSize\": 67108864,\n            \"Runtime\": \"runc\",\n            \"Isolation\": \"\",\n            \"CpuShares\": 0,\n            \"Memory\": 0,\n            \"NanoCpus\": 0,\n            \"CgroupParent\": \"\",\n            \"BlkioWeight\": 0,\n            \"BlkioWeightDevice\": [],\n            \"BlkioDeviceReadBps\": [],\n            \"BlkioDeviceWriteBps\": [],\n            \"BlkioDeviceReadIOps\": [],\n            \"BlkioDeviceWriteIOps\": [],\n            \"CpuPeriod\": 0,\n            \"CpuQuota\": 0,\n            \"CpuRealtimePeriod\": 0,\n            \"CpuRealtimeRuntime\": 0,\n            \"CpusetCpus\": \"\",\n            \"CpusetMems\": \"\",\n            \"Devices\": [],\n            \"DeviceCgroupRules\": null,\n            \"DeviceRequests\": null,\n            \"MemoryReservation\": 0,\n            \"MemorySwap\": 0,\n            \"MemorySwappiness\": null,\n            \"OomKillDisable\": null,\n            \"PidsLimit\": null,\n            \"Ulimits\": [],\n            \"CpuCount\": 0,\n            \"CpuPercent\": 0,\n            \"IOMaximumIOps\": 0,\n            \"IOMaximumBandwidth\": 0,\n            \"Mounts\": [\n                {\n                    \"Type\": \"bind\",\n                    \"Source\": \"/Volumes/autobyteus-shared\",\n                    \"Target\": \"/Volumes/autobyteus-shared\"\n                }\n            ],\n            \"MaskedPaths\": [\n                \"/proc/acpi\",\n                \"/proc/asound\",\n                \"/proc/interrupts\",\n                \"/proc/kcore\",\n                \"/proc/keys\",\n                \"/proc/latency_stats\",\n                \"/proc/sched_debug\",\n                \"/proc/scsi\",\n                \"/proc/timer_list\",\n                \"/proc/timer_stats\",\n                \"/sys/devices/virtual/powercap\",\n                \"/sys/firmware\"\n            ],\n            \"ReadonlyPaths\": [\n                \"/proc/bus\",\n                \"/proc/fs\",\n                \"/proc/irq\",\n                \"/proc/sys\",\n                \"/proc/sysrq-trigger\"\n            ]\n        },\n        \"Storage\": {\n            \"RootFS\": {\n                \"Snapshot\": {\n                    \"Name\": \"overlayfs\"\n                }\n            }\n        },\n        \"Mounts\": [\n            {\n                \"Type\": \"bind\",\n                \"Source\": \"/Volumes/autobyteus-shared\",\n                \"Destination\": \"/Volumes/autobyteus-shared\",\n                \"Mode\": \"\",\n                \"RW\": true,\n                \"Propagation\": \"rprivate\"\n            }\n        ],\n        \"Config\": {\n            \"Hostname\": \"0596cd38d93b\",\n            \"Domainname\": \"\",\n            \"User\": \"\",\n            \"AttachStdin\": false,\n            \"AttachStdout\": false,\n            \"AttachStderr\": false,\n            \"Tty\": false,\n            \"OpenStdin\": false,\n            \"StdinOnce\": false,\n            \"Env\": [\n                \"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\"\n            ],\n            \"Cmd\": [\n                \"sleep\",\n                \"infinity\"\n            ],\n            \"Image\": \"ab-nfs-api008-command-client:local\",\n            \"Volumes\": null,\n            \"WorkingDir\": \"\",\n            \"Entrypoint\": null,\n            \"Labels\": {\n                \"org.opencontainers.image.version\": \"24.04\",\n                \"validation.owner\": \"api008\"\n            }\n        },\n        \"NetworkSettings\": {\n            \"SandboxID\": \"4c570e94d0f1f3c051cbc89b4577048234d658fd49058abf2b29550aa3f51689\",\n            \"SandboxKey\": \"/var/run/docker/netns/4c570e94d0f1\",\n            \"Ports\": {},\n            \"Networks\": {\n                \"none\": {\n                    \"IPAMConfig\": null,\n                    \"Links\": null,\n                    \"Aliases\": null,\n                    \"DriverOpts\": null,\n                    \"GwPriority\": 0,\n                    \"NetworkID\": \"81c37be93d4fb94d4b9cf6bd4bb1e533c4c3cb4d6a3fb4fcc3d521b39be51878\",\n                    \"EndpointID\": \"5020c093e49fc53068dc0ff2435ecd3bff80f5f35a3d4b57e2ae0a39ec7cb63f\",\n                    \"Gateway\": \"\",\n                    \"IPAddress\": \"\",\n                    \"MacAddress\": \"\",\n                    \"IPPrefixLen\": 0,\n                    \"IPv6Gateway\": \"\",\n                    \"GlobalIPv6Address\": \"\",\n                    \"GlobalIPv6PrefixLen\": 0,\n                    \"DNSNames\": null\n                }\n            }\n        },\n        \"ImageManifestDescriptor\": {\n            \"mediaType\": \"application/vnd.oci.image.manifest.v1+json\",\n            \"digest\": \"sha256:b7d5b4112a5c930a8d1a313d80e1f8f3a98627aa0209c84310e35618f00b0f53\",\n            \"size\": 751,\n            \"platform\": {\n                \"architecture\": \"arm64\",\n                \"os\": \"linux\"\n            }\n        }\n    }\n]\n",
+      "stderr": ""
+    }
+  ],
+  "cases": [
+    {
+      "name": "FS01 LD supported NFS create without application nodes",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api008-linux-0c05c8d7",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/home/admin",
+          "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c '/home/admin/ab-nfs-api008-linux-0c05c8d7-docker-binary create --source /home/admin/ab-nfs-api008-linux-0c05c8d7-native-source --backend ganesha-docker --endpoint 192.168.64.4 --allow 192.168.64.4 --nodes none --yes --drained --json'"
+        ],
+        "rc": 0,
+        "seconds": 1.336,
+        "stdout": "{\n  \"connection\": {\n    \"storageId\": \"8bab521e-5c65-4e34-a5ca-4d8d79f06367\",\n    \"endpoint\": \"192.168.64.4\",\n    \"export\": \"/autobyteus/8bab521e-5c65-4e34-a5ca-4d8d79f06367\",\n    \"protocol\": \"4.1\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\"\n  },\n  \"status\": {\n    \"storageId\": \"8bab521e-5c65-4e34-a5ca-4d8d79f06367\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\",\n    \"hostReady\": true,\n    \"nodes\": {},\n    \"limitation\": \"Hard NFS checks may stall; no outage deadline or local substitute\"\n  }\n}\n",
+        "stderr": "Detected private addresses: 192.168.64.4, 172.17.0.1\nLocal managed Docker nodes: \nAutoByteus NFS plan:\n - Ganesha NFSv4.1 TCP2049 only; persistent private recovery state\n - Export chosen source in place: /home/admin/ab-nfs-api008-linux-0c05c8d7-native-source\n - Map ALL clients to nonroot 1000:109; no recursive ownership change\n - Trust private hosts/subnets: 192.168.64.4\n - Attach 192.168.64.4:/autobyteus/8bab521e-5c65-4e34-a5ca-4d8d79f06367 at /Volumes/autobyteus-shared\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\n - Install exact Ubuntu NFS package versions from this release, if needed\nChecking actual host and selected-node readiness; this may wait for storage.\n"
+      },
+      "status": "Pass",
+      "seconds": 1.337
+    },
+    {
+      "name": "start command-only ab-nfs-api008-cmd-a",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api008-linux-0c05c8d7",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/home/admin",
+          "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "sudo -n docker run -d --name ab-nfs-api008-cmd-a --network none --label validation.owner=api008 --mount type=bind,src=/Volumes/autobyteus-shared,dst=/Volumes/autobyteus-shared ab-nfs-api008-command-client:local"
+        ],
+        "rc": 0,
+        "seconds": 0.398,
+        "stdout": "25d0815620e915e5844e1861093c0e5a0acf280aa8bdccc68b04990ebe2537c7\n",
+        "stderr": ""
+      },
+      "status": "Pass",
+      "seconds": 0.398
+    },
+    {
+      "name": "start command-only ab-nfs-api008-cmd-b",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api008-linux-0c05c8d7",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/home/admin",
+          "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "sudo -n docker run -d --name ab-nfs-api008-cmd-b --network none --label validation.owner=api008 --mount type=bind,src=/Volumes/autobyteus-shared,dst=/Volumes/autobyteus-shared ab-nfs-api008-command-client:local"
+        ],
+        "rc": 0,
+        "seconds": 0.705,
+        "stdout": "0596cd38d93b5622e5bdfa4baf517b64577b4af36e2e37ba7e36115d01210499\n",
+        "stderr": ""
+      },
+      "status": "Pass",
+      "seconds": 0.705
+    }
+  ],
+  "result": "Pass",
+  "engineImage": "127.0.0.1:5000/ab-nfs-api008@sha256:aff2bc8eb9124ffc3ae802e3254cd5682a3d34535cf58da7ef5bcda50b4a6a8d",
+  "mode": "LD",
+  "sourceBefore": "64769:786445:1000:109:755\n",
+  "endpoint": "192.168.64.4",
+  "connection": {
+    "storageId": "8bab521e-5c65-4e34-a5ca-4d8d79f06367",
+    "endpoint": "192.168.64.4",
+    "export": "/autobyteus/8bab521e-5c65-4e34-a5ca-4d8d79f06367",
+    "protocol": "4.1",
+    "mountRoot": "/Volumes/autobyteus-shared"
+  },
+  "mount": "TARGET                     SOURCE                                                        FSTYPE OPTIONS\n/Volumes/autobyteus-shared 192.168.64.4:/autobyteus/8bab521e-5c65-4e34-a5ca-4d8d79f06367 nfs4   rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,fatal_neterrors=none,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=192.168.64.4,local_lock=none,addr=192.168.64.4\n",
+  "containers": [
+    {
+      "Id": "25d0815620e915e5844e1861093c0e5a0acf280aa8bdccc68b04990ebe2537c7",
+      "Created": "2026-10-15T16:03:05.123081159Z",
+      "Path": "sleep",
+      "Args": [
+        "infinity"
+      ],
+      "State": {
+        "Status": "running",
+        "Running": true,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 11041,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-10-15T16:03:05.345279321Z",
+        "FinishedAt": "0001-01-01T00:00:00Z"
+      },
+      "Image": "sha256:b7d5b4112a5c930a8d1a313d80e1f8f3a98627aa0209c84310e35618f00b0f53",
+      "ResolvConfPath": "/var/lib/docker/containers/25d0815620e915e5844e1861093c0e5a0acf280aa8bdccc68b04990ebe2537c7/resolv.conf",
+      "HostnamePath": "/var/lib/docker/containers/25d0815620e915e5844e1861093c0e5a0acf280aa8bdccc68b04990ebe2537c7/hostname",
+      "HostsPath": "/var/lib/docker/containers/25d0815620e915e5844e1861093c0e5a0acf280aa8bdccc68b04990ebe2537c7/hosts",
+      "LogPath": "/var/lib/docker/containers/25d0815620e915e5844e1861093c0e5a0acf280aa8bdccc68b04990ebe2537c7/25d0815620e915e5844e1861093c0e5a0acf280aa8bdccc68b04990ebe2537c7-json.log",
+      "Name": "/ab-nfs-api008-cmd-a",
+      "RestartCount": 0,
+      "Driver": "overlayfs",
+      "Platform": "linux",
+      "MountLabel": "",
+      "ProcessLabel": "",
+      "AppArmorProfile": "docker-default",
+      "ExecIDs": null,
+      "HostConfig": {
+        "Binds": null,
+        "ContainerIDFile": "",
+        "LogConfig": {
+          "Type": "json-file",
+          "Config": {}
+        },
+        "NetworkMode": "none",
+        "PortBindings": {},
+        "RestartPolicy": {
+          "Name": "no",
+          "MaximumRetryCount": 0
+        },
+        "AutoRemove": false,
+        "VolumeDriver": "",
+        "VolumesFrom": null,
+        "ConsoleSize": [
+          0,
+          0
+        ],
+        "CapAdd": null,
+        "CapDrop": null,
+        "CgroupnsMode": "private",
+        "Dns": null,
+        "DnsOptions": [],
+        "DnsSearch": [],
+        "ExtraHosts": null,
+        "GroupAdd": null,
+        "IpcMode": "private",
+        "Cgroup": "",
+        "Links": null,
+        "OomScoreAdj": 0,
+        "PidMode": "",
+        "Privileged": false,
+        "PublishAllPorts": false,
+        "ReadonlyRootfs": false,
+        "SecurityOpt": null,
+        "UTSMode": "",
+        "UsernsMode": "",
+        "ShmSize": 67108864,
+        "Runtime": "runc",
+        "Isolation": "",
+        "CpuShares": 0,
+        "Memory": 0,
+        "NanoCpus": 0,
+        "CgroupParent": "",
+        "BlkioWeight": 0,
+        "BlkioWeightDevice": [],
+        "BlkioDeviceReadBps": [],
+        "BlkioDeviceWriteBps": [],
+        "BlkioDeviceReadIOps": [],
+        "BlkioDeviceWriteIOps": [],
+        "CpuPeriod": 0,
+        "CpuQuota": 0,
+        "CpuRealtimePeriod": 0,
+        "CpuRealtimeRuntime": 0,
+        "CpusetCpus": "",
+        "CpusetMems": "",
+        "Devices": [],
+        "DeviceCgroupRules": null,
+        "DeviceRequests": null,
+        "MemoryReservation": 0,
+        "MemorySwap": 0,
+        "MemorySwappiness": null,
+        "OomKillDisable": null,
+        "PidsLimit": null,
+        "Ulimits": [],
+        "CpuCount": 0,
+        "CpuPercent": 0,
+        "IOMaximumIOps": 0,
+        "IOMaximumBandwidth": 0,
+        "Mounts": [
+          {
+            "Type": "bind",
+            "Source": "/Volumes/autobyteus-shared",
+            "Target": "/Volumes/autobyteus-shared"
+          }
+        ],
+        "MaskedPaths": [
+          "/proc/acpi",
+          "/proc/asound",
+          "/proc/interrupts",
+          "/proc/kcore",
+          "/proc/keys",
+          "/proc/latency_stats",
+          "/proc/sched_debug",
+          "/proc/scsi",
+          "/proc/timer_list",
+          "/proc/timer_stats",
+          "/sys/devices/virtual/powercap",
+          "/sys/firmware"
+        ],
+        "ReadonlyPaths": [
+          "/proc/bus",
+          "/proc/fs",
+          "/proc/irq",
+          "/proc/sys",
+          "/proc/sysrq-trigger"
+        ]
+      },
+      "Storage": {
+        "RootFS": {
+          "Snapshot": {
+            "Name": "overlayfs"
+          }
+        }
+      },
+      "Mounts": [
+        {
+          "Type": "bind",
+          "Source": "/Volumes/autobyteus-shared",
+          "Destination": "/Volumes/autobyteus-shared",
+          "Mode": "",
+          "RW": true,
+          "Propagation": "rprivate"
+        }
+      ],
+      "Config": {
+        "Hostname": "25d0815620e9",
+        "Domainname": "",
+        "User": "",
+        "AttachStdin": false,
+        "AttachStdout": false,
+        "AttachStderr": false,
+        "Tty": false,
+        "OpenStdin": false,
+        "StdinOnce": false,
+        "Env": [
+          "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        ],
+        "Cmd": [
+          "sleep",
+          "infinity"
+        ],
+        "Image": "ab-nfs-api008-command-client:local",
+        "Volumes": null,
+        "WorkingDir": "",
+        "Entrypoint": null,
+        "Labels": {
+          "org.opencontainers.image.version": "24.04",
+          "validation.owner": "api008"
+        }
+      },
+      "NetworkSettings": {
+        "SandboxID": "ddb1f3461f050c9284b0b3c4679de227f9b52cc6cb1d4f7b5e70fb42f7105f48",
+        "SandboxKey": "/var/run/docker/netns/ddb1f3461f05",
+        "Ports": {},
+        "Networks": {
+          "none": {
+            "IPAMConfig": null,
+            "Links": null,
+            "Aliases": null,
+            "DriverOpts": null,
+            "GwPriority": 0,
+            "NetworkID": "81c37be93d4fb94d4b9cf6bd4bb1e533c4c3cb4d6a3fb4fcc3d521b39be51878",
+            "EndpointID": "361acef966d85310fb291a3fd6de301bb014c83036ae3a55573da08001237118",
+            "Gateway": "",
+            "IPAddress": "",
+            "MacAddress": "",
+            "IPPrefixLen": 0,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": null
+          }
+        }
+      },
+      "ImageManifestDescriptor": {
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "digest": "sha256:b7d5b4112a5c930a8d1a313d80e1f8f3a98627aa0209c84310e35618f00b0f53",
+        "size": 751,
+        "platform": {
+          "architecture": "arm64",
+          "os": "linux"
+        }
+      }
+    },
+    {
+      "Id": "0596cd38d93b5622e5bdfa4baf517b64577b4af36e2e37ba7e36115d01210499",
+      "Created": "2026-10-15T16:03:05.783855166Z",
+      "Path": "sleep",
+      "Args": [
+        "infinity"
+      ],
+      "State": {
+        "Status": "running",
+        "Running": true,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 11097,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-10-15T16:03:06.05392458Z",
+        "FinishedAt": "0001-01-01T00:00:00Z"
+      },
+      "Image": "sha256:b7d5b4112a5c930a8d1a313d80e1f8f3a98627aa0209c84310e35618f00b0f53",
+      "ResolvConfPath": "/var/lib/docker/containers/0596cd38d93b5622e5bdfa4baf517b64577b4af36e2e37ba7e36115d01210499/resolv.conf",
+      "HostnamePath": "/var/lib/docker/containers/0596cd38d93b5622e5bdfa4baf517b64577b4af36e2e37ba7e36115d01210499/hostname",
+      "HostsPath": "/var/lib/docker/containers/0596cd38d93b5622e5bdfa4baf517b64577b4af36e2e37ba7e36115d01210499/hosts",
+      "LogPath": "/var/lib/docker/containers/0596cd38d93b5622e5bdfa4baf517b64577b4af36e2e37ba7e36115d01210499/0596cd38d93b5622e5bdfa4baf517b64577b4af36e2e37ba7e36115d01210499-json.log",
+      "Name": "/ab-nfs-api008-cmd-b",
+      "RestartCount": 0,
+      "Driver": "overlayfs",
+      "Platform": "linux",
+      "MountLabel": "",
+      "ProcessLabel": "",
+      "AppArmorProfile": "docker-default",
+      "ExecIDs": null,
+      "HostConfig": {
+        "Binds": null,
+        "ContainerIDFile": "",
+        "LogConfig": {
+          "Type": "json-file",
+          "Config": {}
+        },
+        "NetworkMode": "none",
+        "PortBindings": {},
+        "RestartPolicy": {
+          "Name": "no",
+          "MaximumRetryCount": 0
+        },
+        "AutoRemove": false,
+        "VolumeDriver": "",
+        "VolumesFrom": null,
+        "ConsoleSize": [
+          0,
+          0
+        ],
+        "CapAdd": null,
+        "CapDrop": null,
+        "CgroupnsMode": "private",
+        "Dns": null,
+        "DnsOptions": [],
+        "DnsSearch": [],
+        "ExtraHosts": null,
+        "GroupAdd": null,
+        "IpcMode": "private",
+        "Cgroup": "",
+        "Links": null,
+        "OomScoreAdj": 0,
+        "PidMode": "",
+        "Privileged": false,
+        "PublishAllPorts": false,
+        "ReadonlyRootfs": false,
+        "SecurityOpt": null,
+        "UTSMode": "",
+        "UsernsMode": "",
+        "ShmSize": 67108864,
+        "Runtime": "runc",
+        "Isolation": "",
+        "CpuShares": 0,
+        "Memory": 0,
+        "NanoCpus": 0,
+        "CgroupParent": "",
+        "BlkioWeight": 0,
+        "BlkioWeightDevice": [],
+        "BlkioDeviceReadBps": [],
+        "BlkioDeviceWriteBps": [],
+        "BlkioDeviceReadIOps": [],
+        "BlkioDeviceWriteIOps": [],
+        "CpuPeriod": 0,
+        "CpuQuota": 0,
+        "CpuRealtimePeriod": 0,
+        "CpuRealtimeRuntime": 0,
+        "CpusetCpus": "",
+        "CpusetMems": "",
+        "Devices": [],
+        "DeviceCgroupRules": null,
+        "DeviceRequests": null,
+        "MemoryReservation": 0,
+        "MemorySwap": 0,
+        "MemorySwappiness": null,
+        "OomKillDisable": null,
+        "PidsLimit": null,
+        "Ulimits": [],
+        "CpuCount": 0,
+        "CpuPercent": 0,
+        "IOMaximumIOps": 0,
+        "IOMaximumBandwidth": 0,
+        "Mounts": [
+          {
+            "Type": "bind",
+            "Source": "/Volumes/autobyteus-shared",
+            "Target": "/Volumes/autobyteus-shared"
+          }
+        ],
+        "MaskedPaths": [
+          "/proc/acpi",
+          "/proc/asound",
+          "/proc/interrupts",
+          "/proc/kcore",
+          "/proc/keys",
+          "/proc/latency_stats",
+          "/proc/sched_debug",
+          "/proc/scsi",
+          "/proc/timer_list",
+          "/proc/timer_stats",
+          "/sys/devices/virtual/powercap",
+          "/sys/firmware"
+        ],
+        "ReadonlyPaths": [
+          "/proc/bus",
+          "/proc/fs",
+          "/proc/irq",
+          "/proc/sys",
+          "/proc/sysrq-trigger"
+        ]
+      },
+      "Storage": {
+        "RootFS": {
+          "Snapshot": {
+            "Name": "overlayfs"
+          }
+        }
+      },
+      "Mounts": [
+        {
+          "Type": "bind",
+          "Source": "/Volumes/autobyteus-shared",
+          "Destination": "/Volumes/autobyteus-shared",
+          "Mode": "",
+          "RW": true,
+          "Propagation": "rprivate"
+        }
+      ],
+      "Config": {
+        "Hostname": "0596cd38d93b",
+        "Domainname": "",
+        "User": "",
+        "AttachStdin": false,
+        "AttachStdout": false,
+        "AttachStderr": false,
+        "Tty": false,
+        "OpenStdin": false,
+        "StdinOnce": false,
+        "Env": [
+          "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        ],
+        "Cmd": [
+          "sleep",
+          "infinity"
+        ],
+        "Image": "ab-nfs-api008-command-client:local",
+        "Volumes": null,
+        "WorkingDir": "",
+        "Entrypoint": null,
+        "Labels": {
+          "org.opencontainers.image.version": "24.04",
+          "validation.owner": "api008"
+        }
+      },
+      "NetworkSettings": {
+        "SandboxID": "4c570e94d0f1f3c051cbc89b4577048234d658fd49058abf2b29550aa3f51689",
+        "SandboxKey": "/var/run/docker/netns/4c570e94d0f1",
+        "Ports": {},
+        "Networks": {
+          "none": {
+            "IPAMConfig": null,
+            "Links": null,
+            "Aliases": null,
+            "DriverOpts": null,
+            "GwPriority": 0,
+            "NetworkID": "81c37be93d4fb94d4b9cf6bd4bb1e533c4c3cb4d6a3fb4fcc3d521b39be51878",
+            "EndpointID": "5020c093e49fc53068dc0ff2435ecd3bff80f5f35a3d4b57e2ae0a39ec7cb63f",
+            "Gateway": "",
+            "IPAddress": "",
+            "MacAddress": "",
+            "IPPrefixLen": 0,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": null
+          }
+        }
+      },
+      "ImageManifestDescriptor": {
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "digest": "sha256:b7d5b4112a5c930a8d1a313d80e1f8f3a98627aa0209c84310e35618f00b0f53",
+        "size": 751,
+        "platform": {
+          "architecture": "arm64",
+          "os": "linux"
+        }
+      }
+    }
+  ]
+}

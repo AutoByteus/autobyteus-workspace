@@ -1,0 +1,10 @@
+{
+  "initialHTTP": "preview-http-result.json",
+  "initialFailure": "New observer HTML fetched before mounted-view freshness settled; original164bytes observed, not corrupted bytes",
+  "settledHTTP": "preview-http-settled-result.json",
+  "settledFailure": "Harness invented206Range contract; actual preserved route sends complete200stream; approveddesign-spec line371 explicitly no new range/cache/error policy",
+  "correction": "Assert existing fullstream bytes/MIME plus real decoded playback; no range source change",
+  "htmlObserver": "Fixture self-observation proves computed CSS and actual decoded relativeimage in iframe via postMessage, no application internal-state injection",
+  "htmlFinal": "desktop-html-proof4.json",
+  "otherHarnessObservations": "Use folder is draft selection per docs/agent_execution_architecture; sidebar Add actually creates workspace. Initial image/HTML absent assertions preceded successful click after tool-panel transition or cached frame activation; raw actions retained, no product failure inferred."
+}

@@ -1,0 +1,8 @@
+	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/cmd/autobyteus-nfs		coverage: 0.0% of statements
+ok  	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/backend	0.411s	coverage: 32.3% of statements
+ok  	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/cli	0.967s	coverage: 19.6% of statements
+ok  	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/config	1.303s	coverage: 64.0% of statements
+ok  	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/docker	1.582s	coverage: 38.9% of statements
+ok  	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/platform	1.950s	coverage: 22.6% of statements
+ok  	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/service	2.628s	coverage: 47.2% of statements
+ok  	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/setup	2.422s	coverage: 8.2% of statements

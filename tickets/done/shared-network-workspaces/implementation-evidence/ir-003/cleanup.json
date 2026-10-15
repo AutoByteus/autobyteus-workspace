@@ -1,0 +1,12 @@
+{
+  "goToolchainRemoved": true,
+  "toolchainPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir003-go-w7fg7538",
+  "checksHomeRemoved": true,
+  "finalScratchRemoved": true,
+  "observedFixtureRootsAbsent": [
+    "/tmp/nfs-installer-fixture-05cha69l",
+    "/tmp/nfs-installer-fixture-e5vzn9cd",
+    "/tmp/nfs-installer-fixture-qato0mqd"
+  ],
+  "userToolchainsCachesAndLiveResourcesUntouched": true
+}

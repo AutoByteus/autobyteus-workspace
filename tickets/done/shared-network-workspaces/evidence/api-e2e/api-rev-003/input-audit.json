@@ -1,0 +1,8 @@
+{
+  "time": "2026-10-14T06:52:23Z",
+  "head": "e8ed5627da2afa646c9ab89c6ce69b3a0bc0826c",
+  "sourceFix": "eb7934072a1f98832b7b6330a1bc6a7f348fd93d",
+  "prior": "API-REV002 Fail57.14% API-F002 open; API-F001 resolved",
+  "scratch": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api003-cc7rp5vo",
+  "status": "?? applications/brief-studio/dist/\n?? autobyteus-application-backend-sdk/dist/\n?? autobyteus-application-devkit/dist/\n?? autobyteus-application-frontend-sdk/dist/\n?? autobyteus-application-sdk-contracts/dist/\n?? tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/\n"
+}

@@ -1,0 +1,31 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 456B done
+#1 DONE 0.1s
+
+#2 [internal] load metadata for docker.io/library/ubuntu:24.04
+#2 DONE 1.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.1s
+
+#4 [1/2] FROM docker.io/library/ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55
+#4 resolve docker.io/library/ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55 done
+#4 DONE 0.0s
+
+#5 [2/2] RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends nfs-ganesha nfs-ganesha-vfs nfs-common rpcbind python3 git procps iproute2 ca-certificates && rm -rf /var/lib/apt/lists/*
+#5 CACHED
+
+#6 exporting to image
+#6 exporting layers done
+#6 exporting manifest sha256:ecb2fe35453a5f29772f2dd5faec70ba6263270e493f31066246f3d442711b4c done
+#6 exporting config sha256:77d94e3df5baa96d7c6a98aaa53835ff158b2ae66eee475641ef2d48e7a4542f done
+#6 exporting attestation manifest sha256:fa0f548c5bca017922920da63aebcc790275340ec48806eb9410dfd07749e702 done
+#6 exporting manifest list sha256:87e38a1a76a1a1787e4e4d5ea30b2ea8c9f9c6233f86297b47d17aaad1b01681
+#6 exporting manifest list sha256:87e38a1a76a1a1787e4e4d5ea30b2ea8c9f9c6233f86297b47d17aaad1b01681 done
+#6 naming to docker.io/library/autobyteus-shared-feasibility:fr-009 done
+#6 unpacking to docker.io/library/autobyteus-shared-feasibility:fr-009
+#6 unpacking to docker.io/library/autobyteus-shared-feasibility:fr-009 1.0s done
+#6 DONE 1.0s

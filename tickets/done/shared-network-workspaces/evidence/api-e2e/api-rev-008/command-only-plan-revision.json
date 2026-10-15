@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-15",
+  "authority": "Direct user test-case instruction in active conversation",
+  "activeCases": [
+    "FS01",
+    "FS02",
+    "FS03",
+    "FS04",
+    "FS05",
+    "FS06",
+    "FS07",
+    "FS08",
+    "FS09",
+    "FS10",
+    "FS11",
+    "FS12",
+    "FS13",
+    "FS14",
+    "FS15",
+    "FS16",
+    "FS17"
+  ],
+  "topology": "One Linux VM; two command-driven Docker containers; LN/LD sequential",
+  "applicationRequired": false,
+  "solutionDesignerContacted": false,
+  "productionChanged": false,
+  "result": "Plan revised; command evidence reconciliation pending",
+  "historicalVerdictsPreserved": true
+}

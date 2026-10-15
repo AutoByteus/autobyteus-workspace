@@ -267,6 +267,13 @@ export const fileExplorerContentActions = {
     }
   },
 
+  updateEditorDraft(this: any, workspaceId: string, filePath: string, content: string) {
+    const file = this._getWorkspaceState(workspaceId)?.openFiles
+      .find((entry: OpenFileState) => entry.path === filePath)
+    if (!file || file.type !== 'Text' || file.mode !== 'edit' || file.accessIntent?.readOnly) return
+    file.editorDraft = content === file.content ? undefined : { content }
+  },
+
   invalidateFileContent(this: any, filePath: string, workspaceId: string) {
     const wsState = this._getOrCreateWorkspaceState(workspaceId)
     const file = wsState.openFiles.find((entry: OpenFileState) => entry.path === filePath)
@@ -322,7 +329,10 @@ export const fileExplorerContentActions = {
     wsState.saveContentError[filePath] = null
     wsState.saveContentLoading[filePath] = true
     try {
+      const file = wsState.openFiles.find((entry: OpenFileState) => entry.path === filePath)
       await this._writeFileCore(workspaceId, filePath, content)
+      // A later keystroke while Save is in flight still belongs to the user.
+      if (file?.editorDraft?.content === content) file.editorDraft = undefined
     } catch (error) {
       wsState.saveContentError[filePath] = error instanceof Error ? error.message : 'An unknown error occurred'
       throw error

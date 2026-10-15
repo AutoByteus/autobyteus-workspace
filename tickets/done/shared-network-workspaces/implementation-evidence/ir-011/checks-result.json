@@ -1,0 +1,92 @@
+{
+  "scope": "implementation-local repository integration; not API/E2E or product sign-off",
+  "scratch": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir011-56e6kcki",
+  "checks": [
+    {
+      "name": "install",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@autobyteus-example/brief-studio-authoring...",
+        "install",
+        "--frozen-lockfile"
+      ],
+      "exitCode": 0,
+      "seconds": 21.081,
+      "log": "install.log"
+    },
+    {
+      "name": "integration-prepare",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "test:integration:prepare"
+      ],
+      "exitCode": 0,
+      "seconds": 28.513,
+      "log": "integration-prepare.log"
+    },
+    {
+      "name": "server-typecheck",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "seconds": 12.125,
+      "log": "server-typecheck.log"
+    },
+    {
+      "name": "workspace-rest",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts",
+        "--no-watch"
+      ],
+      "exitCode": 0,
+      "seconds": 12.181,
+      "log": "workspace-rest.log"
+    },
+    {
+      "name": "workspace-unit",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/unit/workspaces",
+        "--no-watch"
+      ],
+      "exitCode": 0,
+      "seconds": 11.515,
+      "log": "workspace-unit.log"
+    },
+    {
+      "name": "adjacent-explorer",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/integration/file-explorer/file-explorer.integration.test.ts",
+        "tests/e2e/file-explorer/search-content-http.e2e.test.ts",
+        "--no-watch"
+      ],
+      "exitCode": 0,
+      "seconds": 6.543,
+      "log": "adjacent-explorer.log"
+    }
+  ]
+}

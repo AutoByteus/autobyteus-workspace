@@ -1,0 +1,6 @@
+{
+  "raw": "mac-new-source-resume-result.json",
+  "wrongAssertion": "existing-source0755 reused for newly created private source",
+  "validApprovedBehavior": "new source private/group not0777; actual0700 under077 owned501:20",
+  "change": "assert0700 without altering mode, retain real create and original record; complete mounted/public reconnect/detach proof"
+}

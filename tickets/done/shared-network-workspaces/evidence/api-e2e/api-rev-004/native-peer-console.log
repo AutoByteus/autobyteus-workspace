@@ -1,0 +1,12 @@
+Started native regression starts detached, no host Ganesha engine preinstallation
+native regression starts detached, no host Ganesha engine preinstallation: Pass
+Started public native storage create no selected nodes and exact Mac peer allowlist
+public native storage create no selected nodes and exact Mac peer allowlist: Pass
+Started native original identity bytes UUID and real nonroot defaultY
+native original identity bytes UUID and real nonroot defaultY: Pass
+Started public native no-node reconnect through current owner
+public native no-node reconnect through current owner: Pass
+Started native package private mode managed job and installed binary identity
+native package private mode managed job and installed binary identity: Pass
+Native/peer regression Fail/incomplete AssertionError()
+{"result": "Fail", "nativeResult": null, "peerResult": "Not Tested", "fatal": "AssertionError()"}

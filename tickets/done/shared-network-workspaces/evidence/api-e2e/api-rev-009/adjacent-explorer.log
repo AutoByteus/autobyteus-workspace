@@ -1,0 +1,204 @@
+
+ RUN  v4.0.18 /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/repo/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/repo/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/file-explorer/search-content-http.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:51028) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/file-explorer/search-content-http.e2e.test.ts > search to protected content over real HTTP
+Platform detection: Windows=false
+App root directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/repo/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/search-content-http-1RK5Gv/data
+
+stdout | tests/e2e/file-explorer/search-content-http.e2e.test.ts > search to protected content over real HTTP
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/search-content-http-1RK5Gv/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/search-content-http-1RK5Gv/workspace.
+
+stdout | tests/e2e/file-explorer/search-content-http.e2e.test.ts > search to protected content over real HTTP
+Created and registered workspace ID: agent_ws_34809b817fe9f79389c86e570f5037a4adb6f20f7e6b5f02d3227774a4b9db62
+
+stdout | tests/e2e/file-explorer/search-content-http.e2e.test.ts > search to protected content over real HTTP > returns exact relative locators and full PDF bytes without expanding parent folders
+Created WorkspaceFileExplorer for agent_ws_34809b817fe9f79389c86e570f5037a4adb6f20f7e6b5f02d3227774a4b9db62 (graphql-search).
+
+stdout | tests/e2e/file-explorer/search-content-http.e2e.test.ts > search to protected content over real HTTP > returns exact relative locators and full PDF bytes without expanding parent folders
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/search-content-http-1RK5Gv/workspace' with max_depth=null
+
+stdout | tests/e2e/file-explorer/search-content-http.e2e.test.ts > search to protected content over real HTTP > returns exact relative locators and full PDF bytes without expanding parent folders
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/search-content-http-1RK5Gv/workspace' completed in 0.0060 seconds.
+
+stdout | tests/e2e/file-explorer/search-content-http.e2e.test.ts > search to protected content over real HTTP > returns exact relative locators and full PDF bytes without expanding parent folders
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/e2e/file-explorer/search-content-http.e2e.test.ts > search to protected content over real HTTP > returns exact relative locators and full PDF bytes without expanding parent folders
+[Search] Trying strategy: FuzzysortSearchStrategy for query 'resume'
+
+stdout | tests/e2e/file-explorer/search-content-http.e2e.test.ts > search to protected content over real HTTP > returns exact relative locators and full PDF bytes without expanding parent folders
+[Search] FuzzysortSearchStrategy completed in 0.59ms, found 2 results (total: 0.61ms)
+
+stdout | tests/e2e/file-explorer/search-content-http.e2e.test.ts > search to protected content over real HTTP > uses identical text/tree/search locators through the normal GraphQL reader
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/search-content-http-1RK5Gv/workspace' with max_depth=null
+
+stdout | tests/e2e/file-explorer/search-content-http.e2e.test.ts > search to protected content over real HTTP > uses identical text/tree/search locators through the normal GraphQL reader
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/search-content-http-1RK5Gv/workspace' completed in 0.0020 seconds.
+
+stdout | tests/e2e/file-explorer/search-content-http.e2e.test.ts > search to protected content over real HTTP > uses identical text/tree/search locators through the normal GraphQL reader
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/e2e/file-explorer/search-content-http.e2e.test.ts > search to protected content over real HTTP > uses identical text/tree/search locators through the normal GraphQL reader
+[Search] Trying strategy: FuzzysortSearchStrategy for query 'resume-notes'
+
+stdout | tests/e2e/file-explorer/search-content-http.e2e.test.ts > search to protected content over real HTTP > uses identical text/tree/search locators through the normal GraphQL reader
+[Search] FuzzysortSearchStrategy completed in 0.19ms, found 1 results (total: 0.19ms)
+
+stderr | tests/e2e/file-explorer/search-content-http.e2e.test.ts > search to protected content over real HTTP > denies absolute in-root with existing400 and no fixture/outside bytes
+Security error accessing path /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/search-content-http-1RK5Gv/workspace/applications/nested/resume sample.pdf in workspace agent_ws_34809b817fe9f79389c86e570f5037a4adb6f20f7e6b5f02d3227774a4b9db62: Access denied: Path resolves outside the workspace boundary.
+
+stderr | tests/e2e/file-explorer/search-content-http.e2e.test.ts > search to protected content over real HTTP > denies absolute outside with existing400 and no fixture/outside bytes
+Security error accessing path /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/search-content-http-1RK5Gv/outside.txt in workspace agent_ws_34809b817fe9f79389c86e570f5037a4adb6f20f7e6b5f02d3227774a4b9db62: Access denied: Path resolves outside the workspace boundary.
+
+stderr | tests/e2e/file-explorer/search-content-http.e2e.test.ts > search to protected content over real HTTP > denies parent traversal with existing400 and no fixture/outside bytes
+Security error accessing path ../outside.txt in workspace agent_ws_34809b817fe9f79389c86e570f5037a4adb6f20f7e6b5f02d3227774a4b9db62: Access denied: Path resolves outside the workspace boundary.
+
+stderr | tests/e2e/file-explorer/search-content-http.e2e.test.ts > search to protected content over real HTTP > denies same-prefix sibling with existing400 and no fixture/outside bytes
+Security error accessing path ../workspace-sibling/leak.txt in workspace agent_ws_34809b817fe9f79389c86e570f5037a4adb6f20f7e6b5f02d3227774a4b9db62: Access denied: Path resolves outside the workspace boundary.
+
+stdout | tests/e2e/file-explorer/search-content-http.e2e.test.ts > search to protected content over real HTTP
+Closing FileSystemWorkspace agent_ws_34809b817fe9f79389c86e570f5037a4adb6f20f7e6b5f02d3227774a4b9db62
+
+ ✓ tests/e2e/file-explorer/search-content-http.e2e.test.ts (6 tests) 173ms
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > WorkspaceFileExplorer integration > builds a tree with workspace-relative file identity
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-server-ts-zq94ss' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > WorkspaceFileExplorer integration > builds a tree with workspace-relative file identity
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-server-ts-zq94ss' completed in 0.0030 seconds.
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > WorkspaceFileExplorer integration > writes new file and emits ADD change
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-server-ts-sqnifW' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > WorkspaceFileExplorer integration > writes new file and emits ADD change
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-server-ts-sqnifW' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > WorkspaceFileExplorer integration > modifies existing file and emits MODIFY change
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-server-ts-EeaOzV' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > WorkspaceFileExplorer integration > modifies existing file and emits MODIFY change
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-server-ts-EeaOzV' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > WorkspaceFileExplorer integration > renames file and emits RENAME change
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-server-ts-2nGBaj' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > WorkspaceFileExplorer integration > renames file and emits RENAME change
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-server-ts-2nGBaj' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > WorkspaceFileExplorer integration > moves file and emits MOVE change
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-server-ts-OO2Sz8' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > WorkspaceFileExplorer integration > moves file and emits MOVE change
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-server-ts-OO2Sz8' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > WorkspaceFileExplorer integration > removes file and emits DELETE change
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-server-ts-znR1zE' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > WorkspaceFileExplorer integration > removes file and emits DELETE change
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-server-ts-znR1zE' completed in 0.0000 seconds.
+
+ ✓ tests/integration/file-explorer/file-explorer.integration.test.ts (6 tests) 24ms
+
+ Test Files  2 passed (2)
+      Tests  12 passed (12)
+   Start at  18:44:23
+   Duration  6.46s (transform 3.86s, setup 32ms, import 5.66s, tests 197ms, environment 0ms)
+

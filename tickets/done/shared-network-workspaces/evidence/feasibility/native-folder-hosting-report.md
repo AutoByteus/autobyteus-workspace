@@ -1,0 +1,39 @@
+# Native / Docker Selected-Folder Feasibility — SR-012
+
+## Result And Boundary
+
+Meaningful **component feasibility**, not finished service, current-source validation, physical LAN, independent API/E2E or implementation-ready approval. Latest service-first/nativeMac/Linux/Docker scope is Approved SR-012. All probes operate on one physical Mac, disposable native Mac guests and owned Linux Docker clients; no user mounts/exports/source folders/node containers changed. No finished user command exists.
+
+Two working routes now preserve selected ordinary source files without copies:
+
+| Round | Storage/service node | Client nodes | Source | Mount / selected project | Executed result |
+| --- | --- | --- | --- | --- | --- |
+| FR-039 | ab-sf-fr039-macos, native macOS26.6.2/25G83 built-in nfsd | Same native Mac plus ab-sf-fr039-e703370a-client-a and -client-b, Linux6.12.54-linuxkit Docker, UID10001 | /Users/admin/.ab-sf-native-source-ab-sf-fr039-e703370a, native APFS, owner501:20 | /Volumes/autobyteus-shared and /Volumes/autobyteus-shared/project on all three | 8 checks/exit0: native source -> clients, Docker append -> native mount/source, exact identity/text, rename/relative symlink/executable/exclusive creation and existing-file preservation. Observed reciprocal exact reads0.366/0.310s. Linux nolock explicit, no NLM claim. |
+| FR-040 | ab-sf-fr040-9d5e9ba0-server, Linux Docker UNFS3, UID10001 | ab-sf-fr040-9d5e9ba0-client-a/-client-b | Owned Mac temporary ordinary folder directly bind-mapped to /export; full source at probe-result.json | Same root/project on both Docker clients | 5 checks/exit0: source read, identity, ordinary Mac-source write -> clients0.208s, client append -> source/peer0.238s, operations and preservation. No native Mac mount in this round. |
+| FR-042 | ab-sf-fr042-29c3794a-server, Linux Docker UNFS3, UID10001 | ab-sf-fr042-macos native Mac; ab-sf-fr042-29c3794a-client-a/-client-b Linux Docker | Owned Mac temporary folder directly served through /export, not hidden named-volume storage; full source at receipt | /Volumes/autobyteus-shared/project on all three | 8 checks/exit0: native Mac mount plus reciprocal source/nativeMac/Linux writes, operations, sequential native Mac then Linux Git commits; same commits freshly read, no safe.directory or global Git changes. Single-user UID presentation is a measured candidate remedy, not current production integration. |
+
+FR042 Mac commit a151f643934104cee011ec106a7fe98454a6ac54; Linux commit e0ac864d4691b192e27a212c8c105125ad106490. Git name/email set only for the test command. Test-only raw TCP relay transports NFS from exact guest to owned server loopback, not files/copies, not final secured networking. No real agents/providers/auth in these new rounds; previous FR026 actual native instructed-agent evidence remains scoped to its tested release/Ganesha topology.
+
+## Failed / Limiting Evidence Retained
+
+- FR034: native nfsd configuration/status check, then historical exact Docker application image62ee no longer present. No file serving proof. FR035 current immutable image b141 starts, native ports reachable, but Docker mount EOPNOTSUPP. Actual kernel CONFIG_NFS_V3=y, so not a missing-v3 diagnosis.
+- FR036: native mount binary absent from stripped PATH; use explicit /sbin path in later round. FR037: preliminary rpcinfo/portmapper timeout. FR039 succeeds with explicit configuration restart, direct NFS3 TCP readiness and explicit MOUNT3/TCP options. Changes were combined; individual root-cause necessity was not isolated. nfsd running/checkexports alone is not proof that new exports were applied.
+- FR038: direct measured name_to_handle_at returns errno95 on selected Mac Docker bind (reported fakeowner mount), bytes unchanged. This excludes that backing from the tested Ganesha/VFS route; it does not make all Mac-folder serving impossible.
+- FR041: 7 component passes; native Git commit itself succeeded, but harness mixed status/untracked lines with HEAD and asserted length40. Overall exit1 retained. FR042 separates assertions and completes Mac->Linux Git commit roundtrip.
+- FR043: pinned UNFS3 native arm64 build/help succeeds in owned Mac guest, using guest-only Homebrew dependencies including libtirpc1.3.8. No host dependency install. Build/help is not serving proof.
+- FR044/045: native background server not alive / later expected private log missing. Some private build/source paths were not found after the test VM stop; cause not established, no claim of engine or production-data durability from this. No unsafe restore/cleanup attempted. FR046 rebuilds missing private executable in the same boot, syncs and uses an exact launchd job with UserNameadmin.
+- FR046: actual native nonroot UNFS3 process starts, but repeated TCP NFS3 NULL replies fail the RPC structural assertion. FR047 uses the actual native kernel client rather than relying on that decoder: mount_nfs reports **RPC struct is bad**, exits72. Actual native UNFS3 serving remains NOT qualified for this version/dependency combination. Do not advertise one uniform UNFS backend on Mac/Linux/Docker or hide this failure under Linux successes. Native Apple nfsd route FR039 still works; this does not prove native Mac hosting impossible.
+
+## Architecture Consequence / Next Proof
+
+Keep one persistent service and first-use UX, with platform-specific mature backend integration beneath it; a single backend is not a product requirement. Native Apple nfsd is currently the demonstrated native Mac serving route. Linux NFS/Ganesha and Linux UNFS3 are evidence-backed candidates; Linux UNFS3 can serve the selected Mac bind where Ganesha/VFS cannot. Choose/qualify the supported platform/filesystem matrix before final design, not arbitrary-folder parity. No new custom filesystem, public service or SDK.
+
+UNFS3 is pinned at0.11.0 / ec1660ba33c80d5c67131e163e68834c1a10e243. Its documented NLM absence must remain explicit; advisory flock/fcntl cross-client protection is not claimed for these nolock/locallocks tests. Exclusive-create succeeds and users still coordinate same-file/Git state. Native packing/dependencies, root/user identity, scoped Git integration, mode-specific binary/cache/failure/restart semantics, secured create/join/grants/transport, first invocation/repeat/cancel/busy detach and complete product/native-runtime integration remain unfinished. No original physical or user-verification requirement is waived.
+
+Primary sources: [Apple nfsd manual](https://github.com/apple-oss-distributions/NFS/blob/main/nfsd/nfsd.8), [Ganesha VFS requirements](https://github.com/nfs-ganesha/nfs-ganesha/wiki/VFS), [UNFS3 pinned README](https://github.com/unfs3/unfs3/blob/ec1660ba33c80d5c67131e163e68834c1a10e243/README.md), [UNFS3 pinned manual](https://github.com/unfs3/unfs3/blob/ec1660ba33c80d5c67131e163e68834c1a10e243/unfsd.8). Docs support leads/limits, never substitute these executed receipts.
+
+## Safety / Cleanup / Reproducibility
+
+Raw code/config/build/commands/results/failed receipts under fr034–047, cumulative experiment-index.json. Current component application image sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1 differs from earlier agent-tested62ee image; no current-provider/runtime claim inferred. Public-source-only task-built ab-sf-fr040-unfs:probe retained for bounded continuation, not a distributed production artifact.
+
+All exact created/attempted containers/volumes absent, clients detached before stopping healthy source where mounted, owned host scratch removed, launchd jobs retired, changed no-auth VM clones fully deleted. The immutable public Mac cache/private Tart binary are retained, no global prune. Final exact audit at sr012-resource-audit.json; earlier failed checks retained. No execution remains active. Raw captured help/build logs retain literal output; bounded secret-pattern/syntax/JSON/hygiene checks are separate artifact checks, not product/security verification.

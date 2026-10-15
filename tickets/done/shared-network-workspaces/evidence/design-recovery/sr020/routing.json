@@ -1,0 +1,20 @@
+{
+  "handoffs": [
+    {
+      "when": "When Solution Designer classifies a completed or revised architecture package as Architecture Design Complete with task_size=Large or architectural_risk=High, and the aligned cumulative solution package is ready for independent architecture review. Requirements and behavior-defining supplements must have current approval: the user's, or the Solution Designer's within the request's direction with the user informed.",
+      "recipient_address": "/software_engineering_team/architecture_reviewer"
+    },
+    {
+      "when": "When Solution Designer classifies the completed architecture package as Architecture Design Complete with task_size=Small or Medium and architectural_risk=Low. Include the approved requirements, investigation notes, design spec, solution revision record, classification rationale and selected direct implementation route.",
+      "recipient_address": "/software_engineering_team/implementation_engineer"
+    },
+    {
+      "when": "When Solution Designer checks a Delivery Completed receipt and finds missing or inconsistent delivery-owned completion evidence. Send only the specific receipt gap and cumulative package for correction; do not claim Terminal, reopen unchanged requirements or redo delivery work.",
+      "recipient_address": "/software_engineering_team/delivery_engineer"
+    }
+  ],
+  "selectedRecipient": "/software_engineering_team/architecture_reviewer",
+  "outcome": "SR020 Architecture Design Complete / Large / High / unchanged ApprovedSR018",
+  "reason": "Single completed/revised large-or-high architecture rule applies; direct Low-risk implementation and Delivery receipt-gap rules do not. No duplicate reviewer-pass forwarding or additional same-outcome recipient.",
+  "messageReceipt": "Only send_message_to confirmation establishes delivery; no success inferred here."
+}

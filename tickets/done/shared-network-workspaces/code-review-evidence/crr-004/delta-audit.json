@@ -1,0 +1,67 @@
+{
+  "timestampUTC": "2026-10-14T03:58:55.222932+00:00",
+  "head": "e1081e95db56c8f4b4a028404ab0365b70ad8308",
+  "basis": "4ed9a12720e04daa2fad0c5d3b8d20b5ceb62c79",
+  "delta": [
+    {
+      "path": "autobyteus-nfs/internal/backend/apple_apply.go",
+      "sha256": "2a3bcf1766e843976abe42141d45c37e484f8b67eae295e1f86df85bfddd6083",
+      "bytes": 4263,
+      "nonemptyLines": 136,
+      "beforeNonemptyLines": 129,
+      "implementationSource": true,
+      "beforeVerified": 129,
+      "currentVerified": 136,
+      "testExcludedFromSizeThreshold": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/backend/apple_startup.go",
+      "sha256": "4ff72fb0c2975d1bb68d32cc54829996f1875de4593cd1a8fb07477f9525190f",
+      "bytes": 3488,
+      "nonemptyLines": 98,
+      "beforeNonemptyLines": 0,
+      "implementationSource": true,
+      "beforeVerified": 0,
+      "currentVerified": 98,
+      "testExcludedFromSizeThreshold": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/backend/apple_startup_test.go",
+      "sha256": "d4005397139099380cb2406794759d8e919426cb12afb234ff577fe9838f9f1c",
+      "bytes": 6702,
+      "nonemptyLines": 165,
+      "beforeNonemptyLines": 0,
+      "implementationSource": false,
+      "beforeVerified": 0,
+      "currentVerified": 165,
+      "testExcludedFromSizeThreshold": true
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/apply.go",
+      "sha256": "43d15c534647735f5b2fcdcf7b0d6161a2e222faac846e512079233693bb0b53",
+      "bytes": 5975,
+      "nonemptyLines": 185,
+      "beforeNonemptyLines": 185,
+      "implementationSource": true,
+      "beforeVerified": 185,
+      "currentVerified": 185,
+      "testExcludedFromSizeThreshold": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/lifecycle.go",
+      "sha256": "cebe724c9f4df8f0bd9fa95ddb1db4384a4723dd382950985319aaadf9b587c1",
+      "bytes": 4299,
+      "nonemptyLines": 143,
+      "beforeNonemptyLines": 143,
+      "implementationSource": true,
+      "beforeVerified": 143,
+      "currentVerified": 143,
+      "testExcludedFromSizeThreshold": false
+    }
+  ],
+  "unchangedRowsPersonallyHashComparedToCurrentAndBasis": 906,
+  "unchangedInventory": "implementation-evidence/ir-004/source-audit.json#unchangedReviewedAndAuthorityPaths",
+  "unchangedInventorySha256": "a6da83f9de59961a0b41d7e0715addad7a9c61c8a56594cc66f0dd05196a1363",
+  "scope": "Targeted Delta Review: CR002 activation/mount owners; unaffected CRR001/002 source evidence carried, not repeated full audit",
+  "productionChangeOutsideDeclaredDelta": false
+}

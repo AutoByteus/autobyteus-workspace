@@ -1,0 +1,183 @@
+# SR022 — healthy source-to-client freshness investigation
+
+## Authority, scope and reading gate
+
+Package shared-network-workspaces / project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63.
+Personal Solution Designer investigation; no delegation or implementation.
+Approved SR018 SCN002, BEH002/003, REQ004, AC003, QR001 already require original-source
+publishing followed by fresh participating-client opens to return exact committed
+<=1MiB bytes within5s on the healthy reference topology. No new latency SLA, held-FD
+coherence, outage worker or product requirement. AC009/017 source/private preservation
+and SR021 normal-stop/reboot safeguards remain. CRR010/CR006/API-F004 is Design Impact.
+
+Authorities read in this conversation: solution-designer SKILL, requirements-engineering,
+architecture-design, design-principles, complete design template; worktree AGENTS,
+DESIGN, TESTING (reread for this recovery), data_migration_guideline and predecessor
+remove-global-skill-discovery-mode. Current canonical requirements/approval018/design/
+investigation/history/handoff and incoming CRR010 report, execution/source audits and
+API004 scripts/raw receipts read before selecting a correction. No closer package
+AGENTS for autobyteus-nfs or scripts. Existing integration-checkout testing changes do
+not replace this isolated worktree's testing authority.
+
+Incoming review1240527c804b291ae99c69d6f6cb58f4cba0a09c plus receipt2cd8d35cebafccec6c937a83957f136ce05d0b8b.
+Production d318bd9db935affdf16d141ef4e88a6c0e4939b5 unchanged; complete1003refs in
+code-review-evidence/crr-010/package-index.json. Input audit records exact file hashes.
+
+## Established failure, separate from explanation
+
+API004 recorded two unique1024byte source writes, successful fsync/close and changed
+mtime with same inode/source UUID. All243 observations were independently audited by
+Code Reviewer: native fresh opens and actual managed-node HTTP remained old beyond5s,
+first exact new bytes61.149/60.975s. Initial135byte PNG also missed5s. Timings are sampled
+serial-reader observations, not packet-level timestamps. Review's evidence audit is
+inherited; this investigation does not claim its own execution of API004. Native reads
+exclude a renderer-only or HTTP-only diagnosis. No failed close, held descriptor,
+concurrent write or outage premise is needed.
+
+Prior CR005/API-F003 is independently resolved at API004 Linux Docker-storage selected
+client scope: fresh public setup and two ordinary whole-host boots, no manual Start or
+reconnect; exact ID/image/private/source preserved. Normal Stop, disabled current-policy
+veto, launcher replacement and drained detach controls also passed. This separate
+freshness finding is not an IR007 regression and must not reopen the reboot correction.
+
+## Complete relevant production path and mechanism
+
+1. A native tool writes directly to the chosen original ext4 source. This bypasses
+   Ganesha's NFS WRITE path; it is explicitly supported, not an unsupported external edit.
+2. Public create -> SetupService.Apply -> native InstallGanesha or Docker WriteGanesha
+   -> common backend.GaneshaConfig -> owned EXPORT/VFS. Current generator omits
+   Attr_Expiration_Time; API004 captured live native config agrees.
+3. Exact selected Ganesha source initializes export attribute expiry60 and inherits
+   it into MDCACHE entries; getattrs can return a trusted old regular-file attribute
+   set. A Linux client may ask again after1s yet receive the same old mtime/change
+   attributes and retain old file data. The ~61s observation is consistent with the
+   source's integer-second expiry comparison; no exclusive-cause claim is needed.
+4. Native platform.MountOptions and Docker.VolumeOptions reuse hard4.1/actimeo1,
+   with Docker nosharecache. Neither setting bounds server metadata caching.
+5. Native ordinary file readers and server workspace REST createReadStream both use
+   these mounted kernel paths. UI reload cannot repair stale attributes below the API.
+
+Personal audit-engine-source.py re-read/hash-checked six members of retained source
+archive eed35ab4b732ac05d2afc3531e70cdc27031fb414fdb52a0daf093f33daaec0a, including
+nested upstream archive d4efd020edf4dfe65abfd0f0f66eb4390613360f99dce4354467ab297e0e1c0f.
+engine-source-check.json contains exact excerpts/hashes. Versioned upstream export
+contract/cache validity source were independently fetched into export-contract.txt
+and cache-validity.txt, with URLs and hashes in that audit. Expiry0 forces getattrs
+through lower-FSAL refresh (including the validity predicate's delegated-file branch).
+This is a supported export option, not a new engine patch. Source inspection alone
+is not proof of every downstream mode or operation.
+
+## Lifecycle and persisted-config investigation
+
+- WriteGanesha writes missing config0600 under0700 private directories; exact current
+  bytes are a no-op; different bytes are refused, not overwritten.
+- Native EnsureGanesha verifies generated bytes and unit, then systemctl start;
+  Docker reconnect VerifyGanesha precedes EnsureEngine. Native/Docker use one generator.
+- Docker engine config is a single-file read-only bind. Atomic replacement alone can
+  leave a live process seeing the old inode; already-created MDCACHE entries also carry
+  their existing expiry. No hot-reload/replace-and-pretend-ready proposal is safe here.
+- Status currently discards the hosted descriptor and tests only public binding/mount/
+  UUID/nonroot IO before HostReady. It does not verify hosted Ganesha config.
+- Detach currently checks the generated config late in RemoveGaneshaConfiguration,
+  after node/mount/job/engine changes. A new-template mismatch should be recognized
+  before teardown, not after partially draining the setup.
+- No released NFS predecessor is established: release-lock qualifiedTargets[], empty
+  qualifiedSourceHash/physicalEvidence, userVerifiedfalse, engine null; no authorized
+  tag/push/release. Known API004/earlier candidate fixtures were explicitly cleaned up.
+  The15 retained candidate files are build/test artifacts, not persistent user installs.
+- Project migration guidance requires evidence of an existing stored source and a
+  deliberate disposition, not an automatic migrator inferred from any generated-byte
+  change. Existing workspace/session/source/attachment/marker data formats do not change.
+
+## Chosen bounded technical direction and alternatives
+
+Select export-level
+Attr_Expiration_Time=0 for both owned native/DockerLinux Ganesha configurations;
+retain client actimeo1 and hard mounts, backend/packages/kernel/protocol/allowlist/
+all-squash/source UUID and data identity. Correctness-first server revalidation costs
+extra backing getattr operations; this round does not claim throughput benchmarks.
+No user knob or second cache-policy owner is needed. Apple nfsd policy remains unchanged
+and must still pass its own fresh-client tests.
+
+No automatic old-template migration is justified for this unreleased first delivery.
+Fresh current apply writes the corrected exact template; same-current repeat/reconnect
+is idempotent. Existing different bytes, including older unqualified test templates,
+remain refused. Recreate disposable developer fixtures by draining/detaching through
+their matching old candidate BEFORE installing the new candidate, then creating against
+the same preserved source/marker. This is test-version retirement, not a new end-user
+setup step or permission to delete a source. If a real retained supported deployment is
+found, return that evidence for a specific transition decision; do not quietly add a
+legacy parser, force overwrite or claim successful migration.
+
+Two small integration guards keep that disposition truthful: read-only Status verifies
+hosted Ganesha config before declaring HostReady; Detach verifies existing hosted
+Ganesha config before any node/mount/job/engine teardown. A missing config remains
+acceptable for an already-partial exact-owned teardown; malformed/different existing
+bytes fail without teardown. Reuse current VerifyGanesha and existing Store/lock, no
+new persistence schema or generic gate framework. Connect-only and Apple paths are
+unchanged. Reconnect already has the necessary verification before engine start.
+
+Rejected: client-only smaller timeout (doesn't fix server replies), fixed read retry/
+sleep/UI refresh, manual drop_caches/remount as a product workaround, global Docker/
+NFS configuration, watchers, proxy/copies, replacing/rebuilding Ganesha, generalized
+migration or retry machinery, relaxing5s or excluding source writers. A positive
+server TTL could be investigated later for performance, but adds another expiry budget
+and is unnecessary to establish v1 correctness.
+
+## Controlled experiment and limits
+
+Executed: run-prototype.py / guest-visibility.py in one new private Ubuntu VM.
+Exact retained IR007 CLI/embedded engine, public create with nodes none, nonempty source,
+real1000:109/clearedgroups and two native hard4.1/actimeo1 mounts (second nosharecache).
+A/B/A: warm fresh fixture -> source sync/close -> fresh opens under default; then solely
+export expiry0 with engine restart/remount; then restored default with identical restart/
+remount and another unique warm fixture. Candidate includes1KiB/1MiB in-place, atomic
+replacement and create-after-negative-lookup. Polling is an observation harness, never
+product read retries. Each phase creates and warms its own fixtures, so restart/cache
+coldness is not mistaken for freshness. No cache flush command or kernel change.
+
+This is a dependency experiment, not implementation/source review/API signoff. Same-
+kernel separate native mounts do not establish independent peers, managed-node HTTP,
+Docker STORAGE, Mac clients or physical topology. Corrected public apply/reconnect/
+status/detach must be implemented and tested; existing old CLI cannot validate the new
+exact template. All old failures remain evidence; manual diagnostic config edits are
+never represented as finished public behavior.
+
+## Executed result — controlled policy comparison complete
+
+One new owned Ubuntu24.04.5/ext4/aarch64/kernel7.0.0-38 guest, defaultdirectorydelegationsY;
+actual CLI SHA0036ccef0bbb2a2510064f2e882b692687a2288eb25563d89f9c4ac9150c860c and
+Ganesha/VFS4.3-8ubuntu1+autobyteus1. Public initial create had no engine preinstallation;
+config edits were explicitly diagnostic AFTER that baseline, not a product fix.
+Source `/home/admin/ab-nfs-sr022-4d97877e-source`; source/mount storage UUID `904e2af2-e1db-4d23-9322-f86d50469290`.
+Two same-kernel hard4.1 native mounts, second nosharecache; real1000:109/clearedgroups.
+
+| Policy phase | Unique warmed case | Native mount1 first exact | Native mount2 first exact | Both <=5s |
+| --- | --- | --- | --- | --- |
+| baseline-default | inplace-1024 | not observed (6s window) | not observed (6s window) | False |
+| candidate-zero | inplace-1024 | 0.001s | 0.001s | True |
+| candidate-zero | inplace-1MiB | 0.004s | 0.005s | True |
+| candidate-zero | atomic-replace | 0.001s | 0.002s | True |
+| candidate-zero | create-after-negative | 0.925s | 0.927s | True |
+| restored-default | inplace-1024 | not observed (6s window) | not observed (6s window) | False |
+
+Default-negative phases deliberately observed6s rather than spending another minute
+repeating API004's61s observation. These are reproduced5s violations, not6s exact
+convergence times. Each phase warmed unique old bytes before source write, so restarted
+engine/cold cache alone does not explain candidate success. Candidate source writes
+were successfully fsynced/closed before the recorded timer; per-reader end times include
+fresh read/hash. All paths retained nonempty preexisting bytes, source identity/mode,
+nonroot mapping and source/mount UUID. No kernel setting or cache flush. Extra phase
+startup/NFS grace time is outside the post-close measurement and recorded in commands.
+
+This controlled default->zero->default comparison supports the server-attribute policy
+as a causal lever for the reproduced native reference failure; it does not establish
+that all possible stale reads have one cause. No managed-node HTTP, Docker STORAGE,
+Mac/independent peer/physical, production-source patch or corrected public reconnect
+was exercised. Raw commands/results in prototype-result.json, phase JSON and console.
+Public reconnect and drained detach ran only AFTER restoring exact baseline config;
+source/marker preserved. Cleanup.json confirms exact owned VM/process/private cache and
+scratch disposal. First download timeout is retained separately as harness/infrastructure
+incompleteness, not a product failure. Existing15 artifacts and all incoming evidence
+are separately integrity-audited. CR006/API-F004 stays open until independent correction
+validation; API004 Fail and CRR010 Fail remain unchanged.

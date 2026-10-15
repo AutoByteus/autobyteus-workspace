@@ -1,0 +1,75 @@
+{
+  "revision": "SR018",
+  "date": "2026-10-13",
+  "scope": "Document-only authoring audit; not independent review, product validation or fresh live-resource checks",
+  "checks": {
+    "all_twenty_requirement_rows": true,
+    "all_twenty_acceptance_rows": true,
+    "current_approval_sr018": true,
+    "design_ready_large_high": true,
+    "outage_deferral_explicit": true,
+    "old_removal_instruction_absent": true,
+    "old_ac019_local_responsiveness_absent": true,
+    "healthy_preview_contract_explicit": true,
+    "normal_skill_fix_retained": true,
+    "physical_user_verification_retained": true,
+    "no_deferred_worker_in_created_file_map": true,
+    "reviewer_owned_files_unchanged": true,
+    "evidence_ledger_unchanged": true,
+    "only_owned_documents_modified": true,
+    "scoped_diff_check_pass": true
+  },
+  "reviewer_files": {
+    "architecture-review-scope-feedback.md": {
+      "sha256": "f87c31f89d9da0437a7c87d3271c77af75a31daa88861c2ecd7cfb7c3f78e360",
+      "unchanged_from_3d95901924": true
+    },
+    "design-review-report.md": {
+      "sha256": "e9b49c0b8c38cf8c1d83df49aee7efbb6be97ad799d4ab28be29f04cbe33120e",
+      "unchanged_from_3d95901924": true
+    },
+    "architecture-review-revision-record.md": {
+      "sha256": "7829e89fd5d504435e59b1ac585d4c4e931beacf65957baede6ff2d06dac0a71",
+      "unchanged_from_3d95901924": true
+    }
+  },
+  "document_sha256": {
+    "requirements-doc.md": "62ea50f35b12843a61b287602b843b5050a88b4261de2999d70381bb6755470d",
+    "approval-record-sr018.md": "64399a81bda50aadd8f883930fa9c9fef1c6a3dd46c87fe74e2ed5b38223e249",
+    "design-spec.md": "67f00270af97e4a943f2369fc56ac0da96b69569c8af5d6ce257f1f6d734febb",
+    "investigation-notes.md": "24053532e537be5cf3015fef88c87a85e43d977f60f0df970e5c976a99c0ca5b",
+    "solution-revision-record.md": "5c356d746ddbe19db6bd311dd0f5bcc94333cdab7bdeff14e308961274d591d1",
+    "solution-design-handoff.md": "52462e66a51191f73072448054cc20bb7ae3a55111db66344c89bb3c0ac8243c"
+  },
+  "diff_check": {
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "limits": [
+    "No production source, tests, live mounts/nodes or provider operations changed/run.",
+    "57-round raw evidence retained at original scope; not new product proof.",
+    "Advanced outage hardening deferred; no current Pass inferred from old review."
+  ],
+  "route": {
+    "lookup": "fresh get_handoff_rules after persisted completed SR018",
+    "outcome": "Architecture Design Complete",
+    "task_size": "Large",
+    "architectural_risk": "High",
+    "recipient_address": "/software_engineering_team/architecture_reviewer",
+    "send_status": "Not asserted; subsequent tool receipt authoritative"
+  },
+  "repository_artifact_hygiene": {
+    "command": "python3 scripts/check_repository_artifact_hygiene.py",
+    "exit_code": 0,
+    "tracked_files_scanned": 61819,
+    "path_length_threshold": 200,
+    "longest_tracked_path_chars": 200,
+    "scope": "Staged documentation package plus repository tracked paths; not product validation"
+  },
+  "staged_diff_check": {
+    "command": "git diff --cached --check",
+    "exit_code": 0
+  },
+  "staged_file_count": 7
+}

@@ -1,0 +1,96 @@
+{
+  "reason": "User accepts one VM with two Docker nodes; cross-OS setup superseded",
+  "commands": [
+    {
+      "argv": [
+        "ps",
+        "-p",
+        "78314",
+        "-o",
+        "command="
+      ],
+      "rc": 1,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "ps",
+        "-p",
+        "79951",
+        "-o",
+        "command="
+      ],
+      "rc": 1,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "ps",
+        "-p",
+        "78318",
+        "-o",
+        "command="
+      ],
+      "rc": 0,
+      "stdout": "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart run ab-nfs-api007-mac-85a4eb35 --no-graphics --no-audio --no-clipboard --no-usb-accessories\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api007-mac-85a4eb35",
+        "/bin/sh",
+        "-c",
+        "sudo -n test ! -e \"/Library/Application Support/AutoByteusNFS/attachment.json\"; test ! -e /etc/autobyteus-nfs/attachment.json; mount | grep autobyteus-shared || true"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "/bin/sh: mount: command not found\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "stop",
+        "ab-nfs-api007-mac-85a4eb35"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "delete",
+        "ab-nfs-api007-mac-85a4eb35"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "ps",
+        "-p",
+        "78318",
+        "-o",
+        "command="
+      ],
+      "rc": 1,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "result": "Cross-OS setup stopped; Mac removed; reusable owned build/download retained",
+  "macGuestDeleted": "ab-nfs-api007-mac-85a4eb35",
+  "linuxGuestWasNotStarted": false,
+  "retained": {
+    "scratch": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api007-ejvzqfh7",
+    "serverImage": "sha256:a790be37c80041d93f510dff82552b4272965aaa570bd7937f225d0bfa3d91d2",
+    "serverTag": "ab-nfs-api007-server:current",
+    "publicMacCache": "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK",
+    "purpose": "Linux-only resumption; no running VM or test service retained"
+  }
+}

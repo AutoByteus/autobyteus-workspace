@@ -1,0 +1,2 @@
+exec((__import__('pathlib').Path(__file__).resolve().parent/'mac-common.py').read_text());OUT='mac-detached-observation.json'
+r['observation']=m('sudo -n ls -la '+Q(STATE)+'; sudo -n cat /etc/exports /etc/nfs.conf; sudo -n /usr/sbin/lsof -nP -iTCP:2049 -sTCP:LISTEN; sudo -n /sbin/nfsd status; ls -ld '+SRC+' '+SRC+'-new; sudo -n cat '+Q(STATE+'/pending-setup.json'),60,False);r['result']='Observed';save()

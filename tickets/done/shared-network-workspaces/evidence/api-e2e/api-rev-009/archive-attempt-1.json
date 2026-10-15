@@ -1,0 +1,3061 @@
+{
+  "status": "Stopped before install/tests",
+  "scratch": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l",
+  "differences": [
+    {
+      "path": "autobyteus-message-gateway/tickets/done/gateway-dead-code-investigation/api-e2e-testing.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/done/gateway-dead-code-investigation/code-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/done/gateway-dead-code-investigation/docs-sync.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/done/gateway-dead-code-investigation/future-state-runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/done/gateway-dead-code-investigation/future-state-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/done/gateway-dead-code-investigation/handoff-summary.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/done/gateway-dead-code-investigation/implementation.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/done/gateway-dead-code-investigation/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/done/gateway-dead-code-investigation/proposed-design.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/done/gateway-dead-code-investigation/release-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/done/gateway-dead-code-investigation/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/done/gateway-dead-code-investigation/workflow-state.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/external_messaging_binding_ux_ticket/WHATSAPP_PERSONAL_PEER_DISCOVERY_DESIGN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/external_messaging_binding_ux_ticket/WHATSAPP_PERSONAL_PEER_DISCOVERY_RUNTIME_SIMULATION.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/external_messaging_channel_bridge_ticket/CROSS_PROJECT_END_TO_END_RUNTIME_SIMULATION.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/external_messaging_channel_bridge_ticket/IMPLEMENTATION_PLAN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/external_messaging_channel_bridge_ticket/IMPLEMENTATION_PROGRESS.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/external_messaging_channel_bridge_ticket/MESSAGING_GATEWAY_DESIGN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/external_messaging_channel_bridge_ticket/MESSAGING_GATEWAY_DESIGN_GAP_REVIEW.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/external_messaging_channel_bridge_ticket/MESSAGING_GATEWAY_RUNTIME_SIMULATION.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/external_messaging_channel_bridge_ticket/PRE_IMPLEMENTATION_VALIDATION_GATE.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/external_messaging_outbound_reply_ticket/IMPLEMENTATION_PLAN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/external_messaging_outbound_reply_ticket/IMPLEMENTATION_PROGRESS.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/external_messaging_outbound_reply_ticket/OUTBOUND_REPLY_DELIVERY_DESIGN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/external_messaging_outbound_reply_ticket/OUTBOUND_REPLY_DELIVERY_RUNTIME_SIMULATION.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/real_whatsapp_personal_integration_ticket/IMPLEMENTATION_PLAN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/real_whatsapp_personal_integration_ticket/IMPLEMENTATION_PROGRESS.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/real_whatsapp_personal_integration_ticket/OPENCLAW_WHATSAPP_INVESTIGATION.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/real_whatsapp_personal_integration_ticket/REAL_WHATSAPP_PERSONAL_DESIGN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/real_whatsapp_personal_integration_ticket/REAL_WHATSAPP_PERSONAL_DESIGN_GAP_REVIEW.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/real_whatsapp_personal_integration_ticket/REAL_WHATSAPP_PERSONAL_RUNTIME_SIMULATION.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/unbound_peer_discovery_ticket/IMPLEMENTATION_PROGRESS.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/unbound_peer_discovery_ticket/UNBOUND_PEER_DISCOVERY_DESIGN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/unbound_peer_discovery_ticket/UNBOUND_PEER_DISCOVERY_RUNTIME_SIMULATION.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/wechat_personal_integration_ticket/IMPLEMENTATION_PLAN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/wechat_personal_integration_ticket/IMPLEMENTATION_PROGRESS.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/wechat_personal_integration_ticket/OPENCLAW_WECHAT_INVESTIGATION.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/wechat_personal_integration_ticket/WECHAT_PERSONAL_INTEGRATION_DESIGN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/wechat_personal_integration_ticket/WECHAT_PERSONAL_INTEGRATION_DESIGN_GAP_REVIEW.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-message-gateway/tickets/wechat_personal_integration_ticket/WECHAT_PERSONAL_INTEGRATION_RUNTIME_SIMULATION.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/codex-runtime-server-owned-redesign/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/codex-runtime-server-owned-redesign/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/codex-runtime-server-owned-redesign/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/codex-runtime-server-owned-redesign/proposed-design-based-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/codex-runtime-server-owned-redesign/proposed-design.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/codex-runtime-server-owned-redesign/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/codex-runtime-server-owned-redesign/runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/api-e2e-coverage-investigation.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/api-e2e-execution-coverage-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/api-e2e-revision-record.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/api-e2e-test-review-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/architecture-review-revision-record.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/code-review-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/code-review-revision-record.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/delivery-revision-record.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/design-review-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/design-spec.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/docs-sync-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/handoff-summary.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/implementation-handoff.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/implementation-revision-record.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/logs/delivery/electron-build-mac-20260814T174700Z.log",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/release-deployment-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/runtime-tool-exposure-matrix.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/solution-revision-record.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/system-prompt-file-operations-contract.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/desktop-release-linux-macos-arm64/delivery-revision-record.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/desktop-release-linux-macos-arm64/docs-sync-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/desktop-release-linux-macos-arm64/handoff-summary.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/desktop-release-linux-macos-arm64/release-deployment-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/desktop-release-linux-macos-arm64/release-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/provider-wording-cleanup/future-state-runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/provider-wording-cleanup/future-state-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/provider-wording-cleanup/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/provider-wording-cleanup/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/provider-wording-cleanup/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/provider-wording-cleanup/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/remove-media-output-path-restriction/api-e2e-validation-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/remove-media-output-path-restriction/design-review-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/remove-media-output-path-restriction/design-spec.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/remove-media-output-path-restriction/docs-sync-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/remove-media-output-path-restriction/handoff-summary.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/remove-media-output-path-restriction/implementation-handoff.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/remove-media-output-path-restriction/implementation-pause-requirement-gap.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/remove-media-output-path-restriction/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/remove-media-output-path-restriction/logs/delivery/electron-build-mac-20260506T094425Z.log",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/remove-media-output-path-restriction/release-deployment-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/remove-media-output-path-restriction/release-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/remove-media-output-path-restriction/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/remove-media-output-path-restriction/review-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/remove-media-output-path-restriction/solution-design-rework-input-paths.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/runtime-specific-carpenter-prompt/api-e2e-coverage-investigation.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/runtime-specific-carpenter-prompt/api-e2e-execution-coverage-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/runtime-specific-carpenter-prompt/api-e2e-revision-record.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/runtime-specific-carpenter-prompt/api-e2e-test-review-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/runtime-specific-carpenter-prompt/architecture-review-revision-record.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/runtime-specific-carpenter-prompt/code-review-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/runtime-specific-carpenter-prompt/code-review-revision-record.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/runtime-specific-carpenter-prompt/delivery-revision-record.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/runtime-specific-carpenter-prompt/design-review-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/runtime-specific-carpenter-prompt/design-spec.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/runtime-specific-carpenter-prompt/docs-sync-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/runtime-specific-carpenter-prompt/handoff-summary.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/runtime-specific-carpenter-prompt/implementation-handoff.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/runtime-specific-carpenter-prompt/implementation-revision-record.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/runtime-specific-carpenter-prompt/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/runtime-specific-carpenter-prompt/release-deployment-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/runtime-specific-carpenter-prompt/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/runtime-specific-carpenter-prompt/solution-revision-record.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/team-run-history-real-lmstudio-e2e/future-state-runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/team-run-history-real-lmstudio-e2e/future-state-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/team-run-history-real-lmstudio-e2e/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/team-run-history-real-lmstudio-e2e/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/team-run-history-real-lmstudio-e2e/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/done/team-run-history-real-lmstudio-e2e/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/external_messaging_binding_ux_ticket/EXTERNAL_CHANNEL_BINDING_TARGET_OPTIONS_DESIGN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/external_messaging_binding_ux_ticket/EXTERNAL_CHANNEL_BINDING_TARGET_OPTIONS_RUNTIME_SIMULATION.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/external_messaging_channel_bridge_ticket/EXTERNAL_CHANNEL_INGRESS_DESIGN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/external_messaging_channel_bridge_ticket/EXTERNAL_CHANNEL_INGRESS_DESIGN_GAP_REVIEW.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/external_messaging_channel_bridge_ticket/EXTERNAL_CHANNEL_INGRESS_RUNTIME_SIMULATION.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/external_messaging_outbound_reply_ticket/EXTERNAL_CHANNEL_OUTBOUND_REPLY_DESIGN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/external_messaging_outbound_reply_ticket/EXTERNAL_CHANNEL_OUTBOUND_REPLY_RUNTIME_SIMULATION.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/external_messaging_outbound_reply_ticket/IMPLEMENTATION_PLAN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/external_messaging_outbound_reply_ticket/IMPLEMENTATION_PROGRESS.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/in-progress/claude-session-team-context-separation/future-state-runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/in-progress/claude-session-team-context-separation/future-state-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/in-progress/claude-session-team-context-separation/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/in-progress/claude-session-team-context-separation/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/in-progress/claude-session-team-context-separation/proposed-design.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/in-progress/claude-session-team-context-separation/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/in-progress/claude-session-team-context-separation/workflow-state.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/in-progress/persistence-provider-file-mode/README.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/in-progress/persistence-provider-file-mode/future-state-runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/in-progress/persistence-provider-file-mode/future-state-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/in-progress/persistence-provider-file-mode/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/in-progress/persistence-provider-file-mode/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/in-progress/persistence-provider-file-mode/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/in-progress/persistence-provider-file-mode/proposed-design.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/in-progress/persistence-provider-file-mode/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/memory_view_api_ticket/MEMORY_VIEW_API_DESIGN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/memory_view_api_ticket/MEMORY_VIEW_API_IMPLEMENTATION_PLAN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/memory_view_api_ticket/MEMORY_VIEW_API_PROGRESS.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/memory_view_api_ticket/MEMORY_VIEW_API_RUNTIME_SIMULATION.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/multi_tool_incremental_ui_feedback_ticket/design-based-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/multi_tool_incremental_ui_feedback_ticket/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/multi_tool_incremental_ui_feedback_ticket/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/multi_tool_incremental_ui_feedback_ticket/proposed-design.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/multi_tool_incremental_ui_feedback_ticket/runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/real_whatsapp_personal_integration_ticket/EXTERNAL_CHANNEL_REAL_WHATSAPP_DESIGN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/real_whatsapp_personal_integration_ticket/EXTERNAL_CHANNEL_REAL_WHATSAPP_DESIGN_GAP_REVIEW.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/real_whatsapp_personal_integration_ticket/EXTERNAL_CHANNEL_REAL_WHATSAPP_RUNTIME_SIMULATION.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/remove-prompt-synchronization/design-based-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/remove-prompt-synchronization/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/remove-prompt-synchronization/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/remove-prompt-synchronization/proposed-design.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/remove-prompt-synchronization/runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/unbound_peer_discovery_ticket/EXTERNAL_CHANNEL_UNBOUND_DISCOVERY_DESIGN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/unbound_peer_discovery_ticket/EXTERNAL_CHANNEL_UNBOUND_DISCOVERY_RUNTIME_SIMULATION.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/unbound_peer_discovery_ticket/IMPLEMENTATION_PROGRESS.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/wechat_personal_integration_ticket/EXTERNAL_CHANNEL_WECHAT_DESIGN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/wechat_personal_integration_ticket/EXTERNAL_CHANNEL_WECHAT_DESIGN_GAP_REVIEW.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-server-ts/tickets/wechat_personal_integration_ticket/EXTERNAL_CHANNEL_WECHAT_RUNTIME_SIMULATION.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/code_quality_ticket/CODE_QUALITY_PROGRESS.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/code_quality_ticket/CODE_QUALITY_STRATEGY.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/api-e2e-testing.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/code-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/docs-sync.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/future-state-runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/future-state-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/handoff-summary.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/implementation.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/gemini-rpa-thinking-config-ts/workflow-state.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/run-bash-optional-result-fields/api-e2e-coverage-investigation.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/run-bash-optional-result-fields/api-e2e-execution-coverage-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/run-bash-optional-result-fields/api-e2e-revision-record.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/run-bash-optional-result-fields/api-e2e-test-review-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/run-bash-optional-result-fields/architecture-review-revision-record.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/run-bash-optional-result-fields/code-review-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/run-bash-optional-result-fields/code-review-revision-record.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/run-bash-optional-result-fields/delivery-revision-record.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/run-bash-optional-result-fields/design-review-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/run-bash-optional-result-fields/design-spec.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/run-bash-optional-result-fields/docs-sync-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/run-bash-optional-result-fields/handoff-summary.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/run-bash-optional-result-fields/implementation-handoff.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/run-bash-optional-result-fields/implementation-revision-record.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/run-bash-optional-result-fields/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/run-bash-optional-result-fields/release-deployment-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/run-bash-optional-result-fields/release-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/run-bash-optional-result-fields/requirements-doc.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/run-bash-optional-result-fields/solution-revision-record.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/skill-load-guidance-global-only/api-e2e-testing.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/skill-load-guidance-global-only/code-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/skill-load-guidance-global-only/docs-sync.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/skill-load-guidance-global-only/future-state-runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/skill-load-guidance-global-only/future-state-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/skill-load-guidance-global-only/handoff-summary.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/skill-load-guidance-global-only/implementation.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/skill-load-guidance-global-only/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/skill-load-guidance-global-only/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/skill-load-guidance-global-only/workflow-state.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/tool_schema_best_practices_investigation/api-e2e-validation-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/tool_schema_best_practices_investigation/api-tool-continuation-render-probe-output.json",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/tool_schema_best_practices_investigation/design-review-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/tool_schema_best_practices_investigation/design-rework-api-tool-continuation.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/tool_schema_best_practices_investigation/design-rework-provider-native-scope.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/tool_schema_best_practices_investigation/design-rework-tool-choice-policy.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/tool_schema_best_practices_investigation/design-spec.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/tool_schema_best_practices_investigation/docs-sync-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/tool_schema_best_practices_investigation/handoff-summary.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/tool_schema_best_practices_investigation/implementation-handoff.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/tool_schema_best_practices_investigation/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/tool_schema_best_practices_investigation/non-openai-api-mode-provider-investigation.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/tool_schema_best_practices_investigation/probes/electron-embedded-lmstudio-wire-format-probe-output.json",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/tool_schema_best_practices_investigation/probes/electron-embedded-lmstudio-wire-format-probe-worktree-build-output.json",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/tool_schema_best_practices_investigation/probes/electron-embedded-lmstudio-wire-format-probe.mjs",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/tool_schema_best_practices_investigation/probes/lmstudio-openai-wire-format-probe-output.json",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/tool_schema_best_practices_investigation/probes/lmstudio-openai-wire-format-probe.ts",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/tool_schema_best_practices_investigation/probes/non-openai-api-renderer-probe-output.json",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/tool_schema_best_practices_investigation/probes/non-openai-api-renderer-probe.mjs",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/tool_schema_best_practices_investigation/release-deployment-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/tool_schema_best_practices_investigation/requirements-doc.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/tool_schema_best_practices_investigation/review-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/tool_schema_best_practices_investigation/runtime-electron-verification-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/tool_schema_best_practices_investigation/schema-best-practice-compliance-report.json",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/done/tool_schema_best_practices_investigation/schema-best-practice-compliance.test.ts",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/file_naming_ticket/FILE_NAMING_PROGRESS.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/file_naming_ticket/FILE_NAMING_STRATEGY.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/memory_migration_ticket/MEMORY_MIGRATION_PROGRESS.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/memory_migration_ticket/MEMORY_MIGRATION_STRATEGY.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/migrate_nodesjs_ticket/MIGRATION_PROGRESS.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/migrate_nodesjs_ticket/MIGRATION_STRATEGY.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/multi_tool_incremental_ui_feedback_ticket/design-based-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/multi_tool_incremental_ui_feedback_ticket/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/multi_tool_incremental_ui_feedback_ticket/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/multi_tool_incremental_ui_feedback_ticket/proposed-design.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/multi_tool_incremental_ui_feedback_ticket/runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/working_context_snapshot_ticket/WORKING_CONTEXT_SNAPSHOT_IMPLEMENTATION_PLAN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/working_context_snapshot_ticket/WORKING_CONTEXT_SNAPSHOT_PROGRESS.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/working_context_snapshot_ticket/WORKING_CONTEXT_SNAPSHOT_RUNTIME_SIMULATION.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-ts/tickets/working_context_snapshot_ticket/WORKING_CONTEXT_SNAPSHOT_STRATEGY.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/agent-event-monitor-autoscroll/design-based-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/agent-event-monitor-autoscroll/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/agent-event-monitor-autoscroll/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/agent-event-monitor-autoscroll/runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/agent-teams-ui-redesign-implementation/design-based-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/agent-teams-ui-redesign-implementation/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/agent-teams-ui-redesign-implementation/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/agent-teams-ui-redesign-implementation/proposed-design.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/agent-teams-ui-redesign-implementation/runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/desktop-tag-build-workflow/design-based-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/desktop-tag-build-workflow/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/desktop-tag-build-workflow/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/desktop-tag-build-workflow/runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/desktop-artifact-branch-branding/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/disable-applications-menu-by-default/api-e2e-testing.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/disable-applications-menu-by-default/code-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/disable-applications-menu-by-default/future-state-runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/disable-applications-menu-by-default/future-state-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/disable-applications-menu-by-default/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/disable-applications-menu-by-default/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/disable-applications-menu-by-default/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/disable-applications-menu-by-default/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/disable-applications-menu-by-default/workflow-state.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/first-install-runtime-db-url-cleanup/future-state-runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/first-install-runtime-db-url-cleanup/future-state-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/first-install-runtime-db-url-cleanup/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/first-install-runtime-db-url-cleanup/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/first-install-runtime-db-url-cleanup/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/first-install-runtime-db-url-cleanup/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/hide-middle-success-tool-label/api-e2e-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/hide-middle-success-tool-label/code-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/hide-middle-success-tool-label/design-review-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/hide-middle-success-tool-label/docs-sync.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/hide-middle-success-tool-label/handoff-summary.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/hide-middle-success-tool-label/implementation.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/hide-middle-success-tool-label/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/hide-middle-success-tool-label/proposed-design.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/hide-middle-success-tool-label/release-deployment-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/hide-middle-success-tool-label/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/history-run-archive/api-e2e-validation-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/history-run-archive/design-review-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/history-run-archive/design-rework-log.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/history-run-archive/design-spec.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/history-run-archive/docs-sync-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/history-run-archive/handoff-summary.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/history-run-archive/implementation-handoff.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/history-run-archive/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/history-run-archive/release-deployment-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/history-run-archive/release-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/history-run-archive/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/history-run-archive/review-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mac-arm64-updater-signing/api-e2e-coverage-investigation.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mac-arm64-updater-signing/api-e2e-execution-coverage-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mac-arm64-updater-signing/code-review-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mac-arm64-updater-signing/design-review-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mac-arm64-updater-signing/design-spec.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mac-arm64-updater-signing/docs-sync-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mac-arm64-updater-signing/handoff-summary.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mac-arm64-updater-signing/implementation-handoff.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mac-arm64-updater-signing/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mac-arm64-updater-signing/release-deployment-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mac-arm64-updater-signing/release-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mac-arm64-updater-signing/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/adb-mobile-artifacts-tab-click-regression.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/api-e2e-runtime-probe-results.json",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/api-e2e-runtime-probe.log",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/api-e2e-typecheck.log",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/api-e2e-validation-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/design-review-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/design-spec.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/docs-sync-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/evidence/adb-local-fix-after-restart-artifacts-tap-20260528-redacted.png",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/evidence/adb-local-fix-artifacts-tap-result-20260528-redacted.png",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/evidence/adb-local-fix-device-probe-20260528.txt",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/evidence/adb-mobile-artifacts-tab-tap-montage-20260528.jpg",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/evidence/adb-mobile-artifacts-tap-stays-chat-20260528.png",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/evidence/browser-mobile-artifacts-click-pass-20260528.png",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/evidence/delivery-finalization-target-refresh-20260528.log",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/evidence/delivery-integrated-state-check-20260528-origin-7b265708.log",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/evidence/delivery-resume-integrated-state-check-20260528-origin-7b265708.log",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/evidence/electron-build-mac-20260523-shasums.txt",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/evidence/electron-build-mac-20260523-v1.3.28-origin-5875b06d-shasums.txt",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/evidence/electron-build-mac-20260523-v1.3.28-origin-5875b06d.log",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/evidence/electron-build-mac-20260523-v1.3.28-shasums.txt",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/evidence/electron-build-mac-20260523-v1.3.28.log",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/evidence/electron-build-mac-20260523.log",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/evidence/electron-build-mac-20260528-v1.3.31-origin-7b265708-localfix-shasums.txt",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/evidence/electron-build-mac-20260528-v1.3.31-origin-7b265708-localfix.log",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/evidence/electron-build-mac-20260528-v1.3.31-origin-7b265708-shasums.txt",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/evidence/electron-build-mac-20260528-v1.3.31-origin-7b265708.log",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/handoff-summary.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/implementation-handoff.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/release-deployment-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-artifacts-tab/review-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-file-reference-controls/api-e2e-validation-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-file-reference-controls/design-review-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-file-reference-controls/design-spec.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-file-reference-controls/docs-sync-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-file-reference-controls/evidence/electron-build-mac-20260528-local-shasums.txt",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-file-reference-controls/evidence/electron-build-mac-20260528-local.log",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-file-reference-controls/handoff-summary.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-file-reference-controls/implementation-handoff.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-file-reference-controls/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-file-reference-controls/mobile-bundle-pairing-shell.png",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-file-reference-controls/release-deployment-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-file-reference-controls/release-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-file-reference-controls/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/mobile-file-reference-controls/review-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/nested-team-row-expand/api-e2e-coverage-investigation.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/nested-team-row-expand/api-e2e-execution-coverage-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/nested-team-row-expand/code-review-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/nested-team-row-expand/design-review-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/nested-team-row-expand/design-spec.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/nested-team-row-expand/docs-sync-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/nested-team-row-expand/handoff-summary.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/nested-team-row-expand/implementation-handoff.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/nested-team-row-expand/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/nested-team-row-expand/release-deployment-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/nested-team-row-expand/release-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/nested-team-row-expand/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/right-panel-resize-collapse/probes/api-e2e/ac007-browser-results.json",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/right-panel-resize-collapse/probes/api-e2e/workspace-responsive-probe-results.json",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/right-panel-resize-collapse/probes/api-e2e/workspace-responsive-probe-summary.json",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/right-panel-scroll-decoupling/api-e2e-testing.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/right-panel-scroll-decoupling/code-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/right-panel-scroll-decoupling/docs-sync.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/right-panel-scroll-decoupling/future-state-runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/right-panel-scroll-decoupling/future-state-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/right-panel-scroll-decoupling/handoff.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/right-panel-scroll-decoupling/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/right-panel-scroll-decoupling/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/right-panel-scroll-decoupling/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/right-panel-scroll-decoupling/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/right-panel-scroll-decoupling/workflow-state.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/server-settings-applications-toggle-card/api-e2e-testing.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/server-settings-applications-toggle-card/code-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/server-settings-applications-toggle-card/docs-sync.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/server-settings-applications-toggle-card/future-state-runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/server-settings-applications-toggle-card/future-state-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/server-settings-applications-toggle-card/handoff-summary.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/server-settings-applications-toggle-card/implementation.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/server-settings-applications-toggle-card/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/server-settings-applications-toggle-card/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/server-settings-applications-toggle-card/workflow-state.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/server-settings-delete-key-support/future-state-runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/server-settings-delete-key-support/future-state-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/server-settings-delete-key-support/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/server-settings-delete-key-support/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/server-settings-delete-key-support/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/server-settings-delete-key-support/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/api-e2e-coverage-investigation.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/api-e2e-execution-coverage-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/api-e2e-revision-record.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/api-e2e-test-case-ledger.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/delivery-evidence/initial-integration-browser.log",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/delivery-evidence/post-acceptance-refresh.log",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/delivery-evidence/post-finalization-cleanup.log",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/delivery-evidence/repository-finalization.log",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/delivery-evidence/terminal-readiness.log",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/delivery-revision-record.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/docs-sync-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/evidence/api-e2e-001-focused-frontend.log",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/evidence/api-e2e-002-agent-run-store.log",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/evidence/api-e2e-003-server-lifecycle.log",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/evidence/api-e2e-004-browser-final.log",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/evidence/api-e2e-004-browser.log",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/evidence/api-e2e-005-server-regression.log",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/evidence/api-e2e-006-frontend-regression.log",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/evidence/browser/confirmed-success.png",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/evidence/browser/evidence.json",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/evidence/browser/failure-retry-narrow.png",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/evidence/browser/initial-error-matrix.png",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/evidence/browser/nuxt.log",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/evidence/browser/pending-exact-run.png",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/evidence/delivery-integration-browser/confirmed-success.png",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/evidence/delivery-integration-browser/evidence.json",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/evidence/delivery-integration-browser/failure-retry-narrow.png",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/evidence/delivery-integration-browser/initial-error-matrix.png",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/evidence/delivery-integration-browser/nuxt.log",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/evidence/delivery-integration-browser/pending-exact-run.png",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/handoff-summary.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/implementation-handoff.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/implementation-revision-record.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/release-deployment-report.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/release-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/requirements-doc.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/requirements-revision-record.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/team-grid-view-modes/api-e2e-testing.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/team-grid-view-modes/code-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/team-grid-view-modes/docs-sync.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/team-grid-view-modes/future-state-runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/team-grid-view-modes/future-state-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/team-grid-view-modes/handoff.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/team-grid-view-modes/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/team-grid-view-modes/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/team-grid-view-modes/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/team-grid-view-modes/proposed-design.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/team-grid-view-modes/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/team-grid-view-modes/workflow-state.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/team-notification-ux-enterprise-alignment/future-state-runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/team-notification-ux-enterprise-alignment/future-state-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/team-notification-ux-enterprise-alignment/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/team-notification-ux-enterprise-alignment/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/team-notification-ux-enterprise-alignment/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/team-notification-ux-enterprise-alignment/proposed-design.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/team-notification-ux-enterprise-alignment/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/team-run-left-tree-visibility-personal/future-state-runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/team-run-left-tree-visibility-personal/future-state-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/team-run-left-tree-visibility-personal/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/team-run-left-tree-visibility-personal/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/team-run-left-tree-visibility-personal/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/team-run-left-tree-visibility-personal/proposed-design.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/team-run-left-tree-visibility-personal/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/temp-team-selection-metadata-error/api-e2e-testing.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/temp-team-selection-metadata-error/code-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/temp-team-selection-metadata-error/docs-sync.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/temp-team-selection-metadata-error/future-state-runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/temp-team-selection-metadata-error/future-state-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/temp-team-selection-metadata-error/handoff-summary.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/temp-team-selection-metadata-error/implementation.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/temp-team-selection-metadata-error/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/temp-team-selection-metadata-error/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/temp-team-selection-metadata-error/workflow-state.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/voice-input-audio-source-selection/api-e2e-testing.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/voice-input-audio-source-selection/code-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/voice-input-audio-source-selection/docs-sync.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/voice-input-audio-source-selection/future-state-runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/voice-input-audio-source-selection/future-state-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/voice-input-audio-source-selection/handoff-summary.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/voice-input-audio-source-selection/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/voice-input-audio-source-selection/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/voice-input-audio-source-selection/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/voice-input-audio-source-selection/proposed-design.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/voice-input-audio-source-selection/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/voice-input-audio-source-selection/workflow-state.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/voice-input-extension/api-e2e-testing.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/voice-input-extension/code-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/voice-input-extension/future-state-runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/voice-input-extension/future-state-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/voice-input-extension/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/voice-input-extension/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/voice-input-extension/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/voice-input-extension/proposed-design.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/voice-input-extension/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/done/voice-input-extension/workflow-state.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/event-monitor-single-instance-flow-ticket/design-based-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/event-monitor-single-instance-flow-ticket/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/event-monitor-single-instance-flow-ticket/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/event-monitor-single-instance-flow-ticket/runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/external_messaging_binding_ux_ticket/EXTERNAL_MESSAGING_BINDING_UX_DESIGN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/external_messaging_binding_ux_ticket/EXTERNAL_MESSAGING_BINDING_UX_RUNTIME_SIMULATION.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/external_messaging_binding_ux_ticket/IMPLEMENTATION_PLAN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/external_messaging_binding_ux_ticket/IMPLEMENTATION_PROGRESS.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/external_messaging_channel_bridge_web_ticket/EXTERNAL_MESSAGING_WEB_DESIGN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/external_messaging_channel_bridge_web_ticket/EXTERNAL_MESSAGING_WEB_RUNTIME_SIMULATION.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/external_messaging_channel_bridge_web_ticket/IMPLEMENTATION_PLAN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/external_messaging_channel_bridge_web_ticket/IMPLEMENTATION_PROGRESS.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/history-run-hard-delete-memory/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/history-run-hard-delete-memory/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/history-run-hard-delete-memory/proposed-design-based-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/history-run-hard-delete-memory/proposed-design.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/history-run-hard-delete-memory/runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/history-run-inactive-offline-status-alignment/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/history-run-inactive-offline-status-alignment/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/history-run-inactive-offline-status-alignment/proposed-design-based-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/history-run-inactive-offline-status-alignment/proposed-design.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/history-run-inactive-offline-status-alignment/runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/history-run-termination-boundary-refactor/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/history-run-termination-boundary-refactor/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/history-run-termination-boundary-refactor/proposed-design-based-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/history-run-termination-boundary-refactor/proposed-design.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/history-run-termination-boundary-refactor/runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/in-progress/personal-first-run-db-discovery-bootstrap/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/in-progress/personal-first-run-db-discovery-bootstrap/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/in-progress/personal-first-run-db-discovery-bootstrap/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/in-progress/personal-first-run-db-discovery-bootstrap/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/in-progress/workspace-team-sidebar-avatars/future-state-runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/in-progress/workspace-team-sidebar-avatars/future-state-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/in-progress/workspace-team-sidebar-avatars/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/in-progress/workspace-team-sidebar-avatars/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/in-progress/workspace-team-sidebar-avatars/investigation-notes.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/in-progress/workspace-team-sidebar-avatars/requirements.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/memory_view_ui_ticket/MEMORY_VIEW_UI_DESIGN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/memory_view_ui_ticket/MEMORY_VIEW_UI_PROGRESS.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/memory_view_ui_ticket/MEMORY_VIEW_UI_RUNTIME_SIMULATION.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/messaging-setup-multi-provider-assistant/design-based-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/messaging-setup-multi-provider-assistant/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/messaging-setup-multi-provider-assistant/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/messaging-setup-multi-provider-assistant/proposed-design.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/messaging-setup-multi-provider-assistant/runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/multi_node_v1_ticket/MULTI_NODE_V1_DESIGN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/multi_node_v1_ticket/MULTI_NODE_V1_IMPLEMENTATION_PLAN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/multi_node_v1_ticket/MULTI_NODE_V1_PROGRESS.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/multi_node_v1_ticket/MULTI_NODE_V1_RUNTIME_SIMULATION.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/multi_node_v1_ticket/MULTI_NODE_V4_UI_FIRST_DESIGN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/multi_node_window_v1_ticket/MULTI_NODE_WINDOW_V1_DESIGN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/multi_node_window_v1_ticket/MULTI_NODE_WINDOW_V1_IMPLEMENTATION_PLAN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/multi_node_window_v1_ticket/MULTI_NODE_WINDOW_V1_PROGRESS.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/multi_node_window_v1_ticket/MULTI_NODE_WINDOW_V1_RUNTIME_SIMULATION.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/multi_tool_incremental_ui_feedback_ticket/design-based-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/multi_tool_incremental_ui_feedback_ticket/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/multi_tool_incremental_ui_feedback_ticket/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/multi_tool_incremental_ui_feedback_ticket/proposed-design.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/multi_tool_incremental_ui_feedback_ticket/runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/real_whatsapp_personal_integration_ticket/EXTERNAL_MESSAGING_SETUP_REAL_WHATSAPP_DESIGN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/real_whatsapp_personal_integration_ticket/EXTERNAL_MESSAGING_SETUP_REAL_WHATSAPP_DESIGN_GAP_REVIEW.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/real_whatsapp_personal_integration_ticket/EXTERNAL_MESSAGING_SETUP_REAL_WHATSAPP_RUNTIME_SIMULATION.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/remote-server-settings-remote-window/design-based-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/remote-server-settings-remote-window/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/remote-server-settings-remote-window/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/remote-server-settings-remote-window/proposed-design.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/remote-server-settings-remote-window/runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/remove-prompt-synchronization-ui/design-based-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/remove-prompt-synchronization-ui/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/remove-prompt-synchronization-ui/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/remove-prompt-synchronization-ui/proposed-design.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/remove-prompt-synchronization-ui/runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/remove-settings-server-status-menu/design-based-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/remove-settings-server-status-menu/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/remove-settings-server-status-menu/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/remove-settings-server-status-menu/runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/server-settings-ui-improvements/design-based-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/server-settings-ui-improvements/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/server-settings-ui-improvements/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/server-settings-ui-improvements/proposed-design.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/server-settings-ui-improvements/runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/settings-standalone-page-with-messaging/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/settings-standalone-page-with-messaging/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/settings-standalone-page-with-messaging/proposed-design-based-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/settings-standalone-page-with-messaging/proposed-design.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/settings-standalone-page-with-messaging/runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/unbound_peer_discovery_ticket/EXTERNAL_MESSAGING_UNBOUND_DISCOVERY_DESIGN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/unbound_peer_discovery_ticket/EXTERNAL_MESSAGING_UNBOUND_DISCOVERY_RUNTIME_SIMULATION.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/unbound_peer_discovery_ticket/IMPLEMENTATION_PROGRESS.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/unified-left-panel-navigation-redesign/design-based-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/unified-left-panel-navigation-redesign/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/unified-left-panel-navigation-redesign/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/unified-left-panel-navigation-redesign/proposed-design.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/unified-left-panel-navigation-redesign/runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/vnc-fullscreen-auto-fit-ticket/design-based-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/vnc-fullscreen-auto-fit-ticket/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/vnc-fullscreen-auto-fit-ticket/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/vnc-fullscreen-auto-fit-ticket/runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/vnc-maximized-toolbar-autohide-ticket/design-based-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/vnc-maximized-toolbar-autohide-ticket/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/vnc-maximized-toolbar-autohide-ticket/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/vnc-maximized-toolbar-autohide-ticket/runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/wechat_personal_integration_ticket/EXTERNAL_MESSAGING_SETUP_WECHAT_DESIGN.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/wechat_personal_integration_ticket/EXTERNAL_MESSAGING_SETUP_WECHAT_DESIGN_GAP_REVIEW.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/wechat_personal_integration_ticket/EXTERNAL_MESSAGING_SETUP_WECHAT_RUNTIME_SIMULATION.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/wechat_personal_integration_ticket/IMPLEMENTATION_PROGRESS.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/workspace-add-native-folder-picker/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/workspace-add-native-folder-picker/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/workspace-add-native-folder-picker/proposed-design-based-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/workspace-add-native-folder-picker/runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/workspace-run-config-form-consistency/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/workspace-run-config-form-consistency/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/workspace-run-config-form-consistency/proposed-design-based-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/workspace-run-config-form-consistency/runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/workspace-tree-avatar-hardening/implementation-plan.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/workspace-tree-avatar-hardening/implementation-progress.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/workspace-tree-avatar-hardening/proposed-design-based-runtime-call-stack.md",
+      "issue": "missing",
+      "originalIsFile": true
+    },
+    {
+      "path": "autobyteus-web/tickets/workspace-tree-avatar-hardening/runtime-call-stack-review.md",
+      "issue": "missing",
+      "originalIsFile": true
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "sourceCommit": "eb7934072a1f98832b7b6330a1bc6a7f348fd93d",
+  "sourceHashesMatched": 2,
+  "unchangedHashesMatched": 1115,
+  "IR001through005PrefixPreserved": true,
+  "all13CommandsExpected": true,
+  "JSONAndPythonAST": true,
+  "ownedScratchAbsent": true,
+  "highConfidenceSecretAlerts": [],
+  "scanLimitation": "Narrow token/private-key patterns, not exhaustive",
+  "authoredWhitespacePass": true,
+  "hostedWorkflowExecuted": false,
+  "newCLIOrEngineBuilt": false,
+  "currentDefaultSourceHash": "4568593b99bb3dff263e9824ceb7176e04a95ec90e3cd14a9f7421b4e43055ac",
+  "currentSourceWithSameArm64EngineInputs": "5563645d23aaac13aaa26948490d68dfc12fef31775bb66156185f9052ab0acc",
+  "candidateDisposition": "IR005 CLI/release metadata unchanged, now prior-workflow aggregate; unchanged engine package bytes may be reused but new CLI/metadata must be generated for current-source qualification. No rebuild or qualification claimed.",
+  "testScope": "17 Python tests:16 pass,1 existing standalone Go-child skip; actionlint; nonpublishing source-expression model and mutations, not hosted scheduler proof."
+}

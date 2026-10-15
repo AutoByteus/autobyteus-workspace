@@ -1,0 +1,34 @@
+{
+  "vm": "ab-nfs-api006-mac-a0000f39",
+  "source": "/Users/admin/ab-nfs-api006-mac-a0000f39-source",
+  "binary": {
+    "guestPath": "/Users/admin/ab-nfs-api006-mac-a0000f39-binary",
+    "sha256": "c79e5ac05367d6657bc0be74f2e8f5b9eb504af8ade265e1afdf0334218d0cf1"
+  },
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-mac-a0000f39",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "route -n get 192.168.64.4; nc -z -v -w 3 192.168.64.4 22; nc -z -v -w 3 192.168.64.4 2049"
+      ],
+      "timeout": 15
+    }
+  ],
+  "cases": [],
+  "result": "Running",
+  "linuxEndpoint": "192.168.64.4",
+  "scope": "read-only TCP prerequisite; not public connect, not physical proof"
+}

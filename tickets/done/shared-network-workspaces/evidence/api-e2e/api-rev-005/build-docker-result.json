@@ -1,0 +1,110 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "autobyteus-nfs/packaging/release.py",
+        "--tag",
+        "v1.5.3-beta.2",
+        "--engine-manifest",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/engine-manifest.json",
+        "--engine-image",
+        "127.0.0.1:5000/ab-nfs-api005@sha256:46e746888f36ce8c46a2710dcc18616f87bfe95cd6cacc8ba7c7daf38437ea3b"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+      "rc": 0,
+      "stdout": "{\n  \"version\": \"v1.5.3-beta.2\",\n  \"sourceHash\": \"a6ef7dee582e9b4ba0edd7449bac4d292acfb944073502f0fb63bd8356653342\",\n  \"ubuntuPackages\": {\n    \"nfs-common\": \"1:2.6.4-3ubuntu5.1\"\n  },\n  \"engineImage\": \"127.0.0.1:5000/ab-nfs-api005@sha256:46e746888f36ce8c46a2710dcc18616f87bfe95cd6cacc8ba7c7daf38437ea3b\",\n  \"qualifiedTargets\": [],\n  \"engine\": {\n    \"source\": {\n      \"version\": \"4.3-8ubuntu1\",\n      \"files\": [\n        {\n          \"file\": \"nfs-ganesha_4.3-8ubuntu1.dsc\",\n          \"sha256\": \"ffa76c26b12d23b67dcda184d7ec7ae55a42d1d14bf84bb7c0cf0134156ba3ca\",\n          \"size\": 3576\n        },\n        {\n          \"file\": \"nfs-ganesha_4.3.orig.tar.gz\",\n          \"sha256\": \"d4efd020edf4dfe65abfd0f0f66eb4390613360f99dce4354467ab297e0e1c0f\",\n          \"size\": 1895017\n        },\n        {\n          \"file\": \"nfs-ganesha_4.3-8ubuntu1.debian.tar.xz\",\n          \"sha256\": \"ef35d130e1b37149b156d201b70e6c2804bebbfbee1713c5bd6d938dd433fe03\",\n          \"size\": 19224\n        }\n      ],\n      \"patchCommit\": \"98eb77c4fd94effa6882b214698a77752ec79f6e\",\n      \"patchSha256\": \"ba682b5c64e7f800c927f4c90b2a7bfb4b8d2a323ddc48c3d591db3d75799031\",\n      \"sourceDateEpoch\": 1791936000,\n      \"recipeSha256\": \"34e28c622f598487af74a545115fa8dffe94e8f1aa5d85c091515aa187d66e4f\",\n      \"buildBase\": \"ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e\"\n    },\n    \"architectures\": {\n      \"arm64\": {\n        \"packages\": [\n          {\n            \"file\": \"nfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb\",\n            \"sha256\": \"0b5c78911cfc1b299e9894e1f841e74176fbb2cb45b158008e4530713549ebc8\",\n            \"size\": 613976,\n            \"name\": \"nfs-ganesha\",\n            \"version\": \"4.3-8ubuntu1+autobyteus1\",\n            \"architecture\": \"arm64\"\n          },\n          {\n            \"file\": \"nfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb\",\n            \"sha256\": \"3bf06769646d93ea85f0277fe0726eb42d0d29a70c0108505706954e5e8d2ac6\",\n            \"size\": 48626,\n            \"name\": \"nfs-ganesha-vfs\",\n            \"version\": \"4.3-8ubuntu1+autobyteus1\",\n            \"architecture\": \"arm64\"\n          }\n        ],\n        \"correspondingSource\": {\n          \"file\": \"autobyteus-nfs-ganesha-source-4.3-8ubuntu1+autobyteus1-arm64.tar.gz\",\n          \"sha256\": \"eed35ab4b732ac05d2afc3531e70cdc27031fb414fdb52a0daf093f33daaec0a\",\n          \"size\": 1930105\n        },\n        \"buildInventory\": {\n          \"file\": \"engine-build-arm64.txt\",\n          \"sha256\": \"56fad63c43f85091d84df347564dfd962a9afaafe519539849860b1807695761\",\n          \"size\": 57836\n        }\n      }\n    }\n  }\n}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api005-s1d2nqng/go/bin/go",
+        "build",
+        "-trimpath",
+        "-o",
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api005-s1d2nqng/autobyteus-nfs-docker-linux-arm64",
+        "./cmd/autobyteus-nfs"
+      ],
+      "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api005-s1d2nqng/candidate-source",
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "engineImage": "127.0.0.1:5000/ab-nfs-api005@sha256:46e746888f36ce8c46a2710dcc18616f87bfe95cd6cacc8ba7c7daf38437ea3b",
+  "scope": "Same exact retained engine/current source, only test-loopback image metadata variant; no publication",
+  "metadata": {
+    "version": "v1.5.3-beta.2",
+    "sourceHash": "a6ef7dee582e9b4ba0edd7449bac4d292acfb944073502f0fb63bd8356653342",
+    "ubuntuPackages": {
+      "nfs-common": "1:2.6.4-3ubuntu5.1"
+    },
+    "engineImage": "127.0.0.1:5000/ab-nfs-api005@sha256:46e746888f36ce8c46a2710dcc18616f87bfe95cd6cacc8ba7c7daf38437ea3b",
+    "qualifiedTargets": [],
+    "engine": {
+      "source": {
+        "version": "4.3-8ubuntu1",
+        "files": [
+          {
+            "file": "nfs-ganesha_4.3-8ubuntu1.dsc",
+            "sha256": "ffa76c26b12d23b67dcda184d7ec7ae55a42d1d14bf84bb7c0cf0134156ba3ca",
+            "size": 3576
+          },
+          {
+            "file": "nfs-ganesha_4.3.orig.tar.gz",
+            "sha256": "d4efd020edf4dfe65abfd0f0f66eb4390613360f99dce4354467ab297e0e1c0f",
+            "size": 1895017
+          },
+          {
+            "file": "nfs-ganesha_4.3-8ubuntu1.debian.tar.xz",
+            "sha256": "ef35d130e1b37149b156d201b70e6c2804bebbfbee1713c5bd6d938dd433fe03",
+            "size": 19224
+          }
+        ],
+        "patchCommit": "98eb77c4fd94effa6882b214698a77752ec79f6e",
+        "patchSha256": "ba682b5c64e7f800c927f4c90b2a7bfb4b8d2a323ddc48c3d591db3d75799031",
+        "sourceDateEpoch": 1791936000,
+        "recipeSha256": "34e28c622f598487af74a545115fa8dffe94e8f1aa5d85c091515aa187d66e4f",
+        "buildBase": "ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e"
+      },
+      "architectures": {
+        "arm64": {
+          "packages": [
+            {
+              "file": "nfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb",
+              "sha256": "0b5c78911cfc1b299e9894e1f841e74176fbb2cb45b158008e4530713549ebc8",
+              "size": 613976,
+              "name": "nfs-ganesha",
+              "version": "4.3-8ubuntu1+autobyteus1",
+              "architecture": "arm64"
+            },
+            {
+              "file": "nfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb",
+              "sha256": "3bf06769646d93ea85f0277fe0726eb42d0d29a70c0108505706954e5e8d2ac6",
+              "size": 48626,
+              "name": "nfs-ganesha-vfs",
+              "version": "4.3-8ubuntu1+autobyteus1",
+              "architecture": "arm64"
+            }
+          ],
+          "correspondingSource": {
+            "file": "autobyteus-nfs-ganesha-source-4.3-8ubuntu1+autobyteus1-arm64.tar.gz",
+            "sha256": "eed35ab4b732ac05d2afc3531e70cdc27031fb414fdb52a0daf093f33daaec0a",
+            "size": 1930105
+          },
+          "buildInventory": {
+            "file": "engine-build-arm64.txt",
+            "sha256": "56fad63c43f85091d84df347564dfd962a9afaafe519539849860b1807695761",
+            "size": 57836
+          }
+        }
+      }
+    }
+  },
+  "binary": {
+    "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api005-s1d2nqng/autobyteus-nfs-docker-linux-arm64",
+    "sha256": "d9ba0370c10d1fb7c39ae70970e5407563d6cf5595afc718de601b5bf771ed6f",
+    "size": 11046989
+  },
+  "result": "Ready"
+}

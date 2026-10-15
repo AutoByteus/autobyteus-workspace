@@ -1,0 +1,12 @@
+Started test-owned Docker prerequisite in owned detached LinuxVM
+test-owned Docker prerequisite in owned detached LinuxVM: Pass
+Started build storage image from exact retained engine pair
+build storage image from exact retained engine pair: Pass
+Started clean image package and manifest verification
+clean image package and manifest verification: Pass
+Started VM-loopback private test registry
+VM-loopback private test registry: Pass
+Started retain image under actual local-registry immutable digest
+retain image under actual local-registry immutable digest: Pass
+Docker storage image ready, test-only loopback digest recorded; no public create yet
+{"result": "Ready", "engineImage": "127.0.0.1:5000/ab-nfs-api004@sha256:34197bbbfb60990b3da046d2442c2e28eaaf66c195c2a94883bd90e15876dc78", "fatal": null}

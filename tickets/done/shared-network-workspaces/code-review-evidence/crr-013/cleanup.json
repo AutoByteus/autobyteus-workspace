@@ -1,0 +1,5 @@
+{
+  "scratch": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr013-vhmry3ej",
+  "removed": true,
+  "resources": "No privileged child, mount, VM, Docker, desktop, API, provider or host config created; test-owned dirs only"
+}

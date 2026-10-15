@@ -1,0 +1,8 @@
+--- FAIL: TestHostedConfigDetachCurrentOrPartialRetryReachesExistingChecks (0.18s)
+    --- FAIL: TestHostedConfigDetachCurrentOrPartialRetryReachesExistingChecks/ganesha-native/missing (0.04s)
+        hosted_config_test.go:162: preflight prevented existing teardown checks file does not exist
+    --- FAIL: TestHostedConfigDetachCurrentOrPartialRetryReachesExistingChecks/ganesha-docker/missing (0.04s)
+        hosted_config_test.go:162: preflight prevented existing teardown checks file does not exist
+FAIL
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/setup	0.557s
+FAIL

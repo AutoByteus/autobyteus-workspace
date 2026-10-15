@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "63E82A998089CC78CC6976AF907DBE03",
+    "--script",
+    "() => {const e=document.querySelector(\"iframe[title=\\\"HTML Preview\\\"]\");return {src:e?.src,html:e?.contentDocument?.body?.innerText,images:[...(e?.contentDocument?.images||[])].map(i=>({src:i.src,complete:i.complete,width:i.naturalWidth,height:i.naturalHeight}))};}"
+  ],
+  "rc": 0,
+  "stdout": "{\"schema_version\":\"1\",\"ok\":true,\"command\":\"run-script\",\"result\":{\"tab_id\":\"63E82A998089CC78CC6976AF907DBE03\",\"url\":\"file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat\",\"output_mode\":\"inline\",\"result\":{\"src\":\"http://127.0.0.1:59278/rest/workspaces/agent_ws_49a8721c7fadf351e28d59eec0601bb05deb303d6c8eb6c880dc1f83c32ce54b/static/index.html\",\"html\":null,\"images\":[]}}}\n",
+  "stderr": ""
+}

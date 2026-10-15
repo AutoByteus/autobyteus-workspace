@@ -1,0 +1,2 @@
+PROBE FAILURE RuntimeError("owned VM command failed ('exec', 'ab-sf-fr043-macos', '/usr/bin/sudo'): cat: /Users/admin/.ab-sf-native-config-ab-sf-fr044-4d455b07/server.log: No such file or directory\n")
+{"run": "ab-sf-fr045-f02e7571", "passes": 0, "fatal": "RuntimeError(\"owned VM command failed ('exec', 'ab-sf-fr043-macos', '/usr/bin/sudo'): cat: /Users/admin/.ab-sf-native-config-ab-sf-fr044-4d455b07/server.log: No such file or directory\\n\")"}

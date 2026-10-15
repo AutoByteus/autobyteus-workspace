@@ -1,0 +1,2 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs
+command=["/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api001-pk2d0kur/go/bin/go", "vet", "./..."]

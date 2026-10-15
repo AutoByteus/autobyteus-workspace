@@ -1,3 +1,4 @@
+import { preparePrivateRuntimeSkills, privateSkillInstructions } from "../../shared/prepare-private-runtime-skills.js";
 import type { ProviderPreparationGuard } from "../../provider-preparation-guard.js";
 import { workspaceCollisionPolicyForScope } from "../../shared/workspace-skill-collision-policy.js";
 import { AgentRunContext } from "../../../domain/agent-run-context.js";
@@ -75,8 +76,14 @@ export class ClaudeSessionBootstrapper {
       agentDefinition,
       runContext.config.memberExecutionContext,
     );
-    const preparedSkills =
-      await this.workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills({
+    const privateSkillProfile = await preparePrivateRuntimeSkills({
+      runtime: "claude", workingDirectory, memoryDir: runContext.config.memoryDir,
+      bindings: configuredSkillBindings, skills: this.skillService, guard,
+      collisionPolicy: workspaceCollisionPolicyForScope(this.skillService.resolveSkillScope(agentDefinition)),
+    });
+    const preparedSkills = privateSkillProfile
+      ? { materializedSkills: [], effectiveRequests: privateSkillProfile.exposures.map(entry => ({ kind: "expose-resolved" as const, skill: entry.skill })) }
+      : await this.workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills({
         runId: runContext.runId,
         onAcquired: guard.ownSkill, assertAccepting: guard.assertAccepting,
         workingDirectory,
@@ -94,7 +101,7 @@ export class ClaudeSessionBootstrapper {
     const carpenterSystemPrompt = composeSharedCarpenterPrompt({
       agentDefinition,
       memberExecutionContext: runContext.config.memberExecutionContext,
-    });
+    }) + (privateSkillProfile ? privateSkillInstructions(privateSkillProfile) : "");
     const sessionConfig = buildClaudeSessionConfig({
       model: runContext.config.llmModelIdentifier,
       workingDirectory,
@@ -107,6 +114,7 @@ export class ClaudeSessionBootstrapper {
       config: runContext.config,
       runtimeContext: new ClaudeAgentRunContext({
         sessionConfig,
+        privateSkillProfile,
         carpenterSystemPrompt,
         runtimeToolExposure,
         configuredSkills,

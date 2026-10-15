@@ -1,0 +1,9 @@
+{
+  "ownedScratch": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr007-v1pokhcw",
+  "removed": true,
+  "allSubprocessesCompleted": true,
+  "VMContainerMountHostRootProviderCredentialsHostedWorkflowOrReleaseUsed": false,
+  "delegations": 0,
+  "productionAndDurableTestEdits": false,
+  "retainedCandidateUnchanged": true
+}

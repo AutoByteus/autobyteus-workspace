@@ -1,0 +1,6 @@
+{
+  "clone": "ab-nfs-api007-linux-b72ac1ef",
+  "privateTartHome": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api007-ejvzqfh7/tart-state",
+  "pid": 35676,
+  "image": "ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e"
+}

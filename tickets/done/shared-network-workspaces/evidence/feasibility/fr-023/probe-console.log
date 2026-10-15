@@ -1,0 +1,8 @@
+PASS two fresh real application-image nodes serve independent GraphQL endpoints
+PASS daemon mounts one export into both application nodes; private state and credentials isolated
+PASS each application registers the ordinary mounted project through its public workspace API
+PASS native macOS guest mounts the same Linux export and reads its independent storage identity
+PASS Mac release backend/native client installed only into fresh private guest test root
+FAIL actual Mac release backend serves separate GraphQL endpoint on private VM RuntimeError("owned Mac backend unavailable: URLError(ConnectionRefusedError(61, 'Connection refused'))")
+PROBE FAILURE RuntimeError("owned Mac backend unavailable: URLError(ConnectionRefusedError(61, 'Connection refused'))")
+{"run": "ab-sf-fr023-db476448", "passes": 5, "fatal": "RuntimeError(\"owned Mac backend unavailable: URLError(ConnectionRefusedError(61, 'Connection refused'))\")", "cleanup_ok": true}

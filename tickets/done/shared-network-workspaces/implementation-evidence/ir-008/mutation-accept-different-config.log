@@ -1,0 +1,16 @@
+--- FAIL: TestGaneshaConfigPreflightAndExactRemoval (0.02s)
+    --- FAIL: TestGaneshaConfigPreflightAndExactRemoval/container=false/old (0.00s)
+        cleanup_test.go:136: wrong readiness config result <nil>
+    --- FAIL: TestGaneshaConfigPreflightAndExactRemoval/container=false/different (0.00s)
+        cleanup_test.go:136: wrong readiness config result <nil>
+    --- FAIL: TestGaneshaConfigPreflightAndExactRemoval/container=false/malformed (0.00s)
+        cleanup_test.go:136: wrong readiness config result <nil>
+    --- FAIL: TestGaneshaConfigPreflightAndExactRemoval/container=true/old (0.00s)
+        cleanup_test.go:136: wrong readiness config result <nil>
+    --- FAIL: TestGaneshaConfigPreflightAndExactRemoval/container=true/different (0.00s)
+        cleanup_test.go:136: wrong readiness config result <nil>
+    --- FAIL: TestGaneshaConfigPreflightAndExactRemoval/container=true/malformed (0.00s)
+        cleanup_test.go:136: wrong readiness config result <nil>
+FAIL
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/backend	0.426s
+FAIL

@@ -1,0 +1,12 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+[Error: ENOTEMPTY: directory not empty, rmdir '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ui-X6QYmT/node-compile-cache/v22.23.1-arm64-2b4477fa-501'] {
+  errno: -66,
+  code: 'ENOTEMPTY',
+  syscall: 'rmdir',
+  path: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ui-X6QYmT/node-compile-cache/v22.23.1-arm64-2b4477fa-501'
+}
+
+Node.js v22.23.1

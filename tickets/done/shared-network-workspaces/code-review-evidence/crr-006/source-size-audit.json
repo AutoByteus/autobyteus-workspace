@@ -1,0 +1,878 @@
+{
+  "base": "65b0e6e57a0f93d8343ccbefc1b5227642d7e557",
+  "inputHead": "3655801628e18032fe345db7a7058b618e921554",
+  "rows": [
+    {
+      "path": ".github/workflows/release-nfs.yml",
+      "baseNonempty": 0,
+      "currentNonempty": 277,
+      "totalDelta": 277,
+      "over500": false,
+      "over220Delta": true
+    },
+    {
+      "path": "autobyteus-nfs/cmd/autobyteus-nfs/main.go",
+      "baseNonempty": 0,
+      "currentNonempty": 22,
+      "totalDelta": 22,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/backend/apple.go",
+      "baseNonempty": 0,
+      "currentNonempty": 140,
+      "totalDelta": 140,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/backend/apple_apply.go",
+      "baseNonempty": 0,
+      "currentNonempty": 136,
+      "totalDelta": 136,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/backend/apple_startup.go",
+      "baseNonempty": 0,
+      "currentNonempty": 98,
+      "totalDelta": 98,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/backend/engine_assets_linux.go",
+      "baseNonempty": 0,
+      "currentNonempty": 4,
+      "totalDelta": 4,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/backend/engine_assets_other.go",
+      "baseNonempty": 0,
+      "currentNonempty": 7,
+      "totalDelta": 7,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/backend/engine_bundle.go",
+      "baseNonempty": 0,
+      "currentNonempty": 108,
+      "totalDelta": 108,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/backend/engine_staging.go",
+      "baseNonempty": 0,
+      "currentNonempty": 53,
+      "totalDelta": 53,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/backend/ganesha.go",
+      "baseNonempty": 0,
+      "currentNonempty": 54,
+      "totalDelta": 54,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/backend/ganesha_native.go",
+      "baseNonempty": 0,
+      "currentNonempty": 133,
+      "totalDelta": 133,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/backend/ubuntu_packages.go",
+      "baseNonempty": 0,
+      "currentNonempty": 150,
+      "totalDelta": 150,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/cli/inputs.go",
+      "baseNonempty": 0,
+      "currentNonempty": 162,
+      "totalDelta": 162,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/cli/install.go",
+      "baseNonempty": 0,
+      "currentNonempty": 123,
+      "totalDelta": 123,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/cli/interactive-setup.go",
+      "baseNonempty": 0,
+      "currentNonempty": 92,
+      "totalDelta": 92,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/cli/launcher.go",
+      "baseNonempty": 0,
+      "currentNonempty": 43,
+      "totalDelta": 43,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/cli/run.go",
+      "baseNonempty": 0,
+      "currentNonempty": 190,
+      "totalDelta": 190,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/cli/terminal.go",
+      "baseNonempty": 0,
+      "currentNonempty": 50,
+      "totalDelta": 50,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/cli/verify-release.go",
+      "baseNonempty": 0,
+      "currentNonempty": 36,
+      "totalDelta": 36,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/config/connection.go",
+      "baseNonempty": 0,
+      "currentNonempty": 138,
+      "totalDelta": 138,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/config/source-marker.go",
+      "baseNonempty": 0,
+      "currentNonempty": 38,
+      "totalDelta": 38,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/config/state.go",
+      "baseNonempty": 0,
+      "currentNonempty": 85,
+      "totalDelta": 85,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/config/store.go",
+      "baseNonempty": 0,
+      "currentNonempty": 124,
+      "totalDelta": 124,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/docker/attachment.go",
+      "baseNonempty": 0,
+      "currentNonempty": 106,
+      "totalDelta": 106,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/docker/client.go",
+      "baseNonempty": 0,
+      "currentNonempty": 136,
+      "totalDelta": 136,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/docker/engine.go",
+      "baseNonempty": 0,
+      "currentNonempty": 140,
+      "totalDelta": 140,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/docker/exec.go",
+      "baseNonempty": 0,
+      "currentNonempty": 80,
+      "totalDelta": 80,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/docker/ownership.go",
+      "baseNonempty": 0,
+      "currentNonempty": 19,
+      "totalDelta": 19,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/docker/probe_cleanup.go",
+      "baseNonempty": 0,
+      "currentNonempty": 48,
+      "totalDelta": 48,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/docker/recovery.go",
+      "baseNonempty": 0,
+      "currentNonempty": 87,
+      "totalDelta": 87,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/docker/recreate.go",
+      "baseNonempty": 0,
+      "currentNonempty": 195,
+      "totalDelta": 195,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/docker/snapshot.go",
+      "baseNonempty": 0,
+      "currentNonempty": 213,
+      "totalDelta": 213,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/commands.go",
+      "baseNonempty": 0,
+      "currentNonempty": 86,
+      "totalDelta": 86,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/filesystem_darwin.go",
+      "baseNonempty": 0,
+      "currentNonempty": 22,
+      "totalDelta": 22,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/filesystem_linux.go",
+      "baseNonempty": 0,
+      "currentNonempty": 35,
+      "totalDelta": 35,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/handle_syscalls_linux_amd64.go",
+      "baseNonempty": 0,
+      "currentNonempty": 4,
+      "totalDelta": 4,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/handle_syscalls_linux_arm64.go",
+      "baseNonempty": 0,
+      "currentNonempty": 4,
+      "totalDelta": 4,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/handles_darwin.go",
+      "baseNonempty": 0,
+      "currentNonempty": 3,
+      "totalDelta": 3,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/handles_linux.go",
+      "baseNonempty": 0,
+      "currentNonempty": 49,
+      "totalDelta": 49,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/jobs.go",
+      "baseNonempty": 0,
+      "currentNonempty": 110,
+      "totalDelta": 110,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/lock.go",
+      "baseNonempty": 0,
+      "currentNonempty": 21,
+      "totalDelta": 21,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/mount-observation.go",
+      "baseNonempty": 0,
+      "currentNonempty": 106,
+      "totalDelta": 106,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/mounts.go",
+      "baseNonempty": 0,
+      "currentNonempty": 156,
+      "totalDelta": 156,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/source.go",
+      "baseNonempty": 0,
+      "currentNonempty": 59,
+      "totalDelta": 59,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/service/probe.go",
+      "baseNonempty": 0,
+      "currentNonempty": 155,
+      "totalDelta": 155,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/service/supervisor.go",
+      "baseNonempty": 0,
+      "currentNonempty": 28,
+      "totalDelta": 28,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/apply.go",
+      "baseNonempty": 0,
+      "currentNonempty": 185,
+      "totalDelta": 185,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/detach_nodes.go",
+      "baseNonempty": 0,
+      "currentNonempty": 79,
+      "totalDelta": 79,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/lifecycle.go",
+      "baseNonempty": 0,
+      "currentNonempty": 143,
+      "totalDelta": 143,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/pending.go",
+      "baseNonempty": 0,
+      "currentNonempty": 104,
+      "totalDelta": 104,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/plan.go",
+      "baseNonempty": 0,
+      "currentNonempty": 187,
+      "totalDelta": 187,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/service.go",
+      "baseNonempty": 0,
+      "currentNonempty": 47,
+      "totalDelta": 47,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/status.go",
+      "baseNonempty": 0,
+      "currentNonempty": 91,
+      "totalDelta": 91,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/packaging/Dockerfile",
+      "baseNonempty": 0,
+      "currentNonempty": 26,
+      "totalDelta": 26,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/packaging/engine/build.py",
+      "baseNonempty": 0,
+      "currentNonempty": 74,
+      "totalDelta": 74,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/packaging/engine/manifest.py",
+      "baseNonempty": 0,
+      "currentNonempty": 86,
+      "totalDelta": 86,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/packaging/engine/source.py",
+      "baseNonempty": 0,
+      "currentNonempty": 58,
+      "totalDelta": 58,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-nfs/packaging/release.py",
+      "baseNonempty": 0,
+      "currentNonempty": 94,
+      "totalDelta": 94,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/acp/acp-private-skill-adapter.ts",
+      "baseNonempty": 0,
+      "currentNonempty": 9,
+      "totalDelta": 9,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/acp/backend/acp-agent-run-backend-factory.ts",
+      "baseNonempty": 225,
+      "currentNonempty": 243,
+      "totalDelta": 18,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts",
+      "baseNonempty": 133,
+      "currentNonempty": 137,
+      "totalDelta": 4,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-process.ts",
+      "baseNonempty": 144,
+      "currentNonempty": 144,
+      "totalDelta": 0,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
+      "baseNonempty": 470,
+      "currentNonempty": 473,
+      "totalDelta": 3,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/native-shared-workspace.ts",
+      "baseNonempty": 0,
+      "currentNonempty": 12,
+      "totalDelta": 12,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts",
+      "baseNonempty": 58,
+      "currentNonempty": 63,
+      "totalDelta": 5,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-context.ts",
+      "baseNonempty": 38,
+      "currentNonempty": 42,
+      "totalDelta": 4,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts",
+      "baseNonempty": 121,
+      "currentNonempty": 129,
+      "totalDelta": 8,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/claude-workspace-resolver.ts",
+      "baseNonempty": 42,
+      "currentNonempty": 45,
+      "totalDelta": 3,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts",
+      "baseNonempty": 41,
+      "currentNonempty": 47,
+      "totalDelta": 6,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-query-options.ts",
+      "baseNonempty": 50,
+      "currentNonempty": 56,
+      "totalDelta": 6,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.ts",
+      "baseNonempty": 57,
+      "currentNonempty": 62,
+      "totalDelta": 5,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-context.ts",
+      "baseNonempty": 32,
+      "currentNonempty": 36,
+      "totalDelta": 4,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts",
+      "baseNonempty": 394,
+      "currentNonempty": 401,
+      "totalDelta": 7,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/codex-workspace-resolver.ts",
+      "baseNonempty": 41,
+      "currentNonempty": 44,
+      "totalDelta": 3,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-private-skill-discovery.ts",
+      "baseNonempty": 0,
+      "currentNonempty": 25,
+      "totalDelta": 25,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-manager.ts",
+      "baseNonempty": 233,
+      "currentNonempty": 240,
+      "totalDelta": 7,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/grok/grok-build-agent-run-backend-factory.ts",
+      "baseNonempty": 25,
+      "currentNonempty": 27,
+      "totalDelta": 2,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/grok/grok-private-skills.ts",
+      "baseNonempty": 0,
+      "currentNonempty": 26,
+      "totalDelta": 26,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/provider-preparation-guard.ts",
+      "baseNonempty": 8,
+      "currentNonempty": 10,
+      "totalDelta": 2,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/shared/prepare-private-runtime-skills.ts",
+      "baseNonempty": 0,
+      "currentNonempty": 38,
+      "totalDelta": 38,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/shared/runtime-skill-profile.ts",
+      "baseNonempty": 0,
+      "currentNonempty": 130,
+      "totalDelta": 130,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts",
+      "baseNonempty": 344,
+      "currentNonempty": 350,
+      "totalDelta": 6,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/shared-run-workspace-admission.ts",
+      "baseNonempty": 0,
+      "currentNonempty": 14,
+      "totalDelta": 14,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/acp/acp-client-connection.ts",
+      "baseNonempty": 220,
+      "currentNonempty": 223,
+      "totalDelta": 3,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/claude/client/claude-private-skill-discovery.ts",
+      "baseNonempty": 0,
+      "currentNonempty": 8,
+      "totalDelta": 8,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-client.ts",
+      "baseNonempty": 460,
+      "currentNonempty": 466,
+      "totalDelta": 6,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client-manager.ts",
+      "baseNonempty": 108,
+      "currentNonempty": 114,
+      "totalDelta": 6,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/shared/scoped-project-git-environment.ts",
+      "baseNonempty": 0,
+      "currentNonempty": 11,
+      "totalDelta": 11,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts",
+      "baseNonempty": 128,
+      "currentNonempty": 132,
+      "totalDelta": 4,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/workspaces/shared-workspace-binding.ts",
+      "baseNonempty": 0,
+      "currentNonempty": 74,
+      "totalDelta": 74,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/workspaces/shared-workspace-mount-observation.ts",
+      "baseNonempty": 0,
+      "currentNonempty": 44,
+      "totalDelta": 44,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-ts/src/tools/terminal/background-process-context.ts",
+      "baseNonempty": 22,
+      "currentNonempty": 24,
+      "totalDelta": 2,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-ts/src/tools/terminal/direct-shell-session.ts",
+      "baseNonempty": 208,
+      "currentNonempty": 208,
+      "totalDelta": 0,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-ts/src/tools/terminal/isolated-pty-session.ts",
+      "baseNonempty": 345,
+      "currentNonempty": 345,
+      "totalDelta": 0,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-ts/src/tools/terminal/pty-session.ts",
+      "baseNonempty": 253,
+      "currentNonempty": 253,
+      "totalDelta": 0,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-ts/src/tools/terminal/terminal-child-environment.ts",
+      "baseNonempty": 0,
+      "currentNonempty": 8,
+      "totalDelta": 8,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-ts/src/tools/terminal/terminal-session.ts",
+      "baseNonempty": 10,
+      "currentNonempty": 10,
+      "totalDelta": 0,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-ts/src/tools/terminal/tools/run-bash.ts",
+      "baseNonempty": 65,
+      "currentNonempty": 67,
+      "totalDelta": 2,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-web/components/settings/NfsGuideCard.vue",
+      "baseNonempty": 0,
+      "currentNonempty": 74,
+      "totalDelta": 74,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-web/components/settings/NodeManager.vue",
+      "baseNonempty": 325,
+      "currentNonempty": 332,
+      "totalDelta": 7,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-web/components/settings/NodeManagerTabs.vue",
+      "baseNonempty": 42,
+      "currentNonempty": 54,
+      "totalDelta": 12,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-web/localization/messages/en/settings.ts",
+      "baseNonempty": 400,
+      "currentNonempty": 427,
+      "totalDelta": 27,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-web/localization/messages/zh-CN/settings.ts",
+      "baseNonempty": 400,
+      "currentNonempty": 427,
+      "totalDelta": 27,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "autobyteus-web/utils/nfsLauncherCommands.ts",
+      "baseNonempty": 0,
+      "currentNonempty": 23,
+      "totalDelta": 23,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "scripts/public/docker/autobyteus-docker.d/bash/container-config.sh",
+      "baseNonempty": 0,
+      "currentNonempty": 54,
+      "totalDelta": 54,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "scripts/public/docker/autobyteus-docker.d/bash/docker-runtime.sh",
+      "baseNonempty": 497,
+      "currentNonempty": 450,
+      "totalDelta": -47,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "scripts/public/docker/autobyteus-docker.d/bash/nfs-attachment.sh",
+      "baseNonempty": 0,
+      "currentNonempty": 35,
+      "totalDelta": 35,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "scripts/public/docker/autobyteus-docker.sh",
+      "baseNonempty": 236,
+      "currentNonempty": 242,
+      "totalDelta": 6,
+      "over500": false,
+      "over220Delta": false
+    },
+    {
+      "path": "scripts/public/nfs/install.sh",
+      "baseNonempty": 0,
+      "currentNonempty": 45,
+      "totalDelta": 45,
+      "over500": false,
+      "over220Delta": false
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "original": "docker-selected-create-result.json",
+  "actualPublicCreate": "Pass, not repeated",
+  "observed": "Only expected owned recreation label differs in Config; harness removed it only on after side",
+  "correction": "Symmetric removal of only com.autobyteus.nfs.recreation/storageId. All other Config fields exact. Current raw before/after preserved.",
+  "productFinding": false
+}

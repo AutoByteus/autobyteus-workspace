@@ -1,0 +1,140 @@
+{
+  "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/autobyteus-nfs-ganesha-source-4.3-8ubuntu1+autobyteus1-arm64.tar.gz",
+  "sha256": "eed35ab4b732ac05d2afc3531e70cdc27031fb414fdb52a0daf093f33daaec0a",
+  "scope": "Read-only matching retained source; default values/source clues are not runtime root-cause proof",
+  "files": [
+    {
+      "member": "nfs-ganesha-4.3/src/FSAL/Stackable_FSALs/FSAL_MDCACHE/mdcache_helpers.c",
+      "sha256": "e969895a19d0ef69f2f481a53154853ad415dce25170f26fe7f27392d3dbec9a",
+      "hits": [
+        {
+          "line": 824,
+          "context": "\tnentry->attrs.request_mask = attrs_in->request_mask;\n\tfsal_copy_attrs(&nentry->attrs, attrs_in, true);\n\n\tif (nentry->attrs.expire_time_attr == 0) {\n\t\tnentry->attrs.expire_time_attr =\n\t\t    op_ctx->export_perms.expire_time_attr;\n\t}\n"
+        },
+        {
+          "line": 825,
+          "context": "\tfsal_copy_attrs(&nentry->attrs, attrs_in, true);\n\n\tif (nentry->attrs.expire_time_attr == 0) {\n\t\tnentry->attrs.expire_time_attr =\n\t\t    op_ctx->export_perms.expire_time_attr;\n\t}\n\n\t/* Validate the attributes we just set. */"
+        },
+        {
+          "line": 826,
+          "context": "\n\tif (nentry->attrs.expire_time_attr == 0) {\n\t\tnentry->attrs.expire_time_attr =\n\t\t    op_ctx->export_perms.expire_time_attr;\n\t}\n\n\t/* Validate the attributes we just set. */\n\tmdc_fixup_md(nentry, &nentry->attrs);"
+        },
+        {
+          "line": 3565,
+          "context": "\t\tentry->attrs.request_mask |= ATTR4_SEC_LABEL;\n\t}\n\n\tif (attrs->expire_time_attr == 0) {\n\t\t/* FSAL did not set this, retain what was in the entry. */\n\t\tattrs->expire_time_attr = entry->attrs.expire_time_attr;\n\t}\n"
+        },
+        {
+          "line": 3567,
+          "context": "\n\tif (attrs->expire_time_attr == 0) {\n\t\t/* FSAL did not set this, retain what was in the entry. */\n\t\tattrs->expire_time_attr = entry->attrs.expire_time_attr;\n\t}\n\n\t/* Now move the new attributes into the entry. */\n\tfsal_copy_attrs(&entry->attrs, attrs, true);"
+        }
+      ]
+    },
+    {
+      "member": "nfs-ganesha-4.3/src/config_samples/vfs.conf",
+      "sha256": "96f93b3bf68e01c44808e9100c2fd888ee5fb823153d12e37946df7987c915dd",
+      "hits": []
+    },
+    {
+      "member": "nfs-ganesha-4.3/src/support/exports.c",
+      "sha256": "fc6d23515e7fff9165ff7c0dea593490c73afc03aecc299eae82e65dc8574e11",
+      "hits": [
+        {
+          "line": 69,
+          "context": "#define GLOBAL_EXPORT_PERMS_INITIALIZER\t\t\t\t\\\n\t.def.anonymous_uid = ANON_UID,\t\t\t\t\\\n\t.def.anonymous_gid = ANON_GID,\t\t\t\t\\\n\t.def.expire_time_attr = EXPORT_DEFAULT_CACHE_EXPIRY,\t\\\n\t/* Note: Access_Type defaults to None on purpose     */\t\\\n\t/*       And no PROTO is included - that is filled   */\t\\\n\t/*       from nfs_param.core_param.core_options.     */ \\\n\t.def.options = EXPORT_OPTION_ROOT_SQUASH |\t\t\\"
+        },
+        {
+          "line": 272,
+          "context": "\n\tif ((p_perms->set & EXPORT_OPTION_EXPIRE_SET) != 0)\n\t\tb_left = display_printf(dspbuf, \", expire=%8\"PRIi32,\n\t\t\t\t\t(int)p_perms->expire_time_attr);\n\telse\n\t\tb_left = display_cat(dspbuf, \",                \");\n\n\tif (b_left <= 0)"
+        },
+        {
+          "line": 2002,
+          "context": "\nstatic struct config_item export_defaults_params[] = {\n\tCONF_EXPORT_PERMS(global_export_perms, conf),\n\tCONF_ITEM_I32_SET(\"Attr_Expiration_Time\", -1, INT32_MAX,\n\t\t       EXPORT_DEFAULT_CACHE_EXPIRY,\n\t\t       global_export_perms, conf.expire_time_attr,\n\t\t       EXPORT_OPTION_EXPIRE_SET, conf.set),\n\tCONFIG_EOL"
+        },
+        {
+          "line": 2004,
+          "context": "\tCONF_EXPORT_PERMS(global_export_perms, conf),\n\tCONF_ITEM_I32_SET(\"Attr_Expiration_Time\", -1, INT32_MAX,\n\t\t       EXPORT_DEFAULT_CACHE_EXPIRY,\n\t\t       global_export_perms, conf.expire_time_attr,\n\t\t       EXPORT_OPTION_EXPIRE_SET, conf.set),\n\tCONFIG_EOL\n};\n"
+        },
+        {
+          "line": 2078,
+          "context": "static struct config_item export_params[] = {\n\tCONF_EXPORT_PARAMS(gsh_export),\n\tCONF_EXPORT_PERMS(gsh_export, export_perms),\n\tCONF_ITEM_I32_SET(\"Attr_Expiration_Time\", -1, INT32_MAX,\n\t\t       EXPORT_DEFAULT_CACHE_EXPIRY,\n\t\t       gsh_export, export_perms.expire_time_attr,\n\t\t       EXPORT_OPTION_EXPIRE_SET, export_perms.set),\n"
+        },
+        {
+          "line": 2080,
+          "context": "\tCONF_EXPORT_PERMS(gsh_export, export_perms),\n\tCONF_ITEM_I32_SET(\"Attr_Expiration_Time\", -1, INT32_MAX,\n\t\t       EXPORT_DEFAULT_CACHE_EXPIRY,\n\t\t       gsh_export, export_perms.expire_time_attr,\n\t\t       EXPORT_OPTION_EXPIRE_SET, export_perms.set),\n\n\t/* NOTE: the Client and FSAL sub-blocks must be the *last*\n\t * two entries in the list.  This is so all other"
+        },
+        {
+          "line": 2104,
+          "context": "static struct config_item export_update_params[] = {\n\tCONF_EXPORT_PARAMS(gsh_export),\n\tCONF_EXPORT_PERMS(gsh_export, export_perms),\n\tCONF_ITEM_I32_SET(\"Attr_Expiration_Time\", -1, INT32_MAX,\n\t\t       EXPORT_DEFAULT_CACHE_EXPIRY,\n\t\t       gsh_export, export_perms.expire_time_attr,\n\t\t       EXPORT_OPTION_EXPIRE_SET, export_perms.set),\n"
+        },
+        {
+          "line": 2106,
+          "context": "\tCONF_EXPORT_PERMS(gsh_export, export_perms),\n\tCONF_ITEM_I32_SET(\"Attr_Expiration_Time\", -1, INT32_MAX,\n\t\t       EXPORT_DEFAULT_CACHE_EXPIRY,\n\t\t       gsh_export, export_perms.expire_time_attr,\n\t\t       EXPORT_OPTION_EXPIRE_SET, export_perms.set),\n\n\t/* NOTE: the Client and FSAL sub-blocks must be the *last*\n\t * two entries in the list.  This is so all other"
+        },
+        {
+          "line": 2794,
+          "context": "\tget_gsh_export_ref(export);\n\tinit_op_context_simple(&op_context, export, export->fsal_export);\n\n\t/* set expire_time_attr if appropriate */\n\tif ((op_ctx->export_perms.set & EXPORT_OPTION_EXPIRE_SET) == 0 &&\n\t    (op_ctx->ctx_export->export_perms.set &\n\t     EXPORT_OPTION_EXPIRE_SET) != 0) {\n\t\top_ctx->export_perms.expire_time_attr ="
+        },
+        {
+          "line": 2798,
+          "context": "\tif ((op_ctx->export_perms.set & EXPORT_OPTION_EXPIRE_SET) == 0 &&\n\t    (op_ctx->ctx_export->export_perms.set &\n\t     EXPORT_OPTION_EXPIRE_SET) != 0) {\n\t\top_ctx->export_perms.expire_time_attr =\n\t\t\top_ctx->ctx_export->export_perms.expire_time_attr;\n\t\top_ctx->export_perms.set |= EXPORT_OPTION_EXPIRE_SET;\n\t}\n\tif ((op_ctx->export_perms.set & EXPORT_OPTION_EXPIRE_SET) == 0 &&"
+        },
+        {
+          "line": 2799,
+          "context": "\t    (op_ctx->ctx_export->export_perms.set &\n\t     EXPORT_OPTION_EXPIRE_SET) != 0) {\n\t\top_ctx->export_perms.expire_time_attr =\n\t\t\top_ctx->ctx_export->export_perms.expire_time_attr;\n\t\top_ctx->export_perms.set |= EXPORT_OPTION_EXPIRE_SET;\n\t}\n\tif ((op_ctx->export_perms.set & EXPORT_OPTION_EXPIRE_SET) == 0 &&\n\t    (export_opt.conf.set & EXPORT_OPTION_EXPIRE_SET) != 0) {"
+        },
+        {
+          "line": 2804,
+          "context": "\t}\n\tif ((op_ctx->export_perms.set & EXPORT_OPTION_EXPIRE_SET) == 0 &&\n\t    (export_opt.conf.set & EXPORT_OPTION_EXPIRE_SET) != 0) {\n\t\top_ctx->export_perms.expire_time_attr =\n\t\t\texport_opt.conf.expire_time_attr;\n\t\top_ctx->export_perms.set |= EXPORT_OPTION_EXPIRE_SET;\n\t}\n\tif ((op_ctx->export_perms.set & EXPORT_OPTION_EXPIRE_SET) == 0)"
+        },
+        {
+          "line": 2805,
+          "context": "\tif ((op_ctx->export_perms.set & EXPORT_OPTION_EXPIRE_SET) == 0 &&\n\t    (export_opt.conf.set & EXPORT_OPTION_EXPIRE_SET) != 0) {\n\t\top_ctx->export_perms.expire_time_attr =\n\t\t\texport_opt.conf.expire_time_attr;\n\t\top_ctx->export_perms.set |= EXPORT_OPTION_EXPIRE_SET;\n\t}\n\tif ((op_ctx->export_perms.set & EXPORT_OPTION_EXPIRE_SET) == 0)\n\t\top_ctx->export_perms.expire_time_attr ="
+        },
+        {
+          "line": 2809,
+          "context": "\t\top_ctx->export_perms.set |= EXPORT_OPTION_EXPIRE_SET;\n\t}\n\tif ((op_ctx->export_perms.set & EXPORT_OPTION_EXPIRE_SET) == 0)\n\t\top_ctx->export_perms.expire_time_attr =\n\t\t\t\t\texport_opt.def.expire_time_attr;\n\n\t/* set the EXPORT_OPTION_EXPIRE_SET bit from the export\n\t * into the op_ctx */"
+        },
+        {
+          "line": 2810,
+          "context": "\t}\n\tif ((op_ctx->export_perms.set & EXPORT_OPTION_EXPIRE_SET) == 0)\n\t\top_ctx->export_perms.expire_time_attr =\n\t\t\t\t\texport_opt.def.expire_time_attr;\n\n\t/* set the EXPORT_OPTION_EXPIRE_SET bit from the export\n\t * into the op_ctx */\n\top_ctx->export_perms.options |= EXPORT_OPTION_EXPIRE_SET;"
+        },
+        {
+          "line": 3363,
+          "context": "\tif ((op_ctx->export_perms.set & EXPORT_OPTION_EXPIRE_SET) == 0 &&\n\t    (op_ctx->ctx_export->export_perms.set &\n\t     EXPORT_OPTION_EXPIRE_SET) != 0)\n\t\top_ctx->export_perms.expire_time_attr =\n\t\t\top_ctx->ctx_export->export_perms.expire_time_attr;\n\n\top_ctx->export_perms.set |= op_ctx->ctx_export->export_perms.set;\n"
+        },
+        {
+          "line": 3364,
+          "context": "\t    (op_ctx->ctx_export->export_perms.set &\n\t     EXPORT_OPTION_EXPIRE_SET) != 0)\n\t\top_ctx->export_perms.expire_time_attr =\n\t\t\top_ctx->ctx_export->export_perms.expire_time_attr;\n\n\top_ctx->export_perms.set |= op_ctx->ctx_export->export_perms.set;\n\n no_export:"
+        },
+        {
+          "line": 3391,
+          "context": "\n\tif ((op_ctx->export_perms.set & EXPORT_OPTION_EXPIRE_SET) == 0 &&\n\t    (export_opt.conf.set & EXPORT_OPTION_EXPIRE_SET) != 0)\n\t\top_ctx->export_perms.expire_time_attr =\n\t\t\texport_opt.conf.expire_time_attr;\n\n\top_ctx->export_perms.set |= export_opt.conf.set;\n"
+        },
+        {
+          "line": 3392,
+          "context": "\tif ((op_ctx->export_perms.set & EXPORT_OPTION_EXPIRE_SET) == 0 &&\n\t    (export_opt.conf.set & EXPORT_OPTION_EXPIRE_SET) != 0)\n\t\top_ctx->export_perms.expire_time_attr =\n\t\t\texport_opt.conf.expire_time_attr;\n\n\top_ctx->export_perms.set |= export_opt.conf.set;\n\n\t/* And finally take any options not yet set from global defaults */"
+        },
+        {
+          "line": 3409,
+          "context": "\t\t\t\t\texport_opt.def.anonymous_gid;\n\n\tif ((op_ctx->export_perms.set & EXPORT_OPTION_EXPIRE_SET) == 0)\n\t\top_ctx->export_perms.expire_time_attr =\n\t\t\t\t\texport_opt.def.expire_time_attr;\n\n\top_ctx->export_perms.set |= export_opt.def.set;\n"
+        },
+        {
+          "line": 3410,
+          "context": "\n\tif ((op_ctx->export_perms.set & EXPORT_OPTION_EXPIRE_SET) == 0)\n\t\top_ctx->export_perms.expire_time_attr =\n\t\t\t\t\texport_opt.def.expire_time_attr;\n\n\top_ctx->export_perms.set |= export_opt.def.set;\n\n\tif (isMidDebug(COMPONENT_EXPORT)) {"
+        }
+      ]
+    }
+  ],
+  "initialArchiveScan": "No direct source files; source distribution wraps original and Debian archives, so read nested original next.",
+  "originalSourceSHA256": "d4efd020edf4dfe65abfd0f0f66eb4390613360f99dce4354467ab297e0e1c0f",
+  "defaultDefinition": {
+    "member": "nfs-ganesha-4.3/src/include/nfs_exports.h",
+    "sha256": "ff1a6cdb48983e310c1f9862e8ef3d54b8f300ee16ebc02e6d2694b5235a9268",
+    "lines": [
+      {
+        "line": 185,
+        "text": "#define EXPORT_DEFAULT_CACHE_EXPIRY 60\t/*< Default cache expiry */"
+      }
+    ]
+  }
+}

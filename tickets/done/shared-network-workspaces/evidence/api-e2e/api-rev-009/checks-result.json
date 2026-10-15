@@ -1,0 +1,165 @@
+{
+  "scope": "API009 integrated repository validation only; API008 command-only filesystem verdict carried separately",
+  "inputHead": "bd57ef932dcd9e12c8470f0a1accbce0928d7ae5",
+  "scratch": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l",
+  "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/repo",
+  "environment": {
+    "PATH": "/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/.codex/packages/standalone/releases/0.162.1-aarch64-apple-darwin/codex-path:/Users/normy/.codex/tmp/arg0/codex-arg0gYa2vy:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin",
+    "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/home",
+    "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp",
+    "CI": "1",
+    "NO_COLOR": "1"
+  },
+  "checks": [
+    {
+      "name": "install",
+      "case": "INT01",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@autobyteus-example/brief-studio-authoring...",
+        "install",
+        "--frozen-lockfile"
+      ],
+      "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/repo",
+      "pid": 42225,
+      "started": 1792082577.9049542,
+      "exitCode": 0,
+      "seconds": 19.882,
+      "log": "install.log",
+      "logSha256": "a266d2eabe3066f3f72d22f90f8ae5535a345bdf92f96048d8fb0f6894ba0f0f"
+    },
+    {
+      "name": "integration-prepare",
+      "case": "INT01",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "test:integration:prepare"
+      ],
+      "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/repo",
+      "pid": 43098,
+      "started": 1792082597.7880378,
+      "exitCode": 0,
+      "seconds": 25.04,
+      "log": "integration-prepare.log",
+      "logSha256": "fe701e1b421cdee24ce6bdfcc2031bf75d252fb3bc4fb760ac0ba1d36f126da7"
+    },
+    {
+      "name": "server-typecheck",
+      "case": "INT01",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "typecheck"
+      ],
+      "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/repo",
+      "pid": 45044,
+      "started": 1792082622.8293161,
+      "exitCode": 0,
+      "seconds": 13.173,
+      "log": "server-typecheck.log",
+      "logSha256": "4c69e81a89e1b306729bc878ad405562e422cf40dddca25b099cdd5291537755"
+    },
+    {
+      "name": "workspace-rest",
+      "case": "INT02",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts",
+        "--no-watch"
+      ],
+      "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/repo",
+      "pid": 47116,
+      "started": 1792082636.005755,
+      "exitCode": 0,
+      "seconds": 12.596,
+      "log": "workspace-rest.log",
+      "logSha256": "e7574e81e75de104dd123b28993a90fc65fc6e3700e3e6ea67bee2f7c4f56059"
+    },
+    {
+      "name": "workspace-unit",
+      "case": "INT03",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/unit/workspaces",
+        "--no-watch"
+      ],
+      "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/repo",
+      "pid": 48902,
+      "started": 1792082648.607605,
+      "exitCode": 0,
+      "seconds": 13.92,
+      "log": "workspace-unit.log",
+      "logSha256": "26c0cd5a1f2f1dc20f80d9ed1280a79263d36d9db87bfe504a90d4391c0449a7"
+    },
+    {
+      "name": "adjacent-explorer",
+      "case": "INT04",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/integration/file-explorer/file-explorer.integration.test.ts",
+        "tests/e2e/file-explorer/search-content-http.e2e.test.ts",
+        "--no-watch"
+      ],
+      "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/repo",
+      "pid": 50923,
+      "started": 1792082662.530717,
+      "exitCode": 0,
+      "seconds": 7.05,
+      "log": "adjacent-explorer.log",
+      "logSha256": "239b8bf274cdb0ac16532e8b98bca82aafa2e50f60a6359c6f0c638f431f8a51"
+    },
+    {
+      "name": "workspace-rest-repeat",
+      "case": "INT05",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts",
+        "--no-watch"
+      ],
+      "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/repo",
+      "pid": 51076,
+      "started": 1792082669.583953,
+      "exitCode": 0,
+      "seconds": 8.596,
+      "log": "workspace-rest-repeat.log",
+      "logSha256": "5563f83469ac14c3ebff3a20a0bb33d7b42a7fde525d77463299659fce5b7184"
+    }
+  ],
+  "archive": {
+    "trackedFiles": 7330,
+    "sourceAggregate": "54fcc75526cdae73f3f11e8f84fb401d049b40948e1d64c764d078cbf93a2daa",
+    "matchesInput": true,
+    "excluded": "tickets/ historical evidence only"
+  },
+  "toolchain": {
+    "node": "v22.23.1",
+    "pnpm": "10.28.2"
+  },
+  "restCleanupAfterFirst": [],
+  "restCleanupAfterRepeat": [],
+  "executionFinished": true
+}

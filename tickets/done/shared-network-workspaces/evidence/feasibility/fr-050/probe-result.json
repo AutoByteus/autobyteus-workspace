@@ -1,0 +1,1594 @@
+{
+  "run": "ab-sf-fr050-7c155f0a",
+  "scope": "isolated vendor-patch counterfactual: same concurrent exclusive-create contract plus different-UID Git; not product build, current-source integration, native Mac or physical LAN",
+  "engineImage": "sha256:feb18a8f02a7470eb5427abac1dc8794da707ff6fbcbc14cdb850c28fbcf977b",
+  "engineCommit": "ec1660ba33c80d5c67131e163e68834c1a10e243",
+  "prototypePatch": "binary-safe CREATE verifier hash only; original engine failures retained",
+  "mount": "/Volumes/autobyteus-shared",
+  "project": "/Volumes/autobyteus-shared/project",
+  "commands": [
+    {
+      "argv": [
+        "docker",
+        "network",
+        "create",
+        "--label",
+        "org.autobyteus.probe=fr-050",
+        "ab-sf-fr050-7c155f0a-net"
+      ],
+      "rc": 0,
+      "stdout": "76af72a7fbe35cc5f23145564a0d816e477ab03bbb75cca00529424faf9572a2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "inspect",
+        "ab-sf-fr050-7c155f0a-net",
+        "--format",
+        "{{(index .IPAM.Config 0).Gateway}}"
+      ],
+      "rc": 0,
+      "stdout": "172.29.0.1\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.probe=fr-050",
+        "ab-sf-fr050-7c155f0a-source"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr050-7c155f0a-source\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--name",
+        "ab-sf-fr050-7c155f0a-init",
+        "--label",
+        "org.autobyteus.probe=fr-050",
+        "--user",
+        "0:0",
+        "--network",
+        "ab-sf-fr050-7c155f0a-net",
+        "--entrypoint",
+        "sh",
+        "--mount",
+        "type=volume,src=ab-sf-fr050-7c155f0a-source,dst=/export,volume-nocopy",
+        "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1",
+        "-c",
+        "mkdir -p /export/project /export/private; printf KEEP > /export/project/preexisting.txt; printf DENIED > /export/private/secret.txt; chown -R 10001:10001 /export/project; chown 10001:10001 /export; chmod 755 /export; chmod 700 /export/private"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "cp",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-048/rpc-mount.mjs",
+        "ab-sf-fr050-7c155f0a-init:/tmp/rpc-mount.mjs"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr050-7c155f0a-allowed",
+        "--label",
+        "org.autobyteus.probe=fr-050",
+        "--network",
+        "ab-sf-fr050-7c155f0a-net",
+        "--entrypoint",
+        "tail",
+        "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1",
+        "-f",
+        "/dev/null"
+      ],
+      "rc": 0,
+      "stdout": "c54d98e4da82bc831714a456630f1c91a9a3df3c60ace80989ac250a04d8a44b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "cp",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-048/rpc-mount.mjs",
+        "ab-sf-fr050-7c155f0a-allowed:/tmp/rpc-mount.mjs"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr050-7c155f0a-excluded",
+        "--label",
+        "org.autobyteus.probe=fr-050",
+        "--network",
+        "ab-sf-fr050-7c155f0a-net",
+        "--entrypoint",
+        "tail",
+        "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1",
+        "-f",
+        "/dev/null"
+      ],
+      "rc": 0,
+      "stdout": "4eb33d61636ac37a470b4208cfe60217b79eda22eef046c6c91ebf3f1ade5d62\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "cp",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-048/rpc-mount.mjs",
+        "ab-sf-fr050-7c155f0a-excluded:/tmp/rpc-mount.mjs"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "inspect",
+        "ab-sf-fr050-7c155f0a-allowed",
+        "--format",
+        "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}"
+      ],
+      "rc": 0,
+      "stdout": "172.29.0.2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr050-7c155f0a-server",
+        "--label",
+        "org.autobyteus.probe=fr-050",
+        "--network",
+        "ab-sf-fr050-7c155f0a-net",
+        "--user",
+        "10001:10001",
+        "--mount",
+        "type=volume,src=ab-sf-fr050-7c155f0a-source,dst=/export,volume-nocopy",
+        "--mount",
+        "type=bind,src=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr050-owned-ib3c7e7f/config,dst=/config,readonly",
+        "sha256:feb18a8f02a7470eb5427abac1dc8794da707ff6fbcbc14cdb850c28fbcf977b",
+        "-d",
+        "-s",
+        "-p",
+        "-t",
+        "-n",
+        "2049",
+        "-m",
+        "2049",
+        "-e",
+        "/config/exports"
+      ],
+      "rc": 0,
+      "stdout": "7dd31a291f851a11a1db54df1ea831fcaca0629e5027bff80ac841fc1b8cd481\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "inspect",
+        "ab-sf-fr050-7c155f0a-server",
+        "--format",
+        "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}"
+      ],
+      "rc": 0,
+      "stdout": "172.29.0.4\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-allowed",
+        "node",
+        "/tmp/rpc-mount.mjs",
+        "172.29.0.4",
+        "/export"
+      ],
+      "rc": 0,
+      "stdout": "{\"mountStatus\":0,\"host\":\"172.29.0.4\",\"exportPath\":\"/export\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-excluded",
+        "node",
+        "/tmp/rpc-mount.mjs",
+        "172.29.0.4",
+        "/export"
+      ],
+      "rc": 0,
+      "stdout": "{\"mountStatus\":13,\"host\":\"172.29.0.4\",\"exportPath\":\"/export\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.probe=fr-050",
+        "--driver",
+        "local",
+        "--opt",
+        "type=nfs",
+        "--opt",
+        "device=:/export",
+        "--opt",
+        "o=addr=172.29.0.4,vers=3,proto=tcp,mountproto=tcp,mountvers=3,port=2049,mountport=2049,nolock,hard,timeo=50,retrans=2,actimeo=1,nosharecache",
+        "ab-sf-fr050-7c155f0a-nfs-a"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr050-7c155f0a-nfs-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr050-7c155f0a-client-a",
+        "--label",
+        "org.autobyteus.probe=fr-050",
+        "--network",
+        "ab-sf-fr050-7c155f0a-net",
+        "--user",
+        "10001:10001",
+        "--entrypoint",
+        "tail",
+        "--mount",
+        "type=volume,src=ab-sf-fr050-7c155f0a-nfs-a,dst=/Volumes/autobyteus-shared,volume-nocopy",
+        "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1",
+        "-f",
+        "/dev/null"
+      ],
+      "rc": 0,
+      "stdout": "1d3f8290cc6a43478b89d9dc2c0eca592975d6fa0f8b99a403a29b121324f334\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.probe=fr-050",
+        "--driver",
+        "local",
+        "--opt",
+        "type=nfs",
+        "--opt",
+        "device=:/export",
+        "--opt",
+        "o=addr=172.29.0.4,vers=3,proto=tcp,mountproto=tcp,mountvers=3,port=2049,mountport=2049,nolock,hard,timeo=50,retrans=2,actimeo=1,nosharecache",
+        "ab-sf-fr050-7c155f0a-nfs-b"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr050-7c155f0a-nfs-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr050-7c155f0a-client-b",
+        "--label",
+        "org.autobyteus.probe=fr-050",
+        "--network",
+        "ab-sf-fr050-7c155f0a-net",
+        "--user",
+        "501:20",
+        "--entrypoint",
+        "tail",
+        "--mount",
+        "type=volume,src=ab-sf-fr050-7c155f0a-nfs-b,dst=/Volumes/autobyteus-shared,volume-nocopy",
+        "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1",
+        "-f",
+        "/dev/null"
+      ],
+      "rc": 0,
+      "stdout": "1faffa9fed998c0b76b205eebc6a2dba60f4fb238c7e6c261e07cddbbb8de356\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-a",
+        "node",
+        "-e",
+        "require('fs').writeFileSync(\"/Volumes/autobyteus-shared/project/owner.txt\",'LINUX_OWNER')"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-a",
+        "node",
+        "-e",
+        "console.log(JSON.stringify({uid:process.getuid(),presentedOwner:require('fs').statSync(\"/Volumes/autobyteus-shared/project/owner.txt\").uid,data:require('fs').readFileSync(\"/Volumes/autobyteus-shared/project/owner.txt\",'utf8')}))"
+      ],
+      "rc": 0,
+      "stdout": "{\"uid\":10001,\"presentedOwner\":10001,\"data\":\"LINUX_OWNER\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-b",
+        "node",
+        "-e",
+        "console.log(JSON.stringify({uid:process.getuid(),presentedOwner:require('fs').statSync(\"/Volumes/autobyteus-shared/project/owner.txt\").uid,data:require('fs').readFileSync(\"/Volumes/autobyteus-shared/project/owner.txt\",'utf8')}))"
+      ],
+      "rc": 0,
+      "stdout": "{\"uid\":501,\"presentedOwner\":501,\"data\":\"LINUX_OWNER\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-server",
+        "node",
+        "-e",
+        "console.log(JSON.stringify({processUid:process.getuid(),owner:require('fs').statSync('/export/project/owner.txt').uid,preexisting:require('fs').readFileSync('/export/project/preexisting.txt','utf8')}))"
+      ],
+      "rc": 0,
+      "stdout": "{\"processUid\":10001,\"owner\":10001,\"preexisting\":\"KEEP\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "--user",
+        "0:0",
+        "ab-sf-fr050-7c155f0a-client-a",
+        "node",
+        "-e",
+        "const f=require('fs');let denied=false;try{f.readFileSync(\"/Volumes/autobyteus-shared/private/secret.txt\")}catch(e){denied=e.code==='EACCES'};f.writeFileSync(\"/Volumes/autobyteus-shared/project/client-root.txt\",'SQUASHED');console.log(JSON.stringify({clientUid:process.getuid(),denied}))"
+      ],
+      "rc": 0,
+      "stdout": "{\"clientUid\":0,\"denied\":true}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-server",
+        "node",
+        "-e",
+        "console.log(require('fs').statSync('/export/project/client-root.txt').uid)"
+      ],
+      "rc": 0,
+      "stdout": "10001\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "cp",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-049/sniff-create.py",
+        "ab-sf-fr050-7c155f0a-server:/tmp/sniff-create.py"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-a",
+        "node",
+        "-e",
+        "const f=require('fs');try{const fd=f.openSync(\"/Volumes/autobyteus-shared/project/race-0\",'wx');f.writeSync(fd,process.argv[1]);f.fsyncSync(fd);f.closeSync(fd);console.log('WON')}catch(e){if(e.code!=='EEXIST')throw e;console.log('EXISTS')}",
+        "ab-sf-fr050-7c155f0a-client-a"
+      ],
+      "rc": 0,
+      "stdout": "EXISTS\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-b",
+        "node",
+        "-e",
+        "const f=require('fs');try{const fd=f.openSync(\"/Volumes/autobyteus-shared/project/race-0\",'wx');f.writeSync(fd,process.argv[1]);f.fsyncSync(fd);f.closeSync(fd);console.log('WON')}catch(e){if(e.code!=='EEXIST')throw e;console.log('EXISTS')}",
+        "ab-sf-fr050-7c155f0a-client-b"
+      ],
+      "rc": 0,
+      "stdout": "WON\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-server",
+        "node",
+        "-e",
+        "console.log(require('fs').readFileSync(\"/export/project/race-0\",'utf8'))"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr050-7c155f0a-client-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-a",
+        "node",
+        "-e",
+        "const f=require('fs');try{const fd=f.openSync(\"/Volumes/autobyteus-shared/project/race-1\",'wx');f.writeSync(fd,process.argv[1]);f.fsyncSync(fd);f.closeSync(fd);console.log('WON')}catch(e){if(e.code!=='EEXIST')throw e;console.log('EXISTS')}",
+        "ab-sf-fr050-7c155f0a-client-a"
+      ],
+      "rc": 0,
+      "stdout": "EXISTS\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-b",
+        "node",
+        "-e",
+        "const f=require('fs');try{const fd=f.openSync(\"/Volumes/autobyteus-shared/project/race-1\",'wx');f.writeSync(fd,process.argv[1]);f.fsyncSync(fd);f.closeSync(fd);console.log('WON')}catch(e){if(e.code!=='EEXIST')throw e;console.log('EXISTS')}",
+        "ab-sf-fr050-7c155f0a-client-b"
+      ],
+      "rc": 0,
+      "stdout": "WON\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-server",
+        "node",
+        "-e",
+        "console.log(require('fs').readFileSync(\"/export/project/race-1\",'utf8'))"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr050-7c155f0a-client-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-a",
+        "node",
+        "-e",
+        "const f=require('fs');try{const fd=f.openSync(\"/Volumes/autobyteus-shared/project/race-2\",'wx');f.writeSync(fd,process.argv[1]);f.fsyncSync(fd);f.closeSync(fd);console.log('WON')}catch(e){if(e.code!=='EEXIST')throw e;console.log('EXISTS')}",
+        "ab-sf-fr050-7c155f0a-client-a"
+      ],
+      "rc": 0,
+      "stdout": "WON\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-b",
+        "node",
+        "-e",
+        "const f=require('fs');try{const fd=f.openSync(\"/Volumes/autobyteus-shared/project/race-2\",'wx');f.writeSync(fd,process.argv[1]);f.fsyncSync(fd);f.closeSync(fd);console.log('WON')}catch(e){if(e.code!=='EEXIST')throw e;console.log('EXISTS')}",
+        "ab-sf-fr050-7c155f0a-client-b"
+      ],
+      "rc": 0,
+      "stdout": "EXISTS\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-server",
+        "node",
+        "-e",
+        "console.log(require('fs').readFileSync(\"/export/project/race-2\",'utf8'))"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr050-7c155f0a-client-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-a",
+        "node",
+        "-e",
+        "const f=require('fs');try{const fd=f.openSync(\"/Volumes/autobyteus-shared/project/race-3\",'wx');f.writeSync(fd,process.argv[1]);f.fsyncSync(fd);f.closeSync(fd);console.log('WON')}catch(e){if(e.code!=='EEXIST')throw e;console.log('EXISTS')}",
+        "ab-sf-fr050-7c155f0a-client-a"
+      ],
+      "rc": 0,
+      "stdout": "EXISTS\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-b",
+        "node",
+        "-e",
+        "const f=require('fs');try{const fd=f.openSync(\"/Volumes/autobyteus-shared/project/race-3\",'wx');f.writeSync(fd,process.argv[1]);f.fsyncSync(fd);f.closeSync(fd);console.log('WON')}catch(e){if(e.code!=='EEXIST')throw e;console.log('EXISTS')}",
+        "ab-sf-fr050-7c155f0a-client-b"
+      ],
+      "rc": 0,
+      "stdout": "WON\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-server",
+        "node",
+        "-e",
+        "console.log(require('fs').readFileSync(\"/export/project/race-3\",'utf8'))"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr050-7c155f0a-client-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-a",
+        "node",
+        "-e",
+        "const f=require('fs');try{const fd=f.openSync(\"/Volumes/autobyteus-shared/project/race-4\",'wx');f.writeSync(fd,process.argv[1]);f.fsyncSync(fd);f.closeSync(fd);console.log('WON')}catch(e){if(e.code!=='EEXIST')throw e;console.log('EXISTS')}",
+        "ab-sf-fr050-7c155f0a-client-a"
+      ],
+      "rc": 0,
+      "stdout": "WON\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-b",
+        "node",
+        "-e",
+        "const f=require('fs');try{const fd=f.openSync(\"/Volumes/autobyteus-shared/project/race-4\",'wx');f.writeSync(fd,process.argv[1]);f.fsyncSync(fd);f.closeSync(fd);console.log('WON')}catch(e){if(e.code!=='EEXIST')throw e;console.log('EXISTS')}",
+        "ab-sf-fr050-7c155f0a-client-b"
+      ],
+      "rc": 0,
+      "stdout": "EXISTS\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-server",
+        "node",
+        "-e",
+        "console.log(require('fs').readFileSync(\"/export/project/race-4\",'utf8'))"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr050-7c155f0a-client-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-a",
+        "node",
+        "-e",
+        "const f=require('fs');try{const fd=f.openSync(\"/Volumes/autobyteus-shared/project/race-5\",'wx');f.writeSync(fd,process.argv[1]);f.fsyncSync(fd);f.closeSync(fd);console.log('WON')}catch(e){if(e.code!=='EEXIST')throw e;console.log('EXISTS')}",
+        "ab-sf-fr050-7c155f0a-client-a"
+      ],
+      "rc": 0,
+      "stdout": "EXISTS\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-b",
+        "node",
+        "-e",
+        "const f=require('fs');try{const fd=f.openSync(\"/Volumes/autobyteus-shared/project/race-5\",'wx');f.writeSync(fd,process.argv[1]);f.fsyncSync(fd);f.closeSync(fd);console.log('WON')}catch(e){if(e.code!=='EEXIST')throw e;console.log('EXISTS')}",
+        "ab-sf-fr050-7c155f0a-client-b"
+      ],
+      "rc": 0,
+      "stdout": "WON\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-server",
+        "node",
+        "-e",
+        "console.log(require('fs').readFileSync(\"/export/project/race-5\",'utf8'))"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr050-7c155f0a-client-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-a",
+        "node",
+        "-e",
+        "const f=require('fs');try{const fd=f.openSync(\"/Volumes/autobyteus-shared/project/race-6\",'wx');f.writeSync(fd,process.argv[1]);f.fsyncSync(fd);f.closeSync(fd);console.log('WON')}catch(e){if(e.code!=='EEXIST')throw e;console.log('EXISTS')}",
+        "ab-sf-fr050-7c155f0a-client-a"
+      ],
+      "rc": 0,
+      "stdout": "WON\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-b",
+        "node",
+        "-e",
+        "const f=require('fs');try{const fd=f.openSync(\"/Volumes/autobyteus-shared/project/race-6\",'wx');f.writeSync(fd,process.argv[1]);f.fsyncSync(fd);f.closeSync(fd);console.log('WON')}catch(e){if(e.code!=='EEXIST')throw e;console.log('EXISTS')}",
+        "ab-sf-fr050-7c155f0a-client-b"
+      ],
+      "rc": 0,
+      "stdout": "EXISTS\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-server",
+        "node",
+        "-e",
+        "console.log(require('fs').readFileSync(\"/export/project/race-6\",'utf8'))"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr050-7c155f0a-client-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-a",
+        "node",
+        "-e",
+        "const f=require('fs');try{const fd=f.openSync(\"/Volumes/autobyteus-shared/project/race-7\",'wx');f.writeSync(fd,process.argv[1]);f.fsyncSync(fd);f.closeSync(fd);console.log('WON')}catch(e){if(e.code!=='EEXIST')throw e;console.log('EXISTS')}",
+        "ab-sf-fr050-7c155f0a-client-a"
+      ],
+      "rc": 0,
+      "stdout": "WON\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-b",
+        "node",
+        "-e",
+        "const f=require('fs');try{const fd=f.openSync(\"/Volumes/autobyteus-shared/project/race-7\",'wx');f.writeSync(fd,process.argv[1]);f.fsyncSync(fd);f.closeSync(fd);console.log('WON')}catch(e){if(e.code!=='EEXIST')throw e;console.log('EXISTS')}",
+        "ab-sf-fr050-7c155f0a-client-b"
+      ],
+      "rc": 0,
+      "stdout": "EXISTS\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-server",
+        "node",
+        "-e",
+        "console.log(require('fs').readFileSync(\"/export/project/race-7\",'utf8'))"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr050-7c155f0a-client-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-a",
+        "node",
+        "-e",
+        "const f=require('fs');try{const fd=f.openSync(\"/Volumes/autobyteus-shared/project/race-8\",'wx');f.writeSync(fd,process.argv[1]);f.fsyncSync(fd);f.closeSync(fd);console.log('WON')}catch(e){if(e.code!=='EEXIST')throw e;console.log('EXISTS')}",
+        "ab-sf-fr050-7c155f0a-client-a"
+      ],
+      "rc": 0,
+      "stdout": "WON\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-b",
+        "node",
+        "-e",
+        "const f=require('fs');try{const fd=f.openSync(\"/Volumes/autobyteus-shared/project/race-8\",'wx');f.writeSync(fd,process.argv[1]);f.fsyncSync(fd);f.closeSync(fd);console.log('WON')}catch(e){if(e.code!=='EEXIST')throw e;console.log('EXISTS')}",
+        "ab-sf-fr050-7c155f0a-client-b"
+      ],
+      "rc": 0,
+      "stdout": "EXISTS\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-server",
+        "node",
+        "-e",
+        "console.log(require('fs').readFileSync(\"/export/project/race-8\",'utf8'))"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr050-7c155f0a-client-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-a",
+        "node",
+        "-e",
+        "const f=require('fs');try{const fd=f.openSync(\"/Volumes/autobyteus-shared/project/race-9\",'wx');f.writeSync(fd,process.argv[1]);f.fsyncSync(fd);f.closeSync(fd);console.log('WON')}catch(e){if(e.code!=='EEXIST')throw e;console.log('EXISTS')}",
+        "ab-sf-fr050-7c155f0a-client-a"
+      ],
+      "rc": 0,
+      "stdout": "EXISTS\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-b",
+        "node",
+        "-e",
+        "const f=require('fs');try{const fd=f.openSync(\"/Volumes/autobyteus-shared/project/race-9\",'wx');f.writeSync(fd,process.argv[1]);f.fsyncSync(fd);f.closeSync(fd);console.log('WON')}catch(e){if(e.code!=='EEXIST')throw e;console.log('EXISTS')}",
+        "ab-sf-fr050-7c155f0a-client-b"
+      ],
+      "rc": 0,
+      "stdout": "WON\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-server",
+        "node",
+        "-e",
+        "console.log(require('fs').readFileSync(\"/export/project/race-9\",'utf8'))"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr050-7c155f0a-client-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-a",
+        "node",
+        "-e",
+        "const f=require('fs');try{const fd=f.openSync(\"/Volumes/autobyteus-shared/project/race-10\",'wx');f.writeSync(fd,process.argv[1]);f.fsyncSync(fd);f.closeSync(fd);console.log('WON')}catch(e){if(e.code!=='EEXIST')throw e;console.log('EXISTS')}",
+        "ab-sf-fr050-7c155f0a-client-a"
+      ],
+      "rc": 0,
+      "stdout": "EXISTS\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-b",
+        "node",
+        "-e",
+        "const f=require('fs');try{const fd=f.openSync(\"/Volumes/autobyteus-shared/project/race-10\",'wx');f.writeSync(fd,process.argv[1]);f.fsyncSync(fd);f.closeSync(fd);console.log('WON')}catch(e){if(e.code!=='EEXIST')throw e;console.log('EXISTS')}",
+        "ab-sf-fr050-7c155f0a-client-b"
+      ],
+      "rc": 0,
+      "stdout": "WON\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-server",
+        "node",
+        "-e",
+        "console.log(require('fs').readFileSync(\"/export/project/race-10\",'utf8'))"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr050-7c155f0a-client-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-a",
+        "node",
+        "-e",
+        "const f=require('fs');try{const fd=f.openSync(\"/Volumes/autobyteus-shared/project/race-11\",'wx');f.writeSync(fd,process.argv[1]);f.fsyncSync(fd);f.closeSync(fd);console.log('WON')}catch(e){if(e.code!=='EEXIST')throw e;console.log('EXISTS')}",
+        "ab-sf-fr050-7c155f0a-client-a"
+      ],
+      "rc": 0,
+      "stdout": "WON\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-b",
+        "node",
+        "-e",
+        "const f=require('fs');try{const fd=f.openSync(\"/Volumes/autobyteus-shared/project/race-11\",'wx');f.writeSync(fd,process.argv[1]);f.fsyncSync(fd);f.closeSync(fd);console.log('WON')}catch(e){if(e.code!=='EEXIST')throw e;console.log('EXISTS')}",
+        "ab-sf-fr050-7c155f0a-client-b"
+      ],
+      "rc": 0,
+      "stdout": "EXISTS\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-server",
+        "node",
+        "-e",
+        "console.log(require('fs').readFileSync(\"/export/project/race-11\",'utf8'))"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr050-7c155f0a-client-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-a",
+        "git",
+        "-C",
+        "/Volumes/autobyteus-shared/project",
+        "init",
+        "--quiet"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-a",
+        "node",
+        "-e",
+        "require('fs').appendFileSync(\"/Volumes/autobyteus-shared/project/preexisting.txt\",\" First\")"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr050-7c155f0a-client-a",
+        "git",
+        "-C",
+        "/Volumes/autobyteus-shared/project",
+        "add",
+        "preexisting.txt"
+      ],
+      "rc": 128,
+      "stdout": "",
+      "stderr": "warning: unable to access '/root/.config/git/ignore': Permission denied\nwarning: unable to access '/root/.config/git/attributes': Permission denied\nfatal: error when closing loose object file: Permission denied\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr050-7c155f0a-client-b"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr050-7c155f0a-client-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr050-7c155f0a-client-a"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr050-7c155f0a-client-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr050-7c155f0a-excluded"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr050-7c155f0a-excluded\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr050-7c155f0a-allowed"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr050-7c155f0a-allowed\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr050-7c155f0a-init"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr050-7c155f0a-init\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr050-7c155f0a-nfs-b"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr050-7c155f0a-nfs-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr050-7c155f0a-nfs-a"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr050-7c155f0a-nfs-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "logs",
+        "ab-sf-fr050-7c155f0a-server"
+      ],
+      "rc": 0,
+      "stdout": "UNFS3 unfsd 0.11.0 (C) 2003-2025, various authors\n/export: ip ::ffff:172.29.0.1/128 options 22\n/export: ip ::ffff:172.29.0.2/128 options 22\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr050-7c155f0a-server"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr050-7c155f0a-server\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr050-7c155f0a-source"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr050-7c155f0a-source\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "rm",
+        "ab-sf-fr050-7c155f0a-net"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr050-7c155f0a-net\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr050-7c155f0a-init"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr050-7c155f0a-init\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr050-7c155f0a-allowed"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr050-7c155f0a-allowed\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr050-7c155f0a-excluded"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr050-7c155f0a-excluded\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr050-7c155f0a-server"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr050-7c155f0a-server\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr050-7c155f0a-client-a"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr050-7c155f0a-client-a\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr050-7c155f0a-client-b"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr050-7c155f0a-client-b\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr050-7c155f0a-source"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr050-7c155f0a-source: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr050-7c155f0a-nfs-a"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr050-7c155f0a-nfs-a: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr050-7c155f0a-nfs-b"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr050-7c155f0a-nfs-b: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "inspect",
+        "ab-sf-fr050-7c155f0a-net"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: network ab-sf-fr050-7c155f0a-net not found\n"
+    }
+  ],
+  "cases": [
+    {
+      "name": "direct MOUNT3 accepts exact allowed network peer and denies reachable excluded peer",
+      "status": "PASS",
+      "result": {
+        "allowed": {
+          "mountStatus": 0,
+          "host": "172.29.0.4",
+          "exportPath": "/export"
+        },
+        "excluded": {
+          "mountStatus": 13,
+          "host": "172.29.0.4",
+          "exportPath": "/export"
+        },
+        "authorizationIsHostNotIndividualUser": true
+      },
+      "seconds": 0.252
+    },
+    {
+      "name": "different mounted client UIDs see local owner presentation but source remains nonroot owner",
+      "status": "PASS",
+      "result": {
+        "clients": [
+          {
+            "uid": 10001,
+            "presentedOwner": 10001,
+            "data": "LINUX_OWNER"
+          },
+          {
+            "uid": 501,
+            "presentedOwner": 501,
+            "data": "LINUX_OWNER"
+          }
+        ],
+        "actualSource": {
+          "processUid": 10001,
+          "owner": 10001,
+          "preexisting": "KEEP"
+        },
+        "noChownToClientIds": true
+      },
+      "seconds": 0.342
+    },
+    {
+      "name": "client root cannot read server-root private directory and creates only squashed nonroot files",
+      "status": "PASS",
+      "result": {
+        "clientUid": 0,
+        "denied": true,
+        "serverCreatedOwner": 10001,
+        "privateBytesUntouched": true
+      },
+      "seconds": 0.178
+    },
+    {
+      "name": "binary-verifier candidate has exactly one winner in every concurrent mounted exclusive-create trial",
+      "status": "PASS",
+      "result": {
+        "trials": [
+          {
+            "trial": 0,
+            "outcomes": [
+              "EXISTS",
+              "WON"
+            ],
+            "sourceContent": "ab-sf-fr050-7c155f0a-client-b",
+            "exclusive": true
+          },
+          {
+            "trial": 1,
+            "outcomes": [
+              "EXISTS",
+              "WON"
+            ],
+            "sourceContent": "ab-sf-fr050-7c155f0a-client-b",
+            "exclusive": true
+          },
+          {
+            "trial": 2,
+            "outcomes": [
+              "WON",
+              "EXISTS"
+            ],
+            "sourceContent": "ab-sf-fr050-7c155f0a-client-a",
+            "exclusive": true
+          },
+          {
+            "trial": 3,
+            "outcomes": [
+              "EXISTS",
+              "WON"
+            ],
+            "sourceContent": "ab-sf-fr050-7c155f0a-client-b",
+            "exclusive": true
+          },
+          {
+            "trial": 4,
+            "outcomes": [
+              "WON",
+              "EXISTS"
+            ],
+            "sourceContent": "ab-sf-fr050-7c155f0a-client-a",
+            "exclusive": true
+          },
+          {
+            "trial": 5,
+            "outcomes": [
+              "EXISTS",
+              "WON"
+            ],
+            "sourceContent": "ab-sf-fr050-7c155f0a-client-b",
+            "exclusive": true
+          },
+          {
+            "trial": 6,
+            "outcomes": [
+              "WON",
+              "EXISTS"
+            ],
+            "sourceContent": "ab-sf-fr050-7c155f0a-client-a",
+            "exclusive": true
+          },
+          {
+            "trial": 7,
+            "outcomes": [
+              "WON",
+              "EXISTS"
+            ],
+            "sourceContent": "ab-sf-fr050-7c155f0a-client-a",
+            "exclusive": true
+          },
+          {
+            "trial": 8,
+            "outcomes": [
+              "WON",
+              "EXISTS"
+            ],
+            "sourceContent": "ab-sf-fr050-7c155f0a-client-a",
+            "exclusive": true
+          },
+          {
+            "trial": 9,
+            "outcomes": [
+              "EXISTS",
+              "WON"
+            ],
+            "sourceContent": "ab-sf-fr050-7c155f0a-client-b",
+            "exclusive": true
+          },
+          {
+            "trial": 10,
+            "outcomes": [
+              "EXISTS",
+              "WON"
+            ],
+            "sourceContent": "ab-sf-fr050-7c155f0a-client-b",
+            "exclusive": true
+          },
+          {
+            "trial": 11,
+            "outcomes": [
+              "WON",
+              "EXISTS"
+            ],
+            "sourceContent": "ab-sf-fr050-7c155f0a-client-a",
+            "exclusive": true
+          }
+        ],
+        "violations": 0,
+        "scope": "diagnostic observations, not exclusive-create acceptance PASS"
+      },
+      "seconds": 2.166
+    },
+    {
+      "name": "Linux native-source ownership supports coordinated different-UID Git without global trust override",
+      "status": "FAIL",
+      "error": "RuntimeError(\"warning: unable to access '/root/.config/git/ignore': Permission denied\\nwarning: unable to access '/root/.config/git/attributes': Permission denied\\nfatal: error when closing loose object file: Permission denied\\n\")",
+      "seconds": 0.247
+    }
+  ],
+  "cleanup": [
+    {
+      "container": "ab-sf-fr050-7c155f0a-client-b",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr050-7c155f0a-client-a",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr050-7c155f0a-excluded",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr050-7c155f0a-allowed",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr050-7c155f0a-init",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr050-7c155f0a-nfs-b",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr050-7c155f0a-nfs-a",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr050-7c155f0a-server",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr050-7c155f0a-source",
+      "rc": 0
+    },
+    {
+      "network": "ab-sf-fr050-7c155f0a-net",
+      "rc": 0
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr050-7c155f0a-init",
+      "absent": true
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr050-7c155f0a-allowed",
+      "absent": true
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr050-7c155f0a-excluded",
+      "absent": true
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr050-7c155f0a-server",
+      "absent": true
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr050-7c155f0a-client-a",
+      "absent": true
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr050-7c155f0a-client-b",
+      "absent": true
+    },
+    {
+      "kind": "volume",
+      "name": "ab-sf-fr050-7c155f0a-source",
+      "absent": true
+    },
+    {
+      "kind": "volume",
+      "name": "ab-sf-fr050-7c155f0a-nfs-a",
+      "absent": true
+    },
+    {
+      "kind": "volume",
+      "name": "ab-sf-fr050-7c155f0a-nfs-b",
+      "absent": true
+    },
+    {
+      "kind": "network",
+      "name": "ab-sf-fr050-7c155f0a-net",
+      "absent": true
+    },
+    {
+      "ownedHostScratchRemoved": true
+    }
+  ],
+  "exports": "/export 172.29.0.1(rw,all_squash,anonuid=10001,anongid=10001,insecure) 172.29.0.2(rw,all_squash,anonuid=10001,anongid=10001,insecure)\n",
+  "nodes": {
+    "server": "ab-sf-fr050-7c155f0a-server",
+    "allowedDirectPeer": "ab-sf-fr050-7c155f0a-allowed",
+    "excludedDirectPeer": "ab-sf-fr050-7c155f0a-excluded",
+    "serverIp": "172.29.0.4",
+    "daemonGateway": "172.29.0.1",
+    "mountedClients": [
+      {
+        "node": "ab-sf-fr050-7c155f0a-client-a",
+        "uid": 10001
+      },
+      {
+        "node": "ab-sf-fr050-7c155f0a-client-b",
+        "uid": 501
+      }
+    ]
+  },
+  "exclusiveCreateTrials": [
+    {
+      "trial": 0,
+      "outcomes": [
+        "EXISTS",
+        "WON"
+      ],
+      "sourceContent": "ab-sf-fr050-7c155f0a-client-b",
+      "exclusive": true
+    },
+    {
+      "trial": 1,
+      "outcomes": [
+        "EXISTS",
+        "WON"
+      ],
+      "sourceContent": "ab-sf-fr050-7c155f0a-client-b",
+      "exclusive": true
+    },
+    {
+      "trial": 2,
+      "outcomes": [
+        "WON",
+        "EXISTS"
+      ],
+      "sourceContent": "ab-sf-fr050-7c155f0a-client-a",
+      "exclusive": true
+    },
+    {
+      "trial": 3,
+      "outcomes": [
+        "EXISTS",
+        "WON"
+      ],
+      "sourceContent": "ab-sf-fr050-7c155f0a-client-b",
+      "exclusive": true
+    },
+    {
+      "trial": 4,
+      "outcomes": [
+        "WON",
+        "EXISTS"
+      ],
+      "sourceContent": "ab-sf-fr050-7c155f0a-client-a",
+      "exclusive": true
+    },
+    {
+      "trial": 5,
+      "outcomes": [
+        "EXISTS",
+        "WON"
+      ],
+      "sourceContent": "ab-sf-fr050-7c155f0a-client-b",
+      "exclusive": true
+    },
+    {
+      "trial": 6,
+      "outcomes": [
+        "WON",
+        "EXISTS"
+      ],
+      "sourceContent": "ab-sf-fr050-7c155f0a-client-a",
+      "exclusive": true
+    },
+    {
+      "trial": 7,
+      "outcomes": [
+        "WON",
+        "EXISTS"
+      ],
+      "sourceContent": "ab-sf-fr050-7c155f0a-client-a",
+      "exclusive": true
+    },
+    {
+      "trial": 8,
+      "outcomes": [
+        "WON",
+        "EXISTS"
+      ],
+      "sourceContent": "ab-sf-fr050-7c155f0a-client-a",
+      "exclusive": true
+    },
+    {
+      "trial": 9,
+      "outcomes": [
+        "EXISTS",
+        "WON"
+      ],
+      "sourceContent": "ab-sf-fr050-7c155f0a-client-b",
+      "exclusive": true
+    },
+    {
+      "trial": 10,
+      "outcomes": [
+        "EXISTS",
+        "WON"
+      ],
+      "sourceContent": "ab-sf-fr050-7c155f0a-client-b",
+      "exclusive": true
+    },
+    {
+      "trial": 11,
+      "outcomes": [
+        "WON",
+        "EXISTS"
+      ],
+      "sourceContent": "ab-sf-fr050-7c155f0a-client-a",
+      "exclusive": true
+    }
+  ],
+  "fatal": "RuntimeError(\"warning: unable to access '/root/.config/git/ignore': Permission denied\\nwarning: unable to access '/root/.config/git/attributes': Permission denied\\nfatal: error when closing loose object file: Permission denied\\n\")",
+  "serverLog": "UNFS3 unfsd 0.11.0 (C) 2003-2025, various authors\n/export: ip ::ffff:172.29.0.1/128 options 22\n/export: ip ::ffff:172.29.0.2/128 options 22\n"
+}

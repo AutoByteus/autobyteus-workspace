@@ -4,7 +4,7 @@ Run: python3 -m unittest scripts/tests/test_public_docker_launcher_shared_worksp
 Python 3.9+; PowerShell parsing requires pwsh. Preferred-port policy cases own a
 scoped bind-query double, not host listeners; random allocation and launcher
 policy remain real. The native collision case can skip on an occupied host.
-The known macOS Bash apostrophe installer defect is not suppressed here.
+The macOS system-Bash apostrophe regression is retained after its baseline fix.
 """
 import json
 import os
@@ -27,8 +27,10 @@ POWERSHELL_MODULE_DIR = REPO_ROOT / "scripts/public/docker/autobyteus-docker.d/p
 BASH_LAUNCHER_SOURCES = [
     BASH_LAUNCHER,
     BASH_MODULE_DIR / "core.sh",
+    BASH_MODULE_DIR / "container-config.sh",
     BASH_MODULE_DIR / "docker-runtime.sh",
     BASH_MODULE_DIR / "commands.sh",
+    BASH_MODULE_DIR / "nfs-attachment.sh",
 ]
 POWERSHELL_LAUNCHER_SOURCES = [
     POWERSHELL_LAUNCHER,

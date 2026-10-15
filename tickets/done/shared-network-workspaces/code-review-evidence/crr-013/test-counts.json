@@ -1,0 +1,10 @@
+{
+  "topLevelPasses": 70,
+  "subcasePassLinesAtFourSpaces": 212,
+  "extraIndentedChildDiagnostics": 2,
+  "packages": 7,
+  "standaloneSkips": [
+    "--- SKIP: TestInstallerDirectoryModeChild (0.00s)"
+  ],
+  "rawDiagnosticTrailingWhitespaceLines": 4
+}

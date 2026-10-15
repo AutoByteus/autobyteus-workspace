@@ -1,6 +1,6 @@
 <template>
   <div
-    class="inline-flex w-fit rounded-full border border-slate-200 bg-slate-100 p-1"
+    class="inline-flex w-fit max-w-full flex-wrap gap-1 rounded-2xl md:rounded-full border border-slate-200 bg-slate-100 p-1"
     role="tablist"
     :aria-label="ariaLabel"
     data-testid="node-manager-tabs"
@@ -18,6 +18,7 @@
       :class="modelValue === tab.id ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-600 hover:text-slate-900'"
       :data-testid="`node-manager-tab-${tab.id}`"
       @click="emit('update:modelValue', tab.id)"
+      @keydown="navigateTabs($event, tab.id)"
     >
       {{ t(tab.labelKey) }}
     </button>
@@ -43,5 +44,16 @@ const nodeManagerTabs = [
   { id: 'memorySync', labelKey: 'settings.components.settings.NodeManager.tabs.memorySync' },
   { id: 'phoneSetup', labelKey: 'settings.components.settings.NodeManager.tabs.phoneSetup' },
   { id: 'dockerGuide', labelKey: 'settings.components.settings.NodeManager.tabs.dockerGuide' },
+  { id: 'nfsGuide', labelKey: 'settings.components.settings.NodeManager.tabs.nfsGuide' },
 ];
+function navigateTabs(event: KeyboardEvent, id: string) {
+  if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+  event.preventDefault();
+  const buttons = Array.from((event.currentTarget as HTMLElement).parentElement!.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+  const current = nodeManagerTabs.findIndex(tab => tab.id === id);
+  const next = event.key === 'Home' ? 0 : event.key === 'End' ? buttons.length - 1 :
+    (current + (event.key === 'ArrowRight' ? 1 : -1) + buttons.length) % buttons.length;
+  emit('update:modelValue', nodeManagerTabs[next]!.id);
+  buttons[next]?.focus();
+}
 </script>

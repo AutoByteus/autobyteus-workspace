@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "ADCEC247EC1A87421D4DB626E85165F1",
+    "--script",
+    "() => [...document.querySelectorAll(\"input\")].map(x=>({placeholder:x.placeholder,type:x.type}))"
+  ],
+  "rc": 0,
+  "stdout": "{\"schema_version\":\"1\",\"ok\":true,\"command\":\"run-script\",\"result\":{\"tab_id\":\"ADCEC247EC1A87421D4DB626E85165F1\",\"url\":\"file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/nodes\",\"output_mode\":\"inline\",\"result\":[{\"placeholder\":\"Node Name\",\"type\":\"text\"},{\"placeholder\":\"http://host:port\",\"type\":\"text\"},{\"placeholder\":\"\",\"type\":\"text\"}]}}\n",
+  "stderr": ""
+}

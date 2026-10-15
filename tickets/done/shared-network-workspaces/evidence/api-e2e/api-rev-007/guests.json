@@ -1,0 +1,137 @@
+{
+  "result": "Ready",
+  "guests": {
+    "mac": {
+      "name": "ab-nfs-api007-mac-85a4eb35",
+      "image": "ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377",
+      "env": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/driver-home",
+        "TART_HOME": "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tart-state",
+        "TART_NO_AUTO_PRUNE": "1"
+      },
+      "tart": "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "pid": 78318,
+      "runArgv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "run",
+        "ab-nfs-api007-mac-85a4eb35",
+        "--no-graphics",
+        "--no-audio",
+        "--no-clipboard",
+        "--no-usb-accessories"
+      ],
+      "preflight": "Darwin Manageds-Virtual-Machine.local 25.6.0 Darwin Kernel Version 25.6.0: Fri Jul 31 19:16:43 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_VMAPPLE arm64\nuid=501(admin) gid=20(staff) groups=20(staff),12(everyone),61(localaccounts),79(_appserverusr),80(admin),81(_appserveradm),264(_webdeveloper),701(com.apple.sharepoint.group.1),33(_appstore),98(_lpadmin),100(_lpoperator),204(_developer),250(_analyticsusers),395(com.apple.access_ftp),398(com.apple.access_screensharing),399(com.apple.access_ssh),400(com.apple.access_remote_ae)\n",
+      "binary": {
+        "path": "/Users/admin/api007-nfs",
+        "sha256": "c79e5ac05367d6657bc0be74f2e8f5b9eb504af8ade265e1afdf0334218d0cf1"
+      },
+      "ready": true
+    },
+    "linux": {
+      "name": "ab-nfs-api007-linux-b72ac1ef",
+      "image": "ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e",
+      "env": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api007-ejvzqfh7/home",
+        "TART_HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api007-ejvzqfh7/tart-state",
+        "TART_NO_AUTO_PRUNE": "1"
+      },
+      "tart": "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "pid": 94894,
+      "runArgv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "run",
+        "ab-nfs-api007-linux-b72ac1ef",
+        "--no-graphics",
+        "--no-audio",
+        "--no-clipboard",
+        "--no-usb-accessories"
+      ],
+      "preflight": "Linux ubuntu 7.0.0-38-generic #38~24.04.4-Ubuntu SMP PREEMPT_DYNAMIC Mon Sep 14 17:12:37 UTC 2 aarch64 aarch64 aarch64 GNU/Linux\nuid=1000(admin) gid=109(admin) groups=109(admin)\n",
+      "binary": {
+        "path": "/home/admin/api007-nfs",
+        "sha256": "3944a3f0696f006ac658475ea335fcc5dd8c9bfc1195c2301ab92608de446b38"
+      },
+      "ready": true
+    }
+  },
+  "commands": [
+    {
+      "args": [
+        "clone",
+        "ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377",
+        "ab-nfs-api007-mac-85a4eb35"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "set",
+        "ab-nfs-api007-mac-85a4eb35",
+        "--cpu",
+        "4",
+        "--memory",
+        "8192",
+        "--disk-size",
+        "100"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "exec",
+        "-i",
+        "ab-nfs-api007-mac-85a4eb35",
+        "/bin/sh",
+        "-c",
+        "cat > /Users/admin/api007-nfs; chmod 755 /Users/admin/api007-nfs"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "clone",
+        "ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e",
+        "ab-nfs-api007-linux-b72ac1ef"
+      ],
+      "rc": 0,
+      "stdout": "pulling manifest...\npulling disk (3.1 GB compressed)...\n0%\n\u001b[1A\r\u001b[J2%\n\u001b[1A\r\u001b[J3%\n\u001b[1A\r\u001b[J4%\n\u001b[1A\r\u001b[J5%\n\u001b[1A\r\u001b[J6%\n\u001b[1A\r\u001b[J7%\n\u001b[1A\r\u001b[J8%\n\u001b[1A\r\u001b[J9%\n\u001b[1A\r\u001b[J11%\n\u001b[1A\r\u001b[J12%\n\u001b[1A\r\u001b[J13%\n\u001b[1A\r\u001b[J14%\n\u001b[1A\r\u001b[J15%\n\u001b[1A\r\u001b[J16%\n\u001b[1A\r\u001b[J17%\n\u001b[1A\r\u001b[J18%\n\u001b[1A\r\u001b[J19%\n\u001b[1A\r\u001b[J20%\n\u001b[1A\r\u001b[J21%\n\u001b[1A\r\u001b[J22%\n\u001b[1A\r\u001b[J23%\n\u001b[1A\r\u001b[J24%\n\u001b[1A\r\u001b[J25%\n\u001b[1A\r\u001b[J26%\n\u001b[1A\r\u001b[J27%\n\u001b[1A\r\u001b[J28%\n\u001b[1A\r\u001b[J29%\n\u001b[1A\r\u001b[J30%\n\u001b[1A\r\u001b[J31%\n\u001b[1A\r\u001b[J32%\n\u001b[1A\r\u001b[J33%\n\u001b[1A\r\u001b[J34%\n\u001b[1A\r\u001b[J35%\n\u001b[1A\r\u001b[J36%\n\u001b[1A\r\u001b[J37%\n\u001b[1A\r\u001b[J38%\n\u001b[1A\r\u001b[J40%\n\u001b[1A\r\u001b[J41%\n\u001b[1A\r\u001b[J42%\n\u001b[1A\r\u001b[J43%\n\u001b[1A\r\u001b[J45%\n\u001b[1A\r\u001b[J46%\n\u001b[1A\r\u001b[J47%\n\u001b[1A\r\u001b[J48%\n\u001b[1A\r\u001b[J49%\n\u001b[1A\r\u001b[J50%\n\u001b[1A\r\u001b[J51%\n\u001b[1A\r\u001b[J52%\n\u001b[1A\r\u001b[J53%\n\u001b[1A\r\u001b[J54%\n\u001b[1A\r\u001b[J55%\n\u001b[1A\r\u001b[J56%\n\u001b[1A\r\u001b[J57%\n\u001b[1A\r\u001b[J58%\n\u001b[1A\r\u001b[J59%\n\u001b[1A\r\u001b[J60%\n\u001b[1A\r\u001b[J61%\n\u001b[1A\r\u001b[J63%\n\u001b[1A\r\u001b[J65%\n\u001b[1A\r\u001b[J66%\n\u001b[1A\r\u001b[J67%\n\u001b[1A\r\u001b[J69%\n\u001b[1A\r\u001b[J70%\n\u001b[1A\r\u001b[J71%\n\u001b[1A\r\u001b[J72%\n\u001b[1A\r\u001b[J74%\n\u001b[1A\r\u001b[J75%\n\u001b[1A\r\u001b[J76%\n\u001b[1A\r\u001b[J77%\n\u001b[1A\r\u001b[J78%\n\u001b[1A\r\u001b[J80%\n\u001b[1A\r\u001b[J81%\n\u001b[1A\r\u001b[J82%\n\u001b[1A\r\u001b[J83%\n\u001b[1A\r\u001b[J84%\n\u001b[1A\r\u001b[J85%\n\u001b[1A\r\u001b[J86%\n\u001b[1A\r\u001b[J87%\n\u001b[1A\r\u001b[J88%\n\u001b[1A\r\u001b[J89%\n\u001b[1A\r\u001b[J90%\n\u001b[1A\r\u001b[J91%\n\u001b[1A\r\u001b[J92%\n\u001b[1A\r\u001b[J94%\n\u001b[1A\r\u001b[J95%\n\u001b[1A\r\u001b[J96%\n\u001b[1A\r\u001b[J97%\n\u001b[1A\r\u001b[J98%\n\u001b[1A\r\u001b[J99%\n\u001b[1A\r\u001b[J100%\npulling NVRAM...\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "set",
+        "ab-nfs-api007-linux-b72ac1ef",
+        "--cpu",
+        "4",
+        "--memory",
+        "8192",
+        "--disk-size",
+        "100"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "exec",
+        "-i",
+        "ab-nfs-api007-linux-b72ac1ef",
+        "/bin/sh",
+        "-c",
+        "cat > /home/admin/api007-nfs; chmod 755 /home/admin/api007-nfs"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ]
+}

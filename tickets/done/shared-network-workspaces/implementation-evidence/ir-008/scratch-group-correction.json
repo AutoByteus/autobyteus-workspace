@@ -1,0 +1,14 @@
+{
+  "before": {
+    "/tmp/nfs-ir008-09yknj95": 0,
+    "/tmp/nfs-ir008-09yknj95/home": 0,
+    "/tmp/nfs-ir008-09yknj95/tmp": 0
+  },
+  "after": {
+    "/tmp/nfs-ir008-09yknj95": 20,
+    "/tmp/nfs-ir008-09yknj95/home": 20,
+    "/tmp/nfs-ir008-09yknj95/tmp": 20
+  },
+  "uid": 501,
+  "gid": 20
+}

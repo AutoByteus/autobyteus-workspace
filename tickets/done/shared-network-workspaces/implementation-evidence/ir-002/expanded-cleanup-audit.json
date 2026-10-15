@@ -1,0 +1,50 @@
+{
+  "checks": [
+    {
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-core-unit-all-n97_2rc2",
+      "absent": true,
+      "ownedProcessGroupStillExists": false
+    },
+    {
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-web-unit-all-9jjl7ks2",
+      "absent": true,
+      "ownedProcessGroupStillExists": false
+    },
+    {
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-electron-unit-all-y4olvhx7",
+      "absent": true,
+      "ownedProcessGroupStillExists": false
+    },
+    {
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-web-build-rvlo5v7e",
+      "absent": true,
+      "ownedProcessGroupStillExists": false
+    },
+    {
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-integration-prepare-2nqsv864",
+      "absent": true,
+      "ownedProcessGroupStillExists": false
+    },
+    {
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe",
+      "absent": true,
+      "ownedProcessGroupStillExists": false
+    },
+    {
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-rerun-mfrll47u",
+      "absent": true,
+      "ownedProcessGroupStillExists": false
+    },
+    {
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-rerun-iykai855",
+      "absent": true,
+      "ownedProcessGroupStillExists": false
+    },
+    {
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-rerun-yqgjmwf2",
+      "absent": true,
+      "ownedProcessGroupStillExists": false
+    }
+  ],
+  "liveResourcesTouched": false
+}

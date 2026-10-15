@@ -1,0 +1,2 @@
+Current full-source server image built/transferred unchanged to owned Linux guest; local registry digest, isolated launcher home, loopback port policy ready
+{"result": "Ready", "error": null, "digest": "127.0.0.1:5000/ab-nfs-api004-server@sha256:c4338af68b8608226655056dc7c52d76250eba7c317f25ef43b9ca8458414dfb"}

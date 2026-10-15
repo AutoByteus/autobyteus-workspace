@@ -1,0 +1,49 @@
+{
+  "result": "Pass",
+  "confidence": 95,
+  "scope": "API009 affected integrated repository fixture/lifecycle/search validation; API008 FS01-17 command-only Pass95 carried separately",
+  "cases": {
+    "INT01": "Pass",
+    "INT02": "Pass",
+    "INT03": "Pass",
+    "INT04": "Pass",
+    "INT05": "Pass",
+    "INT06": "Pass"
+  },
+  "counts": {
+    "workspace-rest": {
+      "files": 1,
+      "passed": 6
+    },
+    "workspace-unit": {
+      "files": 9,
+      "passed": 48
+    },
+    "adjacent-explorer": {
+      "files": 2,
+      "passed": 12
+    },
+    "workspace-rest-repeat": {
+      "files": 1,
+      "passed": 6
+    }
+  },
+  "uniqueTests": 66,
+  "uniqueFiles": 12,
+  "additionalRepeatTests": 6,
+  "broaderValidation": "Not Required for this repository-only reconciliation; actual changed lifecycle and socket boundaries executed, no new kernel/browser gap",
+  "categoryScores": [
+    95,
+    95,
+    95,
+    95,
+    95,
+    null,
+    95
+  ],
+  "userSurfaceCategory": "N/A no new browser/desktop surface; CLI proof remains API00895",
+  "cleanup": "Complete",
+  "currentSource": "bd57ef932dcd9e12c8470f0a1accbce0928d7ae5",
+  "historicalResults": "API008 Pass95 filesystem, API007 combined Fail82.14, API006 Blocked67.86 preserved; DR001 remains Delivery owner verdict",
+  "followUp": "CR-FUP002 unresolved/nonblocking Task project_task_a4f90984-add2-4300-983d-de54ded3032b; no retest or new live editor closure"
+}

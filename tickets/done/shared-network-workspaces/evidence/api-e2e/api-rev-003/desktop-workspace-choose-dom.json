@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "63E82A998089CC78CC6976AF907DBE03",
+    "--script",
+    "() => ({text:document.body.innerText,inputs:[...document.querySelectorAll(\"input\")].map(e=>({placeholder:e.placeholder,value:e.value})),buttons:[...document.querySelectorAll(\"[role=dialog] button\")].map(e=>e.textContent)})"
+  ],
+  "rc": 0,
+  "stdout": "{\"schema_version\":\"1\",\"ok\":true,\"command\":\"run-script\",\"result\":{\"tab_id\":\"63E82A998089CC78CC6976AF907DBE03\",\"url\":\"file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat\",\"output_mode\":\"inline\",\"result\":{\"text\":\"Chat\\nEmpty draft\\nAgents\\nAgent Teams\\nAgent Orgs\\nProjects\\nSkills\\nMemory\\nNodes\\nWorkspaces\\napi-scenario\\nNo task history in this workspace.\\nTemp Workspace\\nSettings\\nDaily Assistant\\n\\nAll your skills are available. Type / to use a skill, or @ to delegate to an agent or team.\\n\\nContext Files (0)\\n(drag, paste, or upload)\\nTemp workspace\\nTemp workspace\\nDEFAULT\\nScratch folder for quick chats\\nYOUR WORKSPACES\\napi-scenario\\n/Volumes/autobyteus-shared/api-scenario\\nOpen another folder\\u2026\\nAuto-approve\\nclaude-fable-5\\nAutoByteus\\nOff\",\"inputs\":[{\"placeholder\":\"\",\"value\":\"\"},{\"placeholder\":\"Search workspaces\",\"value\":\"\"}],\"buttons\":[]}}}\n",
+  "stderr": ""
+}

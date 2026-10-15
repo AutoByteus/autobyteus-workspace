@@ -1,0 +1,227 @@
+{
+  "vm": "ab-nfs-api004-linux-9591ce1a",
+  "source": "/home/admin/ab-nfs-api004-linux-9591ce1a-native-source",
+  "mountRoot": "/Volumes/autobyteus-shared",
+  "binary": {
+    "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api004-ih_oeijo/autobyteus-nfs-linux-arm64",
+    "sha256": "0036ccef0bbb2a2510064f2e882b692687a2288eb25563d89f9c4ac9150c860c",
+    "size": 11047219
+  },
+  "metadata": {
+    "version": "v1.5.3-beta.2",
+    "sourceHash": "51f81cd187caf269ecffa83fecc35a4f665b70942716d7858fa7d964d3b335ed",
+    "ubuntuPackages": {
+      "nfs-common": "1:2.6.4-3ubuntu5.1"
+    },
+    "engineImage": "",
+    "qualifiedTargets": [],
+    "engine": {
+      "source": {
+        "version": "4.3-8ubuntu1",
+        "files": [
+          {
+            "file": "nfs-ganesha_4.3-8ubuntu1.dsc",
+            "sha256": "ffa76c26b12d23b67dcda184d7ec7ae55a42d1d14bf84bb7c0cf0134156ba3ca",
+            "size": 3576
+          },
+          {
+            "file": "nfs-ganesha_4.3.orig.tar.gz",
+            "sha256": "d4efd020edf4dfe65abfd0f0f66eb4390613360f99dce4354467ab297e0e1c0f",
+            "size": 1895017
+          },
+          {
+            "file": "nfs-ganesha_4.3-8ubuntu1.debian.tar.xz",
+            "sha256": "ef35d130e1b37149b156d201b70e6c2804bebbfbee1713c5bd6d938dd433fe03",
+            "size": 19224
+          }
+        ],
+        "patchCommit": "98eb77c4fd94effa6882b214698a77752ec79f6e",
+        "patchSha256": "ba682b5c64e7f800c927f4c90b2a7bfb4b8d2a323ddc48c3d591db3d75799031",
+        "sourceDateEpoch": 1791936000,
+        "recipeSha256": "34e28c622f598487af74a545115fa8dffe94e8f1aa5d85c091515aa187d66e4f",
+        "buildBase": "ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e"
+      },
+      "architectures": {
+        "arm64": {
+          "packages": [
+            {
+              "file": "nfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb",
+              "sha256": "0b5c78911cfc1b299e9894e1f841e74176fbb2cb45b158008e4530713549ebc8",
+              "size": 613976,
+              "name": "nfs-ganesha",
+              "version": "4.3-8ubuntu1+autobyteus1",
+              "architecture": "arm64"
+            },
+            {
+              "file": "nfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb",
+              "sha256": "3bf06769646d93ea85f0277fe0726eb42d0d29a70c0108505706954e5e8d2ac6",
+              "size": 48626,
+              "name": "nfs-ganesha-vfs",
+              "version": "4.3-8ubuntu1+autobyteus1",
+              "architecture": "arm64"
+            }
+          ],
+          "correspondingSource": {
+            "file": "autobyteus-nfs-ganesha-source-4.3-8ubuntu1+autobyteus1-arm64.tar.gz",
+            "sha256": "eed35ab4b732ac05d2afc3531e70cdc27031fb414fdb52a0daf093f33daaec0a",
+            "size": 1930105
+          },
+          "buildInventory": {
+            "file": "engine-build-arm64.txt",
+            "sha256": "56fad63c43f85091d84df347564dfd962a9afaafe519539849860b1807695761",
+            "size": 57836
+          }
+        }
+      }
+    }
+  },
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api004-linux-9591ce1a",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "set -e; sha256sum /usr/libexec/autobyteus-nfs/autobyteus-nfs; dpkg-query -W -f=\"\\${Package} \\${Version} \\${Architecture}\\n\" nfs-ganesha nfs-ganesha-vfs; sudo -n stat -c \"%a:%u:%g:%n\" /var/lib/autobyteus-nfs /var/lib/autobyteus-nfs/attachment.json; systemctl is-active autobyteus-nfs.service autobyteus-nfs-ganesha.service; findmnt -n -o OPTIONS /Volumes/autobyteus-shared"
+      ],
+      "rc": 0,
+      "seconds": 0.569,
+      "stdout": "0036ccef0bbb2a2510064f2e882b692687a2288eb25563d89f9c4ac9150c860c  /usr/libexec/autobyteus-nfs/autobyteus-nfs\nnfs-ganesha 4.3-8ubuntu1+autobyteus1 arm64\nnfs-ganesha-vfs 4.3-8ubuntu1+autobyteus1 arm64\n700:0:0:/var/lib/autobyteus-nfs\n600:0:0:/var/lib/autobyteus-nfs/attachment.json\nactive\nactive\nrw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,fatal_neterrors=none,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=192.168.64.4,local_lock=none,addr=192.168.64.4\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api004-mac-5427b9a1",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "/usr/bin/nc -G 3 -z 192.168.64.4 2049"
+      ],
+      "rc": 1,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api004-mac-5427b9a1",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "/sbin/route -n get 192.168.64.4; /usr/sbin/arp -an; /sbin/ping -c 2 -W 1000 192.168.64.4"
+      ],
+      "rc": 2,
+      "stdout": "   route to: 192.168.64.4\ndestination: 192.168.64.4\n  interface: en0\n      flags: <UP,HOST,DONE,LLINFO,WASCLONED,IFSCOPE,IFREF>\n recvpipe  sendpipe  ssthresh  rtt,msec    rttvar  hopcount      mtu     expire\n       0         0         0         0         0         0      1500        -1 \n? (192.168.64.1) at be:d0:74:32:81:64 on en0 ifscope [ethernet]\n? (192.168.64.4) at (incomplete) on en0 ifscope [ethernet]\n? (192.168.64.255) at ff:ff:ff:ff:ff:ff on en0 ifscope [ethernet]\n? (224.0.0.251) at 1:0:5e:0:0:fb on en0 ifscope permanent [ethernet]\nPING 192.168.64.4 (192.168.64.4): 56 data bytes\nRequest timeout for icmp_seq 0\n\n--- 192.168.64.4 ping statistics ---\n2 packets transmitted, 0 packets received, 100.0% packet loss\n",
+      "stderr": "ping: sendto: No route to host\nping: sendto: Host is down\n"
+    }
+  ],
+  "cases": [
+    {
+      "name": "native package private mode managed job and installed binary identity",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api004-linux-9591ce1a",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/home/admin",
+          "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "set -e; sha256sum /usr/libexec/autobyteus-nfs/autobyteus-nfs; dpkg-query -W -f=\"\\${Package} \\${Version} \\${Architecture}\\n\" nfs-ganesha nfs-ganesha-vfs; sudo -n stat -c \"%a:%u:%g:%n\" /var/lib/autobyteus-nfs /var/lib/autobyteus-nfs/attachment.json; systemctl is-active autobyteus-nfs.service autobyteus-nfs-ganesha.service; findmnt -n -o OPTIONS /Volumes/autobyteus-shared"
+        ],
+        "rc": 0,
+        "seconds": 0.569,
+        "stdout": "0036ccef0bbb2a2510064f2e882b692687a2288eb25563d89f9c4ac9150c860c  /usr/libexec/autobyteus-nfs/autobyteus-nfs\nnfs-ganesha 4.3-8ubuntu1+autobyteus1 arm64\nnfs-ganesha-vfs 4.3-8ubuntu1+autobyteus1 arm64\n700:0:0:/var/lib/autobyteus-nfs\n600:0:0:/var/lib/autobyteus-nfs/attachment.json\nactive\nactive\nrw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,fatal_neterrors=none,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=192.168.64.4,local_lock=none,addr=192.168.64.4\n",
+        "stderr": ""
+      },
+      "status": "Pass",
+      "seconds": 0.569
+    }
+  ],
+  "result": "Pass native / Blocked peer",
+  "peerResult": "Blocked",
+  "sourceIdentityBefore": "64769:2359328:1000:109:755",
+  "connection": {
+    "storageId": "982e2025-961c-4b25-ab83-24ff06debcfa",
+    "endpoint": "192.168.64.4",
+    "export": "/autobyteus/982e2025-961c-4b25-ab83-24ff06debcfa",
+    "protocol": "4.1",
+    "mountRoot": "/Volumes/autobyteus-shared"
+  },
+  "endpoint": "192.168.64.4",
+  "createEvidence": "native-peer-result.json, no repeat create/reconnect",
+  "nativeResult": "Pass",
+  "peerTcp": {
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-api004-mac-5427b9a1",
+      "/usr/bin/sudo",
+      "-n",
+      "-u",
+      "admin",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/Users/admin",
+      "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "/usr/bin/nc -G 3 -z 192.168.64.4 2049"
+    ],
+    "rc": 1,
+    "stdout": "",
+    "stderr": ""
+  },
+  "peerDiagnostics": {
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-api004-mac-5427b9a1",
+      "/usr/bin/sudo",
+      "-n",
+      "-u",
+      "admin",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/Users/admin",
+      "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "/sbin/route -n get 192.168.64.4; /usr/sbin/arp -an; /sbin/ping -c 2 -W 1000 192.168.64.4"
+    ],
+    "rc": 2,
+    "stdout": "   route to: 192.168.64.4\ndestination: 192.168.64.4\n  interface: en0\n      flags: <UP,HOST,DONE,LLINFO,WASCLONED,IFSCOPE,IFREF>\n recvpipe  sendpipe  ssthresh  rtt,msec    rttvar  hopcount      mtu     expire\n       0         0         0         0         0         0      1500        -1 \n? (192.168.64.1) at be:d0:74:32:81:64 on en0 ifscope [ethernet]\n? (192.168.64.4) at (incomplete) on en0 ifscope [ethernet]\n? (192.168.64.255) at ff:ff:ff:ff:ff:ff on en0 ifscope [ethernet]\n? (224.0.0.251) at 1:0:5e:0:0:fb on en0 ifscope permanent [ethernet]\nPING 192.168.64.4 (192.168.64.4): 56 data bytes\nRequest timeout for icmp_seq 0\n\n--- 192.168.64.4 ping statistics ---\n2 packets transmitted, 0 packets received, 100.0% packet loss\n",
+    "stderr": "ping: sendto: No route to host\nping: sendto: Host is down\n"
+  },
+  "peerBlocker": "Ordinary shared-NAT Mac-to-Linux TCP2049 unreachable; no host bridge/router/firewall/ARP workaround authorized. No mount attempted on known unhealthy path."
+}

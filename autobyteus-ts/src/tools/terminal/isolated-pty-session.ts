@@ -55,7 +55,7 @@ export class IsolatedPtySession {
     return 'bash';
   }
 
-  async start(cwd: string): Promise<void> {
+  async start(cwd: string, environment?: NodeJS.ProcessEnv): Promise<void> {
     if (this.child) {
       throw new Error('Session already started');
     }
@@ -72,7 +72,7 @@ export class IsolatedPtySession {
     const child = spawn(process.execPath, ['--input-type=module', '--eval', ISOLATED_PTY_BRIDGE_SOURCE], {
       cwd,
       env: {
-        ...process.env,
+        ...(environment ?? process.env),
         TERM: 'xterm-256color',
         PS1: '\\w $ ',
         AUTOBYTEUS_PTY_BRIDGE_COLS: String(DEFAULT_COLS),

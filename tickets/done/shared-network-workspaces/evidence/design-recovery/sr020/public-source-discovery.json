@@ -1,0 +1,67 @@
+[
+  {
+    "name": "fix",
+    "url": "https://api.github.com/repos/nfs-ganesha/nfs-ganesha/commits/98eb77c4fd94effa6882b214698a77752ec79f6e",
+    "rc": 0,
+    "stderr": "",
+    "sha256": "022dac87ac3bbcd3d0e63f5dd8f31960ec9c2f78abd07169fd3395cf2c4a8049",
+    "sha": "98eb77c4fd94effa6882b214698a77752ec79f6e",
+    "date": "2026-04-10T23:02:35Z",
+    "files": [
+      {
+        "sha": "cf0968365ed626f9aa3faa8749373a324fd30086",
+        "filename": "src/Protocols/NFS/nfs4_Compound.c",
+        "status": "modified",
+        "additions": 2,
+        "deletions": 2,
+        "changes": 4,
+        "blob_url": "https://github.com/nfs-ganesha/nfs-ganesha/blob/98eb77c4fd94effa6882b214698a77752ec79f6e/src%2FProtocols%2FNFS%2Fnfs4_Compound.c",
+        "raw_url": "https://github.com/nfs-ganesha/nfs-ganesha/raw/98eb77c4fd94effa6882b214698a77752ec79f6e/src%2FProtocols%2FNFS%2Fnfs4_Compound.c",
+        "contents_url": "https://api.github.com/repos/nfs-ganesha/nfs-ganesha/contents/src%2FProtocols%2FNFS%2Fnfs4_Compound.c?ref=98eb77c4fd94effa6882b214698a77752ec79f6e",
+        "patch": "@@ -440,9 +440,9 @@ static const struct nfs4_op_desc optabv4[] = {\n \t\t.exp_perm_flags = 0},\n \t[NFS4_OP_GET_DIR_DELEGATION] = {\n \t\t.name = \"OP_GET_DIR_DELEGATION\",\n-\t\t.funct = nfs4_op_illegal,\n+\t\t.funct = nfs4_op_notsupp,\n \t\t.resume = nfs4_default_resume,\n-\t\t.free_res = nfs4_op_illegal_Free,\n+\t\t.free_res = nfs4_op_notsupp_Free,\n \t\t.resp_size = sizeof(GET_DIR_DELEGATION4res),\n \t\t.exp_perm_flags = 0\t/* tbd */},\n \t[NFS4_OP_GETDEVICEINFO] = {"
+      }
+    ]
+  },
+  {
+    "name": "ppas",
+    "url": "https://api.launchpad.net/1.0/~nfs-ganesha/ppas",
+    "rc": 0,
+    "stderr": "",
+    "sha256": "b1537fca3a6af2c88d05929bfdaf7600625b439a880b6ffacf1a74081df1e51f",
+    "archives": [
+      "libntirpc-1.7",
+      "libntirpc-1.8",
+      "libntirpc-3.0",
+      "libntirpc-4",
+      "libntirpc-5",
+      "libntirpc-6",
+      "libntirpc-7",
+      "nfs-ganesha-2.7",
+      "nfs-ganesha-2.8",
+      "nfs-ganesha-3.0",
+      "nfs-ganesha-4",
+      "nfs-ganesha-5",
+      "nfs-ganesha-6",
+      "nfs-ganesha-7"
+    ]
+  },
+  {
+    "name": "ppa7",
+    "url": "https://api.launchpad.net/1.0/~nfs-ganesha/+archive/ubuntu/nfs-ganesha-7?ws.op=getPublishedSources&source_name=nfs-ganesha&exact_match=true&status=Published",
+    "rc": 0,
+    "stderr": "",
+    "sha256": "499504b4be4df01b9df5956db1315d6738a2c8fcf9ac9f13f9efec022b796088",
+    "published": [
+      {
+        "source_package_version": "7.0-ubuntu1~questing1",
+        "distro_series_link": "https://api.launchpad.net/1.0/ubuntu/plucky",
+        "date_published": "2025-08-08T14:52:43.816738+00:00"
+      },
+      {
+        "source_package_version": "7.0-ubuntu1~noble2",
+        "distro_series_link": "https://api.launchpad.net/1.0/ubuntu/noble",
+        "date_published": "2025-08-08T14:52:43.816738+00:00"
+      }
+    ]
+  }
+]

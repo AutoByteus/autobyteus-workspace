@@ -1,0 +1,316 @@
+{
+  "result": "Pass \u2014 scoped evidence audit, not product execution",
+  "inputCommit": "a4be96c45d4e9799c3dc18fc6b690b7edf579477",
+  "counts": {
+    "references": 1346,
+    "incoming": 1302,
+    "manifestExcludingReviewerAuthorities": 1342,
+    "protectedExcludingReviewerAuthorities": 1296,
+    "oldDistFiles": 286
+  },
+  "productionAndApprovalUnchanged": true,
+  "solutionHistoryPrefixPreserved": true,
+  "prototypeObservations": [
+    {
+      "deviceObservation": 16777229,
+      "diskutilSeconds": 0.081073042,
+      "filesystem": "apfs",
+      "gid": 20,
+      "identity": {
+        "volumeUuid": "a19fe379-be62-4297-9a39-3934cc88214b",
+        "inode": 507377
+      },
+      "mode": "755",
+      "mountedDevice": "/dev/disk2s5",
+      "source": "/Users/admin/ab-nfs-sr023-8fd5ad2f-source",
+      "uid": 501,
+      "volumeMountPoint": "/System/Volumes/Data",
+      "label": "baseline"
+    },
+    {
+      "deviceObservation": 16777230,
+      "diskutilSeconds": 0.5930855,
+      "filesystem": "apfs",
+      "gid": 20,
+      "identity": {
+        "volumeUuid": "a19fe379-be62-4297-9a39-3934cc88214b",
+        "inode": 507377
+      },
+      "mode": "755",
+      "mountedDevice": "/dev/disk2s5",
+      "source": "/Users/admin/ab-nfs-sr023-8fd5ad2f-source",
+      "uid": 501,
+      "volumeMountPoint": "/System/Volumes/Data",
+      "label": "ordinary-boot-1"
+    },
+    {
+      "deviceObservation": 16777230,
+      "diskutilSeconds": 0.740409667,
+      "filesystem": "apfs",
+      "gid": 20,
+      "identity": {
+        "volumeUuid": "a19fe379-be62-4297-9a39-3934cc88214b",
+        "inode": 507377
+      },
+      "mode": "755",
+      "mountedDevice": "/dev/disk2s5",
+      "source": "/Users/admin/ab-nfs-sr023-8fd5ad2f-source",
+      "uid": 501,
+      "volumeMountPoint": "/System/Volumes/Data",
+      "label": "ordinary-boot-2"
+    },
+    {
+      "deviceObservation": 16777228,
+      "diskutilSeconds": 0.681697458,
+      "filesystem": "apfs",
+      "gid": 20,
+      "identity": {
+        "volumeUuid": "a19fe379-be62-4297-9a39-3934cc88214b",
+        "inode": 507377
+      },
+      "mode": "755",
+      "mountedDevice": "/dev/disk2s5",
+      "source": "/Users/admin/ab-nfs-sr023-8fd5ad2f-source",
+      "uid": 501,
+      "volumeMountPoint": "/System/Volumes/Data",
+      "label": "ordinary-boot-3"
+    },
+    {
+      "deviceObservation": 16777228,
+      "diskutilSeconds": 0.088477875,
+      "filesystem": "apfs",
+      "gid": 20,
+      "identity": {
+        "volumeUuid": "a19fe379-be62-4297-9a39-3934cc88214b",
+        "inode": 514448
+      },
+      "mode": "755",
+      "mountedDevice": "/dev/disk2s5",
+      "source": "/Users/admin/ab-nfs-sr023-8fd5ad2f-source",
+      "uid": 501,
+      "volumeMountPoint": "/System/Volumes/Data",
+      "label": "replacement-directory"
+    },
+    {
+      "deviceObservation": 16777228,
+      "diskutilSeconds": 0.117282125,
+      "filesystem": "apfs",
+      "gid": 20,
+      "identity": {
+        "volumeUuid": "a19fe379-be62-4297-9a39-3934cc88214b",
+        "inode": 507377
+      },
+      "mode": "755",
+      "mountedDevice": "/dev/disk2s5",
+      "source": "/Users/admin/ab-nfs-sr023-8fd5ad2f-source",
+      "uid": 501,
+      "volumeMountPoint": "/System/Volumes/Data",
+      "label": "restored-original-directory"
+    },
+    {
+      "deviceObservation": 16777228,
+      "diskutilSeconds": 0.15475375,
+      "filesystem": "apfs",
+      "gid": 20,
+      "identity": {
+        "volumeUuid": "a19fe379-be62-4297-9a39-3934cc88214b",
+        "inode": 507377
+      },
+      "mode": "755",
+      "mountedDevice": "/dev/disk2s5",
+      "source": "/Users/admin/ab-nfs-sr023-8fd5ad2f-source",
+      "uid": 501,
+      "volumeMountPoint": "/System/Volumes/Data",
+      "label": "after-permission-restore"
+    },
+    {
+      "deviceObservation": 16777241,
+      "diskutilSeconds": 0.157893583,
+      "filesystem": "apfs",
+      "gid": 20,
+      "identity": {
+        "volumeUuid": "2f51721d-414d-4bb9-9a1d-6168a7ef2330",
+        "inode": 2
+      },
+      "mode": "755",
+      "mountedDevice": "/dev/disk8s1",
+      "source": "/Volumes/ab-nfs-sr023-8fd5ad2f-volume",
+      "uid": 501,
+      "volumeMountPoint": "/Volumes/ab-nfs-sr023-8fd5ad2f-volume",
+      "label": "APFS-volume-1"
+    },
+    {
+      "deviceObservation": 16777241,
+      "diskutilSeconds": 0.149106708,
+      "filesystem": "apfs",
+      "gid": 20,
+      "identity": {
+        "volumeUuid": "b9d424c0-6cee-4dae-bb26-91edf2dfbc62",
+        "inode": 2
+      },
+      "mode": "755",
+      "mountedDevice": "/dev/disk8s1",
+      "source": "/Volumes/ab-nfs-sr023-8fd5ad2f-volume",
+      "uid": 501,
+      "volumeMountPoint": "/Volumes/ab-nfs-sr023-8fd5ad2f-volume",
+      "label": "APFS-volume-2"
+    },
+    {
+      "deviceObservation": 16777241,
+      "diskutilSeconds": 0.078795792,
+      "filesystem": "apfs",
+      "gid": 20,
+      "identity": {
+        "volumeUuid": "2f51721d-414d-4bb9-9a1d-6168a7ef2330",
+        "inode": 2
+      },
+      "mode": "755",
+      "mountedDevice": "/dev/disk8s1",
+      "source": "/Volumes/ab-nfs-sr023-8fd5ad2f-volume",
+      "uid": 501,
+      "volumeMountPoint": "/Volumes/ab-nfs-sr023-8fd5ad2f-volume",
+      "label": "original-APFS-volume-reattached"
+    },
+    {
+      "deviceObservation": 16777228,
+      "diskutilSeconds": 0.090533333,
+      "filesystem": "apfs",
+      "gid": 20,
+      "identity": {
+        "volumeUuid": "a19fe379-be62-4297-9a39-3934cc88214b",
+        "inode": 507377
+      },
+      "mode": "755",
+      "mountedDevice": "/dev/disk2s5",
+      "source": "/Users/admin/ab-nfs-sr023-8fd5ad2f-source",
+      "uid": 501,
+      "volumeMountPoint": "/System/Volumes/Data",
+      "label": "final-original"
+    }
+  ],
+  "prototypeOnly": true,
+  "prototypeCleanupComplete": true,
+  "macProductFailureRows": [
+    {
+      "round": "second",
+      "identity": [
+        16777230,
+        506781,
+        501,
+        20,
+        755
+      ],
+      "volumeUuid": null
+    },
+    {
+      "round": "second",
+      "identity": [
+        16777227,
+        506781,
+        501,
+        20,
+        755
+      ],
+      "volumeUuid": null
+    },
+    {
+      "round": "second",
+      "identity": [
+        16777227,
+        506781,
+        501,
+        20,
+        755
+      ],
+      "volumeUuid": null
+    },
+    {
+      "round": "second",
+      "identity": [
+        16777227,
+        506781,
+        501,
+        20,
+        755
+      ],
+      "volumeUuid": null
+    },
+    {
+      "round": "second",
+      "identity": [
+        16777227,
+        506781,
+        501,
+        20,
+        755
+      ],
+      "volumeUuid": null
+    },
+    {
+      "round": "third",
+      "identity": [
+        16777227,
+        506781,
+        501,
+        20,
+        755
+      ],
+      "volumeUuid": "A19FE379-BE62-4297-9A39-3934CC88214B"
+    },
+    {
+      "round": "third",
+      "identity": [
+        16777230,
+        506781,
+        501,
+        20,
+        755
+      ],
+      "volumeUuid": "A19FE379-BE62-4297-9A39-3934CC88214B"
+    },
+    {
+      "round": "third",
+      "identity": [
+        16777230,
+        506781,
+        501,
+        20,
+        755
+      ],
+      "volumeUuid": "A19FE379-BE62-4297-9A39-3934CC88214B"
+    },
+    {
+      "round": "third",
+      "identity": [
+        16777230,
+        506781,
+        501,
+        20,
+        755
+      ],
+      "volumeUuid": "A19FE379-BE62-4297-9A39-3934CC88214B"
+    }
+  ],
+  "priorFreshnessResolution": [
+    {
+      "evidence": "visibility-result.json",
+      "fixtures": 20,
+      "readerChecks": 40,
+      "maxSeconds": {
+        "native": 0.9279331459999867,
+        "http": 0.9349140159999934
+      }
+    },
+    {
+      "evidence": "docker-visibility-result.json",
+      "fixtures": 20,
+      "readerChecks": 40,
+      "maxSeconds": {
+        "native": 0.8274980019999703,
+        "http": 0.8391053779999993
+      }
+    }
+  ],
+  "uniqueFreshnessFixtures": 40,
+  "limits": "No reviewer build, product test, VM, root, mount, Docker, app or provider operation. CRR012/API005 Fail remain. No physical/release/user qualification."
+}

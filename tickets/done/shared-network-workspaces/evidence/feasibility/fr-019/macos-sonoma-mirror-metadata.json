@@ -1,0 +1,11 @@
+{
+  "source": "https://gallery.ecr.aws/cirruslabs/macos",
+  "digest": "sha256:25125a248417ab1b6deea861a3d619ed53734d844bfe761f2fb67344e8c203cc",
+  "compressedLayerBytes": 18343154230,
+  "annotations": {
+    "org.cirruslabs.tart.uncompressed-disk-size": "50000000000",
+    "org.cirruslabs.tart.upload-time": "2024-01-06T13:01:51Z"
+  },
+  "layers": 39,
+  "scope": "official older macOS14 mirror candidate; not current macOS26 substitute"
+}

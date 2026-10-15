@@ -1,0 +1,152 @@
+{
+  "vm": "ab-nfs-api006-mac-a0000f39",
+  "source": "/Users/admin/ab-nfs-api006-mac-a0000f39-source",
+  "binary": {
+    "guestPath": "/Users/admin/ab-nfs-api006-mac-a0000f39-binary",
+    "sha256": "c79e5ac05367d6657bc0be74f2e8f5b9eb504af8ade265e1afdf0334218d0cf1"
+  },
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-mac-a0000f39",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "/sbin/route -n get 192.168.64.4"
+      ],
+      "rc": 0,
+      "seconds": 0.781,
+      "stdout": "   route to: 192.168.64.4\ndestination: 192.168.64.4\n  interface: en0\n      flags: <UP,HOST,DONE,LLINFO,WASCLONED,IFSCOPE,IFREF>\n recvpipe  sendpipe  ssthresh  rtt,msec    rttvar  hopcount      mtu     expire\n       0         0         0         0         0         0      1500       -33 \n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-mac-a0000f39",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "/usr/bin/nc -z -v -G 3 -w 3 192.168.64.4 22"
+      ],
+      "rc": 1,
+      "seconds": 3.135,
+      "stdout": "",
+      "stderr": "nc: connectx to 192.168.64.4 port 22 (tcp) failed: Operation timed out\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-mac-a0000f39",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "/usr/bin/nc -z -v -G 3 -w 3 192.168.64.4 2049"
+      ],
+      "rc": 1,
+      "seconds": 0.316,
+      "stdout": "",
+      "stderr": "nc: connectx to 192.168.64.4 port 2049 (tcp) failed: No route to host\n"
+    }
+  ],
+  "cases": [],
+  "result": "TCP2049 unavailable",
+  "linuxEndpoint": "192.168.64.4",
+  "scope": "TCP prerequisite only; same-host guests never physical qualification",
+  "route": {
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-api006-mac-a0000f39",
+      "/usr/bin/sudo",
+      "-n",
+      "-u",
+      "admin",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/Users/admin",
+      "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "/sbin/route -n get 192.168.64.4"
+    ],
+    "rc": 0,
+    "seconds": 0.781,
+    "stdout": "   route to: 192.168.64.4\ndestination: 192.168.64.4\n  interface: en0\n      flags: <UP,HOST,DONE,LLINFO,WASCLONED,IFSCOPE,IFREF>\n recvpipe  sendpipe  ssthresh  rtt,msec    rttvar  hopcount      mtu     expire\n       0         0         0         0         0         0      1500       -33 \n",
+    "stderr": ""
+  },
+  "tcp22": {
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-api006-mac-a0000f39",
+      "/usr/bin/sudo",
+      "-n",
+      "-u",
+      "admin",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/Users/admin",
+      "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "/usr/bin/nc -z -v -G 3 -w 3 192.168.64.4 22"
+    ],
+    "rc": 1,
+    "seconds": 3.135,
+    "stdout": "",
+    "stderr": "nc: connectx to 192.168.64.4 port 22 (tcp) failed: Operation timed out\n"
+  },
+  "tcp2049": {
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-api006-mac-a0000f39",
+      "/usr/bin/sudo",
+      "-n",
+      "-u",
+      "admin",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/Users/admin",
+      "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "/usr/bin/nc -z -v -G 3 -w 3 192.168.64.4 2049"
+    ],
+    "rc": 1,
+    "seconds": 0.316,
+    "stdout": "",
+    "stderr": "nc: connectx to 192.168.64.4 port 2049 (tcp) failed: No route to host\n"
+  }
+}

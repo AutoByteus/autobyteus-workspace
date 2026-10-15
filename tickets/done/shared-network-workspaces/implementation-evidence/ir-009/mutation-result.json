@@ -1,0 +1,92 @@
+[
+  {
+    "name": "skip-fd-close",
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir009-unit-mutations/skip-fd-close",
+    "rc": 1,
+    "expected": 1,
+    "seconds": 0.952,
+    "intendedTest": "TestSourceCaptureCorrelationAndClosure",
+    "failureIsTest": true
+  },
+  {
+    "name": "skip-post-correlation",
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir009-unit-mutations/skip-post-correlation",
+    "rc": 1,
+    "expected": 1,
+    "seconds": 0.671,
+    "intendedTest": "TestSourceCaptureCorrelationAndClosure",
+    "failureIsTest": true
+  },
+  {
+    "name": "accept-duplicate-key",
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir009-unit-mutations/accept-duplicate-key",
+    "rc": 1,
+    "expected": 1,
+    "seconds": 0.627,
+    "intendedTest": "TestVolumePlistStrictIdentity",
+    "failureIsTest": true
+  },
+  {
+    "name": "ignore-trailing-document",
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir009-unit-mutations/ignore-trailing-document",
+    "rc": 1,
+    "expected": 1,
+    "seconds": 0.643,
+    "intendedTest": "TestVolumePlistStrictIdentity",
+    "failureIsTest": true
+  },
+  {
+    "name": "skip-volume-mapping",
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir009-unit-mutations/skip-volume-mapping",
+    "rc": 1,
+    "expected": 1,
+    "seconds": 0.727,
+    "intendedTest": "TestVolumePlistStrictIdentity",
+    "failureIsTest": true
+  },
+  {
+    "name": "skip-bound-pending-check",
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir009-unit-mutations/skip-bound-pending-check",
+    "rc": 1,
+    "expected": 1,
+    "seconds": 1.244,
+    "intendedTest": "TestBoundPendingReuseAndReplacementRefusal",
+    "failureIsTest": true
+  },
+  {
+    "name": "skip-binding-save",
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir009-unit-mutations/skip-binding-save",
+    "rc": 1,
+    "expected": 1,
+    "seconds": 0.99,
+    "intendedTest": "TestCreatedSourceBindingSurvivesProbeFailure",
+    "failureIsTest": true
+  },
+  {
+    "name": "keep-new-source-flag",
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir009-unit-mutations/keep-new-source-flag",
+    "rc": 1,
+    "expected": 1,
+    "seconds": 1.038,
+    "intendedTest": "TestCreatedSourceBindingSurvivesProbeFailure",
+    "failureIsTest": true
+  },
+  {
+    "name": "ignore-hosted-unbound",
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir009-unit-mutations/ignore-hosted-unbound",
+    "rc": 1,
+    "expected": 1,
+    "seconds": 1.136,
+    "intendedTest": "TestPendingUnboundAndInvalidForms",
+    "failureIsTest": true
+  },
+  {
+    "name": "skip-complete-validation",
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir009-unit-mutations/skip-complete-validation",
+    "rc": 1,
+    "expected": 1,
+    "seconds": 1.126,
+    "intendedTest": "TestCompletedBindingValidationAndReconnectNoEffects",
+    "failureIsTest": true
+  }
+]

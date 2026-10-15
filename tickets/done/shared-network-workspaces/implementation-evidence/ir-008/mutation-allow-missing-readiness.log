@@ -1,0 +1,8 @@
+--- FAIL: TestHostedConfigStatusRefusesBeforeReadiness (0.55s)
+    --- FAIL: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-native/missing (0.06s)
+        hosted_config_test.go:106: status ignored hosted config test stopped at mount observation 1
+    --- FAIL: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-docker/missing (0.06s)
+        hosted_config_test.go:106: status ignored hosted config test stopped at mount observation 1
+FAIL
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/setup	0.924s
+FAIL
