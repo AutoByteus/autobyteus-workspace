@@ -70,8 +70,8 @@ AutoByteus then resolves its exact absolute workspace and calls
 `composeNativeAutoByteusPrompt(...)`; Codex and Claude call
 `composeSharedCarpenterPrompt(...)` and retain ownership of their provider
 working-directory fields. A team run supplies its validated `MemberTeamContext`
-so every composition includes the exact selected Team instruction, canonical
-member address, and the same AgentTeam Addressing/Collaboration guidance. No
+so every composition includes the exact selected Team instruction
+and the collaboration sections for the member's role. No
 flat communication or delegation roster is injected.
 
 The shared semantic order is Agent Identity, optional Team Instruction, and

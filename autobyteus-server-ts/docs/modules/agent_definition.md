@@ -53,7 +53,7 @@ runtime prompt:
 
 Keep the body specific to the agent's responsibilities and boundaries. Do not
 copy the platform-owned native Working Environment, Bash Operating Practice,
-File And Directory Practice, AgentTeam Addressing/Collaboration guidance,
+File And Directory Practice, collaboration guidance (`Working With Other Agents`),
 configured skill bodies, or tool schemas into `agent.md`. Authored Markdown
 headings are deterministically nested below `Responsibilities and Boundaries`
 during composition.

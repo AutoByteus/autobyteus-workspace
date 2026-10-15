@@ -366,7 +366,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     let view = root.state.view; from = view.frames.length;
     const tooEarly = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: worker, content: "Too early?" }));
     expect(tooEarly).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
-    expect(tooEarly.message).toMatch(/This Task is DONE\. The run that assigned it can reopen the Task \(move it to TODO or IN_PROGRESS\)/);
+    expect(tooEarly.message).toMatch(/This Task is DONE\. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this ID again\./);
     expect(await readBytes(path.join(aDir, "agent_run_resources.json"))).toBe(resourcesDone);
     expect(await readBytes(path.join(aDir, "task.json"))).toBe(taskDone);
     expect(view.frames.slice(from).some(root.reopenedFrame)).toBe(false);
@@ -386,7 +386,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     view = root.state.view; from = view.frames.length;
     const toHelper = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: helpers[0]!.agentRunId, content: "Helper?" }));
     expect(toHelper).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
-    expect(toHelper.message).toMatch(/Only the run that assigned (it|the work) can reactivate it.*message the copy's agent run ID/);
+    expect(toHelper.message).toMatch(/Only the agent that assigned the Task can continue it.*message the task agent's ID/);
 
     // 7. QR-002 / AC-006: a sender that is not the assigner cannot reactivate. In a Team or Org root, a configured
     // teammate; in a standalone Agent root, the other senders are Task copies (a copy whose work is that message).
@@ -406,7 +406,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
         callTool("send_message_to", { target_agent_run_id: worker, content: "From a non-assigner." }));
     }
     expect(nonAssigner).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
-    expect(nonAssigner.message).toMatch(/Only the run that assigned it can reactivate it/);
+    expect(nonAssigner.message).toMatch(/Only the agent that assigned the Task can continue it/);
     expect(await readBytes(path.join(aDir, "agent_run_resources.json"))).toBe(resourcesDone);
     expect(view.frames.slice(from).some(root.reopenedFrame)).toBe(false);
     expect(JSON.stringify(await root.conversationOf(worker, workerNode.address))).not.toContain("From a non-assigner.");
@@ -417,7 +417,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     const argvBefore = (await readBytes(process.env["AGY_FAKE_ARGV_LOG"]!)).trim().split("\n").length;
     const reactivated = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: worker, content: "Second round for Task A. Marker POST-REOPEN-9902." }));
     expect(reactivated).toMatchObject({ accepted: true, target_agent_run_id: worker });
-    expect(reactivated.message).toMatch(new RegExp(`${worker} was reactivated\\.$`));
+    expect(reactivated.message).toMatch(new RegExp(`${worker} continues with its conversation\\.$`));
     await until(() => view.frames.slice(from).some(root.reopenedFrame), "live task_executions_reopened", 30_000);
     const reopenedEvents = view.frames.slice(from).filter(root.reopenedFrame);
     expect(reopenedEvents).toHaveLength(1);
@@ -472,7 +472,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     view = root.state.view; from = view.frames.length;
     const again = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: worker, content: "Third round. Marker CYCLE-2." }));
     expect(again).toMatchObject({ accepted: true });
-    expect(again.message).toMatch(/was reactivated\.$/);
+    expect(again.message).toMatch(/continues with its conversation\.$/);
     await until(() => view.frames.slice(from).some(root.reopenedFrame), "second reactivation event", 30_000);
     await until(async () => JSON.stringify(await root.conversationOf(worker, workerNode.address)).includes("CYCLE-2"), "worker got the third round", 60_000);
     expect(await statusOf(projectId, taskA)).toBe("TODO");
@@ -486,12 +486,12 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     const resourcesB = await readBytes(path.join(bDir, "agent_run_resources.json"));
     const toMember = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: mate, content: "Member?" }));
     expect(toMember).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
-    expect(toMember.message).toMatch(/for a Team copy, its coordinator's/);
+    expect(toMember.message).toMatch(/for a task agent team, its coordinator's ID/);
     expect(await readBytes(path.join(bDir, "agent_run_resources.json"))).toBe(resourcesB);
     view = root.state.view; from = view.frames.length;
     const teamReactivated = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: coordinator, content: "Team, second round. Marker TEAM-REOPEN-5150." }));
     expect(teamReactivated).toMatchObject({ accepted: true, target_agent_run_id: coordinator });
-    expect(teamReactivated.message).toMatch(new RegExp(`${coordinator} was reactivated\\.$`));
+    expect(teamReactivated.message).toMatch(new RegExp(`${coordinator} continues with its conversation\\.$`));
     await until(() => view.frames.slice(from).some(root.reopenedFrame), "Team copy reopened event", 30_000);
     expect(keys(root.refsOf(view.frames.slice(from).find(root.reopenedFrame)!))).toEqual([`team:${bNode.teamRunId}`]);
     const coordinatorAddress = bNode.members.find((member: any) => member.agentRunId === coordinator)!.address;
@@ -524,7 +524,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     view = root.state.view; from = view.frames.length;
     const adHocReactivated = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: plain, content: "Ad hoc, again." }));
     expect(adHocReactivated).toMatchObject({ accepted: true });
-    expect(adHocReactivated.message).toMatch(/was reactivated\.$/);
+    expect(adHocReactivated.message).toMatch(/continues with its conversation\.$/);
     await until(() => view.frames.slice(from).some(root.reopenedFrame), "ad hoc copy reopened event", 30_000);
     expect(JSON.parse(await readBytes(path.join(adHocTaskDir(adHocTaskId), "task.json"))).status).toBe("TODO");
     expect(await readBytes(path.join(adHocTaskDir(adHocTaskId), "task.json"))).toBe(adHocTaskBytes);
@@ -600,7 +600,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
       message: "The Task is CANCELLED; move it to TODO or IN_PROGRESS before assigning new work." } });
     const fenced = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: worker, content: "While cancelled?" }));
     expect(fenced).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
-    expect(fenced.message).toMatch(/This Task is CANCELLED\. The run that assigned it can reopen the Task \(move it to TODO or IN_PROGRESS\) and then message this run ID again\./);
+    expect(fenced.message).toMatch(/This Task is CANCELLED\. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this ID again\./);
     await new Promise((resolve) => setTimeout(resolve, 1500));
     expect(taskNodes(await root.liveTree()).length).toBe(nodesBefore);
     expect(view.frames.slice(from).some(root.reopenedFrame)).toBe(false);
@@ -637,7 +637,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     view = root.state.view; from = view.frames.length;
     const reactivated = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: worker, content: "Back on. Marker POST-CLOSE-7720." }));
     expect(reactivated).toMatchObject({ accepted: true, target_agent_run_id: worker });
-    expect(reactivated.message).toMatch(new RegExp(`${worker} was reactivated\\.$`));
+    expect(reactivated.message).toMatch(new RegExp(`${worker} continues with its conversation\\.$`));
     await until(() => view.frames.slice(from).some(root.reopenedFrame), "live task_executions_reopened after a CANCELLED reopen", 30_000);
     expect(keys(root.refsOf(view.frames.slice(from).find(root.reopenedFrame)!))).toEqual([`agent:${worker}`]);
     let conversation = "";
@@ -671,7 +671,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     view = root.state.view; from = view.frames.length;
     const adHocReactivated = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: plain, content: "Temp, again." }));
     expect(adHocReactivated).toMatchObject({ accepted: true });
-    expect(adHocReactivated.message).toMatch(/was reactivated\.$/);
+    expect(adHocReactivated.message).toMatch(/continues with its conversation\.$/);
     await until(() => view.frames.slice(from).some(root.reopenedFrame), "Temp copy reopened event", 30_000);
 
     // Every /ws/projects frame of this journey matched the strict server schema (CANCELLED included).
@@ -735,14 +735,14 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
       // - the DONE first: refused with the reopen-first hint;
       // - the reactivation committed and the DONE then closed the entry before delivery (P-001). The restore was
       //   stopped (TASK_EXECUTION_RESTORE_FAILED), or the live-input fence refused it (TASK_AGENT_RESOURCE_CLOSED).
-      //   Either way the result says it was reactivated but did not receive the message.
-      const notReached = /was reactivated \(its Task work is open again\) but did not receive this message/;
+      //   Either way the result says it continues with its conversation but did not receive the message.
+      const notReached = /continues with its conversation \(its Task is open again\) but did not receive this message/;
       const outcome = message.accepted ? "reactivated-then-done"
         : notReached.test(message.message ?? "") && ["TASK_EXECUTION_RESTORE_FAILED", "TASK_AGENT_RESOURCE_CLOSED"].includes(message.code)
           ? `done-after-commit:${message.code}`
           : message.code === "TASK_AGENT_RESOURCE_CLOSED" && /This Task is DONE/.test(message.message ?? "") ? "done-first" : "unexpected";
       expect(outcome, JSON.stringify(message)).not.toBe("unexpected");
-      if (outcome === "reactivated-then-done") expect(message.message).toMatch(/was reactivated\.$/);
+      if (outcome === "reactivated-then-done") expect(message.message).toMatch(/continues with its conversation\.$/);
       // No runtime process of the worker is left running (each AGY run works in memory/agents/<run>/agy-project).
       await until(() => liveAgyCwds().every((cwd) => !cwd.includes(worker)), "no live worker process after the race", 30_000);
       // The worker never takes input while its entry is closed.
@@ -776,7 +776,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     const reactivated = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: worker,
       content: "Which codeword did I give you earlier? Do not use any tools. Reply with only the codeword." }));
     expect(reactivated).toMatchObject({ accepted: true });
-    expect(reactivated.message).toMatch(/was reactivated\.$/);
+    expect(reactivated.message).toMatch(/continues with its conversation\.$/);
     let conversation = "";
     await until(async () => { conversation = JSON.stringify(await root.conversationOf(worker, node.address));
       return conversation.lastIndexOf(codeword) > conversation.indexOf("Which codeword"); }, "live worker recalled the codeword", 180_000);

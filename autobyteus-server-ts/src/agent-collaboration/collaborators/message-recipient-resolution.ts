@@ -41,6 +41,23 @@ export interface MessageRecipientIndexPort {
   isOwnTeamAddress(senderAgentRunId: string, address: AgentTeamAddress): boolean;
 }
 
+/** How an address relates to the agent the user is talking to (decides the `@` note line). */
+export type MentionViewerRelation = (address: AgentTeamAddress) => "self" | "own_team" | "other";
+
+/**
+ * The relation of an address to one focused agent, from a root's index. `self` is the agent's own
+ * placement by identity (a task agent at a configured agent's address is not that agent);
+ * `own_team` is exactly what `delegate_task` refuses (CM-1); everything else is `other`.
+ */
+export const mentionViewerRelation = (
+  index: Pick<MessageRecipientIndexPort, "getMessagePlacement" | "isOwnTeamAddress">,
+  focusedAgentRunId: string,
+): MentionViewerRelation => (address) => {
+  const placement = index.getMessagePlacement(address);
+  if (placement?.kind === "agent" && placement.receiver.agentRunId === focusedAgentRunId) return "self";
+  return index.isOwnTeamAddress(focusedAgentRunId, address) ? "own_team" : "other";
+};
+
 /** Whether `address` is the instance's own address or lies inside it, at any depth. */
 export const isWithinTeamInstance = (address: string, instance: SenderTeamInstance): boolean =>
   address === instance.address || address.startsWith(`${instance.address}/`);

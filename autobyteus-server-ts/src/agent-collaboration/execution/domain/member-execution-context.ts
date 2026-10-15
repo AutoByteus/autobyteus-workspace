@@ -17,6 +17,7 @@ import {
   type MemberTaskCommandCapability,
 } from "../task/member-task-command-capability.js";
 import type { AvailableCollaborator } from "../../collaborators/collaborator-candidate-policy.js";
+import type { MemberCollaborationRole } from "./member-instance-scope.js";
 
 export type MemberLogicalMessageInput = Readonly<{
   recipientAddress: AgentTeamAddress;
@@ -61,6 +62,8 @@ export class MemberExecutionContext {
    * Agent root are not; they get no `get_handoff_rules`.
    */
   readonly teamScoped: boolean;
+  /** What the agent is, which decides the collaboration prompt it reads (decided once by the scope owner). */
+  readonly collaborationRole: MemberCollaborationRole;
   readonly authoredEnclosingScopeInstruction: string | null;
   readonly collaboration: MemberCollaborationContext;
   readonly tasks: MemberTaskCommandCapability;
@@ -68,6 +71,7 @@ export class MemberExecutionContext {
   constructor(input: {
     identity: CollaborationMemberExecutionIdentity;
     teamScoped: boolean;
+    collaborationRole: MemberCollaborationRole;
     authoredEnclosingScopeInstruction?: string | null;
     collaboration: MemberCollaborationContext;
     tasks: MemberTaskCommandCapability;
@@ -75,6 +79,8 @@ export class MemberExecutionContext {
     if (typeof input.teamScoped !== "boolean") throw new Error("teamScoped is required.");
     this.identity = cloneCollaborationMemberExecutionIdentity(input.identity);
     this.teamScoped = input.teamScoped;
+    if (!COLLABORATION_ROLES.has(input.collaborationRole)) throw new Error("collaborationRole is required.");
+    this.collaborationRole = input.collaborationRole;
     this.authoredEnclosingScopeInstruction = optional(input.authoredEnclosingScopeInstruction);
     this.collaboration = new MemberCollaborationContext(input.collaboration);
     this.tasks = requireMemberTaskCommandCapability(input.tasks);
@@ -84,6 +90,8 @@ export class MemberExecutionContext {
     Object.freeze(this);
   }
 }
+
+const COLLABORATION_ROLES: ReadonlySet<string> = new Set<MemberCollaborationRole>(["standalone_agent", "task_agent", "team_member", "org_agent"]);
 
 const optional = (value: string | null | undefined): string | null =>
   typeof value === "string" && value.trim() ? value.trim() : null;

@@ -48,7 +48,7 @@ export function releaseGenerationFixture(kind: RootSubjectKind = 'agent_team', a
     getActiveRun: (id: string) => active.get(id), releaseExactRun: stop,
     tryPrepareAgentRunTerminationIfQuiescent: async (run: any) => termination(run), prepareAgentRunTermination: async (run: any) => termination(run) });
   const callbacks = { assertExecutionInputAllowed: () => undefined, publishAgentEvent: vi.fn(), commitPlatformBindingChange: async () => undefined,
-    buildMemberExecutionContext: async ({ identity }: any) => new MemberExecutionContext({ identity, teamScoped: true,
+    buildMemberExecutionContext: async ({ identity }: any) => new MemberExecutionContext({ identity, teamScoped: true, collaborationRole: "team_member",
       collaboration: new MemberCollaborationContext({ deliverLogicalMessage: async () => ({ accepted: true }) }),
       tasks: { root: identity.root, delegateToNewCopy: async () => { throw Error('Not a business dispatch witness.'); }, assignToExistingCopy: async () => { throw Error('Not a business dispatch witness.'); } } as never }) };
   const dependencies = { agentRunManager: manager as never, activityInspector: { inspect: () => ({ kind: 'present' }) } as never,

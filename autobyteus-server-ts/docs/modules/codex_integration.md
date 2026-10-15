@@ -42,7 +42,7 @@ Team runs:
 2. `MixedTeamManager` creates/restores one standalone Codex `AgentRun` per Codex team member through `AgentRunManager`.
 3. Codex member bootstrap passes the runtime-neutral `MemberTeamContext` to
    `composeSharedCarpenterPrompt` for optional Team Instruction followed by the
-   exact AgentTeam Addressing and AgentTeam Collaboration sections. It
+   collaboration sections for the member's role. It
    automatically adds `get_handoff_rules`, `send_message_to`, and
    `delegate_task` to effective tool exposure. Native Bash/file guidance is not
    projected into the Codex prompt.

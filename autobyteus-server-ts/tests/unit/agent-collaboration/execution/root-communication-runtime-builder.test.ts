@@ -33,14 +33,15 @@ const build = (rootSubjectKind: "agent_team" | "agent_org" | "agent", senderAddr
     },
   });
 
-describe("buildRootCommunicationInputMessage (REQ-005 sender address)", () => {
+describe("buildRootCommunicationInputMessage (header: sender name and ID, no address)", () => {
   it.each(["agent_team", "agent_org", "agent"] as const)(
-    "states the sender's full address between name and run ID in a %s root",
+    "names the sender by name and ID, without its address, in a %s root",
     (rootSubjectKind) => {
       const message = build(rootSubjectKind, "/eng/lead");
       expect(message.content).toBe(
-        "You received a message from sender name: lead, sender address: /eng/lead, sender id: lead_9a\nmessage:\nPlease review.",
+        "You received a message from sender name: lead, sender id: lead_9a\nmessage:\nPlease review.",
       );
+      expect(message.content).not.toContain("/eng/lead");
       expect(message.metadata).toEqual(expect.objectContaining({
         sender_member_address: "/eng/lead",
         sender_agent_name: "lead",
@@ -51,7 +52,7 @@ describe("buildRootCommunicationInputMessage (REQ-005 sender address)", () => {
 
   it("keeps the de-duplicated Reference files block after the body", () => {
     expect(build("agent", "/lead", [" /a.md ", "/a.md", "/b.md"]).content).toBe(
-      "You received a message from sender name: lead, sender address: /lead, sender id: lead_9a\nmessage:\nPlease review."
+      "You received a message from sender name: lead, sender id: lead_9a\nmessage:\nPlease review."
         + "\n\nReference files:\n- /a.md\n- /b.md",
     );
   });

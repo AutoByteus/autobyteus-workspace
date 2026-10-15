@@ -1,9 +1,6 @@
-import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { describe, expect, it } from "vitest";
 import {
-  AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION,
-  WORK_REQUEST_EXECUTION_LLM_INSTRUCTION,
   DELEGATE_TASK_DESCRIPTION_FIELD_DESCRIPTION,
   DELEGATE_TASK_ID_DESCRIPTION,
   DELEGATE_TASK_LLM_DESCRIPTION,
@@ -15,151 +12,78 @@ import {
   SEND_MESSAGE_TO_RECIPIENT_ADDRESS_DESCRIPTION,
   SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION,
 } from "../../../src/agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
+import { LIST_AVAILABLE_AGENTS_TOOL_DESCRIPTION } from "../../../src/agent-tools/agent-discovery/list-available-agents-contract.js";
+import { GET_HANDOFF_RULES_TOOL_DESCRIPTION } from "../../../src/agent-communication/services/get-handoff-rules-tool-contract.js";
+import { PROJECT_TASK_TOOL_DESCRIPTIONS } from "../../../src/agent-tools/project-tasks/project-task-tool-contract.js";
 
-const sha256 = (value: string): string =>
-  createHash("sha256").update(value, "utf8").digest("hex");
+const sha256 = (value: string): string => createHash("sha256").update(value, "utf8").digest("hex");
 
-const APPROVED_SINGLE_RECIPIENT_HANDOFF_PARAGRAPH =
-  "When you finish your own work or are blocked, call `get_handoff_rules`. Evaluate the returned rules against your outcome. Select the single rule whose `when` condition most specifically applies, and notify only its `recipient_address` using `send_message_to`. Do not notify additional recipients for the same outcome. If no rule applies to an incoming work request, return the result or specific blocker to the requesting agent using `send_message_to`; otherwise, finish normally.";
-
-describe("approved AgentTeam collaboration LLM contract", () => {
-  it("requires skill-governed work and preserves intermediate handoffs and requester fallback", () => {
-    expect(WORK_REQUEST_EXECUTION_LLM_INSTRUCTION).toBe(
-      "On receiving a work request, follow your own agent instructions and applicable skills. " +
-      "Do not send acknowledgements or promises to work. " +
-      "Use `send_message_to` only at a workflow-defined handoff point or when blocked and needing external input. " +
-      "Follow applicable handoff rules; otherwise, return the result or specific blocker to the requesting agent.",
-    );
-    expect(AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION).toContain("### Work Requests and Results");
-    expect(AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION).not.toContain("### Ordinary Communication");
-    expect(AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION).not.toContain("If no rule applies, finish normally.");
-    expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("work request, result, or blocker");
-    expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).not.toContain("ordinary message");
-  });
-
-  it("keeps the documented Team example identical to the rendered collaboration section", () => {
-    const documentation = readFileSync(new URL("../../../docs/modules/prompt_engineering.md", import.meta.url), "utf8");
-    expect(documentation).toContain(AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION);
-  });
-
-  it("pins the exact approved prompt, tool descriptions, and field descriptions", () => {
+/**
+ * The collaboration tool descriptions are the approved wording (collaboration-prompt-wording §6),
+ * written for the agent and identical on every runtime (native tools and the Agent Tools MCP server,
+ * which import these constants). A change to any of them is a change to intended behavior.
+ */
+describe("approved collaboration tool descriptions", () => {
+  it("pins the exact approved texts", () => {
     expect({
       sendTool: sha256(SEND_MESSAGE_TO_LLM_DESCRIPTION),
       sendRecipient: sha256(SEND_MESSAGE_TO_RECIPIENT_ADDRESS_DESCRIPTION),
       sendExactRun: sha256(SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION),
       delegateTool: sha256(DELEGATE_TASK_LLM_DESCRIPTION),
       delegateRecipient: sha256(DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION),
+      delegateTeamId: sha256(DELEGATE_TASK_TARGET_TEAM_RUN_ID_DESCRIPTION),
+      delegateAgentId: sha256(DELEGATE_TASK_TARGET_AGENT_RUN_ID_DESCRIPTION),
+      delegateTaskId: sha256(DELEGATE_TASK_ID_DESCRIPTION),
       delegateDescription: sha256(DELEGATE_TASK_DESCRIPTION_FIELD_DESCRIPTION),
       delegateReferences: sha256(DELEGATE_TASK_REFERENCE_FILES_DESCRIPTION),
-      collaborationPrompt: sha256(AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION),
     }).toEqual({
-      sendTool: "e86152fe7f9ea53242d34371bf081113643187a5128888755a045ed2e7ab1393",
-      sendRecipient: "ffd63b769bf57f6a959e82fcb0f3669f3ce606513a214fdffde571cb011d0c06",
-      sendExactRun: "62e7add6181c1521f41ddaad05b9a87a0d3320f673bf6fc4bd851d4d9f9dc1c4",
-      delegateTool: "fe83fb24df74e83c8fba534feadf52fa695683d6682a85ddd81468ee55db8a8a",
-      delegateRecipient: "c995523a24656245ec0f9290b77128a44ea91cc51f664e40027e8d1c74aeddd0",
-      delegateDescription: "a2165576362e49586aef4ccef6338288d5ba865fd50363d1fd65494b173ca49a",
-      delegateReferences: "43d07f7e31b5b6f03e0327fa89f427fb70dc5da6a91ec098a3430cd56ccb2533",
-      collaborationPrompt: "efc500b6232d659d1ef8f7e4317eef3f6273be9e68068e51fe4ba1424b786680",
+      sendTool: "6ccd3129abfcf3a04a94386d6c78c1ee5e07bdb19b8e419bfa4b554e43f9e01a",
+      sendRecipient: "6be9ed29689ec44cf8775b00e0d34ab473126416a1330a63aa3ccef2b6d14806",
+      sendExactRun: "7411f79a5673d4a0fb5344eb4c2a6e1f4d6b4f059b433628d72d40452d3dbc6e",
+      delegateTool: "9cf4eddebf785b581bee0a7a3aae7b5d56aaf4f160d44f14cb1cd6f72fc85066",
+      delegateRecipient: "501c11b0aa0cf1eeb1c64e9d9c0b852356c5d55f45e8288ecbb16c4e60d18c7b",
+      delegateTeamId: "afb8c56b56a4b927ee1cb303d7701214e9f1eec2b20cb3e1515d572531a6ff96",
+      delegateAgentId: "3feee9125a2fff6b97a656278d8980cd267128b2a314a12f03be4cc8ab506f8c",
+      delegateTaskId: "d0ed960b9714eb20ac0a35c8d4c423ef5131983577b3b02ef5a6fa435afa8c17",
+      delegateDescription: "e4b27c311d0bbe3a2a28745f12ecf495e9b4437d4c6ff36f95f7edda99993bb5",
+      delegateReferences: "dc26162eff418e5fe6ee52377cc0e89521ac1206cc1a13a1ad3c0ac23a5e4610",
     });
   });
 
-  it("describes the one instance at an address, a new copy per address delegation, and agent-run-ID follow-up (REQ-009)", () => {
-    const prompt = AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION;
-    expect(prompt).toContain("`send_message_to` reaches the one instance at an address in your run and never creates a run.");
-    expect(prompt).toContain("`delegate_task` with an address spawns a new copy of an Agent or AgentTeam for new work;\nwith a copy's own ID it gives a new saved Task to that existing copy.");
-    expect(prompt).toContain("that Team instance's coordinator");
-    expect(prompt).toContain("Inside your own team instance, a teammate's address reaches the member of\n  that same instance.");
-    expect(prompt).toContain("An address that is not in your run is not found. To give work to an outside\n  Agent or AgentTeam, use `delegate_task`, then message the copy by its run ID.");
-    expect(prompt).toContain("### Delegated Agents");
-    expect(prompt).toContain("Message a copy only through `send_message_to` with an agent run ID: its\n`target_agent_run_id`, or for a Team copy its `target_team_coordinator_agent_run_id`");
-    expect(prompt).toContain("A copy that stays quiet is shut down after a while, but not\nwhile it has a running background task; a message to it restores it with its\nconversation");
-    expect(prompt).toContain("including a\n  shut-down delegated agent");
-    expect(prompt).not.toMatch(/submit_task_result|review_task_result|Task Lifecycle|not_started|live-only|always spawns/);
-    // AC-008: no text on any runtime says a message brings an agent in or starts it.
-    for (const text of [prompt, SEND_MESSAGE_TO_LLM_DESCRIPTION, SEND_MESSAGE_TO_RECIPIENT_ADDRESS_DESCRIPTION, DELEGATE_TASK_LLM_DESCRIPTION]) {
-      expect(text).not.toMatch(/brought in|brings? (it |them )?in|on first use|bring-in/i);
-    }
-    expect(prompt).not.toMatch(/REQ-|DEC-|TODO|TBD/);
-    expect(SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION).toContain("shut-down delegated agent");
-    expect(SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION).not.toContain("live-only");
-    expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("restored with its conversation");
-    expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("send_message_to never creates a run:");
-    expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("use delegate_task first, then message the copy by its run ID.");
-    expect(SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION).toContain("a run ID never brings anything in");
-    expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("On failure delegated is false\nand message explains why; nothing was started.");
-    // A description-only delegation that creates a Task returns its task_id; no text tells the agent how to close it (AC-001).
-    expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("that creates a\nTask also returns its task_id.");
-    expect(prompt).toContain("A description-only delegation that creates a Task also returns its\n  `task_id`.\n");
+  it("states how each tool works, each fact once: messaging never creates an agent, delegation always does", () => {
+    expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("send_message_to never creates an agent; to have work done by a new agent, use delegate_task.");
+    expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("Use exactly one selector, never both:");
+    expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("For a task agent team, use its coordinator's ID; a team's own ID is refused.");
+    expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("Delegating to yourself, a teammate or your own team is refused.");
+    expect(DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION).toContain("Every call with an address creates another task agent or task agent team.");
+    expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("together with your ID");
+    expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("If you are a task agent yourself");
   });
 
-  it("states the two-relationship model: message inside the run, delegate outside, never bring in or delegate to your own team (AC-008)", () => {
-    for (const text of [SEND_MESSAGE_TO_LLM_DESCRIPTION, DELEGATE_TASK_LLM_DESCRIPTION, AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION]) {
-      expect(text).not.toMatch(/brought in on first use|a collaborator|bring(s)? .{0,20} in/i);
+  it("names the IDs a delegation returns for what they are", () => {
+    for (const field of ["target_agent_run_id", "target_team_run_id", "target_team_coordinator_agent_run_id", "target_kind"]) {
+      expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain(field);
     }
-    expect(SEND_MESSAGE_TO_RECIPIENT_ADDRESS_DESCRIPTION).toContain("An address that is not in your run is not found (messaging never creates a run): use delegate_task for an outside Agent or AgentTeam.");
-    expect(DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION).toContain("Delegating to yourself, a teammate or your own team is refused: use send_message_to.");
-    expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("Delegating to yourself, a teammate or your own team is refused: use send_message_to");
-    expect(AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION).toContain("Never delegate to yourself, a teammate or your own team:");
   });
 
-  it("names no task tool anywhere: closing and reopening guidance lives only in update_task's description (AC-001, AC-004, AC-005)", () => {
-    for (const text of [SEND_MESSAGE_TO_LLM_DESCRIPTION, SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION, DELEGATE_TASK_LLM_DESCRIPTION, DELEGATE_TASK_ID_DESCRIPTION, AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION]) {
+  it("uses only the agent vocabulary and names no internal term (wording §2, AC-007)", () => {
+    const texts = [
+      SEND_MESSAGE_TO_LLM_DESCRIPTION, SEND_MESSAGE_TO_RECIPIENT_ADDRESS_DESCRIPTION, SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION,
+      DELEGATE_TASK_LLM_DESCRIPTION, DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION, DELEGATE_TASK_TARGET_TEAM_RUN_ID_DESCRIPTION,
+      DELEGATE_TASK_TARGET_AGENT_RUN_ID_DESCRIPTION, DELEGATE_TASK_ID_DESCRIPTION, DELEGATE_TASK_DESCRIPTION_FIELD_DESCRIPTION,
+      DELEGATE_TASK_REFERENCE_FILES_DESCRIPTION, LIST_AVAILABLE_AGENTS_TOOL_DESCRIPTION, GET_HANDOFF_RULES_TOOL_DESCRIPTION,
+      PROJECT_TASK_TOOL_DESCRIPTIONS.update_task, PROJECT_TASK_TOOL_DESCRIPTIONS.list_project_tasks,
+    ];
+    for (const text of texts) {
+      expect(text).not.toMatch(/\b(copy|copies|spawn|spawns|this run|your run|the run|in the run|mounted|collaborator|brought in|bring-in|pause|wake|restore|shut down|shut-down|nested|Task worker|work packet)\b/i);
+      expect(text).not.toMatch(/REQ-|DEC-|\bTBD\b/);
+    }
+  });
+
+  it("names no task tool outside update_task's own description, and update_task carries the closing guidance", () => {
+    for (const text of [SEND_MESSAGE_TO_LLM_DESCRIPTION, DELEGATE_TASK_LLM_DESCRIPTION, DELEGATE_TASK_ID_DESCRIPTION]) {
       expect(text).not.toMatch(/create_or_update_task|update_task|create_task/);
-      expect(text).not.toMatch(/call `?\w+`? with that/);
     }
-  });
-
-  it("names every copy ID for what it is and describes delegating a follow-up Task to an existing copy (REQ-001/002/004/012, AC-015)", () => {
-    const prompt = AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION;
-    for (const text of [DELEGATE_TASK_LLM_DESCRIPTION, prompt]) {
-      expect(text).toContain("target_team_run_id");
-      expect(text).toContain("target_team_coordinator_agent_run_id");
-      expect(text).toContain("target_agent_run_id");
-      expect(text).not.toMatch(/always spawns|target_agent_run_id is null|coordinator is the run ID/);
-    }
-    expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("(3) exactly one of target_team_run_id or target_agent_run_id, and task_id");
-    expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("A copy has one current Task at a time: you can give it a new\nTask only if you made its most recent assignment and its current Task is DONE or CANCELLED");
-    expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("closing it again never stops the copy");
-    expect(prompt).toContain("A copy has one current Task at a time: this works only when you\nmade its most recent assignment and its current Task is `DONE` or `CANCELLED`");
-    expect(DELEGATE_TASK_TARGET_TEAM_RUN_ID_DESCRIPTION).toContain("not its coordinator's agent run ID");
-    expect(DELEGATE_TASK_TARGET_AGENT_RUN_ID_DESCRIPTION).toContain("A Team coordinator's ID is refused: use target_team_run_id for a Team copy.");
-    expect(DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION).toContain("With an address, every call spawns a new copy");
-    expect(DELEGATE_TASK_ID_DESCRIPTION).toContain("With target_team_run_id or target_agent_run_id, supply only that ID and task_id");
-    // send_message_to stays agent-only (REQ-009).
-    expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("target_agent_run_id takes agent run IDs only");
-    expect(SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION).toContain("a team run ID is refused");
-    // A worker's description-only delegation is sub-work of its Task (REQ-011).
-    expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("While you work on a Task yourself, a\ndescription-only delegation is sub-work of your Task: it returns no task_id and closes only when\nyour Task is DONE or CANCELLED");
-    expect(prompt).toContain("While you work on a Task yourself, a description-only delegation is sub-work\n  of your Task: it returns no `task_id` and closes only with your Task.");
-  });
-
-  it("describes DONE and CANCELLED as a stop and the reopen-then-message reactivation, never as final (REQ-011)", () => {
-    const texts = [SEND_MESSAGE_TO_LLM_DESCRIPTION, SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION, DELEGATE_TASK_LLM_DESCRIPTION, AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION];
-    for (const text of texts) expect(text).not.toMatch(/for good|unless its Task is DONE|can never/);
-    expect(AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION).toContain("A copy whose Task is `DONE` or `CANCELLED` is stopped.");
-    expect(AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION).toContain("the run that assigned the work first moves the Task out of\n`DONE` or `CANCELLED`");
-    expect(AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION).toContain("then messages the copy; that reactivates it with its conversation. Setting the\nstatus alone starts nothing.");
-    expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("A copy whose Task is DONE or CANCELLED is\nstopped");
-    expect(SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION).toContain("A delegated copy whose Task is DONE or CANCELLED is reactivated only");
-    expect(DELEGATE_TASK_ID_DESCRIPTION).toContain("Blank, unknown, ambiguous, DONE or CANCELLED Tasks fail.");
-    expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("Task to TODO or IN_PROGRESS and then messaging the copy's agent\nrun ID");
-    expect(SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION).toContain("reactivated only by the run that assigned it, after it moves the Task to TODO or IN_PROGRESS");
-    expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("On success it returns delegated: true and\ntarget_kind.");
-    expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("To continue the same Task with the same copy later, move the\nTask to TODO or IN_PROGRESS first, then message the copy's agent run ID");
-    expect(AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION).toContain("`target_kind` says whether the copy is an\n  `agent` or a `team`.");
-  });
-
-  it("encodes SCN-001 as one most-specific rule and at most one recipient", () => {
-    const ruleBasedHandoffParagraph = AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION
-      .split("### Rule-Based Handoffs\n\n")[1]
-      ?.split("\n\nDo not claim that a message")[0];
-
-    expect(ruleBasedHandoffParagraph).toBe(
-      APPROVED_SINGLE_RECIPIENT_HANDOFF_PARAGRAPH,
-    );
-    expect(ruleBasedHandoffParagraph).not.toContain("Apply every matching rule");
-    expect(ruleBasedHandoffParagraph).not.toContain("follow distinct recipients");
-    expect(ruleBasedHandoffParagraph).not.toContain("Combine applicable reasons");
+    expect(PROJECT_TASK_TOOL_DESCRIPTIONS.update_task).toContain("Close a Task you delegated when its work is done.");
   });
 });

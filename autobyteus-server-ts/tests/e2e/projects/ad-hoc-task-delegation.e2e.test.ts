@@ -33,7 +33,8 @@ const segment = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "_")
 const keyOf = (ref: Record<string, any>) => ref.teamRunId ?? ref.team_run_id ? `team:${ref.teamRunId ?? ref.team_run_id}` : `agent:${ref.agentRunId ?? ref.agent_run_id}`;
 const keys = (refs: readonly Record<string, any>[]) => refs.map(keyOf).sort();
 const callTool = (name: string, args: object) => `CALL_TOOL:${JSON.stringify({ name, arguments: args })}`;
-const IN_RUN_GUIDANCE = "One already in this run can instead be messaged directly with send_message_to at its address, or use delegate_task for a separate copy.";
+const TEAMMATE_GUIDANCE = "in your team: talk with it using send_message_to; don't delegate to it.";
+const IN_RUN_GUIDANCE = "talk with it using send_message_to, or delegate a task to it with delegate_task to have a new task agent work on it.";
 
 /** Every task execution node (Agent or Team; nested anywhere), identified by its recorded start. */
 const taskNodes = (tree: unknown): TaskNode[] => {
@@ -309,12 +310,12 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     // `@` added nothing to the run; the stored message carries the delegate_task note (AC-001, AC-002).
     expect(taskNodes(await liveTree()).map(keyOf).sort()).toEqual(keys(nodes));
     const managerText = JSON.stringify(await managerConversation());
-    expect(managerText).toContain("[Mentioned collaborators]");
-    expect(managerText).toContain(`- ${names.reviewer} (Agent) at ${reviewerAddress}`);
-    expect(managerText).toContain("Delegate the work with delegate_task to its address");
+    expect(managerText).toContain("[Mentioned agents]");
+    expect(managerText).toContain(`- ${names.reviewer} (agent) at ${reviewerAddress}`);
+    expect(managerText).toContain("delegate a task to it with delegate_task");
     expect(managerText).not.toContain("Message a collaborator with send_message_to");
     // mention-candidates-in-run AC-004: a mention of a definition not in the run carries no in-run marker or guidance.
-    expect(managerText).not.toContain("already in this run");
+    expect(managerText).not.toContain("in your team");
     expect(managerText).not.toContain(IN_RUN_GUIDANCE);
 
     // 2. Ad-hoc Tasks are not Project Tasks (AC-010 listing half).
@@ -402,17 +403,22 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     const inRunMentions = [{ kind: "agent" as const, definition_id: ids.assistant },
       ...(kind === "agent" ? [] : [{ kind: "agent" as const, definition_id: ids.worker }])];
     send("Reply OK.", inRunMentions);
-    const assistantEntry = `- ${names.assistant} (Agent) at ${assistantAddress}`;
+    const assistantEntry = `- ${names.assistant} (agent) at ${assistantAddress}: delegate a task to it with delegate_task.`;
     let inRunText = "";
     await until(async () => { inRunText = JSON.stringify(await managerConversation()); return inRunText.includes(assistantEntry); },
       "in-run mention note stored", 30_000);
     // The delegated assistant copy is not an in-run placement: no in-run marker for it, and the in-run guidance only
     // when a configured member (Team/Org /worker) is mentioned too.
-    expect(inRunText).not.toContain(`${assistantEntry}, already in this run`);
-    if (kind === "agent") expect(inRunText).not.toContain(IN_RUN_GUIDANCE);
-    else {
-      expect(inRunText).toContain(IN_RUN_GUIDANCE);
-      expect(inRunText).toContain(`- ${names.worker} (Agent) at /worker, already in this run`);
+    expect(inRunText).not.toContain(`${names.assistant} (agent) at ${assistantAddress}, in your team`);
+    if (kind === "agent") {
+      expect(inRunText).not.toContain(IN_RUN_GUIDANCE);
+      expect(inRunText).not.toContain(TEAMMATE_GUIDANCE);
+    } else if (kind === "team") {
+      // The coordinator's teammate is in its own team: talk with it, never delegate to it.
+      expect(inRunText).toContain(`- ${names.worker} (agent) at /worker, ${TEAMMATE_GUIDANCE}`);
+    } else {
+      // An Org member is another unit of the organization: talk with it, or delegate to have a new task agent do the work.
+      expect(inRunText).toContain(`- ${names.worker} (agent) at /worker: ${IN_RUN_GUIDANCE}`);
     }
     // Nothing is added by a mention: the delegated assistant copy stays the single instance.
     expect(taskNodes(await liveTree()).filter((node) => node.address === assistantAddress).map((node) => node.agentRunId)).toEqual([assistantRunId]);

@@ -237,7 +237,7 @@ export class RootAgentExecutionRegistry {
       const created = await this.createHandle(sourceNode, "restore", this.options.callbacks);
       if (!this.materializationOpen || this.active.has(sourceNode.agentRunId)) {
         created.dispose();
-        throw new Error(`Task AgentRun '${sourceNode.agentRunId}' could not be restored.`);
+        throw new Error(`The task agent ${sourceNode.agentRunId} could not continue with its conversation.`);
       }
       this.active.set(sourceNode.agentRunId, created);
       this.taskAgentRunIds.add(sourceNode.agentRunId);

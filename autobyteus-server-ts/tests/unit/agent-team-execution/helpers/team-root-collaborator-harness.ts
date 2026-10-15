@@ -50,7 +50,7 @@ export const admission = (runnable = true) => createCollaboratorAdmission({
     : { kind: "model_unavailable" as const }),
 } as unknown as RunModelSelectionValidator, { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) });
 
-export const harness = async (options: { runnable?: boolean; withTeammate?: boolean } = {}) => {
+export const harness = async (options: { runnable?: boolean; withTeammate?: boolean; teammateDefinitionId?: string } = {}) => {
   vi.spyOn(TokenUsageMigrationReadiness.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
   const handles = observeConfiguredHandles();
   const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "team-root-collaborators-")); directories.push(memoryDir);
@@ -73,7 +73,7 @@ export const harness = async (options: { runnable?: boolean; withTeammate?: bool
     rootTeamRunId: ROOT, rootTeamDefinitionId: "se-team", coordinatorAddress: "/coordinator",
     children: [
       testAgentNode("/coordinator", { agentRunId: "run-coordinator", runtimeKind: RuntimeKind.CODEX_APP_SERVER }),
-      ...(options.withTeammate ? [testAgentNode("/worker", { agentRunId: "run-worker", runtimeKind: RuntimeKind.CODEX_APP_SERVER })] : []),
+      ...(options.withTeammate ? [testAgentNode("/worker", { agentRunId: "run-worker", runtimeKind: RuntimeKind.CODEX_APP_SERVER, ...(options.teammateDefinitionId ? { agentDefinitionId: options.teammateDefinitionId } : {}) })] : []),
     ],
   });
   const root = await materializeTeamRoot({

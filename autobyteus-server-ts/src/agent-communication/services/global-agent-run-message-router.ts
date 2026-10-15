@@ -1,4 +1,5 @@
 import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
+import { ROOT_NOT_ACTIVE_MESSAGE } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import type { AgentRunMessageSenderContext } from "../domain/agent-run-message-sender.js";
@@ -123,13 +124,13 @@ export class GlobalAgentRunMessageRouter {
       return result.accepted ? { ...result, agentRunId: targetAgentRunId } : result;
     }
 
-    // send_message_to reaches agents only: a Team copy's team run ID is refused with its coordinator's run ID.
+    // send_message_to talks with agents only: a task agent team's ID is refused with its coordinator's ID.
     const coordinator = this.activeRootDirectory.findTeamCoordinator(targetAgentRunId);
     if (coordinator) {
       const result = {
         accepted: false,
         code: "TARGET_IS_TEAM_RUN",
-        message: `${targetAgentRunId} is a Team run; send_message_to reaches agents. Message its coordinator agent run ${coordinator}.`,
+        message: `${targetAgentRunId} is a task agent team's ID, and send_message_to talks with agents. To talk with the team, use its coordinator's ID: ${coordinator}.`,
       } satisfies AgentOperationResult;
       this.recordGrantUsage(grantDecision.kind === "allowed" ? grantDecision.grant : null, {
         ...result,
@@ -169,7 +170,7 @@ export class GlobalAgentRunMessageRouter {
       const result = {
         accepted: false,
         code: "COLLABORATION_ROOT_NOT_ACTIVE",
-        message: `Collaboration root '${senderTeam.identity.root.rootSubjectKind}:${senderTeam.identity.root.rootRunId}' is not active.`,
+        message: ROOT_NOT_ACTIVE_MESSAGE,
       } satisfies AgentOperationResult;
       this.recordGrantUsage(grantDecision.kind === "allowed" ? grantDecision.grant : null, {
         ...result,

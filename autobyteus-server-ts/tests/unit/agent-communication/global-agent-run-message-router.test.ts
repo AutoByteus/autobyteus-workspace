@@ -207,7 +207,7 @@ describe("GlobalAgentRunMessageRouter", () => {
     const getActiveRun = vi.fn(() => null);
     const router = new GlobalAgentRunMessageRouter({ agentRunManager: { getActiveRun }, activeRootDirectory });
     const refusal = { accepted: false, code: "TARGET_IS_TEAM_RUN",
-      message: "copy-team is a Team run; send_message_to reaches agents. Message its coordinator agent run copy-lead." };
+      message: "copy-team is a task agent team's ID, and send_message_to talks with agents. To talk with the team, use its coordinator's ID: copy-lead." };
 
     // Same root as the copy, and an unrelated sender (another root, or none).
     await expect(router.deliver({ sender: sameRootSender, targetAgentRunId: "copy-team", content: "Hi." })).resolves.toEqual(refusal);

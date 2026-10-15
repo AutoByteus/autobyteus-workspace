@@ -40,14 +40,14 @@ describe("task delegation runtime descriptions", () => {
     expect(JSON.stringify(TASK_DELEGATION_TOOL_MANIFEST)).not.toMatch(/submit_task_result|review_task_result/);
   });
 
-  it("describes delegate_task as a spawn by address or an assignment to an existing copy by its own ID (AC-015)", () => {
+  it("describes delegate_task as a new task agent by address or an assignment to one of your task agents by its own ID (AC-015)", () => {
     const delegateEntry = getTaskDelegationToolManifestEntry(DELEGATE_TASK_TOOL_NAME);
     expect(delegateEntry.description).toBe(DELEGATE_TASK_LLM_DESCRIPTION);
-    expect(delegateEntry.description).toContain("With an address, every call spawns\nanother copy");
-    expect(delegateEntry.description).toContain("available agent or team");
+    expect(delegateEntry.description).toContain("creates a new task agent (or task agent team)");
+    expect(delegateEntry.description).toContain("gives the saved Task to one of your task agents");
     expect(delegateEntry.description).toContain("recipient_address");
-    expect(delegateEntry.description).toContain("target_team_run_id or target_agent_run_id");
-    expect(delegateEntry.description).toContain("On failure delegated is false");
+    expect(delegateEntry.description).toContain("target_agent_run_id or target_team_run_id");
+    expect(delegateEntry.description).toContain("If delegated is false, nothing was created");
     expect(delegateEntry.description).not.toMatch(/always spawns|target_agent_run_id is null/);
     expect(delegateEntry.description).not.toMatch(/submit_task_result|review_task_result|task lifecycle/i);
     expect(delegateEntry.description).not.toContain("./");
@@ -76,15 +76,13 @@ describe("task delegation runtime descriptions", () => {
     expect(findParameter(delegateSchema, "target_agent_run_id")?.description).toBe(DELEGATE_TASK_TARGET_AGENT_RUN_ID_DESCRIPTION);
     const delegateDescription = findParameter(delegateSchema, "description")?.description ?? "";
     expect(delegateDescription).toBe(DELEGATE_TASK_DESCRIPTION_FIELD_DESCRIPTION);
-    expect(delegateDescription).toContain("Complete ready-to-run work description");
+    expect(delegateDescription).toContain("complete, ready-to-work task description");
     expect(delegateDescription).toContain("objective");
-    expect(delegateDescription).toContain("done conditions");
-    expect(delegateDescription).toContain("delegate_task itself delivers this as the new copy's first message");
-    expect(delegateDescription).toContain("do not resend it with send_message_to");
+    expect(delegateDescription).toContain("what done looks like");
     const delegateReferenceDescription = findParameter(delegateSchema, "reference_files")?.description ?? "";
     expect(delegateReferenceDescription.toLowerCase()).toContain("absolute local file paths");
     expect(delegateReferenceDescription).toBe(DELEGATE_TASK_REFERENCE_FILES_DESCRIPTION);
-    expect(delegateReferenceDescription).toContain("relative paths and URLs are rejected");
+    expect(delegateReferenceDescription).toContain("Relative paths and URLs are rejected");
     expect(JSON.stringify(delegateSchema)).not.toContain("Do not pass");
     expect(JSON.stringify(delegateSchema)).not.toContain("completion_criteria");
   });

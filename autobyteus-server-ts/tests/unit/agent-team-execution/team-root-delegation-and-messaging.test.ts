@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { composeCollaboratorMentionNote } from "@autobyteus/agent-presentation-contracts";
 import { ingressOfOutcome } from "../../fixtures/task-execution-resource-fixtures.js";
 import type { TaskTeamExecution } from "../../../src/run-history/domain/run-execution-tree-shared-records.js";
 import { flushMicrotasks } from "../agent-org-execution/helpers/task-publication-handles.js";
@@ -37,7 +38,7 @@ describe("delegation and messaging in a Team root (CM-1, CM-4)", () => {
     const before = await f.dependencies.executionTreeStore.read(f.teamMemoryDir, ROOT);
     await expect(f.message(coordinatorOf(f), "/product_team", "Design it")).rejects.toMatchObject({
       code: "COLLABORATION_TARGET_NOT_FOUND",
-      message: "/product_team is not in this run. To give work to an outside Agent or Team, use delegate_task, then send_message_to its run ID.",
+      message: "No agent or agent team you can talk with has the address /product_team. To have a task done by a new agent, use delegate_task; then talk with it by its ID.",
     });
     await expect(f.message(coordinatorOf(f), "/code_reviewer", "Review")).rejects.toMatchObject({ code: "COLLABORATION_TARGET_NOT_FOUND" });
     // A run ID or unknown run creates nothing either.
@@ -55,7 +56,7 @@ describe("delegation and messaging in a Team root (CM-1, CM-4)", () => {
     await expect(f.root.delegateToNewCopy({ identity: coordinatorOf(f) }, { recipient_address: "/worker", description: "Do it" }))
       .rejects.toMatchObject({
         code: "COLLABORATION_SELF_TARGET_REJECTED",
-        message: "/worker is in your own team. Use send_message_to with recipient_address /worker.",
+        message: "/worker is in your own team; you can't delegate to it. Talk with it using send_message_to.",
       });
     await expect(f.root.delegateToNewCopy({ identity: coordinatorOf(f) }, { recipient_address: "/coordinator", description: "Do it" }))
       .rejects.toMatchObject({ code: "COLLABORATION_SELF_TARGET_REJECTED" });
@@ -65,6 +66,21 @@ describe("delegation and messaging in a Team root (CM-1, CM-4)", () => {
     expect((resources as unknown as { adHocTaskIds?(): string[] }).adHocTaskIds?.() ?? []).toEqual([]);
     // The teammate is reached by message instead.
     await expect(f.message(coordinatorOf(f), "/worker", "Please help")).resolves.toMatchObject({ accepted: true });
+  });
+
+  it("`@` is decided for the coordinator: a teammate is marked \"in your team\" and not offered delegate_task; a catalog unit is offered delegate_task (AC-006)", async () => {
+    const f = await harness({ withTeammate: true, teammateDefinitionId: "designer" });
+    const result = await f.root.resolveCollaboratorMentions({
+      focusedAgentRunId: "run-coordinator",
+      mentions: [{ kind: "agent", definitionId: "designer" }, { kind: "agent", definitionId: "code-reviewer" }],
+    });
+    expect(result).toMatchObject({ admitted: true, collaborators: [
+      { name: "Designer", address: "/worker", presence: "own_team" },
+      { name: "Code Reviewer", address: "/code_reviewer", presence: "not_in_run" },
+    ] });
+    const note = composeCollaboratorMentionNote("ask", result.admitted ? result.collaborators : []);
+    expect(note).toContain("- Designer (agent) at /worker, in your team: talk with it using send_message_to; don't delegate to it.");
+    expect(note).toContain("- Code Reviewer (agent) at /code_reviewer: delegate a task to it with delegate_task.");
   });
 
   it("a configured root-Team member may still delegate to an independent catalog unit (CM-2, AC-004)", async () => {
@@ -91,7 +107,7 @@ describe("delegation and messaging in a Team root (CM-1, CM-4)", () => {
     resources.addTask("task-B", "Clean up the page");
     // The coordinator's agent run ID is not the copy's ID.
     expect(await f.root.assignToExistingCopy({ identity: coordinatorOf(f) }, { copy: { agentRunId: lead }, taskId: "task-B" }))
-      .toEqual({ delegated: false, message: `${lead} is the coordinator of Team copy ${copy!.teamRunId}; use target_team_run_id "${copy!.teamRunId}".` });
+      .toEqual({ delegated: false, message: `${lead} is the coordinator of task agent team ${copy!.teamRunId}; use target_team_run_id "${copy!.teamRunId}".` });
     expect(await f.root.assignToExistingCopy({ identity: coordinatorOf(f) }, { copy: { teamRunId: copy!.teamRunId }, taskId: "task-B" }))
       .toEqual({ delegated: true, copy: { kind: "team", teamRunId: copy!.teamRunId, teamCoordinatorAgentRunId: lead } });
     expect(resources.entry({ teamRunId: copy!.teamRunId })).toMatchObject({ taskId: "task-B", open: true, start: "started" });

@@ -1,4 +1,5 @@
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+import { ROOT_NOT_ACTIVE_MESSAGE } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
 import type { InterAgentMessageDeliveryIntent } from "../../agent-team-execution/domain/inter-agent-message-delivery.js";
 import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
@@ -29,7 +30,7 @@ export class TeamCommunicationService {
     receiverDisplayName: string;
   }): Promise<AgentOperationResult> {
     if (!this.accepting) {
-      return Promise.resolve({ accepted: false, code: "TEAM_RUN_NOT_ACCEPTING_MESSAGES", message: `Root TeamRun '${this.options.rootTeamRunId}' is not accepting messages.` });
+      return Promise.resolve({ accepted: false, code: "TEAM_RUN_NOT_ACCEPTING_MESSAGES", message: ROOT_NOT_ACTIVE_MESSAGE });
     }
     return this.engine.deliver({
       senderIdentity: input.intent.sender.participant.identity,

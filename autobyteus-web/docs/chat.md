@@ -421,8 +421,10 @@ target mode.
 - **Sending.** The Agent, Team, Org and Agent-collaboration stores send
   `mentions` (`{kind, definition_id}[]`) with SEND_MESSAGE. The server adds
   **nothing** to the run on send: it resolves each mention's address and appends
-  a `[Mentioned collaborators]` note to the stored message that tells the
-  focused agent to `delegate_task` to that address. When the agent delegates, a
+  a `[Mentioned agents]` note to the stored message (one line per mention, decided
+  for the focused agent: delegate a task to it, talk with it, or "in your team" /
+  "that is you"). Messages saved with the earlier `[Mentioned collaborators]`
+  note still display the same. When the agent delegates, a
   delegated (task) row appears; it disappears once the agent marks that
   delegation's Task DONE (or CANCELLED) with `update_task` (for example when the user
   asks it to), live and after reopen. It returns (live, via
@@ -480,8 +482,8 @@ target mode.
   rendered by `eventMonitorActiveTraceBrowsePresentation.ts` and
   `EventMonitorBrowseAssistantRow`). Older stored deliveries without a recorded
   sender stay user-style. `utils/collaboration/interAgentDelivery.ts` parses the
-  delivery header with or without its `sender address` part, so stored history
-  keeps rendering.
+  delivery header (`sender name`, `sender id`) with or without the `sender address`
+  part that earlier headers carried, so stored history keeps rendering.
 - **Standalone runs** gain children: rows under the run row
   (`AgentRunTaskRows`), a child's own conversation (titled by its name, with the
   ⚙ and ＋ header controls and the mention-aware input described above), the run row

@@ -1,7 +1,8 @@
 /**
  * The visible content of an agent-to-agent delivery, as every root builds it:
- * `You received a message from sender name: <name>, sender address: <address>, sender id: <run id>\nmessage:\n<body>`.
- * Deliveries recorded before the header carried `sender address` omit that part; both forms parse.
+ * `You received a message from sender name: <name>, sender id: <run id>\nmessage:\n<body>`.
+ * Deliveries recorded while the header also carried `sender address: <address>` keep that part in
+ * their stored text; both forms parse.
  * The "From <Sender>:" segment shows the sender and the body (RD-004).
  */
 export type InterAgentDelivery = Readonly<{ senderName: string | null; senderAgentRunId: string | null; body: string }>

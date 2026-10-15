@@ -170,12 +170,12 @@ describe("RootTaskExecutionLifecycle delegation result", () => {
       .resolves.toEqual({ delegated: false, message: "Agent '/missing' was not found." });
   });
 
-  it("builds the first message with the delegator address and run ID", async () => {
+  it("builds the first message with the delegator's name and ID, and no address (wording §7.1)", async () => {
     const { lifecycle, adapter } = setup();
     await lifecycle.delegateToNewCopy({ identity: caller }, { recipient_address: "/worker", description: "Review the plan" }, "placement");
     const packet = vi.mocked(adapter.planActivation).mock.calls[0]![0].workPacket as AgentInputUserMessage;
-    expect(packet.content).toContain("Task delegator address: /coordinator");
-    expect(packet.content).toContain("Task delegator AgentRun ID: coordinator-run");
+    expect(packet.content).toMatch(/^You have a new task from coordinator \(ID: coordinator-run\)\.\n\nDescription:\nReview the plan/);
+    expect(packet.content).not.toContain("/coordinator");
     expect(packet.content).toContain("Review the plan");
   });
 });
@@ -488,6 +488,7 @@ describe("RootTaskExecutionLifecycle wake leases", () => {
     state.restoreFailure = new Error("provider session unavailable");
     await expect(lifecycle.acquireLiveLease("nested-run")).rejects.toMatchObject({
       code: "TASK_EXECUTION_RESTORE_FAILED",
+      message: "The task agent nested-run could not continue with its conversation: provider session unavailable",
     });
     expect(state.live.has("team:task-team-run")).toBe(true);
     expect(timers.pendingCount()).toBe(1);
@@ -595,7 +596,7 @@ describe("RootTaskExecutionLifecycle user Stop (SR-006, DS-002)", () => {
     const stop = lifecycle.stopForUser([child]);
     await flush();
     await expect(lifecycle.withLiveLease("child-run", async () => ({ accepted: true as const })))
-      .resolves.toEqual({ accepted: false, code: "TASK_EXECUTION_STOPPING", message: "This copy is being stopped by the user." });
+      .resolves.toEqual({ accepted: false, code: "TASK_EXECUTION_STOPPING", message: "The user is stopping this task agent." });
     await expect(lifecycle.acquireLiveLease("child-run")).rejects.toMatchObject({ code: "TASK_EXECUTION_STOPPING" });
     finishStop();
     await stop;

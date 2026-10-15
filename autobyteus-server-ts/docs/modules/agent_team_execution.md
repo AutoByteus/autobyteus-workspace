@@ -633,26 +633,25 @@ Each Agent receives one `MemberTeamContext` containing:
 - optional Team instruction; and
 - active delivery/tool service bindings.
 
-After optional authored `Team Instruction`, the Carpenter prompt renders one
-`AgentTeam Addressing` section followed by one `AgentTeam Collaboration`
-section, before `Working Environment`. The shared exact renderer supplies the
-canonical member address, logical directory/file analogy, absolute non-root
-address rule, Team coordinator ingress rule, and the complete intent-first
-collaboration contract (REQ-009 wording). The exact copy distinguishes ordinary
-communication with the one instance at an address in the sender's run
-(its "Ordinary Communication" section), where a teammate's address reaches the
-member of the sender's own team instance and an address not in the run is not
-found (messaging never creates a run), from spawning a new copy with every `delegate_task` call (its
-"Delegated Agents" section). It also prohibits duplicate work-packet delivery,
-tells the Agent to follow up on a copy only through its returned run ID, states
-that a quiet copy is shut down (but not while it has a running background task)
-and restored with its conversation on the next message, and presents possible rule-based handoffs that the Agent evaluates against its outcome. The
-Agent selects the single rule whose condition most specifically applies and
-notifies only that rule's recipient; it does not fan out one outcome to
-additional recipients. The renderer injects no flat recipient, representative,
-or delegation roster. Runtime exposure automatically includes `get_handoff_rules`,
-`send_message_to` and `delegate_task` for a valid Team
-context, with identical copy across AutoByteus, Codex, and Claude.
+After optional authored `Team Instruction`, the Carpenter prompt renders the
+collaboration sections for the member's `collaborationRole`
+(`src/agent-execution/prompt/collaboration-prompt-sections.ts`; see
+[Prompt Engineering](./prompt_engineering.md#collaboration-sections-by-role)). A
+member of a user-started team (`team_member`) gets `AgentTeam Addressing`
+(the absolute non-root address rule and the Team coordinator ingress rule) and
+`Working With Other Agents` for a team member: its teammates are reached by
+address with `send_message_to`; a task is delegated with `delegate_task`; every
+message received names its sender and ID and is answered by ID. A `Handoffs`
+subsection with the agent's possible rule-based handoffs is added only when the
+agent has handoff rules; the agent selects the single rule whose condition most
+specifically applies and notifies only that rule's recipient. No section tells
+an agent its own address, and none injects a flat recipient, representative, or
+delegation roster. The role is decided once by
+`resolveMemberCollaborationScope` and stored on the member context; a task agent
+inside a task team is a `task_agent` even when it sits at a configured address.
+Runtime exposure automatically includes `get_handoff_rules`, `send_message_to`
+and `delegate_task` for a valid Team context, with identical copy across
+AutoByteus, Codex, and Claude.
 
 `send_message_to.recipient_address` resolves through the root logical placement
 service, the sender's own Team instance first: a teammate address inside a
@@ -870,8 +869,7 @@ history indexes are documented separately in [Agent Organization](./agent_orgs.m
 - `src/agent-team-execution/services/team-run-execution-tree-mutator.ts`
 - `src/agent-team-execution/services/team-run-persistence-coordinator.ts`
 - `src/agent-team-execution/services/member-team-context-builder.ts`
-- `src/agent-team-execution/services/member-collaboration-instruction-renderer.ts`
-- `src/agent-team-execution/services/team-collaboration-instruction-renderer.ts`
+- `src/agent-execution/prompt/collaboration-prompt-sections.ts`
 - `src/agent-team-execution/services/inter-agent-message-delivery-intent-builder.ts`
 - `src/agent-team-execution/services/member-command-status-overlay-store.ts`
 - `src/agent-team-execution/services/team-agent-event-adapter.ts`

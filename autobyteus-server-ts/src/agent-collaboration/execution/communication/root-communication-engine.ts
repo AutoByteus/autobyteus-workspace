@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { ROOT_NOT_ACTIVE_MESSAGE } from "../task/task-delegation-command.js";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import {
   rootExecutionIdentityKey,
@@ -25,7 +26,7 @@ export class RootCommunicationEngine {
 
   async deliver(input: RootCommunicationDeliveryInput): Promise<AgentOperationResult> {
     if (!this.accepting || !this.adapter.isOpen()) {
-      return { accepted: false, code: "COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES", message: "The collaboration root is not accepting messages." };
+      return { accepted: false, code: "COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES", message: ROOT_NOT_ACTIVE_MESSAGE };
     }
     if (!sameRootExecutionIdentity(input.senderIdentity.root, this.adapter.root)
       || !sameRootExecutionIdentity(input.receiverIdentity.root, this.adapter.root)

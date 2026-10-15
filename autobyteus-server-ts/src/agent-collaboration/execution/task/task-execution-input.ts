@@ -28,16 +28,25 @@ export const validateTaskReferenceFiles = async (values: readonly string[]): Pro
   return Object.freeze(result);
 };
 
-/** The delegated work: who delegated it (address and run ID), the description and any reference files. */
+/** The task itself: its description and any reference files. */
+const taskBodyLines = (description: string, referenceFiles: readonly string[]): string[] => [
+  "Description:", description,
+  ...(referenceFiles.length ? ["", "Reference files:", ...referenceFiles.map((file) => `- ${file}`)] : []),
+];
+
+/**
+ * The delegated work as the task agent's first message (wording §7.1): who gave it (name and ID, the
+ * way to answer; no address, which would not reach a task agent), the description and any reference files.
+ * The name is the last segment of the delegating agent's address, as a label only.
+ */
 export const buildTaskWorkText = (input: {
   delegator: CollaborationMemberExecutionIdentity;
   description: string;
   referenceFiles: readonly string[];
 }): string => [
-  `Task delegator address: ${input.delegator.memberAddress}`,
-  `Task delegator AgentRun ID: ${input.delegator.agentRunId}`,
-  "", "Description:", input.description,
-  ...(input.referenceFiles.length ? ["", "Reference files:", ...input.referenceFiles.map((file) => `- ${file}`)] : []),
+  `You have a new task from ${getAgentTeamAddressBasename(input.delegator.memberAddress) ?? input.delegator.agentRunId} (ID: ${input.delegator.agentRunId}).`,
+  "",
+  ...taskBodyLines(input.description, input.referenceFiles),
 ].join("\n");
 
 /** The child's first message: the delegated work as a system Task notification. */
@@ -45,17 +54,17 @@ export const buildTaskAssigneeWorkPacket = (input: Parameters<typeof buildTaskWo
   new AgentInputUserMessage(buildTaskWorkText(input), SenderType.SYSTEM, null, markTaskDelegationSystemTaskNotificationMetadata({}));
 
 /**
- * An existing copy's new Task, delivered as a message from the delegator into its conversation. The
- * reference files travel as the message's reference files (listed by the delivery, not repeated here).
+ * A saved Task given to an existing task agent, delivered as a message from the delegator (so its
+ * header already names the sender and gives the ID). The reference files travel as the message's
+ * reference files (listed by the delivery, not repeated here).
  */
 export const buildExistingCopyTaskMessage = (input: {
   taskId: string;
-  delegator: CollaborationMemberExecutionIdentity;
   description: string;
 }): string => [
   `New Task assigned to you: ${input.taskId}. Your previous Task is closed; this is the work to do now.`,
   "",
-  buildTaskWorkText({ delegator: input.delegator, description: input.description, referenceFiles: [] }),
+  ...taskBodyLines(input.description, []),
 ].join("\n");
 
 export const TASK_ASSIGNMENT_MESSAGE_TYPE = "task_assignment";

@@ -73,7 +73,7 @@ describe("AgentCollaborationStreamHandler", () => {
     const { handler, sessionId, wire } = await connect({ resolveRoot: async () => root as never, getActive: () => root as never });
     await handler.handleMessage(sessionId!, send({ mentions: [{ kind: "agent", definition_id: "code-reviewer" }] }));
     expect(root.resolveCollaboratorMentions).toHaveBeenCalledWith({ focusedAgentRunId: "child-run", mentions: [{ kind: "agent", definitionId: "code-reviewer" }] });
-    expect(root.executeAgentCommand).toHaveBeenCalledWith("child-run", expect.objectContaining({ kind: "post_message", message: expect.objectContaining({ content: expect.stringMatching(/^hello\n\n\[Mentioned collaborators\]\n- Code Reviewer \(Agent\) at \/code_reviewer\nDelegate the work with delegate_task to its address; /) }) }));
+    expect(root.executeAgentCommand).toHaveBeenCalledWith("child-run", expect.objectContaining({ kind: "post_message", message: expect.objectContaining({ content: expect.stringMatching(/^hello\n\n\[Mentioned agents\]\n- Code Reviewer \(agent\) at \/code_reviewer: delegate a task to it with delegate_task\./) }) }));
     expect(wire.at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { root_subject_kind: "agent", state: "accepted" } });
 
     await handler.handleMessage(sessionId!, send({ target_agent_run_id: HOST, command_id: "c2" }));

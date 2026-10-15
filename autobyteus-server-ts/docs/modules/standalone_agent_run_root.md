@@ -27,8 +27,7 @@ rule (`isCollaborationEligibleStandaloneRun`) decides both the root and the host
 An eligible host always has `send_message_to` and `delegate_task` from
 its first turn and a short
 standalone collaboration section in its prompt
-(`agent-execution/prompt/standalone-collaboration-instruction.ts`, including the shared "Work
-Requests and Outcomes" section); it has no `get_handoff_rules`. Ineligible runs keep the plain
+(`agent-execution/prompt/collaboration-prompt-sections.ts`, role `standalone_agent`); it has no `get_handoff_rules`. Ineligible runs keep the plain
 standalone path (`AgentRunService.resolveCommandReadyAgentRun` and the lifecycle directly).
 
 ## Ownership
@@ -228,7 +227,7 @@ and [memory](agent_memory.md) for the persistence boundaries.
 - `src/standalone-agent-run-root/persistence/standalone-root-package-store.ts`
 - `src/agent-execution/services/standalone-agent-run-lifecycle-service.ts`
 - `src/agent-execution/services/standalone-run-ports.ts`
-- `src/agent-execution/prompt/standalone-collaboration-instruction.ts`
+- `src/agent-execution/prompt/collaboration-prompt-sections.ts`
 - `src/services/agent-streaming/agent-collaboration-stream-handler.ts`
 - `src/run-history/services/standalone-run-liveness.ts`
 - `src/api/graphql/types/agent-run-collaboration.ts`

@@ -1,4 +1,5 @@
 import { buildInRunPlacements, type CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
+import { type MentionViewerRelation } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
 import type {
   CatalogTaskSource,
   CollaboratorAdmission,
@@ -50,8 +51,8 @@ export class StandaloneRootCollaborators {
   }>) {}
 
   /** `@` for the focused agent: each mentioned definition's name, kind, address and presence; adds nothing. */
-  resolveMentions(viewerAgentRunId: string, definitions: readonly CollaboratorMention[]): Promise<CollaboratorAdmissionResult> {
-    return this.admission.resolveMentions(this.portFor(viewerAgentRunId), definitions);
+  resolveMentions(viewerAgentRunId: string, definitions: readonly CollaboratorMention[], relation: MentionViewerRelation): Promise<CollaboratorAdmissionResult> {
+    return this.admission.resolveMentions(this.portFor(viewerAgentRunId), definitions, relation);
   }
 
   /** `list_available_agents` for the calling agent. */

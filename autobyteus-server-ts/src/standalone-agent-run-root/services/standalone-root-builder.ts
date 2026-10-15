@@ -1,4 +1,5 @@
 import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
+import { ROOT_NOT_ACTIVE_MESSAGE } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { resolveMemberCollaborationScope, type MemberHostTeam } from "../../agent-collaboration/execution/domain/member-instance-scope.js";
 import { RootAgentExecutionRegistry } from "../../agent-collaboration/execution/backends/root-agent-execution-registry.js";
 import { RootTeamExecutionDirectory } from "../../agent-collaboration/execution/backends/root-team-execution-directory.js";
@@ -66,7 +67,7 @@ export class StandaloneRootBuilder {
     let run: StandaloneAgentRunRoot | null = null;
     const retained: Array<Parameters<FlatTeamExecutionCallbacks["publishAgentEvent"]>> = [];
     const requireRun = (): StandaloneAgentRunRoot => {
-      if (!run?.isActive()) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", "The collaboration root of this run is not active.");
+      if (!run?.isActive()) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", ROOT_NOT_ACTIVE_MESSAGE);
       return run;
     };
     const callbacks: FlatTeamExecutionCallbacks = Object.freeze({
@@ -149,8 +150,9 @@ export class StandaloneRootBuilder {
     // CR-001: the one owner; an Agent root has no configured placements, handoffs or instruction of its own.
     const scope = resolveMemberCollaborationScope({
       memberAddress: input.identity.memberAddress,
+      agentRunId: input.identity.agentRunId,
       hostTeam: input.hostTeam,
-      root: { configuredRootAddresses: [], handoffs: [], definition: null },
+      root: { configuredRootAddresses: [], configuredRootAgentRunIds: [], configuredRootRole: "team_member", handoffs: [], definition: null },
     });
     const instruction = scope.instructionDefinition
       ? (await this.dependencies.teamDefinitions.getDefinitionById(scope.instructionDefinition.definitionId).catch(() => null))?.instructions?.trim() || null
@@ -158,6 +160,7 @@ export class StandaloneRootBuilder {
     return new MemberExecutionContext({
       identity: input.identity,
       teamScoped,
+      collaborationRole: scope.role,
       authoredEnclosingScopeInstruction: instruction,
       collaboration: new MemberCollaborationContext({
         outgoingHandoffs: scope.outgoingHandoffs,

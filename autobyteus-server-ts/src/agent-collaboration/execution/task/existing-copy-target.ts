@@ -6,8 +6,8 @@ const refuse = (message: string) => new TaskDelegationError("TASK_COPY_NOT_ASSIG
 
 /** The refusal for an ID that is not a copy of this run (unknown, or hosted by another root). */
 export const notACopyOfThisRun = (copy: TaskExecutionReference): TaskDelegationError => refuse(
-  `${"agentRunId" in copy ? copy.agentRunId : copy.teamRunId} is not a delegated copy in this run. Use the ID delegate_task returned for a copy delegated in this run, `
-  + "or delegate to a new copy with recipient_address.");
+  `${"agentRunId" in copy ? copy.agentRunId : copy.teamRunId} is not one of your task agents. Use an ID that delegate_task returned to you, `
+  + "or delegate to a new task agent with recipient_address.");
 
 /**
  * The existing copy a delegator names by its own ID, found in this root's tree. An ID of the other
@@ -23,15 +23,15 @@ export const resolveExistingCopy = <T>(adapter: RootTaskExecutionAdapter<T>, cop
     const id = copy.agentRunId;
     const coordinated = adapter.taskExecutionWithIngress(id);
     if (coordinated && "teamRunId" in coordinated) {
-      throw refuse(`${id} is the coordinator of Team copy ${coordinated.teamRunId}; use target_team_run_id "${coordinated.teamRunId}".`);
+      throw refuse(`${id} is the coordinator of task agent team ${coordinated.teamRunId}; use target_team_run_id "${coordinated.teamRunId}".`);
     }
-    if (adapter.taskExecutionTargetOf({ teamRunId: id })) throw refuse(`${id} is a Team copy's team run ID; use target_team_run_id "${id}".`);
+    if (adapter.taskExecutionTargetOf({ teamRunId: id })) throw refuse(`${id} is a task agent team's ID; use target_team_run_id "${id}".`);
     const container = adapter.taskExecutionChainFor(id)[0];
     if (container && "teamRunId" in container) {
-      throw refuse(`${id} is a member of Team copy ${container.teamRunId}, not a copy itself; to assign that Team copy, use target_team_run_id "${container.teamRunId}".`);
+      throw refuse(`${id} is a member of task agent team ${container.teamRunId}; to give that team a Task, use target_team_run_id "${container.teamRunId}".`);
     }
   } else if (adapter.taskExecutionTargetOf({ agentRunId: copy.teamRunId })) {
-    throw refuse(`${copy.teamRunId} is an Agent copy's agent run ID; use target_agent_run_id "${copy.teamRunId}".`);
+    throw refuse(`${copy.teamRunId} is a task agent's ID; use target_agent_run_id "${copy.teamRunId}".`);
   }
   return null;
 };

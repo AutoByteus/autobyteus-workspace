@@ -72,6 +72,8 @@ const harness = (options: { invalid?: boolean } = {}) => {
   return { steps, admission: createCollaboratorAdmission(catalog, validator, { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) }) };
 };
 
+const other = () => "other" as const;
+
 describe("catalog policy and mention resolution", () => {
   const admission = harness().admission;
 
@@ -92,7 +94,7 @@ describe("catalog policy and mention resolution", () => {
   it("`@` resolves addresses without validating, allocating or adding; the caller composes the delegate_task note (REQ-001/002)", async () => {
     const run = harness({ invalid: true });
     const result = await run.admission.resolveMentions(port({ configuredAgents: ["reviewer"] }),
-      [{ kind: "agent", definitionId: "reviewer" }, { kind: "agent_team", definitionId: "product" }]);
+      [{ kind: "agent", definitionId: "reviewer" }, { kind: "agent_team", definitionId: "product" }], other);
     // An in-run definition resolves to its configured placement's address and is marked; any other to its catalog address.
     expect(result).toEqual({ admitted: true, launchNotes: [], collaborators: [
       { name: "Code Reviewer", kind: "agent", address: "/reviewer", presence: "in_run" },
@@ -101,23 +103,36 @@ describe("catalog policy and mention resolution", () => {
     // Runnability is checked when the agent delegates, not here; nothing is allocated or added.
     expect(run.steps).toEqual([]);
     const note = composeCollaboratorMentionNote("please review", result.admitted ? result.collaborators : []);
-    expect(note).toContain("[Mentioned collaborators]\n- Code Reviewer (Agent) at /reviewer, already in this run\n- Product Team (Agent Team) at /product_team\n");
-    expect(note).toContain("delegate_task");
-    expect(note).toContain("messaged directly with send_message_to at its address");
-    await expect(run.admission.resolveMentions(port(), [])).resolves.toEqual({ admitted: true, launchNotes: [], collaborators: [] });
+    expect(note).toContain("[Mentioned agents]\n- Code Reviewer (agent) at /reviewer: talk with it using send_message_to, or delegate a task to it with delegate_task");
+    expect(note).toContain("- Product Team (agent team) at /product_team: delegate a task to it with delegate_task.");
+    await expect(run.admission.resolveMentions(port(), [], other)).resolves.toEqual({ admitted: true, launchNotes: [], collaborators: [] });
+  });
+
+  it("`@` decides each in-run mention for the agent the user is talking to: itself, its own team, or another unit (AC-006)", async () => {
+    const inRun = port({ configuredAgents: ["reviewer", "lead", "designer"] });
+    const relation = (address: string) => address === "/reviewer" ? "self" as const : address === "/lead" ? "own_team" as const : "other" as const;
+    await expect(admission.resolveMentions(inRun, [
+      { kind: "agent", definitionId: "reviewer" }, { kind: "agent", definitionId: "lead" },
+      { kind: "agent", definitionId: "designer" }, { kind: "agent_team", definitionId: "product" },
+    ], relation)).resolves.toEqual({ admitted: true, launchNotes: [], collaborators: [
+      { name: "Code Reviewer", kind: "agent", address: "/reviewer", presence: "self" },
+      { name: "Lead", kind: "agent", address: "/lead", presence: "own_team" },
+      { name: "Designer", kind: "agent", address: "/designer", presence: "in_run" },
+      { name: "Product Team", kind: "agent_team", address: "/product_team", presence: "not_in_run" },
+    ] });
   });
 
   it("`@` of the run's own definition fails, like an ineligible one", async () => {
     const run = harness();
     const ownReviewer = { ...port(), ownDefinition: () => ({ kind: "agent" as const, definitionId: "reviewer" }) };
-    await expect(run.admission.resolveMentions(ownReviewer, [{ kind: "agent", definitionId: "reviewer" }]))
+    await expect(run.admission.resolveMentions(ownReviewer, [{ kind: "agent", definitionId: "reviewer" }], other))
       .resolves.toMatchObject({ admitted: false, code: "COLLABORATOR_ADD_FAILED", collaboratorName: "Code Reviewer",
         message: "Code Reviewer is this run's own definition." });
   });
 
   it("`@` of an ineligible definition fails with its name and adds nothing", async () => {
     const run = harness();
-    await expect(run.admission.resolveMentions(port(), [{ kind: "agent", definitionId: "local" }]))
+    await expect(run.admission.resolveMentions(port(), [{ kind: "agent", definitionId: "local" }], other))
       .resolves.toMatchObject({ admitted: false, code: "COLLABORATOR_ADD_FAILED", collaboratorName: "local" });
     expect(run.steps).toEqual([]);
   });
@@ -126,7 +141,7 @@ describe("catalog policy and mention resolution", () => {
     const inRun = port({ configuredAgents: ["reviewer", "lead"] });
     expect((await admission.policy.listCandidates(inRun)).candidates.map((candidate) => candidate.definitionId))
       .toEqual(["reviewer", "lead", "designer", "product"]);
-    await expect(admission.resolveMentions(inRun, [{ kind: "agent", definitionId: "reviewer" }, { kind: "agent", definitionId: "lead" }]))
+    await expect(admission.resolveMentions(inRun, [{ kind: "agent", definitionId: "reviewer" }, { kind: "agent", definitionId: "lead" }], other))
       .resolves.toEqual({ admitted: true, launchNotes: [], collaborators: [
         { name: "Code Reviewer", kind: "agent", address: "/reviewer", presence: "in_run" },
         { name: "Lead", kind: "agent", address: "/lead", presence: "in_run" },

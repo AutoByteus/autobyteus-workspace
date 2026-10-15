@@ -118,8 +118,8 @@ const TOOL_HINT = {
 // (delegate_task, then update_task with the returned task_id when the work is finished). An agent may close
 // on its own once a copy reports (supported, SCN-002); the user-driven close is asserted with a copy that never
 // reports back (Note Taker).
-const HOST_RULE = 'When the user message ends with a "[Mentioned collaborators]" section, follow that section for each listed '
-  + 'collaborator, using the user request as the work description, then tell the user in one short sentence. '
+const HOST_RULE = 'When the user message ends with a "[Mentioned agents]" section, follow that section for each listed '
+  + 'agent, using the user request as the work description, then tell the user in one short sentence. '
   + 'When the user says some delegated work is finished, mark exactly that delegated work as done as the delegation told you, '
   + 'then reply in one short sentence. When the user asks you to use a specific tool, do exactly that. '
   + 'Otherwise reply in one short sentence. Never call get_handoff_rules.' + TOOL_HINT
@@ -441,9 +441,9 @@ const conversationJson = async (kind, rootId, agentRunId, address) => {
   if (kind === 'team') return JSON.stringify((await gql('query($id:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$a){conversation}}', { id: rootId, a: agentRunId })).getTeamMemberRunProjection.conversation)
   return JSON.stringify((await gql('query($id:String!,$a:String!,$m:String!){getAgentOrgMemberRunProjection(orgRunId:$id,memberAddress:$m,agentRunId:$a){conversation}}', { id: rootId, a: agentRunId, m: address })).getAgentOrgMemberRunProjection.conversation)
 }
-const NOTE_GUIDANCE_START = 'Delegate the work with delegate_task to its address'
+const NOTE_GUIDANCE_START = ': delegate a task to it with delegate_task.'
 const assertStoredNote = (text, entries) => {
-  assert(text.includes('[Mentioned collaborators]') && text.includes(NOTE_GUIDANCE_START), 'stored message lacks the delegate_task note (AC-002)', text.slice(0, 1500))
+  assert(text.includes('[Mentioned agents]') && text.includes(NOTE_GUIDANCE_START), 'stored message lacks the delegate_task note (AC-002)', text.slice(0, 1500))
   for (const entry of entries) assert(text.includes(entry), `stored note lacks "${entry}"`, text.slice(0, 1500))
   assert(!text.includes('Message a collaborator with send_message_to'), 'stored note still has the old collaborator guidance', text.slice(0, 1500))
 }
@@ -460,7 +460,7 @@ const memberRunIdIn = (tree, address) => {
   visit(tree)
   return found
 }
-const conversationShowsNote = async (page) => /\[Mentioned collaborators\]/.test(await conversationText(page))
+const conversationShowsNote = async (page) => /\[Mentioned agents\]/.test(await conversationText(page))
 const markDone = async (page, what) => sendInComposer(page, `The ${what} work is finished. Mark that delegated work as done.`)
 const REVIEWER_ADDRESS = '/code_reviewer'
 const PRODUCT_TEAM_ADDRESS = '/product_team'

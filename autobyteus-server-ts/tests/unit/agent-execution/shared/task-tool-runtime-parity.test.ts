@@ -18,7 +18,7 @@ import { testMemberExecutionContext } from "../../../fixtures/current-team-run-f
 const teamMember = testMemberExecutionContext({
   teamRunId: "team-run", rootTeamRunId: "team-run", teamDefinitionId: "team-def", memberAddress: "/worker", agentRunId: "run-worker",
 });
-const standaloneHost = new MemberExecutionContext({ ...teamMember, teamScoped: false });
+const standaloneHost = new MemberExecutionContext({ ...teamMember, teamScoped: false, collaborationRole: "standalone_agent" });
 const TASK_TOOLS = ["create_task", "update_task"];
 
 describe("task tool exposure and schemas across runtimes", () => {
@@ -77,8 +77,8 @@ describe("task tool exposure and schemas across runtimes", () => {
   });
 
   it("only update_task's description carries the closing and reopening guidance", () => {
-    expect(UpdateTaskTool.getDescription()).toMatch(/Close a Task you delegated this way when its work is done/);
-    expect(UpdateTaskTool.getDescription()).toMatch(/set it to|set the Task to TODO or IN_PROGRESS first/);
+    expect(UpdateTaskTool.getDescription()).toMatch(/Close a Task you delegated when its work is done/);
+    expect(UpdateTaskTool.getDescription()).toMatch(/first set the Task to TODO or IN_PROGRESS/);
     expect(CreateTaskTool.getDescription()).not.toMatch(/DONE|CANCELLED|reactivat/);
   });
 

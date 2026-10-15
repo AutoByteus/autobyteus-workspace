@@ -46,7 +46,7 @@ const taskProjection = {
   summary: 'Retained exact task projection',
   lastActivityAt: '2026-08-31T12:03:00.000Z',
   conversation: [
-    { kind: 'message', role: 'user', content: 'Task delegator address: /Teacher\n\nRetain this exact task context.', ts: 1788177600 },
+    { kind: 'message', role: 'user', content: 'You have a new task from Teacher (ID: teacher-run).\n\nDescription:\nRetain this exact task context.', ts: 1788177600 },
     { kind: 'reasoning', role: 'assistant', content: 'TASK_RETAINED_REASONING', ts: 1788177610 },
     {
       kind: 'tool_call', role: 'assistant', invocationId: 'task-tool-001', toolName: 'task_probe_tool',

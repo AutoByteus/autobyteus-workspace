@@ -44,7 +44,7 @@ describe("Agent-root catalog port per viewer (REQ-001..REQ-003)", () => {
     expect(hostView.ownDefinition()).toEqual({ kind: "agent", definitionId: "pm" });
     expect((await policy.listCandidates(hostView)).candidates.map((candidate) => candidate.definitionId))
       .toEqual(["reviewer", "lead", "designer", "product"]);
-    await expect(admission.resolveMentions(hostView, [{ kind: "agent", definitionId: "pm" }]))
+    await expect(admission.resolveMentions(hostView, [{ kind: "agent", definitionId: "pm" }], () => "other"))
       .resolves.toMatchObject({ admitted: false, collaboratorName: "Project Task Manager", message: "Project Task Manager is this run's own definition." });
     expect((await policy.listEligible(hostView)).map((entry) => entry.address))
       .toEqual(["/code_reviewer", "/lead", "/designer", "/product_team"]);
@@ -55,7 +55,7 @@ describe("Agent-root catalog port per viewer (REQ-001..REQ-003)", () => {
     expect(childView.ownDefinition()).toBeNull();
     expect((await policy.listCandidates(childView)).candidates.map((candidate) => candidate.definitionId))
       .toEqual(["pm", "reviewer", "lead", "designer", "product"]);
-    await expect(admission.resolveMentions(childView, [{ kind: "agent", definitionId: "pm" }, { kind: "agent_team", definitionId: "product" }]))
+    await expect(admission.resolveMentions(childView, [{ kind: "agent", definitionId: "pm" }, { kind: "agent_team", definitionId: "product" }], () => "other"))
       .resolves.toEqual({ admitted: true, launchNotes: [], collaborators: [
         { name: "Project Task Manager", kind: "agent", address: "/project_task_manager", presence: "run_agent" },
         { name: "Product Team", kind: "agent_team", address: "/product_team", presence: "not_in_run" },
@@ -91,7 +91,7 @@ describe("Agent-root catalog port per viewer (REQ-001..REQ-003)", () => {
   it("the run agent is the only in-run placement of its definition for every other viewer", async () => {
     const run = createCollaboratorAdmission(catalog, runnable);
     const childView = standaloneRootCollaboratorPortFor(treeOf({ address: "/lead", agentDefinitionId: "lead" }), launch, "designer-run-3");
-    await expect(run.resolveMentions(childView, [{ kind: "agent", definitionId: "lead" }, { kind: "agent_team", definitionId: "product" }]))
+    await expect(run.resolveMentions(childView, [{ kind: "agent", definitionId: "lead" }, { kind: "agent_team", definitionId: "product" }], () => "other"))
       .resolves.toEqual({ admitted: true, launchNotes: [], collaborators: [
         { name: "Lead", kind: "agent", address: "/lead", presence: "run_agent" },
         { name: "Product Team", kind: "agent_team", address: "/product_team", presence: "not_in_run" },

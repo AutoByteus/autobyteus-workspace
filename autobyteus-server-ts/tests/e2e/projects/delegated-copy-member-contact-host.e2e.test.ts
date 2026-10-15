@@ -284,12 +284,12 @@ suite("Delegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/s
       [{ kind: "agent", definition_id: ids.manager }]));
     expect(reviewerSend, JSON.stringify(reviewerSend)).toMatchObject({ isError: false, accepted: true, code: "DELIVERED", target_agent_run_id: hostRunId });
     const reviewerText = JSON.stringify(await memberConversation(reviewer.address, reviewer.agentRunId));
-    const runAgentEntry = `- ${names.manager} (Agent) at ${hostAddress}, the run's own agent`;
-    const runAgentGuidance = `Use send_message_to with recipient_address ${hostAddress} to message ${names.manager}; delegate_task cannot target it.`;
-    expect(reviewerText).toContain("[Mentioned collaborators]");
+    const runAgentEntry = `- ${names.manager} (agent) at ${hostAddress}: `;
+    const runAgentGuidance = `talk with it using send_message_to; you can't delegate to it.`;
+    expect(reviewerText).toContain("[Mentioned agents]");
     expect(reviewerText).toContain(runAgentEntry);
     expect(reviewerText).toContain(runAgentGuidance);
-    expect(reviewerText).not.toContain("Delegate the work with delegate_task");
+    expect(reviewerText).not.toContain("delegate a task to it with delegate_task");
     expect(reviewerText).not.toContain("already in this run");
     let hostText = "";
     await until(async () => { hostText = JSON.stringify(await hostConversation()); return hostText.includes(marker); },

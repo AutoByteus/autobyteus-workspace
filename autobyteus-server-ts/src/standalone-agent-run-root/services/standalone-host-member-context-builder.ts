@@ -1,4 +1,5 @@
 import { collaboratorSegmentForName } from "../../agent-collaboration/collaborators/catalog-address-map.js";
+import { ROOT_NOT_ACTIVE_MESSAGE } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { createAgentTeamAddress, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import {
   MemberCollaborationContext,
@@ -12,7 +13,6 @@ import type { AgentDefinitionService } from "../../agent-definition/services/age
 import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
 import type { StandaloneAgentRunRoot } from "../domain/standalone-agent-run-root.js";
 
-const ROOT_NOT_ACTIVE = "The collaboration root of this run is not active.";
 
 /**
  * Builds the host member context of an eligible standalone run; its root passes it to the host's
@@ -45,17 +45,18 @@ export class StandaloneHostMemberContextBuilder {
     return new MemberExecutionContext({
       identity,
       teamScoped: false,
+      collaborationRole: "standalone_agent",
       authoredEnclosingScopeInstruction: null,
       collaboration: new MemberCollaborationContext({
         deliverLogicalMessage: async (message) => {
           const active = this.options.getActiveRoot(metadata.runId);
           return active
             ? active.deliverLogicalMessage(identity, message)
-            : { accepted: false, code: "COLLABORATION_ROOT_NOT_ACTIVE", message: ROOT_NOT_ACTIVE };
+            : { accepted: false, code: "COLLABORATION_ROOT_NOT_ACTIVE", message: ROOT_NOT_ACTIVE_MESSAGE };
         },
         listAvailableAgents: async () => {
           const active = this.options.getActiveRoot(metadata.runId);
-          if (!active) throw new Error(ROOT_NOT_ACTIVE);
+          if (!active) throw new Error(ROOT_NOT_ACTIVE_MESSAGE);
           return active.listAvailableAgents(identity);
         },
       }),
@@ -63,11 +64,11 @@ export class StandaloneHostMemberContextBuilder {
         root,
         delegateToNewCopy: async (caller, input) => {
           const active = this.options.getActiveRoot(metadata.runId);
-          return active ? active.delegateToNewCopy({ identity: caller }, input) : { delegated: false, message: ROOT_NOT_ACTIVE };
+          return active ? active.delegateToNewCopy({ identity: caller }, input) : { delegated: false, message: ROOT_NOT_ACTIVE_MESSAGE };
         },
         assignToExistingCopy: async (caller, input) => {
           const active = this.options.getActiveRoot(metadata.runId);
-          return active ? active.assignToExistingCopy({ identity: caller }, input) : { delegated: false, message: ROOT_NOT_ACTIVE };
+          return active ? active.assignToExistingCopy({ identity: caller }, input) : { delegated: false, message: ROOT_NOT_ACTIVE_MESSAGE };
         },
       }),
     });

@@ -16,6 +16,7 @@ import type {
   CollaboratorEntryPlan,
 } from "./collaborator-entry-builder.js";
 import type { CollaboratorRootPort } from "./collaborator-root-port.js";
+import type { MentionViewerRelation } from "./message-recipient-resolution.js";
 import { CollaboratorAddError, CollaboratorMentionError } from "./collaborator-errors.js";
 import type { CollaboratorLaunchResolver } from "./collaborator-launch-resolver.js";
 import { entryPlanLaunchNotes } from "./launch-configuration-notes.js";
@@ -64,12 +65,16 @@ export class CollaboratorAdmission {
 
   /**
    * `@`: each mentioned definition, in order, with its name, kind, address and presence. An
-   * in-run definition resolves to its preferred in-run placement address (`run_agent` when that
-   * placement is the run's own agent, else `in_run`); any other to its catalog address
-   * (`not_in_run`). Never writes, allocates or publishes. An
+   * in-run definition resolves to its preferred in-run placement address with its relation to the
+   * focused agent (`self`, `own_team`, `run_agent` when that placement is the run's own agent, else
+   * `in_run`); any other to its catalog address (`not_in_run`). Never writes, allocates or publishes. An
    * ineligible mention returns `COLLABORATOR_ADD_FAILED` with its name.
    */
-  async resolveMentions(port: CollaboratorRootPort, definitions: readonly CollaboratorMention[]): Promise<CollaboratorAdmissionResult> {
+  async resolveMentions(
+    port: CollaboratorRootPort,
+    definitions: readonly CollaboratorMention[],
+    relation: MentionViewerRelation,
+  ): Promise<CollaboratorAdmissionResult> {
     if (definitions.length === 0) return admitted(Object.freeze([]));
     try {
       const eligible: AdmissibleCollaboratorDefinition[] = [];
@@ -80,7 +85,7 @@ export class CollaboratorAdmission {
         const address = addresses.addressFor({ kind: definition.kind, definitionId: definition.definition.id });
         if (!address) throw new CollaboratorAddError(definition.definition.name, "It has no address in this run.");
         const preferred = preferredInRunPlacement(placements.get(catalogDefinitionKey({ kind: definition.kind, definitionId: definition.definition.id })) ?? []);
-        const presence = preferred?.rank === "run_agent" ? "run_agent" : preferred ? "in_run" : "not_in_run";
+        const presence = !preferred ? "not_in_run" : presenceFor(relation(address), preferred.rank);
         return Object.freeze({ name: definition.definition.name, kind: definition.kind, address, presence });
       });
       return admitted(Object.freeze(collaborators));
@@ -157,6 +162,10 @@ const toTaskExecutionSource = (plan: CollaboratorEntryPlan): TaskExecutionSource
       defaultLaunchConfiguration: plan.defaultLaunchConfiguration,
       defaultLaunchSource: plan.defaultLaunchSource,
     });
+
+/** The note presence of an in-run placement for the focused agent (wording §8). */
+const presenceFor = (relation: ReturnType<MentionViewerRelation>, rank: "run_agent" | "configured"): MentionedCollaborator["presence"] =>
+  relation === "self" ? "self" : relation === "own_team" ? "own_team" : rank === "run_agent" ? "run_agent" : "in_run";
 
 const admitted = (collaborators: readonly MentionedCollaborator[], launchNotes: readonly string[] = []): CollaboratorAdmissionResult =>
   Object.freeze({ admitted: true, collaborators, launchNotes: Object.freeze([...launchNotes]) });

@@ -56,7 +56,7 @@ describe("AutoByteus server-owned send_message_to", () => {
     const adapter = new SendMessageToMcpAdapterProvider(dispatcher).getAdapters()[0]!;
     expect(AutoByteusSendMessageToTool.getDescription()).toBe(SEND_MESSAGE_TO_TOOL_DESCRIPTION);
     expect(adapter.definition.description).toBe(SEND_MESSAGE_TO_TOOL_DESCRIPTION);
-    expect(adapter.definition.description).toContain("work request, result, or blocker");
+    expect(adapter.definition.description).toContain("self-contained request, result, question or blocker");
     const schema = AutoByteusSendMessageToTool.getArgumentSchema();
     expect(adapter.definition.inputSchema).toEqual(schema);
     expect(schema.parameters.map(({ name, required }) => ({ name, required }))).toEqual([

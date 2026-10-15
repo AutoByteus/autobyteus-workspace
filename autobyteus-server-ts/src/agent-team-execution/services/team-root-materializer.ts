@@ -1,4 +1,5 @@
 import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
+import { ROOT_NOT_ACTIVE_MESSAGE } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { createRootExecutionPhysicalScope, createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { MemberTaskCommandCapability } from "../../agent-collaboration/execution/task/member-task-command-capability.js";
@@ -56,7 +57,7 @@ export const materializeTeamRoot = async (
   let root: RootTeamRun | null = null;
   const requireActiveRoot = (): RootTeamRun => {
     if (!root?.isActive()) {
-      throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", "Root TeamRun is not active.");
+      throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", ROOT_NOT_ACTIVE_MESSAGE);
     }
     return root;
   };

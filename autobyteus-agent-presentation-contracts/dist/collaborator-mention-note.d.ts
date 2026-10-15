@@ -26,11 +26,13 @@ export declare const collaboratorMentionsDtoSchema: z.ZodArray<z.ZodObject<{
     definition_id: z.ZodString;
 }, z.core.$strict>>;
 /**
- * Where a mentioned definition is relative to the run: `not_in_run` (delegate to its catalog
- * address), `in_run` (a configured member of the run, messageable directly), or
- * `run_agent` (the standalone Agent run's own agent, reached only with `send_message_to`).
+ * Where a mentioned definition is, for the agent the user is talking to (wording §8): `not_in_run`
+ * (only in the catalog: delegate a task to it), `in_run` (defined in the same team or organization
+ * run, outside the agent's own team: talk with it or delegate), `own_team` (the agent's teammate or
+ * own team: talk with it, never delegate), `self` (the agent itself), or `run_agent` (the agent the
+ * user started in a standalone run, mentioned to one of its task agents: talk with it, never delegate).
  */
-export type MentionedCollaboratorPresence = "not_in_run" | "in_run" | "run_agent";
+export type MentionedCollaboratorPresence = "not_in_run" | "in_run" | "own_team" | "self" | "run_agent";
 export type MentionedCollaborator = Readonly<{
     name: string;
     kind: CollaboratorMentionKind;
@@ -43,20 +45,16 @@ export type ParsedCollaboratorMentionNote = Readonly<{
     collaborators: readonly MentionedCollaborator[];
 }>;
 /**
- * The one owner of the mention-note wording (server compose, web parse). The note tells the
- * focused agent to delegate the work to each mentioned address. An entry already in the run is
- * marked so, and the guidance then also offers messaging that instance directly. The run's own
- * agent (a standalone Agent run's host) is marked so and gets an explicit send_message_to
- * sentence instead, with no delegate_task alternative:
+ * The one owner of the mention-note wording (server compose, web parse). One line per mentioned
+ * agent or team, chosen for the agent the user is talking to; each line carries its own guidance:
  *
  *   compose("Please ask @Product Team", [{ name: "Product Team", kind: "agent_team", address: "/product_team", presence: "not_in_run" }])
- *   === "Please ask @Product Team\n\n[Mentioned collaborators]\n- Product Team (Agent Team) at /product_team\nDelegate the work with delegate_task …"
+ *   === "Please ask @Product Team\n\n[Mentioned agents]\n- Product Team (agent team) at /product_team: delegate a task to it with delegate_task."
  */
 export declare const composeCollaboratorMentionNote: (text: string, collaborators: readonly MentionedCollaborator[]) => string;
 /**
- * Recognizes only a note at the very end of the content, in exactly the composed form: its
- * guidance line is the one its entries compose to, the one the previous release
- * composed, or a guidance saved by an earlier release.
+ * Recognizes only a note at the very end of the content, in exactly the composed form (every line
+ * with the guidance its presence composes to), or in any form saved by an earlier release.
  */
 export declare const parseCollaboratorMentionNote: (content: string) => ParsedCollaboratorMentionNote | null;
 /**

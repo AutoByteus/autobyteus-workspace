@@ -4,7 +4,7 @@ import { skillRequestInstruction } from '~/utils/skills/skillRequestInstruction'
 
 /**
  * The run summary reads from the user's own words: a skill-request instruction prefix and the
- * server's `[Mentioned collaborators]` note are dropped. A mention-only message reads as its
+ * server's `[Mentioned agents]` note (or the earlier `[Mentioned collaborators]` form) are dropped. A mention-only message reads as its
  * `@Name` mentions; only a tags-only message falls back to the instruction itself.
  */
 export const resolveFirstUserMessageSummary = (
