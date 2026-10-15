@@ -1,0 +1,6 @@
+{
+  "pid": 43312,
+  "processBefore": "",
+  "reason": "loopback tunnel no longer needed; no remote preview executed",
+  "result": "Stopped or already exited after owned reboot"
+}

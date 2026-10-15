@@ -1,0 +1,8 @@
+Started fresh nonempty owned APFS source
+fresh nonempty owned APFS source: Pass
+Started one public nativeMac create under077 no selected nodes
+one public nativeMac create under077 no selected nodes: Pass
+Started Mac original/mounted identity bytes UUID private modes installed binary running job
+Mac original/mounted identity bytes UUID private modes installed binary running job: Pass
+Mac native Fail/incomplete RuntimeError('No automatic Mac host readiness after ordinary reboot in observation window; no reconnect performed')
+{"result": "Fail", "fatal": "RuntimeError('No automatic Mac host readiness after ordinary reboot in observation window; no reconnect performed')"}

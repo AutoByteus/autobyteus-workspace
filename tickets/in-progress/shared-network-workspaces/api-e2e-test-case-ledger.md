@@ -934,3 +934,427 @@ Prior result002 Fail57.14% retained. PriorAPI-F002 unresolved; API-F001 scoped r
 - V05/nativeactualtools/unreadassets/peerclose/restore/Standalone-Team-Org, MacmanagedDockerclient, independentphysical/healthyprivatepeer/release surfaces remainNotTested/dependency-limited; onlyMacDockerSTORAGEdeferred. No user-onlywaiver.
 - Generic helper `V03-Docker storage` event label later includes explicitlyidentifiednative/UI probes; rawenvelopeidentity corrected in evidence-identity-corrections.json, actualargv/installedhash/sourceUUID govern. Allharnessfailuresretained, notproductfindings exceptAPI-F004.
 - CleanupComplete: mac-cleanup.json, native-detach-result.json, desktop-validation-result.json, cleanup.json. No case leftRunning; allownedVM/app/tunnel/tag/scratch removed. Fullcurrentreport confidence57.14% Fail/broaderRequired; no TaskDone/release/userverification.
+
+## Round5 plan — API-REV-005 (in progress, prior result remains authoritative)
+|Case|Expected|State|
+|---|---|---|
+|N01|Current7package race/vet + relevant Python clean isolated checks|Not Tested|
+|API-F004|Fresh public native storage+managedHTTP warmed1KiB/1MiB writes/reconnect exact<=5s, same source/private identity|Not Tested|
+|V03-Docker|Current actualDocker storage+native/managedclient freshness and operations|Not Tested|
+|V03-Lifecycle|Ordinary boots/Stop/policy/upgrade/detach preservation regression|Not Tested|
+|V01/V02|Macnative and bothOS clients/independentpeer matrix|Not Tested|
+|V04|Current mounted desktop healthy preview/explorer/completedartifact|Not Tested|
+|V05|Native tools/unreadlinkedassets/peerclose/restore/Standalone-Team-Org|Not Tested|
+|Cleanup|Only owned processes/data/clones/tags removed; retainedcandidate inventory unchanged|Not Tested|
+
+- 2026-10-15T10:01:24Z **Round5 N01** — Starting go-race
+
+- 2026-10-15T10:01:58Z **Round5 N01** — go-race: Pass
+
+- 2026-10-15T10:01:58Z **Round5 N01** — Starting go-vet
+
+- 2026-10-15T10:02:04Z **Round5 N01** — go-vet: Pass
+
+- 2026-10-15T10:02:04Z **Round5 N01** — Starting python-bootstrap-launcher
+
+- 2026-10-15T10:02:50Z **Round5 N01** — python-bootstrap-launcher: Pass
+
+- 2026-10-15T10:05:47Z **Round5 V03 Started setup** — own Ubuntu24.04 public-image clone, private Tart root; no host bridge/root/credentials.
+
+- 2026-10-15T10:05:57Z **Round5** — Started fresh owned guest has no NFS installation or attachment
+
+- 2026-10-15T10:05:57Z **Round5** — fresh owned guest has no NFS installation or attachment: Pass
+
+- 2026-10-15T10:05:57Z **Round5** — Started Docker only prerequisite in own fresh guest
+
+- 2026-10-15T10:06:19Z **Round5** — Docker only prerequisite in own fresh guest: Pass
+
+- 2026-10-15T10:06:19Z **Round5** — Started private guest loopback registry for current candidate image only
+
+- 2026-10-15T10:06:24Z **Round5** — private guest loopback registry for current candidate image only: Pass
+
+- 2026-10-15T10:08:08Z **Round5** — Current full-source server image built/transferred unchanged to owned Linux guest; local registry digest, isolated launcher home, loopback port policy ready
+
+- 2026-10-15T10:08:08Z **Round5** — Started actual current launcher first ordinary node
+
+- 2026-10-15T10:08:11Z **Round5** — actual current launcher first ordinary node: Pass
+
+- 2026-10-15T10:08:12Z **Round5** — Started real server health before NFS selection
+
+- 2026-10-15T10:08:28Z **Round5** — real server health before NFS selection: Pass
+
+- 2026-10-15T10:08:28Z **Round5** — Started actual current launcher second unselected node
+
+- 2026-10-15T10:08:31Z **Round5** — actual current launcher second unselected node: Pass
+
+- 2026-10-15T10:08:42Z **Round5** — Started seed synthetic private auth/data/browser sentinel bytes
+
+- 2026-10-15T10:08:43Z **Round5** — seed synthetic private auth/data/browser sentinel bytes: Pass
+
+- 2026-10-15T10:08:43Z **Round5** — Started ordinary custom network alias setup
+
+- 2026-10-15T10:08:43Z **Round5** — ordinary custom network alias setup: Pass
+
+- 2026-10-15T10:08:44Z **Round5** — Two exact current launcher nodes prepared; selected running/unselected stopped, loopback ports and synthetic private bytes recorded
+
+- 2026-10-15T10:08:44Z **Round5** — Started fresh nonempty ext4 source before first public setup
+
+- 2026-10-15T10:08:44Z **Round5** — fresh nonempty ext4 source before first public setup: Pass
+
+- 2026-10-15T10:08:44Z **Round5** — Started one fresh public selected native-storage create
+
+- 2026-10-15T10:09:07Z **Round5** — one fresh public selected native-storage create: Pass
+
+- 2026-10-15T10:09:07Z **Round5** — Started exact chosen image config private state ports aliases and unselected preservation
+
+- 2026-10-15T10:09:08Z **Round5** — exact chosen image config private state ports aliases and unselected preservation: Pass
+
+- 2026-10-15T10:09:08Z **Round5** — Started same original nonempty source and native mount identity preserved
+
+- 2026-10-15T10:09:08Z **Round5** — same original nonempty source and native mount identity preserved: Pass
+
+- 2026-10-15T10:09:08Z **Round5** — Started installed identity private modes and active managed job
+
+- 2026-10-15T10:09:08Z **Round5** — installed identity private modes and active managed job: Pass
+
+- 2026-10-15T10:09:08Z **Round5** — Fresh selected public create Pass; no reconnect performed; API-F004 healthy visibility next; no fresh-read success implied
+
+- 2026-10-15T10:09:08Z **Round5** — Started actual fresh activated native config package process mount identities
+
+- 2026-10-15T10:09:08Z **Round5** — actual fresh activated native config package process mount identities: Pass
+
+- 2026-10-15T10:09:08Z **Round5** — Started API-F004 fresh-public-create warmed 1KiB/1MiB + atomic/new native and HTTP
+
+- 2026-10-15T10:09:10Z **Round5** — API-F004 fresh-public-create warmed 1KiB/1MiB + atomic/new native and HTTP: Pass
+
+- 2026-10-15T10:09:10Z **Round5** — Started public native reconnect without config or cache manipulation
+
+- 2026-10-15T10:09:12Z **Round5** — public native reconnect without config or cache manipulation: Pass
+
+- 2026-10-15T10:09:12Z **Round5** — Started API-F004 public-reconnect warmed 1KiB/1MiB + atomic/new native and HTTP
+
+- 2026-10-15T10:09:14Z **Round5** — API-F004 public-reconnect warmed 1KiB/1MiB + atomic/new native and HTTP: Pass
+
+- 2026-10-15T10:09:14Z **Round5** — API-F004 native-storage public create/reconnect scope Pass; current Docker-storage and broader matrix NOT implied
+
+- 2026-10-15T10:09:38Z **Round5** — Started native mkdir create synced executable and relative symlink
+
+- 2026-10-15T10:09:38Z **Round5** — native mkdir create synced executable and relative symlink: Pass
+
+- 2026-10-15T10:09:38Z **Round5** — Started container fresh read relative symlink execute and exclusive-create refusal
+
+- 2026-10-15T10:09:38Z **Round5** — container fresh read relative symlink execute and exclusive-create refusal: Pass
+
+- 2026-10-15T10:09:38Z **Round5** — Started container modify fsync close then native read rename delete
+
+- 2026-10-15T10:09:38Z **Round5** — container modify fsync close then native read rename delete: Pass
+
+- 2026-10-15T10:09:38Z **Round5** — Started container observes rename and removes file
+
+- 2026-10-15T10:09:38Z **Round5** — container observes rename and removes file: Pass
+
+- 2026-10-15T10:09:38Z **Round5** — Started both Linux clients see independent committed outputs
+
+- 2026-10-15T10:09:39Z **Round5** — both Linux clients see independent committed outputs: Pass
+
+- 2026-10-15T10:09:39Z **Round5** — Linux same-kernel native/container ordinary operations and reciprocal/different-file writes Pass; no physical/mac/native-agent claim
+
+- 2026-10-15T10:09:39Z **Round5** — Started seed original source project files and Git as actual selected nonroot user
+
+- 2026-10-15T10:09:39Z **Round5** — seed original source project files and Git as actual selected nonroot user: Pass
+
+- 2026-10-15T10:09:39Z **Round5** — Started actual running product HTTP GraphQL image HTML and PTY Git
+
+- 2026-10-15T10:09:39Z **Round5** — actual running product HTTP GraphQL image HTML and PTY Git: Pass
+
+- 2026-10-15T10:09:39Z **Round5** — Mounted HTTP/GraphQL/relative static bytes and actual WebSocket PTY exact scoped Git/cwd Pass; not desktop rendering/model tools/independent peer
+
+- 2026-10-15T10:12:53Z **Round5** — V04 deterministic healthy mounted fixtures bytes verified in actual managed node; no actual-agent completed artifact claim
+
+- 2026-10-15T10:12:54Z **Round5** — Host-to-owned-guest SSH loopback HTTP forwarding verified using own ephemeral key and guest-read host key; no VM peer route/bridge workaround
+
+- 2026-10-15T10:13:16Z **Round5** — Started explicitly drain own selected test node before safe detach
+
+- 2026-10-15T10:13:21Z **Round5** — explicitly drain own selected test node before safe detach: Pass
+
+- 2026-10-15T10:13:21Z **Round5** — Started public detach --yes --drained through installed owner
+
+- 2026-10-15T10:13:22Z **Round5** — public detach --yes --drained through installed owner: Pass
+
+- 2026-10-15T10:13:22Z **Round5** — Started drained detach current config private/source preservation and exact attempt removal
+
+- 2026-10-15T10:13:24Z **Round5** — drained detach current config private/source preservation and exact attempt removal: Pass
+
+- 2026-10-15T10:13:24Z **Round5** — Selected drained detach preserves current opaque state/source/private bytes and removes exact bounded attempt PASS
+
+- 2026-10-15T10:13:24Z **Round5** — Started test-owned Docker prerequisite in owned detached LinuxVM
+
+- 2026-10-15T10:13:26Z **Round5** — test-owned Docker prerequisite in owned detached LinuxVM: Pass
+
+- 2026-10-15T10:13:26Z **Round5** — Started build storage image from exact retained engine pair
+
+- 2026-10-15T10:14:17Z **Round5** — build storage image from exact retained engine pair: Pass
+
+- 2026-10-15T10:14:17Z **Round5** — Started clean image package and manifest verification
+
+- 2026-10-15T10:14:18Z **Round5** — clean image package and manifest verification: Pass
+
+- 2026-10-15T10:14:18Z **Round5** — Started existing own loopback registry ready
+
+- 2026-10-15T10:14:19Z **Round5** — existing own loopback registry ready: Pass
+
+- 2026-10-15T10:14:19Z **Round5** — Started retain image under actual local-registry immutable digest
+
+- 2026-10-15T10:14:20Z **Round5** — retain image under actual local-registry immutable digest: Pass
+
+- 2026-10-15T10:14:20Z **Round5** — Docker storage image ready, test-only loopback digest recorded; no public create yet
+
+- 2026-10-15T10:14:36Z **Round5** — Started operator starts own safely detached node before Docker storage setup
+
+- 2026-10-15T10:14:36Z **Round5** — operator starts own safely detached node before Docker storage setup: Pass
+
+- 2026-10-15T10:14:40Z **Round5** — Started preserved original ext4 source and marker before Docker setup
+
+- 2026-10-15T10:14:40Z **Round5** — preserved original ext4 source and marker before Docker setup: Pass
+
+- 2026-10-15T10:14:41Z **Round5** — Started public selected Docker-storage create against same preserved source
+
+- 2026-10-15T10:14:51Z **Round5** — public selected Docker-storage create against same preserved source: Pass
+
+- 2026-10-15T10:14:51Z **Round5** — Started exact chosen image config private state ports aliases and unselected preservation
+
+- 2026-10-15T10:14:51Z **Round5** — exact chosen image config private state ports aliases and unselected preservation: Fail
+
+- 2026-10-15T10:14:51Z **Round5** — ManagedDocker client Fail/incomplete AssertionError({'configChangedKeys': ['Labels']})
+
+- 2026-10-15T10:15:22Z **Round5** — Started exact preservation after already successful public Docker setup
+
+- 2026-10-15T10:15:23Z **Round5** — exact preservation after already successful public Docker setup: Pass
+
+- 2026-10-15T10:15:23Z **Round5** — Docker public setup and exact preservation confirmed; harness asymmetric label exclusion corrected, no repeat mutation
+
+- 2026-10-15T10:15:23Z **Round5** — Started actual activated Docker storage config image process and package identity
+
+- 2026-10-15T10:15:23Z **Round5** — actual activated Docker storage config image process and package identity: Pass
+
+- 2026-10-15T10:15:23Z **Round5** — Started API-F004 docker-fresh-public-create warmed 1KiB/1MiB + atomic/new native and HTTP
+
+- 2026-10-15T10:15:26Z **Round5** — API-F004 docker-fresh-public-create warmed 1KiB/1MiB + atomic/new native and HTTP: Pass
+
+- 2026-10-15T10:15:26Z **Round5** — Started public Docker-storage reconnect without config or cache manipulation
+
+- 2026-10-15T10:15:28Z **Round5** — public Docker-storage reconnect without config or cache manipulation: Pass
+
+- 2026-10-15T10:15:28Z **Round5** — Started API-F004 docker-public-reconnect warmed 1KiB/1MiB + atomic/new native and HTTP
+
+- 2026-10-15T10:15:30Z **Round5** — API-F004 docker-public-reconnect warmed 1KiB/1MiB + atomic/new native and HTTP: Pass
+
+- 2026-10-15T10:15:31Z **Round5** — API-F004 Docker-storage public create/reconnect scope Pass; broader bothOS/physical matrix NOT implied
+
+- 2026-10-15T10:16:11Z **Round5** — Started ordinary whole-host reboot 1 automatic actual readiness
+
+- 2026-10-15T10:16:53Z **Round5 V01 Mac-native** — Started fresh nonempty owned APFS source
+
+- 2026-10-15T10:16:54Z **Round5 V01 Mac-native** — fresh nonempty owned APFS source: Pass
+
+- 2026-10-15T10:16:54Z **Round5 V01 Mac-native** — Started one public nativeMac create under077 no selected nodes
+
+- 2026-10-15T10:16:55Z **Round5 V01 Mac-native** — one public nativeMac create under077 no selected nodes: Pass
+
+- 2026-10-15T10:16:55Z **Round5 V01 Mac-native** — Started Mac original/mounted identity bytes UUID private modes installed binary running job
+
+- 2026-10-15T10:16:56Z **Round5 V01 Mac-native** — Mac original/mounted identity bytes UUID private modes installed binary running job: Pass
+
+- 2026-10-15T10:17:23Z **Round5** — ordinary whole-host reboot 1 automatic actual readiness: Pass
+
+- 2026-10-15T10:17:23Z **Round5** — Started reboot 1 same ID/image/config/private/source/mounted API preservation
+
+- 2026-10-15T10:17:24Z **Round5** — reboot 1 same ID/image/config/private/source/mounted API preservation: Pass
+
+- 2026-10-15T10:17:24Z **Round5** — Started ordinary whole-host reboot 2 automatic actual readiness
+
+- 2026-10-15T10:18:27Z **Round5** — ordinary whole-host reboot 2 automatic actual readiness: Pass
+
+- 2026-10-15T10:18:27Z **Round5** — Started reboot 2 same ID/image/config/private/source/mounted API preservation
+
+- 2026-10-15T10:18:28Z **Round5** — reboot 2 same ID/image/config/private/source/mounted API preservation: Pass
+
+- 2026-10-15T10:18:28Z **Round5** — Two fresh ordinary full-host reboots automatic readiness and exact preservation PASS; no manual Start/reconnect. Controls still required.
+
+- 2026-10-15T10:18:28Z **Round5** — Started ordinary actual healthy state before Stop
+
+- 2026-10-15T10:18:28Z **Round5** — ordinary actual healthy state before Stop: Pass
+
+- 2026-10-15T10:18:28Z **Round5** — Started current public launcher Stop on successfully running selected node
+
+- 2026-10-15T10:18:31Z **Round5** — current public launcher Stop on successfully running selected node: Pass
+
+- 2026-10-15T10:18:31Z **Round5** — Started ordinary Stop state and read-only status
+
+- 2026-10-15T10:18:32Z **Round5** — ordinary Stop state and read-only status: Pass
+
+- 2026-10-15T10:18:32Z **Round5** — Observe two existing30-second service ticks after normal Stop
+
+- 2026-10-15T10:19:13Z **Round5 V01 Mac-native** — Started read source identity current boot mount actual engine source and persisted owner
+
+- 2026-10-15T10:19:13Z **Round5 V01 Mac-native** — read source identity current boot mount actual engine source and persisted owner: Pass
+
+- 2026-10-15T10:19:37Z **Round5** — Started normal Stop preserved across service ticks
+
+- 2026-10-15T10:19:38Z **Round5** — normal Stop preserved across service ticks: Pass
+
+- 2026-10-15T10:19:38Z **Round5** — Started confirmed public reconnect does not override normal Stop
+
+- 2026-10-15T10:19:38Z **Round5** — confirmed public reconnect does not override normal Stop: Pass
+
+- 2026-10-15T10:19:38Z **Round5** — Started normal Stop preserved after confirmed reconnect
+
+- 2026-10-15T10:19:39Z **Round5** — normal Stop preserved after confirmed reconnect: Pass
+
+- 2026-10-15T10:20:40Z **Round5 V01 Mac-native** — Mac native Fail/incomplete RuntimeError('No automatic Mac host readiness after ordinary reboot in observation window; no reconnect performed')
+
+### Round5 V01-MAC-IDENTITY investigation checkpoint
+Fresh Mac create Pass; first reboot currently unready with repeated explicit source-device mismatch (not timing alone). New focused second ordinary reboot/readonly APFS UUID and source/persisted identity proof planned, followed only by separately labelled diagnostic reconnect if needed. Failure origin preliminary Unclear, likely persisted source-identity/platform integration; reviewer to determine design impact. Remaining desktop preview/peer/native-agent expansion paused for focused evidence, no Pass inferred.
+
+- 2026-10-15T10:21:19Z **Round5** — Started normal unless-stopped Stop remains stopped after whole-host reboot and ticks
+
+- 2026-10-15T10:21:20Z **Round5** — normal unless-stopped Stop remains stopped after whole-host reboot and ticks: Pass
+
+- 2026-10-15T10:21:20Z **Round5** — Normal-running Stop / ticks / confirmed reconnect / ordinary reboot veto PASS. No failed-stop policy control inferred.
+
+- 2026-10-15T10:21:20Z **Round5** — Started control only: hold owned attachment completion job for serial failed-start inspection
+
+- 2026-10-15T10:21:21Z **Round5** — control only: hold owned attachment completion job for serial failed-start inspection: Pass
+
+- 2026-10-15T10:21:21Z **Round5** — Started explicit user Start of normally stopped node to prepare distinct policy control
+
+- 2026-10-15T10:21:21Z **Round5** — explicit user Start of normally stopped node to prepare distinct policy control: Pass
+
+- 2026-10-15T10:21:21Z **Round5** — Started control starts from genuinely running healthy selected node
+
+- 2026-10-15T10:21:29Z **Round5** — control starts from genuinely running healthy selected node: Pass
+
+- 2026-10-15T10:21:29Z **Round5** — Started ordinary reboot with attachment job held for serial operator inspection
+
+- 2026-10-15T10:22:12Z **Round5** — ordinary reboot with attachment job held for serial operator inspection: Pass
+
+- 2026-10-15T10:22:43Z **Round5** — Captured real ordinary Docker NFS pre-process connection-refused start; job held, no synthetic state
+
+- 2026-10-15T10:22:43Z **Round5** — Started raw Stop on already-failed node is a Docker no-op
+
+- 2026-10-15T10:22:43Z **Round5** — raw Stop on already-failed node is a Docker no-op: Pass
+
+- 2026-10-15T10:22:43Z **Round5** — Started current launcher reports no-op/policy guidance, not cancellation promise
+
+- 2026-10-15T10:22:43Z **Round5** — current launcher reports no-op/policy guidance, not cancellation promise: Pass
+
+- 2026-10-15T10:22:43Z **Round5** — Started operator explicitly selects current restart=no durable veto
+
+- 2026-10-15T10:22:43Z **Round5** — operator explicitly selects current restart=no durable veto: Pass
+
+- 2026-10-15T10:22:43Z **Round5** — Started restore original owned attachment service with existing configuration
+
+- 2026-10-15T10:22:43Z **Round5** — restore original owned attachment service with existing configuration: Pass
+
+- 2026-10-15T10:23:22Z **Round5 V01 Mac-native** — Mac source-identity second ordinary boot observation complete; actual status/identity governs classification, no identity bypass
+
+- 2026-10-15T10:23:48Z **Round5** — Started policy=no suppresses automatic completion while host becomes ready
+
+- 2026-10-15T10:23:49Z **Round5** — policy=no suppresses automatic completion while host becomes ready: Pass
+
+- 2026-10-15T10:23:49Z **Round5** — Started confirmed public reconnect cannot override current policy=no
+
+- 2026-10-15T10:23:49Z **Round5** — confirmed public reconnect cannot override current policy=no: Pass
+
+- 2026-10-15T10:23:49Z **Round5** — Started policy veto exact stopped-state preservation after explicit reconnect
+
+- 2026-10-15T10:23:50Z **Round5** — policy veto exact stopped-state preservation after explicit reconnect: Pass
+
+- 2026-10-15T10:23:50Z **Round5** — Started ordinary reboot after durable veto with original attachment job enabled
+
+- 2026-10-15T10:24:26Z **Round5** — ordinary reboot after durable veto with original attachment job enabled: Pass
+
+- 2026-10-15T10:25:22Z **Round5 V01 Mac-native** — Mac source-identity second ordinary boot observation complete; actual status/identity governs classification, no identity bypass
+
+- 2026-10-15T10:25:31Z **Round5** — Started policy=no remains veto across reboot and service ticks
+
+- 2026-10-15T10:25:32Z **Round5** — policy=no remains veto across reboot and service ticks: Pass
+
+- 2026-10-15T10:25:32Z **Round5** — Captured failed-start raw Stop no-op/guidance and current restart=no automatic/explicit/reboot veto PASS
+
+- 2026-10-15T10:25:32Z **Round5** — Started explicit operator restores original unless-stopped policy and starts node for restart regression
+
+- 2026-10-15T10:25:33Z **Round5** — explicit operator restores original unless-stopped policy and starts node for restart regression: Pass
+
+- 2026-10-15T10:25:33Z **Round5** — Started restored explicit running state actual API ready
+
+- 2026-10-15T10:25:39Z **Round5** — restored explicit running state actual API ready: Pass
+
+- 2026-10-15T10:25:39Z **Round5** — Started ordinary Docker node restart
+
+- 2026-10-15T10:25:43Z **Round5** — ordinary Docker node restart: Pass
+
+- 2026-10-15T10:25:43Z **Round5** — Started ordinary node restart readiness
+
+- 2026-10-15T10:25:51Z **Round5** — ordinary node restart readiness: Pass
+
+- 2026-10-15T10:25:51Z **Round5** — Started ordinary node restart exact original selected state preservation
+
+- 2026-10-15T10:25:51Z **Round5** — ordinary node restart exact original selected state preservation: Pass
+
+- 2026-10-15T10:25:51Z **Round5** — Started test-only registry and isolated HOME current helper prerequisites
+
+- 2026-10-15T10:25:52Z **Round5** — test-only registry and isolated HOME current helper prerequisites: Pass
+
+- 2026-10-15T10:25:52Z **Round5** — Started actual public launcher upgrade --all against same immutable current worktree image
+
+- 2026-10-15T10:25:55Z **Round5 V01 Mac-native** — Started public safe Mac detach after retained identity failure evidence
+
+- 2026-10-15T10:25:55Z **Round5 V01 Mac-native** — public safe Mac detach after retained identity failure evidence: Pass
+
+- 2026-10-15T10:25:55Z **Round5 V01 Mac-native** — Started same current source identity original bytes and marker preserved, no owned mount/job
+
+- 2026-10-15T10:25:55Z **Round5 V01 Mac-native** — same current source identity original bytes and marker preserved, no owned mount/job: Pass
+
+- 2026-10-15T10:25:55Z **Round5 V01 Mac-native** — Mac public safe detach cleanup preserves source/marker; normal reboot failure remains OPEN
+
+- 2026-10-15T10:25:58Z **Round5** — actual public launcher upgrade --all against same immutable current worktree image: Pass
+
+- 2026-10-15T10:25:59Z **Round5** — Started explicitly stop unselected fixture again after requested upgrade --all
+
+- 2026-10-15T10:26:01Z **Round5** — explicitly stop unselected fixture again after requested upgrade --all: Pass
+
+- 2026-10-15T10:26:02Z **Round5** — Started current replacement admitted by existing selected node reference
+
+- 2026-10-15T10:26:02Z **Round5** — current replacement admitted by existing selected node reference: Pass
+
+- 2026-10-15T10:26:02Z **Round5** — Started new current container private bytes mounted APIs source and exact state baseline
+
+- 2026-10-15T10:26:03Z **Round5** — new current container private bytes mounted APIs source and exact state baseline: Pass
+
+- 2026-10-15T10:26:03Z **Round5** — Started ordinary reboot resolves current replacement rather than old recreation receipt ID
+
+- 2026-10-15T10:27:04Z **Round5** — ordinary reboot resolves current replacement rather than old recreation receipt ID: Pass
+
+- 2026-10-15T10:27:04Z **Round5** — Started replacement automatic boot same current ID private and mounted data preservation
+
+- 2026-10-15T10:27:05Z **Round5** — replacement automatic boot same current ID private and mounted data preservation: Pass
+
+- 2026-10-15T10:27:05Z **Round5** — Node restart and actual public launcher replacement/current-ref ordinary boot PASS. Upgrade-all has its documented own configuration policy, not unchanged opaque-config proof.
+
+- 2026-10-15T10:27:07Z **Round5** — Started explicitly drain own selected test node before safe detach
+
+- 2026-10-15T10:27:12Z **Round5** — explicitly drain own selected test node before safe detach: Pass
+
+- 2026-10-15T10:27:12Z **Round5** — Started public detach --yes --drained through installed owner
+
+- 2026-10-15T10:27:13Z **Round5** — public detach --yes --drained through installed owner: Pass
+
+- 2026-10-15T10:27:13Z **Round5** — Started drained detach current config private/source preservation and exact attempt removal
+
+- 2026-10-15T10:27:14Z **Round5** — drained detach current config private/source preservation and exact attempt removal: Pass
+
+- 2026-10-15T10:27:14Z **Round5** — Selected drained detach preserves current opaque state/source/private bytes and removes exact bounded attempt PASS
+
+### Round5 final reconciliation — API-REV-005 Fail57.14%, broaderRequired
+N01 Passwith3Pythonskips+standaloneGochildskip; V03/API-F004 native+Dockerpublicfresh/reconnect80actualreaderchecks Pass≤5s/scopedresolved. V03files/API/Git+Linux2boots/Stop/policyVeto/nodeRestart/upgrade/currentref/safedetach Pass. V01freshMaccreate Pass; V01-MAC-IDENTITY **Fail/API-F005** across3ordinaryboots, samevalidAPFSUUID/sourceinode/bytes/marker but devnumberschange; automatic+explicitsourceidentityrefusal/no mount. SafeMacdetach cleanup Pass only, notrepair. V04currentlocalGuide/shell Passnarrow; remoteactualpreviewnotexecuted afterfinding, priorE3/E4scopedproofretained. V02independentpeer/V05nativeagents/fullphysical/bothOSclient matrixNotTested/dependency-limited; no manufacturedPass. Preparedmounted-lock scriptnotrun. ExistingLinuxcontrolsequence alreadyunderway completed; no newgeneralexpansion afterMacfinding. Fullnew-failure-summary/visibility-summary/currentreportACtable/cleanup/index govern. No production/durabletestchange/delegation/merge/push/release/TaskDone/userverification.

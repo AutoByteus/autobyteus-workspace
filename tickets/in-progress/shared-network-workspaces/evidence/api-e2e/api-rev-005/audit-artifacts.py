@@ -1,0 +1,10 @@
+from pathlib import Path
+import json,hashlib,subprocess as sp,ast
+R=Path.cwd();E=Path(__file__).resolve().parent;T=E.parent.parent.parent;before=json.loads((E/'input-audit.json').read_text());owned=[str((T/n).relative_to(R)) for n in ['api-e2e-coverage-investigation.md','api-e2e-execution-coverage-report.md','api-e2e-revision-record.md','api-e2e-test-case-ledger.md']]
+def h(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def verify(rows):return [{'path':x['path'],'exists':Path(x['path']).exists(),'unchanged':Path(x['path']).exists() and h(Path(x['path']))==x['sha256'] and Path(x['path']).stat().st_size==x['size']} for x in rows]
+r={'inputHead':before['head'],'trackedCount':len(before['tracked']),'trackedChanged':[p for p,v in before['tracked'].items() if not (R/p).exists() or h(R/p)!=v], 'incomingCount':len(before['incomingReferences']),'incomingChanged':[p for p,v in before['incomingReferences'].items() if not Path(p).exists() or h(Path(p))!=v], 'retainedFiles':verify(before['retainedFiles']),'priorDistFiles':verify(before['priorDistFiles'])}
+r['unexpectedTracked']=[p for p in r['trackedChanged'] if p not in owned];r['unexpectedIncoming']=[p for p in r['incomingChanged'] if str(Path(p).relative_to(R)) not in owned];r['newPythonSyntax']={str(p.relative_to(R)):'Pass' for p in E.glob('*.py') if ast.parse(p.read_text())};r['jsonCount']=0
+for p in E.glob('*.json'):json.loads(p.read_text());r['jsonCount']+=1
+old=sp.check_output(['git','show',before['head']+':'+str((T/'api-e2e-revision-record.md').relative_to(R))]);r['revisionPrefixPreserved']=(T/'api-e2e-revision-record.md').read_bytes().startswith(old)
+r['retainedAllUnchanged']=all(x['unchanged'] for x in r['retainedFiles']);r['priorDistChanged']=[x['path'] for x in r['priorDistFiles'] if not x['unchanged']];r['result']='Pass' if not r['unexpectedTracked'] and not r['unexpectedIncoming'] and r['retainedAllUnchanged'] and r['revisionPrefixPreserved'] else 'Fail';(E/'artifact-audit.json').write_text(json.dumps(r,indent=2)+'\n');print(json.dumps({k:v for k,v in r.items() if k not in ['retainedFiles','priorDistFiles','newPythonSyntax']},indent=2));assert r['result']=='Pass'
