@@ -859,3 +859,54 @@ The canonical [code-review-report.md](code-review-report.md) is authoritative fo
   17 relevant references. One most-specific source-Pass recipient only, no duplicate
   Implementation/Designer/Delivery notice. Separate user-requested PM follow-up
   already created and durably attached; no delegation or recipient polling.
+
+## CRR-016 — API008 successful cumulative durable-test review
+
+- 2026-10-15; **Proportional Successful API/E2E Test-Code Review**, first round of
+  separate canonical `api-e2e-test-review-report.md`; cumulative review round16.
+  **Pass**, no actionable test-review finding. No implementation-source audit,
+  size thresholds, scorecard or new confidence score; code-review-report.md stays
+  unchanged as CRR015 source authority. Large/High/Reviewed retained.
+- Input API008/a53c133a262ca859e8b8103c737a0ce385019aa5; sourcea3f65/IR010,
+  technicalNFS IR009/d3c88/SR023/ARCH007; ApprovedSR025/DEC017 plus latest direct
+  user command-only filesystem validation instruction in E8. Delivery N/A.
+- API008 **Pass95% ONLY command-only filesystem scope**, FS01–17 with fresh and
+  audited carried proof explicitly distinguished, broaderRequired/executed,
+  cleanupComplete. HistoricalAPI007 combinedFail82.14/API006Blocked67.86 remain
+  unchanged. No original live editor rerun/closure claimed: user removed that
+  application gate and prohibited another scope-approval loop. IR010 retained.
+- Cumulative four changed durable tests reviewed: af9f23 workspace-content REST;
+  API007 Tabs.unsaved; IR010 Tabs.draftViewer and updated Tabs.spec. The runtime-
+  server helper is unchanged from the ancestor and reused, not a fifth delta.
+  REST adds one actual HTTP/GraphQL replacement/relative-asset/deletion journey;
+  five existing inject/bytes/MIME/path controls remain. Actual-viewer lifecycle
+  cases complement the parent Save-contract regression; original assertion intact.
+- All9 proportional checks Pass. Fixtures assert independently established public
+  content/access and peer-draft contracts, not self-created scenario validity.
+  Mocks/stubs and same-kernel/renderer limits explicit; no weakened assertion or
+  compatibility-only test. Dead document-click assertions removed only alongside
+  the unused invisible listener; active keyboard checks preserved.
+- Reviewed fresh API008 logs:3files12focused,22files148adjacent (overlapping, not160),
+  bothguards, REST1file6tests Pass. One REST case actually crosses the network;
+  five use Fastify injection. No new reviewer runtime/test execution necessary;
+  diffs and existing fresh results sufficient. These tests are supplementary,
+  not command-only filesystem gates. Temporary command probes are evidence,
+  not new durable test code subject to this proportional review.
+
+### Prior finding / follow-up disposition
+
+| Item | Current disposition |
+| --- | --- |
+| Prior proportional-test findings | None; no prior completed successful-test review |
+| CR008 / original API-F007 | CRR015 source/component correction retained; live revalidation not reached and removed as current filesystem gate, not claimed Passed |
+| CR-FUP002 | Existing PM Task project_task_a4f90984-add2-4300-983d-de54ded3032b; unresolved/nonblocking by user direction; no duplicate dispatch |
+| CR001–007 / FUP001 / D001 / IMP-D001 | Prior scoped resolutions, custody, deferrals and corrected scope unchanged |
+
+- E16 review-audit records exact four-file delta, helper/source-review hashes,
+  current log summaries and no API008 production/durable-test change. No reviewer
+  source/test modification or new resources; existing untracked dist untouched.
+  Prior CRR001–015 byte prefix retained. Canonical source report not overwritten.
+- Next fresh successful-test rule -> Delivery, not another API run for removed
+  application gate. Carry current API report/proof/cleanup, scope direction,
+  retained fix and explicit deferred/known-issue limits into finalization docs.
+  No merge/push/tag/release/TaskDone/deployment/userverify claim or delegation.
