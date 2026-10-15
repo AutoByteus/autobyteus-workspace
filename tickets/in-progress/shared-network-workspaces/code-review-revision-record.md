@@ -597,3 +597,57 @@ The canonical [code-review-report.md](code-review-report.md) is authoritative fo
   Confirmed handoff receipt is appended only after the tool accepts delivery.
 
 - **Confirmed handoff:** review da124edf1230a0cd4da2780766497c48f7a9723b delivered to `/software_engineering_team/api_e2e_engineer`, AgentRun `api_e2e_engineer_4b3516b0eb7d448586471bee29383f50`; accepted=true/DELIVERED,1122 cumulative references. Single most-specific primary source-Pass recipient only; no duplicate notification, polling or delegation.
+
+## CRR-012 — API005 Mac ordinary-reboot source identity failure
+
+- Canonical report code-review-report.md; entry **API/E2E Failure-Origin Review**,
+  2026-10-15. Focused source/representation/lifecycle and raw execution analysis,
+  not full source audit/scorecard or successful API test-code review.
+- Input190e130290ca74307430fac6b28f0bc736766033 / unchanged sourced65aeda24fc4b9a534a3941b194dd4a55b88c00c;
+  prior CRR011 reviewda124edf1230a0cd4da2780766497c48f7a9723b / receiptd963097b6e3d0cf80e3bf4e86d900173b671fd26.
+  ApprovedSR018 / ReadySR022 / ARCH-REV006 / IR008 / API-REV005; delivery N/A.
+  Large/High/Reviewed remains. API005Fail57.14%/broaderRequired unchanged.
+- Current **Fail / Design Impact / newCR007P1(API-F005)**. MP011 supported normal
+  SCN009/012/013 restart, AC007/014/017/018/019. CAND013 promoted; CAND014 unproven
+  marker-only/ignore-device/rebinding/extra-retry machinery rejected, not prescribed.
+- Public nativeMac fresh create succeeds. Three ordinary boots change source device
+  16777228->16777230->16777227->16777230; inode506781/owner/mode/originalbytes/
+  marker/saved record remain. Valid thirdboot APFS UUID unchanged across27->30.
+  Source pair check before Apple Ensure/mount repeatedly refuses, hostReadyfalse;
+  separately labelled explicit reconnect also fails. No false-ready/data loss.
+- Design expressly persists dev+inode while promising same-source restart. Bounded
+  identity contract and persisted hosted/pending-state disposition need design owner;
+  no intended-behavior ambiguity or demanded migration. Actual replacement safety
+  must remain. No latest IR008 regression, invalid test, peer-network or forced-outage
+  attribution. Exact earlier review gap: raw stat device identity lifetime was not
+  reconciled with persisted full-pair equality across the approved boot lifecycle.
+- Affected shared-model/runtime-correctness/API-readiness rationale reopened only;
+  CRR011100/100 remains historical, no new aggregate failure-origin score.
+
+### Prior finding resolution
+
+| Finding | Prior status | Current status / evidence |
+| --- | --- | --- |
+| CR007 / API-F005 | New API005 preliminary Unclear | Confirmed Design Impact; original APFS source rejected across ordinary boots; E12 raw audit/source trace |
+| CR006 / API-F004 | Source acceptedCRR011; product pending | **Resolved at API005 executed Linux native+Docker storage/native+managedHTTP scope**;40fixtures80exact reads<=5s, max0.934914s; not fullcrossOS/physicalAC003 |
+| CR005 / API-F003 | Independently resolvedAPI004 | Retained plus API005 currentLinux twoordinaryboot/Stop/policy/replacement/detach regressions; not rawHostConfigbyteequality beyond DNSnormalization |
+| CR003 / API-F002 | NativeUbuntu first-use scoped resolved | Retained, unchanged exactIR005enginepair/source reused NOTrebuilt |
+| CR002 / API-F001 | NativeMac cold-create scoped resolved | Retained; currentMaccreate passes, separate new boot identity finding |
+| CR001 / CR004 | Modes/release-gate source resolved | Retained; no reopened finding |
+| FUP001 | PM custody baseline non-green | Retained; no duplicate follow-up/deduction |
+
+- Personal static/raw audit verifies1285refs/1283manifesthashes/sizes,19candidates,
+  286old-dist files,9Macobservations,4validthirdbootplists and80visibilitycomparisons.
+  E12/audit-failure-package.py passed first execution. Bounded reads/programmatic
+  parsing resolve initial truncated combined displays. No live reexecution/build/
+  production or durable-test edit, scratch/resources or cleanup needed by reviewer.
+- All cumulative inputs and CRR001–011 prefix retained; E12 contains prior report,
+  raw-audit outputs, source trace, official Apple contract context, limits and index.
+- Next owner Solution Designer under fresh matching Design Impact rule. Requested
+  bounded recovery must preserve actual source/marker/private resources and true
+  replacement refusal; corrected implementation then source review, API-F005-first
+  actual publicMac ordinaryboots and remainingfullmatrix. No duplicate dispatch,
+  delegation, merge/push/tag/release/TaskDone or user-verification claim.
+- D001/DEC015 deferredNOTfixed, IMP-D001 sourceUpdateRemove/AGYlocal, FUP001 and
+  physical/profile/inference/privateLAN dependencies retained. OnlyMacDockerSTORAGE
+  deferred. Confirmed handoff appended only after successful tool delivery.
