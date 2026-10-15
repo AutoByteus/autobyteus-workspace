@@ -2,18 +2,18 @@
 
 ## Solution And Approval Basis
 
-- Package `shared-network-workspaces`, Task `project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`; current revision **SR-021**; status **Ready — Architecture Design Complete (selected Docker startup recovery; re-review required)**.
-- Intended-behavior authority: requirements-doc.md **Approved SR018**, Solution Designer within the user's explicit working-first v1 direction, exact quote in architecture-review-scope-feedback.md and approval/informing record approval-record-sr018.md. DEC015 defers advanced outage hardening; DEC012 hosting, DEC013 trusted-LAN plaintext and DEC014 physical-test sequencing remain unchanged from approval-record-sr017.md. No behavior-defining supplement or external Product-owned specification. SR021 changes no requirements/ACs. Normal selected-client restart and ordinary stopped-node preservation remain the existing authority; the Docker no-op-stop observability limit is explicit below. The existing approved native Linux reference must work; no kernel/protocol downgrade or platform narrowing. SR019 private current-source links/no-retention policy remains unchanged; approval-record-sr018.md remains applicable.
-- Canonical evidence: investigation-notes.md and evidence/design-recovery/sr021/. Incoming CRR008/CR005/API-F003 is the current Design Impact; API003 remains Fail57.14%/broader Required. ARCH004 passed SR020; IR005 implemented the engine bundle, IR006 corrected release gates (source eb7934072a1f98832b7b6330a1bc6a7f348fd93d). CRR007 source Pass is historical, not a lifecycle Pass after CRR008. API003 independently resolves API-F002 at fresh no-engine-preinstall public Ubuntu create/reconnect scope. CR001 modes/CR004 release gates retained; CR002/API-F001 retains earlier nativeMac cold-create scope. No fresh Mac setup claim. Full cumulative incoming chain: code-review-evidence/crr-008/package-index.json (641 references). Requirements/approval and specialist artifacts remain unedited; D001 deferred, IMP-D001 unchanged; no fresh product qualification.
-- Authorities read in this conversation2026-10-13 and recovery2026-10-14: solution-designer SKILL and requirements-engineering, architecture-design, design-principles, full formal design template; root AGENTS.md/DESIGN.md/TESTING.md (reread for SR021); server/web AGENTS.md; server startup/lazy-services, terminal-unification and data_migration_guideline; predecessor remove-global-skill-discovery-mode migration. No project/general principle conflict. Design-examples N/A — no example required as authority.
+- Package `shared-network-workspaces`, Task `project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`; current revision **SR-022**; status **Ready — Architecture Design Complete (healthy source-to-client freshness; re-review required)**.
+- Intended-behavior authority: requirements-doc.md **Approved SR018**, Solution Designer within the user's explicit working-first v1 direction, exact quote in architecture-review-scope-feedback.md and approval/informing record approval-record-sr018.md. DEC015 defers advanced outage hardening; DEC012 hosting, DEC013 trusted-LAN plaintext and DEC014 physical-test sequencing remain unchanged from approval-record-sr017.md. No behavior-defining supplement or external Product-owned specification. SR022 changes no requirements/ACs. REQ004/AC003/QR001 retain healthy source-folder writes and <=5s fresh-client visibility; no platform/writer narrowing. SR021 selected-client restart design remains implemented and scoped independently validated by API004. Normal selected-client restart and ordinary stopped-node preservation remain the existing authority; the Docker no-op-stop observability limit is explicit below. The existing approved native Linux reference must work; no kernel/protocol downgrade or platform narrowing. SR019 private current-source links/no-retention policy remains unchanged; approval-record-sr018.md remains applicable.
+- Canonical evidence: investigation-notes.md and evidence/design-recovery/sr022/. Incoming CRR010/CR006/API-F004 is the current Design Impact; API004 remains Fail57.14%/broader Required. ARCH005 passed SR021; IR007/source d318bd9db935affdf16d141ef4e88a6c0e4939b5 implements its selected-client recovery. API004 independently resolves CR005/API-F003 with two ordinary whole-host boots without manual repair and separate normal-stop/policy/replacement/detach controls. Do not reopen that correction. CR001/002/003/004 retain their actual scopes; API003 fresh native-Ubuntu setup and API004 fresh nativeMac setup/boot evidence do not establish full platform/client qualification. CRR009 source Pass is historical, not a current product Pass. Cumulative incoming CRR010 index contains1003 references. Requirements/approval and specialist artifacts unedited; D001 deferred, IMP-D001 unchanged. Personal SR022 exact-source audit and controlled A/B/A native dependency experiment support expiry0; they are not a corrected public-command/API/managed-Docker/physical Pass.
+- Authorities read in this conversation2026-10-13 and recovery2026-10-14/15: solution-designer SKILL and requirements-engineering, architecture-design, design-principles, full formal design template; root AGENTS.md/DESIGN.md/TESTING.md (reread for SR021/SR022); server/web AGENTS.md; server startup/lazy-services, terminal-unification and data_migration_guideline; predecessor remove-global-skill-discovery-mode migration. No project/general principle conflict. Design-examples N/A — no example required as authority.
 - Isolated workspace `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces`, branch `codex/shared-network-workspaces`; base `origin/personal@f13bdd0eb79aacc63dffa5995b9c86f359001468`; finalization `origin/personal`. No main-checkout changes, release, live mounts or data mutation authorized by this design.
 
 ## Current-State Read And Intended Change
 
-The following paragraph records the original source-design basis; current IR002–006 production implements service/runtime/launcher/guide and corrected Linux packages. API003 resolves CR003 at public native-Ubuntu setup scope, but CR005 exposes a missing selected-client startup completion boundary. The pre-change Docker launcher maps a host-local folder, not common cross-computer storage. WorkspaceManager/FileSystemWorkspace create metadata and path-hash IDs; that is not mount readiness. Standalone, Team and Org provisioning/restore converge on workspace management, but native runtime resolvers can fall back to temp/cwd. Explorer actions and separate workspace/static/run-artifact REST readers run parent filesystem calls, whereas watcher isolation covers events only. The latter readers are reached by normal media/HTML/completed-artifact UI, not by explorer acquisition. Core file/terminal path validation and Claude startup perform synchronous filesystem work; hard NFS can stall these callers. Current configured skill publishers create node-private absolute links inside projects; FR009/011 show another node's cleanup breaking an active peer. Their holders own links, NOT source bytes: SkillSourceService/GitHubSkillRepository delete retired managed generations independently; AGY already uses unleased private links. IMP-D001 corrects the contrary SR018 reuse premise. Cross-node private-skill cleanup is a demonstrated normal-use defect and remains in scope. Parent shared IO can stall during outages, but that hardening is now explicitly deferred under DEC015; healthy existing path-based content delivery is retained. Whole projects remain in scope.
+The following paragraph records the original source-design basis; current IR002–007 production implements service/runtime/launcher/guide and corrected Linux packages. API003 resolves CR003 at public native-Ubuntu setup scope; API004 resolves the subsequently implemented CR005 selected-client completion. CR006 now exposes a server/client freshness-policy gap for direct source writes. The pre-change Docker launcher maps a host-local folder, not common cross-computer storage. WorkspaceManager/FileSystemWorkspace create metadata and path-hash IDs; that is not mount readiness. Standalone, Team and Org provisioning/restore converge on workspace management, but native runtime resolvers can fall back to temp/cwd. Explorer actions and separate workspace/static/run-artifact REST readers run parent filesystem calls, whereas watcher isolation covers events only. The latter readers are reached by normal media/HTML/completed-artifact UI, not by explorer acquisition. Core file/terminal path validation and Claude startup perform synchronous filesystem work; hard NFS can stall these callers. Current configured skill publishers create node-private absolute links inside projects; FR009/011 show another node's cleanup breaking an active peer. Their holders own links, NOT source bytes: SkillSourceService/GitHubSkillRepository delete retired managed generations independently; AGY already uses unleased private links. IMP-D001 corrects the contrary SR018 reuse premise. Cross-node private-skill cleanup is a demonstrated normal-use defect and remains in scope. Parent shared IO can stall during outages, but that hardening is now explicitly deferred under DEC015; healthy existing path-based content delivery is retained. Whole projects remain in scope.
 
 
-SR021 current path: initial Apply orders engine/host/daemon probe/recreation, but reboot runs Docker restore independently. The selected NFS local-volume mount can fail before the app process exists; later Reconnect ends at host nonroot proof. Two ordinary API003 boots strand the same client, while a diagnostic same-ID Start after storage readiness restores its API. Extend the existing reconnect owner narrowly; keep running-process restart and normal manual stops Docker-owned. No first-use receipt supplies current run intent.
+SR022 current path: public setup generates a Ganesha/VFS export without Attr_Expiration_Time, inheriting server metadata expiry60. Native and Docker clients already use actimeo1; those clients can revalidate against stale server attributes. API004 demonstrates ~61s fresh-read staleness after healthy source fsync/close. Explicit export expiry0 removes that server metadata validity window while retaining client policy and the direct filesystem data path. Existing Apply/Write/Verify owners remain; no separate coherence service. SR021's bounded exact-ID completion remains unchanged and independently passed its API004 reboot/stop controls.
 Add **one standalone persistent AutoByteus NFS service**, operated through `autobyteus-nfs`, in this superrepo. Its first invocation creates or connects storage, configures selected local Docker agent nodes, verifies and prints a usable path. Native operating-system NFS clients access the same chosen folder; AutoByteus does not proxy/copy individual project writes. Add a narrow Nodes NFS Guide and setup/new-run identity checks and private-runtime integration while preserving ordinary local behavior.
 
 ## Task Size And Architectural Risk
@@ -24,7 +24,7 @@ Add **one standalone persistent AutoByteus NFS service**, operated through `auto
 
 ## Change Scope
 
-In scope UC001–007 / BEH001–007: supported native Mac/native Linux/Docker-on-Linux service; native and Docker clients on both OSes; one bootstrap/first-use command; persistent attach/reconnect/safe detach; chosen source mapping; Nodes guide; configured-shared setup/new-run identity checks, normal file/preview/terminal/native runtime compatibility and private skill exposure required to preserve current functionality. SR019 narrows that exposure to private links/current-source availability, not a source-retention or snapshot subsystem. Existing Sources Update/Remove, local source registration and ordinary local-workspace materialization policy are preserved. SR021 adds selected failed-start completion and a bounded consumed-attempt record under the existing setup/Docker owner; no global daemon ordering, generalized supervisor or recreation at boot. Concrete files below.
+In scope UC001–007 / BEH001–007: supported native Mac/native Linux/Docker-on-Linux service; native and Docker clients on both OSes; one bootstrap/first-use command; persistent attach/reconnect/safe detach; chosen source mapping; Nodes guide; configured-shared setup/new-run identity checks, normal file/preview/terminal/native runtime compatibility and private skill exposure required to preserve current functionality. SR019 narrows that exposure to private links/current-source availability, not a source-retention or snapshot subsystem. Existing Sources Update/Remove, local source registration and ordinary local-workspace materialization policy are preserved. SR021 adds selected failed-start completion and a bounded consumed-attempt record under the existing setup/Docker owner; no global daemon ordering, generalized supervisor or recreation at boot. SR022 changes only the owned Ganesha export policy, two small hosted-config verification entry points, their focused tests and documentation. It does not change runtime/REST readers, retry behavior or release gates. Concrete files below.
 
 Leave private databases, memories, provider homes/auth, existing local-only Docker sharing, ordinary local workspace defaults and unrelated runtime policies intact. No embedded desktop helper is necessary: REQ013 permits the selected standalone bootstrap route. No public/SDK/HA/offline-sync product, Windows, automatic notifications/context ingestion, general OS administration UI or parked collaboration work.
 
@@ -36,7 +36,8 @@ All paths below are relative to this ticket; full canonical inventory remains in
 
 | Evidence / source | Decision supported | Limit / applicability |
 | --- | --- | --- |
-| code-review-evidence/crr-008/package-index.json; evidence/api-e2e/api-rev-003/package-index.json; evidence/design-recovery/sr021/lifecycle-investigation.md | Actual normal reboot failure, same-ID diagnostic repair, public state/stop contracts and recovered owner | Inherited runtime evidence; new design not implemented, fresh public API-F003 revalidation required |
+| code-review-evidence/crr-010/package-index.json; evidence/api-e2e/api-rev-004/package-index.json; evidence/design-recovery/sr022/freshness-investigation.md and prototype-result.json | Normal healthy source-write failure; exact engine cache contract; controlled default/zero/restored-default comparison; generated-config disposition | Native same-kernel dependency prototype only, not implemented public behavior/managed HTTP/Docker storage/physical qualification. Independent API-F004 closure required |
+| evidence/design-recovery/sr021/lifecycle-investigation.md; API004 two-reboots and control receipts | Bounded SR021 exact-ID recovery and current stop policy | Prior CR005 is scoped resolved, retained unchanged |
 | evidence/feasibility/experiment-index.json, raw fr001–057 | Auditable attempts, exact commands/topology/failures/cleanup | Designer prototypes, not downstream signoff |
 | real-agent-roundtrip-report.md, private-runtime-skill-report.md, native-private-readiness-report.md under evidence/feasibility | Actual native agent IO; Claude private plugins; Codex process-wide extra roots and peer-stop/resume | Existing release/SDK proofs, not finished current product |
 | evidence/feasibility/macos-vm-feasibility-report.md and raw FR026/028/029/033 (raw rounds authoritative) | Actual Mac+twoDocker same path, operations/locks and reboot/recreation; FR029 outage observations retained | Outage isolation is future evidence, not v1 machinery; no full public command/physicalLAN proof |
@@ -49,7 +50,7 @@ All paths below are relative to this ticket; full canonical inventory remains in
 | approval-record-sr017.md; prior approval records, historical transcripts, setup-revision-context.md | Current authority plus historical user journey | Historical requirements/questions are superseded, not current blockers |
 | evidence/ui-reference/docker-guide-user.png | Reuse user's Nodes guide pattern | Not Windows support or an external Product specification |
 
-Independent review history preserved: ARCH001–004, IR001–006, CRR001–008 and API001–003. Current **CRR008 Fail/Design Impact** and **API003 Fail57.14%/broader Required** remain independent authorities. CR001/002/003/004 resolutions retain their actual scopes, not a full product Pass. Full raw/current/history references are indexed by CRR008 and API003 plus the SR021 cumulative index. No specialist artifact is edited. Delivery/finalization **N/A — not yet performed**; external Product specification **N/A — not requested/applicable**.
+Independent review history preserved: ARCH001–005, IR001–007, CRR001–010 and API001–004. Current **CRR010 Fail/Design Impact** and **API004 Fail57.14%/broader Required** remain independent authorities. CR001–005 resolutions retain actual scopes, not a full product Pass. Complete raw/history references remain indexed by CRR010/API004 and the SR022 cumulative index. No specialist artifact edited. Delivery/finalization **N/A — not yet performed**; external Product specification **N/A — not requested/applicable**.
 
 ## Relevant Behavior And Production-Path Map
 
@@ -111,6 +112,93 @@ Reference binaries are built for Darwin/Linux arm64/amd64; advertise only actual
 
 **Validation order.** Implement/package with focused exact-source patch/package/bundle validation and failure fixtures, then applicable source review. API-F002 public **create and reconnect first** on fresh Ubuntu24.04.5/ext4/kernel7.0.0-38 with default directory delegation **Y**, native nonroot1000:109/no supplementary groups, nonempty original source, hard4.1, UUID/content/private modes/job assertions. Unlike the designer prototype, this must run the new one-command path with **no manual engine preinstallation**, no probe bypass or workaround. Include old-dispatch negative evidence, mismatched/truncated/wrong-arch bundle rejection before engine mutation, exact mask restoration, clean-machine native and Docker package parity, both release architectures and runtime dependencies. Continue the full native/Docker/client/peer/restart/detach/file/lock/Git/runtime/desktop/physical/user-verification matrix. The prototype is not an API Pass, package installer test, Docker/amd64 or physical qualification; stock4.3 and prior failed logs stay visible. No blanket aggregate confidence upgrade.
 
+### SR022 — end-to-end healthy freshness and owned-config lifecycle
+
+**Decision/owner.** In existing `backend.GaneshaConfig`, emit `Attr_Expiration_Time = 0;`
+at the owned **EXPORT** level for native Linux and Docker-on-Linux storage. No CLIENT
+override, global/unrelated export change, extra policy registry or user setting.
+Retain existing native/Docker `hard,tcp,vers=4.1,actimeo=1` (Docker nosharecache),
+all-squash/allowlist, source path/UUID, corrected4.3 package pair, kernel and protocol.
+Apple nfsd configuration is unchanged. The native and Docker clients on BOTH OSes
+remain required; shared generator reuse is not evidence every mode passed.
+
+**Why.** Exact4.3 source defaults server attrs to60s. Client1s alone cannot discover
+an original-source write when the server returns old change attributes. Expiry0
+forces the server's attribute path to refresh from VFS; this avoids an additional
+server TTL/delegation validity window. The controlled SR022 A/B/A experiment on exact
+retained packages supports this choice on native Linux: unique warmed fixtures stay
+stale with default policy, become current within5s with zero, and stay stale again
+with restored default. Candidate covers1KiB/1MiB in-place, atomic replacement and
+negative-lookup creation. See raw timings/limits, not a blanket eventual-consistency
+or performance claim. Extra backing metadata calls are the explicit correctness-first
+tradeoff. No byte proxy, cache flush, app read retries, watcher or new runtime owner.
+
+**Current public lifecycle.** Fresh Apply writes the corrected generated bytes before
+engine activation using current WriteGanesha/InstallGanesha; current exact repeat is
+a no-op. Reconnect/service continue exact VerifyGanesha before existing EnsureGanesha
+or EnsureEngine and then the same mount/nonroot/selected-node checks. Status adds an
+existing-owner VerifyGanesha check for a hosted native/Docker Ganesha configuration
+before HostReady; status never writes config or restarts. Connect-only and Apple paths
+remain unchanged. Detach preflights an **existing** hosted Ganesha config with the same
+verifier before detachNodes/unmount/job/engine mutation; absent config is allowed for
+safe retry of already-partial owned teardown. Existing exact unit/container/removal
+checks still apply. Different/malformed existing config is retained with error and no
+teardown; no unconditional overwrite or late mismatch after teardown has begun.
+
+**Generated-state disposition.** This unreleased first delivery has no evidenced
+published NFS predecessor: qualification/release fields remain empty, known old runtime
+fixtures were cleaned up, retained files are unqualified test candidates. No persisted
+source/marker/attachment/project/session format changes. Current different config bytes
+(including old test templates omitting expiry0) remain refused by Write/Verify, not
+silently called an upgrade. Dispose/recreate owned old candidate fixtures by public
+drained detach with their matching old candidate **before** installing the new one,
+then create against the same preserved nonempty source/marker. Do not automatically
+rewrite a user's file or delete source/recovery data. If an actual retained supported
+deployment is discovered, return concrete transition evidence to Solution Designer;
+do not invent a compatibility reader or migrator. Same-current repeat/restart remains
+automatic as approved; no extra end-user first-install step is introduced.
+
+**No hot update.** Merely replacing generated bytes is insufficient: Docker has a
+read-only single-file bind and existing Ganesha cache entries retain their expiry.
+This revision does not implement live config migration/SIGHUP/restart orchestration.
+Fresh engine activation consumes the current template; existing exact current configs
+are reusable. An externally changed file is not authority to silently reconfigure a
+running service or claim loaded-policy verification.
+
+**Files and clean-cut boundary.** Change `internal/backend/ganesha.go` (the one generator),
+`internal/setup/status.go` and `internal/setup/lifecycle.go` (thin calls to current
+verification owner), existing backend/backend_test.go, backend/cleanup_test.go and setup/setup_test.go (or adjacent focused setup tests), and NFS README/operator/test guidance.
+If missing-vs-present preflight needs a small helper, keep it with existing backend
+config ownership, not a new cross-layer framework. Keep WriteGanesha/VerifyGanesha
+strict byte comparison and0700/0600 policies. No change to Docker node recovery,
+restart intent, daemon config, node images/ports/private data, mounts/volumes, source
+identity, native runtime profiles, REST handlers, frontend or engine build recipe.
+Normal source-hash/release metadata regeneration belongs to implementation packaging;
+reuse exact engine packages, do not rebuild the engine for a config-only change.
+
+**Verification and sequencing.** Selected architecture review -> implementation ->
+independent source review -> API/E2E. First independent API case is API-F004 on fresh
+public native storage: prime two actual readers with old bytes, direct source unique
+in-place write/fsync/close, then fresh native and actual managed-node HTTP opens;
+record per-reader elapsed time and exact bytes for repeated1KiB and1MiB fixtures under
+unchanged5s, no manual config edit/dropcache/remount/retry workaround. Capture generated
+and actually used config/engine invocation, package/CLI/image/mount identities, source
+inode/device/owner/mode/UUID and private preservation. Then atomic replace/new/delete/
+rename/directory/symlink and client-to-client directions under existing ACs; validate
+both Linux STORAGE forms and both OS native/managed clients and healthy previews.
+Retain API004 negative evidence rather than require an unsafe user downgrade.
+
+Focused implementation tests: native/Docker templates each contain exactly the export
+option; absent/current/different config Write/Verify outcomes; Status mismatch never
+HostReady; Detach mismatch produces no node/mount/job/engine mutations; missing config
+supports exact-owned partial-detach retry; public current repeat/reconnect remains
+idempotent. Assert unchanged source/client options/security and Apple/connect-only
+behavior. Do not validate only by string matching: actual repeated source-write reads
+are mandatory downstream. Preserve SR021 two-boot/normal-stop/current-policy-no/
+unselected/launcher-replacement/drained-detach regressions; do not turn60s observed
+reboot completion into a new SLA. Full existing physical/native-tool/preview/user/
+release gates remain. No independent API or source Pass is issued by this design.
+
 ### Data identity, permissions and network
 
 Create writes an exclusive UUID record `.autobyteus-nfs/storage.json` under the selected source and establishes an owned health-probe subdirectory. Existing marker conflict never overwrites/regenerates identity. Source selection refuses filesystem root, home root, private app/runtime/auth trees, another network mount, inside/above the client target or unavailable/nonpersistent backing. No recursive chown/chmod. Existing source requires the chosen nonroot owner to have needed access; a new folder is created for the initiating user with private/group modes (not0777). Mixed inaccessible files remain a diagnosed permissions failure, not a mass rewrite. Marker and OS mount source identify accidental mismatch, not a cryptographic guarantee against trusted hostile admins.
@@ -123,7 +211,7 @@ Ganesha v4.1 TCP2049 only; stable export pseudo `/autobyteus/<storageId>` and du
 
 ### Filesystem semantics
 
-Hard TCP mounts, explicit protocol, cache bounds `actimeo=1` initial reference; Linux `timeo=50,retrans=2` and per-client independent mount for tests, Mac equivalent supported options. No soft fallback because write integrity matters. Kernel retries and current parent application IO can stall; v1 offers no bounded per-action response/cancellation guarantee. Fresh open after successful fsync/close must meet AC003<=5s for<=1MiB test fixtures; already-open/in-progress writes and remote watch events have no instantaneous guarantee. Same-export rename/replace and exclusive creation must pass. Relative in-project symlink and execute-bit support required; cross-OS build artifacts not portable by implication.
+Hard TCP mounts, explicit protocol, client attribute bounds `actimeo=1`; owned Ganesha exports use server `Attr_Expiration_Time=0` under SR022 (Apple unchanged); Linux `timeo=50,retrans=2` and per-client independent mount for tests, Mac equivalent supported options. No soft fallback because write integrity matters. Kernel retries and current parent application IO can stall; v1 offers no bounded per-action response/cancellation guarantee. Fresh open after successful fsync/close must meet AC003<=5s for<=1MiB test fixtures; already-open/in-progress writes and remote watch events have no instantaneous guarantee. Same-export rename/replace and exclusive creation must pass. Relative in-project symlink and execute-bit support required; cross-OS build artifacts not portable by implication.
 
 Ganesha v4 cross-client POSIX advisory locks are a supported validated target (FR028). Apple v3 reference deliberately uses local advisory locking (`locallocks` on Mac / `nolock` on Linux) and does **not** advertise cross-client flock/fcntl protection; no NLM callback/firewall dependency for v1. Exclusive create remains a cross-client obligation, and same-file/Git operations remain user-coordinated. If a project requires distributed advisory locks choose the Linux service. Test exact native client options before advertising, never silently disable promised locks. This is within REQ005's documented lock contract, not removal of ordinary projects.
 
@@ -435,6 +523,7 @@ Migration conventions fully investigated before choice: server data_migration_gu
 | New hosted-filesystem/attachment and source marker, one filesystem/attachment per installation | **New subject — no historical migration** | Atomic exact current writer; known-field reader; schemaVersion not introduced. Keep source UUID and server recovery state across restarts |
 | Existing launcher state plus optional attachment reference | **Directly Usable — No Migration** | Missing reference retains unselected local behavior; known-field parser/writer preserves all existing settings. Only successfully applied nodes acquire opt-in reference |
 | New start-attempt per selected node | **New bounded subject — no migration**; absent means no recorded completion attempt, not prior running intent | Docker recovery writes current daemon/storage/container/process incarnation through existing atomic0600 Store; no Config/auth/READY, restart-safe dedup only. Detach removes exact owned entries after success |
+| Generated owned Ganesha config | **Fresh current generation; no evidenced released predecessor migration** | SR022 export expiry0; exact current bytes reusable, different bytes retained/refused. Retire disposable old test setups with matching candidate public detach before reinstall. Status/pre-teardown validation avoids false readiness/partial mutation; no live reload or source/marker rewrite |
 | Release engine manifest and generated embedded package bytes | **Build artifact — no user-data migration** | Packaging owns exact bytes/provenance; no source UUID/profile/attachment format changes or runtime package registry |
 | Existing project absolute skill links | **Preserve; no automatic migration/cleanup** | No durable cross-node ownership proof, so don't delete/repair others' data. New managed-shared flow never creates them; collision result is explicit |
 
@@ -467,6 +556,7 @@ This is the finalized allocation after spine/ownership/type review; redundant dr
 | autobyteus-nfs/internal/config/{state,connection,store}.go | Tight subject records/atomic private storage | No workspace DB migration/READY cache |
 | autobyteus-nfs/internal/service/{supervisor,probe}.go | Persistent owned lifecycle/exact child check | No second engine data plane |
 | autobyteus-nfs/internal/platform/{darwin,linux}.go | Elevation, mount inspection, launchd/systemd/exact export ownership | No unbounded shell interpolation/global reset |
+| autobyteus-nfs/internal/backend/ganesha.go; internal/setup/{status,lifecycle}.go; nearest backend/setup tests; NFS README | SR022 export-level expiry0 through shared generator; read-only hosted-config status and pre-teardown exact validation | Reuse existing verifier/lock; no migration or runtime data-plane owner; Apple/connect-only and SR021 recovery unchanged |
 | autobyteus-nfs/internal/backend/{apple,apple_apply,apple_startup,ganesha,ganesha_native}.go; packaging/Dockerfile | Existing selected engine config/start; Docker consumes same corrected package pair | Preserve Apple IR004 fix and existing privilege/source contracts; no UNFS/macDocker storage fallback |
 | autobyteus-nfs/internal/backend/ubuntu_packages.go; engine_bundle.go plus generated engine-assets/ | Existing install owner + cohesive immutable package payload validation/extraction | No user-supplied package/URL, stock-engine fallback, kernel tuning or reconnect install |
 | autobyteus-nfs/packaging/engine/{source-lock.json,build recipe,upstream patch}; packaging/{release-lock.json,release.py,RELEASE.md}; THIRD_PARTY_NOTICES | Verified backport sources/build/package identities and corresponding-source delivery | No source-state migration, PPA, independent release stream or invented qualification |
@@ -509,6 +599,8 @@ Validation obligations: pure plan/config/descriptor/parser tests; Go/native clea
 For IMP-D001 correction, reuse existing server tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts for confirmed Update/Remove through public GraphQL (the inspected runtime matrix is not a new pass), shared workspace-skill-materializer unit tests for unchanged local policy and tests/unit/agent-execution/backends/antigravity/{agy-configured-skill-linker,agy-run-capsule}.test.ts plus tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts for existing capsule semantics. Add focused profile tests: private links expose SKILL.md and a previously unread support asset; two distinct profiles share available source, closing either preserves the other/source; partial preparation/actual native close releases only owned wrappers; Update removes retired source while a profile exists, next profile selects current source, Remove does not wait for holders and missing-source handling stays explicit. Do not test a fabricated old-generation retention guarantee. Current native private-link discovery and real tool reads/peer-stop are downstream obligations; earlier copied-fixture FR014/020 do not prove that link-specific integration. No new GitHub network/auth/provider use needed for owner-level tests.
 
 For healthy preview coverage extend/reuse existing tests/unit/api/rest/{workspaces,run-file-changes}.test.ts, tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts and tests/integration/api/run-file-changes-api.integration.test.ts. Verify exact PNG/SVG bytes/MIME/no-store, HTML plus relative assets, encoded paths, existing path/entry/pending/deleted semantics and regular local use; actual shared mounts/current UI must supplement fixtures. No source change is required to stream a healthy ordinary mounted file unless tests find a real normal-use incompatibility. Do **not** make D-001 injected outage/socket-cancellation/backpressure child-isolation matrix,10s diagnostics, global parent-responsiveness or additional recovery tests a v1 delivery gate. Retain prior outage experiments as evidence and disclose limitations, not as a requirement to build their prototypes.
+
+SR022 API-F004-first ordering above supersedes historical API-F002/API-F003 first-case orders for this incoming correction; prior scoped resolutions remain regression evidence, not reopened failures.
 
 Table every experiment with **node role/ID, source/mount path, exact command/build, result and uncovered scope**.
 Follow TESTING.md production public path requirements, isolated data/resource authorization and package test commands. Unit mocks do not prove NFS/native/OS behavior. No direct controller shortcuts for full user journey; no shell transport probe substituted for instructed native agents. Physical Mac and independent Linux plus Mac Docker agent, actual one-command create/connect and user verification are release/delivery gates, not designer waits. User receives the runnable single command only once built/published and verified; internal python/mount test scripts are never offered as that product command.

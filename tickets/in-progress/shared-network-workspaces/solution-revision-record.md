@@ -394,3 +394,44 @@ product-validation claim. First downstream API revalidation remains fresh public
 selected setup and two ordinary host reboots without manual Start/reconnect,
 then remaining full current-product/both-OS/physical/native-runtime/user/release
 gates. Stop under the informational-Pass workflow; receiving owner continues.
+
+
+## SR-022 — CR006 / API-F004 healthy freshness design recovery (2026-10-15)
+
+- Trigger: CRR010 Fail/Design Impact, CR006 P1 and API004 Fail57.14%/broader Required;
+  review1240527c804b291ae99c69d6f6cb58f4cba0a09c, receipt2cd8d35cebafccec6c937a83957f136ce05d0b8b.
+  Prior Ready SR021/ARCH005/IR007 remains history; production d318bd9 unchanged.
+- Impact: **Design only**, Approved SR018/approval018 retained unchanged. Affected
+  SCN002, BEH002/003, REQ004, AC003, QR001; preserved AC009/017 and SR021 lifecycle.
+  Healthy direct-source writes and5s fresh-open bound stay fixed, no approval reopening.
+- Evidence: selected engine source default60 plus production generator/client trace;
+  personally re-audited exact source and A/B/A native dependency comparison. Default
+  misses5s, export expiry0 passes four unique1KiB/1MiB/in-place/atomic/new-file cases,
+  restored default misses5s. All limits/commands/hashes/first-download timeout retained
+  in evidence/design-recovery/sr022; exact owned guest/private cache cleanup Complete.
+- Revised canonical sections: design approval/current state/evidence, DS002 freshness
+  policy and existing config lifecycle, persisted-generated-config disposition, concrete
+  files and API-F004-first validation; investigation inventory and complete handoff.
+  Minimal shared generator change plus current verifier calls in status/pre-detach.
+  No engine replacement/rebuild, new migration owner, read retry/watchers/proxy or outage
+  subsystem. No source/marker format change; different existing config bytes stay refused.
+- Previous issue **CR005/API-F003 scoped resolved** independently in API004 two ordinary
+  whole-host boots without manual Start/reconnect and separate normal-stop/policy/
+  replacement/detach controls; not reopened. CR001–004 scopes retained.
+- Result **Architecture Design Complete / Ready SR022**, task_size **Large** and
+  architectural_risk **High** for the unchanged full privileged multi-platform package.
+  Existing owners suffice; no new design spine. Independent review needed for affected
+  delta; ARCH005 does not approve it. Routing to be recorded after fresh rule lookup.
+- Still open: independent implementation/source/API closure of CR006; full bothOSnative/
+  managedclients/LinuxnativeDockerstorage, independent peers/physical/native actualtools+
+  unreadassets/peerclose/restore/Standalone-Team-Org/healthy previews/completed artifact,
+  hostedworkflow/signing/amd64engine/publicbootstrap/docs/user/finalization/authorized
+  release. Successful test-code review still awaits passed API package. D001/DEC015
+  deferred/notfixed; IMP-D001/FUP001/peerNAT/accessquestions unchanged. No TaskDone,
+  merge/push/tag/release/user verification or delegation.
+
+SR022 routing2026-10-15: fresh rules select only
+/software_engineering_team/architecture_reviewer for completed Large/High solution.
+Direct-low-risk and delivery-receipt rules do not match. Complete cumulative context and
+same absolute solution-design-handoff.md attached; no duplicate implementation/API/PM
+forwarding or delegation. Reviewer will own subsequent configured route after review.

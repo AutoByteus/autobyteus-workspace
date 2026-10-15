@@ -1,6 +1,66 @@
 # Investigation Notes — Shared Network Workspaces
 
-## Current SR021 — CR005 / API-F003 selected-client restart recovery
+## Current SR022 — CR006 / API-F004 healthy committed-file freshness
+
+2026-10-15; **Architecture Design Complete / Ready SR022**, **Large/High**, unchanged
+**Approved SR018**. Incoming CRR010 review1240527c804b291ae99c69d6f6cb58f4cba0a09c and
+receipt2cd8d35cebafccec6c937a83957f136ce05d0b8b read before action. Production remains
+d318bd9db935affdf16d141ef4e88a6c0e4939b5. No requirement/approval/specialist/source edits.
+Authorities read and exact production path, supported scenario, primary contracts,
+migration investigation and alternative assessment are in
+[evidence/design-recovery/sr022/freshness-investigation.md](evidence/design-recovery/sr022/freshness-investigation.md).
+
+- Fact: API004 two healthy source fsync/close trials returned old bytes through fresh
+  native and managed-node HTTP reads until~61s, violating existing5s AC003. Code Reviewer
+  audited243 rows. Client actimeo1 does not bound server attr cache; generated Ganesha
+  config omitted the default60s expiry. Exact selected engine source personally re-audited.
+- New bounded experiment: default/expiry0/restored-default on one new private native
+  Ubuntu guest, exact retained IR007 CLI/engine, original nonempty source/two native
+  mount instances. Default cases miss5s; all four zero-policy cases pass5s; restored
+  default fails again. Detailed timings below. This is dependency feasibility, not a
+  corrected public-product/managedDocker/physical Pass.
+- Design: existing Ganesha generator emits EXPORT Attr_Expiration_Time0; preserve
+  hard4.1/client1s/security/source/kernel/packages. Existing exact Write/Verify refusal
+  remains; add thin hosted-config verification before Status readiness and before
+  Detach side effects. No live migration/reload, read retries or new coherence owner.
+  No released predecessor exists; old disposable test templates are retired by their
+  matching candidate's drained detach before new install, preserving source/UUID.
+- Prior CR005/API-F003 now independently scoped resolved by API004 two real whole-host
+  reboots without manual repair plus stop/policy/replacement/detach controls. Keep that
+  fix; this is a separate normal-coherence case, not an IR007 regression.
+- Requirements/approval018 unchanged; no five-second relaxation, platform/writer
+  narrowing, new user decision or outage expansion. ARCH005 covers SR021, not SR022.
+  CRR010 Fail / API004 Fail57.14% / broader Required stay authoritative; new design
+  requires configured architecture review before dependent implementation/source/API.
+
+### SR022 supplement inventory (Solution Designer owned; evidence only)
+
+| Path under evidence/design-recovery/sr022 | Purpose / applicability / status |
+| --- | --- |
+| freshness-investigation.md; engine-source-check.json; versioned primary text files | Path, default/zero mechanism, config lifecycle and no-migration evidence; complete, not intended-behavior authority |
+| prepare-prototype.py; resume-prepare.py; resource/download/boot and download-attempt-1 | Exact owned disposable resource and first download-timeout record, complete |
+| run-prototype.py; guest-visibility.py; prototype-result.json; three phase JSONs; console | Native A/B/A dependency experiment, limited scope above |
+| cleanup-prototype.py; cleanup.json; attempts.md | Exact owned guest/process/private cache disposal and harness limits, Complete |
+| input-audit.json; final-audit.json; package-index.json; routing.json |1003 incoming references, protected-authority/15retained-artifact checks and complete handoff routing |
+
+| Policy phase | Case | Mount1 first exact | Mount2 first exact | Both <=5s |
+| --- | --- | --- | --- | --- |
+| baseline-default | inplace-1024 | not observed (6s window) | not observed (6s window) | False |
+| candidate-zero | inplace-1024 | 0.001s | 0.001s | True |
+| candidate-zero | inplace-1MiB | 0.004s | 0.005s | True |
+| candidate-zero | atomic-replace | 0.001s | 0.002s | True |
+| candidate-zero | create-after-negative | 0.925s | 0.927s | True |
+| restored-default | inplace-1024 | not observed (6s window) | not observed (6s window) | False |
+
+Detailed table headers/units and raw data are in the evidence report; native mount1/2
+are same-kernel instances, not independent physical computers. All prior experiments,
+failed attempts, API histories and remaining full-matrix restrictions remain below and
+in the cumulative index. No merge/push/tag/release/TaskDone/user-verification claim.
+
+---
+# Investigation Notes — Shared Network Workspaces
+
+## Historical SR021 — CR005 / API-F003 selected-client restart recovery
 
 2026-10-14; **Architecture Design Complete / Ready SR021, Large/High** on unchanged
 **Approved SR018**. Incoming CRR008 report/history/package was read before action;
