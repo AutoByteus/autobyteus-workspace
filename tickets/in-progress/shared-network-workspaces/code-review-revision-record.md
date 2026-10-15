@@ -794,3 +794,61 @@ The canonical [code-review-report.md](code-review-report.md) is authoritative fo
   implementation_engineer_2c60a2b9fdf1490c818f25289337aa21; accepted=true/DELIVERED,
   56 relevant references. Single most-specific failure-origin rule; no duplicate
   API/design/Delivery notification or recipient polling.
+
+## CRR-015 — IR010 source review / retain peer-refresh fix, separate editor follow-up
+
+- 2026-10-15; **Implementation Review**, round15; canonical code-review-report.md.
+  **Full Re-Audit of affected frontend spine** because session draft ownership and
+  OpenFileState shared shape change; all24 structural checks and10 scores reviewed.
+  Large/High/Reviewed retained. No broader NFS/platform/design requalification.
+- Input63d41de1f5e9d9e1370232d370bbc47673be6218; source a3f65bfe6e7859a3167cb41013b80bc223385cfb;
+  baseline0deb1d4824b1601c8ee267c404a40479a16d01ce. ApprovedSR025/DEC017;
+  technicalSR023/ARCH007; IR010; triggeringCRR014/API007. Delivery N/A.
+- **Pass / 10.0 per category / 100 overall, in-scope source only.** Prior CRR014
+  failure-origin had no scorecard. API007 Fail82.14 remains independent authority;
+  source Pass is not product/runtime closure or successful durable-test review.
+- CR008 peer-refresh source fix accepted: existing store owns editorDraft; actual
+  Tabs/FileViewer/Monaco projects it through loading/error/remount and saves the
+  same visible content. Committed clean/preview data remains separate. Old deep
+  watch/local buffer and dead invisible context-menu plumbing removed. No NFS,
+  backend, persistence/migration or new editor subsystem.
+- Personally executed22files/148tests Pass and two boundary guards Pass in clean
+  owned HOME/TMPDIR. Reviewed current renderer8states/realMonaco/nativekeys receipts
+  and normal/narrow PNGs; controlled transport, not reviewer live NFS/Electron proof.
+- Additional CAND020 confirmed: Save checkpoint, then continue editing/undo to old
+  committed text while pending. updateEditorDraft clears the later draft; Save
+  completion replaces visible input and next Save payload. Independent controlled
+  actual Tabs/FileViewer/store probe1Fail/1Pass; no production latency/frequency or
+  native-key reproduction claimed. This normal editing lifecycle is supported,
+  not dismissed as contrived. No general merge/concurrency machinery prescribed.
+- **Latest explicit user disposition:** keep IR010 original peer-refresh fix;
+  create separate Project Task for this additional File Explorer bug and continue
+  current filesystem increment. User named /project_task_manager. Therefore
+  CAND020 -> **CR-FUP002 Follow-up**, not an in-scope finding/deduction/rework gate.
+  Its failure remains real and unresolved, not retroactively marked Passed.
+- Project Task Manager confirmed creation **project_task_a4f90984-add2-4300-983d-de54ded3032b**,
+  title “Preserve later File Explorer edits when a pending Save completes”,
+  TODO/unassigned/notdispatched/no duplicate. All4 supplied evidence artifacts
+  durably attached; receipt in code-review-evidence/crr-015/follow-up-receipt.json.
+  This is user-authorized follow-up custody, not technical approval or parent Done.
+
+### Prior finding resolution
+
+| Finding | Prior | Current evidence / disposition |
+| --- | --- | --- |
+| CR008 / API-F007-UNSAVED | CRR014 Fail; live peer refresh replaced draft | IR010 corrected at source/component scope; unchanged original test passes; affected API rerun remains required |
+| CR001–007 | Scoped source/runtime closures | Retained; no production delta or contrary evidence in this review boundary |
+| CR-FUP002 | New CAND020 | Confirmed pending-Save frontend bug; separate user-directed Task above; nonblocking, unresolved |
+| FUP001 / D001 / IMP-D001 | Existing custody/deferral/scope | Unchanged; no duplicate request |
+
+- Evidence crr-015 runner/inputaudit/results/rawlogs/probe/followup/receipt.82input
+  files unchanged during execution;286oldDist files preserved. Three source sizes
+  393->355,300->309,83->85; deltas111/10/2. Tests excluded from source caps.
+  Own scratch/temporary colocated spec removed; reviewer production/durable-test
+  edits none. Prior CRR001–014 exact byte prefix retained.
+- Next: fresh primary source-Pass rule -> API/E2E, original native input/Save/peer
+  rerun and affected healthy-reader checks only; valid prior storage evidence
+  carried. ONE LinuxVM/TWOactualnodes,LN/LD sequential, SR025 settled. Deferred
+  Mac/independent-kernel/physical/authenticated scopes notPassed. Successful test-
+  review af9f23/current additions after green API; Delivery later. No release,
+  merge/push/tag/deploy/TaskDone/userverify/delegation/duplicate informational route.
