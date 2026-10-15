@@ -1,5 +1,96 @@
 # API/E2E Coverage Investigation — Shared Network Workspaces
 
+## API009 completed decision — integrated repository Pass95%
+
+INT01–06 Pass: fresh clean source/build/typecheck;66 unique tests/12files plus6
+REST repeat. Real composed removal/registry/shutdown and socket content/search
+boundaries executed, so broader validation **Not Required** for this fixture-only
+reconciliation. Full six-applicable-category95% scorecard and AC proof in current
+report. No durable/production edits; IR0116add/2del needs proportional test review.
+API008 command-only FS01–17 Pass95% carries with exact source/evidence audit,
+not a new VM/app/platform claim. Cleanup Complete, all7330 source files and294
+protected artifacts intact; scratch/DB/cache/build gone. No UI/editor/agent test
+or Designer loop. CR-FUP002 remains unresolved/nonblocking; DR001 remains Delivery
+owner verdict. Initial archive mismatch was corrected before tests with full
+identity guard, recorded below and E9/archive-attempt-1.json. No in-scope gap.
+
+## API009 active plan — integrated repository fixture validation
+
+Prepared before execution on 2026-10-15. Input CRR017 Pass / IR011 / DR001;
+Review8082eb2478016b9a1ac0402a937846c5906e54df; actual input receipt HEAD
+bd57ef932dcd9e12c8470f0a1accbce0928d7ae5 contains the resolved development
+merge a4afd758a9766274b08f675c04952b19913fff0c of personal5096011674.
+Large / High / Reviewed, personal execution only. No new production or durable
+coverage edit planned. API008 FS01–17 command-only Pass95% remains valid subject
+to the unchanged-source audit; this round does not repeat or requalify it.
+
+### Scope, authority, boundaries and test validity
+
+Read current root AGENTS.md, DESIGN.md, TESTING.md, server AGENTS.md and README
+Tests, package.json, vitest.config.ts, integration-test-prerequisites.mjs,
+Prisma test setup and runtime helper; no closer TESTING file. Read current
+requirements/design/investigation/solution history and approval025, implementation
+handoff/history IR011 (Legacy clean; Persisted Data Transition Not Affected),
+CRR017/source history, CRR016 test review, DR001/handoff-summary and API008 report.
+Later E8/user-command-only-direction.json controls: no application acceptance,
+UI/editor retest or Designer loop. Keep IR010 and unresolved nonblocking CR-FUP002
+Task project_task_a4f90984-add2-4300-983d-de54ded3032b unchanged.
+
+Changed boundary: repository fixture lifecycle only, reconciled 6add/2del in
+workspace-content-rest.e2e.test.ts. Public removal must run with the composed
+runtime alive, active/registry lookup must be empty, app.close precedes own
+app-data removal. Six test bodies remain unchanged. This engineering cleanup
+contract is established by TESTING.md and DR001, not a new filesystem gate.
+SCN006/REQ011/AC010 existing healthy bytes/MIME/containment remains legitimate
+supplementary repository regression, not reinstated product acceptance.
+Imported composition service wiring and relative-search paths warrant focused
+integrated checks, not all unrelated base changes.
+
+| Existing coverage | Validity / action | Evidence boundary |
+| --- | --- | --- |
+| workspace-content-rest.e2e.test.ts and reused studio-runtime-test-server.ts | Still Valid after reviewed IR011 reconciliation; execute first | Real composed process authorities, 1 socket HTTP/GraphQL journey, 5 injection controls; six public teardown assertions, no browser/NFS claim |
+| tests/unit/workspaces (9 files) | Still Valid; execute | Manager, registry, source binding, permission/removal guards, temp and skill workspace regression; doubles disclosed |
+| file-explorer.integration.test.ts | Still Valid; execute | Real temporary filesystem/tree/mutation integration, no watcher delivery claim |
+| search-content-http.e2e.test.ts | Still Valid; execute | Real socket GraphQL search and content/PDF/text/containment, route-only fixture correctly distinct from composed removal |
+| API008 FS01–17 | Carry exact scoped proof if relevant NFS/launcher/IR010 source unchanged | Real Linux commands/one VM/two generic containers LN+LD, shared kernel/cache; no independent-client/platform proof |
+| UI/editor/native agent/platform suites | Out Of Scope for current execution | User excluded acceptance; historical results retained, not promoted |
+
+No uncovered material changed behavior requires another durable test: the added
+public lookup postconditions plus existing composed setup directly cover the
+reconciliation. Temporary evidence runner records commands and cleanup only;
+no new test framework or private production patch.
+
+### Execution and safety plan
+
+Archive current tracked source (excluding ticket evidence only) into unique owned
+scratch; verify source identity. Fresh filtered frozen install of the Brief Studio
+dependency closure (normal documented integration prerequisites), private HOME,
+TMPDIR, cache and test DB, clean PATH/HOME/TMPDIR/CI/NO_COLOR environment. No
+provider keys/gates/user data. Prepare current builds, never old dist. Serial
+execution: INT01 setup/build/typecheck; INT02 REST6; INT03 workspace48; INT04
+adjacent explorer/search12; INT05 repeat REST6 after adjacent checks to confirm
+fresh lifecycle and automatic own-app-data cleanup; INT06 exact cleanup/source
+preservation. Repeated6 are not unique extra coverage. Record per-case status
+before next case, including any failed attempts. Root's guidance uses the same
+pnpm scripts; no guideline conflict. Read-only attempt to find skill guidance
+inside this worktree failed (skills live in main workspace); corrected there,
+not a source/test failure.
+
+Inspect preexisting five dist trees and retained engine hashes, never modify or
+clean them. No VM, Docker, browser, installed app, live nodes, credential import,
+network/security changes, merge/push/release or TaskDone. Delete only new scratch
+and its test-owned resources; persist evidence under E9.
+
+### Planned confidence and broader decision
+
+No new score before execution. Broader validation provisionally Not Required:
+the affected fixture calls real removal/registry and composed Fastify shutdown;
+repository socket checks directly cover integrated reader boundaries. Confirm
+after execution/source audit. A new kernel/browser run cannot improve proof of
+a test teardown-only delta; API008 actual filesystem evidence remains separate.
+Do not use generic green units alone as the reason. If evidence changes, update
+this plan before expanding. DR001 remains Delivery's last verdict until its gates.
+
 ## Current API008 completed decision — command-only filesystem Pass95%
 
 The user's 2026-10-15 correction explicitly requests that API/E2E revise its own cases, without contacting Solution Designer: prove shared filesystem behavior through Linux commands inside two Docker containers, not the application UI/backend/editor. The active FS01–FS17 table at the top of the canonical ledger is authoritative for this validation plan; older plans below are historical.
@@ -474,3 +565,13 @@ Scores75/75/75/95/95/95/95 =86.43%; broader Required. Native binary identical to
 ## Final API008 confidence and outcome
 
 All17 active filesystem groups Pass. Fresh generic-command LN/LD receipts, exact carried source/lifecycle/management proof, and cleanupComplete close the scoped gaps. Final95/95/95/95/95/95/95 =95%. Broader Required and executed; no missing active critical proof. No production/durable-test edits in API008; cumulative successful-test review remains required on Large/High route. App/UI/API/editor gates removed by direct user instruction, not reported fixed or passed. Details/attempts/AC evidence in canonical report.
+
+### API009 setup correction — before tests
+
+Attempt1 stopped on archive identity assertion before install/tests. BSD tar
+`--exclude=tickets` also excluded611 nested historical package-ticket files, while
+the planned aggregate excluded only root tickets. No production source differed.
+Preserved E9/archive-attempt-1.json and initial runner. Corrected archive selection
+to explicit top-level tracked entries except root tickets, preserving every nested
+tracked file. Resume same owned scratch, recheck all7330 hashes before install.
+This is an archive-harness correction, not product failure or relaxed test oracle.

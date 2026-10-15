@@ -1,0 +1,6 @@
+{
+  "rawArtifactCheckExit": 2,
+  "rawOutput": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-009/adjacent-explorer.log:204: new blank line at EOF.\ntickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-009/reviewed-test-delta.diff:8: trailing whitespace.\n+ \ntickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-009/reviewed-test-delta.diff:19: trailing whitespace.\n+ \ntickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-009/server-typecheck.log:20: new blank line at EOF.\ntickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-009/workspace-rest-repeat.log:293: new blank line at EOF.\ntickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-009/workspace-rest.log:303: new blank line at EOF.\ntickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-009/workspace-unit.log:358: new blank line at EOF.\n",
+  "sourceDocsExecutableCheckExit": 0,
+  "disposition": "Preserve raw tool logs and git patch bytes/hashes. Only terminal blank lines and empty context lines in captured diff; no source/doc/runner whitespace defect. Initial commit chain stopped before commit; this is artifact formatting, not a test failure."
+}

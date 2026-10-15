@@ -1,0 +1,137 @@
+{
+  "input": "bd57ef932dcd9e12c8470f0a1accbce0928d7ae5",
+  "commandProofBaseline": "a53c133a262ca859e8b8103c737a0ce385019aa5",
+  "unchangedRelevantScopes": {
+    "autobyteus-nfs": [],
+    "scripts/public/docker": [],
+    "scripts/tests/test_public_docker_launcher_shared_workspace.py": [],
+    "autobyteus-web/components/fileExplorer/FileExplorerTabs.vue": [],
+    "autobyteus-web/stores/fileExplorerContentActions.ts": [],
+    "autobyteus-web/stores/fileExplorerState.ts": [],
+    "autobyteus-server-ts/src/workspaces": [],
+    "autobyteus-server-ts/tests/e2e/helpers/studio-runtime-test-server.ts": []
+  },
+  "allSixTestBodiesByteIdentical": true,
+  "testDelta": "6\t2\tautobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts",
+  "currentTestSha256": "94b6a231e61fbe4bd1381ac661de6ed79b3e165b5d2f200eeed66cc9780367ee",
+  "retainedFilesystemProof": [
+    {
+      "path": "evidence/api-e2e/api-rev-008/command-final-summary.json",
+      "sha256": "1d007ee4b1fa4b261dcc42fadc5459e5aeafe35c56bfa36e48d685c362aab753",
+      "matchesAPI008Commit": true
+    },
+    {
+      "path": "evidence/api-e2e/api-rev-008/command-carried-evidence.json",
+      "sha256": "1dc771caab935fd36cc00c0e53dba92189d2634de56e92b226b2a84bab59f343",
+      "matchesAPI008Commit": true
+    },
+    {
+      "path": "evidence/api-e2e/api-rev-008/command-cleanup.json",
+      "sha256": "8a28522f262d9b33c9dbbd5932708428f6435baeb63bbc60d71f7a39b908e2da",
+      "matchesAPI008Commit": true
+    },
+    {
+      "path": "evidence/api-e2e/api-rev-008/LN-commands-result.json",
+      "sha256": "50d4880ff097abdd0f4cb8c2218db92799404419b4114108f5b062fb146b5955",
+      "matchesAPI008Commit": true
+    },
+    {
+      "path": "evidence/api-e2e/api-rev-008/LD-commands-result.json",
+      "sha256": "1285681fa35fcf148d82cdb6b1802653aa3eb6c711fb00693b5b0b87efde72c9",
+      "matchesAPI008Commit": true
+    },
+    {
+      "path": "evidence/api-e2e/api-rev-008/LN-command-setup-result.json",
+      "sha256": "a3321100075c4d1a45a28183a657c3cbbd21ed4c0bf9f5867153b1b0d0eb6b23",
+      "matchesAPI008Commit": true
+    },
+    {
+      "path": "evidence/api-e2e/api-rev-008/LD-command-setup-result.json",
+      "sha256": "4544bef00fe75d40c758214a12c69cc457ad88ab09b54df742ad7042dbc150f5",
+      "matchesAPI008Commit": true
+    },
+    {
+      "path": "evidence/api-e2e/api-rev-008/LN-command-detach-result.json",
+      "sha256": "09081dce57e9aa5524708b18e74bf65842c489323cd2688d3cae483e0e25ed73",
+      "matchesAPI008Commit": true
+    },
+    {
+      "path": "evidence/api-e2e/api-rev-008/LD-command-detach-result.json",
+      "sha256": "306e2c3ac302e51d5db0f7b5e2732f2d9c71460de3102929aa5d31566f9ee66d",
+      "matchesAPI008Commit": true
+    },
+    {
+      "path": "evidence/api-e2e/api-rev-008/user-command-only-direction.json",
+      "sha256": "ec32ff09070d94b1ffc14f45d68cc0b3957e8d13d8152d7a2dd49c81ca25dff6",
+      "matchesAPI008Commit": true
+    }
+  ],
+  "nestedCarriedReceipts": [
+    {
+      "case": "FS13",
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LN-lifecycle-result.json",
+      "matchesRecordedHash": true
+    },
+    {
+      "case": "FS13",
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LN-lifecycle-resume-result.json",
+      "matchesRecordedHash": true
+    },
+    {
+      "case": "FS13",
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LD-lifecycle-v2-result.json",
+      "matchesRecordedHash": true
+    },
+    {
+      "case": "FS13",
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LD-lifecycle-upgrade-result.json",
+      "matchesRecordedHash": true
+    },
+    {
+      "case": "FS14",
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/preflight-controls-result.json",
+      "matchesRecordedHash": true
+    },
+    {
+      "case": "FS14",
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LN-source-detach-result.json",
+      "matchesRecordedHash": true
+    },
+    {
+      "case": "FS14",
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LD-source-detach-result.json",
+      "matchesRecordedHash": true
+    },
+    {
+      "case": "FS15",
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/selected-create-result.json",
+      "matchesRecordedHash": true
+    },
+    {
+      "case": "FS15",
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/docker-selected-create-v2-result.json",
+      "matchesRecordedHash": true
+    },
+    {
+      "case": "FS15",
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LN-both-create-result.json",
+      "matchesRecordedHash": true
+    },
+    {
+      "case": "FS15",
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LD-both-create-result.json",
+      "matchesRecordedHash": true
+    },
+    {
+      "case": "FS16",
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LN-source-detach-resume-result.json",
+      "matchesRecordedHash": true
+    },
+    {
+      "case": "FS16",
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LD-source-detach-result.json",
+      "matchesRecordedHash": true
+    }
+  ],
+  "importantLimit": "Whole server changed through integrated base; only exact filesystem/launcher/workspace and IR010 paths carried unchanged. No new application image or live editor/NFS product qualification. Adjacent imported composition/search executes separately in API009."
+}

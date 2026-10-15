@@ -1,5 +1,58 @@
 # API/E2E Test-Case Ledger
 
+## API009 — integrated repository revalidation (Complete / Pass95%)
+
+API008 FS01–17 Pass95% remains the filesystem verdict below. These INT cases
+validate the IR011 integration fixture only; not new application acceptance.
+Evidence: evidence/api-e2e/api-rev-009; review8082eb2478, actual input receiptbd57ef932d / CRR017 / IR011 / DR001.
+
+| ID | Expected | Status | Evidence |
+| --- | --- | --- | --- |
+| INT01 | Current tracked archive, clean frozen install/current prerequisites/typecheck; carry source unchanged | Pass | E9/checks-result.json; current archive/build/typecheck and unchanged carry audit |
+| INT02 | REST6 including public removal/active+registry absence and normal shutdown | Pass | E9/workspace-rest.log; public removal and registry absence; owned fixture dirs absent |
+| INT03 | Workspace48/9files valid regressions | Pass | E9/workspace-unit.log |
+| INT04 | Real adjacent explorer/search12/2files correct relative paths/bytes/errors | Pass | E9/adjacent-explorer.log |
+| INT05 | Repeat REST6 normal lifecycle; own appdata/workspace dirs absent afterward | Pass | E9/workspace-rest-repeat.log; owned REST/search appdata dirs absent; repeat not unique tests |
+| INT06 | Own scratch/DB/build/cache gone; no owned processes; protected original resources unchanged | Pass | E9/cleanup.json; current source and294 protected artifacts intact; owned scratch gone |
+
+### API009 execution checkpoints
+
+Initialized; no execution implied. Events appended here by the owned runner.
+
+- 2026-10-15T16:42:00.748358+00:00 **INT01 Started** — Archive current tracked source; private HOME/TMPDIR and current builds only.
+
+- INT01 attempt1 Incomplete — archive identity guard stopped before tests;611 nested historical ticket paths excluded by tar pattern. Corrected top-level archive selection; same scratch, no source/test changes. E9/archive-attempt-1.json.
+
+- 2026-10-15T16:42:53.396098+00:00 **INT01 Started** — Archive current tracked source; private HOME/TMPDIR and current builds only.
+
+- 2026-10-15T16:42:57.904548+00:00 **INT01 Checkpoint** — Starting install; exact argv/output in E9/install.log and checks-result.json
+
+- 2026-10-15T16:43:17.787698+00:00 **INT01 Checkpoint** — Starting integration-prepare; exact argv/output in E9/integration-prepare.log and checks-result.json
+
+- 2026-10-15T16:43:42.828826+00:00 **INT01 Checkpoint** — Starting server-typecheck; exact argv/output in E9/server-typecheck.log and checks-result.json
+
+- 2026-10-15T16:43:56.005020+00:00 **INT01 Pass** — E9/checks-result.json; current archive/build/typecheck and unchanged carry audit
+
+- 2026-10-15T16:43:56.005499+00:00 **INT02 Checkpoint** — Starting workspace-rest; exact argv/output in E9/workspace-rest.log and checks-result.json
+
+- 2026-10-15T16:44:08.605919+00:00 **INT02 Pass** — E9/workspace-rest.log; public removal and registry absence; owned fixture dirs absent
+
+- 2026-10-15T16:44:08.607271+00:00 **INT03 Checkpoint** — Starting workspace-unit; exact argv/output in E9/workspace-unit.log and checks-result.json
+
+- 2026-10-15T16:44:22.529790+00:00 **INT03 Pass** — E9/workspace-unit.log
+
+- 2026-10-15T16:44:22.530438+00:00 **INT04 Checkpoint** — Starting adjacent-explorer; exact argv/output in E9/adjacent-explorer.log and checks-result.json
+
+- 2026-10-15T16:44:29.582997+00:00 **INT04 Pass** — E9/adjacent-explorer.log
+
+- 2026-10-15T16:44:29.583515+00:00 **INT05 Checkpoint** — Starting workspace-rest-repeat; exact argv/output in E9/workspace-rest-repeat.log and checks-result.json
+
+- 2026-10-15T16:44:38.182536+00:00 **INT05 Pass** — E9/workspace-rest-repeat.log; owned REST/search appdata dirs absent; repeat not unique tests
+
+- 2026-10-15T16:44:56.579965+00:00 **INT06 Pass** — cleanup/source identity checked; E9/cleanup.json and final-summary.json. All INT01–06 Pass;66 unique tests/12files plus6 repeat.
+
+<!-- API009 events end -->
+
 ## Current active plan — command-only shared-filesystem validation (user revision, 2026-10-15)
 
 **This section supersedes the API008 application rerun plan and is the active test plan.** The user explicitly directs API/E2E to revise its own test cases without contacting Solution Designer. We test filesystem behavior with Linux commands in TWO Docker containers in ONE disposable Linux VM. Native-Linux storage (LN) and Docker-Linux storage (LD) remain sequential. No application UI, editor, preview, GraphQL/REST server, agent run, or model account is a prerequisite or a filesystem verdict gate.

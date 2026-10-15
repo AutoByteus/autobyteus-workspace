@@ -125,3 +125,45 @@ Prior API001 Fail57.14%, implementation's failed candidates and source history r
 - Publicimage downloadtimeout/interruption safelyresumed samecache/clone; redundantDockerinstall hitunattended-upgrades lock. V2 verifiesalreadyinstalledDocker, no packageprocesskill/lockdeletion/productpatch. Rawattempts retained. AllactualfilesystemcasesPass aftersetup.
 - Final **Pass95%**, categoriesall95, broaderRequired/executed; command-onlypostrepo86.43. No activecriticalfilesystemgap, no user-onlydependency. Mac/independentkernel/client/physical/externaljoin/authenticatedagent/publicrelease and generalapplication acceptance NOTPassed. Cumulativeaf9f23/helper/API007regression/IR010tests requireproportionalsuccessfultestreview; no Designer/duplicateforwarding/Delivery/TaskDone/release action.
 - OwnVM/clone/guestcommandcontainers/storage/registry/privatecache/scratch/toolchain/unusedhostapptag removed; isolateddesktop previouslystoppednormally/owndatarootremoved/portsclosed. IR005engine/publicMaccache/preexistingbuildtrees preserved; no globalprune. CurrentcanonicalreportACtable+E8command-final-summary/command-carried-evidence/command-cleanup govern.
+
+## API-REV-009 — IR011 integrated repository lifecycle validation
+
+- Trigger CRR017 Pass / IR011 completed DR001 Local Fix. Actual input receipt
+  bd57ef932dcd9e12c8470f0a1accbce0928d7ae5 after review8082eb2478; source development
+  mergea4afd758a9766274b08f675c04952b19913fff0c integrates personal5096011674.
+  Large/High/Reviewed retained, personal execution. DR001 owner verdict unchanged.
+- Read complete current package/testing guidance; planned INT01–06 before tests.
+  No new production/durable test edit. Existing REST/workspace/search coverage
+  Still Valid; IR011 six bodies unchanged, public teardown lifecycle/postconditions
+  retained. No compatibility/migration/data transition introduced (Not Affected).
+- Fresh owned archive/frozen filtered install/current documented integration builds
+  and typecheck exit0; REST6 + workspace48/9files + explorer/search12/2files =
+  **66 unique tests/12files Pass**. Repeated REST6 Pass afterward (72executions,
+  not72unique). Real socket and composed lifecycle, no browser/VM/application gate.
+- Initial tar exclusion removed611 nested historical ticket paths; archive identity
+  guard stopped before install/tests. Corrected explicit root exclusion, retained
+  attempt and reused scratch; all7330 files then matched before/after. Install
+  warnings resolved by normal prerequisite path; no policy/test-oracle relaxation.
+- API008 **FS01–17 Pass95%** carried: exact unchanged NFS/launcher/workspace/IR010
+  sources, ten critical API008 files and thirteen nested receipts audited. Whole
+  integrated server is not falsely called unchanged. Same-kernel/cache command
+  proof remains bounded; Mac/independent clients/physical/external join/agents/
+  publication notPassed. No new original live-editor closure or CR-FUP002 retest.
+- Final **Pass95%**, six applicable categories95; browser/shell N/A for no current
+  boundary. Broader **Not Required** because actual changed public lifecycle and
+  integrated sockets/filesystem were directly executed; no new kernel/UI gap.
+  Prior API008broaderRequired/executed, API007Fail82.14/API006Blocked67.86 remain.
+- Cleanup Complete: owned scratch/private HOME/cache/build/testDB removed, no own
+  processes/cwds;286old dist files and8retained engine files unchanged. No VM,
+  Docker, browser, user app/data/credential/network actions; no global prune.
+- Evidence E9/checks-result/logs/scope-audit/final-summary/cleanup and current report
+  AC tables. Own4docs updated; no new blocker/finding. CR-FUP002 existing PM Task
+  project_task_a4f90984-add2-4300-983d-de54ded3032b unresolved/nonblocking; retainIR010,
+  D001/IMP-D001/FUP001 dispositions. No Designer or duplicate scope/Task dispatch.
+- Next fresh successful Large/High rule: proportional review of IR011 small REST
+  test delta, carrying CRR016 cumulative test review, before Delivery resumes.
+  No target merge/push/tag/release/deployment/TaskDone/userverification claimed.
+
+- Final artifact whitespace check: raw log terminal newlines/git-diff context only;
+  preserved bytes/hashes, source/docs/runners clean. Initial commit chain stopped
+  before commit; not a failed test or ignored product assertion. E9/artifact-whitespace.json.
