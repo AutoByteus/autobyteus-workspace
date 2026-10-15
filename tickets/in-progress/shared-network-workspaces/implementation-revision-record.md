@@ -490,3 +490,38 @@ record does not imply an earlier Pass or completed implementation.
   access/physical/privateLAN/peerNAT prerequisites unchanged. OnlyMacDockerSTORAGE
   deferred. af9f23 test-code review pending PassedAPIpackage. No merge/push/tag/
   release/TaskDone/deployment/user-verification claim.
+
+
+### IR-010 — CR008 / API-F007-UNSAVED frontend Local Fix
+
+- Trigger: CodeReviewer `code-review-report.md` / CRR014 and cumulative
+  `code-review-revision-record.md`; API007's native edit/peer refresh evidence.
+- Prior current authority: CRR014 Fail / API007 Fail82.14% (24Pass/2Fail case
+  groups from one issue). IR009/CRR013 source-only Pass historical, not product Pass.
+- Current result: implementation Local Fix complete, local checks Pass; ready for
+  selected source review. API verdict unchanged until independent rerun.
+- Related SR025/DEC017 approval and technical SR023/ARCH007; CRR014; API007;
+  delivery DR N/A. Large/High/Reviewed confirmed, no new requirement/design change.
+- Approved AC010/REQ011/BEH006/SCN006/IV-F05/L23 requires preservation of an unsaved
+  buffer when peer refresh arrives; no new competing-write arbitration promise.
+- Source `a3f65bfe6e7859a3167cb41013b80bc223385cfb`: existing workspace open-file store owns a session-only
+  editorDraft, Tabs projects it into real FileViewer/Monaco, preserves dirty
+  editor through loading/errors, and saves visible draft. Matching successful
+  Save clears it; failure/later input remain. Clean readers/previews retain
+  committed bytes, read-only/path/workspace binding and existing explicit-close
+  behavior. Three production files; two tests and file-explorer docs updated.
+- Removed destructive watcher/local duplicate buffer and dead invisible Tabs
+  context-menu/listener/language/ref plumbing. No NFS/engine/backend delta,
+  migration, fallback, broad editor architecture or new framework.
+- Own baseline regression red3/1; final original+viewer controls green;
+  final22files/148Nuxt tests and both boundary guards Pass. Current-source
+  fixture Chrome/native-key renderer8states Pass, exact Save payload/visible
+  draft and clean refresh/preview confirmed. Controlled transport, not NFS proof.
+- Limits/attempts/cleanup: `implementation-evidence/ir-010/checks-and-limits.md`;
+  initial fixture echo-window/proxy/cleanup correction and premature captures
+  retained. Own resources removed;50protected inputs/309old artifacts unchanged;
+  IR001–009 byte prefix retained. No cumulative legacy manifest rebuilt.
+- Next: fresh selected source-review rule, then affected API/E2E under SR025,
+  successful test-code review, Delivery. No duplicate notification/delegation.
+  DEC017 deferred scopes stay deferred, not broad requalification. No release,
+  merge/push/tag/TaskDone or user-verification claim.

@@ -1,0 +1,96 @@
+{
+  "render1PortClosed": true,
+  "render2PortClosed": true,
+  "render3PortClosed": true,
+  "temporaryPageAbsent": true,
+  "sourceCommit": "a3f65bfe6e7859a3167cb41013b80bc223385cfb",
+  "rendererFinalResult": "Pass",
+  "regressionResult": {
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-web",
+      "test:nuxt",
+      "components/fileExplorer/__tests__",
+      "components/fileExplorer/viewers/__tests__",
+      "stores/__tests__/fileExplorerStore.spec.ts",
+      "stores/__tests__/fileExplorerNodeRouting.spec.ts",
+      "utils/fileExplorer/__tests__",
+      "--run",
+      "--maxWorkers=2"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "envKeys": [
+      "PATH",
+      "HOME",
+      "TMPDIR",
+      "LANG",
+      "CI",
+      "NO_COLOR"
+    ],
+    "scratch": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-ir010-check-aazthv25",
+    "exitCode": 0,
+    "cleanup": true,
+    "seconds": 24.54
+  },
+  "sourceAudit": {
+    "source": [
+      {
+        "path": "autobyteus-web/components/fileExplorer/FileExplorerTabs.vue",
+        "beforeNonblank": 393,
+        "afterNonblank": 355,
+        "deltaLines": 111,
+        "sha256": "242a529cc896b7906e19f3c1bf9bd1077593bbe9137c3768c6819e2a0d259fc8"
+      },
+      {
+        "path": "autobyteus-web/stores/fileExplorerContentActions.ts",
+        "beforeNonblank": 300,
+        "afterNonblank": 309,
+        "deltaLines": 10,
+        "sha256": "9380ee4f6bb778c77b9a828a2e78350f769e7242bec56b32b37c456947cc0bb1"
+      },
+      {
+        "path": "autobyteus-web/stores/fileExplorerState.ts",
+        "beforeNonblank": 83,
+        "afterNonblank": 85,
+        "deltaLines": 2,
+        "sha256": "ed2d8a6743652ec7cff429aedb89e5e97e4ac8176c7a84b78a037d97f51cefa7"
+      }
+    ],
+    "sourceGuardrails": true,
+    "protectedInputCount": 50,
+    "protectedInputsUnchanged": true,
+    "oldDistAndCandidatesCount": 309,
+    "oldDistAndCandidatesUnchanged": true,
+    "historyPrefixPreserved": true,
+    "unchangedFileViewerAndMonaco": "Protected inputs include both; draft projection fixes their upstream authority without changing shared viewer semantics.",
+    "deadCode": "Removed Tabs-only uncalled context-close handlers, write-only invisible context menu state/listener, unread DOM ref, unused language wrapper/import. Prior SFC template contains no context-menu consumer. Existing test-only document-click assertions retired; active keyboard controls retained.",
+    "persistedData": "Not affected: session-only OpenFileState composition; store is not persisted, no schema migration."
+  },
+  "rawDiagnosticWhitespaceExceptions": [
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-010/baseline-unsaved.log",
+      "line": 34
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-010/baseline-unsaved.log",
+      "line": 54
+    }
+  ],
+  "sourceDocWhitespaceExit": 0,
+  "rawLogEOFWhitespaceExceptions": [
+    {
+      "path": "focused-1.log",
+      "line": 83
+    },
+    {
+      "path": "regression-final.log",
+      "line": 362
+    },
+    {
+      "path": "render-1/nuxt.log",
+      "line": 101
+    }
+  ],
+  "artifactCheckInitial": "Reported three raw-log blank-at-EOF lines; command shell continued commit. Disclosed; raw bytes retained. Not source/doc exceptions."
+}

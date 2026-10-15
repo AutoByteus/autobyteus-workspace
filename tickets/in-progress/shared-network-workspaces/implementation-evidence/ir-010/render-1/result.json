@@ -1,0 +1,109 @@
+{
+  "kind": "Implementation-only fixture renderer, real Monaco/native keys; GraphQL and event source controlled. No desktop shell/NFS/backend qualification.",
+  "steps": [
+    {
+      "name": "draft-before-peer",
+      "models": [
+        "LOCAL DRAFT"
+      ],
+      "visible": "LOCAL\u00a0DR",
+      "active": "native-edit-context"
+    },
+    {
+      "name": "draft-during-loading",
+      "models": [
+        "LOCAL DRAFT"
+      ],
+      "visible": "LOCAL\u00a0DRAFT",
+      "active": ""
+    },
+    {
+      "name": "draft-after-peer",
+      "models": [
+        "LOCAL DRAFT"
+      ],
+      "visible": "LOCAL\u00a0DRAFT",
+      "active": ""
+    },
+    {
+      "name": "zen-draft",
+      "models": [
+        "LOCAL DRAFT"
+      ],
+      "visible": "",
+      "active": "monaco-enable-motion underline-links"
+    },
+    {
+      "name": "saved-control",
+      "models": [
+        "LOCAL DRAFT"
+      ],
+      "visible": "LOCAL\u00a0DRAFT",
+      "active": "native-edit-context"
+    },
+    {
+      "name": "failure",
+      "models": [
+        "LOCAL DRAFT"
+      ],
+      "visible": "LOCAL\u00a0DRAFT",
+      "active": ""
+    }
+  ],
+  "errors": [],
+  "requests": [
+    {
+      "operation": "GetFileContent",
+      "variables": {
+        "workspaceId": "ir010-owned-fixture",
+        "filePath": "notes.md"
+      }
+    },
+    {
+      "operation": "GetFileContent",
+      "variables": {
+        "workspaceId": "ir010-owned-fixture",
+        "filePath": "other.md"
+      }
+    },
+    {
+      "operation": "GetFileContent",
+      "variables": {
+        "workspaceId": "ir010-owned-fixture",
+        "filePath": "notes.md"
+      }
+    },
+    {
+      "operation": "GetFileContent",
+      "variables": {
+        "workspaceId": "ir010-owned-fixture",
+        "filePath": "other.md"
+      }
+    },
+    {
+      "operation": "GetFileContent",
+      "variables": {
+        "workspaceId": "ir010-owned-fixture",
+        "filePath": "notes.md"
+      }
+    },
+    {
+      "operation": "WriteFileContent",
+      "variables": {
+        "workspaceId": "ir010-owned-fixture",
+        "filePath": "notes.md",
+        "content": "LOCAL DRAFT"
+      }
+    }
+  ],
+  "cleanup": {
+    "browserClosed": true,
+    "nuxtStopped": true,
+    "manualCorrection": "Own Nuxt process group14700 terminated during slow browser close. Runner then hit ESRCH before fixture/scratch removal; verified process exit and removed only exact owned paths.",
+    "fixtureRemoved": true,
+    "scratchRemoved": true
+  },
+  "port": 53774,
+  "result": "Fail",
+  "failure": "page.waitForFunction: Timeout 30000ms exceeded.\n    at expectValue (/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-010/render-check.mjs:23:47)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-010/render-check.mjs:62:116"
+}

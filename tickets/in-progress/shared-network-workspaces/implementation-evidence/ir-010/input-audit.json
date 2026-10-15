@@ -1,0 +1,1832 @@
+{
+  "head": "0deb1d4824b1601c8ee267c404a40479a16d01ce",
+  "inputs": [
+    {
+      "path": "autobyteus-web/components/fileExplorer/FileExplorerTabs.vue",
+      "bytes": 19454,
+      "sha256": "4cb5108ba8f34fd7097b2d81c10a234392cb9dfad35c9a1a3b722259aa349fa9"
+    },
+    {
+      "path": "autobyteus-web/components/fileExplorer/FileViewer.vue",
+      "bytes": 3758,
+      "sha256": "4edc9b25e105e1220bb775c168d73053ee9066367f8bc383b6ecbb59598a48e3"
+    },
+    {
+      "path": "autobyteus-web/components/fileExplorer/MonacoEditor.vue",
+      "bytes": 7907,
+      "sha256": "9564e441ad219955b2c478361ed5835195add5e70010ae7a0c03a8a41fa44781"
+    },
+    {
+      "path": "autobyteus-web/stores/fileExplorer.ts",
+      "bytes": 4653,
+      "sha256": "500624e734b9dc97ebc790185a10a8e0ddbdc93072b99067586d278a1d2fa9e3"
+    },
+    {
+      "path": "autobyteus-web/stores/fileExplorerState.ts",
+      "bytes": 2785,
+      "sha256": "358a696293269a9db057ccd8476506b5f9ddd35ff98cfb8e780cc6cbe02ec4ae"
+    },
+    {
+      "path": "autobyteus-web/stores/fileExplorerContentActions.ts",
+      "bytes": 13620,
+      "sha256": "ef611389d31707ce232598479ce5b04054d791659ec421b7001d5c125d5f2738"
+    },
+    {
+      "path": "autobyteus-web/stores/fileExplorerTreeActions.ts",
+      "bytes": 6726,
+      "sha256": "a65e17303b18c8f82d7bf1b0cc63e9d95d12d0218cb53068720321cb21cda902"
+    },
+    {
+      "path": "autobyteus-web/stores/workspace.ts",
+      "bytes": 18735,
+      "sha256": "828bbec600cbf89dab5c247ce007f8c9ff828b83cda6ebc22f818c2c1f707e87"
+    },
+    {
+      "path": "autobyteus-web/stores/workspaceFileExplorerLiveActions.ts",
+      "bytes": 6902,
+      "sha256": "364410defcefcdf7600f4ed5fc30bb334c21b8e559bf6cf94a055011abaf6370"
+    },
+    {
+      "path": "autobyteus-web/services/fileExplorerStreaming/FileExplorerStreamingService.ts",
+      "bytes": 8479,
+      "sha256": "2212db3168145c7127c2393952bf805bb6a47caa48148260fa7488d554996f3a"
+    },
+    {
+      "path": "autobyteus-web/utils/fileExplorer/fileUtils.ts",
+      "bytes": 7431,
+      "sha256": "9c483d3c4591d6a1615b02846586e1da89e8d2a48051173e01f5c29cc2050a83"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/requirements-doc.md",
+      "bytes": 84801,
+      "sha256": "eeaac5c0b92fbfac2f83a1942549177365f53ada73c6328a0a75142a537023a1"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/approval-record-sr025.md",
+      "bytes": 3582,
+      "sha256": "a72250c99f6ba132e750c2e2e54c6740518ae872f482dcbee6843f9ad9106e63"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/investigation-notes.md",
+      "bytes": 156253,
+      "sha256": "55a35e1c29fe8cc14a98725d8abd9952cf56b499de94e26cd00dc4a643ccfa70"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/solution-revision-record.md",
+      "bytes": 95858,
+      "sha256": "45194d94eaccf679d928d1d2b2886d7713f8dcdbb06052d9957d66525adb1792"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/design-spec.md",
+      "bytes": 122834,
+      "sha256": "1b3974b7a0ebff69b9d5e5c6cb200669e5a47d27168ca843ffae0d51c96f52f1"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/solution-design-handoff.md",
+      "bytes": 8379,
+      "sha256": "1ea2674bb95e05b76825de17edf8a5c6395eeb4f3a7027ffc4bdeb317848bad1"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/design-review-report.md",
+      "bytes": 29494,
+      "sha256": "ddb94b7c1b0434191b1afae6942ac9244943a351e2b89da424c5f7709ce10642"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/architecture-review-revision-record.md",
+      "bytes": 49669,
+      "sha256": "e43eb2ddca143be3810e97a4d8807331d8c88d156af18d0525343d0a7a525251"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-handoff.md",
+      "bytes": 14360,
+      "sha256": "633c33f4ba83f2fe3cc36c192cfa00a400a7bf7881bc906504a8fe4663add1bc"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-revision-record.md",
+      "bytes": 37934,
+      "sha256": "567a7de50af180b29be8e1cf137531a75d560c9c2f3408e8e405fe65de700348"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/code-review-report.md",
+      "bytes": 14938,
+      "sha256": "f1ee072ff71af3c778d2b38ed4fcc092268cf3853cbf4df341cb67f80913baff"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/code-review-revision-record.md",
+      "bytes": 79113,
+      "sha256": "35591e5c7acce23c7384279ce2c9dbad1c0b7bf0e4626c5aa455926101ad2874"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/api-e2e-coverage-investigation.md",
+      "bytes": 84940,
+      "sha256": "c69db7a488d02898ef1e48f26683487463711969953997a09dd645f4da458c09"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/api-e2e-execution-coverage-report.md",
+      "bytes": 20155,
+      "sha256": "eee506008766801a245c08f8dc1e8388eb22b0a0d33c69a62d0fb5ddcae7fbfd"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/api-e2e-test-case-ledger.md",
+      "bytes": 172441,
+      "sha256": "f39a0b48872e1aa31221a0f342eba6c6d17b6b8f572fd797803cefe1636501b5"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/api-e2e-revision-record.md",
+      "bytes": 26902,
+      "sha256": "b2505975d1619d28b58831fa5d0e47914dd00ff5982e93272ebd72a40f9d454e"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/ui-unsaved-peer-reproduction.json",
+      "bytes": 7925,
+      "sha256": "319b20ec4a81fe9ab4a811bb67cef5ed2cf47746d4ec747bd07bc2c1ea25acf0"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/ui-unsaved-save-control.json",
+      "bytes": 4199,
+      "sha256": "417b0718afc931fc7dad092821e7d999bf185917e55aa749d8dca018b4692acf"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/unsaved-source-trace.md",
+      "bytes": 1781,
+      "sha256": "46cd5e71ee7c6e55f8b6cdbeefa27862cdec296471a6aa3cf20937255faf462a"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/unsaved-regression-result.json",
+      "bytes": 301,
+      "sha256": "1ad170360b044dafa3f95659809e1e242b3fcb97217a02e256a58ba4149c6a84"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/unsaved-regression.log",
+      "bytes": 4378,
+      "sha256": "a518be40d401f9556eee0c182f7913b5b1f7a501ef9f7b299ff2d1b545b17cbf"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LN-files-result.json",
+      "bytes": 195333,
+      "sha256": "676cf1d8190ad8fbc1a6fb580a8041a37be6a7691d29b8905d88e2f7a9b90b6b"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LD-files-v2-result.json",
+      "bytes": 197385,
+      "sha256": "368ce8b8bbf82abbbd068baa2772b72b75658995fc8442b2fe5c26f76c55a78b"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LN-mounted-api-result.json",
+      "bytes": 30922,
+      "sha256": "732163c853b8bd928e5306bd98fd8953015659b6e2766fe8afb7be6443b7fc6f"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LD-mounted-api-result.json",
+      "bytes": 31153,
+      "sha256": "13a4c072a709b97c0897929d5a2930543540a912d07f4740f1f92a1a0b92a49d"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LN-lifecycle-resume-result.json",
+      "bytes": 808949,
+      "sha256": "df302def989807fdcb71f2ce75c4a24803b0c1754b568aabf5ea42e2df5ae0f0"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LD-lifecycle-v2-result.json",
+      "bytes": 939326,
+      "sha256": "dd18cb5265257e162aeba1eea1ec4164e89ee38bf00e4ee2a2236127aa8d4327"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LD-lifecycle-upgrade-result.json",
+      "bytes": 430951,
+      "sha256": "04fb530792604bcc8b901df9d47abf08a32a3f06ec26dd3e14508647437f9da2"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LN-source-detach-resume-result.json",
+      "bytes": 181663,
+      "sha256": "859ef30918c984101cbbc0c93c70cf3d20bc4f7ec63508e78e555aa67e82c0de"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LD-source-detach-result.json",
+      "bytes": 199599,
+      "sha256": "bd79d8a07e3c05afa01a3b7f426e9269f74c1a34157966f1008a8c01bb0ba333"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/cleanup.json",
+      "bytes": 14208,
+      "sha256": "b53be4acd8d0b1cf6db9ca624775375ee1ed0068e1ec08972c5c729ed2823658"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/final-audit.json",
+      "bytes": 13463,
+      "sha256": "a943bd86b4dfbb23761e723a7ea9da53fac280075853c30da1a55e7f449a9591"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 640,
+      "sha256": "a53621fd9a2a4da3c1456fb15432524ace2716a53c94caa130c1ad88be1bac93"
+    },
+    {
+      "path": "DESIGN.md",
+      "bytes": 18830,
+      "sha256": "cca1f0f067ede06295b9a3774aacd3e333202f859494e7368b15595fb3bfd7df"
+    },
+    {
+      "path": "TESTING.md",
+      "bytes": 15082,
+      "sha256": "f0bbb0f46c3964f01328c3450f5e37586a6e496d25c2eee21bc6a68b8cb1358c"
+    },
+    {
+      "path": "autobyteus-web/AGENTS.md",
+      "bytes": 6092,
+      "sha256": "30fd30e0f304a1d5ce30fb4115537ef5890cca3b42ec1d03d0abd50edd7b52e3"
+    },
+    {
+      "path": "autobyteus-web/vitest.config.mts",
+      "bytes": 889,
+      "sha256": "46e65a4b5b6b9223ddc9ed6d228dcfbe22d3ecab156dbce6ef419f2b2cc5913a"
+    },
+    {
+      "path": "autobyteus-web/components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts",
+      "bytes": 2457,
+      "sha256": "d840d8e2706cee756bae4f77a40b740ef37cf032edf68a2c9d957dc1020c5e98"
+    },
+    {
+      "path": "autobyteus-web/components/fileExplorer/__tests__/FileExplorerTabs.spec.ts",
+      "bytes": 2149,
+      "sha256": "c103ecee5615aef829b49b24a4118530396f1ab0259a4485489d73783c45d84a"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-014/unsaved-regression.log",
+      "bytes": 3430,
+      "sha256": "68c3ca915e692344809c75551cd26b2e6f5b78db71044dbd4f0296f57ad950c9"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-014/review-checks.py",
+      "bytes": 4790,
+      "sha256": "fbf4e382dba07ef5a2fecec63bcce35bf6cb84a40b63a411738e09a58c811715"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-014/checks-result.json",
+      "bytes": 713,
+      "sha256": "013240cefefbbb32587fbc3eae6aa3a7b975e32064e8a9653671be3f3431cde7"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-014/final-checks.json",
+      "bytes": 886,
+      "sha256": "ecd92d8e4b53506d1add7bf910ab9413337bf3d0d16e52e0f7785539fd4a78b4"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-014/routing.json",
+      "bytes": 5238,
+      "sha256": "296a2c9bfe0e58b12f5bd773014690da5044553490bd9f862ce8e649cd4ced67"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-014/input-audit.json",
+      "bytes": 14485,
+      "sha256": "73fa0fc31f912fda5bbdc7306432640d6e6b2386eb5937617154d1190e9f4d18"
+    }
+  ],
+  "preserve": [
+    {
+      "path": "applications/brief-studio/dist/importable-package/README.md",
+      "bytes": 315,
+      "sha256": "4ac20f1bde2b1231430d3ca814382c95c62b5d6a6e9d88f1feed5e78e54a772f"
+    },
+    {
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/application.json",
+      "bytes": 1510,
+      "sha256": "ffdbbb2368a257994c0ebca95ffe229b1b9e0789750fdcc8500c8f19cc39cc73"
+    },
+    {
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/ui/index.html",
+      "bytes": 348,
+      "sha256": "ddc65c01a4eb9cee230c586a6486774a10a73f01a08b29d8ba48997a6eec626b"
+    },
+    {
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/ui/styles.css",
+      "bytes": 8739,
+      "sha256": "ef092b0eea0eaa49783c0e2fa2c886c3789bd708fb07173061eabdd5f35d81c0"
+    },
+    {
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/ui/icon.svg",
+      "bytes": 1276,
+      "sha256": "45d1634112fb8b1f83c4ee346f674c8705c199e17f756d8b64dcf7d87bc9269a"
+    },
+    {
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/ui/brief-studio-runtime.js",
+      "bytes": 6191,
+      "sha256": "f59ece38676a0d6d1a15712fdef564bd5c96167aaa6ab3e9ff4a6af704049e4a"
+    },
+    {
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/ui/app.js",
+      "bytes": 87349,
+      "sha256": "74e9834857cdf4f2371800270bd0d79460aa2d28f0bcd10b33c5abb12c419b32"
+    },
+    {
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/ui/brief-studio-renderer.js",
+      "bytes": 14508,
+      "sha256": "177f6e331446de0e8844c646ea7590f15c343c350545880ab5b85c9f6f4ee86d"
+    },
+    {
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/ui/generated/graphql-client.js",
+      "bytes": 3577,
+      "sha256": "0f5cf81e58ae33e4fd61fc873eb4664327182e8f23ff729bbf38900c5e5222d1"
+    },
+    {
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/backend/bundle.json",
+      "bytes": 555,
+      "sha256": "815a32a2039d66c8a13f519b429d5d87c9addf322d5740184698632294c6810a"
+    },
+    {
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/backend/migrations/003_application_owned_orchestration.sql",
+      "bytes": 593,
+      "sha256": "487febfd2b9c0b0a8f00c091bafe779e9887f41383f969addb3260ea06f0289b"
+    },
+    {
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/backend/migrations/005_published_artifact_reconciliation.sql",
+      "bytes": 2273,
+      "sha256": "c27da5695301dff98c5c44b30ec8b473c822c0edfc1074e3d7111a880a9c0a7a"
+    },
+    {
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/backend/migrations/001_create_brief_tables.sql",
+      "bytes": 982,
+      "sha256": "b18d150ee9900c36c75a2e05414a4c3be54d58e8ce5019dc04d80a9b53b9d7be"
+    },
+    {
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/backend/migrations/004_pending_launch_requests.sql",
+      "bytes": 569,
+      "sha256": "1b21739380032a3b0e19a5bd90da37795ceb2cb2ccc78420e163585f849929e4"
+    },
+    {
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/backend/migrations/002_artifact_publication_model.sql",
+      "bytes": 188,
+      "sha256": "d8d7b1ced11e3525acdbb07d83899af86120258695ff9fe37ab88d54c32ca8e7"
+    },
+    {
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/entry.mjs",
+      "bytes": 52481,
+      "sha256": "5d8550feb591ec843f99f8ba0727eaa4da9c6e1c285138cc0db18afd1ca9575d"
+    },
+    {
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/team-config.json",
+      "bytes": 395,
+      "sha256": "fea5fb5d1fa904b83b26a603b4a344147aa1f9113e1847d4d1c03d92f345dbf2"
+    },
+    {
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/team.md",
+      "bytes": 1894,
+      "sha256": "bf0514660e685e2bed77fc3e4d096a8a634b8b8574b4a7046091bf4a35e02964"
+    },
+    {
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/writer/agent.md",
+      "bytes": 3966,
+      "sha256": "05882e50eb20e1d6f34ebc1848fc835a012ec9efb64d58b1e24f1136cba7a360"
+    },
+    {
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/writer/agent-config.json",
+      "bytes": 213,
+      "sha256": "513031463f589e7b8d966bfabf59b28883c23aa1aa665782b71551d3c667a5cc"
+    },
+    {
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/researcher/agent.md",
+      "bytes": 3440,
+      "sha256": "5c7e98e50371e5f3c530ede3a0b519fd8ead4a1c915e0b4e104914bdf10755f7"
+    },
+    {
+      "path": "applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/researcher/agent-config.json",
+      "bytes": 213,
+      "sha256": "513031463f589e7b8d966bfabf59b28883c23aa1aa665782b71551d3c667a5cc"
+    },
+    {
+      "path": "autobyteus-application-backend-sdk/dist/launch-profile.d.ts",
+      "bytes": 505,
+      "sha256": "9b2c7f9af1ad49bc293c54f65935720270b070e73c2b1defee3deaa65d41ec98"
+    },
+    {
+      "path": "autobyteus-application-backend-sdk/dist/application-agent-target-address.js",
+      "bytes": 1943,
+      "sha256": "89e7db31e5f3b9eecfcf0960e9b1c2b2bc5d881aa7416808883b23e278b05b43"
+    },
+    {
+      "path": "autobyteus-application-backend-sdk/dist/launch-profile.js.map",
+      "bytes": 2339,
+      "sha256": "17dcfd3c405ff2fc61dc45b20bcd9428295a76d6a310173b3516a9774b56040b"
+    },
+    {
+      "path": "autobyteus-application-backend-sdk/dist/launch-profile.js",
+      "bytes": 2466,
+      "sha256": "146bf9583a87251a62676fadb195cff7d58c592f88af64b9cf6d567666b922b9"
+    },
+    {
+      "path": "autobyteus-application-backend-sdk/dist/launch-profile.d.ts.map",
+      "bytes": 364,
+      "sha256": "b5e3ad70759f6c420e7c8765b558ede55f862e1babf261666c03b3026eb5a5e9"
+    },
+    {
+      "path": "autobyteus-application-backend-sdk/dist/index.js",
+      "bytes": 186,
+      "sha256": "01cac3372e789f0885584aa479044478663febdf80bca4a56d12d7bbaff11e3f"
+    },
+    {
+      "path": "autobyteus-application-backend-sdk/dist/application-agent-target-address.js.map",
+      "bytes": 1711,
+      "sha256": "1d6543ecd1183fb13de071e8869a80db1c837702feb04e5cb5f1408396bda644"
+    },
+    {
+      "path": "autobyteus-application-backend-sdk/dist/application-agent-target-address.d.ts",
+      "bytes": 583,
+      "sha256": "61586112d9bf99dc3678b48447ae6d52ca3d7060455256f6937e03d799d66129"
+    },
+    {
+      "path": "autobyteus-application-backend-sdk/dist/index.js.map",
+      "bytes": 216,
+      "sha256": "831156d86d7c50bec4022b737b41fa9c12f724efd79df5f8f0874ff02a74804c"
+    },
+    {
+      "path": "autobyteus-application-backend-sdk/dist/application-agent-target-address.d.ts.map",
+      "bytes": 393,
+      "sha256": "f2a08902b14a5fa637bd9cf6cf85d711c370e8c53a5c66c70f7b4cab4b872058"
+    },
+    {
+      "path": "autobyteus-application-backend-sdk/dist/index.d.ts",
+      "bytes": 2605,
+      "sha256": "bba19a526653ed235d6aeb69e0c37ffd541e354f8f5dd37b9e309c0068ef8f92"
+    },
+    {
+      "path": "autobyteus-application-backend-sdk/dist/index.d.ts.map",
+      "bytes": 1232,
+      "sha256": "a37a0819e2f476f4c5b3942ed87a1940222f1895bad1f83957716321bcbc1954"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/cli.js.map",
+      "bytes": 1725,
+      "sha256": "892e8f1ed5465a98828975c1ec027810c9498ff7e745c270d0a540a5ace33d7c"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/cli.d.ts",
+      "bytes": 118,
+      "sha256": "c4d037d08fe01ed1a8e79e3aa1c7af4fb9520f6c126b3ce6a266bf0326f9c908"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/index.js",
+      "bytes": 962,
+      "sha256": "b57b5ee25eecf87cf047d8033d80d0e577635219191d68ae9334ad95a27d0d92"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/index.js.map",
+      "bytes": 568,
+      "sha256": "4c5f1d5b8726334c3caaba8fce0e7d8f4e6babc55ed4b3d0f108b026ec8f743a"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/cli.d.ts.map",
+      "bytes": 173,
+      "sha256": "20e9c9770ce2e79c6a1b5990e892c37d35dd666917cb5724e9c610ed917c60d8"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/cli.js",
+      "bytes": 2075,
+      "sha256": "ce6b2fd13e8b3d4136c491a1eeb7cd35e5257a90b969657b782065ec78919c72"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/index.d.ts",
+      "bytes": 1759,
+      "sha256": "c03f3fb5e0038578b79271c1cc47a6ce4cf43e0cc5ff8fac1036d1c390b8e593"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/index.d.ts.map",
+      "bytes": 956,
+      "sha256": "a7a238ea200c79bba378c1906df5f352bf8ec4f772729b6dbed842ccd1feb7ba"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/config/application-devkit-config.d.ts.map",
+      "bytes": 2094,
+      "sha256": "caf37c5c70dda4c654f109134ab2dc5844b47e33e8a039adf083692f1178703e"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/config/load-application-devkit-config.js",
+      "bytes": 1394,
+      "sha256": "39a6cf1c2f5229d2bb1402b7a90d99a47c77d5ff4f4bf5a52ba73ff6463a1534"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/config/load-application-devkit-config.js.map",
+      "bytes": 1438,
+      "sha256": "ffca7cfe2541b458b059e9e551e443b02149e3495612ec97d556bface4661b20"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/config/application-devkit-config.js",
+      "bytes": 3599,
+      "sha256": "b6763994e222dcdbdfbc090bec3811fe0ef6e7757d16aef917393a29f346b13f"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/config/application-devkit-config.js.map",
+      "bytes": 3159,
+      "sha256": "d37ee21c79047ffa5671309447785a2505beb3b7e80c23402bd9905eeaffd5d7"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/config/application-devkit-config.d.ts",
+      "bytes": 2295,
+      "sha256": "dac9528a8a97072e6a075c630461a9958c2f536d8e41da27dd38acc971f52c06"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/config/load-application-devkit-config.d.ts",
+      "bytes": 565,
+      "sha256": "6707537741e0b89aa1ca98b036a081426a3cbc1cd37d08622c92e0f6a45cd604"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/config/load-application-devkit-config.d.ts.map",
+      "bytes": 480,
+      "sha256": "4a00d70708132f7408163470ab07ec0136d5f1f85f3d290e5000b166e8e6e43e"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/atomic-application-pack.d.ts.map",
+      "bytes": 275,
+      "sha256": "4c91354cffc28e4b8240ce4744e92d025efaffb3e8c53e4b679d6a8b17f25677"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/development-process-lifetime.js",
+      "bytes": 1374,
+      "sha256": "18124cd32193e3984fc48acca4f54655a299c73c3196385d678cca03b7a6f1cd"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/atomic-application-pack.js.map",
+      "bytes": 1572,
+      "sha256": "d6df550cf3df807e40d9dcd99d93e7fc58e4b4ba6afeaf661f47e10c84e8a8b3"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/application-development-project-state.d.ts",
+      "bytes": 560,
+      "sha256": "68011adda479cc441638b79159284c55c3190ac3b82149fd2be7bad1126d1874"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/studio-development-session.d.ts.map",
+      "bytes": 281,
+      "sha256": "e9ae8b300cf8d8d3476733c25627fd4f75cc335364fa0d2467ce706e32f5fc7d"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/atomic-application-pack.js",
+      "bytes": 1385,
+      "sha256": "20ad1f2de7e3761ac07c9cdb3b460fadfbfc9bc002a909fb17016289e8fe48f1"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/development-browser-session.d.ts",
+      "bytes": 1009,
+      "sha256": "fb6ef22ee12920b3e8aa3df3fcd1d53874cb85efa5175738e36cf3d1c05c744f"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/studio-application-client.d.ts",
+      "bytes": 425,
+      "sha256": "2279699eb848f66a18161a17627a63c4acfd96e9a036f812d898d1af79c28962"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/atomic-application-pack.d.ts",
+      "bytes": 189,
+      "sha256": "85d2f98ec63ca4f2915255854b583782f81b9411735c57623e5cbbdd5b01e2e0"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/development-browser-session.js",
+      "bytes": 3025,
+      "sha256": "6934e6c51ebadb199821f071f07f9567f1d16700585f42b24bbea1e2e8724dd9"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/studio-development-session.js.map",
+      "bytes": 1440,
+      "sha256": "880f23ae5089e9bb71aa8af96c6952b101f49b6f9410ca28dde2c7343c76c84b"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/standalone-development-session.js.map",
+      "bytes": 2610,
+      "sha256": "25c9560ea7d999953c532441ec6dd37fa8d67e9e03160ea37e17ce412217e308"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/application-project-watch.js",
+      "bytes": 3771,
+      "sha256": "0efded3d7379d70f65ee8cb69981f06b86a11f9c99ecbb1c3208a846e0dedefc"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/studio-application-client.d.ts.map",
+      "bytes": 453,
+      "sha256": "020ea89b06bb9808e543a1cdb6d7901a45e3d1e810e033793519adb2586f7265"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/development-process-lifetime.d.ts",
+      "bytes": 395,
+      "sha256": "58b038efff0527dcc4ff8257cdcf7c463ab5a07c3a187cc5908560def48c1bd8"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/application-development-project-state.d.ts.map",
+      "bytes": 493,
+      "sha256": "0993974dab21690f865491532928055c8464b33c70fe2b04ebc555dab8704429"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/application-development-project-state.js.map",
+      "bytes": 736,
+      "sha256": "bec47e2175c66fe57e267a85170fe6487b9b71d56fe76e93a3287b476b2a819a"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/standalone-development-session.d.ts",
+      "bytes": 281,
+      "sha256": "d59826ea170189a2e72f84bcc2ee5ad1b3bf418953665090c81087a34e5ad4dd"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/studio-development-session.d.ts",
+      "bytes": 185,
+      "sha256": "6d1e05a76a28b70b9da53f254c4b52204d3899089ad1d871c716d63e543f9b08"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/development-browser-session.d.ts.map",
+      "bytes": 1081,
+      "sha256": "801f1d3a03f97c7d2ca8b18e7f3eee59cc00dad4b2d6ceff3005b661a359ded3"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/application-project-watch.d.ts",
+      "bytes": 491,
+      "sha256": "e2e86d37e20af090ce79da679ebbb7e17a21522c6d610695a630eea7b2e7545b"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/development-browser-session.js.map",
+      "bytes": 2918,
+      "sha256": "9f9866fb2420c4405932e28743941cb9f8985f6b30ee14ccc8a45bd55558a61e"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/standalone-development-session.js",
+      "bytes": 3066,
+      "sha256": "cb19a201164a02256d7dd5106973949373f1b44c22a7dae00083809bfa000ec0"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/development-process-lifetime.js.map",
+      "bytes": 1539,
+      "sha256": "a9bfd55315600d11456ab314cb69ab032e638f5d7043515179a65a9435b0c115"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/studio-application-client.js.map",
+      "bytes": 2874,
+      "sha256": "4909f1a2c2e479bc4c4fd12d245ef2c929517a5ae8b7aad01101a6fb842b5af2"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/standalone-development-session.d.ts.map",
+      "bytes": 387,
+      "sha256": "3af55502e71f950d4f14d89632b84ceca42487f486479a9612bfd618a1688956"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/development-process-lifetime.d.ts.map",
+      "bytes": 447,
+      "sha256": "a6cd77883e10b154b0f465a130b12c8b444dc9542f871683f355e26300908aa6"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/application-project-watch.js.map",
+      "bytes": 3478,
+      "sha256": "358d0326452e15bac3c2d1ca6234f3c602ff06568a82d2444a84d2d729352a6a"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/studio-application-client.js",
+      "bytes": 3484,
+      "sha256": "bcb1e755f406d8d011ffde2c93b7e9484feee1a08749e4048895f8d1118cfece"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/application-development-project-state.js",
+      "bytes": 755,
+      "sha256": "f03776fe0f0ea0b32bf79f0b8df5cc1246260e8a1f799ea0d6dfa83f2a4d1181"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/application-project-watch.d.ts.map",
+      "bytes": 569,
+      "sha256": "45deb3044724c7db697e374ddcc31f115cf3ef44191f4e52918d530d55417e73"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/development/studio-development-session.js",
+      "bytes": 1759,
+      "sha256": "1b8abc023ef022a32817b88d5890d9b5398e5399f8a6638ad6de3c038875c5b8"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/template/template-materializer.js",
+      "bytes": 3698,
+      "sha256": "6aafb6153b2dfff7032ccf0b6d10c1d60345c9b866537521357f5a1ee0dfc777"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/template/template-materializer.js.map",
+      "bytes": 3894,
+      "sha256": "4497ccc93361ff3c37befda546a99a8fe65522f69115191c23132444da2ebc26"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/template/template-materializer.d.ts",
+      "bytes": 524,
+      "sha256": "e36478e0884138b19f51c42905f83b9c13500b42169c175a554ba1a2196c7b72"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/template/template-materializer.d.ts.map",
+      "bytes": 563,
+      "sha256": "a8270ad3e8daa4c162088176f37a57d077ad8e514f02e97932e85aa99966a959"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/paths/application-project-paths.d.ts.map",
+      "bytes": 1008,
+      "sha256": "d95f2ec776d7a7ee6ed8f69bec459e42de33060e2bb5ab8cd3fe08e67c2b6f65"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/paths/application-project-paths.js.map",
+      "bytes": 5579,
+      "sha256": "c4434c5cc33d65afc1d7aa881e482cb690f8f5a6a47dc84e66fdd84ed9ecf01a"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/paths/application-project-paths.js",
+      "bytes": 6000,
+      "sha256": "af486570a8f19dca88f921ece8041fef2cd3b08084486817db62b50629804511"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/paths/application-project-paths.d.ts",
+      "bytes": 1141,
+      "sha256": "522afa22665952a9c33a84b9c3e4aeed7b4ea432dc16cb84a1a523e7f4cab90d"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/commands/start.js.map",
+      "bytes": 1777,
+      "sha256": "9b83195be817010a012b8b02b719a89d0fc32319428e0e5d0a6293e4e14696bf"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/commands/pack.d.ts",
+      "bytes": 106,
+      "sha256": "f2242562bd31e5af60582555b5f4c1789496b727a9c38979730dee3668047a97"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/commands/validate.d.ts.map",
+      "bytes": 195,
+      "sha256": "4ec2757c3a1268eaac08068f6d9899c88fb1b5ec72b85637b4f8918590b282d3"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/commands/start.js",
+      "bytes": 2129,
+      "sha256": "8b53969c3328eef2bd68c310f8e4cf84df20e3b70995b38e98ce8160f8c9561d"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/commands/command-options.d.ts.map",
+      "bytes": 554,
+      "sha256": "ab5f3d1cdc938b2dde81b7068de759c2bedd68c03e2da73113c6a6c2f7c6deea"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/commands/command-options.d.ts",
+      "bytes": 537,
+      "sha256": "4ae0b9bfe3f17a0ad3e8dd646a8e7009c0540aee4ad54c02ca666465768e0f0d"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/commands/dev.d.ts.map",
+      "bytes": 183,
+      "sha256": "e8b7e28da0b35b680dff65b22bc29c2202aa5aad5f2bb24979ca0a9ed35a7ed8"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/commands/command-options.js",
+      "bytes": 1444,
+      "sha256": "9e287ecc305214186480278a239435c461f22afc3f1ca69ca033d48a4f1d38c0"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/commands/validate.d.ts",
+      "bytes": 114,
+      "sha256": "f642549d1a53b8ed2d490b16803d6b157df1e7a3117340107a74e53c702712b1"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/commands/create.d.ts.map",
+      "bytes": 191,
+      "sha256": "f99bb818aaf621c8f51dbfac299c5ca07e84de39bb501dae91eba83a5f4182f3"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/commands/pack.js",
+      "bytes": 634,
+      "sha256": "00a0a5a368040a7975d90e4299c2c596f4ca4136703b0b3c7679bdd0ccaccc42"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/commands/create.js",
+      "bytes": 1192,
+      "sha256": "d83e11ff23ce7efb3f8020e9c70ed81a21c35e79cd699aec8e074c4273dd6157"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/commands/pack.js.map",
+      "bytes": 629,
+      "sha256": "d564fef7c48664ebc2450eb19edd3a5f7d6309f4a099bc43cdf23fb7d37f569b"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/commands/dev.d.ts",
+      "bytes": 104,
+      "sha256": "059320dce582f027f1de485ad113ffde40c3779fa38ca0d0e2fdc3c11c895828"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/commands/pack.d.ts.map",
+      "bytes": 184,
+      "sha256": "35d7bd10b3d08c5798877451cc1b0ba90d21152418d9e4bae4343ea69a54b300"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/commands/dev.js",
+      "bytes": 1282,
+      "sha256": "6e74a0e88bf7d231d92c24e379180c4dce2ff146195c6e04241851f2926c76d7"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/commands/start.d.ts",
+      "bytes": 108,
+      "sha256": "3e88c2eddcf8e35222f48215293fe7d1f5959c93a4f3ab0aa115ecdab89a49c5"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/commands/create.d.ts",
+      "bytes": 110,
+      "sha256": "8c13db221fba13125dcfee6bd8b02b71fbf0eb776b84db1898c0f06e517f0833"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/commands/validate.js.map",
+      "bytes": 1550,
+      "sha256": "5586554ec983bc2e5c7c96efaa48b53e57f426bde3dcf57e996b01f379762892"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/commands/dev.js.map",
+      "bytes": 1099,
+      "sha256": "e89feecab5a8bcc24a1cc3f5bb979bfbdc57a1245c6cbac98b13d04095c2e352"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/commands/command-options.js.map",
+      "bytes": 1908,
+      "sha256": "7a4e2d6cc7315dab454e2171430a44aac16d5f916615775c3e8f84801576b0da"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/commands/validate.js",
+      "bytes": 1738,
+      "sha256": "956018758debfc1a282f7b3f46a10d26dc55569d9f98a77067e78b6752f236ba"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/commands/create.js.map",
+      "bytes": 1068,
+      "sha256": "9537f3f953473c9cd5e27c394eaf8b9c6d4d38613592b6c05f249487db6ef02a"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/commands/start.d.ts.map",
+      "bytes": 187,
+      "sha256": "24203b4275e194b3df2179605f06c9a300a2fa639fcafef00f524e08715438b5"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/package-validator.js.map",
+      "bytes": 1578,
+      "sha256": "f7e5a87b6ff20707d90f68e5566de2dccf4b747cd7b94f97d98b848466e7be3c"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/package-validator.js",
+      "bytes": 1758,
+      "sha256": "997dd411f4d149401cef09b2b4d66433218406d2c2b2c383d4c2768a40f7567c"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/manifest-paths.js.map",
+      "bytes": 1770,
+      "sha256": "f8021c67d4c41cafa1976c1a7b87b28b2668fa7466e1ddf7693077790400599b"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/backend-manifest-validator.js",
+      "bytes": 5455,
+      "sha256": "4b3abcb3367276d23afb2139bbe9beec2297145629ed2e185b2dc02400f3326c"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/validation-result.js.map",
+      "bytes": 964,
+      "sha256": "a6496f81775d1855aa2a5a047ca7c3cc4cbbf53072c3de9fe5c883efdacea3d3"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/validation-helpers.d.ts.map",
+      "bytes": 1445,
+      "sha256": "f4a006e55f2b81797192eedf286852127118c6ef324394e5e5433a9ca873868c"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/application-root-validator.js.map",
+      "bytes": 4773,
+      "sha256": "db90bb871f03b22ea1a651f28c6ee4650d0311f97cc36bcca09e6929dd9f7ed8"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/validation-helpers.d.ts",
+      "bytes": 1749,
+      "sha256": "caaef80c99b63bb4218d3075924968928030568e400caaa32b66fd7237a00bdb"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/local-application-id.js.map",
+      "bytes": 923,
+      "sha256": "8abcd370e9550f1069b739b82de78362b5284f39858e626c296c0e6b67efbd37"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/manifest-paths.d.ts.map",
+      "bytes": 442,
+      "sha256": "41fd5715d90305793753555207205c704102ccb04cdc0db7109491d42048014e"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/validation-result.js",
+      "bytes": 780,
+      "sha256": "d930598b4b73b4e339eb2ff7f8a445980659bdd1329c366dbc1b97454b84f4f3"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/validation-result.d.ts",
+      "bytes": 656,
+      "sha256": "ed55e6ef337420cb8f9e037e7feeb96078f253d700841783d5b1613b5bc2e8ad"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/package-validator.d.ts.map",
+      "bytes": 263,
+      "sha256": "9df1dc1e6f1603385ad9dba797c5c7b821e54dba53f05519f4477f628386047b"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/manifest-paths.d.ts",
+      "bytes": 460,
+      "sha256": "449623a95c86cb64954d766020d49402f279524bb81f12da5e15dccfa75e0a18"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/validation-helpers.js",
+      "bytes": 3922,
+      "sha256": "82fd7e445d12343dd11fe2d9fc68201ec4953b96149368ee81d0c29cbc7fb448"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/local-application-id.d.ts",
+      "bytes": 480,
+      "sha256": "1b7cdaabc2351ae92e5ccf5c57a5abdcc788edb009e8550d0c850e5ac8233e8e"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/application-root-validator.d.ts",
+      "bytes": 299,
+      "sha256": "84c3b3a4d40755609aece091bfe0ee02465f24588e217bb4e8d5d1e81b103945"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/validation-helpers.js.map",
+      "bytes": 4232,
+      "sha256": "6f5c742ee73e56fd869ca5a31d8935b92c3b9f9e509fb4d775c6a5c95f028ece"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/local-application-id.d.ts.map",
+      "bytes": 358,
+      "sha256": "a3b9b05614e80a0ebfc32720c5bc87506e6c7a26acb68ab906ac2d6e3e3abbbb"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/manifest-paths.js",
+      "bytes": 1682,
+      "sha256": "4808ffe5ec928fa7b314a93faab1cc07409738d3b60d8c1abda743d7e379fb94"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/validation-result.d.ts.map",
+      "bytes": 656,
+      "sha256": "3b972249ec81baa7dadb03209049111d3374b74c19e1a213573e6cfae4f47d89"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/application-root-validator.js",
+      "bytes": 5655,
+      "sha256": "487249320f7e52b6cd4e67b275cc59cc456745522768dda447399d7b000e2477"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/package-validator.d.ts",
+      "bytes": 212,
+      "sha256": "0b16f19859d4d7e71630cda72edf45a71c7e1ec6afc377689ed114cd8b4f1707"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/backend-manifest-validator.js.map",
+      "bytes": 4217,
+      "sha256": "cd561401cb3c3b8db5c972aea195302c2077f53ca9d9fb7ad918baec919ce920"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/backend-manifest-validator.d.ts.map",
+      "bytes": 522,
+      "sha256": "f39a35222f70d4b552b05e7a05e9ef31faa1072aa3bcb41dace29dc672a477dd"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/backend-manifest-validator.d.ts",
+      "bytes": 495,
+      "sha256": "647ad042c1e41a8eed4cccec6501ba98b1cad03b910b7c852a8a1b6d0acc16df"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/application-root-validator.d.ts.map",
+      "bytes": 367,
+      "sha256": "a0f4c8446db70241184bc850acbbf2d1ea4816b5a99b47988c332f562f28ec29"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/validation/local-application-id.js",
+      "bytes": 982,
+      "sha256": "e3c86314726354305e96ca87c5f16bead558550e43d699a3aad4bd990c677444"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/package/package-assembler.d.ts",
+      "bytes": 672,
+      "sha256": "8905f5a6f905ac525e8ebf6a0f50c5ac3027c918d8b6c0b96492e5e042872786"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/package/resource-copier.js.map",
+      "bytes": 1528,
+      "sha256": "01ddbde063092959ea34300049222d8554b4c7af30cbe446f42e65b19e855ea6"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/package/frontend-builder.js.map",
+      "bytes": 2938,
+      "sha256": "2b97f2c8c2ed2e8d38c99e68f79faf979f9511724fdbf24aedbd667bff5ddcb4"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/package/backend-bundle-manifest-writer.d.ts.map",
+      "bytes": 564,
+      "sha256": "936fc850ee436fb728c7049c9485947fa6a7c033f23150ac5ab07ec6e6ef1b05"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/package/resource-copier.d.ts",
+      "bytes": 312,
+      "sha256": "ee75afcdf673a8737491ffd43484e390f5837dff2f6c0bed9803d00895f2c523"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/package/backend-bundle-manifest-writer.js.map",
+      "bytes": 1244,
+      "sha256": "bc45509de21b460914330167514e32e62849d2f01561083e1fae643862aff444"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/package/backend-builder.js.map",
+      "bytes": 2539,
+      "sha256": "ee99614e684916803785412b30132ae275150f2da0687559a7ef3548e4082809"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/package/frontend-builder.js",
+      "bytes": 2732,
+      "sha256": "9accebb0b0f7b75729179f77db78c63e56dde8fce232421ebece42fd2f76c84e"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/package/frontend-builder.d.ts",
+      "bytes": 322,
+      "sha256": "aebd7764ead384cf5f9af57ff9cf348d275431546efc7fcd94b231944f5ab204"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/package/frontend-builder.d.ts.map",
+      "bytes": 366,
+      "sha256": "41b7c14e1a0a4b429974a890fb701b1b4b47cfa71fde1f30f126f8889b292bfe"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/package/backend-bundle-manifest-writer.js",
+      "bytes": 1357,
+      "sha256": "055d411581f3f41dd6b30e81d26f21cede168959cef940d73a0202f6149889aa"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/package/backend-builder.d.ts.map",
+      "bytes": 310,
+      "sha256": "b49d899239e04b2ed61cd32c15b8c2212f96ac37f4074c61b9bbea34342f4f3b"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/package/backend-bundle-manifest-writer.d.ts",
+      "bytes": 691,
+      "sha256": "32d6928b5217f5504be7d673e87d9cd4a3be0bd88f715e4a667cb20121bbd66a"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/package/package-assembler.js",
+      "bytes": 4000,
+      "sha256": "111e040e4eceb63ffa062a9cfe14102d9659cb9672bcee8ee422d7ca35f27f50"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/package/resource-copier.d.ts.map",
+      "bytes": 332,
+      "sha256": "221a6db8166ca0d4ca6851c69f117019844e21bc7ef747baf7f59c36222615f1"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/package/resource-copier.js",
+      "bytes": 1252,
+      "sha256": "7a99c4a493f094fa626472adae249fc664cd7613fd9562d21860d5e7549fd09a"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/package/package-assembler.d.ts.map",
+      "bytes": 651,
+      "sha256": "eb24c3db4dac3945adb93a0a998e2fa049ac66f1a039687182e202b7cc660449"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/package/backend-builder.js",
+      "bytes": 2389,
+      "sha256": "7d5e3d26602368107799f75dc965a1cef8a537bf246ab6fcabf354c81f33d970"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/package/backend-builder.d.ts",
+      "bytes": 291,
+      "sha256": "9bd700f7c748917b89065af21c68f807579f50eada86bcdacf317e9ad7f19ae5"
+    },
+    {
+      "path": "autobyteus-application-devkit/dist/package/package-assembler.js.map",
+      "bytes": 3477,
+      "sha256": "34e78400b53945c47bec3286a19c0d3c4ba834f3506a3e06e737456c7ddde618"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-client.d.ts.map",
+      "bytes": 928,
+      "sha256": "1a281ff4829257ad2efcc3d2d7d6cac55da60b12e0b8e69c15c9b73c7c0f9507"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-backend-websocket-transport.js.map",
+      "bytes": 2355,
+      "sha256": "cd57c9f110113df390b00b03c5c4d9532153703800af5d980d345134e70732bc"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/create-application-backend-mount-transport.d.ts.map",
+      "bytes": 2327,
+      "sha256": "1ab97b8a96570285beb0dc8b99834af0e83eb7f4df135d2bac242408274984d1"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-backend-websocket-transport.js",
+      "bytes": 2022,
+      "sha256": "41212badb0aa5f2df7b102adf7bce945df2cac37d4573da99f83edb6f8cfca3f"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/create-application-backend-mount-transport.js.map",
+      "bytes": 9960,
+      "sha256": "0495626f769f6ccff5a46301e79d7031db1b88bd222648fe211492d77f36ab3f"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-agent-event-validator.d.ts",
+      "bytes": 390,
+      "sha256": "d3258dbbaa7e1eacd1543b41b9b27702e1a54b744a00a13c22443face6193114"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-agent-server-frame-parser.d.ts",
+      "bytes": 446,
+      "sha256": "3d7bfe6b26523a40ff9d44b8f9c41a8687b2673ea326d8bacb19033b513c429f"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-websocket-url.js.map",
+      "bytes": 2084,
+      "sha256": "673f88db6010a3bee6892855aa9bdd1e769e04d5d5696dd81928e53345348293"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-backend-websocket-connection.d.ts",
+      "bytes": 2291,
+      "sha256": "dc147ae733e00b7994c62c882cda557c2a0e5ae31ce92be2f33ab7fb3e64b68c"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-agent-connection-transport.js.map",
+      "bytes": 1447,
+      "sha256": "18d4cd7f4fa6e87a007ff9dc5dac5de8966ad46b7d4dbe3f72d57b1bf9ed17c7"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-client-transport.d.ts",
+      "bytes": 1864,
+      "sha256": "6ac556a412dad721105d088a5429b2472798005bcdc1f87dc8c9e8899f45549c"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-backend-websocket-connection.d.ts.map",
+      "bytes": 1918,
+      "sha256": "9c3536ae6c00e5af5f77339d3f6a30a47f3811d3abff2c5170afa2547d80f3e9"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-client.d.ts",
+      "bytes": 2008,
+      "sha256": "b32d1814299ec69f41bd7b29087767398178a8248f2097b29ab9115dc449f16f"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-agent-server-frame-parser.js.map",
+      "bytes": 3560,
+      "sha256": "28113383939a2e4f4a4596f7b8a28a521df9a3fd6641ca1481626e7e3763ecef"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-client-transport.js.map",
+      "bytes": 148,
+      "sha256": "b124f71d2a1b24637290454f86907ebf0ad651476a553bf41b074fc05316216c"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-agent-event-validator.js",
+      "bytes": 2549,
+      "sha256": "abce5d8cd68077c3aa93e4fd42699a7de67ec1ccf502660e813e1ddb6e6002dd"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-client-transport.js",
+      "bytes": 67,
+      "sha256": "7acb05d81eb10a6c9a14d2dc5e4deec7d959a1f93a8248049a54f92ad62e40e3"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-agent-server-frame-parser.d.ts.map",
+      "bytes": 379,
+      "sha256": "88681f2522822d42b685a88bc3496030b6a70fb4e50d94a8b951ef0fbd4f35b0"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/index.js",
+      "bytes": 540,
+      "sha256": "c9cf99c69d14f3f3e6a338eb911ba3a44d098423ccd7c0be5c94497d31e8da9d"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-agent-connection.d.ts",
+      "bytes": 1304,
+      "sha256": "0880becd8f203ca34a0197cd42efc4d83bdcc359eb69acf7ce8b57e77c80070d"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-websocket-url.js",
+      "bytes": 1902,
+      "sha256": "90b81120dd4a99afbf935571556f450e1ed5ed971e3f48da0e559efa789beef8"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-client.js",
+      "bytes": 2045,
+      "sha256": "9b8186717ae01508db178e0df3fe5385518b69d16ab0fa9496ce9760335fffd7"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-agent-connection.js",
+      "bytes": 11013,
+      "sha256": "3263cd4a96b51ceb3678907382207b35a88b02d8056079f7f06aaf6a3255f428"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-agent-connection.d.ts.map",
+      "bytes": 1108,
+      "sha256": "afec7d2de559feb54f96aa6873870240c37ed480843c0677905d729353cb5887"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-backend-websocket-transport.d.ts",
+      "bytes": 1189,
+      "sha256": "71184f99602f3c27eb3896cbd29ffd4d7b3710235a29c58dbc8abb7a9d467932"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-websocket-url.d.ts",
+      "bytes": 501,
+      "sha256": "ca23f193eef33e5962938815d545dafee24ce756c0ee2ae0905b2b5357982cc1"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/create-application-backend-mount-transport.js",
+      "bytes": 11477,
+      "sha256": "b9db020c0a7abb746da585470f5e77777385b6f3cc1dc95f4a2b3ab45b155a4c"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-agent-event-validator.js.map",
+      "bytes": 2841,
+      "sha256": "b13c465cad69de76679889e8d9314822d92d00d9868aaf3a3cc42141e6f95009"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-backend-websocket-transport.d.ts.map",
+      "bytes": 1160,
+      "sha256": "d404846a1d17d455baa67e31f51bb54b879747f1755edf1c7ffe888a73f92289"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-client-transport.d.ts.map",
+      "bytes": 1476,
+      "sha256": "b4c1fd73508bfeac2c718d91832974659bd8c2decfa12e9495c718a2bb6dab90"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-agent-connection.js.map",
+      "bytes": 9535,
+      "sha256": "13e5c7c3719bf5ec136aabecd28e173d92b6243b1f2d48213a5c3581cd4e0e31"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/index.js.map",
+      "bytes": 342,
+      "sha256": "e4c40f9929fd5c14f26bbe2c8737fccfcdeda0616e82d293321a408f60e04061"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/create-application-backend-mount-transport.d.ts",
+      "bytes": 2649,
+      "sha256": "27c70fa858a3b504c5d280a3731915c5b908a5b649b41b6ef7a032f9d059d1b2"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-agent-connection-transport.d.ts.map",
+      "bytes": 1224,
+      "sha256": "c8e089b616a835577a8f573e858e49206a430c2235a29827a43783a308ba359b"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-backend-websocket-connection.js.map",
+      "bytes": 7935,
+      "sha256": "cec2d09d522d850866c73d2e6eb5fc00158d7c45d2f257dda4ad90a788de7db2"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/index.d.ts",
+      "bytes": 1961,
+      "sha256": "d344e7f8f4f289506c1e983b28e92be5bf4ffd0ff41e568a4480a02102b94604"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-agent-event-validator.d.ts.map",
+      "bytes": 353,
+      "sha256": "f164bf7010fb4bc16cee809868690b0ddf9567bcec8d27d3c3a5497b06848404"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-agent-connection-transport.js",
+      "bytes": 1154,
+      "sha256": "48b4f41b3ca46c195d06ed54a192ec8ce074fd132913af26e366a38b9d533fa1"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-agent-connection-transport.d.ts",
+      "bytes": 1147,
+      "sha256": "2acba9da803bc9336f8551d12d9f4fd7c44d38acdbc46995ec3d4d680c86d085"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-client.js.map",
+      "bytes": 1774,
+      "sha256": "f2ce4599e675161b987864ba74dd3cbcb7353d5947e771d3da0b52f55afb65da"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/index.d.ts.map",
+      "bytes": 977,
+      "sha256": "d0a7a39a31e9c9b4b50e3fb90d92eceedc49afb109e34581e926a907b7acff1d"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-agent-server-frame-parser.js",
+      "bytes": 3351,
+      "sha256": "c8592929ea34ed64d3c2f5c715b2d4df714f69a618cc1145ba0892d0901bd8da"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-websocket-url.d.ts.map",
+      "bytes": 510,
+      "sha256": "f9b56dc1d05b4596efb8368ff3e8fa1247e85b094cf4530507e080f0cbae827a"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-backend-websocket-connection.js",
+      "bytes": 8708,
+      "sha256": "fbd6eb5d51a4b6b3cf2aada5c58d25469a8b1d714bad6ae685ddd6ceabe6e1e0"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/application-startup-coordinator.js",
+      "bytes": 3140,
+      "sha256": "d98c3e77d855420f6ad199ae6ba16606a1c3fd45f1e79d05102de56cd5fec96f"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/default-application-startup-screen.js.map",
+      "bytes": 1856,
+      "sha256": "9bb765e3ce323c3908151ed9825d9e185b683679b9690d3b26b1883206e96162"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/resolve-application-bootstrap-provider.d.ts",
+      "bytes": 316,
+      "sha256": "093bb2ea4efa9bf4a0b9ac20aec6795174203cce1925f10f2a9f67da2d9edc8a"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/resolve-application-bootstrap-provider.js.map",
+      "bytes": 946,
+      "sha256": "8889d38b5701233c5ae3b724229ad528519b730eb6edb436c96c054479d0fcae"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/studio-iframe-bootstrap-provider.d.ts",
+      "bytes": 788,
+      "sha256": "9ab71f19999171ce61f2b126d78a159a7b7a01061df52780d522e213ffd11f9b"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/studio-iframe-bootstrap-provider.js.map",
+      "bytes": 3541,
+      "sha256": "b886a0f7c439e76cdd0d0171e0d09e0649a77ea3dc585388a52624acab86361d"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/application-startup-coordinator.js.map",
+      "bytes": 2493,
+      "sha256": "606a4cae5b36c4f31d30ccc897c7514e4d6370fa16d5167db649c2d78f5e7bc8"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/default-application-startup-screen.d.ts",
+      "bytes": 325,
+      "sha256": "45ed712627e4cc5e29e0b56789ad2a9a9a5dc0c2a11b1455ae36757b6e713154"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/default-application-startup-screen.js",
+      "bytes": 3829,
+      "sha256": "5518d6ba098bb34f3c05916878cac83e3fa388786ac6d33fc142cfebd85065f2"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/studio-iframe-bootstrap-provider.js",
+      "bytes": 4701,
+      "sha256": "019d9b8a1452d1ba8ba88f69700eceeb8864d1cf68e0aeb8a5d41acb2ea54219"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/standalone-same-origin-bootstrap-provider.js",
+      "bytes": 2470,
+      "sha256": "f71909e6ef31c0c218d6b75c22ae6e552125747307437e0cae80f2e8ea4764d3"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/application-startup-types.js.map",
+      "bytes": 165,
+      "sha256": "c77cee5f465882b9c05be846ed1c51937947ec9fdebe5c94feb2f20565c46769"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/application-bootstrap-provider.js",
+      "bytes": 301,
+      "sha256": "7e26f50d2cbb7f64a41cd592b65b22132ff3d5cb4db70cd64d5b5fae567ccf11"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/standalone-same-origin-bootstrap-provider.d.ts.map",
+      "bytes": 590,
+      "sha256": "15cb895dc623537b8badf503a053274cc9b9790a167d07020b9d2fc465448b72"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/application-startup-coordinator.d.ts",
+      "bytes": 873,
+      "sha256": "4dc5d4c6cc2ef60240ed71bf6d2e20f5a7eda754db50ef49c499304a3f5d6dc3"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/studio-iframe-bootstrap-provider.d.ts.map",
+      "bytes": 528,
+      "sha256": "562cc1563f138665b392f0f11164b1beaf68e93dd6f2757fc96c6d626217e167"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/application-startup-types.d.ts.map",
+      "bytes": 799,
+      "sha256": "062b4d82c00995989330670906bc22a30862a9e56771cbc8868c4bb93efb4c04"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/application-startup-types.d.ts",
+      "bytes": 912,
+      "sha256": "f963c0028440c10c70dda76a359dda76f5593c9a4e32e2fc339c1df74871f7fc"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/default-application-startup-screen.d.ts.map",
+      "bytes": 384,
+      "sha256": "615b8efac5a3e599c0d4ad7c2e307cf979f1978318e99dd4a986ef648e891b4d"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/application-startup-types.js",
+      "bytes": 64,
+      "sha256": "bdb7f441aef8cc7041e9a7d033e24cb2338b7945a15dfdc1e40091b122b3a2cd"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/application-bootstrap-provider.js.map",
+      "bytes": 382,
+      "sha256": "540afe639d850bec610a96f89197e592dfc9e6d06af1d134c6757b23704078fe"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/resolve-application-bootstrap-provider.js",
+      "bytes": 1208,
+      "sha256": "7c58049c892e507d0a6b2fc5938fec26803388bac35389a3665f697458dfb893"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/standalone-same-origin-bootstrap-provider.js.map",
+      "bytes": 2199,
+      "sha256": "2e7d46b9f1f0b4bbfa92d2b98065c6318b1f99a6f9fa227e1be679e8b4ca2a52"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/application-bootstrap-provider.d.ts",
+      "bytes": 923,
+      "sha256": "7076fe745cdacfd1728d1a6033dda505640f7a529fb403228972b5a8c34c8636"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/application-bootstrap-provider.d.ts.map",
+      "bytes": 960,
+      "sha256": "a043bfa7ac1a3baf5abc620a4af589759f4f4eeb52220932434f45e9d8ab2d5d"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/application-startup-coordinator.d.ts.map",
+      "bytes": 622,
+      "sha256": "3d0f5caa119921ef1cc7202f34f0abff142eae1ef73b09506aaf6f1728f53ec4"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/standalone-same-origin-bootstrap-provider.d.ts",
+      "bytes": 764,
+      "sha256": "d5b75c4a0d775e747eb6e2664b5135fed8b640e5fe9bd5e774d11e5622e2be18"
+    },
+    {
+      "path": "autobyteus-application-frontend-sdk/dist/application-startup/resolve-application-bootstrap-provider.d.ts.map",
+      "bytes": 313,
+      "sha256": "f31715890ee9048fa985b821a7ba2bd216bc7924ad3006351de04d6c1ea3f680"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/execution-resources.d.ts.map",
+      "bytes": 6825,
+      "sha256": "1a5a93ce98d7befb9e252dee78b8858265fc83a0889dbc72d51b79bd0e015316"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/execution-resources.js.map",
+      "bytes": 130,
+      "sha256": "896a152ed5bec8423fe2c716d9db2d6de08f3f178ba354682d23d93680b04f1d"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/execution-resources.d.ts",
+      "bytes": 8622,
+      "sha256": "8f076699a3e02df1c73d91508d1d421b16f3ec2812e8726f55265dfb253d1e77"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-websockets.d.ts",
+      "bytes": 1305,
+      "sha256": "e298ac67d2003f79af57a1de9aca0055b1f17b44b455054becad99241ce11fa2"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-communication.js",
+      "bytes": 752,
+      "sha256": "00004fd8954d44028a724d97d70ea2830e8e00baa243f9d01efa755e6af71583"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-member-address.d.ts.map",
+      "bytes": 336,
+      "sha256": "abe426d736ecbb988f36dea8318c40e8c1f70c2cab11c2f2cb965da72e2c8ac2"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts",
+      "bytes": 3559,
+      "sha256": "92a7953d0c6be93b3197e1c41cc224e093cb4b140df98e9b9242ddb3934e459c"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-websockets.js.map",
+      "bytes": 136,
+      "sha256": "b1bcc88bcbeb0d7b1462d81bb83348adc988fa5dfe9f9e41a6af414e64b27f39"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js.map",
+      "bytes": 2721,
+      "sha256": "9fc8c3e04902d8849811c4b0f6ff55ff0cae0ee2bb7bfcf4990b173c41a60510"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-iframe-contract.js.map",
+      "bytes": 5261,
+      "sha256": "10f558b4a343441d4254762c0ddb4a537e68eb712d61f7f89724f8b7c2643ff9"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-target-url.js.map",
+      "bytes": 2121,
+      "sha256": "456b2aeb896be26ea795cd3b796a2807475bd7efc5b0d9fa46473d6832de3ce0"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-tools.d.ts",
+      "bytes": 2993,
+      "sha256": "ec8872c892ae9e809e8909286e4d44623f113f00418dae8da44a5543eeef4885"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-target-url.d.ts.map",
+      "bytes": 380,
+      "sha256": "1931697506cf1ca1cdec5974e9265ccd1ab6829caf96b07aedea4044cc9190ff"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts.map",
+      "bytes": 683,
+      "sha256": "f81a383fe9aef767e26797009f54c8a5771407f077b80ea98d29c1d8cc5a87c4"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts",
+      "bytes": 1069,
+      "sha256": "006a7d414226aa8670b288ee3536d9045e91dba880bb34c5d4164fc24ee5f406"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js",
+      "bytes": 2881,
+      "sha256": "a92f9273c2dc5f3f282d445f7b592df907809131e7688bd822c144ce529bdf0d"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-bindings.d.ts",
+      "bytes": 2155,
+      "sha256": "3eade94c01c3ee8a859e403087558c991d5f28271d5820b2a0995f8e242e3cbf"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-bindings.js.map",
+      "bytes": 144,
+      "sha256": "ac3be91f5599be58359b182baa67260397e5cce6e212ba8b577058e6514c71a1"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-events.d.ts",
+      "bytes": 696,
+      "sha256": "d32606dc371d7eb53ceff9ac2fe574339a7a4bed7abf07d1c63828be9f71e9f2"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-communication.js.map",
+      "bytes": 738,
+      "sha256": "e6b6189c28bedc19021347cc8aaa314148a101fc055b809f55a805bd2defbeaa"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-websockets.d.ts.map",
+      "bytes": 1390,
+      "sha256": "147f0744192bf77832d42e46c80798bfdc68f809ff5d9fff8d1ab2021fb04fd6"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/index.js",
+      "bytes": 874,
+      "sha256": "251aa9169c72bc841eb7d66f80740ea4a2c62e120e3128ee069663ba0babc95c"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js",
+      "bytes": 2939,
+      "sha256": "65f0e957cf24f61163a466d3715105a8a94e200a4d5d90b2ac8c795ed5776a20"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/execution-resources.js",
+      "bytes": 58,
+      "sha256": "701b64cb0afa3e3d65671dcd5b18f4a1b5a437827a9bc5f26de906a0721cacc6"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/manifests.d.ts.map",
+      "bytes": 1800,
+      "sha256": "27ac8c91a2119c40fa4c307fd7cf4ad2e4b2a018c4cb1d4780dfd75cd0b864bd"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/manifests.js",
+      "bytes": 86,
+      "sha256": "138353f936d015a9d869c83906d5cb0fba5306ec0eabd66ce80b4608a42a04d3"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-tools.js",
+      "bytes": 9907,
+      "sha256": "b4971792d41a31602603efee84de51e45aebb7c27e74fa9dd5ed4209c56f546f"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-member-address.d.ts",
+      "bytes": 349,
+      "sha256": "6af1a20dce1e8b621ba36774a212746e3f877de724e5e9f922ddad4c7a5d38cd"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-communication.d.ts.map",
+      "bytes": 2720,
+      "sha256": "6e959615b3bf5cc5ac3487acc874208b422f2144f11bba29a4688ce0f1161d2b"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/manifests.js.map",
+      "bytes": 151,
+      "sha256": "6223b1d547c6e71bceb9fac76b28d730caf2f7b91d9e357857b109ae1652152b"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-bindings.d.ts.map",
+      "bytes": 1949,
+      "sha256": "16361848fb226a04b016aa3aa6b5d370458d80f87dc9cb306fa836c834925422"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js.map",
+      "bytes": 2780,
+      "sha256": "91ab4024355be9c6207ff70a8a0c1a66c87d6e7d5e4f403e871ef8583c72977f"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-member-address.js",
+      "bytes": 688,
+      "sha256": "458ee497eece6227aa7a6360d4c950f11c1ee5bab7cb0c1b33cfda5655075e8c"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts.map",
+      "bytes": 783,
+      "sha256": "849ec74f2ed68f338cc635fed6006d5223fd7bb334a8373589e81c24582552cc"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-tools.d.ts.map",
+      "bytes": 2670,
+      "sha256": "042a2c0b3b2c6016799f4becf39b41592ad48c09ebf2b77e33852add0cf632e9"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-events.d.ts.map",
+      "bytes": 703,
+      "sha256": "9f84f7a7d16ad70d2da120c6f1c383d0bd19bef84d3358aa377e6f0ff8bf7d96"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-events.js.map",
+      "bytes": 140,
+      "sha256": "979139c60bfc991b573fa5c957744d0d58d5ab8cd2b18c96c4eebf6752b5e17f"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/index.js.map",
+      "bytes": 550,
+      "sha256": "13fd55377993390db563b5a2463d6407dd6dd06f070b78e85ca410bb6345a753"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-iframe-contract.js",
+      "bytes": 6167,
+      "sha256": "a47cf1818019108570002ca3bc589db266e359d208856ecc29864b3096b2fcf7"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/manifests.d.ts",
+      "bytes": 2175,
+      "sha256": "b1c7039ec91211f90b90b05289fec071e3028775c5ccce216b80ca93495a7b6b"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-bindings.js",
+      "bytes": 65,
+      "sha256": "5d6bc94d25b435fcd7139519cdcdccae0bbc9e493910e847411368e10c7a02c1"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-events.js",
+      "bytes": 63,
+      "sha256": "010591b002515e0dc231a63e3f07f583608c3accf8ca4559be2848fa92abb671"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts.map",
+      "bytes": 2451,
+      "sha256": "a3ae5904afe2257dfcd9685832cfbba2a7f3c1ddeab183c6d30b929de1f2a61d"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-communication.d.ts",
+      "bytes": 3795,
+      "sha256": "8c31dac7590ecc69e52142ca79c09c70b741943d03ac3ff9e4d673e7cbe3fb57"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-tools.js.map",
+      "bytes": 9585,
+      "sha256": "456b4a6bfbd529c14623429401acfb9d1fee7c06bbeb8dbe87fbd0752a2a0702"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/index.d.ts",
+      "bytes": 12670,
+      "sha256": "31b7018454cb7721433a337d2a38c1cd35e75f7c96d97f40da50c2f9519fe0f8"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts",
+      "bytes": 804,
+      "sha256": "5e6093ee59029f72d3dcf7d27ad2b6b9f29ce9146d0062536172672a517f51ba"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-target-url.js",
+      "bytes": 1917,
+      "sha256": "b77ce83d9188a9ce63ca413cf67db85342b9b37e10810909e58a91323b7e9354"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-websockets.js",
+      "bytes": 61,
+      "sha256": "d9004bf25435c48a7a1eadbd51cc4881b372a707d06f77b75c3b948f23965a6b"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/index.d.ts.map",
+      "bytes": 10377,
+      "sha256": "f7b10a5e26d8aaa5c95107a7f9d79da0090a97065dbf067e110be4224d10a287"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-target-url.d.ts",
+      "bytes": 473,
+      "sha256": "0d67f4f2c5661a24d84e2bb48d910e2efe29c080c4c21ee7b8f759ff3ac09e12"
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-member-address.js.map",
+      "bytes": 895,
+      "sha256": "0a08ea3e52a6c9e5f5223847517f8a46fd55dabb2d37b2cbd02e25265bc65d02"
+    },
+    {
+      "path": "autobyteus-nfs/out/ir007-local-candidate/autobyteus-nfs-linux-arm64",
+      "bytes": 11047219,
+      "sha256": "0036ccef0bbb2a2510064f2e882b692687a2288eb25563d89f9c4ac9150c860c"
+    },
+    {
+      "path": "autobyteus-nfs/out/ir007-local-candidate/release.json",
+      "bytes": 2493,
+      "sha256": "03c13f53da662b436827df34e96b38c24d30aa9457cc0fa9e6ecb24df11d5386"
+    },
+    {
+      "path": "autobyteus-nfs/out/ir007-local-candidate/README.txt",
+      "bytes": 420,
+      "sha256": "3ad926e0c21fa6dc0140b6c2d69776592f8a4492186d7cfa94486544171b36cc"
+    },
+    {
+      "path": "autobyteus-nfs/out/ir007-local-candidate/autobyteus-nfs-darwin-arm64",
+      "bytes": 10580770,
+      "sha256": "64085e451774b99666ae272c78111d3f3c3972a619aa4cf7e4da657abb79df04"
+    },
+    {
+      "path": "autobyteus-nfs/out/ir008-local-candidate/autobyteus-nfs-linux-arm64",
+      "bytes": 11046973,
+      "sha256": "32772499817bccc6dc8c8bd01b15a457457848e17321af6053544adf53803a64"
+    },
+    {
+      "path": "autobyteus-nfs/out/ir008-local-candidate/release.json",
+      "bytes": 2493,
+      "sha256": "481edc071d27e64a94ce0a02c9ee076e0c556c5eed8d11e2a59a29766e2bab53"
+    },
+    {
+      "path": "autobyteus-nfs/out/ir008-local-candidate/README.txt",
+      "bytes": 420,
+      "sha256": "b070a69ad290222dae05ff86abcd2ddaa751d25f23d687fc88963db38031bb5a"
+    },
+    {
+      "path": "autobyteus-nfs/out/ir008-local-candidate/autobyteus-nfs-darwin-arm64",
+      "bytes": 10580882,
+      "sha256": "5908c8229010102d7a1708c65e50b8674766a6c8356c4362588c0fed36167a57"
+    },
+    {
+      "path": "autobyteus-nfs/out/ir009-local-candidate/autobyteus-nfs-linux-arm64",
+      "bytes": 11049466,
+      "sha256": "3944a3f0696f006ac658475ea335fcc5dd8c9bfc1195c2301ab92608de446b38"
+    },
+    {
+      "path": "autobyteus-nfs/out/ir009-local-candidate/release.json",
+      "bytes": 2493,
+      "sha256": "d8b1f8078807bf669b422ffac253a43f1a4721ccd632b9847a34ecc091a91eee"
+    },
+    {
+      "path": "autobyteus-nfs/out/ir009-local-candidate/README.txt",
+      "bytes": 420,
+      "sha256": "c86aa45f6f56a353d6078a55877caf6f655dcc660cf289e87b1370e9971a82c4"
+    },
+    {
+      "path": "autobyteus-nfs/out/ir009-local-candidate/autobyteus-nfs-darwin-arm64",
+      "bytes": 10683618,
+      "sha256": "c79e5ac05367d6657bc0be74f2e8f5b9eb504af8ade265e1afdf0334218d0cf1"
+    },
+    {
+      "path": "autobyteus-nfs/out/ir005-local-candidate/autobyteus-nfs-linux-arm64",
+      "bytes": 11033781,
+      "sha256": "20022a9e553ce3d898531e66e48a843d9fd10fb2fd044474f1a471ed070b219e"
+    },
+    {
+      "path": "autobyteus-nfs/out/ir005-local-candidate/release.json",
+      "bytes": 2493,
+      "sha256": "7d647fa2d41f6916221af53a79d3a0bfc9bc296383d747fe837744c6f3ba7e9f"
+    },
+    {
+      "path": "autobyteus-nfs/out/ir005-local-candidate/README.txt",
+      "bytes": 366,
+      "sha256": "9b5429541f972b6d432b903e48b5a525d2147a0d879e8caa4f969f8b2ccc6685"
+    },
+    {
+      "path": "autobyteus-nfs/out/ir005-local-candidate/engine-candidate/engine-manifest.json",
+      "bytes": 2134,
+      "sha256": "4488fccf14574d27931429d4c2529c34620de575bacce63383254808f97c39a5"
+    },
+    {
+      "path": "autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/autobyteus-nfs-ganesha-source-4.3-8ubuntu1+autobyteus1-arm64.tar.gz",
+      "bytes": 1930105,
+      "sha256": "eed35ab4b732ac05d2afc3531e70cdc27031fb414fdb52a0daf093f33daaec0a"
+    },
+    {
+      "path": "autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/engine-manifest.json",
+      "bytes": 2134,
+      "sha256": "4488fccf14574d27931429d4c2529c34620de575bacce63383254808f97c39a5"
+    },
+    {
+      "path": "autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/engine-build-arm64.txt",
+      "bytes": 57836,
+      "sha256": "56fad63c43f85091d84df347564dfd962a9afaafe519539849860b1807695761"
+    },
+    {
+      "path": "autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/nfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb",
+      "bytes": 613976,
+      "sha256": "0b5c78911cfc1b299e9894e1f841e74176fbb2cb45b158008e4530713549ebc8"
+    },
+    {
+      "path": "autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/COPYRIGHT",
+      "bytes": 30807,
+      "sha256": "f005d5cee9e5c771ac65f2cd2401a7259fc0cf71961275044adfd804d6b66bf7"
+    },
+    {
+      "path": "autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/SHA256SUMS",
+      "bytes": 453,
+      "sha256": "59100b94a86df4f03d3720daf4c65466b4f10ad447ab41d91163023001a63735"
+    },
+    {
+      "path": "autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/nfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb",
+      "bytes": 48626,
+      "sha256": "3bf06769646d93ea85f0277fe0726eb42d0d29a70c0108505706954e5e8d2ac6"
+    }
+  ]
+}
