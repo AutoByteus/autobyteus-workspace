@@ -616,3 +616,33 @@ implementation delta or delivery receipt). User explicitly names API/E2E; send t
 persisted package ONLY to `/software_engineering_team/api_e2e_engineer` under the named-
 collaborator instruction. No further architecture/implementation or premature Delivery
 handoff. Receipt route evidence in `evidence/acceptance-revision/sr024/review-receipt/`.
+
+## SR025 — User-approved one-VM/two-node proof alignment — 2026-10-15
+
+- API007 carried exact newer user proposal, explanation of cross-OS/separate-kernel limits
+  and acceptance; source handoff evidence/api-e2e/api-rev-007/scope-alignment-handoff.md at
+  a6c274d96f. User also rejects unnecessary tester→Designer review overhead here.
+- Prior ApprovedSR024/ReadySR024/ARCH008; now ApprovedSR025/DEC017, validation alignment
+  complete, unchanged technical SR023/ARCH007/IR009. Large/High cumulative classification
+  retained; no new architecture package, implementation delta or review cycle.
+- REQ012/016, staged AC001–020 and IV-F01–F04 updated: one owned Linux VM/two real launcher-
+  managed nodes; LN/LD storage sequentially; all L01–L26 behaviors still required. IV-D04
+  explicitly defers Mac/cross-OS/independent-kernel/external-computer-join/host-allowlist
+  qualification—not Passed. Existing IV-D01–D03/IV-R01 and safety/functional targets retained.
+- Approval by user in the carried exact exchange; Designer records within that direction,
+  informs user and resolves documentary mismatch. No renewed question or test verification.
+  API owns execution, ledger, verdict and test-resource cleanup; no test status altered here.
+- Canonical requirements/current approval-request/design validation references/investigation/
+  handoff aligned. Prior approval024 and all specialist records unedited; prior solution
+  history exact prefix. New approval025; full1644 incoming refs retained cumulatively.
+- API007 has setup/build evidence only; stopped Linux clone/cache/image retained for resume
+  under API custody and L26 cleanup. API006 Blocked67.86% and CRR013 source Pass100 retain
+  their basis; scoped F003/F004/F005 closures unaffected. D001 deferred, IMP-D001/FUP001 unchanged.
+- Next: return directly to API L01–L26 execution; after success proportional durable-test
+  review then Delivery. No runtime/source/live-resource work, release/TaskDone/verification
+  claim, new agent or duplicate architecture/implementation dispatch. Fresh route below.
+
+SR025 routing: fresh rules match none; no technical package awaiting review, new Low-risk
+implementation work or Delivery receipt. Return resolved acceptance request ONLY to
+`/software_engineering_team/api_e2e_engineer` (also the user's expressly named collaborator).
+No duplicate architecture/source/implementation/Delivery/PM dispatch; no test approval gate.

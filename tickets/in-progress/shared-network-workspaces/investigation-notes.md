@@ -1,6 +1,37 @@
 # Investigation Notes — Shared Network Workspaces
 
-## Current SR024 — User-approved VM filesystem acceptance boundary
+## Current SR025 — Explicit user one-VM/two-node acceptance
+
+2026-10-15. API007 carried exact user approval after explaining that one VM cannot prove
+Mac↔Linux/separate kernels. Read full scope-alignment-handoff, active L01–L26 ledger,
+coverage-investigation current scope, scope-alignment audit and corrective cleanup receipt.
+Prior requirements still demanded distinct Mac/Linux VMs; that documentary mismatch—not
+a test failure or request to verify tests—triggered this alignment. User here separately
+reconfirmed API/E2E should own testing, without another review loop.
+
+Evidence: API007 preparation/build only, server image a790be37c80041d93f510dff82552b4272965aaa570bd7937f225d0bfa3d91d2;
+no functional verdict. Mac clone retired, exact Linux clone stopped after interruption;
+corrective cleanup governs. Reusable Linux clone/cache/scratch/image retained by API for
+resumption/final L26 cleanup. No designer runtime/resource actions. API006 peer transport
+gap retained but its cross-kernel topology now deferred—not repaired/Passed. Source IR009/
+d3c88 unchanged; CRR013 source Pass and scoped earlier runtime resolutions retained.
+
+Intended proof: requirements DEC017 / approval-record-sr025; all26 cases in one Linux VM,
+A/B actual managed nodes, LN/LD storage sequentially, no NFS-copy/bind shortcut, all safety
+and preservation obligations. API owns ledger/execution/confidence. Technical design impact:
+none; only validation references aligned. No approval questionnaire/review/implementation
+cycle; return directly to API. Deferred claims explicit; later PM custody and release limits
+unchanged. No source/specialist artifact edited by this role.
+
+Authorities already read in this conversation: solution-designer SKILL; full requirements-
+engineering, architecture-design, design-principles/templates; applicable AGENTS/DESIGN/
+TESTING. Current canonical approval/design/history read before alignment. No new technical
+investigation/migration design. New evidence inventory: API007 scope handoff/ledger (API
+owned); approval-record-sr025 and evidence/acceptance-revision/sr025 input-audit/package-index/
+routing (Designer owned). Prior owned versions retained at git a6c274d96f; old history exact
+prefix. All1644 incoming refs retained. Findings outside agreed scope remain follow-ups.
+
+## Historical SR024 — User-approved VM filesystem acceptance boundary
 
 2026-10-15. Requirements **Approved SR024**, design alignment **Ready SR024** with unchanged
 technical SR023/ARCH007; Large/High. User's latest direct clarification supersedes the

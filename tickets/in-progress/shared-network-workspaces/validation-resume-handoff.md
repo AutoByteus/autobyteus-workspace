@@ -1,3 +1,7 @@
+> Historical SR024 handoff: topology superseded by ApprovedSR025/DEC017. Current continuation
+> is solution-design-handoff.md and approval-record-sr025.md; one Linux VM/two Docker nodes.
+> The earlier text below records the prior dispatch and is not a current distinct-VM gate.
+
 # Validation Resume Handoff — SR024 / reviewed VM filesystem scope
 
 ## Result, purpose and authority

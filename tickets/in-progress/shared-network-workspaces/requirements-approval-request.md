@@ -1,8 +1,7 @@
-# Current disposition — Approved SR024
+# Current disposition — Approved SR025
 
-No historical questionnaire is pending. Latest direct-user clarification requires shared-filesystem tests across different VM nodes without agents; it qualifies the preceding immediate-close suggestion. Current authority: requirements-doc.md DEC016 and approval-record-sr024.md. Complete the required cross-node filesystem matrix; independent physical hosts, authenticated agents and personal-command verification are later qualification, not current dependency requests. No live-operation or release permission is implied. Earlier questions below are history only.
+The user already accepted one VM/two Docker nodes after API explained the deferred Mac↔Linux/separate-kernel proof. No questionnaire is pending. Current authority: requirements-doc.md DEC017 and approval-record-sr025.md. Complete L01–L26, then normal test-review/Delivery gates; no new architecture or implementation work. Earlier records below are historical only.
 
----
 ## Historical approval-request record
 
 # Current Direct-User Decisions — SR-016
