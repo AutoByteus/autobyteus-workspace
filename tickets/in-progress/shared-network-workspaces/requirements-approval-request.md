@@ -1,6 +1,6 @@
-# Current disposition — resolved by SR017
+# Current disposition — Approved SR024
 
-No answer to the historical questionnaire below is pending. The user explicitly directed the Solution Designer to reason, choose and proceed after the hosting, plaintext-LAN and physical-validation-sequence choices were presented. Current authority is requirements-doc.md Approved SR017 and approval-record-sr017.md, including DEC012–014. Preserve the questions below as history only; do not ask them again or report a current approval blocker. Live administrative approvals and final user verification are separate.
+No historical questionnaire is pending. Latest direct-user clarification requires shared-filesystem tests across different VM nodes without agents; it qualifies the preceding immediate-close suggestion. Current authority: requirements-doc.md DEC016 and approval-record-sr024.md. Complete the required cross-node filesystem matrix; independent physical hosts, authenticated agents and personal-command verification are later qualification, not current dependency requests. No live-operation or release permission is implied. Earlier questions below are history only.
 
 ---
 ## Historical approval-request record

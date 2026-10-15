@@ -1,6 +1,44 @@
 # Investigation Notes — Shared Network Workspaces
 
-## Current SR023 — CR007 / API-F005 Mac source identity across ordinary boots
+## Current SR024 — User-approved VM filesystem acceptance boundary
+
+2026-10-15. Requirements **Approved SR024**, design alignment **Ready SR024** with unchanged
+technical SR023/ARCH007; Large/High. User's latest direct clarification supersedes the
+preceding suggestion of immediate closeout: all shared-filesystem cases across different
+nodes remain needed, VMs and non-agent readers/writers are acceptable. Physical/personal/
+authenticated-agent validation can wait. Exact quote/approval/informing message:
+[approval-record-sr024.md](approval-record-sr024.md). Canonical intended proof staging is
+requirements-doc.md DEC016; not an evidence claim or blanket test waiver.
+
+Facts inspected: source d3c88f37c30ee74a89a95a4f6906992667c9b875 / IR009; CRR013 Pass100;
+API006 Blocked67.86%, no new established product failure. Public Mac two ordinary boots
+with real device reassignment/automatic nonroot mounted RW and real replacement refusal
+resolve CR007 at that scope. Linux native regression and earlier Linux native/Docker
+freshness/lifecycle closures retained. API006 current Macguest could not reach Linuxguest
+2049/SSH despite Linux listener/self-connect; no peer proof resulted. Macmanaged-client/
+full cross-node filesystem matrix remains incomplete. No source review pass, own-mount IO
+or agent-credential absence closes that gap. Evidence: API006 report/ledger/blockers/
+prior-failure-resolution and cumulative1592-reference index.
+
+Authorities: solution-designer SKILL, requirements-engineering, architecture-design,
+design-principles/templates (full phase reading gates in this conversation), task root
+AGENTS/DESIGN/TESTING, current canonical approval/design/history/review/implementation/API
+artifacts; current source.go/source_identity.go and packaging/RELEASE.md. No new migration
+or mechanism work. API ledger/report current sections read; historical evidence reused at
+its named scope, not a claim to rerun/re-audit all history. Prior approval018 and specialist
+records are read-only. Investigation this round is local document/source evidence review;
+no tests, VM/provider/host/network operations or owned live resources.
+
+Supplement inventory: evidence/acceptance-revision/sr024/acceptance-disposition.md is
+Solution Designer-owned evidence, coverage intent and follow-up ownership (all relevant
+filesystem ACs; ApprovedSR024 applicability); input-audit/snapshots/package-index/final-audit
+retain complete input/protection evidence. Earlier draft approval/disposition retained as
+superseded before dispatch; only current canonical SR024 is authority. No Product supplement.
+Next expected action is API coverage reconciliation and missing cross-node filesystem
+execution, after any configured alignment review; not duplicate production implementation.
+No API Pass/CRR014/release/TaskDone/user-test claim; deferred D001/IMP-D001/FUP001 limits stay.
+
+## Historical SR023 — CR007 / API-F005 Mac source identity across ordinary boots
 
 2026-10-15; **Architecture Design Complete / Ready SR023 / Large / High**, unchanged
 **Approved SR018**. Read current CRR012 before work; review342572f01969a2253785281df3764f3add6ffa7c,

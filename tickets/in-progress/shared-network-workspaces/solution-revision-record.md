@@ -546,3 +546,48 @@ not a new solution revision or work request. Under the skill's informational-Pas
 record and stop: no duplicate implementation/API/PM forwarding, delegation/spawning,
 requirements/design reopening, live-resource action or further review work. Implementation
 continues through its established route. No specialist artifact changed by this receipt.
+
+
+## SR024 — Direct-user VM cross-node filesystem acceptance revision (2026-10-15)
+
+- Trigger: Code Reviewer relayed incremental-close request after API006; user then directly
+  accepted VM scope/suggested Delivery or Reviewer, then explicitly clarified **all shared
+  filesystem cases across different nodes are needed even without agents**. Latest quote
+  and exact approval/informing message in approval-record-sr024.md. Earlier immediate-close
+  interpretation is superseded before dispatch, not a completed delivery or separate SR.
+- Prior ApprovedSR018 / ReadySR023 / ARCH007 / IR009 / CRR013 source Pass100 / API006
+  Blocked67.86%. Current **ApprovedSR024 / ReadySR024 acceptance alignment**, same technical
+  SR023 and unchanged source d3c88f37c30ee74a89a95a4f6906992667c9b875. No new finding/CRR014,
+  API result, numeric score or production modification. API-F005/CR007 now scoped resolved
+  by API006; CR005/API-F003, CR006/API-F004 and previous scopes retained.
+- DEC016 / REQ012/016 / AC011 and staged proof across AC001–020: distinct Mac/Linux VM
+  peer mounts plus managed Docker clients can prove this increment without agents; all
+  planned filesystem read/write/consistency/concurrency/permission/lifecycle/preservation
+  cases still required. Physical hardware/native-agent/personal verification deferred to
+  user-authorized follow-up. Known Macguest transport gap remains current filesystem work,
+  not erased by physical deferral. No unsupported filesystem/locking guarantee added.
+- Canonical requirements and approval-request current status, investigation/supplement,
+  design next-work/acceptance alignment and full solution handoff updated. All old solution
+  history retained as exact prefix. No technical subsystem/refactor/state transition/UI
+  impact; cumulative Large/High retained. Approval by Solution Designer within direct
+  user-defined scope, user informed; no further generic questionnaire needed.
+- Required downstream: API owner reconciles exact carried evidence and completes missing
+  cross-node filesystem matrix, emits own new verdict; then proportional af9f23/durable
+  test-code review and Delivery integration/docs/verification/finalization/cleanup. No
+  immediate TaskDone or full-matrix Pass. User personal tests later with PM follow-up
+  custody; no new Task/delegated copy/duplicate FUP001 here. Release gates unchanged.
+- No runtime tests/live resources this round;1592 input refs/1586 protected inputs and286
+  old dist files audited. No specialist artifact changed; initial pre-clarification draft
+  records retained separately, not a competing authority. Fresh routing recorded below
+  after classification/context persisted. No duplicate implementation/API dispatch.
+
+SR024 fresh-rule routing2026-10-15:
+Fresh rules select ONLY `/software_engineering_team/architecture_reviewer`: completed
+Large/High revised aligned package, ApprovedSR024 and user informed. Small/Medium-Low and
+Delivery-receipt correction conditions do not apply. Review is proportionate to acceptance
+alignment; SR023 technical architecture remains reviewed/implemented. After alignment,
+next substantive work is API/E2E required filesystem coverage, not a new implementation.
+Apply receiving-role rules; do not duplicate dispatch. The user's earlier immediate-close
+suggestion was qualified by their latest mandatory cross-node filesystem instruction.
+No additional API/CodeReviewer/Delivery message from this role for this outcome. Success
+is asserted only by subsequent send_message_to confirmation, not this pre-dispatch record.
