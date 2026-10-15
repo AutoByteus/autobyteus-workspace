@@ -1,0 +1,24 @@
+{
+  "review": "CRR-017",
+  "checks": {
+    "historyPrefixPreserved": true,
+    "separateSuccessfulTestReportUnchanged": true,
+    "oneNewHistoryEntry": true,
+    "structural24Pass": true,
+    "score10CategoriesCarried": true,
+    "currentHeadUnchanged": true,
+    "noMergeInProgress": true,
+    "whitespacePass": true,
+    "trackedDeltaOnlyReviewerDocs": true,
+    "inputChangesOnlyOwnCanonicalReviewDocuments": true
+  },
+  "result": "Pass",
+  "reviewerRuntimeExecution": "None; no runtime resource created or cleaned",
+  "inputChanges": [
+    "tickets/in-progress/shared-network-workspaces/code-review-report.md",
+    "tickets/in-progress/shared-network-workspaces/code-review-revision-record.md"
+  ],
+  "canonicalReportSha256": "1755fa3ece180b8f060badb87d49ae2625d9c283624080caab56406c643c63d5",
+  "noProductionOrDurableTestEdits": true,
+  "priorAuditAttempt": "final-checks-attempt-1.json: reviewer expected only report to change but index also contains intentionally appended history. Corrected audit allowlist to both owned canonical documents, no product/test correction."
+}

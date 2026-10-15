@@ -916,3 +916,47 @@ The canonical [code-review-report.md](code-review-report.md) is authoritative fo
   delivery_engineer_97aea298f55141d4be9a3662f140848f with21 selected references.
   Review commit feb9bc4a2da8351c789f197e956295f3a4f61b2c. No duplicate
   API/Implementation/Designer notice, delegation or recipient polling.
+
+## CRR-017 — IR011 / DR001 integrated test-lifecycle recovery
+
+- 2026-10-15; Implementation Review, **Targeted Delta Review / Pass**. Delivery
+  Local Fix re-entry, not successful API review or failure-origin investigation.
+  Prior source CRR015 and separate successful-test CRR016 reports checked.
+  Canonical code-review-report.md updated; api-e2e-test-review-report.md unchanged.
+- Input1ea11e4eea2a76b17c6ac02d37f4cc7ea591e593; integrated merge
+  a4afd758a9766274b08f675c04952b19913fff0c, recovery4f44d115 + personal5096011674.
+  Related IR011 / DR001 / API008; SR025/DEC017 and technical SR023/ARCH007,
+  historical ARCH008 alignment; latest E8 user command-only direction controls.
+  Large/High/Reviewed confirmed. No new approval or architecture loop.
+- Independently confirmed two overlapping non-ticket paths (REST test/docs),
+  exact parent matches for all other imports, all58 package hashes current.
+  Only test authored delta6add/2delete: retain composed suite lifetime and public
+  removal, add active/registered public absence assertions, remove unused async.
+  All6 case bodies byte-identical. Docs retain IR010 draft section and base
+  relative-path corrections. NFS, IR010 production, manager/helper unchanged.
+- Governing contract is TESTING-owned resource cleanup; actual public removal
+  needs process authorities alive. Base route-only per-test close/private-map
+  cleanup is deliberately not transplanted. No private bypass, weakened
+  assertion, speculative scenario or new recovery mechanism.
+- All24 structural checks revalidated/carried proportionately. Prior source
+  score10/10,100/100 retained for unchanged ticket source; **not a test score**.
+  No source-file thresholds applied to test. No findings or new follow-ups.
+- Fresh implementation-local evidence inspected: install/prepare/typecheck0,
+  REST6 + workspace48 + adjacent12 =66tests/12files Pass, clean scratch with
+  current source/build. No reviewer runtime repeat or new API/product score;
+  no UI/VM/Docker/provider/credential/user resource action. Own review artifacts
+  only. Source audit E17; prior CRR001–016 byte prefix preserved.
+
+### Prior finding / authority disposition
+
+| Item | Current disposition |
+| --- | --- |
+| DR001 integration conflict | Deliberate lifecycle resolution accepted; affected independent validation and Delivery gates remain |
+| CRR016 test-review Pass | Historical result preserved unchanged; integrated delta awaits API-owned validation then proportional review |
+| CR008 / API-F007 | Retained IR010 source/component fix; no new live editor closure; removed application gate stays removed |
+| CR-FUP002 | Existing PM Task project_task_a4f90984-add2-4300-983d-de54ded3032b; unresolved/nonblocking, no duplicate notification or retest |
+| CR001–007 / FUP001 / D001 / IMP-D001 | Prior scoped resolution/custody/deferral unchanged |
+
+- Next fresh Local Fix rule -> API/E2E affected repository validation, not another
+  whole filesystem/UI campaign. API00895 and DR001Blocked remain their owners'
+  last results. No release/target merge/push/tag/deployment/TaskDone/userverify.

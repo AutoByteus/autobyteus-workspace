@@ -1,240 +1,192 @@
-# Code Review Report — CRR-015 / IR010
+# Code Review Report — CRR-017 / IR011
 
-**Pass — implementation-source review, 10.0/10 (100/100) within the explicitly
-bounded increment.** Keep the IR010 peer-refresh fix. Original CR008 is resolved
-at the reviewed source/component boundary; independent affected API validation
-is next, not already Passed. A different pending-Save editor defect is confirmed
-and remains unresolved in a separate user-directed follow-up Task. This score is
-not a whole-product quality or API confidence score.
+**Pass — targeted delivery-integration recovery review.** The REST test lifecycle
+was reconciled correctly. No implementation or test correction is requested.
+This is a pre-API review of IR011, **not** a new API/product verdict or Delivery
+completion. CRR015's implementation-source score remains **10/10 (100/100)**
+within its recorded scope; no new score is assigned to test code.
 
-## Review Round Meta
+## Review Meta, Authority And Scope
 
-- Entry point **Implementation Review**, round15; **Full Re-Audit of the affected
-  frontend spine** because IR010 moves draft ownership and changes OpenFileState.
-  All24 structural checks and all10 categories are reconsidered below. This does
-  not reopen unrelated NFS, platform, release or acceptance-topology design.
-- Input HEAD63d41de1f5e9d9e1370232d370bbc47673be6218; source/test/docs
-  a3f65bfe6e7859a3167cb41013b80bc223385cfb; baseline CRR014 receipt
-  0deb1d4824b1601c8ee267c404a40479a16d01ce. Branch codex/shared-network-workspaces;
-  finalization origin/personal; task project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63.
-- Approved requirements **SR025/DEC017**, requirements-doc.md and
-  approval-record-sr025.md; investigation-notes.md and solution-revision-record.md.
-  Technical design **SR023/ARCH007**, design-spec.md and solution-design-handoff.md.
-  design-review-report.md/architecture-review-revision-record.md apply historically;
-  ARCH008 reviewed SR024 alignment, not a new SR025 or frontend architecture.
-- Implementation-handoff.md and implementation-revision-record.md **IR010**;
-  triggering **CRR014 / CR008 / API-F007-UNSAVED**. API execution report,
-  investigation, ledger/history **API007 Fail82.14%** remain their owner's authority.
-  CRR013 source Pass100 is historical. Delivery revision **N/A**, Product supplement
-  **N/A**. Successful af9f23/durable-test review still awaits a green API package.
-- Latest direct user direction, after discussing the additional pending-Save bug:
-  keep the existing editor fix, ask Project Task Manager for a separate ticket for
-  the additional bug, and continue. Explicitly named `/project_task_manager`, then
-  clarified “for this file editor bug actually”. This is a narrow scope disposition,
-  not a claim that the additional bug passes, nor a waiver of filesystem checks.
-- Authorities: code-reviewer skill/template/shared design principles, scenario
-  Example9, root AGENTS/DESIGN/TESTING and web AGENTS; no new conflict. Reviewer
-  changes only review artifacts and a removed temporary diagnostic spec.
+- Entry: **Implementation Review**, delivery Local Fix re-entry; cumulative round
+  **17 / CRR-017**, **Targeted Delta Review**. Trigger **DR001 / IR011**, not a
+  new runtime failure. Prior source result CRR015 and proportional result CRR016
+  checked. Prior source report is preserved in git at 673e89fd50; canonical
+  successful-test report remains unchanged at CRR016 pending the next API result.
+- Input **1ea11e4eea2a76b17c6ac02d37f4cc7ea591e593**; integrated development merge
+  **a4afd758a9766274b08f675c04952b19913fff0c**, parents recovery4f44d115 and
+  personal5096011674. Branch codex/shared-network-workspaces, finalization
+  origin/personal; Task project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63.
+- Context: requirements-doc.md, investigation-notes.md, solution history and
+  design-spec.md / SR025/DEC017; technical SR023/ARCH007, historical ARCH008/SR024
+  alignment; implementation-handoff.md and implementation history **IR011**;
+  handoff-summary.md, delivery history and dr-001 integration-state/conflict.
+  No new architecture, Product supplement or requirement approval is needed.
+- **Later user command-only direction in E8 controls acceptance.** It supersedes
+  older application/UI/editor/API gate language in earlier solution/report text.
+  No Solution Designer contact or new approval loop. This is repository
+  integration maintenance, not reinstated application qualification.
+- API008 Pass95% applies only to its command-only filesystem scope. DR001 remains
+  Delivery's last Blocked verdict until that owner completes its gates. Existing
+  API failures and deferred qualifications are not relabelled.
+- **Large / High / Reviewed — Confirmed.** Cumulative privileged/storage scope
+  retains that classification despite the small authored integration delta.
+- Read current root AGENTS/DESIGN/TESTING, server AGENTS, skill/shared principles,
+  review template and relevant current source. No applicable nested test AGENTS.
+  No guideline conflict. No independent runtime execution by this reviewer.
 
-## Routing Classification And Scope
+### Why targeted, not a full source re-audit
 
-**Large / High / Reviewed — Confirmed** from the cumulative package. Independent
-source review required. Three implementation files: FileExplorerTabs.vue,
-fileExplorerContentActions.ts, fileExplorerState.ts. Also inspect unchanged
-FileViewer/Monaco, store/open/refresh/Save/path-remap callers, changed unit tests,
-original regression, docs and renderer receipts. No production backend or NFS
-changes. This is neither another failure-origin-only round nor successful-test
-review. No new requirement/design approval loop.
+Independent git comparison found exactly two non-ticket paths changed on both
+branches: workspace-content-rest.e2e.test.ts and file_explorer.md. Only the test
+conflicted. Its authored delta is **6 additions / 2 deletions**, limited to setup
+syntax, lifecycle explanation and public teardown postconditions. All **six test
+bodies are byte-identical** to the reviewed ticket version. Other non-overlapping
+imports exactly match their respective parent; no unexplained merge edits.
 
-Current in-scope outcome is preserving the existing unsaved draft across peer
-refresh/reload in the retained fix, with clean readers/previews and actual Save
-payload preserved. Additional Save-and-continue-editing bug CR-FUP002 is **outside
-this increment by the user's explicit latest disposition**, not because the
-scenario is unsupported. Keep its failed evidence and follow-up custody visible.
-No exhaustive editor cleanup, auto-merge, competing-write arbitration, durable
-crash recovery, full-page draft persistence or new notification promise.
+NFS source, all three IR010 production files, test-server helper and workspace
+manager are unchanged. Imported composition adds a delegated-launch service
+argument, not shutdown changes. Adjacent explorer search now returns validated
+relative paths; inspect that integration and its existing focused check results,
+not all unrelated base work. Docs retain the exact IR010 draft section and base
+relative-path corrections. No ticket-owned production spine/interface/model was
+changed by this recovery, so CRR015 source evidence remains applicable.
 
-## Upstream Behavior And Production-Path Basis Confirmation
+## Behavior Basis And Forward Paths
 
-Requirements and existing BEH006/DS004 path understood; basis **Confirmed within
-this scope**. Design already calls for no unsaved-buffer overwrite and reuse of
-existing reader paths. IR010 needs no new storage or architecture mechanism.
-Historical design narrative still mentions earlier review/API statuses; it is
-context, not authority superseding current specialist reports or user direction.
+Behavior basis **Confirmed**; no newly discovered product behavior or ambiguity.
 
-| Behavior | Status | Actual current path/lifecycle evidence |
-| --- | --- | --- |
-| BEH006 / REQ011 / AC010 / SCN006 — peer refresh and unsaved draft | Confirmed for source review; live API closure pending | Native Monaco change -> FileViewer emit -> Tabs -> existing workspace open-file editorDraft. Tree modify -> invalidate/fetch changes committed content only. Both normal/Zen Tabs project draft into FileViewer/Monaco and retain dirty editor through loading/error. |
-| BEH006 — Save of the visible draft after peer refresh | Confirmed for this fixed path | Tabs passes displayFileData.content to the existing store Save. Successful matching draft clears; failed Save retains draft. Independent original regression plus actual-viewer tests pass. Separate later-input-equals-old-content case is CR-FUP002 below. |
-| BEH006 — healthy clean readers, media/HTML/relative assets/read-only previews | Confirmed at source/adjacent-test scope | No draft for clean reader; refetch remains active. Preview/read-only paths use committed file data and existing resource context. No change to FileViewer/Monaco, backend reader or authorization. |
-| BEH001–005/007 and SR023 source binding | Unchanged, prior scoped evidence retained | No changed production outside three frontend files. No new broader runtime or platform qualification claimed. |
-
-## Supported Product Scenario And Reachability Gate
-
-| Basis | Actor, coherent goal / independent trigger | Supported entry, forward path and lifecycle | Expected consequence / disposition |
+| Basis | Independent goal / entry | Forward path and lifecycle | Disposition |
 | --- | --- | --- | --- |
-| SCN006, AC010 explicit unsaved edge | A retains a local draft while B commits a shared-file modification; preserve unsubmitted work | Existing Files editor and ordinary peer filesystem write; API007 native Save/no-peer controls and live peer receipt establish scenario independently of tests. Stream/refetch reaches the open editor. | Supported Explicit Edge Scenario / Reachable / Use. Peer committed bytes may refresh without silently replacing A's draft. |
-| SCN006 clean reader/preview | User observes another node's committed content through healthy existing APIs | Existing reload/reopen/preview paths -> store committed content -> viewer/media; no local draft, or explicit preview mode | Supported Normal Scenario / Use. Fresh committed reads and existing authorization/MIME/resource context remain. |
-| AC010/BEH006 draft integrity; existing async Save contract | One user saves an editing checkpoint and continues working, including undo to earlier text | Same still-editable Files editor -> one pending Save request -> later editor input -> successful completion. SaveLoading prevents duplicate Save, not input; FileViewer readOnly is access intent, not request state. | Supported Normal Scenario / Reachable. Later input must not silently be overwritten by an earlier Save completion. Confirmed CR-FUP002, **user-directed Follow-up**, not an in-scope gate. |
-| Existing session ownership / source design principles | Remounts change presentation, not open-file identity; explicit close retires the open-file state | Existing workspace/path open-file store, tab/workspace/Files/Zen switches; close filters entries; store is not persisted | Supported engineering contract / Use. Reuse session owner, no second registry/migration. No new durable restart promise. |
+| TESTING.md test-owned resources / stop what you started | Repository tests must exercise real boundaries and clean their own resources | beforeAll -> existing composed runtime -> per-test workspace fixture -> public removal while authorities live -> afterAll app.close -> own app-data removal | Established engineering contract / Supported Normal Scenario / Use |
+| BEH006 / SCN006 / REQ011 / AC010 healthy-content regression | Existing user opens/reopens workspace HTML and relative assets; content/access/error semantics preserved | GraphQL workspace registration -> REST static/content -> FileSystemWorkspace -> exact bytes/MIME/error | Supported Normal Scenario / Use for retained repository regression, not restored filesystem acceptance gate |
+| Preserved workspace-registration boundary | Removing a registered workspace must remove registration, not authorize deleting shared user data | removeRegisteredWorkspace -> removal guard -> active workspace close/map removal -> registry deletion -> public lookup absence | Supported Normal Scenario / Use; fixture deletes only its own temporary source afterward |
+| IR009 filesystem and IR010 retained correction | Latest user says keep existing work, no extra editor repair/retest | Unchanged source and API008 scoped evidence; pending-Save exception remains separate | Carry prior scoped evidence; no new live/editor/platform closure |
 
-### Candidate Finding And Mechanism Gate
+### Reconciliation / Candidate Gate
 
-| Candidate | Observation / independent basis / consequence | Evidence | Disposition and proportionate action |
-| --- | --- | --- | --- |
-| CAND019 / CR008 | Peer refetch previously replaced editable content; explicit SCN006/AC010 preservation edge | IR010 removed destructive deep watch/local parallel buffer; current state/actual viewer projection; original peer regression and new viewer suite; I10 renderer evidence | Previously promoted; **resolved at source/component scope**. Keep fix and require affected API rerun before runtime closure. |
-| CAND020 / CR-FUP002 | Continuing the same editing goal during pending Save, then returning to pre-save committed text, clears editorDraft; earlier completion replaces visible text and next Save payload | ContentActions274/317/336, Tabs289–294/handleSave, FileViewer97, Monaco166–179; independent diagnostic log shows exact before/after and a passing differing-text control | **Promote / Follow-up by explicit user direction.** Real unresolved frontend defect, not NFS corruption. Task project_task_a4f90984-add2-4300-983d-de54ded3032b. No deduction or rework in this increment. |
-| Draft composition, dirty loading/error retention and matching-Save clear | Session owner must survive view remount and background committed reads; established peer scenario, not invented general recovery | Optional editorDraft in OpenFileState; store action; unchanged reader/preview ownership; eight viewer-state cases and current renderer receipts | Supported bounded mechanism. No new owner, fallback, merge or persistence machinery. CR-FUP002 records the specific remaining limit rather than calling the mechanism universally correct. |
+The independent DR001 merge conflict and TESTING lifecycle contract justify this
+repair; the added assertions do not establish their own product scenario.
 
-The pending-request diagnostic does not establish its own scenario. The independent
-editing goal and no-unsaved-overwrite contract apply to the ordinary nonblocking
-Save lifecycle already exposed and implemented; no different node/window rebinding,
-competing Save, precise timing, or artificial production file mutation is assumed.
-It does not measure production latency or prove how often this case occurs. User
-scope disposition does not reclassify the scenario as contrived or the failure as Pass.
-
-## Structural / Design Checks
-
-| Check | Result | Evidence / action |
+| Observation / mechanism | Path, evidence and consequence | Disposition |
 | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Existing reader reuse; CR008 missing draft-authority invariant addressed in existing owner. |
-| Implementation matches approved behavior-defining supplemental artifacts | Pass | SR025 topology unchanged; original peer preservation fixed; latest user explicitly separates CR-FUP002. No Product supplement. |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | Editor -> store draft -> Tabs projection -> viewer/Save; independent committed refresh. |
-| Ownership boundary preservation and clarity | Pass | One workspace open-file owner; local duplicate buffer removed. |
-| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Save/error presentation stays in Tabs; NFS, media and resource routing unchanged. |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Existing Pinia content actions, open file and FileViewer reused. |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | One optional typed editorDraft composition; no second shared shape. |
-| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | Two-line session-only composition; committed content remains separately meaningful. |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Draft updates and Save clearing in existing store; both presentations use same computed projection. |
-| Empty indirection check (no pass-through-only boundary) | Pass | Tabs projection adapts editable display; no new forwarding layer. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Store owns state transitions, Tabs owns view, FileViewer selects renderer. |
-| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | No new backend dependency or reversed viewer/store import. |
-| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | Tabs uses fileExplorer store, not its action implementation module or Apollo. |
-| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Existing fileExplorer stores/components/docs, colocated tests. |
-| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | No new service/file hierarchy. |
-| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | updateEditorDraft(workspaceId,filePath,content); existing Save identity unchanged. |
-| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | editorDraft/committed content/displayFileData distinguish responsibilities. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | One computed draft projection used by existing normal/Zen branches. No forced unrelated template extraction. |
-| Patch-on-patch complexity control | Pass | Replaced destructive owner rather than layering more watchers/retries. |
-| Dead code removed in the touched files and modules (Core Principle 7) | Pass | Removed invisible unused context-menu state/listeners/handlers, unused language/ref, destructive deep watch/local buffer. No remaining new dead item identified. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Original peer assertion unchanged; eight actual Tabs/FileViewer/store cases verify visible state and payload. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | subject/addFile/peer/save helpers; coherent lifecycle cases; Monaco/transport doubles explicit. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Removed only dead document-click assertions; keyboard lifecycle preserved. |
-| API/E2E readiness for the next workflow stage | Pass | Scoped fix ready for original live native-input/peer/Save plus affected reader checks; additional bug explicitly tracked outside increment, not hidden. |
+| IR011 public teardown with suite-scoped app lifetime | Test lines28–76; unchanged helper; workspace-manager lines197–247; build-studio-server onClose. Public removal needs composed process authorities alive; afterAll stops them before deleting owned data. Added active/registered lookup assertions observe the actual owner. | Supported, correctly implemented; no finding/deduction. |
+| Base route-only teardown differs | Base4c373495 closes its per-test route fixture and removes private fixture maps because it lacks process supervision. Copying that teardown wholesale into the composed suite would mismatch ownership. IR011 deliberately does not do so. | Reconciliation rationale verified; not an outstanding product defect or demand to refactor the base harness. |
 
-## Source File Size And Structure Audit
+No held/unclear candidate, new recovery machinery, compatibility layer or
+speculative concurrency requirement. Prior finding dispositions are in CRR017's
+revision entry. No new finding ID is needed.
 
-Base is CRR014 input immediately before IR010; these files were previously unchanged
-from the ticket's ancestor. Effective nonblank lines; delta = added + removed.
-Tests, fixtures and evidence are not subject to source caps.
+## Mandatory Structural Checks — Scoped Revalidation / Carry
 
-| Source file | Before | After | >500 hard-limit | >220 delta | SoC / placement / action |
-| --- | ---: | ---: | --- | --- | --- |
-| FileExplorerTabs.vue | 393 | 355 | Pass | 111, Pass | View projection/listeners; correct component owner; none |
-| fileExplorerContentActions.ts | 300 | 309 | Pass | 10, Pass | Existing open/refresh/save owner; follow-up bug recorded separately |
-| fileExplorerState.ts | 83 | 85 | Pass | 2, Pass | Shared session composition; none |
+Unchanged source checks carry CRR015 evidence. Test-specific rows are assessed
+proportionately; no implementation-source threshold or score is applied to tests.
 
-## Legacy, Persistence, Cleanup And Docs
+| Check | Result | Evidence / required action |
+| --- | --- | --- |
+| Task design health assessment present and preserved | Pass | IR011 correctly retains existing lifecycle owner; no refactor required. |
+| Behavior-defining supplements matched | Pass | Latest command-only direction retained; no application acceptance expansion. |
+| Data-flow spine clarity | Pass | Composed runtime -> public removal -> shutdown traced above; product spines unchanged. |
+| Ownership boundary preservation | Pass | Suite owns app; each case owns added workspaces/temp source; manager owns registration. |
+| Off-spine concerns clear | Pass | Test bookkeeping stays in fixture; no production coordination added. |
+| Existing capability reuse | Pass | Existing runtime helper and public removal reused unchanged. |
+| Reusable owned structures | Pass | No new helper/model; CRR015 source evidence carried. |
+| Shared model tightness | Pass | No data-shape delta; carried. |
+| Repeated coordination ownership | Pass | One afterEach cleanup and one afterAll shutdown, no dual lifecycle. |
+| Empty indirection absent | Pass | No new wrapper/forwarder. |
+| Separation of concerns/file responsibility | Pass | One coherent content-boundary suite; unchanged production ownership. |
+| Ownership-driven dependencies | Pass | Public manager/helper boundaries; no new private-map access. |
+| Authoritative Boundary Rule | Pass | Cleanup and assertions both use manager public methods, not its repository/maps. |
+| File placement | Pass | Existing server E2E fixture and existing docs. |
+| Flat/over-split layout | Pass | No new hierarchy; carried. |
+| Interface/query/command clarity | Pass | Removal and public lookup use the same explicit workspace identity. |
+| Naming/readability | Pass | Comment explains why suite/per-test ownership differs from base. |
+| No unjustified duplication | Pass | Existing shared helper; no copied process composition. |
+| Patch-on-patch control | Pass | Single coherent resolution, no branch for old fixture semantics. |
+| Dead code removed | Pass | Unused async removed; no new dead machinery identified. |
+| Test assertions requirement-aligned | Pass | Six original cases unchanged; two public cleanup postconditions added. |
+| Fixture reuse/coherent structure | Pass | Shared runtime remains suite-owned; unique temporary roots, cleanup finally blocks. |
+| No stale/disabled/compatibility-only tests | Pass | No tests removed/skipped or expectations weakened. |
+| API/E2E readiness | Pass | Integrated local66 tests/typecheck green; affected repository validation next, not another VM/UI campaign. |
 
-- No backward-compatibility mechanism, old-behavior dual path, version fallback,
-  unused adapter or alternate registry added. Original destructive watcher removed.
-- Persisted data **Not Affected**: Pinia store has no persistence option; draft is
-  scoped to existing open file. No migration/cutover or disk/source-marker change.
-  Explicit close/full-page restart semantics are unchanged, not a new recovery promise.
-- Dead/obsolete removal list: destructive deep activeFileData watch and local
-  buffer; unreachable context-close handlers and invisible context-menu state;
-  document click listener for that nonexistent menu; unused language helper/import
-  and unread DOM ref. No remaining removal obligation identified in changed scope.
-- Docs impact **Yes**: docs/file_explorer.md explains session versus committed
-  data, preview and close/restart limits. Its broad later-typing-during-Save claim
-  has the known CR-FUP002 exception; do not repeat it as universal validation.
-  Delivery should disclose the separate known issue; do not claim it fixed here.
-- Additional architecture material-premise changes **None**. SR023/ARCH007 and
-  prior scoped storage resolutions remain as recorded; the one Save lifecycle
-  premise is completely documented in the scenario/candidate table above.
+Required action for these checks: **None**.
 
-## Executed Checks And Evidence Limits
+## Source Size, Legacy, Persistence, Cleanup And Documentation
 
-Reviewer personally ran in fresh owned HOME/TMPDIR, no inherited provider setup:
+- Source size audit: **N/A to authored test delta**. No production file authored
+  by this recovery. Prior IR010 source sizes/ownership remain unchanged; do not
+  force a test split or apply source-file size thresholds.
+- Legacy/persistence checks: Pass — no old-behavior fallback, version branch,
+  dual reader/writer or migration introduced. Persisted-data transition for
+  IR011 **Not Affected**; prior source-identity decision remains unchanged.
+- Dead/obsolete items requiring removal: **None**. Removed unused async only.
+- Implementation cleanup receipt: owned scratch/private HOME/cache/build/DB
+  removed, no surviving owned processes reported,309 retained artifacts intact.
+  Reviewer started no runtime resources and changed no source/tests/old dist.
+- Docs impact: **Yes**, integration/review/history and eventual Delivery scope
+  sync. Auto-merged file_explorer.md retains both branches' relevant text. This
+  does not claim its generic later-edit wording closes CR-FUP002; final handoff
+  must still disclose that known exception. No new editor docs redesign required.
+- Additional material premise: **None new/reclassified**. Technical SR023/ARCH007
+  premises and latest same-kernel qualification limits stay at their prior scope.
 
-1. Adjacent Nuxt suite: **22files / 148tests Pass**, exit0. Includes original peer
-   regression, eight new real-viewer draft cases, FileViewer/Monaco, store/routing,
-   preview and path utilities.
-2. Web-boundary and localization-boundary guards: **Pass**, exit0 each.
-3. Temporary pending-Save diagnostic: **1Fail / 1Pass**, exit1, **not a green
-   suite**. Same actual Tabs/FileViewer/store; Monaco/GraphQL controlled. Shows
-   old-content equality clears draft, then visible text and second Save revert;
-   differing later-text control survives. Diagnostic copied exclusively into test
-   directory, then removed; source retained as review evidence, not a durable test.
+## Checks And Evidence Limits
 
-Exact commands, outcomes and cleanup in
-[checks-result.json](code-review-evidence/crr-015/checks-result.json), executable
-[runner](code-review-evidence/crr-015/review-checks.py),
-[adjacent log](code-review-evidence/crr-015/adjacent-regression.log),
-[follow-up diagnostic log](code-review-evidence/crr-015/pending-save-probe.log).
-82 relevant input files hashed before/after execution unchanged; all286 files in
-five old dist trees unchanged. No user process, app, provider, VM, Docker, mount,
-network setting or credential touched. Own scratch and temporary spec removed. Raw adjacent-regression.log final blank
-line362 is retained unchanged; the explicit evidence-whitespace exception and
-final preservation checks are in code-review-evidence/crr-015/final-checks.json.
+Independent audit: [review-audit.json](code-review-evidence/crr-017/review-audit.json).
+All58 input-package hashes match; six test bodies match; non-overlap merge results
+match the corresponding parent; protected relevant source paths unchanged.
 
-Inspected implementation's current-source renderer script/result and normal/narrow
-render-3 PNGs: visible LOCAL DRAFT/SECOND DRAFT, one editor surface, no obvious
-layout clipping. Its eight asserted states and Save request are coherent. Real
-Monaco/native keys, controlled GraphQL/event source, not actual backend/NFS or
-Electron-shell proof. Render1 fixture/cleanup corrections and render2 early-paint
-captures remain disclosed; render3 settled Pass does not erase them. No reviewer
-live browser rerun or pending-Save native-key reproduction claimed. API owns the
-remaining integrated proof. No whole-app typecheck/package/platform matrix rerun.
+Inspected IR011 runners, exact commands and raw log summaries:
+- frozen relevant-workspace installation, current integration prerequisites and
+  server production typecheck: exit0;
+- REST6/1file, workspace48/9files, adjacent explorer/search-content12/2files:
+  **66 tests / 12 files Pass**, implementation-local evidence;
+- clean HOME/TMPDIR/environment and non-watch commands recorded; no provider gates.
+  Implementation's source archive matched7330 non-ticket tracked files.
 
-## Mandatory Scorecard
+One REST case uses real socket HTTP/GraphQL; five retained cases use Fastify
+injection. No claim of six socket journeys, native UI or NFS execution. Raw merge
+failure and install warnings remain disclosed. Reviewer examined the source/diff
+and fresh evidence; no unexplained assertion warranted duplicating local runtime
+checks before the independent API owner resumes. No new API confidence score.
 
-In-scope source quality only: simple average **10.0/10 = 100/100**. Follow-up
-CR-FUP002 does not deduct under the user's explicit disposition; no claim that all
-editor behavior or the whole product is defect-free. API007 score is unchanged.
+## Implementation-Source Scorecard — Carried, Not Applied To Test Code
 
-| Priority | Category | Score | Reason | Weakness / improvement within this increment |
-| --- | --- | ---: | --- | --- |
-| 1 | Data-Flow Spine Inventory and Clarity | 10.0 | Draft, committed refresh, display and Save traced end-to-end | None identified |
-| 2 | Ownership Clarity and Boundary Encapsulation | 10.0 | Existing workspace open-file store is sole draft owner | None identified |
-| 3 | API / Interface / Query / Command Clarity | 10.0 | Explicit workspace/path/content; no bypass of store | None identified |
-| 4 | Separation of Concerns and File Placement | 10.0 | State transitions versus display remain separate | None identified |
-| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 10.0 | Small optional session composition; no parallel model | None identified |
-| 6 | Naming Quality and Local Readability | 10.0 | Content/draft distinction and transition intent clear | None identified |
-| 7 | API/E2E Readiness | 10.0 | Original defect's independent regression green; affected live path specified | API execution remains next stage, not a source deduction |
-| 8 | Runtime Correctness And Behavioral Fidelity | 10.0 | Required peer-refresh/view/Save path passes source/component checks | Separate known Save lifecycle exception is CR-FUP002, user-directed follow-up |
-| 9 | No Backward-Compatibility / No Legacy Retention | 10.0 | No fallback/migration/old-reader path; obsolete local owner removed | None identified |
-| 10 | Cleanup Completeness | 10.0 | Dead plumbing removed; own resources cleaned; inputs/old dist preserved | None identified |
+**10.0/10,100/100**, retained from CRR015 for unchanged ticket source, not an
+integrated whole-product/performance score. The ten source categories remain
+current within this bounded delta; test code receives only the checks above.
+Simple average is historical summary, not the decision rule.
 
-## Findings And Follow-ups
+| Priority | Category | Retained score | Reason / weakness / improvement |
+| --- | --- | --- | --- |
+| 1 | Data-Flow Spine Inventory and Clarity | 10.0 | Source spine unchanged; fixture lifecycle traced. No new in-scope weakness/action. |
+| 2 | Ownership Clarity and Boundary Encapsulation | 10.0 | Existing source owners unchanged; public teardown preserved. No new weakness/action. |
+| 3 | API / Interface / Query / Command Clarity | 10.0 | Ticket interfaces unchanged; integrated public methods match fixture. No new weakness/action. |
+| 4 | Separation of Concerns and File Placement | 10.0 | No production responsibility moved. No new weakness/action. |
+| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 10.0 | No ticket model delta. No new weakness/action. |
+| 6 | Naming Quality and Local Readability | 10.0 | Prior source unchanged. No new weakness/action. |
+| 7 | API/E2E Readiness | 10.0 | Integration conflict resolved and relevant local checks green. API-owned affected validation still next, not already signed off. |
+| 8 | Runtime Correctness And Behavioral Fidelity | 10.0 | Prior scoped evidence retained; no new ticket behavior. CR-FUP002 remains explicitly unresolved/nonblocking, not fixed. |
+| 9 | No Backward-Compatibility / No Legacy Retention | 10.0 | No production compatibility delta or parallel fixture branch. No new weakness/action. |
+| 10 | Cleanup Completeness | 10.0 | Implementation scratch removed; reviewer started none. No new weakness/action. |
 
-**No remaining in-scope source finding.** CR008 original peer-refresh defect:
-source correction accepted; public API runtime resolution awaits the next API run.
-CR001–007 prior scoped closures retained, not expanded or rerun here.
+## Findings, Follow-ups And Latest Result
 
-**CR-FUP002 — Preserve later File Explorer edits when a pending Save completes.**
-Confirmed separate frontend defect, medium priority suggestion, no filesystem
-corruption claim. User-directed outside current increment; see
-[full follow-up](code-review-evidence/crr-015/editor-follow-up.md) and
-[confirmed custody](code-review-evidence/crr-015/follow-up-receipt.json).
-Project Task Manager created **project_task_a4f90984-add2-4300-983d-de54ded3032b**,
-TODO/unassigned/**not dispatched**, attached all four evidence artifacts unchanged,
-confirmed no duplicate. Do not route the current increment back for this fix.
-D001/DEC015 deferred/notfixed, IMP-D001 scope and FUP001 existing custody unchanged.
-
-## Latest Authoritative Result And Next Step
-
-- **Pass / Implementation Review / CRR015**. Scenario/material-premise gates Pass;
-  all24 structural checks and10 categories completed. Failure classification N/A.
-- Sole primary next recipient, subject to fresh rules: API/E2E. Revalidate the
-  **retained original fix** with native input/Save control/peer update/reload L23
-  and affected clean-reader/healthy-preview checks. Carry still-valid prior
-  storage/lifecycle evidence; no repeated broad filesystem qualification loop.
-- ONE Linux VM / TWO actual public-launcher application nodes, LN/LD sequential,
-  per settled SR025. Mac/independent-kernel/physical/external-join/authenticated-
-  agent scopes stay deferred, not Passed. No new approval/architecture cycle.
-- API007 remains Fail until its owner issues the next execution result. After green
-  API, proportional durable-test review (including af9f23/current additions), then
-  Delivery. No TaskDone, merge, push, tag, release, deployment or user verification.
-- Explicit user-requested Project Task Manager notification is a separate follow-up
-  custody message, not duplicate team routing. No delegation/spawning or polling.
+- **Findings: None. Pass.** Supported scenario/material-premise gates Pass;
+  failure-origin classification N/A. DR001 Local Fix reconciled at review scope;
+  Delivery's own verdict remains unchanged until its next round.
+- CR008 source/component fix retained; CRR016 test review remains historical
+  successful result. No new original live-editor closure. CR-FUP002 remains in
+  PM Task **project_task_a4f90984-add2-4300-983d-de54ded3032b**, unresolved and
+  nonblocking by explicit user direction; do not repair/retest or redispatch.
+  CR001–007, FUP001, D001/DEC015 and IMP-D001 prior dispositions unchanged.
+- **Next: API/E2E owner**, under fresh most-specific Local Fix routing, for
+  affected integrated repository validation and then proportional test review
+  before Delivery resumes. Keep current builds/clean environment; focus the
+  reconciled fixture and affected lifecycle/search boundaries as needed.
+- Do not repeat command-only VM campaign without concrete integration evidence;
+  no such trigger found. No UI/editor/API product gate, new scope approval or
+  Designer dispatch. Shared-kernel API008 is not independent-client/physical/
+  Mac/cross-OS/authenticated-agent/publication qualification.
+- No reviewer merge, push, release, tag, deployment, TaskDone, delegation or
+  user-verification claim. No release remains the guide default.
