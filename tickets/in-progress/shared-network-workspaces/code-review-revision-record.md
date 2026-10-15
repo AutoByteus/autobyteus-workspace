@@ -465,3 +465,9 @@ The canonical [code-review-report.md](code-review-report.md) is authoritative fo
 - Route: obtain fresh rules; select only most-specific implementation-review Pass
   primary recipient. Full739-reference chain plus current evidence preserved;
   actual send confirmation will be recorded. No duplicate informational forwarding.
+
+- **Confirmed primary handoff:** review4d686e9371e9e8251c351efd6050c38536375419
+  delivered to `/software_engineering_team/api_e2e_engineer`, AgentRun
+  `api_e2e_engineer_4b3516b0eb7d448586471bee29383f50`; accepted=true/DELIVERED,
+  774 cumulative references. Only the most-specific primary Pass recipient
+  notified; no duplicate informational forwarding or polling.
