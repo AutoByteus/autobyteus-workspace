@@ -1707,32 +1707,32 @@ set, not every OS, every runtime or release qualification.
 
 | ID | Mode | Case / required assertions | Planned evidence | API007 status |
 | --- | --- | --- | --- | --- |
-| L01 | Both | Environment and build identity: fresh guest OS/ext4, nonroot identity, exact candidate/engine/server image, no inherited credentials or old attachment | Guest preflight, hashes, version, mount/process inventory | Not Tested; VM/build setup receipts only |
-| L02 | Both | Relevant Go/packaging/launcher/binding/REST/Guide/local regressions; inspect carried exact-source results; skips explicitly enumerated | Current focused tests or justified unchanged receipts, source hash audit | Not Tested; prior API006 repository results available |
-| L03 | Both | Two nodes from current public launcher, real health endpoints; snapshot A/B image, Config/HostConfig, ports, aliases, volumes, running state and private sentinels | Launcher commands, actual Docker inspect and hashes | Not Tested |
-| L04 | Both | Consent/unsafe-target controls: decline required drain, reject nonempty mount target/private or symlink source; leave nodes/data/config unchanged | Public CLI exit/output, before/after snapshot; narrow unit cases for unavailable interactive privilege condition | Not Tested |
-| L05 | LN, LD | Public create selects A only, reports actual mapping and readiness; B remains unselected/local and unchanged; source bytes/UUID/nonroot mapping preserved | Public CLI/descriptor/mount, A RW, B inspect/private hashes | Not Tested |
-| L06 | LN, LD | Public drained detach A-only setup then fresh public create selecting A+B against preserved source/marker; no extra in-container mount/setup commands | Displayed plan, public results, source UUID continuity, both node mounts | Not Tested |
-| L07 | LN, LD | Real source proof: A/B see original nonempty project and same marker; reciprocal unique writes reach other node and original source; no local-folder substitute | Exact bytes/hashes, native and Docker NFS volume/mount records, actual UID/GID | Not Tested |
-| L08 | LN, LD | Reciprocal create/read/write/overwrite/append for text, Unicode and binary files (including empty,1KiB,1MiB); verify exact bytes | Independent actor results and source hashes | Not Tested |
-| L09 | LN, LD | mkdir/nested directories/listing, file+directory rename, atomic replacement, deletion and missing-path results visible to other actor | Peer directory listings/stat/open assertions | Not Tested |
-| L10 | LN, LD | Metadata/relative symlinks/chmod/executable-file behavior; preserve ordinary owner/group/mode contract, no global permission relaxation | Actual stat/readlink/execute and nonroot identity evidence | Not Tested |
-| L11 | LN, LD | Warm old bytes/negative lookups; in-place overwrite, atomic replacement and new publication,1KiB/1MiB, both A→B/B→A and source/native controls; fresh open exact bytes <=5s from successful flush/fsync/close | Per-fixture writer completion, reader observation/elapsed bound, expected/actual hash; no cacheflush/remount workaround | Not Tested |
-| L12 | LN, LD | Concurrent independent-file writers A/B; every file intact and cross-readable, no overwrite/loss; actual two-process overlap | Barrier/start/end timestamps, complete expected manifest and hashes | Not Tested |
-| L13 | LN, LD | Coordinated same-file edit handoff and Git status/edit/add/commit A then B; same repository state, scoped Git environment; no implicit merging/independent shared branches claim | Command/output and repository content/commit assertions | Not Tested |
-| L14 | LN, LD | Exclusive-create contention: one winner, other receives supported exists error, final bytes exactly winner; no silent overwrite | Both actor exits, actual contents | Not Tested |
-| L15 | LN, LD | Documented NFSv4 advisory lock contention/release with separate node processes; distinguish same-kernel lock proof from independent-kernel qualification | Holder/contender acquire/refusal/release receipts | Not Tested |
-| L16 | LN, LD | Nonroot authorized access, root-squash/mapall ownership, permission-denied path/error; private database/auth/profile sentinels remain node-private, nonexported and unchanged | UID/GID/mode/access errors, private hashes and export inspection | Not Tested |
-| L17 | LN, LD | Repeat status/reconnect with healthy configured source: same source/UUID/bytes/node configuration, no duplicate resources or local fallback | Public results and before/after mount/node/state inventories | Not Tested |
-| L18 | LN, LD | Ordinary VM reboot: service and both selected nodes automatically usable before manual reconnect/start; then separate explicit reconnect and reciprocal roundtrip | Distinct boot IDs, timed observations (not boot SLA), same IDs/image/config/private/source comparisons | Not Tested |
-| L19 | LN, LD | Normal Stop of one running unless-stopped node stays stopped through ticks/reconnect/reboot; peer remains healthy. Retain previously proven failed-start restart=no veto at its exact scope | Public Docker lifecycle, saved intent/config, valid API005 scope mapping or focused rerun | Not Tested |
-| L20 | LN, LD | Public launcher restart/upgrade/recreation retains shared attachment and each node's private data/config; current replacement reference resolves after reboot | Current launcher calls, old/new IDs/image provenance, volume/private hashes and RW | Not Tested |
-| L21 | LN, LD | Real source replacement with copied marker is refused without rebind/false ready; restore exact original, reconnect; unsupported configuration errors preserve evidence | Actual inode/source change, public refusal, saved binding/hash and restored original proof | Not Tested; API006 relevant refusal evidence available |
-| L22 | LN, LD | Filesystem-facing application GraphQL/REST and WebSocket terminal use mounted project; node B changes/removes content A serves, then reverse; existing path authorization and error behavior preserved | Real server endpoints, exact bytes/MIME/errors and scoped terminal/Git output | Not Tested |
-| L23 | LN, LD | Healthy text/Markdown/image/HTML+relative assets/PDF/audio/video previews, deliberate tree reload/reopen after other-node changes, preserve unsaved buffers; watcher behavior recorded, not required | Current worktree isolated app/API/DOM evidence; justified mode-invariant carried UI evidence where exact source unchanged | Not Tested |
-| L24 | Both | NFS Guide current unavailable release state and ordinary local workspace/preview regressions; no invented working public installer | Current UI/component and applicable real-surface evidence | Not Tested; earlier Guide receipts available |
-| L25 | LN, LD | Safe detach: busy/drain refusal leaves data intact; after actual drain public detach restores local node configuration, preserves private volumes/source/marker, removes only owned attachment/job/mount; repeat incomplete detach only if genuinely reached | Public output, no forced unmount, source/private/config/resource comparisons | Not Tested |
-| L26 | Final | Stop/remove only test-owned nodes/VM/processes/build tags/scratch; retain evidence and prior public cache/candidates/dist; reconcile every row and seven-category score | Cleanup receipt, source/durable diff and cumulative evidence audit; final API report | Not Tested |
+| L01 | Both | Environment and build identity: fresh guest OS/ext4, nonroot identity, exact candidate/engine/server image, no inherited credentials or old attachment | Guest preflight, hashes, version, mount/process inventory | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |
+| L02 | Both | Relevant Go/packaging/launcher/binding/REST/Guide/local regressions; inspect carried exact-source results; skips explicitly enumerated | Current focused tests or justified unchanged receipts, source hash audit | Fail new AC010 regression (3Pass/1Fail); initial repository suites Pass with listed skips |
+| L03 | Both | Two nodes from current public launcher, real health endpoints; snapshot A/B image, Config/HostConfig, ports, aliases, volumes, running state and private sentinels | Launcher commands, actual Docker inspect and hashes | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |
+| L04 | Both | Consent/unsafe-target controls: decline required drain, reject nonempty mount target/private or symlink source; leave nodes/data/config unchanged | Public CLI exit/output, before/after snapshot; narrow unit cases for unavailable interactive privilege condition | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |
+| L05 | LN, LD | Public create selects A only, reports actual mapping and readiness; B remains unselected/local and unchanged; source bytes/UUID/nonroot mapping preserved | Public CLI/descriptor/mount, A RW, B inspect/private hashes | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |
+| L06 | LN, LD | Public drained detach A-only setup then fresh public create selecting A+B against preserved source/marker; no extra in-container mount/setup commands | Displayed plan, public results, source UUID continuity, both node mounts | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |
+| L07 | LN, LD | Real source proof: A/B see original nonempty project and same marker; reciprocal unique writes reach other node and original source; no local-folder substitute | Exact bytes/hashes, native and Docker NFS volume/mount records, actual UID/GID | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |
+| L08 | LN, LD | Reciprocal create/read/write/overwrite/append for text, Unicode and binary files (including empty,1KiB,1MiB); verify exact bytes | Independent actor results and source hashes | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |
+| L09 | LN, LD | mkdir/nested directories/listing, file+directory rename, atomic replacement, deletion and missing-path results visible to other actor | Peer directory listings/stat/open assertions | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |
+| L10 | LN, LD | Metadata/relative symlinks/chmod/executable-file behavior; preserve ordinary owner/group/mode contract, no global permission relaxation | Actual stat/readlink/execute and nonroot identity evidence | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |
+| L11 | LN, LD | Warm old bytes/negative lookups; in-place overwrite, atomic replacement and new publication,1KiB/1MiB, both A→B/B→A and source/native controls; fresh open exact bytes <=5s from successful flush/fsync/close | Per-fixture writer completion, reader observation/elapsed bound, expected/actual hash; no cacheflush/remount workaround | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |
+| L12 | LN, LD | Concurrent independent-file writers A/B; every file intact and cross-readable, no overwrite/loss; actual two-process overlap | Barrier/start/end timestamps, complete expected manifest and hashes | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |
+| L13 | LN, LD | Coordinated same-file edit handoff and Git status/edit/add/commit A then B; same repository state, scoped Git environment; no implicit merging/independent shared branches claim | Command/output and repository content/commit assertions | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |
+| L14 | LN, LD | Exclusive-create contention: one winner, other receives supported exists error, final bytes exactly winner; no silent overwrite | Both actor exits, actual contents | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |
+| L15 | LN, LD | Documented NFSv4 advisory lock contention/release with separate node processes; distinguish same-kernel lock proof from independent-kernel qualification | Holder/contender acquire/refusal/release receipts | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |
+| L16 | LN, LD | Nonroot authorized access, root-squash/mapall ownership, permission-denied path/error; private database/auth/profile sentinels remain node-private, nonexported and unchanged | UID/GID/mode/access errors, private hashes and export inspection | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |
+| L17 | LN, LD | Repeat status/reconnect with healthy configured source: same source/UUID/bytes/node configuration, no duplicate resources or local fallback | Public results and before/after mount/node/state inventories | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |
+| L18 | LN, LD | Ordinary VM reboot: service and both selected nodes automatically usable before manual reconnect/start; then separate explicit reconnect and reciprocal roundtrip | Distinct boot IDs, timed observations (not boot SLA), same IDs/image/config/private/source comparisons | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |
+| L19 | LN, LD | Normal Stop of one running unless-stopped node stays stopped through ticks/reconnect/reboot; peer remains healthy. Retain previously proven failed-start restart=no veto at its exact scope | Public Docker lifecycle, saved intent/config, valid API005 scope mapping or focused rerun | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |
+| L20 | LN, LD | Public launcher restart/upgrade/recreation retains shared attachment and each node's private data/config; current replacement reference resolves after reboot | Current launcher calls, old/new IDs/image provenance, volume/private hashes and RW | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |
+| L21 | LN, LD | Real source replacement with copied marker is refused without rebind/false ready; restore exact original, reconnect; unsupported configuration errors preserve evidence | Actual inode/source change, public refusal, saved binding/hash and restored original proof | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |
+| L22 | LN, LD | Filesystem-facing application GraphQL/REST and WebSocket terminal use mounted project; node B changes/removes content A serves, then reverse; existing path authorization and error behavior preserved | Real server endpoints, exact bytes/MIME/errors and scoped terminal/Git output | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |
+| L23 | LN, LD | Healthy text/Markdown/image/HTML+relative assets/PDF/audio/video previews, deliberate tree reload/reopen after other-node changes, preserve unsaved buffers; watcher behavior recorded, not required | Current worktree isolated app/API/DOM evidence; justified mode-invariant carried UI evidence where exact source unchanged | Fail unsaved-buffer loss; LN UI plus both-mode API/media healthy subchecks Pass; LD renderer mode-invariant carry explicitly scoped |
+| L24 | Both | NFS Guide current unavailable release state and ordinary local workspace/preview regressions; no invented working public installer | Current UI/component and applicable real-surface evidence | Pass current Guide UI/21unit and real HTTP local-preview regressions; no separate new local-workspace desktop journey |
+| L25 | LN, LD | Safe detach: busy/drain refusal leaves data intact; after actual drain public detach restores local node configuration, preserves private volumes/source/marker, removes only owned attachment/job/mount; repeat incomplete detach only if genuinely reached | Public output, no forced unmount, source/private/config/resource comparisons | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |
+| L26 | Final | Stop/remove only test-owned nodes/VM/processes/build tags/scratch; retain evidence and prior public cache/candidates/dist; reconcile every row and seven-category score | Cleanup receipt, source/durable diff and cumulative evidence audit; final API report | Pass exact owned cleanup Complete; evidence retained; no production/source repair or finalization |
 
 ### Explicitly outside this revised increment's execution claim
 
@@ -1754,3 +1754,657 @@ E7/scope-change-cleanup-correction.json controls over the initial premature no-r
 purpose text. Linux clone/cache and current server build retained solely for single-VM
 resume, with final removal owned by L26. No two-VM network test executed. No production or
 durable coverage changes yet. Next action: canonical acceptance alignment, then run L01–L26.
+
+- **Round7 resume / ApprovedSR025 DEC017** — L01–L26 accepted; no further Designer verification
+  or topology approval is needed. Earlier “awaiting alignment” wording is historical.
+  Start L01 retained-resource identity and L02 fresh repository checks; no functional Pass yet.
+
+- L01 resume harness attempt 1 stopped before VM start: clean Tart PATH excluded host Docker CLI. Preserved under api-rev-007/resume-attempt-1; corrected host-only image inspection to explicit /usr/local/bin/docker. No product failure.
+
+- 2026-10-15T13:43:50Z **Round7 L02** — Starting go-race
+
+- 2026-10-15T13:44:23Z **Round7 L02** — go-race: Pass
+
+- 2026-10-15T13:44:23Z **Round7 L02** — Starting go-vet
+
+- L01 retained Linux resumed; current image and binary hashes matched. Harness attempt2 incorrectly relied on findmnt empty-result exit code; actual /proc/mounts confirms no NFS mounts. Corrected read-only preflight Ready, same VM. No product failure.
+
+- 2026-10-15T13:44:29Z **Round7** — Started fresh owned guest has no NFS installation or attachment
+
+- 2026-10-15T13:44:29Z **Round7** — fresh owned guest has no NFS installation or attachment: Pass
+
+- 2026-10-15T13:44:29Z **Round7** — Started Docker only prerequisite in own fresh guest
+
+- 2026-10-15T13:44:30Z **Round7 L02** — go-vet: Pass
+
+- 2026-10-15T13:44:30Z **Round7 L02** — Starting python-bootstrap-launcher
+
+- 2026-10-15T13:44:48Z **Round7** — Docker only prerequisite in own fresh guest: Pass
+
+- 2026-10-15T13:44:48Z **Round7** — Started private guest loopback registry for current candidate image only
+
+- 2026-10-15T13:44:54Z **Round7** — private guest loopback registry for current candidate image only: Pass
+
+- 2026-10-15T13:45:19Z **Round7 L02** — python-bootstrap-launcher: Pass
+
+- Round7 L02/L24 Starting server-targeted (clean HOME/environment).
+
+- Round7 L02/L24 server-targeted: Pass.
+
+- Round7 L02/L24 Starting integration-prepare (clean HOME/environment).
+
+- Round7 L02/L24 integration-prepare: Pass.
+
+- Round7 L02/L24 Starting public-contracts (clean HOME/environment).
+
+- Round7 L02/L24 public-contracts: Pass.
+
+- Round7 L02/L24 Starting guide-unit (clean HOME/environment).
+
+- 2026-10-15T13:47:01Z **Round7** — Current full-source server image built/transferred unchanged to owned Linux guest; local registry digest, isolated launcher home, loopback port policy ready
+
+- 2026-10-15T13:47:02Z **Round7** — Started actual current launcher first ordinary node
+
+- 2026-10-15T13:47:05Z **Round7** — actual current launcher first ordinary node: Pass
+
+- 2026-10-15T13:47:06Z **Round7** — Started real server health before NFS selection
+
+- Round7 L02/L24 guide-unit: Pass.
+
+- Round7 L02/L24 Starting terminal-unit (clean HOME/environment).
+
+- Round7 L02/L24 terminal-unit: Pass.
+
+- 2026-10-15T13:47:23Z **Round7** — real server health before NFS selection: Pass
+
+- 2026-10-15T13:47:23Z **Round7** — Started actual current launcher second unselected node
+
+- 2026-10-15T13:47:27Z **Round7** — actual current launcher second unselected node: Pass
+
+- 2026-10-15T13:47:37Z **Round7** — Started seed synthetic private auth/data/browser sentinel bytes
+
+- 2026-10-15T13:47:38Z **Round7** — seed synthetic private auth/data/browser sentinel bytes: Pass
+
+- 2026-10-15T13:47:38Z **Round7** — Started ordinary custom network alias setup
+
+- 2026-10-15T13:47:38Z **Round7** — ordinary custom network alias setup: Pass
+
+- 2026-10-15T13:47:39Z **Round7** — Two exact current launcher nodes prepared; selected running/unselected stopped, loopback ports and synthetic private bytes recorded
+
+- 2026-10-15T13:48:14Z **Round7** — Started L04 private home source refusal/no changes
+
+- 2026-10-15T13:48:14Z **Round7** — L04 private home source refusal/no changes: Pass
+
+- 2026-10-15T13:48:14Z **Round7** — Started L04 symlink source refusal/no changes
+
+- 2026-10-15T13:48:14Z **Round7** — L04 symlink source refusal/no changes: Pass
+
+- 2026-10-15T13:48:14Z **Round7** — Started L04 nonempty target refusal/preserved bytes
+
+- 2026-10-15T13:48:15Z **Round7** — L04 nonempty target refusal/preserved bytes: Pass
+
+- 2026-10-15T13:48:15Z **Round7** — Started L04 required drain withheld/no changes
+
+- 2026-10-15T13:48:15Z **Round7** — L04 required drain withheld/no changes: Pass
+
+- 2026-10-15T13:48:15Z **Round7** — L04 consent/private/symlink/nonempty controls and malformed public connect Pass; no setup applied
+
+- 2026-10-15T13:48:15Z **Round7** — Started fresh nonempty ext4 source before first public setup
+
+- 2026-10-15T13:48:15Z **Round7** — fresh nonempty ext4 source before first public setup: Pass
+
+- 2026-10-15T13:48:16Z **Round7** — Started one fresh public selected native-storage create
+
+- 2026-10-15T13:48:38Z **Round7** — one fresh public selected native-storage create: Pass
+
+- 2026-10-15T13:48:38Z **Round7** — Started exact chosen image config private state ports aliases and unselected preservation
+
+- 2026-10-15T13:48:38Z **Round7** — exact chosen image config private state ports aliases and unselected preservation: Pass
+
+- 2026-10-15T13:48:38Z **Round7** — Started same original nonempty source and native mount identity preserved
+
+- 2026-10-15T13:48:38Z **Round7** — same original nonempty source and native mount identity preserved: Pass
+
+- 2026-10-15T13:48:38Z **Round7** — Started installed identity private modes and active managed job
+
+- 2026-10-15T13:48:39Z **Round7** — installed identity private modes and active managed job: Pass
+
+- 2026-10-15T13:48:39Z **Round7** — Fresh selected public create Pass; no reconnect performed; API-F004 healthy visibility next; no fresh-read success implied
+
+- 2026-10-15T13:49:24Z **Round7** — Started explicitly drain own selected test node before safe detach
+
+- 2026-10-15T13:49:27Z **Round7** — explicitly drain own selected test node before safe detach: Pass
+
+- 2026-10-15T13:49:27Z **Round7** — Started public detach --yes --drained through installed owner
+
+- 2026-10-15T13:49:29Z **Round7** — public detach --yes --drained through installed owner: Pass
+
+- 2026-10-15T13:49:29Z **Round7** — Started drained detach current config private/source preservation and exact attempt removal
+
+- 2026-10-15T13:49:29Z **Round7** — drained detach current config private/source preservation and exact attempt removal: Pass
+
+- 2026-10-15T13:49:29Z **Round7** — Selected drained detach preserves current opaque state/source/private bytes and removes exact bounded attempt PASS
+
+- 2026-10-15T13:49:29Z **Round7** — Started L06 LN explicit start both local nodes before operator-approved selection
+
+- 2026-10-15T13:49:30Z **Round7** — L06 LN explicit start both local nodes before operator-approved selection: Pass
+
+- 2026-10-15T13:49:30Z **Round7** — Started L03 LN both real application nodes healthy before selection
+
+- 2026-10-15T13:51:31Z **Round7** — L03 LN both real application nodes healthy before selection: Fail
+
+- 2026-10-15T13:53:24Z **Round7** — Started destroy only interrupted fresh B through public launcher
+
+- 2026-10-15T13:53:25Z **Round7** — destroy only interrupted fresh B through public launcher: Pass
+
+- 2026-10-15T13:53:25Z **Round7** — Started remove exact test-only B private volumes for clean fixture rebuild
+
+- 2026-10-15T13:53:26Z **Round7** — remove exact test-only B private volumes for clean fixture rebuild: Pass
+
+- 2026-10-15T13:53:26Z **Round7** — Started recreate B through unchanged current public launcher
+
+- 2026-10-15T13:53:29Z **Round7** — recreate B through unchanged current public launcher: Pass
+
+- 2026-10-15T13:53:48Z **Round7** — L03 fixture correction: initial B Stop interrupted first database migration. Preserved failed attempt/logs; rebuilt only exact owned B volumes through public launcher and waited for real health. A-only unselected proof retains old B ID scope; no database/schema/product changes.
+
+- 2026-10-15T13:53:48Z **Round7** — Started L06 LN explicit start both local nodes before operator-approved selection
+
+- 2026-10-15T13:53:48Z **Round7** — L06 LN explicit start both local nodes before operator-approved selection: Pass
+
+- 2026-10-15T13:53:48Z **Round7** — Started L03 LN both real application nodes healthy before selection
+
+- 2026-10-15T13:53:48Z **Round7** — L03 LN both real application nodes healthy before selection: Pass
+
+- 2026-10-15T13:53:48Z **Round7** — Started L06 LN fresh public create A+B preserved source UUID
+
+- 2026-10-15T13:54:19Z **Round7** — L06 LN fresh public create A+B preserved source UUID: Pass
+
+- 2026-10-15T13:54:19Z **Round7** — Started L06 LN both configuration private image network volume and source preservation
+
+- 2026-10-15T13:54:20Z **Round7** — L06 LN both configuration private image network volume and source preservation: Pass
+
+- 2026-10-15T13:54:20Z **Round7** — Started L06 LN both actual application health after NFS selection
+
+- 2026-10-15T13:54:21Z **Round7** — L06 LN both actual application health after NFS selection: Pass
+
+- 2026-10-15T13:54:22Z **Round7** — LN L07 Pass; LN-files-result.json / streamed evidence
+
+- 2026-10-15T13:54:25Z **Round7** — LN L08 Pass; LN-files-result.json / streamed evidence
+
+- 2026-10-15T13:54:26Z **Round7** — LN L09 Pass; LN-files-result.json / streamed evidence
+
+- 2026-10-15T13:54:26Z **Round7** — LN L10 Pass; LN-files-result.json / streamed evidence
+
+- 2026-10-15T13:54:31Z **Round7** — LN L11 Pass; LN-files-result.json / streamed evidence
+
+- 2026-10-15T13:54:34Z **Round7** — LN L12 Pass; LN-files-result.json / streamed evidence
+
+- 2026-10-15T13:54:35Z **Round7** — LN L13 Pass; LN-files-result.json / streamed evidence
+
+- 2026-10-15T13:54:37Z **Round7** — LN L14 Pass; LN-files-result.json / streamed evidence
+
+- 2026-10-15T13:54:40Z **Round7** — LN L15 Pass; LN-files-result.json / streamed evidence
+
+- 2026-10-15T13:54:40Z **Round7** — LN L16 Pass; LN-files-result.json / streamed evidence
+
+- 2026-10-15T13:55:25Z **Round7** — Started L22 LN deterministic mounted project and non-global Git fixture
+
+- 2026-10-15T13:55:26Z **Round7** — L22 LN deterministic mounted project and non-global Git fixture: Pass
+
+- 2026-10-15T13:55:26Z **Round7** — Started L22 LN autobyteus-server-0 actual GraphQL REST HTML-relative-image and WebSocket PTY scoped Git
+
+- 2026-10-15T13:55:26Z **Round7** — L22 LN autobyteus-server-0 actual GraphQL REST HTML-relative-image and WebSocket PTY scoped Git: Pass
+
+- 2026-10-15T13:55:26Z **Round7** — Started L22 LN autobyteus-server-1 actual GraphQL REST HTML-relative-image and WebSocket PTY scoped Git
+
+- 2026-10-15T13:55:27Z **Round7** — L22 LN autobyteus-server-1 actual GraphQL REST HTML-relative-image and WebSocket PTY scoped Git: Pass
+
+- 2026-10-15T13:55:27Z **Round7** — Started L22 LN autobyteus-server-1 to autobyteus-server-0 actual content API peer change
+
+- 2026-10-15T13:55:28Z **Round7** — L22 LN autobyteus-server-1 to autobyteus-server-0 actual content API peer change: Pass
+
+- 2026-10-15T13:55:28Z **Round7** — Started L22 LN peer delete and traversal/absolute authorization refusals
+
+- 2026-10-15T13:55:28Z **Round7** — L22 LN peer delete and traversal/absolute authorization refusals: Pass
+
+- 2026-10-15T13:55:28Z **Round7** — Started L22 LN autobyteus-server-0 to autobyteus-server-1 actual content API peer change
+
+- 2026-10-15T13:55:28Z **Round7** — L22 LN autobyteus-server-0 to autobyteus-server-1 actual content API peer change: Pass
+
+- 2026-10-15T13:55:28Z **Round7** — Started L22 LN peer delete and traversal/absolute authorization refusals
+
+- 2026-10-15T13:55:29Z **Round7** — L22 LN peer delete and traversal/absolute authorization refusals: Pass
+
+- 2026-10-15T13:55:29Z **Round7** — Started L17 LN repeated actual status and explicit reconnect preserve source UUID
+
+- 2026-10-15T13:55:33Z **Round7** — L17 LN repeated actual status and explicit reconnect preserve source UUID: Pass
+
+- 2026-10-15T13:55:33Z **Round7** — Started L18 LN ordinary whole-host boot automatic both node readiness before any manual reconnect
+
+- 2026-10-15T13:56:29Z **Round7** — L18 LN ordinary whole-host boot automatic both node readiness before any manual reconnect: Pass
+
+- 2026-10-15T13:56:29Z **Round7** — Started L18 LN automatic same ID image config private/source and reciprocal bytes
+
+- 2026-10-15T13:56:30Z **Round7** — L18 LN automatic same ID image config private/source and reciprocal bytes: Pass
+
+- 2026-10-15T13:56:30Z **Round7** — Started L18 LN separate explicit reconnect after automatic proof
+
+- 2026-10-15T13:56:32Z **Round7** — L18 LN separate explicit reconnect after automatic proof: Pass
+
+- 2026-10-15T13:56:32Z **Round7** — Started L19 LN public launcher normal Stop on healthy node A
+
+- 2026-10-15T13:56:35Z **Round7** — L19 LN public launcher normal Stop on healthy node A: Pass
+
+- 2026-10-15T13:56:35Z **Round7** — Started L19 LN stopped A healthy B immediate
+
+- 2026-10-15T13:56:36Z **Round7** — L19 LN stopped A healthy B immediate: Fail
+
+- L17/L18 LN Pass actual two-node automatic boot before separate reconnect. L19 first observation harness compared running live NetworkSettings.Ports against intentionally stopped A; Docker correctly reports {}. Desired HostConfig.PortBindings unchanged. Original failed attempt retained; resume same stopped node with state-aware live-port assertion, no product change.
+
+- 2026-10-15T13:57:19Z **Round7** — Started L19 LN stopped A healthy B immediate corrected observation
+
+- 2026-10-15T13:57:20Z **Round7** — L19 LN stopped A healthy B immediate corrected observation: Pass
+
+- 2026-10-15T13:57:20Z **Round7** — L19 LN observing two normal30-second supervisor ticks
+
+- 2026-10-15T13:58:25Z **Round7** — Started L19 LN normal Stop persists through ticks and explicit reconnect
+
+- 2026-10-15T13:58:27Z **Round7** — L19 LN normal Stop persists through ticks and explicit reconnect: Pass
+
+- 2026-10-15T13:58:27Z **Round7** — Started L19 LN ordinary boot while A intentionally stopped
+
+- 2026-10-15T13:59:20Z **Round7** — L19 LN ordinary boot while A intentionally stopped: Pass
+
+- 2026-10-15T13:59:55Z **Round7** — Started L19 LN stopped A persists after boot while B automatically healthy
+
+- 2026-10-15T13:59:56Z **Round7** — L19 LN stopped A persists after boot while B automatically healthy: Pass
+
+- 2026-10-15T13:59:56Z **Round7** — Started L20 LN explicit operator starts A then ordinary node restart both
+
+- 2026-10-15T14:00:13Z **Round7** — L20 LN explicit operator starts A then ordinary node restart both: Pass
+
+- 2026-10-15T14:00:13Z **Round7** — Started L20 LN ordinary restart preserved both selected nodes
+
+- 2026-10-15T14:00:18Z **Round7** — L20 LN ordinary restart preserved both selected nodes: Pass
+
+- 2026-10-15T14:00:19Z **Round7** — Started L20 LN public launcher upgrade --all immutable current worktree image
+
+- 2026-10-15T14:00:26Z **Round7** — L20 LN public launcher upgrade --all immutable current worktree image: Pass
+
+- 2026-10-15T14:00:27Z **Round7** — Started L20 LN current replacement references and actual peer bytes
+
+- 2026-10-15T14:00:33Z **Round7** — L20 LN current replacement references and actual peer bytes: Pass
+
+- 2026-10-15T14:00:33Z **Round7** — Started L20 LN ordinary boot resolves new current references not stale IDs
+
+- 2026-10-15T14:01:27Z **Round7** — L20 LN ordinary boot resolves new current references not stale IDs: Pass
+
+- 2026-10-15T14:01:27Z **Round7** — Started L20 LN current reference image private and original source preserved
+
+- 2026-10-15T14:01:28Z **Round7** — L20 LN current reference image private and original source preserved: Pass
+
+- 2026-10-15T14:01:38Z **Round7** — V04 deterministic healthy mounted fixtures bytes verified in actual managed node; no actual-agent completed artifact claim
+
+- 2026-10-15T14:01:39Z **Round7** — Started L23 LN autobyteus-server-0 all healthy media text HTML-relative assets exact API bytes/MIME
+
+- 2026-10-15T14:01:39Z **Round7** — L23 LN autobyteus-server-0 all healthy media text HTML-relative assets exact API bytes/MIME: Pass
+
+- 2026-10-15T14:01:39Z **Round7** — Started L23 LN autobyteus-server-1 all healthy media text HTML-relative assets exact API bytes/MIME
+
+- 2026-10-15T14:01:39Z **Round7** — L23 LN autobyteus-server-1 all healthy media text HTML-relative assets exact API bytes/MIME: Pass
+
+- 2026-10-15T14:01:44Z **Round7** — Host-to-owned-guest SSH loopback HTTP forwarding verified using own ephemeral key and guest-read host key; no VM peer route/bridge workaround
+
+- 2026-10-15T14:03:34Z **Round7** — L23 real node B committed text/create; native and node A independently see bytes. UI unsaved-buffer/reload evidence next.
+
+- 2026-10-15T14:08:14Z **Round7** — L23 real node B committed text/create; native and node A independently see bytes. UI unsaved-buffer/reload evidence next.
+
+- 2026-10-15T14:08:57Z **Round7** — L23 control: trusted native key events typed ab, Cmd+S displayed Changes saved and real node B read exactly ab. Earlier unsaved ab was replaced after peer change + Files reload; reproducing with validated native editor input. First inline observation attempt lacked harness __file__ and did not run guest commands.
+
+- Round7 L23 **Fail / API-F007-UNSAVED / AC-010**: validated native editor input cd was silently replaced by actual node-B committed text before reload. Save control proves real editor model; source/peer bytes correct. See `evidence/api-e2e/api-rev-007/ui-unsaved-peer-reproduction.json`. Continue independent storage cases, not a Pass.
+
+- 2026-10-15T14:11:09Z **Round7** — L23 peer B changed PNG and HTML and deleted both own-created entries; exact hashes independently read at original source. UI reload/reopen next.
+
+- Round7 L23 LN healthy text/Markdown/image/HTML-relative/PDF/audio/video rendered in current isolated desktop; real audio/video completed4sec, peer-change/reopen and delete/tree reload passed. **L23 remains Fail** for unsaved edit loss, not masked by other preview success. `LN-desktop-observations.json`.
+
+- 2026-10-15T14:11:44Z **Round7** — Started L21 LN replace source pathname with actual new directory and copied marker
+
+- 2026-10-15T14:11:44Z **Round7** — L21 LN replace source pathname with actual new directory and copied marker: Pass
+
+- 2026-10-15T14:11:44Z **Round7** — Started L21 LN public reconnect refuses copied-marker replacement without rebinding
+
+- 2026-10-15T14:11:44Z **Round7** — L21 LN public reconnect refuses copied-marker replacement without rebinding: Pass
+
+- 2026-10-15T14:11:44Z **Round7** — Started L21 LN restore exact original source without copying data
+
+- 2026-10-15T14:11:44Z **Round7** — L21 LN restore exact original source without copying data: Pass
+
+- 2026-10-15T14:11:44Z **Round7** — Started L21 LN restored original public reconnect and actual fresh status
+
+- 2026-10-15T14:11:46Z **Round7** — L21 LN restored original public reconnect and actual fresh status: Pass
+
+- 2026-10-15T14:11:46Z **Round7** — Started L25 LN no-drain public detach refusal leaves both running unchanged
+
+- 2026-10-15T14:11:46Z **Round7** — L25 LN no-drain public detach refusal leaves both running unchanged: Fail
+
+- Round7 L25 first no-drain attempt correctly refused rc1: detach declined; nothing changed. Harness wrongly required the word drain. Preserve raw result; correct exact documented refusal oracle and resume L25 without repeating successful L21. No product repair.
+
+- 2026-10-15T14:12:10Z **Round7** — Started L25 LN no-drain public detach refusal leaves both running unchanged
+
+- 2026-10-15T14:12:10Z **Round7** — L25 LN no-drain public detach refusal leaves both running unchanged: Pass
+
+- 2026-10-15T14:12:10Z **Round7** — Started L25 LN actual controlled drain stops both nodes
+
+- 2026-10-15T14:12:13Z **Round7** — L25 LN actual controlled drain stops both nodes: Pass
+
+- 2026-10-15T14:12:14Z **Round7** — Started L25 LN busy mount refused without forced/lazy unmount
+
+- 2026-10-15T14:12:15Z **Round7** — L25 LN busy mount refused without forced/lazy unmount: Pass
+
+- 2026-10-15T14:12:15Z **Round7** — Started L25 LN after real drain public detach completes
+
+- 2026-10-15T14:12:16Z **Round7** — L25 LN after real drain public detach completes: Pass
+
+- 2026-10-15T14:12:16Z **Round7** — Started L25 LN both node local config private volumes source marker retained and owned attachment absent
+
+- 2026-10-15T14:12:16Z **Round7** — L25 LN both node local config private volumes source marker retained and owned attachment absent: Pass
+
+- 2026-10-15T14:12:37Z **Round7** — Started test-owned Docker prerequisite in owned detached LinuxVM
+
+- 2026-10-15T14:12:40Z **Round7** — test-owned Docker prerequisite in owned detached LinuxVM: Pass
+
+- 2026-10-15T14:12:40Z **Round7** — Started build storage image from exact retained engine pair
+
+- 2026-10-15T14:13:18Z **Round7** — build storage image from exact retained engine pair: Pass
+
+- 2026-10-15T14:13:18Z **Round7** — Started clean image package and manifest verification
+
+- 2026-10-15T14:13:20Z **Round7** — clean image package and manifest verification: Pass
+
+- 2026-10-15T14:13:20Z **Round7** — Started existing own loopback registry ready
+
+- 2026-10-15T14:13:20Z **Round7** — existing own loopback registry ready: Pass
+
+- 2026-10-15T14:13:20Z **Round7** — Started retain image under actual local-registry immutable digest
+
+- 2026-10-15T14:13:21Z **Round7** — retain image under actual local-registry immutable digest: Pass
+
+- 2026-10-15T14:13:21Z **Round7** — Docker storage image ready, test-only loopback digest recorded; no public create yet
+
+- 2026-10-15T14:13:23Z **Round7** — Started operator starts own safely detached node before Docker storage setup
+
+- 2026-10-15T14:13:24Z **Round7** — operator starts own safely detached node before Docker storage setup: Pass
+
+- 2026-10-15T14:13:28Z **Round7** — Started preserved original ext4 source and marker before Docker setup
+
+- 2026-10-15T14:13:28Z **Round7** — preserved original ext4 source and marker before Docker setup: Pass
+
+- 2026-10-15T14:13:28Z **Round7** — Started public selected Docker-storage create against same preserved source
+
+- 2026-10-15T14:13:38Z **Round7** — public selected Docker-storage create against same preserved source: Pass
+
+- 2026-10-15T14:13:38Z **Round7** — Started exact chosen image config private state ports aliases and unselected preservation
+
+- 2026-10-15T14:13:39Z **Round7** — exact chosen image config private state ports aliases and unselected preservation: Fail
+
+- 2026-10-15T14:13:39Z **Round7** — ManagedDocker client Fail/incomplete AssertionError({'configChangedKeys': ['Labels']})
+
+- Round7 LD public selected create succeeded; preservation assertion invalid due asymmetric product-owned recreation label exclusion. Raw Fail retained; confirm current snapshots with both owned-label exclusions, no product mutation.
+- Round7 L23 durable regression executed: 3Pass/1Fail; no-peer draft/save control Pass, peer modify path saves peer committed bytes instead of local unsaved draft. Matches live actual unsaved-loss. See unsaved-regression.log.
+
+- Round7 LD confirmation helper overwrote original create JSON with initial metadata before loading its snapshots (KeyError). Evidence-harness failure disclosed in docker-selected-create-evidence-attempts.json; console survives. Do not credit lost preservation proof. Publicly drain/detach own A, then repeat fresh setup with new complete snapshot/result-v2.
+
+- 2026-10-15T14:14:51Z **Round7** — Started LD harness recovery real drain A
+
+- 2026-10-15T14:14:53Z **Round7** — LD harness recovery real drain A: Pass
+
+- 2026-10-15T14:14:53Z **Round7** — Started LD harness recovery public detach
+
+- 2026-10-15T14:14:54Z **Round7** — LD harness recovery public detach: Pass
+
+- 2026-10-15T14:14:55Z **Round7** — Started operator starts own safely detached node before Docker storage setup
+
+- 2026-10-15T14:14:55Z **Round7** — operator starts own safely detached node before Docker storage setup: Pass
+
+- 2026-10-15T14:14:59Z **Round7** — Started preserved original ext4 source and marker before Docker setup
+
+- 2026-10-15T14:14:59Z **Round7** — preserved original ext4 source and marker before Docker setup: Pass
+
+- 2026-10-15T14:15:00Z **Round7** — Started public selected Docker-storage create against same preserved source
+
+- 2026-10-15T14:15:09Z **Round7** — public selected Docker-storage create against same preserved source: Pass
+
+- 2026-10-15T14:15:09Z **Round7** — Started exact chosen image config private state ports aliases and unselected preservation
+
+- 2026-10-15T14:15:10Z **Round7** — exact chosen image config private state ports aliases and unselected preservation: Pass
+
+- 2026-10-15T14:15:10Z **Round7** — Started same original nonempty source and native mount identity preserved
+
+- 2026-10-15T14:15:10Z **Round7** — same original nonempty source and native mount identity preserved: Pass
+
+- 2026-10-15T14:15:10Z **Round7** — Started installed identity private modes and active managed job
+
+- 2026-10-15T14:15:10Z **Round7** — installed identity private modes and active managed job: Pass
+
+- 2026-10-15T14:15:10Z **Round7** — Current Docker-storage selected public create Pass; healthy visibility next; native package is already installed but stopped; not fresh-Docker-only machine claim
+
+- 2026-10-15T14:15:35Z **Round7** — Started explicitly drain own selected test node before safe detach
+
+- 2026-10-15T14:15:39Z **Round7** — explicitly drain own selected test node before safe detach: Pass
+
+- 2026-10-15T14:15:39Z **Round7** — Started public detach --yes --drained through installed owner
+
+- 2026-10-15T14:15:40Z **Round7** — public detach --yes --drained through installed owner: Pass
+
+- 2026-10-15T14:15:40Z **Round7** — Started drained detach current config private/source preservation and exact attempt removal
+
+- 2026-10-15T14:15:41Z **Round7** — drained detach current config private/source preservation and exact attempt removal: Pass
+
+- 2026-10-15T14:15:41Z **Round7** — Selected drained detach preserves current opaque state/source/private bytes and removes exact bounded attempt PASS
+
+- 2026-10-15T14:15:41Z **Round7** — Started L06 LD explicit start both local nodes before operator-approved selection
+
+- 2026-10-15T14:15:42Z **Round7** — L06 LD explicit start both local nodes before operator-approved selection: Pass
+
+- 2026-10-15T14:15:42Z **Round7** — Started L03 LD both real application nodes healthy before selection
+
+- 2026-10-15T14:15:48Z **Round7** — L03 LD both real application nodes healthy before selection: Pass
+
+- 2026-10-15T14:15:48Z **Round7** — Started L06 LD fresh public create A+B preserved source UUID
+
+- 2026-10-15T14:16:07Z **Round7** — L06 LD fresh public create A+B preserved source UUID: Pass
+
+- 2026-10-15T14:16:07Z **Round7** — Started L06 LD both configuration private image network volume and source preservation
+
+- 2026-10-15T14:16:08Z **Round7** — L06 LD both configuration private image network volume and source preservation: Pass
+
+- 2026-10-15T14:16:08Z **Round7** — Started L06 LD both actual application health after NFS selection
+
+- 2026-10-15T14:16:08Z **Round7** — L06 LD both actual application health after NFS selection: Pass
+
+- 2026-10-15T14:16:09Z **Round7** — LD L07 Pass; LD-files-result.json / streamed evidence
+
+- 2026-10-15T14:16:11Z **Round7** — LD L08 Pass; LD-files-result.json / streamed evidence
+
+- 2026-10-15T14:16:11Z **Round7** — LD L09 Pass; LD-files-result.json / streamed evidence
+
+- 2026-10-15T14:16:11Z **Round7** — LD L10 Fail; LD-files-result.json / streamed evidence
+
+- Round7 LD L10 failed overstrict client numeric-owner equality, source actual1000:109 correct; client1001:109 recorded. No product mutation. New v2 namespace tests approved source ownership plus actual client behavior; child-scoped Git trust per design.
+
+- 2026-10-15T14:17:44Z **Round7** — LD L07 Pass; LD-files-result.json / streamed evidence
+
+- 2026-10-15T14:17:46Z **Round7** — LD L08 Pass; LD-files-result.json / streamed evidence
+
+- 2026-10-15T14:17:47Z **Round7** — LD L09 Pass; LD-files-result.json / streamed evidence
+
+- 2026-10-15T14:17:47Z **Round7** — LD L10 Pass; LD-files-result.json / streamed evidence
+
+- 2026-10-15T14:17:52Z **Round7** — LD L11 Pass; LD-files-result.json / streamed evidence
+
+- 2026-10-15T14:17:55Z **Round7** — LD L12 Pass; LD-files-result.json / streamed evidence
+
+- 2026-10-15T14:17:56Z **Round7** — LD L13 Pass; LD-files-result.json / streamed evidence
+
+- 2026-10-15T14:17:57Z **Round7** — LD L14 Pass; LD-files-result.json / streamed evidence
+
+- 2026-10-15T14:18:00Z **Round7** — LD L15 Pass; LD-files-result.json / streamed evidence
+
+- 2026-10-15T14:18:01Z **Round7** — LD L16 Pass; LD-files-result.json / streamed evidence
+
+- Round7 LD v2 L07–L16 allPass; streamed event suffix still named first raw receipt, corrected reference is LD-files-v2-result.json. Initial API runner stopped before any guest action because it referenced superseded raw files result; retarget valid v2 receipt, keep precondition attempt.
+
+- 2026-10-15T14:18:33Z **Round7** — Started L22 LD deterministic mounted project and non-global Git fixture
+
+- 2026-10-15T14:18:34Z **Round7** — L22 LD deterministic mounted project and non-global Git fixture: Pass
+
+- 2026-10-15T14:18:34Z **Round7** — Started L22 LD autobyteus-server-0 actual GraphQL REST HTML-relative-image and WebSocket PTY scoped Git
+
+- 2026-10-15T14:18:34Z **Round7** — L22 LD autobyteus-server-0 actual GraphQL REST HTML-relative-image and WebSocket PTY scoped Git: Pass
+
+- 2026-10-15T14:18:34Z **Round7** — Started L22 LD autobyteus-server-1 actual GraphQL REST HTML-relative-image and WebSocket PTY scoped Git
+
+- 2026-10-15T14:18:35Z **Round7** — L22 LD autobyteus-server-1 actual GraphQL REST HTML-relative-image and WebSocket PTY scoped Git: Pass
+
+- 2026-10-15T14:18:35Z **Round7** — Started L22 LD autobyteus-server-1 to autobyteus-server-0 actual content API peer change
+
+- 2026-10-15T14:18:36Z **Round7** — L22 LD autobyteus-server-1 to autobyteus-server-0 actual content API peer change: Pass
+
+- 2026-10-15T14:18:36Z **Round7** — Started L22 LD peer delete and traversal/absolute authorization refusals
+
+- 2026-10-15T14:18:36Z **Round7** — L22 LD peer delete and traversal/absolute authorization refusals: Pass
+
+- 2026-10-15T14:18:36Z **Round7** — Started L22 LD autobyteus-server-0 to autobyteus-server-1 actual content API peer change
+
+- 2026-10-15T14:18:36Z **Round7** — L22 LD autobyteus-server-0 to autobyteus-server-1 actual content API peer change: Pass
+
+- 2026-10-15T14:18:36Z **Round7** — Started L22 LD peer delete and traversal/absolute authorization refusals
+
+- 2026-10-15T14:18:37Z **Round7** — L22 LD peer delete and traversal/absolute authorization refusals: Pass
+
+- 2026-10-15T14:18:37Z **Round7** — Started L23 LD autobyteus-server-0 all healthy media text HTML-relative assets exact API bytes/MIME
+
+- 2026-10-15T14:18:37Z **Round7** — L23 LD autobyteus-server-0 all healthy media text HTML-relative assets exact API bytes/MIME: Pass
+
+- 2026-10-15T14:18:37Z **Round7** — Started L23 LD autobyteus-server-1 all healthy media text HTML-relative assets exact API bytes/MIME
+
+- 2026-10-15T14:18:37Z **Round7** — L23 LD autobyteus-server-1 all healthy media text HTML-relative assets exact API bytes/MIME: Pass
+
+- 2026-10-15T14:18:38Z **Round7** — Started L17 LD repeated actual status and explicit reconnect preserve source UUID
+
+- 2026-10-15T14:18:38Z **Round7** — L17 LD repeated actual status and explicit reconnect preserve source UUID: Fail
+
+- Round7 LD L22/L23 actual both-node APIs/media hashes Pass. L17 first status correctly returned explicit administrative-operation incomplete while supervisor held lock; no mutation or false Ready. Original attempt retained. v2 waits only exact documented lock response on status/reconnect; all other failures stop. No lifecycle retry/repair or weakened automatic-boot proof.
+
+- 2026-10-15T14:19:25Z **Round7** — Started L17 LD repeated actual status and explicit reconnect preserve source UUID
+
+- 2026-10-15T14:19:29Z **Round7** — L17 LD repeated actual status and explicit reconnect preserve source UUID: Pass
+
+- 2026-10-15T14:19:29Z **Round7** — Started L18 LD ordinary whole-host boot automatic both node readiness before any manual reconnect
+
+- 2026-10-15T14:20:38Z **Round7** — L18 LD ordinary whole-host boot automatic both node readiness before any manual reconnect: Pass
+
+- 2026-10-15T14:20:38Z **Round7** — Started L18 LD automatic same ID image config private/source and reciprocal bytes
+
+- 2026-10-15T14:20:38Z **Round7** — L18 LD automatic same ID image config private/source and reciprocal bytes: Pass
+
+- 2026-10-15T14:20:38Z **Round7** — Started L18 LD separate explicit reconnect after automatic proof
+
+- 2026-10-15T14:20:41Z **Round7** — L18 LD separate explicit reconnect after automatic proof: Pass
+
+- 2026-10-15T14:20:41Z **Round7** — Started L19 LD public launcher normal Stop on healthy node A
+
+- 2026-10-15T14:20:44Z **Round7** — L19 LD public launcher normal Stop on healthy node A: Pass
+
+- 2026-10-15T14:20:44Z **Round7** — Started L19 LD stopped A healthy B immediate
+
+- 2026-10-15T14:20:45Z **Round7** — L19 LD stopped A healthy B immediate: Pass
+
+- 2026-10-15T14:20:45Z **Round7** — L19 LD observing two normal30-second supervisor ticks
+
+- 2026-10-15T14:21:50Z **Round7** — Started L19 LD normal Stop persists through ticks and explicit reconnect
+
+- 2026-10-15T14:21:53Z **Round7** — L19 LD normal Stop persists through ticks and explicit reconnect: Pass
+
+- 2026-10-15T14:21:53Z **Round7** — Started L19 LD ordinary boot while A intentionally stopped
+
+- 2026-10-15T14:22:53Z **Round7** — L19 LD ordinary boot while A intentionally stopped: Pass
+
+- 2026-10-15T14:23:28Z **Round7** — Started L19 LD stopped A persists after boot while B automatically healthy
+
+- 2026-10-15T14:23:29Z **Round7** — L19 LD stopped A persists after boot while B automatically healthy: Pass
+
+- 2026-10-15T14:23:29Z **Round7** — Started L20 LD explicit operator starts A then ordinary node restart both
+
+- 2026-10-15T14:23:44Z **Round7** — L20 LD explicit operator starts A then ordinary node restart both: Pass
+
+- 2026-10-15T14:23:44Z **Round7** — Started L20 LD ordinary restart preserved both selected nodes
+
+- 2026-10-15T14:23:50Z **Round7** — L20 LD ordinary restart preserved both selected nodes: Pass
+
+- 2026-10-15T14:23:51Z **Round7** — Started L20 LD public launcher upgrade --all immutable current worktree image
+
+- 2026-10-15T14:23:54Z **Round7** — L20 LD public launcher upgrade --all immutable current worktree image: Pass
+
+- Round7 LD L17–19 and ordinary restart passed. Upgrade current-image/current-config correctly no-opped with same IDs, contrary to harness unconditional recreation assertion. Preserve v2 raw result. Explicit upgrade to owned metadata-only new immutable image (same application binaries) now exercises actual replacement; no product change/force recreation or source-version compatibility claim.
+
+- 2026-10-15T14:25:06Z **Round7** — Started L20 LD already-current public upgrade preserves both IDs/config
+
+- 2026-10-15T14:25:06Z **Round7** — L20 LD already-current public upgrade preserves both IDs/config: Pass
+
+- 2026-10-15T14:25:32Z **Round7** — Started L20 LD public launcher upgrade --all immutable current worktree image
+
+- 2026-10-15T14:25:39Z **Round7** — L20 LD public launcher upgrade --all immutable current worktree image: Pass
+
+- 2026-10-15T14:25:40Z **Round7** — Started L20 LD current replacement references and actual peer bytes
+
+- 2026-10-15T14:25:46Z **Round7** — L20 LD current replacement references and actual peer bytes: Pass
+
+- 2026-10-15T14:25:46Z **Round7** — Started L20 LD ordinary boot resolves new current references not stale IDs
+
+- 2026-10-15T14:26:54Z **Round7** — L20 LD ordinary boot resolves new current references not stale IDs: Pass
+
+- 2026-10-15T14:26:54Z **Round7** — Started L20 LD current reference image private and original source preserved
+
+- 2026-10-15T14:26:54Z **Round7** — L20 LD current reference image private and original source preserved: Pass
+
+- 2026-10-15T14:26:55Z **Round7** — Started L21 LD replace source pathname with actual new directory and copied marker
+
+- 2026-10-15T14:26:55Z **Round7** — L21 LD replace source pathname with actual new directory and copied marker: Pass
+
+- 2026-10-15T14:26:55Z **Round7** — Started L21 LD public reconnect refuses copied-marker replacement without rebinding
+
+- 2026-10-15T14:26:55Z **Round7** — L21 LD public reconnect refuses copied-marker replacement without rebinding: Pass
+
+- 2026-10-15T14:26:55Z **Round7** — Started L21 LD restore exact original source without copying data
+
+- 2026-10-15T14:26:55Z **Round7** — L21 LD restore exact original source without copying data: Pass
+
+- 2026-10-15T14:26:55Z **Round7** — Started L21 LD restored original public reconnect and actual fresh status
+
+- 2026-10-15T14:26:56Z **Round7** — L21 LD restored original public reconnect and actual fresh status: Pass
+
+- 2026-10-15T14:26:56Z **Round7** — Started L25 LD no-drain public detach refusal leaves both running unchanged
+
+- 2026-10-15T14:26:56Z **Round7** — L25 LD no-drain public detach refusal leaves both running unchanged: Pass
+
+- 2026-10-15T14:26:56Z **Round7** — Started L25 LD actual controlled drain stops both nodes
+
+- 2026-10-15T14:26:59Z **Round7** — L25 LD actual controlled drain stops both nodes: Pass
+
+- 2026-10-15T14:27:00Z **Round7** — Started L25 LD busy mount refused without forced/lazy unmount
+
+- 2026-10-15T14:27:01Z **Round7** — L25 LD busy mount refused without forced/lazy unmount: Pass
+
+- 2026-10-15T14:27:01Z **Round7** — Started L25 LD after real drain public detach completes
+
+- 2026-10-15T14:27:02Z **Round7** — L25 LD after real drain public detach completes: Pass
+
+- 2026-10-15T14:27:02Z **Round7** — Started L25 LD both node local config private volumes source marker retained and owned attachment absent
+
+- 2026-10-15T14:27:02Z **Round7** — L25 LD both node local config private volumes source marker retained and owned attachment absent: Pass
+
+- Round7 L26 cleanup Complete: exact VM/clone/private cache, server tag, owned desktop/tunnel/ports and scratch removed; original source/marker/private bytes proved before disposable VM retirement; previous public Mac cache/engine candidate/generated directories retained. `evidence/api-e2e/api-rev-007/cleanup.json`.
+
+## API007 completed result reconciliation
+24Pass/2Fail case groups; one underlying finding API-F007-UNSAVED (L02 red regression, L23 live). Full planned scoped categories attempted; not all acceptance passed. Final report Fail 82.14%, cleanupComplete. No deferred qualification counted as Pass.

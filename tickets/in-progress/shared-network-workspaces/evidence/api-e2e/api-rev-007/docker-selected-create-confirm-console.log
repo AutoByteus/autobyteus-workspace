@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/confirm-docker-selected-create.py", line 21, in <module>
+    r=json.loads((E/'docker-selected-create-result.json').read_text());r['result']='Running';r.pop('fatal',None);prep=r['preparedCurrent'];RESULT='docker-selected-create-confirm-result.json'
+KeyError: 'preparedCurrent'

@@ -1,0 +1,10 @@
+Started operator starts own safely detached node before Docker storage setup
+operator starts own safely detached node before Docker storage setup: Pass
+Started preserved original ext4 source and marker before Docker setup
+preserved original ext4 source and marker before Docker setup: Pass
+Started public selected Docker-storage create against same preserved source
+public selected Docker-storage create against same preserved source: Pass
+Started exact chosen image config private state ports aliases and unselected preservation
+exact chosen image config private state ports aliases and unselected preservation: Fail
+ManagedDocker client Fail/incomplete AssertionError({'configChangedKeys': ['Labels']})
+{"result": "Fail", "fatal": "AssertionError({'configChangedKeys': ['Labels']})"}

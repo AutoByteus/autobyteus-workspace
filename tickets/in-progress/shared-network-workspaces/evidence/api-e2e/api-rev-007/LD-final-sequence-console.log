@@ -1,0 +1,10 @@
+Starting run-mounted-apis.py ['LD']
+LD-mounted-api-result.json:Pass
+Starting run-preview-apis.py ['LD']
+LD-preview-api-result.json:Pass
+Starting run-lifecycle.py ['LD']
+LD-lifecycle-result.json:Fail
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/continue-docker-after-files.py", line 10, in <module>
+    assert p.returncode==0 and d['result']=='Pass',(script,d.get('fatal'))
+AssertionError: ('run-lifecycle.py', "RuntimeError('AutoByteus NFS incomplete: another administrative operation is checking/incomplete; restore storage and wait: resource temporarily unavailable\\nAutoByteus NFS incomplete: exit status 1\\n')")

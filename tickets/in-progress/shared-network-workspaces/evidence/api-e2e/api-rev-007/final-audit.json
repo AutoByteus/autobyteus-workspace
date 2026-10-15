@@ -1,0 +1,140 @@
+{
+  "technicalSourceVsInput": {
+    "argv": [
+      "git",
+      "diff",
+      "--name-only",
+      "d3c88f37c30ee74a89a95a4f6906992667c9b875",
+      "HEAD",
+      "--",
+      ".",
+      ":!tickets"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "trackedSourceWorkingDiff": {
+    "argv": [
+      "git",
+      "diff",
+      "--name-only",
+      "--",
+      ".",
+      ":!tickets"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "durableTest": "autobyteus-web/components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts",
+  "verdict": {
+    "result": "Fail",
+    "confidence": 82.14,
+    "scores": [
+      50,
+      95,
+      95,
+      95,
+      95,
+      50,
+      95
+    ],
+    "caseGroups": {
+      "Pass": 24,
+      "Fail": 2
+    },
+    "finding": "API-F007-UNSAVED",
+    "cleanup": "Complete",
+    "sourceChanged": false,
+    "newDurableTest": "autobyteus-web/components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts",
+    "testReview": "Failure-origin review requested; not successful-test review",
+    "broaderValidation": "Required and executed"
+  },
+  "localEvidenceLinks": [
+    "evidence/api-e2e/api-rev-007/build-result.json",
+    "evidence/api-e2e/api-rev-007/build-docker-result.json",
+    "evidence/api-e2e/api-rev-007/selected-create-result.json",
+    "evidence/api-e2e/api-rev-007/native-detach-result.json",
+    "evidence/api-e2e/api-rev-007/LN-both-create-result.json",
+    "evidence/api-e2e/api-rev-007/docker-selected-create-v2-result.json",
+    "evidence/api-e2e/api-rev-007/docker-single-detach-result.json",
+    "evidence/api-e2e/api-rev-007/LD-both-create-result.json",
+    "evidence/api-e2e/api-rev-007/LN-files-result.json",
+    "evidence/api-e2e/api-rev-007/LD-files-v2-result.json",
+    "evidence/api-e2e/api-rev-007/guest-filesystem-cases.py",
+    "evidence/api-e2e/api-rev-007/preflight-controls-result.json",
+    "evidence/api-e2e/api-rev-007/LN-lifecycle-result.json",
+    "evidence/api-e2e/api-rev-007/LN-lifecycle-resume-result.json",
+    "evidence/api-e2e/api-rev-007/LD-lifecycle-v2-result.json",
+    "evidence/api-e2e/api-rev-007/LD-lifecycle-upgrade-result.json",
+    "evidence/api-e2e/api-rev-007/policy-veto-carried-scope.json",
+    "evidence/api-e2e/api-rev-007/LN-source-detach-result.json",
+    "evidence/api-e2e/api-rev-007/LN-source-detach-resume-result.json",
+    "evidence/api-e2e/api-rev-007/LD-source-detach-result.json",
+    "evidence/api-e2e/api-rev-007/LN-mounted-api-result.json",
+    "evidence/api-e2e/api-rev-007/LD-mounted-api-result.json",
+    "evidence/api-e2e/api-rev-007/ui-unsaved-peer-reproduction.json",
+    "evidence/api-e2e/api-rev-007/ui-unsaved-save-control.json",
+    "evidence/api-e2e/api-rev-007/LN-desktop-observations.json",
+    "evidence/api-e2e/api-rev-007/LN-preview-api-result.json",
+    "evidence/api-e2e/api-rev-007/LD-preview-api-result.json",
+    "evidence/api-e2e/api-rev-007/ui-peer-preview-update.json",
+    "evidence/api-e2e/api-rev-007/desktop-guide-observation.json",
+    "evidence/api-e2e/api-rev-007/guide-unit.log",
+    "evidence/api-e2e/api-rev-007/public-contracts.log",
+    "evidence/api-e2e/api-rev-007/unsaved-regression.log",
+    "evidence/api-e2e/api-rev-007/cleanup.json"
+  ],
+  "caseGroupRows": [
+    "| L01 | Both | Environment and build identity: fresh guest OS/ext4, nonroot identity, exact candidate/engine/server image, no inherited credentials or old attachment | Guest preflight, hashes, version, mount/process inventory | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |",
+    "| L02 | Both | Relevant Go/packaging/launcher/binding/REST/Guide/local regressions; inspect carried exact-source results; skips explicitly enumerated | Current focused tests or justified unchanged receipts, source hash audit | Fail new AC010 regression (3Pass/1Fail); initial repository suites Pass with listed skips |",
+    "| L03 | Both | Two nodes from current public launcher, real health endpoints; snapshot A/B image, Config/HostConfig, ports, aliases, volumes, running state and private sentinels | Launcher commands, actual Docker inspect and hashes | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |",
+    "| L04 | Both | Consent/unsafe-target controls: decline required drain, reject nonempty mount target/private or symlink source; leave nodes/data/config unchanged | Public CLI exit/output, before/after snapshot; narrow unit cases for unavailable interactive privilege condition | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |",
+    "| L05 | LN, LD | Public create selects A only, reports actual mapping and readiness; B remains unselected/local and unchanged; source bytes/UUID/nonroot mapping preserved | Public CLI/descriptor/mount, A RW, B inspect/private hashes | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |",
+    "| L06 | LN, LD | Public drained detach A-only setup then fresh public create selecting A+B against preserved source/marker; no extra in-container mount/setup commands | Displayed plan, public results, source UUID continuity, both node mounts | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |",
+    "| L07 | LN, LD | Real source proof: A/B see original nonempty project and same marker; reciprocal unique writes reach other node and original source; no local-folder substitute | Exact bytes/hashes, native and Docker NFS volume/mount records, actual UID/GID | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |",
+    "| L08 | LN, LD | Reciprocal create/read/write/overwrite/append for text, Unicode and binary files (including empty,1KiB,1MiB); verify exact bytes | Independent actor results and source hashes | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |",
+    "| L09 | LN, LD | mkdir/nested directories/listing, file+directory rename, atomic replacement, deletion and missing-path results visible to other actor | Peer directory listings/stat/open assertions | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |",
+    "| L10 | LN, LD | Metadata/relative symlinks/chmod/executable-file behavior; preserve ordinary owner/group/mode contract, no global permission relaxation | Actual stat/readlink/execute and nonroot identity evidence | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |",
+    "| L11 | LN, LD | Warm old bytes/negative lookups; in-place overwrite, atomic replacement and new publication,1KiB/1MiB, both A\u2192B/B\u2192A and source/native controls; fresh open exact bytes <=5s from successful flush/fsync/close | Per-fixture writer completion, reader observation/elapsed bound, expected/actual hash; no cacheflush/remount workaround | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |",
+    "| L12 | LN, LD | Concurrent independent-file writers A/B; every file intact and cross-readable, no overwrite/loss; actual two-process overlap | Barrier/start/end timestamps, complete expected manifest and hashes | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |",
+    "| L13 | LN, LD | Coordinated same-file edit handoff and Git status/edit/add/commit A then B; same repository state, scoped Git environment; no implicit merging/independent shared branches claim | Command/output and repository content/commit assertions | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |",
+    "| L14 | LN, LD | Exclusive-create contention: one winner, other receives supported exists error, final bytes exactly winner; no silent overwrite | Both actor exits, actual contents | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |",
+    "| L15 | LN, LD | Documented NFSv4 advisory lock contention/release with separate node processes; distinguish same-kernel lock proof from independent-kernel qualification | Holder/contender acquire/refusal/release receipts | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |",
+    "| L16 | LN, LD | Nonroot authorized access, root-squash/mapall ownership, permission-denied path/error; private database/auth/profile sentinels remain node-private, nonexported and unchanged | UID/GID/mode/access errors, private hashes and export inspection | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |",
+    "| L17 | LN, LD | Repeat status/reconnect with healthy configured source: same source/UUID/bytes/node configuration, no duplicate resources or local fallback | Public results and before/after mount/node/state inventories | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |",
+    "| L18 | LN, LD | Ordinary VM reboot: service and both selected nodes automatically usable before manual reconnect/start; then separate explicit reconnect and reciprocal roundtrip | Distinct boot IDs, timed observations (not boot SLA), same IDs/image/config/private/source comparisons | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |",
+    "| L19 | LN, LD | Normal Stop of one running unless-stopped node stays stopped through ticks/reconnect/reboot; peer remains healthy. Retain previously proven failed-start restart=no veto at its exact scope | Public Docker lifecycle, saved intent/config, valid API005 scope mapping or focused rerun | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |",
+    "| L20 | LN, LD | Public launcher restart/upgrade/recreation retains shared attachment and each node's private data/config; current replacement reference resolves after reboot | Current launcher calls, old/new IDs/image provenance, volume/private hashes and RW | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |",
+    "| L21 | LN, LD | Real source replacement with copied marker is refused without rebind/false ready; restore exact original, reconnect; unsupported configuration errors preserve evidence | Actual inode/source change, public refusal, saved binding/hash and restored original proof | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |",
+    "| L22 | LN, LD | Filesystem-facing application GraphQL/REST and WebSocket terminal use mounted project; node B changes/removes content A serves, then reverse; existing path authorization and error behavior preserved | Real server endpoints, exact bytes/MIME/errors and scoped terminal/Git output | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |",
+    "| L23 | LN, LD | Healthy text/Markdown/image/HTML+relative assets/PDF/audio/video previews, deliberate tree reload/reopen after other-node changes, preserve unsaved buffers; watcher behavior recorded, not required | Current worktree isolated app/API/DOM evidence; justified mode-invariant carried UI evidence where exact source unchanged | Fail unsaved-buffer loss; LN UI plus both-mode API/media healthy subchecks Pass; LD renderer mode-invariant carry explicitly scoped |",
+    "| L24 | Both | NFS Guide current unavailable release state and ordinary local workspace/preview regressions; no invented working public installer | Current UI/component and applicable real-surface evidence | Pass current Guide UI/21unit and real HTTP local-preview regressions; no separate new local-workspace desktop journey |",
+    "| L25 | LN, LD | Safe detach: busy/drain refusal leaves data intact; after actual drain public detach restores local node configuration, preserves private volumes/source/marker, removes only owned attachment/job/mount; repeat incomplete detach only if genuinely reached | Public output, no forced unmount, source/private/config/resource comparisons | Pass LN+LD / valid scoped evidence; see API007 report AC proof and immediate case events |",
+    "| L26 | Final | Stop/remove only test-owned nodes/VM/processes/build tags/scratch; retain evidence and prior public cache/candidates/dist; reconcile every row and seven-category score | Cleanup receipt, source/durable diff and cumulative evidence audit; final API report | Pass exact owned cleanup Complete; evidence retained; no production/source repair or finalization |"
+  ],
+  "caseGroupCounts": {
+    "Pass": 24,
+    "Fail": 2
+  },
+  "newEvidenceJsonParsed": 76,
+  "sensitiveFindings": [],
+  "focusedWhitespace": {
+    "argv": [
+      "git",
+      "diff",
+      "--check",
+      "--",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/api-e2e-coverage-investigation.md",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/api-e2e-test-case-ledger.md",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/api-e2e-execution-coverage-report.md",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/api-e2e-revision-record.md"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "cleanup": "Complete",
+  "result": "Pass"
+}

@@ -1,0 +1,30 @@
+{
+  "desktopStop": {
+    "argv": [
+      "pnpm",
+      "--silent",
+      "isolated-app",
+      "stop",
+      "iso-63125-cdfd"
+    ],
+    "rc": 0,
+    "stdout": "{\n  \"schemaVersion\": 1,\n  \"ok\": true,\n  \"command\": \"stop\",\n  \"result\": {\n    \"instanceId\": \"iso-63125-cdfd\",\n    \"wasRunning\": true,\n    \"forced\": false,\n    \"dataRoot\": \"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api007-ejvzqfh7/desktop-tmp/autobyteus-isolated-root-Hg9sZt\",\n    \"dataRootRemoved\": true,\n    \"controlPortReleased\": true,\n    \"serverPortReleased\": true,\n    \"logPath\": null\n  }\n}\n",
+    "stderr": ""
+  },
+  "tunnelReceiptKeys": [
+    "vm",
+    "source",
+    "mountRoot",
+    "binary",
+    "metadata",
+    "commands",
+    "cases",
+    "result",
+    "publicKeySHA256",
+    "hostKeySHA256",
+    "pid",
+    "argv",
+    "baseUrl",
+    "health"
+  ]
+}

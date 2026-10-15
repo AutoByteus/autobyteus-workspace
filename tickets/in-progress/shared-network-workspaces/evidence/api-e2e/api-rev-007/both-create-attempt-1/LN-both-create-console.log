@@ -1,0 +1,11 @@
+Started L06 LN explicit start both local nodes before operator-approved selection
+L06 LN explicit start both local nodes before operator-approved selection: Pass
+Started L03 LN both real application nodes healthy before selection
+L03 LN both real application nodes healthy before selection: Fail
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/select-both.py", line 38, in <module>
+    case('L03 '+MODE+' both real application nodes healthy before selection',healthy)
+  File "<string>", line 23, in case
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/select-both.py", line 36, in healthy
+    else:raise RuntimeError('server unhealthy '+n)
+RuntimeError: server unhealthy autobyteus-server-1

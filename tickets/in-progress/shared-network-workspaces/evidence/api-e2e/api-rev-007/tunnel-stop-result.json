@@ -1,0 +1,6 @@
+{
+  "pid": 2845,
+  "observedCommand": "/usr/bin/ssh -F /dev/null -i /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api007-ejvzqfh7/api007-vm-ssh -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api007-ejvzqfh7/api007-known-hosts -o ConnectTimeout=10 -o ExitOnForwardFailure=yes -N -L 127.0.0.1:63567:127.0.0.1:8001 admin@192.168.64.4\n",
+  "scope": "Exact owned ssh process, never broad pkill",
+  "stopRequested": true
+}

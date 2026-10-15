@@ -383,3 +383,57 @@ owned VM was stopped; see scope-change-cleanup-correction.json, which corrects a
 cleanup-purpose claim. No guest running. Owned Linux disk/cache, scratch and built image
 retained for resumed single-VM work; they still require final cleanup. No host bridge,
 firewall, user node/profile/credential or source mutation performed.
+
+### Round7 resumed — Approved SR025 / DEC017
+
+The designer recorded the settled one-Linux-VM/two-managed-node acceptance; no open scope
+question remains. L01–L26 is active for sequential LN/LD. Current HEAD85c2229078 and source
+IR009/d3c88 unchanged. Reread updated API skill and handoff-references guidance: use focused
+next-owner documents/evidence, not legacy cumulative manifests or preservation inventories.
+Earlier full indexes remain historical only. No production/test assertion changes in SR025.
+
+Resume retained Linux clone only after matching corrective cleanup identity and stopped
+state; verify current built image exact digest. Build current test metadata variant for LD
+from the retained corrected engine, never rebuild engine or change release qualification.
+Run fresh Go/packaging and focused application/Guide regressions; then public launcher/setup
+and two-node tests. Existing API005/006 evidence can cover unchanged narrow controls with
+explicit source-delta justification. L23 new remote update evidence must not inherit earlier
+freshness failures as Pass; use current unchanged UI/API with fresh healthy source fixtures.
+All remaining environment and safety constraints above apply. No delegation.
+
+### API007 repository-layer assessment and execution checkpoints
+
+Fresh Go race/vet, 53 Python packaging/launcher cases (50 passed,3 skipped), focused server
+binding/scoped Git/REST units, real workspace HTTP and run-file-change contracts, Guide/NodeManager,
+and terminal units passed. E7/narrow-checks-result.json and app-checks-result.json name exact commands.
+No durable source/test changes. Temporary two-node probes implement the approved runtime matrix.
+
+Repository-only confidence (not the later LN result): AC proof50%; changed-boundary
+directness75%; cross-boundary realism50%; environment/fixture fidelity75%; failure/lifecycle50%;
+user-surface75%; durable coverage95%. Mean67.14%. These scores reflect that mocked/local
+repository cases cannot prove live NFS, Docker recreation/boots or rendered mounted previews.
+**Broader validation Required**: one owned Ubuntu VM/two real launcher nodes, both LN/LD, current
+isolated worktree app. No user-only dependency or new approval question is needed.
+
+L03 correction: fixture stopped freshly launched B before the first DB migration finished.
+Preserved logs/failed health attempt; destroyed/rebuilt only owned B and exact private volumes
+through public launcher, awaited successful health. No product/DB migration edits. Old B remains
+the scope of initial unselected preservation; new B is the live A+B participant.
+
+LN L07–L16 passed actual two-node/source byte checks,24 warmed visibility samples(max0.071827s),
+overlapping40-file-per-writer manifests, coordinated Git, one-winner exclusive create, same-kernel
+NFSv4 POSIX locks, mode/symlink/execute/root-mapall/permission checks. L22 passed both real
+GraphQL/REST/WebSocket terminal and reciprocal peer changes/deletes/path refusal. No independent
+NFS-kernel, native-agent or cross-OS inference. Lifecycle, LD, UI and final cleanup still required.
+
+### API007 L23 new evidence / failure validity
+AC-010 explicitly preserves unsaved edits in SCN-006. Two current isolated-desktop observations lost real unsaved text on node-B modification. Focused native-key save control proves editor input reaches backend; second reproduction loses cd before any reload. This is a valid in-scope failing assertion, not unsupported close-drawer semantics or stale test. Investigate normal content-change path; retain prior synthetic API004 unsaved claim only as historical evidence, not closure. Continue independent LN/LD cases before focused failure-origin handoff.
+
+### API007 durable regression decision before edit
+`FileExplorerTabs.spec.ts` active-listener tests remain Still Valid but do not cover AC-010 unsaved preservation. **Add Durable Coverage** in a separate colocated `FileExplorerTabs.unsaved.spec.ts`: use actual Pinia store/change-event path, stub only FileViewer editor boundary and network response; prove a local editor update reaches Save with and without a peer modify event. This is a narrow failing regression supporting the already reproduced real desktop defect, not a replacement for its live evidence or a production fix. Preserve failure until origin review; no source edits.
+
+### API007 LD metadata oracle correction
+LD raw client stat reports1001:109 while actual backing file is1000:109; execute/relative-link/chmod passed. Approved mapall identity is selected backing source owner, not guaranteed uniform client numeric display. v2 records both and asserts exact backing ownership/mode. Coordinated standalone Git clients receive only verified project safe.directory in child environment, as design explicitly requires for differing squashed/runtime identities; normal PTY tests independently prove product wiring. Original L10 failure retained as invalid overassertion pending functional rerun.
+
+### API007 completed reassessment
+Broader execution completed for SR025 one LinuxVM/two real launcher nodes and both sequential storage modes. Final category scores50/95/95/95/95/50/95 = 82.14% **Fail**; AC010 actual unsaved-buffer overwrite and matching new durable regression preventPass. Independent failure-origin review required; no productionfix. All storage/lifecycle/API categories have direct scoped evidence; samekernel/Mac/physical/agent/release limits unchanged. CleanupComplete. See current report ACproof for authoritative mapping and raw attempts.
