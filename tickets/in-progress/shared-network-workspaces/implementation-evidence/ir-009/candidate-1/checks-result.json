@@ -1,0 +1,198 @@
+[
+  {
+    "name": "go-race",
+    "argv": [
+      "/tmp/nfs-ir009-zbuj4d3x/go/bin/go",
+      "test",
+      "-race",
+      "-count=1",
+      "-v",
+      "./..."
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+    "rc": 0,
+    "expected": 0,
+    "seconds": 32.63
+  },
+  {
+    "name": "go-vet",
+    "argv": [
+      "/tmp/nfs-ir009-zbuj4d3x/go/bin/go",
+      "vet",
+      "./..."
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+    "rc": 0,
+    "expected": 0,
+    "seconds": 1.401
+  },
+  {
+    "name": "python-packaging",
+    "argv": [
+      "python3",
+      "-m",
+      "unittest",
+      "scripts/tests/test_nfs_engine_packaging.py",
+      "scripts/tests/test_nfs_installer_fixture.py",
+      "scripts/tests/test_nfs_packaging_and_launcher.py",
+      "scripts/tests/test_nfs_release_workflow.py",
+      "-v"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "rc": 0,
+    "expected": 0,
+    "seconds": 3.565
+  },
+  {
+    "name": "shell-syntax",
+    "argv": [
+      "bash",
+      "-n",
+      "scripts/public/docker/autobyteus-docker.d/bash/commands.sh"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "rc": 0,
+    "expected": 0,
+    "seconds": 0.006
+  },
+  {
+    "name": "publish-refusal",
+    "argv": [
+      "python3",
+      "autobyteus-nfs/packaging/release.py",
+      "--check-publish"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "rc": 1,
+    "expected": 1,
+    "seconds": 0.27
+  },
+  {
+    "name": "source-hash",
+    "argv": [
+      "python3",
+      "autobyteus-nfs/packaging/release.py",
+      "--source-hash"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "rc": 0,
+    "expected": 0,
+    "seconds": 0.28
+  },
+  {
+    "name": "build-darwin-arm64",
+    "argv": [
+      "/tmp/nfs-ir009-zbuj4d3x/go/bin/go",
+      "build",
+      "-trimpath",
+      "-o",
+      "/tmp/nfs-ir009-zbuj4d3x/nfs-darwin-arm64",
+      "./cmd/autobyteus-nfs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+    "rc": 0,
+    "expected": 0,
+    "seconds": 5.579
+  },
+  {
+    "name": "build-darwin-amd64",
+    "argv": [
+      "/tmp/nfs-ir009-zbuj4d3x/go/bin/go",
+      "build",
+      "-trimpath",
+      "-o",
+      "/tmp/nfs-ir009-zbuj4d3x/nfs-darwin-amd64",
+      "./cmd/autobyteus-nfs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+    "rc": 0,
+    "expected": 0,
+    "seconds": 5.531
+  },
+  {
+    "name": "build-linux-arm64",
+    "argv": [
+      "/tmp/nfs-ir009-zbuj4d3x/go/bin/go",
+      "build",
+      "-trimpath",
+      "-o",
+      "/tmp/nfs-ir009-zbuj4d3x/nfs-linux-arm64",
+      "./cmd/autobyteus-nfs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+    "rc": 0,
+    "expected": 0,
+    "seconds": 5.729
+  },
+  {
+    "name": "build-linux-amd64",
+    "argv": [
+      "/tmp/nfs-ir009-zbuj4d3x/go/bin/go",
+      "build",
+      "-trimpath",
+      "-o",
+      "/tmp/nfs-ir009-zbuj4d3x/nfs-linux-amd64",
+      "./cmd/autobyteus-nfs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+    "rc": 0,
+    "expected": 0,
+    "seconds": 5.479
+  },
+  {
+    "name": "native-version",
+    "argv": [
+      "/tmp/nfs-ir009-zbuj4d3x/nfs-darwin-arm64",
+      "version"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "rc": 0,
+    "expected": 0,
+    "seconds": 0.44
+  },
+  {
+    "name": "test-compile-darwin-amd64",
+    "argv": [
+      "/tmp/nfs-ir009-zbuj4d3x/go/bin/go",
+      "test",
+      "-c",
+      "-o",
+      "/tmp/nfs-ir009-zbuj4d3x/test-binaries-darwin-amd64/",
+      "./..."
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+    "rc": 0,
+    "expected": 0,
+    "seconds": 5.716
+  },
+  {
+    "name": "test-compile-linux-arm64",
+    "argv": [
+      "/tmp/nfs-ir009-zbuj4d3x/go/bin/go",
+      "test",
+      "-c",
+      "-o",
+      "/tmp/nfs-ir009-zbuj4d3x/test-binaries-linux-arm64/",
+      "./..."
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+    "rc": 0,
+    "expected": 0,
+    "seconds": 5.554
+  },
+  {
+    "name": "test-compile-linux-amd64",
+    "argv": [
+      "/tmp/nfs-ir009-zbuj4d3x/go/bin/go",
+      "test",
+      "-c",
+      "-o",
+      "/tmp/nfs-ir009-zbuj4d3x/test-binaries-linux-amd64/",
+      "./..."
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+    "rc": 0,
+    "expected": 0,
+    "seconds": 5.553
+  }
+]

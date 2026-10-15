@@ -1,0 +1,21 @@
+[
+  "autobyteus-nfs/README.md",
+  "autobyteus-nfs/internal/config/source_identity.go",
+  "autobyteus-nfs/internal/config/source_identity_test.go",
+  "autobyteus-nfs/internal/config/state.go",
+  "autobyteus-nfs/internal/platform/filesystem_darwin.go",
+  "autobyteus-nfs/internal/platform/source.go",
+  "autobyteus-nfs/internal/platform/source_darwin.go",
+  "autobyteus-nfs/internal/platform/source_darwin_test.go",
+  "autobyteus-nfs/internal/platform/source_linux.go",
+  "autobyteus-nfs/internal/platform/source_linux_test.go",
+  "autobyteus-nfs/internal/platform/volume_identity.go",
+  "autobyteus-nfs/internal/platform/volume_identity_test.go",
+  "autobyteus-nfs/internal/platform/volume_plist.go",
+  "autobyteus-nfs/internal/setup/apply.go",
+  "autobyteus-nfs/internal/setup/hosted_config_test.go",
+  "autobyteus-nfs/internal/setup/lifecycle.go",
+  "autobyteus-nfs/internal/setup/pending.go",
+  "autobyteus-nfs/internal/setup/plan.go",
+  "autobyteus-nfs/internal/setup/source_binding_darwin_test.go"
+]

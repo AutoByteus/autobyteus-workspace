@@ -1,0 +1,604 @@
+?   	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/cmd/autobyteus-nfs	[no test files]
+=== RUN   TestAppleActivationWaitsForBothServingPrograms
+=== RUN   TestAppleActivationWaitsForBothServingPrograms/restart
+=== RUN   TestAppleActivationWaitsForBothServingPrograms/update
+--- PASS: TestAppleActivationWaitsForBothServingPrograms (0.00s)
+    --- PASS: TestAppleActivationWaitsForBothServingPrograms/restart (0.00s)
+    --- PASS: TestAppleActivationWaitsForBothServingPrograms/update (0.00s)
+=== RUN   TestAppleColdRPCStartupRechecksNFSAndMountWithoutReactivation
+--- PASS: TestAppleColdRPCStartupRechecksNFSAndMountWithoutReactivation (0.00s)
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/checkexports
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/enable
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/restart
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/update
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution//registration
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution//NULL
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Authentication_error/registration
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Authentication_error/NULL
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Program/version_mismatch/registration
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Program/version_mismatch/NULL
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Procedure_unavailable/registration
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Procedure_unavailable/NULL
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Unknown_host/registration
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Unknown_host/NULL
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/Permission_denied/registration
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/Permission_denied/NULL
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/unrecognized_option/registration
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/unrecognized_option/NULL
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Unable_to_receive/registration
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Unable_to_receive/NULL
+--- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/checkexports (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/enable (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/restart (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/update (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution//registration (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution//NULL (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Authentication_error/registration (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Authentication_error/NULL (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Program/version_mismatch/registration (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Program/version_mismatch/NULL (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Procedure_unavailable/registration (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Procedure_unavailable/NULL (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Unknown_host/registration (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Unknown_host/NULL (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/Permission_denied/registration (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/Permission_denied/NULL (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/unrecognized_option/registration (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/unrecognized_option/NULL (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Unable_to_receive/registration (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Unable_to_receive/NULL (0.00s)
+=== RUN   TestAppleStartupStopsObservingUnavailablePrograms
+=== RUN   TestAppleStartupStopsObservingUnavailablePrograms/RPC:_Program_not_registered
+=== RUN   TestAppleStartupStopsObservingUnavailablePrograms/RPC:_Remote_system_error_-_Connection_refused
+=== RUN   TestAppleStartupStopsObservingUnavailablePrograms/RPC:_Timed_out
+=== RUN   TestAppleStartupStopsObservingUnavailablePrograms/RPC:_Unable_to_send;_errno_=_Broken_pipe
+=== RUN   TestAppleStartupStopsObservingUnavailablePrograms/___program_vers_proto___port_
+--- PASS: TestAppleStartupStopsObservingUnavailablePrograms (0.00s)
+    --- PASS: TestAppleStartupStopsObservingUnavailablePrograms/RPC:_Program_not_registered (0.00s)
+    --- PASS: TestAppleStartupStopsObservingUnavailablePrograms/RPC:_Remote_system_error_-_Connection_refused (0.00s)
+    --- PASS: TestAppleStartupStopsObservingUnavailablePrograms/RPC:_Timed_out (0.00s)
+    --- PASS: TestAppleStartupStopsObservingUnavailablePrograms/RPC:_Unable_to_send;_errno_=_Broken_pipe (0.00s)
+    --- PASS: TestAppleStartupStopsObservingUnavailablePrograms/___program_vers_proto___port_ (0.00s)
+=== RUN   TestAppleRPCRegistrationParsing
+--- PASS: TestAppleRPCRegistrationParsing (0.00s)
+=== RUN   TestAppleExportAndConflictingGlobalSettings
+--- PASS: TestAppleExportAndConflictingGlobalSettings (0.00s)
+=== RUN   TestGaneshaPolicyAndPersistentRecovery
+--- PASS: TestGaneshaPolicyAndPersistentRecovery (0.00s)
+=== RUN   TestPackageMaskCleanupRetainsUncertainReceipt
+--- PASS: TestPackageMaskCleanupRetainsUncertainReceipt (0.06s)
+=== RUN   TestGaneshaDetachPreservesRecoveryAndRejectsExternalConfig
+--- PASS: TestGaneshaDetachPreservesRecoveryAndRejectsExternalConfig (0.00s)
+=== RUN   TestGaneshaConfigPreflightAndExactRemoval
+=== RUN   TestGaneshaConfigPreflightAndExactRemoval/container=false/current
+=== RUN   TestGaneshaConfigPreflightAndExactRemoval/container=false/missing
+=== RUN   TestGaneshaConfigPreflightAndExactRemoval/container=false/old
+=== RUN   TestGaneshaConfigPreflightAndExactRemoval/container=false/different
+=== RUN   TestGaneshaConfigPreflightAndExactRemoval/container=false/malformed
+=== RUN   TestGaneshaConfigPreflightAndExactRemoval/container=false/directory
+=== RUN   TestGaneshaConfigPreflightAndExactRemoval/container=false/dangling
+=== RUN   TestGaneshaConfigPreflightAndExactRemoval/container=true/current
+=== RUN   TestGaneshaConfigPreflightAndExactRemoval/container=true/missing
+=== RUN   TestGaneshaConfigPreflightAndExactRemoval/container=true/old
+=== RUN   TestGaneshaConfigPreflightAndExactRemoval/container=true/different
+=== RUN   TestGaneshaConfigPreflightAndExactRemoval/container=true/malformed
+=== RUN   TestGaneshaConfigPreflightAndExactRemoval/container=true/directory
+=== RUN   TestGaneshaConfigPreflightAndExactRemoval/container=true/dangling
+--- PASS: TestGaneshaConfigPreflightAndExactRemoval (0.02s)
+    --- PASS: TestGaneshaConfigPreflightAndExactRemoval/container=false/current (0.00s)
+    --- PASS: TestGaneshaConfigPreflightAndExactRemoval/container=false/missing (0.00s)
+    --- PASS: TestGaneshaConfigPreflightAndExactRemoval/container=false/old (0.00s)
+    --- PASS: TestGaneshaConfigPreflightAndExactRemoval/container=false/different (0.00s)
+    --- PASS: TestGaneshaConfigPreflightAndExactRemoval/container=false/malformed (0.00s)
+    --- PASS: TestGaneshaConfigPreflightAndExactRemoval/container=false/directory (0.00s)
+    --- PASS: TestGaneshaConfigPreflightAndExactRemoval/container=false/dangling (0.00s)
+    --- PASS: TestGaneshaConfigPreflightAndExactRemoval/container=true/current (0.00s)
+    --- PASS: TestGaneshaConfigPreflightAndExactRemoval/container=true/missing (0.00s)
+    --- PASS: TestGaneshaConfigPreflightAndExactRemoval/container=true/old (0.00s)
+    --- PASS: TestGaneshaConfigPreflightAndExactRemoval/container=true/different (0.00s)
+    --- PASS: TestGaneshaConfigPreflightAndExactRemoval/container=true/malformed (0.00s)
+    --- PASS: TestGaneshaConfigPreflightAndExactRemoval/container=true/directory (0.00s)
+    --- PASS: TestGaneshaConfigPreflightAndExactRemoval/container=true/dangling (0.00s)
+=== RUN   TestEngineBundleExactPairAndRefusals
+=== RUN   TestEngineBundleExactPairAndRefusals/valid
+=== RUN   TestEngineBundleExactPairAndRefusals/missing
+=== RUN   TestEngineBundleExactPairAndRefusals/truncated
+=== RUN   TestEngineBundleExactPairAndRefusals/digest
+=== RUN   TestEngineBundleExactPairAndRefusals/wrong-arch
+=== RUN   TestEngineBundleExactPairAndRefusals/version
+=== RUN   TestEngineBundleExactPairAndRefusals/name
+=== RUN   TestEngineBundleExactPairAndRefusals/member
+=== RUN   TestEngineBundleExactPairAndRefusals/size
+=== RUN   TestEngineBundleExactPairAndRefusals/extra
+=== RUN   TestEngineBundleExactPairAndRefusals/source
+=== RUN   TestEngineBundleExactPairAndRefusals/provenance
+--- PASS: TestEngineBundleExactPairAndRefusals (0.00s)
+    --- PASS: TestEngineBundleExactPairAndRefusals/valid (0.00s)
+    --- PASS: TestEngineBundleExactPairAndRefusals/missing (0.00s)
+    --- PASS: TestEngineBundleExactPairAndRefusals/truncated (0.00s)
+    --- PASS: TestEngineBundleExactPairAndRefusals/digest (0.00s)
+    --- PASS: TestEngineBundleExactPairAndRefusals/wrong-arch (0.00s)
+    --- PASS: TestEngineBundleExactPairAndRefusals/version (0.00s)
+    --- PASS: TestEngineBundleExactPairAndRefusals/name (0.00s)
+    --- PASS: TestEngineBundleExactPairAndRefusals/member (0.00s)
+    --- PASS: TestEngineBundleExactPairAndRefusals/size (0.00s)
+    --- PASS: TestEngineBundleExactPairAndRefusals/extra (0.00s)
+    --- PASS: TestEngineBundleExactPairAndRefusals/source (0.00s)
+    --- PASS: TestEngineBundleExactPairAndRefusals/provenance (0.00s)
+=== RUN   TestEngineStagingModesAndExactCleanup
+--- PASS: TestEngineStagingModesAndExactCleanup (0.02s)
+=== RUN   TestUbuntuEmbeddedInstallAndFailureCleanup
+=== RUN   TestUbuntuEmbeddedInstallAndFailureCleanup/success
+=== RUN   TestUbuntuEmbeddedInstallAndFailureCleanup/already
+=== RUN   TestUbuntuEmbeddedInstallAndFailureCleanup/update
+=== RUN   TestUbuntuEmbeddedInstallAndFailureCleanup/install
+=== RUN   TestUbuntuEmbeddedInstallAndFailureCleanup/requery
+=== RUN   TestUbuntuEmbeddedInstallAndFailureCleanup/cleanup
+=== RUN   TestUbuntuEmbeddedInstallAndFailureCleanup/external-mask
+=== RUN   TestUbuntuEmbeddedInstallAndFailureCleanup/active
+=== RUN   TestUbuntuEmbeddedInstallAndFailureCleanup/changed-mask
+=== RUN   TestUbuntuEmbeddedInstallAndFailureCleanup/resume-mask
+--- PASS: TestUbuntuEmbeddedInstallAndFailureCleanup (0.15s)
+    --- PASS: TestUbuntuEmbeddedInstallAndFailureCleanup/success (0.03s)
+    --- PASS: TestUbuntuEmbeddedInstallAndFailureCleanup/already (0.00s)
+    --- PASS: TestUbuntuEmbeddedInstallAndFailureCleanup/update (0.02s)
+    --- PASS: TestUbuntuEmbeddedInstallAndFailureCleanup/install (0.02s)
+    --- PASS: TestUbuntuEmbeddedInstallAndFailureCleanup/requery (0.03s)
+    --- PASS: TestUbuntuEmbeddedInstallAndFailureCleanup/cleanup (0.02s)
+    --- PASS: TestUbuntuEmbeddedInstallAndFailureCleanup/external-mask (0.00s)
+    --- PASS: TestUbuntuEmbeddedInstallAndFailureCleanup/active (0.00s)
+    --- PASS: TestUbuntuEmbeddedInstallAndFailureCleanup/changed-mask (0.02s)
+    --- PASS: TestUbuntuEmbeddedInstallAndFailureCleanup/resume-mask (0.01s)
+=== RUN   TestUbuntuClientOnlyDoesNotNeedEngine
+--- PASS: TestUbuntuClientOnlyDoesNotNeedEngine (0.00s)
+PASS
+ok  	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/backend	1.586s
+=== RUN   TestExplicitNoTTYInputsAndNoShellEvaluation
+Detected private addresses: 192.168.2.158
+Detected private addresses: 192.168.2.158
+--- PASS: TestExplicitNoTTYInputsAndNoShellEvaluation (0.00s)
+=== RUN   TestReleaseManifestMustMatchAndQualifyActualArchitecture
+--- PASS: TestReleaseManifestMustMatchAndQualifyActualArchitecture (0.00s)
+=== RUN   TestEngineIdentityParticipatesInVerifiedReleaseEquality
+=== RUN   TestEngineIdentityParticipatesInVerifiedReleaseEquality/bytes
+=== RUN   TestEngineIdentityParticipatesInVerifiedReleaseEquality/recipe
+=== RUN   TestEngineIdentityParticipatesInVerifiedReleaseEquality/architecture
+=== RUN   TestEngineIdentityParticipatesInVerifiedReleaseEquality/source-removed
+--- PASS: TestEngineIdentityParticipatesInVerifiedReleaseEquality (0.00s)
+    --- PASS: TestEngineIdentityParticipatesInVerifiedReleaseEquality/bytes (0.00s)
+    --- PASS: TestEngineIdentityParticipatesInVerifiedReleaseEquality/recipe (0.00s)
+    --- PASS: TestEngineIdentityParticipatesInVerifiedReleaseEquality/architecture (0.00s)
+    --- PASS: TestEngineIdentityParticipatesInVerifiedReleaseEquality/source-removed (0.00s)
+PASS
+ok  	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/cli	1.414s
+=== RUN   TestConnectionBoundary
+--- PASS: TestConnectionBoundary (0.00s)
+=== RUN   TestTrustedAllowlist
+--- PASS: TestTrustedAllowlist (0.00s)
+=== RUN   TestPrivateAtomicStore
+--- PASS: TestPrivateAtomicStore (0.03s)
+=== RUN   TestSourceMarkerConfined
+--- PASS: TestSourceMarkerConfined (0.00s)
+=== RUN   TestSharedDescriptorFixture
+--- PASS: TestSharedDescriptorFixture (0.00s)
+=== RUN   TestSourceBindingVariants
+=== RUN   TestSourceBindingVariants/apple
+=== RUN   TestSourceBindingVariants/linux-native
+=== RUN   TestSourceBindingVariants/linux-docker
+=== RUN   TestSourceBindingVariants/unbound
+=== RUN   TestSourceBindingVariants/old-apple
+=== RUN   TestSourceBindingVariants/mixed
+=== RUN   TestSourceBindingVariants/zero-inode
+=== RUN   TestSourceBindingVariants/zero-uuid
+=== RUN   TestSourceBindingVariants/uppercase
+=== RUN   TestSourceBindingVariants/invalid-uuid
+=== RUN   TestSourceBindingVariants/linux-uuid
+=== RUN   TestSourceBindingVariants/linux-zero-device
+=== RUN   TestSourceBindingVariants/linux-zero-inode
+=== RUN   TestSourceBindingVariants/unsupported
+--- PASS: TestSourceBindingVariants (0.00s)
+    --- PASS: TestSourceBindingVariants/apple (0.00s)
+    --- PASS: TestSourceBindingVariants/linux-native (0.00s)
+    --- PASS: TestSourceBindingVariants/linux-docker (0.00s)
+    --- PASS: TestSourceBindingVariants/unbound (0.00s)
+    --- PASS: TestSourceBindingVariants/old-apple (0.00s)
+    --- PASS: TestSourceBindingVariants/mixed (0.00s)
+    --- PASS: TestSourceBindingVariants/zero-inode (0.00s)
+    --- PASS: TestSourceBindingVariants/zero-uuid (0.00s)
+    --- PASS: TestSourceBindingVariants/uppercase (0.00s)
+    --- PASS: TestSourceBindingVariants/invalid-uuid (0.00s)
+    --- PASS: TestSourceBindingVariants/linux-uuid (0.00s)
+    --- PASS: TestSourceBindingVariants/linux-zero-device (0.00s)
+    --- PASS: TestSourceBindingVariants/linux-zero-inode (0.00s)
+    --- PASS: TestSourceBindingVariants/unsupported (0.00s)
+PASS
+ok  	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/config	1.609s
+=== RUN   TestReplacementPreservesSelectedSettingsAndPrivateVolumes
+--- PASS: TestReplacementPreservesSelectedSettingsAndPrivateVolumes (0.00s)
+=== RUN   TestUnsupportedConfigurationRejectedBeforeStop
+--- PASS: TestUnsupportedConfigurationRejectedBeforeStop (0.00s)
+=== RUN   TestRecreationNeverRollsBackAfterStartMayAcceptWork
+--- PASS: TestRecreationNeverRollsBackAfterStartMayAcceptWork (0.00s)
+=== RUN   TestChangedNodeAfterConsentHasNoMutation
+--- PASS: TestChangedNodeAfterConsentHasNoMutation (0.00s)
+=== RUN   TestPreStartFailureRestoresExactOriginalAndDoesNotDeleteVolumes
+--- PASS: TestPreStartFailureRestoresExactOriginalAndDoesNotDeleteVolumes (0.00s)
+=== RUN   TestNestedMountCannotHideSharedBytesAfterPriorAttachment
+--- PASS: TestNestedMountCannotHideSharedBytesAfterPriorAttachment (0.00s)
+=== RUN   TestEngineOnlyUsesChosenSourceAndNarrowCapabilities
+--- PASS: TestEngineOnlyUsesChosenSourceAndNarrowCapabilities (0.00s)
+=== RUN   TestChangedDaemonRefusesRecreationBeforeAnyContainerOperation
+--- PASS: TestChangedDaemonRefusesRecreationBeforeAnyContainerOperation (0.00s)
+=== RUN   TestFailedStartSameIDProofAndConsumption
+--- PASS: TestFailedStartSameIDProofAndConsumption (0.09s)
+=== RUN   TestFailedStartAmbiguityDedupAndConfirmedRetry
+--- PASS: TestFailedStartAmbiguityDedupAndConfirmedRetry (0.08s)
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/mountpoint
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/attachment_missing
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/pid
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/wrong_daemon
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/unknown_policy
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/soft_error
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/pending_recreation
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/restarting
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/unknown_error
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/extra_suffix
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/wrong_options
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/descriptor_writable
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/paused
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/different_errno
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/foreign_volume
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/not_selected
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/bad_time
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/time_reversed
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/dead
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/policy_no
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/absent_policy
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/wrong_driver
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/malformed_attempt
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/normal_stop
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/never_started
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/wrong_endpoint
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/removing
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/oom
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/on_failure
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/foreign_error
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/wrong_export
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/missing_volume
+--- PASS: TestFailedStartRefusalsNeverProbeOrStart (0.07s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/mountpoint (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/attachment_missing (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/pid (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/wrong_daemon (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/unknown_policy (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/soft_error (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/pending_recreation (0.01s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/restarting (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/unknown_error (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/extra_suffix (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/wrong_options (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/descriptor_writable (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/paused (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/different_errno (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/foreign_volume (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/not_selected (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/bad_time (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/time_reversed (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/dead (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/policy_no (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/absent_policy (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/wrong_driver (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/malformed_attempt (0.01s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/normal_stop (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/never_started (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/wrong_endpoint (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/removing (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/oom (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/on_failure (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/foreign_error (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/wrong_export (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/missing_volume (0.00s)
+=== RUN   TestFailedStartReinspectionAndProbeRefusals
+=== RUN   TestFailedStartReinspectionAndProbeRefusals/policy
+=== RUN   TestFailedStartReinspectionAndProbeRefusals/config
+=== RUN   TestFailedStartReinspectionAndProbeRefusals/image
+=== RUN   TestFailedStartReinspectionAndProbeRefusals/id
+=== RUN   TestFailedStartReinspectionAndProbeRefusals/state
+=== RUN   TestFailedStartReinspectionAndProbeRefusals/volume
+=== RUN   TestFailedStartReinspectionAndProbeRefusals/daemon
+=== RUN   TestFailedStartReinspectionAndProbeRefusals/already-running
+--- PASS: TestFailedStartReinspectionAndProbeRefusals (0.24s)
+    --- PASS: TestFailedStartReinspectionAndProbeRefusals/policy (0.03s)
+    --- PASS: TestFailedStartReinspectionAndProbeRefusals/config (0.03s)
+    --- PASS: TestFailedStartReinspectionAndProbeRefusals/image (0.03s)
+    --- PASS: TestFailedStartReinspectionAndProbeRefusals/id (0.02s)
+    --- PASS: TestFailedStartReinspectionAndProbeRefusals/state (0.03s)
+    --- PASS: TestFailedStartReinspectionAndProbeRefusals/volume (0.02s)
+    --- PASS: TestFailedStartReinspectionAndProbeRefusals/daemon (0.02s)
+    --- PASS: TestFailedStartReinspectionAndProbeRefusals/already-running (0.03s)
+=== RUN   TestFailedStart304AndVerificationFailure
+--- PASS: TestFailedStart304AndVerificationFailure (20.15s)
+=== RUN   TestFailedStartObservationIsNonMutatingAndDetachRemovesOnlyAttempt
+--- PASS: TestFailedStartObservationIsNonMutatingAndDetachRemovesOnlyAttempt (0.06s)
+=== RUN   TestFailedStartMissingProofAndWriteFailure
+=== RUN   TestFailedStartMissingProofAndWriteFailure/custom_image_startup
+=== RUN   TestFailedStartMissingProofAndWriteFailure/write_ahead_fails
+=== RUN   TestFailedStartMissingProofAndWriteFailure/304_but_not_running
+=== RUN   TestFailedStartMissingProofAndWriteFailure/policy_no_after_consumed
+--- PASS: TestFailedStartMissingProofAndWriteFailure (0.13s)
+    --- PASS: TestFailedStartMissingProofAndWriteFailure/custom_image_startup (0.00s)
+    --- PASS: TestFailedStartMissingProofAndWriteFailure/write_ahead_fails (0.03s)
+    --- PASS: TestFailedStartMissingProofAndWriteFailure/304_but_not_running (0.04s)
+    --- PASS: TestFailedStartMissingProofAndWriteFailure/policy_no_after_consumed (0.04s)
+=== RUN   TestFailedStartMountProjectionOrderDoesNotChangeIdentity
+--- PASS: TestFailedStartMountProjectionOrderDoesNotChangeIdentity (0.05s)
+PASS
+ok  	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/docker	23.101s
+=== RUN   TestBootstrapDirectoryModes
+    directory_modes_test.go:41: test_directory_modes_with_go_fixture (scripts.tests.test_nfs_installer_fixture.NfsInstallerFixtureTest) ... ok
+        
+        ----------------------------------------------------------------------
+        Ran 1 test in 3.733s
+        
+        OK
+        === RUN   TestInstallerDirectoryModeChild
+        --- PASS: TestInstallerDirectoryModeChild (0.00s)
+        PASS
+        === RUN   TestInstallerDirectoryModeChild
+        === RUN   TestInstallerDirectoryModeChild/mac
+            directory_modes_test.go:115: private=0700 public/exec/parents=0755 descriptor=0644
+        === RUN   TestInstallerDirectoryModeChild/linux
+            directory_modes_test.go:115: private=0700 public/exec/parents=0755 descriptor=0644
+        --- PASS: TestInstallerDirectoryModeChild (0.41s)
+            --- PASS: TestInstallerDirectoryModeChild/mac (0.23s)
+            --- PASS: TestInstallerDirectoryModeChild/linux (0.18s)
+        PASS
+        
+        
+--- PASS: TestBootstrapDirectoryModes (4.21s)
+=== RUN   TestInstallerDirectoryModeChild
+    directory_modes_test.go:47: child-only fixture invoked by TestBootstrapDirectoryModes
+--- SKIP: TestInstallerDirectoryModeChild (0.00s)
+=== RUN   TestRootDirectoryDoesNotAdoptExistingPaths
+--- PASS: TestRootDirectoryDoesNotAdoptExistingPaths (0.00s)
+=== RUN   TestMountParsersKeepActualSource
+--- PASS: TestMountParsersKeepActualSource (0.00s)
+=== RUN   TestMountPolicy
+--- PASS: TestMountPolicy (0.00s)
+=== RUN   TestSourceGuardrails
+--- PASS: TestSourceGuardrails (0.00s)
+=== RUN   TestJobUsesOnlyFixedBinaryAndNoApplication
+--- PASS: TestJobUsesOnlyFixedBinaryAndNoApplication (0.00s)
+=== RUN   TestAdministrativeLock
+--- PASS: TestAdministrativeLock (0.00s)
+=== RUN   TestSourceCaptureCorrelationAndClosure
+=== RUN   TestSourceCaptureCorrelationAndClosure/success
+=== RUN   TestSourceCaptureCorrelationAndClosure/command-error
+=== RUN   TestSourceCaptureCorrelationAndClosure/bad-plist
+=== RUN   TestSourceCaptureCorrelationAndClosure/wrong-mapping
+=== RUN   TestSourceCaptureCorrelationAndClosure/directory-replaced
+=== RUN   TestSourceCaptureCorrelationAndClosure/symlink-replaced
+=== RUN   TestSourceCaptureCorrelationAndClosure/ancestor-replaced
+--- PASS: TestSourceCaptureCorrelationAndClosure (0.01s)
+    --- PASS: TestSourceCaptureCorrelationAndClosure/success (0.00s)
+    --- PASS: TestSourceCaptureCorrelationAndClosure/command-error (0.00s)
+    --- PASS: TestSourceCaptureCorrelationAndClosure/bad-plist (0.00s)
+    --- PASS: TestSourceCaptureCorrelationAndClosure/wrong-mapping (0.00s)
+    --- PASS: TestSourceCaptureCorrelationAndClosure/directory-replaced (0.00s)
+    --- PASS: TestSourceCaptureCorrelationAndClosure/symlink-replaced (0.00s)
+    --- PASS: TestSourceCaptureCorrelationAndClosure/ancestor-replaced (0.00s)
+=== RUN   TestSourceCaptureRefusesSymlinksBeforeCommand
+--- PASS: TestSourceCaptureRefusesSymlinksBeforeCommand (0.00s)
+=== RUN   TestSourceComparisonUsesVolumeAndInode
+=== RUN   TestSourceComparisonUsesVolumeAndInode/inode
+=== RUN   TestSourceComparisonUsesVolumeAndInode/uuid
+=== RUN   TestSourceComparisonUsesVolumeAndInode/old-device
+--- PASS: TestSourceComparisonUsesVolumeAndInode (0.00s)
+    --- PASS: TestSourceComparisonUsesVolumeAndInode/inode (0.00s)
+    --- PASS: TestSourceComparisonUsesVolumeAndInode/uuid (0.00s)
+    --- PASS: TestSourceComparisonUsesVolumeAndInode/old-device (0.00s)
+=== RUN   TestSourceIdentityInstalledDiskutil
+--- PASS: TestSourceIdentityInstalledDiskutil (0.27s)
+=== RUN   TestSourceCapturePermissionRefusal
+--- PASS: TestSourceCapturePermissionRefusal (0.00s)
+=== RUN   TestVolumePlistStrictIdentity
+=== RUN   TestVolumePlistStrictIdentity/trailing-text
+=== RUN   TestVolumePlistStrictIdentity/wrong-device
+=== RUN   TestVolumePlistStrictIdentity/missing-uuid
+=== RUN   TestVolumePlistStrictIdentity/space-uuid
+=== RUN   TestVolumePlistStrictIdentity/entity-declaration
+=== RUN   TestVolumePlistStrictIdentity/wrong-type-DeviceNode
+=== RUN   TestVolumePlistStrictIdentity/duplicate-FilesystemType
+=== RUN   TestVolumePlistStrictIdentity/duplicate-DeviceNode
+=== RUN   TestVolumePlistStrictIdentity/empty
+=== RUN   TestVolumePlistStrictIdentity/extra-dict
+=== RUN   TestVolumePlistStrictIdentity/zero-uuid
+=== RUN   TestVolumePlistStrictIdentity/duplicate-unrelated
+=== RUN   TestVolumePlistStrictIdentity/wrong-mount
+=== RUN   TestVolumePlistStrictIdentity/malformed-uuid
+=== RUN   TestVolumePlistStrictIdentity/duplicate-MountPoint
+=== RUN   TestVolumePlistStrictIdentity/oversize
+=== RUN   TestVolumePlistStrictIdentity/wrong-type-MountPoint
+=== RUN   TestVolumePlistStrictIdentity/wrong-fs
+=== RUN   TestVolumePlistStrictIdentity/disk-uuid-only
+=== RUN   TestVolumePlistStrictIdentity/nested-scalar
+=== RUN   TestVolumePlistStrictIdentity/namespace
+=== RUN   TestVolumePlistStrictIdentity/depth
+=== RUN   TestVolumePlistStrictIdentity/duplicate-VolumeUUID
+=== RUN   TestVolumePlistStrictIdentity/malformed-declaration
+=== RUN   TestVolumePlistStrictIdentity/second-document
+=== RUN   TestVolumePlistStrictIdentity/missing-value
+=== RUN   TestVolumePlistStrictIdentity/trailing-processing-instruction
+=== RUN   TestVolumePlistStrictIdentity/wrong-type-VolumeUUID
+=== RUN   TestVolumePlistStrictIdentity/truncated
+=== RUN   TestVolumePlistStrictIdentity/wrong-root
+=== RUN   TestVolumePlistStrictIdentity/unknown-value
+=== RUN   TestVolumePlistStrictIdentity/wrong-type-FilesystemType
+--- PASS: TestVolumePlistStrictIdentity (0.01s)
+    --- PASS: TestVolumePlistStrictIdentity/trailing-text (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/wrong-device (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/missing-uuid (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/space-uuid (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/entity-declaration (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/wrong-type-DeviceNode (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/duplicate-FilesystemType (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/duplicate-DeviceNode (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/empty (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/extra-dict (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/zero-uuid (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/duplicate-unrelated (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/wrong-mount (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/malformed-uuid (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/duplicate-MountPoint (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/oversize (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/wrong-type-MountPoint (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/wrong-fs (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/disk-uuid-only (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/nested-scalar (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/namespace (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/depth (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/duplicate-VolumeUUID (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/malformed-declaration (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/second-document (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/missing-value (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/trailing-processing-instruction (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/wrong-type-VolumeUUID (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/truncated (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/wrong-root (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/unknown-value (0.00s)
+    --- PASS: TestVolumePlistStrictIdentity/wrong-type-FilesystemType (0.00s)
+PASS
+ok  	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/platform	6.404s
+=== RUN   TestProbeSameIdentityAndNoProjectChanges
+--- PASS: TestProbeSameIdentityAndNoProjectChanges (0.03s)
+=== RUN   TestProbeCannotEscapeSource
+--- PASS: TestProbeCannotEscapeSource (0.00s)
+PASS
+ok  	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/service	2.534s
+=== RUN   TestDetachSelectedNodePublicationFailureAndRetry
+=== RUN   TestDetachSelectedNodePublicationFailureAndRetry/before-publication
+=== RUN   TestDetachSelectedNodePublicationFailureAndRetry/after-detach-before-unpublish
+=== RUN   TestDetachSelectedNodePublicationFailureAndRetry/different-daemon
+--- PASS: TestDetachSelectedNodePublicationFailureAndRetry (0.11s)
+    --- PASS: TestDetachSelectedNodePublicationFailureAndRetry/before-publication (0.06s)
+    --- PASS: TestDetachSelectedNodePublicationFailureAndRetry/after-detach-before-unpublish (0.02s)
+    --- PASS: TestDetachSelectedNodePublicationFailureAndRetry/different-daemon (0.02s)
+=== RUN   TestHostedConfigStatusRefusesBeforeReadiness
+=== RUN   TestHostedConfigStatusRefusesBeforeReadiness/ganesha-native/missing
+=== RUN   TestHostedConfigStatusRefusesBeforeReadiness/ganesha-native/old
+=== RUN   TestHostedConfigStatusRefusesBeforeReadiness/ganesha-native/different
+=== RUN   TestHostedConfigStatusRefusesBeforeReadiness/ganesha-native/malformed
+=== RUN   TestHostedConfigStatusRefusesBeforeReadiness/ganesha-native/current
+=== RUN   TestHostedConfigStatusRefusesBeforeReadiness/ganesha-docker/missing
+=== RUN   TestHostedConfigStatusRefusesBeforeReadiness/ganesha-docker/old
+=== RUN   TestHostedConfigStatusRefusesBeforeReadiness/ganesha-docker/different
+=== RUN   TestHostedConfigStatusRefusesBeforeReadiness/ganesha-docker/malformed
+=== RUN   TestHostedConfigStatusRefusesBeforeReadiness/ganesha-docker/current
+--- PASS: TestHostedConfigStatusRefusesBeforeReadiness (0.43s)
+    --- PASS: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-native/missing (0.04s)
+    --- PASS: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-native/old (0.04s)
+    --- PASS: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-native/different (0.04s)
+    --- PASS: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-native/malformed (0.04s)
+    --- PASS: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-native/current (0.04s)
+    --- PASS: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-docker/missing (0.04s)
+    --- PASS: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-docker/old (0.04s)
+    --- PASS: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-docker/different (0.04s)
+    --- PASS: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-docker/malformed (0.04s)
+    --- PASS: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-docker/current (0.05s)
+=== RUN   TestHostedConfigDetachPreflightsBeforeEffects
+=== RUN   TestHostedConfigDetachPreflightsBeforeEffects/ganesha-native/old/saved
+=== RUN   TestHostedConfigDetachPreflightsBeforeEffects/ganesha-native/different/saved
+=== RUN   TestHostedConfigDetachPreflightsBeforeEffects/ganesha-native/malformed/saved
+=== RUN   TestHostedConfigDetachPreflightsBeforeEffects/ganesha-native/old/pending
+=== RUN   TestHostedConfigDetachPreflightsBeforeEffects/ganesha-native/different/pending
+=== RUN   TestHostedConfigDetachPreflightsBeforeEffects/ganesha-native/malformed/pending
+=== RUN   TestHostedConfigDetachPreflightsBeforeEffects/ganesha-docker/old/saved
+=== RUN   TestHostedConfigDetachPreflightsBeforeEffects/ganesha-docker/different/saved
+=== RUN   TestHostedConfigDetachPreflightsBeforeEffects/ganesha-docker/malformed/saved
+=== RUN   TestHostedConfigDetachPreflightsBeforeEffects/ganesha-docker/old/pending
+=== RUN   TestHostedConfigDetachPreflightsBeforeEffects/ganesha-docker/different/pending
+=== RUN   TestHostedConfigDetachPreflightsBeforeEffects/ganesha-docker/malformed/pending
+--- PASS: TestHostedConfigDetachPreflightsBeforeEffects (0.45s)
+    --- PASS: TestHostedConfigDetachPreflightsBeforeEffects/ganesha-native/old/saved (0.04s)
+    --- PASS: TestHostedConfigDetachPreflightsBeforeEffects/ganesha-native/different/saved (0.04s)
+    --- PASS: TestHostedConfigDetachPreflightsBeforeEffects/ganesha-native/malformed/saved (0.04s)
+    --- PASS: TestHostedConfigDetachPreflightsBeforeEffects/ganesha-native/old/pending (0.03s)
+    --- PASS: TestHostedConfigDetachPreflightsBeforeEffects/ganesha-native/different/pending (0.03s)
+    --- PASS: TestHostedConfigDetachPreflightsBeforeEffects/ganesha-native/malformed/pending (0.03s)
+    --- PASS: TestHostedConfigDetachPreflightsBeforeEffects/ganesha-docker/old/saved (0.04s)
+    --- PASS: TestHostedConfigDetachPreflightsBeforeEffects/ganesha-docker/different/saved (0.04s)
+    --- PASS: TestHostedConfigDetachPreflightsBeforeEffects/ganesha-docker/malformed/saved (0.04s)
+    --- PASS: TestHostedConfigDetachPreflightsBeforeEffects/ganesha-docker/old/pending (0.03s)
+    --- PASS: TestHostedConfigDetachPreflightsBeforeEffects/ganesha-docker/different/pending (0.03s)
+    --- PASS: TestHostedConfigDetachPreflightsBeforeEffects/ganesha-docker/malformed/pending (0.03s)
+=== RUN   TestHostedConfigDetachCurrentOrPartialRetryReachesExistingChecks
+=== RUN   TestHostedConfigDetachCurrentOrPartialRetryReachesExistingChecks/ganesha-native/current
+=== RUN   TestHostedConfigDetachCurrentOrPartialRetryReachesExistingChecks/ganesha-native/missing
+=== RUN   TestHostedConfigDetachCurrentOrPartialRetryReachesExistingChecks/ganesha-docker/current
+=== RUN   TestHostedConfigDetachCurrentOrPartialRetryReachesExistingChecks/ganesha-docker/missing
+--- PASS: TestHostedConfigDetachCurrentOrPartialRetryReachesExistingChecks (0.13s)
+    --- PASS: TestHostedConfigDetachCurrentOrPartialRetryReachesExistingChecks/ganesha-native/current (0.03s)
+    --- PASS: TestHostedConfigDetachCurrentOrPartialRetryReachesExistingChecks/ganesha-native/missing (0.03s)
+    --- PASS: TestHostedConfigDetachCurrentOrPartialRetryReachesExistingChecks/ganesha-docker/current (0.03s)
+    --- PASS: TestHostedConfigDetachCurrentOrPartialRetryReachesExistingChecks/ganesha-docker/missing (0.03s)
+=== RUN   TestHostedConfigChecksLeaveAppleAndConnectOnlyUnchanged
+--- PASS: TestHostedConfigChecksLeaveAppleAndConnectOnlyUnchanged (0.06s)
+=== RUN   TestReconnectSelectedSetIsBoundedAndIndependent
+--- PASS: TestReconnectSelectedSetIsBoundedAndIndependent (0.07s)
+=== RUN   TestDeclineNeverChangesResources
+--- PASS: TestDeclineNeverChangesResources (0.00s)
+=== RUN   TestPendingReceiptDoesNotDuplicatePrivateContainerSnapshot
+--- PASS: TestPendingReceiptDoesNotDuplicatePrivateContainerSnapshot (0.00s)
+=== RUN   TestBackgroundReconnectDoesNotResumePendingNodeMutation
+--- PASS: TestBackgroundReconnectDoesNotResumePendingNodeMutation (0.01s)
+=== RUN   TestBoundPendingReuseAndReplacementRefusal
+=== RUN   TestBoundPendingReuseAndReplacementRefusal/false
+=== RUN   TestBoundPendingReuseAndReplacementRefusal/true
+--- PASS: TestBoundPendingReuseAndReplacementRefusal (0.05s)
+    --- PASS: TestBoundPendingReuseAndReplacementRefusal/false (0.02s)
+    --- PASS: TestBoundPendingReuseAndReplacementRefusal/true (0.02s)
+=== RUN   TestPendingUnboundAndInvalidForms
+=== RUN   TestPendingUnboundAndInvalidForms/existing-unbound
+=== RUN   TestPendingUnboundAndInvalidForms/absent-unbound
+=== RUN   TestPendingUnboundAndInvalidForms/old
+=== RUN   TestPendingUnboundAndInvalidForms/partial
+=== RUN   TestPendingUnboundAndInvalidForms/zero-not-new
+=== RUN   TestPendingUnboundAndInvalidForms/mixed
+=== RUN   TestPendingUnboundAndInvalidForms/hosted-unbound
+--- PASS: TestPendingUnboundAndInvalidForms (0.17s)
+    --- PASS: TestPendingUnboundAndInvalidForms/existing-unbound (0.02s)
+    --- PASS: TestPendingUnboundAndInvalidForms/absent-unbound (0.02s)
+    --- PASS: TestPendingUnboundAndInvalidForms/old (0.02s)
+    --- PASS: TestPendingUnboundAndInvalidForms/partial (0.02s)
+    --- PASS: TestPendingUnboundAndInvalidForms/zero-not-new (0.02s)
+    --- PASS: TestPendingUnboundAndInvalidForms/mixed (0.02s)
+    --- PASS: TestPendingUnboundAndInvalidForms/hosted-unbound (0.03s)
+=== RUN   TestCreatedSourceBindingSurvivesProbeFailure
+--- PASS: TestCreatedSourceBindingSurvivesProbeFailure (0.07s)
+=== RUN   TestBindingSaveFailureStopsAndUnboundRetryPersists
+--- PASS: TestBindingSaveFailureStopsAndUnboundRetryPersists (0.05s)
+=== RUN   TestCompletedBindingValidationAndReconnectNoEffects
+=== RUN   TestCompletedBindingValidationAndReconnectNoEffects/old
+=== RUN   TestCompletedBindingValidationAndReconnectNoEffects/zero
+=== RUN   TestCompletedBindingValidationAndReconnectNoEffects/changed-inode
+=== RUN   TestCompletedBindingValidationAndReconnectNoEffects/changed-uuid
+=== RUN   TestCompletedBindingValidationAndReconnectNoEffects/missing-source
+--- PASS: TestCompletedBindingValidationAndReconnectNoEffects (0.12s)
+    --- PASS: TestCompletedBindingValidationAndReconnectNoEffects/old (0.02s)
+    --- PASS: TestCompletedBindingValidationAndReconnectNoEffects/zero (0.02s)
+    --- PASS: TestCompletedBindingValidationAndReconnectNoEffects/changed-inode (0.02s)
+    --- PASS: TestCompletedBindingValidationAndReconnectNoEffects/changed-uuid (0.03s)
+    --- PASS: TestCompletedBindingValidationAndReconnectNoEffects/missing-source (0.02s)
+=== RUN   TestDetachDoesNotRequireLiveSource
+--- PASS: TestDetachDoesNotRequireLiveSource (0.03s)
+=== RUN   TestPlanCapturesExistingAndQualifiesNewParent
+=== RUN   TestPlanCapturesExistingAndQualifiesNewParent/false
+=== RUN   TestPlanCapturesExistingAndQualifiesNewParent/true
+--- PASS: TestPlanCapturesExistingAndQualifiesNewParent (0.00s)
+    --- PASS: TestPlanCapturesExistingAndQualifiesNewParent/false (0.00s)
+    --- PASS: TestPlanCapturesExistingAndQualifiesNewParent/true (0.00s)
+PASS
+ok  	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/setup	4.617s

@@ -1,182 +1,200 @@
-# Implementation Handoff — IR-008
+# Implementation Handoff — IR-009
 
 ## Current result and authority
 
-**Implementation Complete — SR022 bounded healthy source-write freshness/config-
-lifecycle correction; independent source review required. Large / High confirmed.**
-Source commit **d65aeda24fc4b9a534a3941b194dd4a55b88c00c**, eight scoped source/test/docs
-paths. All implementation/checks personal; no delegation/spawning. See IR008 in
-implementation-revision-record.md for the delta, not an inferred prior result.
+**Implementation Complete — bounded SR023 Mac source-identity/bind-once recovery;
+independent source review required. Large / High confirmed.** Personal work only;
+no delegation/spawning. Source commit **d3c88f37c30ee74a89a95a4f6906992667c9b875**, 19 source/test/docs paths.
+Current code and this handoff are authoritative; IR001–009 history is cumulative.
 
-The common owned Ganesha EXPORT now sets Attr_Expiration_Time=0. Status verifies
-hosted native/Docker config before readiness; Detach preflights existing config
-before selected-node/mount/job/engine effects. Missing config permits partial
-owned teardown retry, never readiness. Existing strict writer/verifier, exact
-removal and all other ownership checks remain. No engine rebuild, migration,
-runtime reader workaround or selected-start-policy change.
+Mac APFS source identity is now volume UUID + directory inode, not durable raw
+device. Descriptor-correlated actual-device diskutil capture, complete bounded
+XML/typed mapping validation and post-command correlation fail closed. Linux
+retains device + inode. New source binding is saved before marker/handle/export
+work; complete pending binding is reused even with stale NewSource. No migration,
+rebind fallback, engine rebuild, mount/runtime/UI or restart-policy change.
 
-**This is not CR006 product closure or a measured five-second freshness Pass.**
-CRR010 Fail / CR006 P1 and API004 Fail57.14% / broader Required / API-F004 remain
-current until their owners supersede them. **CR005/API-F003 is independently
-scoped resolved by API004**; its two ordinary host reboots and separate Stop/
-policy/replacement/detach controls remain preserved, not reopened.
+**Not CR007 product closure. CRR012 Fail / API005 Fail57.14% / broader Required
+remain authoritative.** The corrected public Mac ordinary-boot path has NOT been
+executed in this implementation round. ARCH007 accepts design, not implementation
+or product acceptance. CR006/API-F004 is independently scoped **RESOLVED by API005**
+(Linux native + Docker STORAGE, native + actual managed HTTP, 40 fixtures/80 reads
+within5s). Do not reopen it as IR008/IR009 regression. Prior CR005/API-F003 ordinary
+boots and separate Stop/policy/replacement/detach controls remain scoped resolved.
 
-## Upstream package
+## Upstream artifact package
 
-Worktree /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces;
-branch codex/shared-network-workspaces; finalization origin/personal.
-Task project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63.
-Ticket /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces.
-Ticket references below are relative to that root; code paths worktree-relative.
+Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces`;
+branch `codex/shared-network-workspaces`; finalization `origin/personal`.
+Task `project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`.
+Ticket `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces`.
+Artifact links below are ticket-relative; production paths are worktree-relative.
 
-- requirements-doc.md **Approved SR018**, approval-record-sr018.md, retained
-  approvals/scope feedback; unchanged intended behavior.
-- investigation-notes.md, solution-revision-record.md, solution-design-handoff.md,
-  design-spec.md **Ready SR022**, reviewed design4c66567ccacf6552e0f21af5c4e7f177c312f5c4.
-- design-review-report.md / architecture-review-revision-record.md:
-  **ARCH-REV006 Pass**, review9d0ff246a71988c911cddbd4148fcec16f89db3f.
-  Actual input391d65a993fbb0ca891e043d6a7eea5e4981eebc adds coordinator receipt only.
-- code-review-report.md / code-review-revision-record.md / crr-010:
-  CR006 Design Impact accepted in SR022, not an independent source/product Pass.
-- API report/investigation/ledger/history and api-rev-004 raw public runtime,
-  freshness, reboot/control, preview and cleanup evidence; earlier API001–003
-  evidence retained without relabeling it current.
-- Full1041-reference input architecture-review-evidence/arch-rev-006/package-index.json;
-  current complete cumulative implementation-evidence/ir-008/package-index.json
-  includes all inputs, unchanged earlier evidence and this round's files.
-- IR001–007 history retained. Exact prior IR007 handoff snapshot:
-  implementation-evidence/ir-008/prior-implementation-handoff-ir007.md.
-- SR022 exact-source and diagnostic A/B/A supplements remain feasibility evidence;
-  NOT corrected-public-command/managedHTTP/Docker-storage/Mac/physical proof.
-- External Product spec N/A — not applicable. DR/delivery N/A — not performed.
-  Independent architecture and source review apply; neither is marked N/A.
+- `requirements-doc.md` **Approved SR018**, approval017/018, unchanged scope/DEC015.
+- `investigation-notes.md`, `solution-revision-record.md`, `solution-design-handoff.md`,
+  `design-spec.md` **Ready SR023**, design a4be96c45d4e9799c3dc18fc6b690b7edf579477.
+- `design-review-report.md`, `architecture-review-revision-record.md`: **ARCH007
+  Pass**, review ca0ac77b16d5f88074a8d45df16a4c04aea517fa; actual implementation
+  input7b2db1b07beedfeac473b9e7ef367b7176338fde adds only coordinator informational
+  receipt to solution-revision-record.md. No omitted review artifacts.
+- `code-review-report.md`, `code-review-revision-record.md`, CRR012 source trace /
+  API005 raw Mac failure + Linux freshness/prior-resolution receipts.
+- Full1351 input refs in `architecture-review-evidence/arch-rev-007/package-index.json`;
+  all retained by `implementation-evidence/ir-009/package-index.json` with this delta.
+- SR023 installed manuals, primary contracts, persisted-state investigation and
+  disposable probe/results/attempts/cleanup remain dependency feasibility ONLY.
+  Not public mounted RW, whole-host product boot, managed client or physical proof.
+- Exact prior IR008 handoff snapshot: `implementation-evidence/ir-009/prior-implementation-handoff-ir008.md`.
+  Earlier specialist histories/evidence retained without relabeling their scopes.
+- External Product spec **N/A — not applicable**; DR/delivery **N/A — not performed**.
 
-Cycle **Rework / architecture-reviewed recovery**. Related SR022 / ApprovedSR018,
-ARCH006, CRR010, API-REV004; earlier SR019/020/021 and IR001–007 dispositions retained.
-Trigger CR006(P1)/API-F004. No requirements changes.
+Cycle **Rework**, IR009 / SR023 / ARCH-REV007 / CRR012 / API-REV005 / DR N/A.
+Trigger **CR007(P1)/API-F005**. ApprovedSR018 and SR019–022 policies retained.
 
-## Classification and design health
+## Routing classification and design health
 
-Task size **Large**; architectural risk **High**, confirmed from design-spec
-classification/Change Scope and this completed implementation. Small local delta
-does not downgrade privileged multi-platform consistency/configuration risk.
-Selected route **Code Review** via fresh handoff rules recorded in ir-008/routing.json.
-Direct-route lightweight review N/A; scoped source self-review completed.
-New Design Impact/Requirement Gap: **None**.
+Task size **Large**; architectural risk **High**, confirmed from SR023 classification
+and completed persistence/privileged lifecycle delta. No silent downgrade.
+Selected route **Code Review**; fresh rule receipt in `ir-009/routing.json` controls
+recipient. Direct-route lightweight review **N/A**; implementation self-review done.
+New Design Impact/Requirement Gap **None**.
 
-Reviewed posture/root cause: missing server-side freshness invariant, not an IR007
-regression or a renderer-only problem. **No Refactor Needed**; the existing export
-generator, verifier and setup sequencing owners suffice. Implementation matches
-the assessment. No cross-layer bypass, extra cache/service/registry or fallback.
-Four changed production files stay within500 nonempty lines and220 changed-line
-guardrails (source-audit.json). No dead code found in touched paths; no new outside
-dead-code follow-up. Shared structures remain unchanged/tight. Root DESIGN/TESTING,
-NFS README checks and shared design principles reapplied; no closer NFS AGENTS/
-TESTING file or guideline conflict found.
+Reviewed root cause: source identity's lifetime mismatch/missing invariant, not
+IR008 or Apple startup regression. Small OS-specific capture/config validation
+extraction and pending sequencing within existing owners; no broad refactor/new
+command runner, supervision owner, cache or version framework. Matches reviewed
+health assessment. Shared principles/root DESIGN/TESTING and migration policy
+reapplied; no closer NFS/package guideline found. No scope expansion.
 
-## Behavior implementation trace
+## Reviewed behavior implementation trace
 
-| Behavior / requirement | Current production path | Outcome / limit |
+| Behavior / approved contract | Actual path | Outcome / limit |
 | --- | --- | --- |
-| BEH001, public create/reconnect | setup/apply.go -> backend.GaneshaConfig / WriteGanesha / InstallGanesha; lifecycle.Reconnect -> existing Verify/Ensure | Fresh activation consumes export-level zero expiry for nativeLinux/DockerLinux; strict repeated-current reuse. Writer/activation bodies unchanged |
-| BEH003, SCN002, REQ004/AC003/QR001 | source fsync/close -> Ganesha/VFS export -> unchanged hard4.1/actimeo1 native or managed-client mount -> fresh reader | Missing server policy implemented; five-second current-product native+HTTP visibility still requires API-F004 |
-| BEH004, configuration not falsely ready | setup/status.go -> backend.VerifyGanesha before mount/probe/HostReady | Read-only config verification; missing/different/unreadable config cannot pass. No config write or lifecycle restart from Status; existing health probe IO unchanged |
-| BEH005, REQ010/AC009/017 preservation | lifecycle.Detach -> backend.VerifyGaneshaForDetach -> existing detachNodes/unmount/job/engine -> existing exact config removal | Present mismatch fails before effects. Absent config allows partial retry, not bypass of remaining exact unit/container/source checks |
-| BEH002/006, native tools and healthy previews | existing runtime/workspace/REST/preview paths unchanged | No retry/proxy/cache-flush/UI workaround; full native-tools, linked-assets and healthy-preview proof still downstream |
-| BEH007, truthful release Guide | existing qualification gates and Guide unchanged | Empty qualifiedTargets remains unavailable; no release/qualification claim |
+| BEH001, SCN009/012, REQ014/017, AC007/014/017 | CLI -> Setup.Plan -> platform.SourceIdentity; config.Identity / ValidateBound; metadata Validate still supports unbound planning | Existing source captured, absent source's canonical parent qualified; same marker/storage UUID policy retained |
+| BEH004, SCN013, REQ019, AC018/019 | launchd/supervisor or public reconnect -> CheckConfiguration -> CheckSource -> existing Apple Ensure/mount | Apple canonical nonzero lowercase VolumeUUID + inode; no durable Device or refresh; Linux positive device/inode unchanged. Local tests only; public reboot acceptance pending |
+| BEH005, retry/preservation | PendingPlan / validateSourceIntent / Apply / bindSource / SaveIntent | Complete binding checked/reused despite stale NewSource; true zero + NewSource only unbound; old/partial/mixed/hosted-unbound refused. Atomic binding save before later effects, final hosted-before-export order retained |
+| BEH005, status/detach | complete config validation; pending detach shape validation; existing exact teardown | Status no repair. Detach no live-source capture requirement; missing-source valid current binding reaches existing mount boundary |
+| BEH003 and BEH002/006/007 preserved | Ganesha expiry0, Docker restart safeguards, runtime/private links, REST/previews, Guide/release owners untouched | Scoped prior resolutions and remaining full-product gates retained; no new qualification |
 
-Scope Guardrail / Change Scope followed: **Yes**. Source/UUID, all-squash/allowlist,
-kernel/protocol, mounts/volume options, engine pair, runtime profiles/REST/UI,
-node image/ports/private data and SR021 immutable-ID recovery remain unchanged.
-Apple and connect-only config paths bypass the new hosted Ganesha verification.
+Changes stayed within requirements Scope Guardrail and design Change Scope: **Yes**.
 
-## Generated-state disposition and assumptions
+## Key implementation owners and self-review
 
-Design SR022 section "Generated-state disposition": fresh current generation,
-**no evidenced released predecessor migration**. User/project/source/marker/
-attachment formats **Not Affected**. Old disposable test setup **Discard or Rebuild**
-only through its matching candidate's public drained detach BEFORE reinstall on
-preserved source/marker. Existing current exact bytes directly reusable; different
-bytes retained/refused. No compatibility wrapper, dual read/write, version field,
-unconditional overwrite, hot reload, source deletion or retained-engine rebuild.
+- `internal/config/state.go`, `source_identity.go`: one backend-selected Identity,
+  no schema/platform selector. `Validate` remains metadata-only for planning/backend
+  renderers; `ValidateBound` is mandatory at completed setup/current-source boundaries.
+  Linux JSON device/inode fields retain meaning/shape. Mixed/zero/old Apple refused.
+- `internal/platform/source.go`, `source_darwin.go`, `source_linux.go`, existing
+  `filesystem_darwin.go`: canonical real-directory checks, O_DIRECTORY/O_NOFOLLOW/
+  CLOEXEC fd, Fstat/Fstatfs local APFS mounted device, fixed trusted Runner command,
+  before/after path/fd raw-pair and mount/fsid correlation; defer close on every
+  post-open exit. Raw device only local observation. QualifyFilesystem is still
+  reached by Darwin handle qualification; not dead code.
+- `volume_plist.go`, `volume_identity.go`: <=1MiB accepted complete plist/dict,
+  bounded nested values, duplicate keys rejected (including unrelated keys), typed
+  required strings, strict system prolog/root, malformed/trailing refusal. Actual
+  DeviceNode/MountPoint/FilesystemType/VolumeUUID only. No Mounted/DiskUUID fallback.
+- `setup/plan.go`, `apply.go`, `pending.go`, `lifecycle.go`: existing Store/admin lock,
+  fresh consent, supervisor pending refusal and final hosted-before-export order
+  unchanged. Apply normalizes complete stale-flag plans before effects; newly
+  created source calls bindSource immediately after CreateSource, before probe.
+  Failure after a successful binding save retains the selected identity.
+- Adjacent config/platform/setup tests, metadata-complete IR008 hosted config test
+  fixtures, and narrow NFS README update. Backend/engine/workflow/REST/runtime/UI
+  production bytes unchanged.
 
-An externally edited matching disk file does not prove the daemon loaded a new
-policy. No hot update is implemented/claimed. If a real supported retained deployment
-is evidenced, return it to Solution Designer for a concrete transition. No such
-new evidence found here. Extra VFS metadata calls are the accepted correctness-
-first tradeoff; no performance/throughput benchmark claim.
+Compatibility mechanisms **None**; old cross-OS raw-pair comparison and stale-flag
+pending recapture removed. Dead in-scope code **removed/replaced**; none newly
+unreachable found elsewhere. Tight shared variant **Yes**; meaningful helpers in
+existing owners, no bypass. All production files <=210 effective nonempty lines;
+all production deltas <=220 lines (largest new plist parser189 physical/183
+nonempty). Tests outside source-size limit. Full path/hash/delta audit retained.
 
-## Local implementation evidence
+## Persisted-data disposition
 
-implementation-evidence/ir-008/checks-and-limits.md and checks-result.json contain
-commands, expected exits and scope. Personal final results:
-- Go race: seven packages,56 top-level/140 first-level subcases pass; vet pass.
-- Backend/setup current/missing/malformed/different/old config, saved/pending
-  teardown ordering, exact removal/recovery retry, Apple/connect-only controls.
-  Positive setup preflight stops at mount observation; no full public teardown.
-- Python packaging/installer/launcher/workflow18 tests:17 pass, one standalone
-  Go-child skip (child exercised via Go parent); shell syntax pass.
-- Four plain compile targets Darwin/Linux arm64/amd64, native version pass.
-- Seven copied mutation controls fail intended tests; not compilation failures.
-- Empty-qualification publication check refuses as required.
-- Initial race-only environment failure retained: owned /tmp TMPDIR inherited
-  wheelGID0, violating existing Probe nonroot identity. Corrected own scratch
-  group20 and reran; no source/test guard weakening. attempts.md / attempt-1.
-- Source audit: eight scoped files,1083 other protected input paths unchanged;
-  all15 IR005/007 candidate files and286 files across five prior dist trees
-  unchanged; all1041 incoming references retained. Strict Write/Verify/Ensure/
-  RemoveGaneshaConfiguration function bodies byte-identical.
+Follows SR023 `Persisted Data / State Transition Decision` without deviation:
+- Current Apple UUID+inode / Linux device+inode, source bytes/marker/storageUUID,
+  attachments/private data: directly usable; no migration/meaning change.
+- Truly all-zero NewSource without hosted state: unbound first capture only.
+- Old bound device-only Apple fixtures: not convertible by guessing today's UUID.
+  Drain/detach using **matching OLD candidate BEFORE replacing it**, then fresh
+  create on preserved source/marker/storageUUID. New reader supplies actionable
+  unsupported-binding error; no automatic deletion, rebind or startup migration.
+- No supported released predecessor established by evidence, **not universal absence**.
+  Actual supported retained installation evidence must return for concrete transition
+  assessment before cutover. No manual identity edits for acceptance.
 
-No new VM/real Docker/root/mount/physical/provider/public-bootstrap/API/E2E work.
-Frontend rendered-result check **Not Applicable**: no frontend code/interaction
-delta. No rendered-quality or current public freshness Pass claimed.
+## Local implementation checks and environment
 
-## Build and dependency provenance
+See `ir-009/checks-and-limits.md`, raw logs, attempts.md, checks-result.json,
+mutation-result.json, source-audit.json and build-result.json.
 
-Source-default aggregate:
-ae8e023775c9f7ab060e469cc9770a34ccc1321a8ae9d338a95a70ae0cd15076.
-With unchanged retained IR005 engine manifest:
-a6ef7dee582e9b4ba0edd7449bac4d292acfb944073502f0fb63bd8356653342.
+- Pinned checksum-verified Go1.27.2 darwin/arm64, clean owned HOME/TMPDIR (group20).
+  Final race: seven packages, **70 top-level passes / 212 first-level subcases**;
+  one standalone installer-child skip (parent executes the child mode). Vet passes.
+- Strict plist/variant/FD/error/mapping/path-change/permission tests; installed
+  diskutil read-only integration on owned APFS directory. Complete pending/stale
+  NewSource/unbound/old/partial/hosted-conflict/mismatch no-effects tests.
+- New-created-source binding test starts at actual Apply helper immediately AFTER
+  nonroot creation, then actual Apply fails at missing trusted probe executable.
+  It proves persisted binding before later effects, **not privileged CreateSource
+  execution or public mounted setup**. Plan tests stop after capture at backend
+  selection, before NFS config/port work. Detach success fixture stops at mount query.
+- Python packaging:18 tests,17pass/1 standalone Go-child skip; shell syntax;
+  empty-qualification publication expected refusal. Four CLI cross-builds,
+  native version; all test packages cross-compile Darwin amd64/Linux arm64+amd64.
+  **Linux-specific tests compile, not execute**; common Linux identity/config,
+  backend/expiry and Docker recovery unit regressions execute on Darwin.
+- Ten copied-source mutations fail intended tests: missing FD close, post-query
+  correlation, duplicate/trailing/mapping checks, pending comparison, binding save/
+  flag clearing, hosted-unbound and complete-config validation.
+- First compile exposed nonexported MNT_LOCAL; corrected using retained OS-header
+  constant. Candidate-1/check-directory rerun issue preserved; final14 checks complete.
+  No erased failures, guard weakening or API/E2E environment bring-up.
 
-Actual current-source Linux/Darwin arm64 CLI and release.json retained ignored at
-autobyteus-nfs/out/ir008-local-candidate; full four-file SHA/size inventory and exact
-commands in ir-008/build-result.json. Linux CLI SHA32772499817bccc6dc8c8bd01b15a457457848e17321af6053544adf53803a64;
-Darwin CLI SHA5908c8229010102d7a1708c65e50b8674766a6c8356c4362588c0fed36167a57.
-Embedded metadata bytes verified in both binaries; native version verified.
-Only copied-source changes for packaging: release.json + exact two .debs.
-Pinned Go1.27.2 archive digest verified. No engine rebuild. Exact4.3-8ubuntu1+
-autobyteus1 engine pair/corresponding source/notices remain in ir005-local-candidate;
-prior IR007 candidate remains intact. No new Docker image identity assigned.
-All candidates unqualified/unpublished; actual amd64-engine qualification remains.
+## Current CLI candidate / retained inputs
 
-Owned scratch/toolchain/copies/plain cross-builds removed (cleanup.json); retained
-only new four-file candidate and existing15 historical files. No live user resources,
-installed config, credentials or the five old dist trees modified.
+Ignored `autobyteus-nfs/out/ir009-local-candidate` contains Linuxarm64 and Darwinarm64
+CLIs plus current release.json and README; exact hashes/sizes in build-result.json.
+Uses identical retained **IR005 arm64 engine pair** and source/notices. No engine
+rebuild, Docker image assignment, signing, publication or qualification.
+Actual-source default hash **cc3556ce850bf20281e6b7e0411a6b01359ea863cac6cb22104808e9dc225354**;
+retained-engine metadata source hash **f0d71675d3d9b70d89969a8071b8de03287cff0676669ddab295f14568041c88**.
+Both binaries contain the exact generated metadata bytes; native version smoke
+only proves executable/version, not source identity or mounted functionality.
+All19 prior IR005/007/008 artifacts and286 old dist files unchanged; five preexisting
+dist trees untouched. 1379 protected input paths unchanged except this delta and
+our two canonical implementation authorities. Scratch/copied mutations removed;
+only inventoried new candidate intentionally retained. No live resource mutation.
 
-## Downstream sequence and remaining limits
+## Frontend rendered-result check
 
-1. Independent source review of this bounded delta and cumulative package; no
-   duplicate direct API dispatch.
-2. After source Pass, **API-F004 FIRST**: fresh corrected public setup/reconnect;
-   prime real native + actual managedHTTP readers, unique repeated1KiB/1MiB direct
-   source in-place writes with sync/close, fresh opens -> exact bytes within5s.
-   Include atomic/new-file cases; record actual generated/loaded activation policy,
-   client cache/mount, CLI/engine package/image, source/UUID/private identities.
-   No manual config edit, cacheflush, remount or read-retry workaround.
-3. Preserve API004 independently resolved CR005/API-F003 ordinary two-boot and
-   separate normal Stop/policy-disabled/unselected/replacement/detach regression.
-   Same ID/Image/Config; HostConfig permits only already documented empty-DNS
-   null->[] normalization, not raw byte equality.
-4. Full remaining current-product bothOS native+managedclients; Linux native/Docker
-   STORAGE; independent physical peers; native actual tools/unread linked assets/
-   peer close/restore/Standalone-Team-Org; completed artifact + healthy previews;
-   amd64 engine; hosted workflow/signing/public bootstrap; docs/user verification/
-   finalization/authorized release. Successful af9f23 REST test-code review still
-   waits for passed API package. No forced-outage gate or150s SLA invented.
+**Not Applicable** — backend/config/lifecycle-only delta plus documentation; no
+rendered UI/interaction changed. Prior healthy-preview evidence is not new proof.
 
-CR001–004 scoped resolutions retained; API-F002 fresh no-preinstall nativeUbuntu
-scope remains resolved, not full qualification. D001/DEC015 outage isolation deferred
-**not fixed**. IMP-D001 private current-source links, independent source Update/Remove,
-unchanged AGY/local policy retained. FUP001 remains PM custody (no duplicate task).
-PeerNAT/access limits separate. Only MacDocker STORAGE deferred, not Mac clients.
-No merge/push/tag/release/TaskDone/user-verification authorization or claim.
+## Required downstream gates
+
+1. Fresh configured **independent source review** of IR009. Do not dispatch API in
+   parallel or duplicate a reviewer's primary handoff.
+2. After source Pass: **API-F005 FIRST**, current public native Mac fresh create;
+   >=2 ordinary whole-host boots (more if required to witness ACTUAL raw-device
+   change), automatic mounted nonroot RW BEFORE manual reconnect/repair. Separately
+   public reconnect; actual same-path directory and real APFS volume replacement
+   refusal with copied marker/bytes. No synthetic identity edits/helper substitute.
+   Record installed CLI/metadata, distinct boots, observed device, UUID/inode,
+   unchanged saved binding/source/marker/modes/private state and job/export/mount.
+3. Preserve CR006's Linux native/Docker storage + native/actual managed HTTP80 reads
+   <=5s resolution and CR005 normalboots/Stop/policy/replacement/detach controls.
+   Same ID/Image/Config; documented empty-DNS null->[] HostConfig normalization is
+   not raw byte equality. CR001–004 scoped resolutions retained, not entire-suite Pass.
+4. Remaining bothOS native+managed clients / LinuxnativeDockerstorage / independent
+   physical topology / actual native tools + unread linked assets + peer-close +
+   restore / Standalone-Team-Org / completed artifacts + healthy previews / amd64
+   engine / hosted-workflow/signing/public-bootstrap/docs/user/finalization/authorized
+   release gates remain. Successful af9f23 REST test-code review awaits Passed API package.
+
+D001/DEC015 deferred **notfixed**; IMP-D001 current-source links, independent Source
+Update/Remove and AGY/local policy unchanged. FUP001 PMcustody; physical/profile/
+inference/privateLAN/peerNAT prerequisites unchanged. Only MacDocker **STORAGE**
+deferral, not clients. Empty qualification/unavailable Guide honest. No merge,
+push, tag, release, TaskDone, deployment or user-verification claim.

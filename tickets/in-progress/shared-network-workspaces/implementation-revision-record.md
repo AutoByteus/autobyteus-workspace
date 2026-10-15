@@ -433,3 +433,60 @@ record does not imply an earlier Pass or completed implementation.
   DEC015/D001 deferred notfixed; IMP-D001 source/AGY/local unchanged; FUP001 PMcustody
   and separate peerNAT limit; only MacDocker STORAGE deferred. Empty qualification/
   unavailable Guide honest. No merge/push/tag/release/TaskDone/user-verification claim.
+
+## IR-009 — Bind Mac sources to reboot-stable APFS identity
+
+- Date2026-10-15. Trigger Architecture Reviewer ARCH-REV007 Pass / SR023 Ready,
+  unchanged ApprovedSR018. CRR012/CR007 P1 and API-REV005/API-F005; DR N/A.
+- Prior implementation result IR008 Implementation Complete/source review required;
+  CRR011 later source Pass and API005 independently resolved CR006/API-F004 for
+  Linux native+Docker STORAGE/native+actual managedHTTP40fixtures80reads<=5s.
+  Current CRR012/API005 failure concerns distinct ordinary Mac reboot identity,
+  not an IR008 regression. Exact previous handoff snapshotted in ir-009.
+- Current result **Implementation Complete; selected independent source review
+  required**, Large/High confirmed. Not CR007 product closure or public reboot Pass.
+  Code and canonical implementation-handoff.md remain authorities.
+- BEH001/004/005, SCN009/012/013, REQ014/017/019, AC007/014/017/018/019:
+  platform captures descriptor-correlated actual APFS volume UUID + inode through
+  fixed trusted diskutil/typed complete bounded XML; post-query path/fd/mount checks,
+  close on all paths. Config owns mutually exclusive backend-selected identity.
+  Linux device/inode unchanged. Pending/Apply own first binding and SaveIntent
+  before later effects; stale NewSource never recaptures a complete binding.
+  Completed config validation, no status repair or new detach live-source dependency.
+- Source **d3c88f37c30ee74a89a95a4f6906992667c9b875**,19 source/test/docs paths:
+  config/state+source_identity; platform/source OS split, existing APFS qualifier,
+  local volume plist/mapping parser; setup plan/apply/pending/lifecycle; adjacent
+  tests and NFS README. No engine/backend/REST/UI/runtime/restart-policy production
+  changes. Largest production file210 effective lines; all production deltas<=220.
+- Direct-use current bindings and source/marker/data; no supported released old
+  predecessor established, not universal absence. Old bound device-only Mac test
+  setups drain/detach using matching old CLI BEFORE new install/fresh create on
+  preserved source/marker/storageUUID. No inference/migration/deletion/fallback.
+  Evidence of actual supported retained installation returns for concrete transition.
+- Final local14-command run: race7packages70top-level212subcases,vet,Python18/
+  17pass/1standaloneGo-childskip,shellsyntax,expectedpublishrefusal,4CLIcrossbuilds,
+  nativeversion,3cross-target all-test-package compiles. Installer child separately
+  skips at top level but executes via parent. Linux-specific tests compiled only.
+  Ten copied mutations fail intended tests. Actual installed diskutil read-only
+  integration on an owned directory; no public setup/boot/mount/VM/API execution.
+- Test boundary limits explicit: created-source binding helper starts after nonroot
+  CreateSource; actual resumed Apply fails before marker work at missing trusted
+  probe binary. Plan fixture stops before NFS config/ports. No full privileged
+  CreateSource proof. Initial nonexported MNT_LOCAL compile error and output-dir
+  rerun harness failure retained; final run complete, no guard weakened.
+- Current actual CLIs+metadata built with retained exact IR005 engine, no rebuild:
+  defaultsource cc3556ce850bf20281e6b7e0411a6b01359ea863cac6cb22104808e9dc225354;
+  sameengine f0d71675d3d9b70d89969a8071b8de03287cff0676669ddab295f14568041c88.
+  Four new candidate files inventoried; all19old artifacts/286dist files unchanged.
+  All1351 incoming refs retained; protected inputs preserved. Scratch/copies cleaned.
+- Configured Code Review only, existing role/no spawning/duplicate API dispatch.
+  After source Pass: API-F005 FIRST current public Mac create +>=2ordinary host
+  boots, witness actual rawdev reassignment, automatic nonroot mounted RW BEFORE
+  manual reconnect/repair, separate public reconnect and real directory/volume
+  replacement refusal. Then full remaining product/native/managed/physical/agent/
+  preview/amd64engine/workflow/signing/publicbootstrap/docs/user/release gates.
+- CR001–006 scoped closures retained. D001/DEC015 deferred notfixed; IMP-D001
+  current-source/independent Source Update-Remove/AGYlocal, FUP001 PMcustody and
+  access/physical/privateLAN/peerNAT prerequisites unchanged. OnlyMacDockerSTORAGE
+  deferred. af9f23 test-code review pending PassedAPIpackage. No merge/push/tag/
+  release/TaskDone/deployment/user-verification claim.

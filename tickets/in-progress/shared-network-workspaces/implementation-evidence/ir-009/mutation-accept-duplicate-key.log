@@ -1,0 +1,14 @@
+--- FAIL: TestVolumePlistStrictIdentity (0.00s)
+    --- FAIL: TestVolumePlistStrictIdentity/duplicate-MountPoint (0.00s)
+        volume_identity_test.go:53: accepted "a19fe379-be62-4297-9a39-3934cc88214b"
+    --- FAIL: TestVolumePlistStrictIdentity/duplicate-unrelated (0.00s)
+        volume_identity_test.go:53: accepted "a19fe379-be62-4297-9a39-3934cc88214b"
+    --- FAIL: TestVolumePlistStrictIdentity/duplicate-DeviceNode (0.00s)
+        volume_identity_test.go:53: accepted "a19fe379-be62-4297-9a39-3934cc88214b"
+    --- FAIL: TestVolumePlistStrictIdentity/duplicate-FilesystemType (0.00s)
+        volume_identity_test.go:53: accepted "a19fe379-be62-4297-9a39-3934cc88214b"
+    --- FAIL: TestVolumePlistStrictIdentity/duplicate-VolumeUUID (0.00s)
+        volume_identity_test.go:53: accepted "a19fe379-be62-4297-9a39-3934cc88214b"
+FAIL
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/platform	0.294s
+FAIL

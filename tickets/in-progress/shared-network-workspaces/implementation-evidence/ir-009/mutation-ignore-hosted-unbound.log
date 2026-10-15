@@ -1,0 +1,6 @@
+--- FAIL: TestPendingUnboundAndInvalidForms (0.18s)
+    --- FAIL: TestPendingUnboundAndInvalidForms/hosted-unbound (0.03s)
+        source_binding_darwin_test.go:184: invalid binding observed or accepted <nil> 1
+FAIL
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/setup	0.532s
+FAIL
