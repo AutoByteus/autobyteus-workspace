@@ -1,0 +1,23 @@
+test_artifact_mutations_fail_before_embed (scripts.tests.test_nfs_engine_packaging.EnginePackagingTest) ... ok
+test_backport_is_only_two_fields_with_correct_provenance (scripts.tests.test_nfs_engine_packaging.EnginePackagingTest) ... ok
+test_engine_bytes_part_of_source_hash_and_stale_qualification_clears (scripts.tests.test_nfs_engine_packaging.EnginePackagingTest) ... ok
+test_merge_embed_same_bytes_and_reject_mixed_inputs (scripts.tests.test_nfs_engine_packaging.EnginePackagingTest) ... ok
+test_pipeline_pair_reuse_and_size_gate (scripts.tests.test_nfs_engine_packaging.EnginePackagingTest) ... ok
+test_corrupt_or_unsafe_archive_never_executes (scripts.tests.test_nfs_installer_fixture.NfsInstallerFixtureTest) ... ok
+test_directory_modes_with_go_fixture (scripts.tests.test_nfs_installer_fixture.NfsInstallerFixtureTest) ... skipped 'invoked by Go platform bootstrap regression'
+test_valid_fixture_installs_and_immediately_invokes (scripts.tests.test_nfs_installer_fixture.NfsInstallerFixtureTest) ... ok
+test_launcher_stop_explains_noop_without_changing_policy (scripts.tests.test_nfs_packaging_and_launcher.NfsPackagingAndLauncherTest) ... ok
+test_nfs_workflow_build_only_never_pushes_or_publishes (scripts.tests.test_nfs_packaging_and_launcher.NfsPackagingAndLauncherTest) ... ok
+test_shell_selected_attachment_arguments_and_wrong_daemon_refusal (scripts.tests.test_nfs_packaging_and_launcher.NfsPackagingAndLauncherTest) ... ok
+test_unpublished_installer_fails_before_download (scripts.tests.test_nfs_packaging_and_launcher.NfsPackagingAndLauncherTest) ... ok
+test_unqualified_release_cannot_publish (scripts.tests.test_nfs_packaging_and_launcher.NfsPackagingAndLauncherTest) ... ok
+test_build_only_runs_all_build_gates_without_publishing (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) ... ok
+test_each_gate_rejects_bad_direct_needs_and_cancellation (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) ... ok
+test_existing_candidate_skip_rebuild_reaches_publication (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) ... ok
+test_failed_or_skipped_applicable_prerequisites_block_dependents (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) ... ok
+test_qualification_candidate_and_signing_gates_remain_required (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 3.448s
+
+OK (skipped=1)

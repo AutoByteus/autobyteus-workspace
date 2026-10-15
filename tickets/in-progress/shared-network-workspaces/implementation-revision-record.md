@@ -12,6 +12,7 @@ record does not imply an earlier Pass or completed implementation.
 | IR-002 | Architecture Reviewer / current report / round 3 | IMP-D001 | Implementation Complete | SR-019 / Approved SR-018, ARCH-REV-003; CRR/API-REV/DR N/A | Source implemented; personal local checks complete with unrelated baseline frontend failure; ready for source review |
 | IR-003 | Code Reviewer / CRR-001 / round1 | CR-001 P1 | Local Fix Complete | SR-019 / Approved SR-018, ARCH-REV-003, CRR-001; API-REV/DR N/A | Restrictive-mask new-directory modes corrected; pending source re-review |
 | IR-007 | Architecture Reviewer / ARCH005 / round5 | CR005 / API-F003 | Implementation Complete (reviewed design recovery) | SR021 / ApprovedSR018, ARCH005, CRR008, API003; DR N/A | Bounded same-ID failed-start completion implemented; local checks complete; source review required |
+| IR-008 | Architecture Reviewer / ARCH006 / round6 | CR006 P1 / API-F004 | Implementation Complete (reviewed design recovery) | SR022 / ApprovedSR018, ARCH006, CRR010, API-REV004; DR N/A | Export expiry0 and hosted config lifecycle verification implemented; source review required |
 
 ## IR-001 — Correct the source-generation lease reuse premise
 
@@ -387,3 +388,48 @@ record does not imply an earlier Pass or completed implementation.
   FUP001 PMcustody and peerNAT limit unchanged. Only MacDocker STORAGE deferred.
   No provider/liveuser resources/merge/push/release/TaskDone. Full artifacts and
   historical IR006 handoff retained; current canonical handoff/code authoritative.
+
+
+## IR-008 — Correct healthy source freshness and hosted config lifecycle
+
+- Date2026-10-15. Trigger Architecture Reviewer ARCH-REV006 Pass / design-review-
+  report.md, SR022. Findings CRR010/CR006 P1 / API-REV004/API-F004.
+  ApprovedSR018 and SR019/020/021 retained; DR N/A.
+- Prior implementation result IR007 Implementation Complete/source review required;
+  later CRR009 source Pass and API004 independently resolved CR005/API-F003 at their
+  actual scopes. Current CRR010 Fail/API004 Fail57.14% concern distinct freshness.
+  Exact previous canonical handoff retained at implementation-evidence/ir-008/
+  prior-implementation-handoff-ir007.md; current code/handoff remain authoritative.
+- Current result Implementation Complete, bounded reviewed design recovery;
+  Large/High confirmed, independent source review required. Not CR006 product closure.
+- BEH001/003/004/005, SCN002, REQ004/AC003/QR001 and REQ010/AC009/017:
+  common GaneshaConfig adds EXPORT Attr_Expiration_Time=0; hosted Status calls
+  VerifyGanesha before readiness; Detach calls backend VerifyGaneshaForDetach
+  before node/mount/job/engine effects. Missing allowed only in teardown preflight.
+  Existing Write/Verify/Ensure/exact-removal bodies unchanged.
+- Source d65aeda24fc4b9a534a3941b194dd4a55b88c00c: eight paths. Ganesha generator/native
+  config owner, setup status/lifecycle, backend/backend_test.go/cleanup_test.go,
+  adjacent setup/hosted_config_test.go, README. No new state owner/migration/cache/
+  reader/UI workaround, engine rebuild, source/private/node-policy mutation.
+- No evidenced released predecessor transition. Old disposable fixtures use matching
+  old candidate drained public detach BEFORE corrected reinstall on preserved source/
+  marker. Different bytes retained/refused; disk equality is not loaded-policy proof.
+- Local final race seven packages56 top-level140 subcases pass; vet; four compile
+  targets; native version; Python18/17pass/1 Go-child standalone skip; shell syntax;
+  qualification refusal; seven intended mutation failures. All implementation-local.
+  Initial wheelGID0 scratch failure retained and corrected only in owned test env.
+- Actual CLI/metadata rebuilt with exact retained IR005 pair; defaultsource
+  ae8e023775c9f7ab060e469cc9770a34ccc1321a8ae9d338a95a70ae0cd15076;
+  sameengine a6ef7dee582e9b4ba0edd7449bac4d292acfb944073502f0fb63bd8356653342.
+  Four ignored current candidate files inventoried; all15 prior artifacts unchanged.
+  All1041 incoming refs retained,1083 other input paths and five old dist trees
+  unchanged. Scratch removed; no live resources or API/E2E run.
+- Fresh configured Code Review route only, existing role, no spawning/duplicate API
+  dispatch. After source Pass API-F004 FIRST corrected public native+managedHTTP
+  exact fresh bytes within5s, warmed repeated1KiB/1MiB source writes, then complete
+  remaining current-product/platform/native-agent/physical/preview/release gates.
+- API004 CR005 reboot/Stop/policy/replacement/detach resolutions preserved, including
+  empty-DNS HostConfig normalization caveat. CR001–004 scoped resolutions retained.
+  DEC015/D001 deferred notfixed; IMP-D001 source/AGY/local unchanged; FUP001 PMcustody
+  and separate peerNAT limit; only MacDocker STORAGE deferred. Empty qualification/
+  unavailable Guide honest. No merge/push/tag/release/TaskDone/user-verification claim.

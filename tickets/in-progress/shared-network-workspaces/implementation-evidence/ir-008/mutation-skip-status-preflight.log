@@ -1,0 +1,20 @@
+--- FAIL: TestHostedConfigStatusRefusesBeforeReadiness (0.46s)
+    --- FAIL: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-native/missing (0.08s)
+        hosted_config_test.go:106: status ignored hosted config test stopped at mount observation 1
+    --- FAIL: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-native/old (0.04s)
+        hosted_config_test.go:106: status ignored hosted config test stopped at mount observation 1
+    --- FAIL: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-native/different (0.04s)
+        hosted_config_test.go:106: status ignored hosted config test stopped at mount observation 1
+    --- FAIL: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-native/malformed (0.04s)
+        hosted_config_test.go:106: status ignored hosted config test stopped at mount observation 1
+    --- FAIL: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-docker/missing (0.04s)
+        hosted_config_test.go:106: status ignored hosted config test stopped at mount observation 1
+    --- FAIL: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-docker/old (0.04s)
+        hosted_config_test.go:106: status ignored hosted config test stopped at mount observation 1
+    --- FAIL: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-docker/different (0.04s)
+        hosted_config_test.go:106: status ignored hosted config test stopped at mount observation 1
+    --- FAIL: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-docker/malformed (0.04s)
+        hosted_config_test.go:106: status ignored hosted config test stopped at mount observation 1
+FAIL
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/setup	0.812s
+FAIL
