@@ -2,18 +2,18 @@
 
 ## Solution And Approval Basis
 
-- Package `shared-network-workspaces`, Task `project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`; current revision **SR-022**; status **Ready — Architecture Design Complete (healthy source-to-client freshness; re-review required)**.
-- Intended-behavior authority: requirements-doc.md **Approved SR018**, Solution Designer within the user's explicit working-first v1 direction, exact quote in architecture-review-scope-feedback.md and approval/informing record approval-record-sr018.md. DEC015 defers advanced outage hardening; DEC012 hosting, DEC013 trusted-LAN plaintext and DEC014 physical-test sequencing remain unchanged from approval-record-sr017.md. No behavior-defining supplement or external Product-owned specification. SR022 changes no requirements/ACs. REQ004/AC003/QR001 retain healthy source-folder writes and <=5s fresh-client visibility; no platform/writer narrowing. SR021 selected-client restart design remains implemented and scoped independently validated by API004. Normal selected-client restart and ordinary stopped-node preservation remain the existing authority; the Docker no-op-stop observability limit is explicit below. The existing approved native Linux reference must work; no kernel/protocol downgrade or platform narrowing. SR019 private current-source links/no-retention policy remains unchanged; approval-record-sr018.md remains applicable.
-- Canonical evidence: investigation-notes.md and evidence/design-recovery/sr022/. Incoming CRR010/CR006/API-F004 is the current Design Impact; API004 remains Fail57.14%/broader Required. ARCH005 passed SR021; IR007/source d318bd9db935affdf16d141ef4e88a6c0e4939b5 implements its selected-client recovery. API004 independently resolves CR005/API-F003 with two ordinary whole-host boots without manual repair and separate normal-stop/policy/replacement/detach controls. Do not reopen that correction. CR001/002/003/004 retain their actual scopes; API003 fresh native-Ubuntu setup and API004 fresh nativeMac setup/boot evidence do not establish full platform/client qualification. CRR009 source Pass is historical, not a current product Pass. Cumulative incoming CRR010 index contains1003 references. Requirements/approval and specialist artifacts unedited; D001 deferred, IMP-D001 unchanged. Personal SR022 exact-source audit and controlled A/B/A native dependency experiment support expiry0; they are not a corrected public-command/API/managed-Docker/physical Pass.
-- Authorities read in this conversation2026-10-13 and recovery2026-10-14/15: solution-designer SKILL and requirements-engineering, architecture-design, design-principles, full formal design template; root AGENTS.md/DESIGN.md/TESTING.md (reread for SR021/SR022); server/web AGENTS.md; server startup/lazy-services, terminal-unification and data_migration_guideline; predecessor remove-global-skill-discovery-mode migration. No project/general principle conflict. Design-examples N/A — no example required as authority.
+- Package `shared-network-workspaces`, Task `project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`; current revision **SR-023**; status **Ready — Architecture Design Complete (Mac source identity across normal boots; re-review required)**.
+- Intended-behavior authority: requirements-doc.md **Approved SR018**, Solution Designer within the user's explicit working-first v1 direction, exact quote in architecture-review-scope-feedback.md and approval/informing record approval-record-sr018.md. DEC015 defers advanced outage hardening; DEC012 hosting, DEC013 trusted-LAN plaintext and DEC014 physical-test sequencing remain unchanged from approval-record-sr017.md. No behavior-defining supplement or external Product-owned specification. SR023 changes no requirements/ACs. Native Mac same-source ordinary restart and replacement refusal stay mandatory; no new user decision is introduced. REQ004/AC003/QR001 retain healthy source-folder writes and <=5s fresh-client visibility; no platform/writer narrowing. SR021 selected-client restart design remains implemented and scoped independently validated by API004. Normal selected-client restart and ordinary stopped-node preservation remain the existing authority; the Docker no-op-stop observability limit is explicit below. The existing approved native Linux reference must work; no kernel/protocol downgrade or platform narrowing. SR019 private current-source links/no-retention policy remains unchanged; approval-record-sr018.md remains applicable.
+- Canonical evidence: investigation-notes.md and evidence/design-recovery/sr023/. Incoming **CRR012 / CR007 P1 / API-F005** is the current Design Impact; **API005 Fail57.14% / broader Required** remains. ARCH006 passed SR022, IR008/source d65aeda24fc4b9a534a3941b194dd4a55b88c00c implements it; CRR011 is historical source-only Pass. API005 independently resolves CR006/API-F004 at both Linux storage forms/native+actual managedHTTP scope and retains CR005/API-F003 scoped normal-reboot/control resolution. CR001–004 scopes retained. New personal Mac dependency probe keeps UUID+inode through three ordinary boots despite raw-device reassignment, distinguishes real directory and APFS-volume replacements with copied marker/content, and retains symlink/permission refusal. NOT product/public-command/API/physical qualification. Complete1302 incoming references remain indexed; no specialist/requirements/production edits. D001 deferred, IMP-D001/FUP001 unchanged.
+- Authorities read in this conversation2026-10-13 and recovery2026-10-14/15: solution-designer SKILL and requirements-engineering, architecture-design, design-principles, full formal design template; root AGENTS.md/DESIGN.md/TESTING.md (reread for SR021/SR022/SR023); server/web AGENTS.md; server startup/lazy-services, terminal-unification and data_migration_guideline; predecessor remove-global-skill-discovery-mode migration. No project/general principle conflict. Design-examples N/A — no example required as authority.
 - Isolated workspace `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces`, branch `codex/shared-network-workspaces`; base `origin/personal@f13bdd0eb79aacc63dffa5995b9c86f359001468`; finalization `origin/personal`. No main-checkout changes, release, live mounts or data mutation authorized by this design.
 
 ## Current-State Read And Intended Change
 
-The following paragraph records the original source-design basis; current IR002–007 production implements service/runtime/launcher/guide and corrected Linux packages. API003 resolves CR003 at public native-Ubuntu setup scope; API004 resolves the subsequently implemented CR005 selected-client completion. CR006 now exposes a server/client freshness-policy gap for direct source writes. The pre-change Docker launcher maps a host-local folder, not common cross-computer storage. WorkspaceManager/FileSystemWorkspace create metadata and path-hash IDs; that is not mount readiness. Standalone, Team and Org provisioning/restore converge on workspace management, but native runtime resolvers can fall back to temp/cwd. Explorer actions and separate workspace/static/run-artifact REST readers run parent filesystem calls, whereas watcher isolation covers events only. The latter readers are reached by normal media/HTML/completed-artifact UI, not by explorer acquisition. Core file/terminal path validation and Claude startup perform synchronous filesystem work; hard NFS can stall these callers. Current configured skill publishers create node-private absolute links inside projects; FR009/011 show another node's cleanup breaking an active peer. Their holders own links, NOT source bytes: SkillSourceService/GitHubSkillRepository delete retired managed generations independently; AGY already uses unleased private links. IMP-D001 corrects the contrary SR018 reuse premise. Cross-node private-skill cleanup is a demonstrated normal-use defect and remains in scope. Parent shared IO can stall during outages, but that hardening is now explicitly deferred under DEC015; healthy existing path-based content delivery is retained. Whole projects remain in scope.
+The following paragraph records the original source-design basis; current IR002–008 production implements service/runtime/launcher/guide, corrected Linux packages and server freshness policy. API003 resolves CR003 at public native-Ubuntu setup scope; API004/005 resolve CR005 selected-client completion and API005 resolves CR006 at its stated Linux/native+managedHTTP scope. CR007 now exposes the persisted Mac device-number lifetime mismatch. The pre-change Docker launcher maps a host-local folder, not common cross-computer storage. WorkspaceManager/FileSystemWorkspace create metadata and path-hash IDs; that is not mount readiness. Standalone, Team and Org provisioning/restore converge on workspace management, but native runtime resolvers can fall back to temp/cwd. Explorer actions and separate workspace/static/run-artifact REST readers run parent filesystem calls, whereas watcher isolation covers events only. The latter readers are reached by normal media/HTML/completed-artifact UI, not by explorer acquisition. Core file/terminal path validation and Claude startup perform synchronous filesystem work; hard NFS can stall these callers. Current configured skill publishers create node-private absolute links inside projects; FR009/011 show another node's cleanup breaking an active peer. Their holders own links, NOT source bytes: SkillSourceService/GitHubSkillRepository delete retired managed generations independently; AGY already uses unleased private links. IMP-D001 corrects the contrary SR018 reuse premise. Cross-node private-skill cleanup is a demonstrated normal-use defect and remains in scope. Parent shared IO can stall during outages, but that hardening is now explicitly deferred under DEC015; healthy existing path-based content delivery is retained. Whole projects remain in scope.
 
 
-SR022 current path: public setup generates a Ganesha/VFS export without Attr_Expiration_Time, inheriting server metadata expiry60. Native and Docker clients already use actimeo1; those clients can revalidate against stale server attributes. API004 demonstrates ~61s fresh-read staleness after healthy source fsync/close. Explicit export expiry0 removes that server metadata validity window while retaining client policy and the direct filesystem data path. Existing Apply/Write/Verify owners remain; no separate coherence service. SR021's bounded exact-ID completion remains unchanged and independently passed its API004 reboot/stop controls.
+SR023 current path: setup.Plan captures raw st_dev+st_ino; Apply persists it in hosted/pending state; automatic launchd -> serial supervisor -> Reconnect -> CheckSource compares the full pair BEFORE Apple Ensure/mount. API005 proves the same APFS volume/directory is rejected after ordinary raw-device reassignment. Replace only the Mac volume component with actual persistent APFS VolumeUUID; keep directory inode, source marker and other guards. Reconcile both hosted and pending binding lifetime in their existing owners. Linux dev+inode and implemented SR021/SR022 behavior remain unchanged; no new retry/supervision mechanism.
 Add **one standalone persistent AutoByteus NFS service**, operated through `autobyteus-nfs`, in this superrepo. Its first invocation creates or connects storage, configures selected local Docker agent nodes, verifies and prints a usable path. Native operating-system NFS clients access the same chosen folder; AutoByteus does not proxy/copy individual project writes. Add a narrow Nodes NFS Guide and setup/new-run identity checks and private-runtime integration while preserving ordinary local behavior.
 
 ## Task Size And Architectural Risk
@@ -24,7 +24,7 @@ Add **one standalone persistent AutoByteus NFS service**, operated through `auto
 
 ## Change Scope
 
-In scope UC001–007 / BEH001–007: supported native Mac/native Linux/Docker-on-Linux service; native and Docker clients on both OSes; one bootstrap/first-use command; persistent attach/reconnect/safe detach; chosen source mapping; Nodes guide; configured-shared setup/new-run identity checks, normal file/preview/terminal/native runtime compatibility and private skill exposure required to preserve current functionality. SR019 narrows that exposure to private links/current-source availability, not a source-retention or snapshot subsystem. Existing Sources Update/Remove, local source registration and ordinary local-workspace materialization policy are preserved. SR021 adds selected failed-start completion and a bounded consumed-attempt record under the existing setup/Docker owner; no global daemon ordering, generalized supervisor or recreation at boot. SR022 changes only the owned Ganesha export policy, two small hosted-config verification entry points, their focused tests and documentation. It does not change runtime/REST readers, retry behavior or release gates. Concrete files below.
+In scope UC001–007 / BEH001–007: supported native Mac/native Linux/Docker-on-Linux service; native and Docker clients on both OSes; one bootstrap/first-use command; persistent attach/reconnect/safe detach; chosen source mapping; Nodes guide; configured-shared setup/new-run identity checks, normal file/preview/terminal/native runtime compatibility and private skill exposure required to preserve current functionality. SR019 narrows that exposure to private links/current-source availability, not a source-retention or snapshot subsystem. Existing Sources Update/Remove, local source registration and ordinary local-workspace materialization policy are preserved. SR021 adds selected failed-start completion and a bounded consumed-attempt record under the existing setup/Docker owner; no global daemon ordering, generalized supervisor or recreation at boot. SR022 changes only the owned Ganesha export policy, two small hosted-config verification entry points, their focused tests and documentation. It does not change runtime/REST readers, retry behavior or release gates. SR023 changes platform source capture/comparison, tight config identity validation, existing plan/apply/pending/reconnect wiring, focused tests and docs; no other new production owner. Concrete files below.
 
 Leave private databases, memories, provider homes/auth, existing local-only Docker sharing, ordinary local workspace defaults and unrelated runtime policies intact. No embedded desktop helper is necessary: REQ013 permits the selected standalone bootstrap route. No public/SDK/HA/offline-sync product, Windows, automatic notifications/context ingestion, general OS administration UI or parked collaboration work.
 
@@ -36,7 +36,9 @@ All paths below are relative to this ticket; full canonical inventory remains in
 
 | Evidence / source | Decision supported | Limit / applicability |
 | --- | --- | --- |
-| code-review-evidence/crr-010/package-index.json; evidence/api-e2e/api-rev-004/package-index.json; evidence/design-recovery/sr022/freshness-investigation.md and prototype-result.json | Normal healthy source-write failure; exact engine cache contract; controlled default/zero/restored-default comparison; generated-config disposition | Native same-kernel dependency prototype only, not implemented public behavior/managed HTTP/Docker storage/physical qualification. Independent API-F004 closure required |
+| code-review-evidence/crr-012/package-index.json, mac-evidence-review.json and source-trace.md; evidence/api-e2e/api-rev-005/mac-volume-boot-result.json | CR007 supported normal Mac boot refusal with unchanged actual APFS volume/inode | Independent failure evidence; no current fix Pass |
+| evidence/design-recovery/sr023/source-identity-investigation.md, primary-contracts.md, prototype-result.json, persisted-state-evidence.json, cleanup.json | Platform-specific identity, actual three-boot and replacement feasibility, explicit bound/unbound state disposition | Disposable dependency prototype only; current public product and physical qualification still required |
+| code-review-evidence/crr-010/package-index.json; evidence/design-recovery/sr022/; code-review-evidence/crr-012/visibility-evidence-review.json | Historical CR006 failure/design plus API005 actual Linux native/Docker storage and native/managedHTTP resolution | Resolved only at executed scope; bothOS/physical AC003 still required |
 | evidence/design-recovery/sr021/lifecycle-investigation.md; API004 two-reboots and control receipts | Bounded SR021 exact-ID recovery and current stop policy | Prior CR005 is scoped resolved, retained unchanged |
 | evidence/feasibility/experiment-index.json, raw fr001–057 | Auditable attempts, exact commands/topology/failures/cleanup | Designer prototypes, not downstream signoff |
 | real-agent-roundtrip-report.md, private-runtime-skill-report.md, native-private-readiness-report.md under evidence/feasibility | Actual native agent IO; Claude private plugins; Codex process-wide extra roots and peer-stop/resume | Existing release/SDK proofs, not finished current product |
@@ -50,7 +52,7 @@ All paths below are relative to this ticket; full canonical inventory remains in
 | approval-record-sr017.md; prior approval records, historical transcripts, setup-revision-context.md | Current authority plus historical user journey | Historical requirements/questions are superseded, not current blockers |
 | evidence/ui-reference/docker-guide-user.png | Reuse user's Nodes guide pattern | Not Windows support or an external Product specification |
 
-Independent review history preserved: ARCH001–005, IR001–007, CRR001–010 and API001–004. Current **CRR010 Fail/Design Impact** and **API004 Fail57.14%/broader Required** remain independent authorities. CR001–005 resolutions retain actual scopes, not a full product Pass. Complete raw/history references remain indexed by CRR010/API004 and the SR022 cumulative index. No specialist artifact edited. Delivery/finalization **N/A — not yet performed**; external Product specification **N/A — not requested/applicable**.
+Independent review history preserved: ARCH001–006, IR001–008, CRR001–012 and API001–005. Current **CRR012 Fail/Design Impact** and **API005 Fail57.14%/broader Required** remain independent authorities. CR001–006 resolutions retain actual scopes, not a full product Pass. Complete raw/history references remain indexed by CRR012/API005 and SR023; no specialist artifact edited. Delivery/finalization **N/A — not yet performed**; external Product specification **N/A — not requested/applicable**.
 
 ## Relevant Behavior And Production-Path Map
 
@@ -59,7 +61,7 @@ Independent review history preserved: ARCH001–005, IR001–007, CRR001–010 a
 | BEH001 Operational | 001/002/006/013–019; AC001/012–019 | Current public CLI create/reconnect and selected native/Docker backend | Same source; SR020 correct package pair -> unchanged engine/mount/nonroot probe -> actual root/node readiness | DS001/002 |
 | BEH002 User/System | 003/004/012; AC002–004/011 | Workspace selection -> standalone/Team/Org -> runtime | Native tools/cwd, normal policies, private configured skills; no fallback | DS003 |
 | BEH003 Contract | 002/004/005; AC001/003–005 | OS write/sync/close then peer open | Same filesystem, concurrent different files, coordinated same-file/Git, stated locks | DS002 |
-| BEH004 Operational | 007/008/014/019; AC006/007/014/018/019 | Setup/new-run expected path and ordinary machine/daemon restart after completed attachment | Existing source/host proof then eligible exact selected NFS failed-start completion; normal stopped nodes/private state preserved; outages may stall | DS001/003/006 |
+| BEH004 Operational | 007/008/014/019; AC006/007/014/018/019 | Setup/new-run expected path and ordinary machine/daemon restart after completed attachment | SR023 persistent Mac volume+directory proof (Linux pair unchanged), then host and eligible exact selected NFS failed-start completion; normal stopped nodes/private state preserved; outages may stall | DS001/003/006 |
 | BEH005 Operational | 009/010/017/019; AC008/009/017/019 | Source/export apply, node recreation, detach | Explicit network/OS/disruption consent; nonroot data mapping and exact preservation | DS001 |
 | BEH006 User/System | 011; AC010 | Healthy explorer reload and media/static/completed-artifact preview | Exact mounted content via existing APIs, no unsaved-buffer overwrite; outage isolation deferred | DS004 |
 | BEH007 User/Interaction | 020; AC020 | Nodes tab/copy/download | Existing guide pattern, truthful availability, no execution by copying | DS005 |
@@ -73,6 +75,8 @@ Posture Larger Requirement; normal-use design issue Yes, root causes **Missing I
 
 **SR021 design health:** Boundary/Ownership Issue. First-use ordering plus Docker restart-policy preservation did not establish boot completion; the reviewed engine/host-only Reconnect boundary was incomplete. Refactor needed now: a cohesive selected-node completion adapter/coordinator, sharing volume inspection and existing probe/API checks. Bounded consumed-attempt state prevents competing repeated Start calls; it never becomes desired-running history. No dependency change, runtime restart-manager takeover, schema migration or outage worker. Structural delta is Medium/High in isolation; cumulative solution remains Large/High due its existing privileged multi-platform surface, not artifact count.
 **Explicit deferral:** parent synchronous/async NFS calls can stall during outage (FR029 and ARCH-REV-001 D-001). User DEC015 removes v1 bounded-outage/unrelated-local responsiveness guarantees, so no file/preview streaming workers, per-action probe/queue or shared-cwd trampoline is required now. Healthy path-based readers remain coherent for approved v1. Do not claim the flaw fixed or defer the independent normal-use skill cleanup defect.
+**SR023 design health:** Missing Invariant / shared-model lifetime mismatch. OS-assigned raw Mac device ID was incorrectly treated as durable across boots; its source guard and pending recapture need a bounded representation/lifecycle correction, not a new source owner. Existing platform/config/setup boundaries suffice. Small OS-specific capture extraction plus strict binding validation and bind-once pending sequencing; no broad refactor. Cumulative Large/High remains because privileged persisted source identity can export the wrong directory if weakened; delta spans a few cohesive files, not a new subsystem. Experimental evidence supports UUID+inode, not product closure.
+
 ## Terminology And Selected Storage Contract
 
 **Source folder** is the ordinary persistent local folder actually exported. **Storage ID** is the UUID marker of that filesystem, not the app's path-derived workspace ID. **Attachment** is a computer/daemon's expected storage ID + endpoint/export + mount root. **Project** is a subfolder selected as an ordinary workspace. **Private runtime profile** contains only configured skills/metadata on one node, not provider auth or project files.
@@ -113,6 +117,12 @@ Reference binaries are built for Darwin/Linux arm64/amd64; advertise only actual
 **Validation order.** Implement/package with focused exact-source patch/package/bundle validation and failure fixtures, then applicable source review. API-F002 public **create and reconnect first** on fresh Ubuntu24.04.5/ext4/kernel7.0.0-38 with default directory delegation **Y**, native nonroot1000:109/no supplementary groups, nonempty original source, hard4.1, UUID/content/private modes/job assertions. Unlike the designer prototype, this must run the new one-command path with **no manual engine preinstallation**, no probe bypass or workaround. Include old-dispatch negative evidence, mismatched/truncated/wrong-arch bundle rejection before engine mutation, exact mask restoration, clean-machine native and Docker package parity, both release architectures and runtime dependencies. Continue the full native/Docker/client/peer/restart/detach/file/lock/Git/runtime/desktop/physical/user-verification matrix. The prototype is not an API Pass, package installer test, Docker/amd64 or physical qualification; stock4.3 and prior failed logs stay visible. No blanket aggregate confidence upgrade.
 
 ### SR022 — end-to-end healthy freshness and owned-config lifecycle
+
+**Retained accepted/implemented design:** ARCH006 / IR008. API005 independently closes
+CR006/API-F004 for Linux native and Docker STORAGE with native+actual managedHTTP readers
+(40 unique fixtures/80 checks, all<=5s). The original implementation/validation wording
+below records that correction; its API-first order is superseded by SR023 for this round.
+No full bothOS/physical AC003 closure is inferred.
 
 **Decision/owner.** In existing `backend.GaneshaConfig`, emit `Attr_Expiration_Time = 0;`
 at the owned **EXPORT** level for native Linux and Docker-on-Linux storage. No CLIENT
@@ -199,6 +209,167 @@ unselected/launcher-replacement/drained-detach regressions; do not turn60s obser
 reboot completion into a new SLA. Full existing physical/native-tool/preview/user/
 release gates remain. No independent API or source Pass is issued by this design.
 
+### SR023 — reboot-stable Mac source binding (CR007 / API-F005)
+
+**Approved scenario and cause.** SCN009/012/013, BEH001/004/005,
+REQ014/017/019 and AC007/014/017/018/019 already require ordinary healthy restart
+against the same original source without manual mounting, while refusing replacement.
+Plan -> platform.SourceIdentity -> private hosted/pending records -> launchd service ->
+Reconnect -> CheckSource currently persists/compares raw st_dev+st_ino on both OSes.
+API005's unchanged APFS source retains volume UUID/inode/bytes while st_dev changes
+across three ordinary boots. The comparison correctly follows an inadequate design;
+this is not an IR008 regression, requirement change or request for more retries.
+
+**Identity and owner.** Keep one tight `config.Identity` value with mutually exclusive
+backend-specific volume identity: `{volumeUuid, inode}` for Apple/APFS;
+`{device, inode}` for Linux/ext4. Add `VolumeUUID string` (`volumeUuid,omitempty`) to
+existing Identity, make Device omittable for Apple, retain uint64 Inode. Existing
+HostedFilesystem.Backend selects the variant; do not add a second platform selector,
+schema version, magic sentinel or reinterpret Device. Apple requires canonical lowercase
+nonzero volume UUID, nonzero inode and zero/absent Device. Linux requires positive
+Device/inode and empty VolumeUUID. Mixed/partial/unsupported forms fail closed. The
+all-zero identity is permitted ONLY for a not-yet-bound `NewSource` setup intent, not
+for hosted config/readiness. Separate metadata validation from complete binding
+validation so planning a nonexistent source remains possible. Linux identity semantics
+and JSON fields remain unchanged; this correction does not claim a universal Linux
+filesystem/device lifetime guarantee beyond the approved tested reference.
+
+`platform` owns capture and comparison; `config` owns shape validation; `setup` owns
+when a binding is established/persisted. For Mac, retain canonical path/ancestor/real
+non-symlink directory guards, then open the directory with O_DIRECTORY|O_NOFOLLOW.
+Fstat/Fstatfs on that descriptor determine the directory inode, local APFS qualification,
+actual mounted device and volume mountpoint. Raw device is used only to correlate the
+path/fd observations in this one capture, never as a saved cross-boot Mac identity.
+Invoke the existing trusted Runner with fixed `/usr/sbin/diskutil`, separate arguments
+`info`, `-plist`, and the actual Fstatfs mounted device. No shell, guessed disk number,
+directory-as-device query, PATH lookup, user-selected command or full-disk enumeration.
+Use the same root-owned executable/trusted path and clean environment policy as other
+platform commands. Existing CLI remains CGO_ENABLED=0 on both Mac architectures; no
+user compiler, new install dependency or raw syscall/assembly bridge.
+
+Decode a bounded (at most1MiB accepted) XML plist with standard encoding/xml inside
+this platform owner. Require one complete plist/dict, unique keys, valid key/value
+pairs and correctly typed DeviceNode, MountPoint, FilesystemType and VolumeUUID strings;
+ignore unrelated extra fields without accepting duplicate/ambiguous required values.
+Reject malformed/trailing documents, absent/zero/invalid UUID, non-APFS or mapping mismatch.
+DeviceNode and MountPoint must equal the same descriptor's actual mount observation.
+The observed system plist has **no Mounted key**; do not invent that requirement or
+substitute DiskUUID, container UUID, volume name, fsid or st_dev for VolumeUUID.
+Revalidate current canonical path/real directory, raw dev+inode and descriptor mount
+identity after the command. If the observation changes or command fails, report a source
+identity error with no export/mount/identity rewrite. Close the descriptor on every path.
+No cache across reconciliations; a fixed extra system command per capture is the bounded
+cost. No generic command-runner overhaul, retry/watch framework or new supervision owner.
+
+The binding comparison uses both persistent volume identity AND directory inode. The
+existing independently checked storage marker/UUID and nonroot read/write/fsync checks
+remain necessary; a copied marker or identical bytes never authorize a new directory or
+volume. This is normal same-source protection, not cryptographic proof against a
+privileged actor cloning/spoofing filesystem UUIDs or a new atomic hostile-mount-race
+security guarantee. APFS clone images can share a volume UUID; no stronger claim is made.
+Privacy/system-path exclusions, source/target separation, current ownership, OS privacy
+and normal permission refusal remain. No permission widening or new volume support.
+
+**Lifecycle and pending-state invariant.** Plan captures existing source identity and
+qualifies a new source's existing parent through the same platform owner. Apply validates
+complete planned identity before exporting; for a new directory, capture it once after
+successful nonroot CreateSource, clear NewSource, and atomically save this bound intent
+using existing SaveIntent before subsequent marker/handle/export work. Preserve the
+existing final hosted write before export and normal attachment/job/backend order.
+If persistence fails, stop before export; no claimed cross-resource transaction.
+
+PendingPlan must distinguish unbound intent from established binding, not recapture on
+a stale NewSource flag. A complete current binding is compared to the actual source and
+reused unchanged; NewSource is cleared for its resumed plan. A genuinely all-zero
+NewSource intent may capture a now-existing directory only as first binding during the
+existing fresh plan/consent path, after normal path/filesystem checks. If source is still
+absent, retain the original new-source intent. Partial/malformed/old bound Apple identities
+must not enter the unbound case. If a hosted record already exists alongside an unbound
+pending intent, refuse the inconsistency rather than infer/rewrite identity from the
+current path. Persist the resumed binding before later apply side effects. These are
+small changes to existing pending/apply owners, not a new journal or automatic migration.
+The supervisor still refuses pending recreation; only the existing consented retry owns it.
+
+Completed CheckConfiguration validates the backend-appropriate complete binding. Reconnect
+then checks observed identity before Apple Ensure/mount, including automatic launchd
+and explicit reconnect. A mismatch never updates stored identity or falls back to the
+marker. Status can report the validation error without writing; no new status-driven
+source repair. Detach retains its current non-forced/exact-owned teardown (not a new
+live-source-availability requirement); predecessor fixture cutover is below. Serial
+supervisor cadence/OS startup, mount options, Apple export startup correction, Ganesha
+expiry0, Docker stop/reboot safeguards, node data and application admission are unchanged.
+
+**Persisted-data decision, not migration-by-schema.** `persisted-state-evidence.json`
+records local origin/personal without this new package, no local tag containing its first
+source commit, empty qualifiedTargets/qualifiedSourceHash/physicalEvidence and publish
+refusal. Known installed device-only records are unqualified owned API fixtures; API005
+reported their exact cleanup. This establishes no supported released predecessor in this
+package, NOT a global absence proof about arbitrary installations. The repository migration
+guideline and real predecessor were read before deciding; server migration machinery does
+not own standalone NFS config and no application startup migration gate is appropriate.
+
+- Project bytes, source marker/storage UUID, attachment/public descriptor, selected node
+  private data, runtime profiles and current Linux bound records: directly usable, no
+  migration or format/meaning changes. Linux is not forced into a new UUID representation.
+- Complete current Apple UUID+inode hosted/pending records: directly usable across normal
+  boot/reconnect; no durable raw-device refresh. Complete identity is never recaptured.
+- All-zero NewSource pending intent without hosted state: directly usable as an unbound
+  intent under the lifecycle above, not evidence of any already-selected directory identity.
+- Old device+inode-only Apple hosted/bound pending fixtures: NOT safely convertible because
+  original capture never stored the volume UUID. Never infer from current path on mismatch
+  or accept the old pair as a fallback. Drain/detach with the matching old candidate BEFORE
+  installing the new candidate; then fresh create on preserved nonempty source/marker,
+  reusing the storage UUID. This is exact-owned unqualified fixture rebuild, not automatic
+  user-state deletion or an extra first-release user install step. New readers give an
+  actionable unsupported-binding diagnostic and make no mutation to such records.
+- If actual supported retained installation evidence appears, return it for explicit
+  transition/approval assessment before cutover; do not invent a migrator, compatibility
+  parser, backup policy or data-loss permission. Never edit identity by hand for acceptance.
+
+**Files and clean cut.** Extend config/state.go (Identity and validation; cohesive
+config/source_identity.go extraction allowed), platform/source.go (common path checks and
+comparison), add platform/source_darwin.go and source_linux.go (OS-specific capture),
+and wire existing Runner through setup/plan.go, apply.go, pending.go and lifecycle.go.
+Keep capture/test seams at the platform command boundary, not injectable per-caller policy.
+Complete-config checking remains in its current setup/apply.go owner. Reuse filesystem
+qualification, source-marker, protected Store and Commands; do not duplicate them. Add
+adjacent config/platform/setup tests and narrowly update NFS README/testing instructions.
+Remove unconditional cross-OS dev+inode equality and bound-pending recapture; no second
+legacy Apple acceptance path. No backend/engine/release-workflow/REST/UI/runtime-profile
+production edits are prescribed. Packaging may regenerate current CLI/source metadata with
+retained exact engine bytes; no engine rebuild or qualification claim.
+
+**Validation order and scope.** Architecture review of this delta -> implementation
+self-checks -> selected independent source review -> independent **API-F005 FIRST**:
+current public native Mac fresh create, at least two ordinary whole-host boots (additional
+boot if needed to witness raw-device reassignment), automatic mounted nonroot read/write
+without manual mount/service repair/reconnect, then separately labelled public reconnect.
+Record distinct boot IDs, actual APFS volume UUID and directory inode, raw device as
+observation, saved binding bytes, original project/marker/hash/modes, installed CLI/OS/job/
+exports/mount/private-state proof. Demonstrate current public refusal for same-path different
+directory and different actual APFS volume even with copied marker/content, plus symlink/
+privacy/permission controls; restore exact owned originals without identity editing. Preserve
+source on detach. Synthetic field edits and the disposable probe are not this acceptance.
+
+Focused durable tests: strict variant/UUID parsing including mixed/missing/zero/wrong-type/
+duplicate plist keys, wrong device/mount/filesystem, command error, changed observation,
+fd cleanup and symlink guards; Mac dev-change plus stable UUID/inode matches, changed UUID
+or inode refuses; Linux pair and nonroot/path rules unchanged. Cover existing-source Plan,
+new-source Apply bind-before-probe failure, complete pending identity reuse/refusal, stale
+NewSource with complete identity, genuinely unbound retry, old/partial binding refusal,
+hosted/unbound inconsistency, saved record unchanged on mismatch, and reconnect refusal
+before backend/mount effects. Unit fixtures are not Mac boot evidence. No hard-coded device
+numbers or new polling/reboot SLA. No production remedy that edits saved identity to match.
+
+Retain proportionate CR005/API-F003 and CR006/API-F004 regressions (both Linux storage
+forms, native+actual managed HTTP fresh reads<=5s; selected reboot/Stop/policy/replacement/
+detach). Their API005 scoped resolutions remain valid. Then all remaining approved
+both-OS/client/independent physical/native actual-tool/private-linked-asset/peer-close/
+restore/Standalone-Team-Org/healthy preview/completed-artifact/release/user gates. CRR012
+and API005 remain Fail until their owners issue replacement verdicts. The design experiment
+supports the identity choice only; it is NOT fixed product/API/physical qualification.
+
+
 ### Data identity, permissions and network
 
 Create writes an exclusive UUID record `.autobyteus-nfs/storage.json` under the selected source and establishes an owned health-probe subdirectory. Existing marker conflict never overwrites/regenerates identity. Source selection refuses filesystem root, home root, private app/runtime/auth trees, another network mount, inside/above the client target or unavailable/nonpersistent backing. No recursive chown/chmod. Existing source requires the chosen nonroot owner to have needed access; a new folder is created for the initiating user with private/group modes (not0777). Mixed inaccessible files remain a diagnosed permissions failure, not a mass rewrite. Marker and OS mount source identify accidental mismatch, not a cryptographic guarantee against trusted hostile admins.
@@ -245,7 +416,7 @@ No-args unconfigured command -> Create/Connect; configured -> current status/act
 
 ### Configuration and supervisor
 
-Private root-owned config `/Library/Application Support/AutoByteusNFS` (Mac), `/var/lib/autobyteus-nfs` (Linux); fixed root-owned executable under corresponding libexec installation directory. `hosted-filesystem.json`: installationId/storageId/source/dev+inode/backend/dataUid+gid/allowlist/owned OS resources. `attachment.json`: installationId/storageId/endpoint/export/protocol/mountRoot/selected node references. Atomic exact writers, known-field readers; no schemaVersion/persisted READY. Private recreation receipts may include Docker env values:0600, never shared/logged.
+Private root-owned config `/Library/Application Support/AutoByteusNFS` (Mac), `/var/lib/autobyteus-nfs` (Linux); fixed root-owned executable under corresponding libexec installation directory. `hosted-filesystem.json`: installationId/storageId/source/backend-specific identity (Mac APFS volumeUuid+inode; Linux device+inode)/backend/dataUid+gid/allowlist/owned OS resources. `attachment.json`: installationId/storageId/endpoint/export/protocol/mountRoot/selected node references. Atomic exact writers, known-field readers; no schemaVersion/persisted READY. Private recreation receipts may include Docker env values:0600, never shared/logged.
 
 Public read-only **nonsecret** `/etc/autobyteus-nfs/attachment.json`: expected storageId, local mount root and backend endpoint/protocol/export. Bind into selected nodes read-only; use a descriptor directory bind plus atomic file replacement so updates aren't trapped by an old bind-mounted inode. Applications read lazily during new-run/restore preparation, not every file operation or active turn; malformed existing descriptor fails closed for its configured path, not silently local. No descriptor means existing ordinary local behavior, not proof arbitrary similarly named directories are shared. No global workspace scan.
 
@@ -520,7 +691,9 @@ Migration conventions fully investigated before choice: server data_migration_gu
 | Existing run/session references/native session IDs plus AgentDefinition skillNames/skillScope | **Directly Usable — No Migration**; no persistent field change | Claude/Codex/Grok rebuild current private exposure from existing scope; AGY retains its existing capsule restore below. No persisted plugin path becomes a source-retention authority |
 | New Claude/Codex/Grok private profile per execution generation, not source history | **Discard or Rebuild** only under exact profile/process owner | Current catalog lookup reconstructs wrappers/links; no source snapshots/retention or stored-generation migration. Uncertain live profile is not deleted |
 | Existing managed-source registry/generation trees and AGY capsule manifest | **Directly Usable — No Migration** | Source Update/Remove cleanup and AGY warn/skip missing-source restore unchanged; no profile holder field/source lease/schema addition |
-| New hosted-filesystem/attachment and source marker, one filesystem/attachment per installation | **New subject — no historical migration** | Atomic exact current writer; known-field reader; schemaVersion not introduced. Keep source UUID and server recovery state across restarts |
+| Hosted source identity (one per installation) | **SR023 explicit transition**: current Mac UUID+inode and Linux device+inode directly usable; old bound Mac device-only test state not convertible | Atomic private owner; no schemaVersion/fallback/rebind. Matching-old-candidate drained detach before fresh current fixture create; preserve source/marker. Unknown supported deployment -> return evidence |
+| Pending hosted identity | **Bound-once intent**; current complete identity reused, truly zero NewSource intent may establish its first binding | No stale-flag recapture; malformed/old-bound or hosted/unbound inconsistency refuses. Save bound intent before later source/apply effects |
+| Attachment/public descriptor and source marker | **Directly usable — no migration** | Format/UUID/meaning unchanged; no source or recovery-state deletion |
 | Existing launcher state plus optional attachment reference | **Directly Usable — No Migration** | Missing reference retains unselected local behavior; known-field parser/writer preserves all existing settings. Only successfully applied nodes acquire opt-in reference |
 | New start-attempt per selected node | **New bounded subject — no migration**; absent means no recorded completion attempt, not prior running intent | Docker recovery writes current daemon/storage/container/process incarnation through existing atomic0600 Store; no Config/auth/READY, restart-safe dedup only. Detach removes exact owned entries after success |
 | Generated owned Ganesha config | **Fresh current generation; no evidenced released predecessor migration** | SR022 export expiry0; exact current bytes reusable, different bytes retained/refused. Retire disposable old test setups with matching candidate public detach before reinstall. Status/pre-teardown validation avoids false readiness/partial mutation; no live reload or source/marker rewrite |
@@ -541,6 +714,7 @@ No new data-loss permission beyond disposable fixtures/rebuildable exact-owned g
 | Existing local-only /home/autobyteus/shared | Keep independent documented functionality, never presented as cross-machine storage | Preserved behavior, not legacy compatibility |
 | UNFS patch prototypes | Evidence only; do not move into production backend | Rejected candidate |
 | Host-only Reconnect completion boundary | Extend to eligible selected-client failed-start completion after host proof; eliminate duplicated volume validation via one read-only validator | SR021; do not remove Docker restart policy, initial recreation or explicit-drain Recover |
+| Mac durable raw-device equality / complete pending recapture | Replace with APFS UUID+inode binding and bind-once pending lifecycle; no legacy acceptance branch | SR023 only; Linux equality, marker/nonroot checks and existing lifecycle retained |
 | Stock Ubuntu Ganesha4.3 engine install path/pins | Replace with exact upstream-corrected package bundle for native/Docker storage; no parallel stock fallback | SR020; nfs-common/distro dependency path preserved |
 
 No dead source is claimed without reachability proof. Remove newly unreachable shared-specific helpers/imports/tests in touched files once cutover is complete; do not broad-clean unrelated package. Reject path-only READY, local-copy fallback, global safe.directory, shared auth homes, compatibility schema readers, dual shared skill publishing and timeout-as-release. Unchanged local branch is a separate preserved behavior, not a fallback for failed shared execution.
@@ -556,6 +730,7 @@ This is the finalized allocation after spine/ownership/type review; redundant dr
 | autobyteus-nfs/internal/config/{state,connection,store}.go | Tight subject records/atomic private storage | No workspace DB migration/READY cache |
 | autobyteus-nfs/internal/service/{supervisor,probe}.go | Persistent owned lifecycle/exact child check | No second engine data plane |
 | autobyteus-nfs/internal/platform/{darwin,linux}.go | Elevation, mount inspection, launchd/systemd/exact export ownership | No unbounded shell interpolation/global reset |
+| autobyteus-nfs/internal/platform/{source,source_darwin,source_linux}.go; config/{state,source_identity}.go; setup/{plan,apply,pending,lifecycle}.go; adjacent tests; NFS README | SR023 source observation/variant validation and bind-once lifecycle in existing owners; source_identity extraction optional | No raw-device Mac fallback, marker-only binding, identity migration, generic supervisor or backend/data-plane change |
 | autobyteus-nfs/internal/backend/ganesha.go; internal/setup/{status,lifecycle}.go; nearest backend/setup tests; NFS README | SR022 export-level expiry0 through shared generator; read-only hosted-config status and pre-teardown exact validation | Reuse existing verifier/lock; no migration or runtime data-plane owner; Apple/connect-only and SR021 recovery unchanged |
 | autobyteus-nfs/internal/backend/{apple,apple_apply,apple_startup,ganesha,ganesha_native}.go; packaging/Dockerfile | Existing selected engine config/start; Docker consumes same corrected package pair | Preserve Apple IR004 fix and existing privilege/source contracts; no UNFS/macDocker storage fallback |
 | autobyteus-nfs/internal/backend/ubuntu_packages.go; engine_bundle.go plus generated engine-assets/ | Existing install owner + cohesive immutable package payload validation/extraction | No user-supplied package/URL, stock-engine fallback, kernel tuning or reconnect install |
@@ -585,7 +760,7 @@ Concrete shape example: container `/Volumes/autobyteus-shared/project` -> daemon
 
 ## Change Sequence, Validation And Implementation Guidance
 
-**Current recovery delta:** after re-review implement only SR021 selected-client failed-start completion, shared read-only volume validation, typed public observations, bounded consumed-attempt store and corresponding CLI/status/docs/tests. Retain IR002–006 source and exact IR005 engine artifacts; no engine rebuild needed for lifecycle correction. Generate actual current CLI/release source hashes for validation. Independent source review then **API-F003 current public selected setup and two ordinary reboots FIRST** without manual Start/reconnect, with normal-stop/policy-disabled/unselected controls and preservation; continue full matrix. API-F002 is resolved at API003 scope and gets proportionate regression, not relabeled unproved or reimplemented. API003 Fail/CRR008 Design Impact remain until independent replacement. The numbered sequence below is original overall context, not a request to restart implemented work.
+**Current recovery delta SR023:** after configured architecture review implement only Mac persistent volume+directory identity, strict backend-specific binding and existing hosted/pending lifecycle wiring/tests/docs. Retain IR002–008 and exact IR005 engine bytes; regenerate current CLI/source metadata without engine rebuild. Independent selected source review -> **API-F005 current public nativeMac create / ordinary whole-host boots / automatic nonroot mounted read-write FIRST**, then separately public reconnect and supported replacement refusal. No synthetic device edit, manual identity rewrite or probe substituted for product validation. Preserve CR005/API-F003 and CR006/API-F004 scoped API005 resolutions with proportionate regressions. CRR012 Fail/API005 Fail remain until independently replaced. The numbered sequence below is original overall context, not a request to redo implemented work.
 
 1. Implement service config/plan/current state + backend/source qualification + packaged bootstrap on isolated resources, and pure contract fixtures. Current architecture-review gate precedes production implementation. No live data/export/mount/node change without explicit operation approval.
 2. Implement native supervisors/mount probes, selected Docker preservation and repeat/detach; integrate launcher opt-in reference. No installer success before same-source and execution-UID verification. Keep unsupported combinations explicit.
@@ -600,7 +775,7 @@ For IMP-D001 correction, reuse existing server tests/e2e/skills/github-skill-sou
 
 For healthy preview coverage extend/reuse existing tests/unit/api/rest/{workspaces,run-file-changes}.test.ts, tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts and tests/integration/api/run-file-changes-api.integration.test.ts. Verify exact PNG/SVG bytes/MIME/no-store, HTML plus relative assets, encoded paths, existing path/entry/pending/deleted semantics and regular local use; actual shared mounts/current UI must supplement fixtures. No source change is required to stream a healthy ordinary mounted file unless tests find a real normal-use incompatibility. Do **not** make D-001 injected outage/socket-cancellation/backpressure child-isolation matrix,10s diagnostics, global parent-responsiveness or additional recovery tests a v1 delivery gate. Retain prior outage experiments as evidence and disclose limitations, not as a requirement to build their prototypes.
 
-SR022 API-F004-first ordering above supersedes historical API-F002/API-F003 first-case orders for this incoming correction; prior scoped resolutions remain regression evidence, not reopened failures.
+SR023 API-F005-first ordering supersedes historical API-F002/API-F003/API-F004 first-case orders for this incoming correction; prior scoped resolutions remain regression evidence, not reopened failures.
 
 Table every experiment with **node role/ID, source/mount path, exact command/build, result and uncovered scope**.
 Follow TESTING.md production public path requirements, isolated data/resource authorization and package test commands. Unit mocks do not prove NFS/native/OS behavior. No direct controller shortcuts for full user journey; no shell transport probe substituted for instructed native agents. Physical Mac and independent Linux plus Mac Docker agent, actual one-command create/connect and user verification are release/delivery gates, not designer waits. User receives the runnable single command only once built/published and verified; internal python/mount test scripts are never offered as that product command.

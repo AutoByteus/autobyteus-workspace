@@ -1,0 +1,50 @@
+[
+  {
+    "argv": [
+      "/private/tmp/nfs-sr023-gc5go40z/go/bin/go",
+      "build",
+      "-o",
+      "/private/tmp/nfs-sr023-gc5go40z/identity-probe-arm64",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr023/identity-probe.go"
+    ],
+    "env": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/private/tmp/nfs-sr023-gc5go40z",
+      "GOCACHE": "/private/tmp/nfs-sr023-gc5go40z/go-cache",
+      "GOPATH": "/private/tmp/nfs-sr023-gc5go40z/go-path",
+      "GOTOOLCHAIN": "local",
+      "GOOS": "darwin",
+      "GOARCH": "arm64",
+      "CGO_ENABLED": "0"
+    },
+    "rc": 0,
+    "stdout": "",
+    "stderr": "",
+    "sha256": "96ba94b2d786e465310b1a22458e64752ff06119b7acd7362e2c0ebc03206828",
+    "bytes": 4582130
+  },
+  {
+    "argv": [
+      "/private/tmp/nfs-sr023-gc5go40z/go/bin/go",
+      "build",
+      "-o",
+      "/private/tmp/nfs-sr023-gc5go40z/identity-probe-amd64",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr023/identity-probe.go"
+    ],
+    "env": {
+      "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/private/tmp/nfs-sr023-gc5go40z",
+      "GOCACHE": "/private/tmp/nfs-sr023-gc5go40z/go-cache",
+      "GOPATH": "/private/tmp/nfs-sr023-gc5go40z/go-path",
+      "GOTOOLCHAIN": "local",
+      "GOOS": "darwin",
+      "GOARCH": "amd64",
+      "CGO_ENABLED": "0"
+    },
+    "rc": 0,
+    "stdout": "",
+    "stderr": "",
+    "sha256": "dccaafb6df8b157fa6a8e42c7937e7f0821da9d8224f91758f61a16c5fdaf1cc",
+    "bytes": 4841136
+  }
+]

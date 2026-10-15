@@ -461,3 +461,58 @@ Reviewer confirms the complete1041-reference primary package **DELIVERED** to
 new solution revision or work request. Record and stop under the informational-Pass
 workflow: no duplicate forwarding/delegation, requirement/design reopening, source/test
 work, live-resource action or additional routing. The implementation owner continues.
+
+
+## SR023 — CR007 / API-F005 ordinary Mac restart source-identity recovery — 2026-10-15
+
+- Trigger CRR012 Fail/Design Impact CR007(P1), API005-F005 confirmed nativeMac ordinary-boot
+  refusal; review342572f01969a2253785281df3764f3add6ffa7c / API005190e130290ca74307430fac6b28f0bc736766033.
+  Prior ReadySR022 / ARCH006 / IR008; productiond65aeda24fc4b9a534a3941b194dd4a55b88c00c unchanged.
+- Same original APFS volume/directory loses availability because persisted raw st_dev changes
+  across normal boots. Supported SCN009/012/013, BEH001/004/005, REQ014/017/019,
+  AC007/014/017/018/019 unchanged; no Requirement Gap or altered restart/data/privacy guarantee.
+  Approval-record-sr018 continues; no new approval/behavior supplement or Product request.
+- Authorities reread, exact platform/config/setup/launchd production path and pending recapture
+  traced; repository migration guideline/predecessor and actual released/installed evidence
+  investigated before transition choice. Primary source contracts/limits retained in E23.
+- Personal isolated no-cgo dependency experiment: three ordinary Mac boots keep UUID+inode
+  through observed raw-device changes; copied marker/content cannot disguise replaced
+  directory or two actual APFS volumes with SAME raw dev+inode. Symlink/ancestor/nonroot
+  permission refusals retained.11 observations; both Darwin architectures compile, only
+  arm64 executes. Exact-owned cleanup Complete; failed prepare/build/cleanup assertions
+  preserved. Not production implementation, public lifecycle/API/physical Pass.
+- Canonical design now ReadySR023: Mac APFS VolumeUUID+inode from descriptor-correlated
+  trusted diskutil machine output; Linux pair unchanged; complete variant validation;
+  existing pending/apply binding established once and persisted before later effects.
+  No raw-device fallback, marker-only identity, mismatch refresh, migration-by-schema,
+  cgo/engine/proxy/watcher/retry/supervision subsystem. Existing guards/safeguards preserved.
+- Explicit data dispositions: source/marker/attachment/private/session untouched; Linux and
+  current Apple bound state reusable; true unbound intent may bind initially; old bound
+  Apple device-only fixtures not inferable, drain/detach matching candidate before fresh
+  current setup preserving source UUID. No supported released predecessor established,
+  not universal absence. Actual supported retained data -> return evidence before cutover.
+- Canonical sections changed: design approval/current-state/evidence/health/identity/config/
+  persisted transition/legacy/file-map/sequence; investigation current section and supplements;
+  full handoff. Requirements/approval and specialist authorities unedited.1302 incoming refs
+  preserved cumulatively; previous solution history is an unchanged byte prefix.
+- **Architecture Design Complete / ReadySR023 / task_size Large / architectural_risk High.**
+  Bounded shared-model/lifecycle delta reuses existing owners; full privilege/multiplatform
+  scope retains route classification independent of note volume. ARCH006 is historical
+  approval of SR022, not approval of SR023; re-review the affected identity/state rationale.
+- CR006/API-F004 now independently scoped resolved API005:40fixtures80native+managedHTTP
+  reads<=5s on Linux native+Docker storage. CR005/API-F003 scoped normalboot/Stop/policy/
+  replacement/detach and CR001–004 scopes retained. CRR012 Fail/API005 Fail57.14% remain.
+- Next after review: implementation -> selected source review -> API-F005 corrected public
+  nativeMac create/ordinaryboots/automatic mounted nonroot RW FIRST, then reconnect/real
+  replacement controls, proportionate Linux regressions and remaining full matrix. No
+  synthetic identity edit/public probe substitute. Successful af9f23 REST test-code review
+  still awaits passed API package. D001/DEC015 deferred NOTfixed; IMP-D001/FUP001/access
+  limits unchanged. No release/TaskDone/merge/push/tag/user-verification or duplicate API route.
+- Routing recorded after fresh rules below. Personal execution; no delegated copies.
+
+SR023 fresh-rule routing2026-10-15: completed Large/High architecture package with unchanged
+ApprovedSR018 selects ONLY `/software_engineering_team/architecture_reviewer`. Direct Low-risk
+implementation and delivery-receipt conditions do not apply. Full cumulative reference package
+and the same absolute solution-design-handoff.md accompany the message. No duplicate
+implementation/API/PM forwarding or delegation. Dispatch success is asserted only by the
+send_message_to confirmation, not by this pre-dispatch route record.

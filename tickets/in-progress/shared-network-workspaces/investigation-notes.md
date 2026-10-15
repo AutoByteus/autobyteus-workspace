@@ -1,6 +1,58 @@
 # Investigation Notes — Shared Network Workspaces
 
-## Current SR022 — CR006 / API-F004 healthy committed-file freshness
+## Current SR023 — CR007 / API-F005 Mac source identity across ordinary boots
+
+2026-10-15; **Architecture Design Complete / Ready SR023 / Large / High**, unchanged
+**Approved SR018**. Read current CRR012 before work; review342572f01969a2253785281df3764f3add6ffa7c,
+receiptb562a3a8a1d9fcbff024ba039363f3db15f7f08a, API005190e130290ca74307430fac6b28f0bc736766033.
+Productiond65aeda24fc4b9a534a3941b194dd4a55b88c00c unchanged. Full authorities, exact
+production trace, supported scenario, primary contracts, state evidence and alternatives:
+[evidence/design-recovery/sr023/source-identity-investigation.md](evidence/design-recovery/sr023/source-identity-investigation.md).
+
+- Fact: API005 public nativeMac create succeeds, then three ordinary boots assign different
+  raw st_dev to the SAME APFS volume/directory; saved full-pair guard rejects before backend/
+  mount. No false-ready/data loss reported. This is inadequate identity lifetime design,
+  not IR008 regression, outage, unsupported filesystem or requirements gap.
+- New personal experiment: one isolated Mac VM, no product installed, no-cgo Go dependency
+  probe through actual Fstatfs + system diskutil. Three normal boots change raw dev29->30->30->28
+  but keep volumeUUID/inode507377/bytes/mode; same-path replacement directory changes inode;
+  two actual different APFS volumes share raw dev16777241/inode2/marker/bytes but different UUID.
+  Candidate distinguishes replacements; helper refuses symlink/ancestor/unreadable controls.
+  All11 observations retained, exact own VM/process/compiler scratch cleanup Complete. This
+  is NOT corrected public lifecycle/mount/API/physical evidence.
+- Decision: existing platform/config/setup owners persist Mac VolumeUUID+inode; Linux pair
+  unchanged. Raw dev is capture-local correlation only, not silently ignored from old state.
+  Bound pending identity reused/compared, not recaptured via stale NewSource; complete binding
+  saved before later apply effects. No marker-only, mismatch rebind, generic retries or new owner.
+- Data investigation: no supported released predecessor established; local source/tag/release
+  and actual known installed fixture evidence retained. Old bound Apple device-only records
+  cannot safely infer their original volume UUID. Matching-old-candidate drain/detach before
+  fixture rebuild on preserved source/marker; no automatic migration or global absence claim.
+  Current Apple and unchanged Linux records directly reusable; truly unbound intents distinct.
+- Current independent verdicts remain CRR012 Fail / API005 Fail57.14% / broader Required.
+  CR006/API-F004 now scoped resolved at API005 bothLinuxstorage/native+realmanagedHTTP80checks;
+  CR005/API-F003 scoped reboot/stop controls and CR001–004 resolutions remain. ARCH006 applies
+  SR022, not this delta. Selected architecture/source review and API-F005-first product proof
+  required before remaining full matrix. Requirements/approval/specialist/source untouched.
+- D001/DEC015 deferred NOT fixed; IMP-D001 private current links/current source Update/Remove/
+  AGY local unchanged; FUP001 PM custody. Only Mac Docker STORAGE deferred, not Mac native
+  boots or Docker clients. Existing physical/profile/inference/privateLAN/peerNAT limits remain;
+  no new permission/waiver, TaskDone, release, user-verification or duplicate dispatch.
+
+### SR023 supplement inventory (Solution Designer owned, evidence only)
+
+| Path under evidence/design-recovery/sr023 | Purpose / status / applicability |
+| --- | --- |
+| source-identity-investigation.md; primary-contracts.md; retained Apple manuals/header | Exact production/model boundary and primary source basis; complete, not intended-behavior authority |
+| persisted-state-evidence.json | Actual source/release/known fixture basis for explicit hosted/pending dispositions; no universal deployment absence |
+| prepare/resume/build/run scripts, resource/toolchain/probe-build, identity-probe.go, prototype-result/console | Personal no-cgo identity feasibility across real Mac boots and replacements; dependency scope ONLY |
+| cleanup-prototype.py; complete-cleanup.py; cleanup.json; attempts and failed-attempt directories | Exact owned cleanup Complete, failed harness attempts retained |
+| prior-* snapshots; complete-design.py; complete-context.py | Authored derivation/history preservation, not competing live authorities |
+| input-audit.json; audit-package.py; final-audit.json; package-index.json; routing.json | Cumulative1302 input refs/protected authorities/old dist/history, complete handoff context and fresh rule result |
+
+Earlier sections below retain their historical state; current status/ordering above governs.
+
+## Historical SR022 — CR006 / API-F004 healthy committed-file freshness
 
 2026-10-15; **Architecture Design Complete / Ready SR022**, **Large/High**, unchanged
 **Approved SR018**. Incoming CRR010 review1240527c804b291ae99c69d6f6cb58f4cba0a09c and

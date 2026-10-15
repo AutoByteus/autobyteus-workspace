@@ -1,0 +1,4 @@
+boot 1 device 16777230 identity equal
+boot 2 device 16777230 identity equal
+boot 3 device 16777228 identity equal
+{"result": "Pass", "observations": 11, "controls": [{"case": "same-path directory replacement, same marker/bytes", "refused": true}, {"case": "symlink source", "refused": true}, {"case": "symlink ancestor", "refused": true}, {"case": "unreadable source as nonroot", "refused": true}, {"case": "same-path different-volume same inode/marker/content", "refused": true, "one": {"volumeUuid": "2f51721d-414d-4bb9-9a1d-6168a7ef2330", "inode": 2}, "two": {"volumeUuid": "b9d424c0-6cee-4dae-bb26-91edf2dfbc62", "inode": 2}}]}
