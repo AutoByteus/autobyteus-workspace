@@ -2,303 +2,283 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `requirements-doc.md`, **Approved SR018**; approvals018/017 and DEC015 unchanged.
-- Upstream Investigation Notes: `investigation-notes.md`, current SR021 and cumulative supplement inventory.
-- Upstream Solution Revision Record: `solution-revision-record.md`, **SR-021**.
-- Reviewed Design Spec: `design-spec.md`, **Ready SR021**, commit `cd1519a798`.
-- Supplemental Task Artifacts Reviewed: current cumulative handoff; CRR008/CR005 origin and API003 public lifecycle/raw inspect/reconnect/reboot/diagnostic results; SR021 lifecycle investigation/observations/primary source contracts and audits; IR005/006 and prior architecture/source/API results at their recorded scopes. Full667-reference input chain: `evidence/design-recovery/sr021/package-index.json`.
-- Relevant Solution Revision IDs: SR021 technical recovery; ApprovedSR018; SR019 source/profile and SR020 dependency corrections retained.
+- Upstream Requirements Doc: `requirements-doc.md`, **Approved SR018**; approvals017/018 and DEC015 unchanged.
+- Upstream Investigation Notes: `investigation-notes.md`, current SR022 supplement inventory and cumulative context.
+- Upstream Solution Revision Record: `solution-revision-record.md`, **SR022**.
+- Reviewed Design Spec: `design-spec.md`, **Ready SR022**, commit `4c66567ccacf6552e0f21af5c4e7f177c312f5c4`.
+- Supplemental Task Artifacts Reviewed: current solution handoff; CRR010/CR006 source/failure-origin evidence; API004 report/ledger/history, raw visibility and prior reboot/control receipts; SR022 exact-source audit, A/B/A scripts/raw results, cleanup and integrity records; prior IR001–007/ARCH001–005/CRR001–010/API001–004 at their recorded scopes. Full1036-reference input: `evidence/design-recovery/sr022/package-index.json`, retaining all1003 incoming references.
+- Relevant Solution Revision IDs: SR022 correction; ApprovedSR018, SR019 source/profile, SR020 dependency and SR021 node-start policies retained.
 - Architecture Review Revision Record: `architecture-review-revision-record.md`.
-- Current Architecture Review Revision ID: **ARCH-REV-005**.
-- Current Review Round: **5**, 2026-10-14.
-- Trigger: **CRR008 Fail / Design Impact CR-005 P1 / API-F003**, normal selected-client host-reboot recovery.
-- Prior Review Round Reviewed: ARCH004 Pass on SR020; rechecked incoming failure and earlier finding dispositions first. No automatic SR021 Pass.
-- Latest Authoritative Round: this report for architecture only. **API003 Fail57.14%/broader Required and CRR008 Fail remain independent current results.**
-- Canonical ticket root: `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces`. Ticket paths below are relative to this root; source paths are worktree-relative.
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces`; branch `codex/shared-network-workspaces`; base/finalization `origin/personal`.
-- Current-State Evidence Basis: personally traced CLI/job/serial supervisor/setup apply/reconnect/status, Docker discovery/snapshot/attachment/probe/verify/recreation/ownership and launcher Stop; read raw API003 failures, same-object diagnostic repair and versioned Moby contracts. Reviewer audit `architecture-review-evidence/arch-rev-005/review-checks.json` verifies667 unique existing refs,650 protected current paths,11 retained candidate files, unchanged approved basis and production aggregate **4568593b99bb3dff263e9824ceb7176e04a95ec90e3cd14a9f7421b4e43055ac**. Reviewer skill, full template/shared principles, root DESIGN/TESTING and applicable instructions applied; no closer NFS/script AGENTS found. **No reviewer product build/test/VM/runtime/provider/live-resource operation.**
+- Current Architecture Review Revision ID: **ARCH-REV-006**; round **6**, 2026-10-15.
+- Trigger: **CRR010 Fail / Design Impact CR006 P1 / API-F004**, healthy committed-source visibility.
+- Prior Review Round Reviewed: ARCH005 Pass on SR021; rechecked prior finding dispositions before current verdict. It did not approve SR022.
+- Latest Authoritative Round: this architecture report only. **CRR010 Fail and API004 Fail57.14% / broader Required remain current at their boundaries.**
+- Ticket root: `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces`. Ticket links below are relative to this root; production paths are worktree-relative.
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces`; branch `codex/shared-network-workspaces`; finalization `origin/personal`.
+- Current-State Evidence Basis: personal source/contract/raw-receipt review and `architecture-review-evidence/arch-rev-006/review-audit.py` / `review-checks.json`. Exact six engine source members/excerpts checked against retained archive;127 SR022 and243 API004 raw observations audited. All1036 references exist;997 protected designer-input paths excluding the two reviewer outputs and15 retained candidate artifacts remain unchanged. Approved basis byte-identical; production aggregate **968f6d000d4b6c2cc3c66cd3add5845cb30385cdad752fe831b564823db9b764** unchanged. Root DESIGN/TESTING, shared principles/full template and applicable instructions applied; no closer NFS/scripts AGENTS. **No reviewer product suite/build/VM/runtime/live-resource operation.**
 
 ## Routing Classification Review
 
-- Task size **Large**; architectural risk **High**; independent review required **Yes**.
-- Cumulative privileged service, native/Docker storage/client, runtime/private-state and distribution scope remains Large/High. SR021 alone is a bounded Medium/High lifecycle/persistence/ownership delta, not667 files of implementation.
-- No downgrade or classification correction. Pass routes the revised cumulative package to implementation, then an informational Solution Designer notice after confirmed primary delivery.
+- Task size **Large**, architectural risk **High**; independent review required **Yes**.
+- Cumulative privileged multi-platform storage/client/runtime/release integration justifies classification, not1036 evidence files. Current delta is small in source footprint but changes data-plane consistency and generated-config lifecycle; retain independent review.
+- No classification correction or new behavior approval required. Fresh rules govern the completed result.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Overall Basis Status: **Confirmed**. Normal restart and preserved operator/node/source state are already approved; no new product choice is needed.
-- Approved basis: REQ014/019, AC007/014/018/019, SCN009/013, BEH001/004/005. REQ010/AC009/017 constrain node/private/source preservation. DEC015 does not defer normal healthy boot completion.
-- Relevant existing behavior: initial Apply orders engine, host proof, daemon probe and selected node recreation; later Reconnect stops at host proof. Docker restores clients independently and can fail the NFS volume mount before their process exists. Two ordinary API003 boots reach this state; manual diagnostic Start of the same observed object restores API. Status truthfully reports the stopped node, not false READY.
-- Scope guardrail: retain one command/service, existing source/UUID and native/Docker clients on both OSes; only Mac-Docker storage hosting is deferred. No outage watchdog, all-stopped retry, global daemon ordering, policy rewriting, app-entrypoint wait or private daemon-state reader.
-- Every prospective blocking Design Impact is traceable to approved authority: **Yes; no new blocker accepted**. Remaining material ambiguity preventing this design handoff: **None**. Implemented automatic recovery and negative controls remain downstream proof, not inferred successes.
+- Overall Basis Status: **Confirmed**.
+- Approved authority: SCN002, BEH002/003, REQ004/AC003/QR001 require fresh participating-client opens to obtain successfully synced/closed <=1MiB source writes within5s on the healthy reference topology. REQ010/AC009/017 and BEH004/005 preserve owned configuration/source/private state and safe lifecycle. BEH006 retains healthy previews.
+- Current behavior: source-folder publishing is ordinary supported use. Common Ganesha generator omits server expiry; clients already use actimeo1. API004 native and actual managed HTTP readers remain stale about61s despite successful source close and updated mtime/same inode/UUID. This is not an IR007 regression, held-descriptor promise, renderer-only failure or DEC015 outage issue.
+- Target: common owned EXPORT expiry0, existing client policy/security/source identity unchanged; strict config writer/verifier retained, with narrow verification before Status HostReady and before Detach side effects. No new data plane, retry or migration subsystem.
+- Scope Guardrail: UC001–007 retained; current changes only generator, setup validation, nearest tests/docs/actual CLI metadata. No runtime/REST/UI/private-source/restart-policy change. Only Mac Docker STORAGE is deferred; native/managed clients on both OSes remain required.
+- Every prospective blocking Design Impact maps to approved authority: **Yes; no new blocker accepted**. Remaining material ambiguity blocking implementation: **None**. Public correction validation is still pending.
 
-| Behavior ID | Kind | Design Alignment | Trigger / Current-State Evidence | Target Path Coherence | Status | Required Action |
+| Behavior ID | Kind | Design Alignment | Trigger / Current Evidence | Target Path Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH001 | Operational | Pass | Pass — completed selected setup, ordinary host reboot, API003 | Pass — DS001 first use preserved, DS006 completes eligible boot start | Confirmed | Implement only SR021 delta |
-| BEH002 | User/System | Pass | Pass — existing shared workspace/runtime/private profiles unchanged | Pass — DS003 unaffected | Confirmed | Retain native linked-asset/peer-stop/restore gates |
-| BEH003 | Contract | Pass | Pass — ordinary NFS IO and scoped API003 operations | Pass — DS002 unchanged, no copy/proxy | Confirmed | Remaining peer/both-OS/physical matrix |
-| BEH004 | Operational | Pass | Pass — host-ready/node-exited after two boots and host-only reconnect | Pass — current eligibility -> fresh daemon proof -> same-ID Start -> verify | Confirmed | Two fresh ordinary reboots without manual repair first |
-| BEH005 | Operational | Pass | Pass — selected/private/source preservation plus current Stop/policy contracts | Pass — no recreation/config change; exact-ID recheck; current policy veto | Confirmed | Normal-stop, disabled-policy and unselected controls |
-| BEH006 | User/System | Pass | Pass — API003 scoped mounted HTTP and isolated desktop content checks | Pass — DS004 healthy readers unchanged | Confirmed | Remaining completed-artifact/preview coverage; no outage expansion |
-| BEH007 | User/Interaction | Pass | Pass — guide unavailable remains truthful | Pass — DS005 release linkage unchanged | Confirmed | Current published qualification/Guide gates retained |
+| BEH001 | Operational | Pass | Pass — public create/reconnect and generated-config ownership | Pass — DS001 activates corrected bytes through existing backend | Confirmed | Fresh current public setup/reconnect proof |
+| BEH002 | User/System | Pass | Pass — native tools use selected project paths | Pass — DS003 unchanged | Confirmed | Retain actual runtime/private-link matrix |
+| BEH003 | Contract | Pass | Pass — synced source publisher -> fresh native/managed reader; API004 failure | Pass — DS002 server attribute refresh + unchanged client bound | Confirmed | API-F004 first; repeated1KiB/1MiB exact reads |
+| BEH004 | Operational | Pass | Pass — Status/Reconnect/job current code and API004 reboots | Pass — verify hosted config before HostReady; no lifecycle mutation from Status | Confirmed | Current-config and prior reboot/Stop regressions |
+| BEH005 | Operational | Pass | Pass — public Detach and exact-owned removal | Pass — preflight before teardown; retain mismatched bytes and partial retry | Confirmed | No-side-effect mismatch and exact missing-config retry tests |
+| BEH006 | User/System | Pass | Pass — normal explorer/preview content reads via mounted path | Pass — DS004 unchanged; no UI workaround | Confirmed | Healthy previews/completed-artifact coverage remains |
+| BEH007 | User/Interaction | Pass | Pass — release unavailable state | Pass — DS005 remains truthful | Confirmed | No qualified Guide/publication claim |
 
-**Prior dispositions first:** API-F002/CR003 is now independently resolved at API003 fresh public native-Ubuntu no-preinstall create/reconnect scope; do not reopen it as unproved or inflate it to all modes. CR001 modes, CR002/API-F001 native-Mac cold-create and CR004 release gates retain their respective scopes. D-001 is deferred/not repaired; IMP-D001 current-source/profile/AGY policy remains. **CR005's design obligation is adequately addressed; product closure is pending.**
+**Prior dispositions:** CR005/API-F003 is independently scoped resolved by API004's first two ordinary Linux Docker-storage/selected-client reboots, without manual Start/reconnect, plus separate Stop/policy/replacement/detach controls. Reviewer rechecked distinct boot IDs, actual health/status, same ID/Image/Config and HostConfig except recorded empty-DNS normalization (null -> []). Do not call this raw byte equality. CR001–004/API-F001/F002 keep recorded resolutions; API-F002 remains fresh no-preinstall native-Ubuntu scope, not full qualification. D001 remains deferred/not repaired; IMP-D001 current-source/AGY policy unchanged. **CR006 design recovery is accepted, not product closure.**
 
-**Earlier architecture-review gap:** ARCH004 retained the host-only lifecycle boundary without establishing that Docker restart policy completed a pre-process dependency failure. First-use ordering is not a boot-order contract. API003 supplies the normal execution witness; this review accepts the narrow missing owner, not a blanket runtime-retry interpretation of the earlier Pass.
+**Earlier review limitation:** client actimeo1 and earlier ordinary IO examples did not establish the server-side freshness budget for warmed direct-source writes. API004 proves the missing invariant. The correction belongs to the current export owner, not a reader retry or a narrower writer/platform contract.
 
-Independent forward source trace: `platform/jobs.go:JobDefinition` -> `cli/run.go:service` -> `service/supervisor.go:Supervise` under admin lock -> `setup/lifecycle.go:Reconnect` -> source/engine/mount/nonroot probe. Target extends this last owner through `setup/reconnect_nodes.go` -> Docker adapter's current selected failure classification/probe/reinspection/attempt/Start -> `docker/exec.go:VerifyStarted`. `Status` remains observational with respect to lifecycle; existing health probes may perform their owned test IO. `setup/pending.go` and `docker/recovery.go` retain explicit-drain recreation recovery, not automatic boot repair.
+Forward source trace: user/native tool publishes original source -> existing `setup/apply.go`-configured `backend.GaneshaConfig`/VFS export -> `platform.MountOptions` or `docker.VolumeOptions` -> native fresh open; managed HTTP additionally resolves workspace path and `createReadStream` -> exact bytes. `WriteGanesha`/native `EnsureGanesha`/Docker `VerifyGanesha` already compare current template; `Status` currently discards hosted metadata and `Detach` checks config late. SR022 moves no ownership: it adds the missing calls at those lifecycle boundaries.
 
 ## Supplemental Artifact Coherence Verdict
 
-| Artifact | Purpose/Scope Clear? | Linked To Core? | Complete At Scope? | Consistent? | Status/Approval Clear? | Required Action |
+| Artifact | Scope Clear? | Linked To Core? | Complete At Scope? | Consistent? | Status/Approval Clear? | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| Approved018/approvals017–018/scope feedback | Pass | Pass | Pass | Pass | Pass | No renewed behavior approval needed |
-| SR021 design/investigation/history/handoff | Pass | Pass | Pass | Pass | Pass | Same bounded policy/observability/state contracts |
-| CRR008/API003 reports/history/raw chain | Pass | Pass | Pass | Pass | Pass | Preserve failed automatic outcome and scoped successes |
-| SR021 lifecycle investigation/public states/Moby source | Pass | Pass | Pass | Pass | Pass | Source/raw-evidence investigation only, no new runtime Pass |
-| IR001–006, earlier reviews/feasibility/engine artifacts | Pass | Pass | Pass | Pass | Pass | Retain current implementation; no restart from scratch |
-| Reviewer audit/script | Pass | Pass | Pass | Pass | Pass | Integrity and raw-receipt checks only |
+| Requirements/approvals/scope feedback | Pass | Pass | Pass | Pass | Pass | Preserve5s and source-writer/platform scope |
+| SR022 design/investigation/history/handoff | Pass | Pass | Pass | Pass | Pass | Current SR022/API-F004-first paragraph expressly supersedes historical SR021 sequence |
+| CRR010/API004 reports/history/raw receipts | Pass | Pass | Pass | Pass | Pass | Preserve current failure and separate prior scoped resolutions |
+| SR022 exact-source/A-B-A evidence and cleanup | Pass | Pass | Pass | Pass | Pass | Dependency feasibility only; diagnostic config edits are not product fix |
+| Earlier IR/ARCH/CRR/API/feasibility supplements | Pass | Pass | Pass | Pass | Pass | Carry cumulative context without reopening unaffected work |
+| Reviewer audit and attempt note | Pass | Pass | Pass | Pass | Pass | Raw/integrity checks, not executable qualification |
 
-No source/test change in SR021; its commit changes ticket artifacts only. API diagnostic command addressed the node by name; before/after inspect proves the same immutable ID/config, not execution of the proposed immutable-ID adapter. It is a mechanism witness, not automatic recovery proof. Delivery/finalization **N/A — not performed**; external Product spec **N/A — not applicable**. Existing implementation/source/API artifacts are not N/A.
+SR022 changed four designer canonical documents and evidence only, not source/tests or specialist verdicts. External Product spec **N/A — not applicable**; Delivery **N/A — not performed**. Prototype's two mount instances share one kernel; independent peers, managed HTTP, Docker STORAGE and Mac qualification are explicitly not inferred.
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Current posture assessed | Pass | Actual normal boot failure after working first use | None |
-| Root classification evidence-backed | Pass | Missing lifecycle ownership between storage proof and failed client start | Preserve CR005 origin, not blame an unproven Docker defect |
-| Refactor decision explicit | Pass | Extend setup/Docker owner, reuse volume/probe/verify/storage | None |
-| Concrete design reflects decision | Pass | DS006, eligibility, attempts, files, removal and controls aligned | Implement bounded delta |
+| Current posture assessed | Pass | Current-state section and SR022 freshness/config-lifecycle decision address CR006 | None |
+| Root classification supported | Pass | Missing end-to-end freshness invariant: server60s metadata cache versus approved5s | Not an IR007 regression or new product requirement |
+| Refactor/no-refactor explicit | Pass | Existing backend/setup owners suffice; no new coherence owner, engine patch or migration | Keep bounded extension |
+| Concrete sections implement decision | Pass | Single generator, two verifier entry points, exact state disposition and tests | Implement affected delta only |
 
 ## Spine Inventory Verdict
 
-| Spine ID | Scope | Readable? | Narrative Clear? | Facade/Owner Clear? | Domain Naming Clear? | Ownership Clear? | Off-Spine Appropriate? | Verdict |
+| Spine | Scope | Readable? | Narrative Clear? | Facade/Owner Clear? | Naming Clear? | Ownership Clear? | Off-Spine Appropriate? | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| DS001 | Bootstrap -> consented setup -> engine/host/selected attachment -> verified path | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS002 | Tool -> native NFS -> source -> peer open | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS003 | Selected workspace/run -> binding/profile -> existing runtime/tools | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS004 | UI/tool -> existing file/preview/PTY IO -> result | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS005 | Nodes Guide -> actual release descriptor/copy -> terminal -> DS001 | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS006 | Ordinary reboot/job -> locked Reconnect -> host proof -> selected failed-start completion -> real API/binding result | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS006-L | Selected current identity/state -> daemon probe -> reinspection -> consume -> one Start -> verify/report | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS001 | Command -> consent/apply -> engine/mount -> verified usable path; status/detach lifecycle | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS002 | Ordinary source writer -> export/VFS -> NFS client -> peer fresh open | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS003 | Workspace/run -> binding/private profile -> runtime/native tool | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS004 | File/preview request -> existing REST/OS reader -> bytes/stream -> UI | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS005 | Nodes Guide -> release descriptor/copy -> user's terminal -> DS001 | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS006 / DS006-L | Reboot/job -> locked selected-start completion; eligibility/probe/consume/Start/result | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 
-Return path distinguishes hostReady, stopped/ineligible, recovered and incomplete selected nodes. Existing serial supervisor owns cadence; readiness evidence, not elapsed sleep, permits the action. Consumed-attempt state serves that owner, not a second scheduler. Retained SR020 release supply path still delivers verified identical native/Docker engine bytes; SR021 needs current CLI metadata, not an engine rebuild.
+No new spine owner is needed. Expiry policy is part of existing DS002 backend semantics; checks remain inside DS001 setup lifecycle. Existing return/status paths communicate errors; Status does not reconfigure or restart. Source-hash regeneration remains packaging-owned, not an engine rebuild.
 
 ## Boundary Encapsulation Verdict
 
-| Boundary / Owner | Entry Clear? | Internals Stay Internal? | Bypass Controlled? | Verdict | Notes |
+| Boundary | Entry Clear? | Internals Internal? | Bypass Controlled? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Setup Reconnect | Pass | Pass | Pass | Pass | Host proof, current selection and admin sequencing |
-| Docker failed-start adapter | Pass | Pass | Pass | Pass | Owns classification/probe/recheck/Start/result; raw grammar not in CLI |
-| Docker initial recreation/Recover | Pass | Pass | Pass | Pass | Explicit consent/drain remains separate; no background call |
-| Status and launcher Stop guidance | Pass | Pass | Pass | Pass | No lifecycle mutation from status or retry policy in shell |
-| Existing runtime/source/release owners | Pass | Pass | Pass | Pass | Unaffected decisions retained |
+| Setup -> backend config | Pass | Pass | Pass | Pass | Backend owns generation/verification; no duplicated parser in CLI |
+| Backend -> Ganesha/VFS | Pass | Pass | Pass | Pass | Export-local policy, no unrelated/global exports |
+| Status / Detach | Pass | Pass | Pass | Pass | Read-only verification / pre-teardown admission, not overwrite |
+| Runtime/HTTP/Docker node/release owners | Pass | Pass | Pass | Pass | Existing boundaries preserved |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
-| Boundary | Allowed Dependencies Clear? | Forbidden Shortcuts Clear? | Coherent? | Verdict | Notes |
+| Boundary | Allowed Dependencies Clear? | Shortcuts Explicit? | Coherent? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Job/CLI -> SetupService -> Docker adapter | Pass | Pass | Pass | Pass | No direct shell/node mutation from supervisor |
-| Adapter -> public daemon inspect/volume/probe/Start/verify | Pass | Pass | Pass | Pass | Same daemon/immutable ID; no private DB/event replay |
-| Adapter -> existing Store | Pass | Pass | Pass | Pass | Atomic attempt, not desired-running authority |
-| Setup/status -> typed node result | Pass | Pass | Pass | Pass | Per-node failure retained; do not mark hostReady as nodeReady |
-| Existing first-use and release paths | Pass | Pass | Pass | Pass | No pull/recreate/global Docker reorder/new package command |
+| CLI -> SetupService -> backend | Pass | Pass | Pass | Pass | No direct template editing in commands |
+| Native/Docker engine -> common config | Pass | Pass | Pass | Pass | One export policy, distinct source/recovery path rendering retained |
+| Readers -> existing mounted paths | Pass | Pass | Pass | Pass | No read-retry/proxy/UI workaround or source-copy fallback |
+| Packaging -> retained engine + current CLI metadata | Pass | Pass | Pass | Pass | No engine rebuild, qualification fabrication or kernel toggle |
 
 ## Interface Boundary Verdict
 
-| Interface | Subject Clear? | Singular Responsibility? | Identity Explicit? | Generic Boundary Risk | Verdict |
+| Interface | Subject Clear? | Singular Responsibility? | Identity Explicit? | Generic Risk | Verdict |
 | --- | --- | --- | --- | --- | --- |
-| Reconnect with explicit retry authority separate from service | Pass | Pass | Pass | Low | Pass |
-| CompleteFailedStart(snapshot, connection, nodeAttachment, store, retryConsumed) | Pass | Pass | Pass | Low | Pass |
-| Shared read-only volume inspect/validation | Pass | Pass | Pass | Low | Pass |
-| Typed disposition and sanitized reason | Pass | Pass | Pass | Low | Pass |
-| Attempt read/write by current selected node/incarnation | Pass | Pass | Pass | Low | Pass |
+| GaneshaConfig(hosted, privateRoot, container) | Pass | Pass | Pass | Low | Pass |
+| WriteGanesha / VerifyGanesha | Pass | Pass | Pass | Low | Pass |
+| Status() hosted validation before HostReady | Pass | Pass | Pass | Low | Pass |
+| Detach(consented) existing-config preflight | Pass | Pass | Pass | Low | Pass |
 
-The example method signature is not a generic retry framework. `retryConsumed` can authorize one additional already-eligible attempt only after explicit reconnect confirmation/`--yes`; it cannot override current policy, identity, resources or failed-start qualification. No new API selector guesses between storage, node or process identity.
+No new public option or generic gate framework. If absence handling merits a helper, backend config ownership contains it. Missing during Detach is not missing-during-Status success. Same bytes on disk do not constitute claimed live hot-policy verification.
 
 ## Existing Capability / Subsystem Reuse Verdict
 
 | Need | Existing Area Checked? | Extension Sound? | New Piece Justified? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Persistent healthy reconnect | Pass | Pass | Pass | Pass | Existing job/lock/supervisor reused |
-| Daemon namespace readiness | Pass | Pass | N/A | Pass | Existing fresh image Probe, no auth/private mounts |
-| Real application readiness | Pass | Pass | N/A | Pass | Existing VerifyStarted, not Running alone |
-| Attempt dedup | Pass | Pass | Pass | Pass | Small new subject in existing atomic Store |
-| Volume identity/options | Pass | Pass | Pass | Pass | Extract common read-only validator; only EnsureVolume creates |
+| Server freshness | Pass | Pass | N/A | Pass | Existing supported export option; unchanged engine |
+| Owned config readiness/removal | Pass | Pass | Pass | Pass | Existing verifier reused at two relevant entries |
+| Atomic config creation/private state | Pass | Pass | N/A | Pass | Existing Write/Store; no new journal/state |
+| Runtime/preview correctness | Pass | Pass | N/A | Pass | Actual downstream reads validate integration; no implementation change presumed |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
 | Area | Ownership Clear? | Reuse/Extend Sound? | Correct Spine Owner? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| setup | Pass | Pass | Pass | Pass | Complete selected set after storage, keep host/node outcomes distinct |
-| docker | Pass | Pass | Pass | Pass | Qualified public observation/action boundary |
-| config Store | Pass | Pass | Pass | Pass | Storage mechanics only, no eligibility policy |
-| CLI/launcher docs/output | Pass | Pass | Pass | Pass | Explicit retry and truthful Stop distinction, not new supervisor |
-| Other implemented capabilities | Pass | Pass | Pass | Pass | No new ownership change |
+| backend | Pass | Pass | Pass | Pass | Export template and exact config validation |
+| setup | Pass | Pass | Pass | Pass | Lifecycle sequencing and result/error publication |
+| platform/docker | Pass | Pass | Pass | Pass | Client options and existing node recovery unchanged |
+| docs/tests/packaging | Pass | Pass | Pass | Pass | Truthful policy, boundary controls and actual build identity |
 
 ## Reusable Owned Structures Verdict
 
 | Structure | Extraction Evaluated? | File Choice Sound? | Ownership Clear? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Volume driver/options/owner inspection | Pass | Pass | Pass | Pass | Same validator used by first-use and recovery; recovery never creates |
-| Observed failure and result | Pass | Pass | Pass | Pass | Docker adapter types, not shared generic lifecycle catalog |
-| Consumed incarnation record | Pass | Pass | Pass | Pass | Current node/daemon/storage/container/process identity only |
-| Existing Snapshot opaque Config/HostConfig | Pass | Pass | Pass | Pass | Preserve external fields, add real State observations only |
+| Native/Docker Ganesha template | Pass | Pass | Pass | Pass | Already shared; one option at EXPORT, not duplicated per mode |
+| Exact config verification | Pass | Pass | Pass | Pass | Reuse existing backend function; no second format reader |
+| Hosted/attachment/attempt records | Pass | Pass | Pass | Pass | Current structures remain unchanged; no extraction needed |
 
 ## Shared Structure / Data Model Tightness Verdict
 
 | Structure | One Meaning? | Redundancy Controlled? | Overlap Controlled? | Core/Variant Sound? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Snapshot.State extensions | Pass | Pass | Pass | Pass | Pass | Actual Error/timestamps/Pid/exit/OOM fields; no invented manuallyStopped |
-| Attempt record | Pass | Pass | Pass | Pass | Pass | No Error string/policy/config/auth/READY; not historical desiredRunning |
-| Connection/NodeAttachment | Pass | Pass | Pass | Pass | Pass | Existing selected reference/daemon/storage meaning unchanged |
-| Result/status | Pass | Pass | Pass | Pass | Pass | Observation separate from saved intent and dedup state |
+| HostedFilesystem / Connection | Pass | Pass | Pass | Pass | Pass | Source/UUID/backend/private root retain current meanings |
+| Generated Ganesha config | Pass | Pass | Pass | Pass | Pass | One expiry policy, no old/current discriminator or user knob |
+| Status / persisted state | Pass | Pass | Pass | Pass | Pass | Observed HostReady is not a saved config/current-policy cache |
 
 ## File Responsibility Mapping Verdict
 
-| File / Group | Clear Responsibility? | Matches Owner? | Re-Tightened? | Verdict | Notes |
+| File | Clear Responsibility? | Matches Owner? | Re-Tightened? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| setup/lifecycle.go, reconnect_nodes.go | Pass | Pass | Pass | Pass | Reconnect ordering and bounded selected-set coordination |
-| docker/start_recovery.go, start_attempt.go | Pass | Pass | Pass | Pass | Failure eligibility/action; separate small durable attempt |
-| docker/snapshot.go, attachment.go | Pass | Pass | Pass | Pass | Public observation shape and shared read-only volume validation |
-| setup/status.go, cli/run.go | Pass | Pass | Pass | Pass | Current outcomes/explicit override, thin CLI |
-| setup detach path | Pass | Pass | Pass | Pass | Exact attempt cleanup after attachment removal |
-| launcher commands.sh, NFS README and focused tests | Pass | Pass | Pass | Pass | Truthful Stop/policy guidance; no shell recovery policy |
-| Existing engine/runtime/preview/release files | Pass | Pass | N/A | Pass | Preserved; current CLI source hash regenerated downstream |
+| internal/backend/ganesha.go | Pass | Pass | N/A | Pass | Common current generator |
+| internal/backend/ganesha_native.go if helper needed | Pass | Pass | N/A | Pass | Existing exact config owner; no engine lifecycle rewrite |
+| internal/setup/status.go | Pass | Pass | N/A | Pass | Validate hosted config before readiness |
+| internal/setup/lifecycle.go | Pass | Pass | N/A | Pass | Detach preflight before node/mount/job/engine actions |
+| Backend/setup focused tests, NFS README | Pass | Pass | N/A | Pass | Positive/negative current-template lifecycle and honest fixture disposition |
+| Existing engine build/node/runtime/REST/UI files | Pass | Pass | N/A | Pass | Not correction targets; current source metadata regenerated normally |
 
 ## Subsystem / Folder / File Placement Verdict
 
 | Path | Placement Clear? | Matches Owner? | Mixed/Over-Split Risk | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| internal/setup/reconnect_nodes.go | Pass | Pass | Low | Pass | Cohesive selected-set ordering, not peer coordinator |
-| internal/docker/start_recovery.go and start_attempt.go | Pass | Pass | Low | Pass | Distinct action and bounded persistence concerns |
-| Existing config/CLI/script/docs | Pass | Pass | Low | Pass | No new global state/service/helper hierarchy |
+| internal/backend | Pass | Pass | Low | Pass | Existing config concern, no new subsystem |
+| internal/setup | Pass | Pass | Low | Pass | Thin lifecycle calls rather than duplicated config parsing |
+| Nearby tests/docs | Pass | Pass | Low | Pass | No broad folder restructuring justified |
 
 ## Removal / Decommission Completeness Verdict
 
 | Item | Obsolete Piece Named? | Replacement Clear? | Scope Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Host-only reconnect boundary | Pass | Pass | Pass | Pass | Extended through selected failed-start result |
-| Duplicated volume validation | Pass | Pass | Pass | Pass | One read-only validator, create remains first-use only |
-| Unconditional Stop-as-cancellation wording | Pass | Pass | Pass | Pass | Correct guidance, no change to actual Stop operation |
-| Recreate/Recover/runtime restart policy | Pass | N/A | Pass | Pass | Reachable and preserved, not dead code |
-| Prior private veto draft | Pass | N/A | Pass | Pass | Rejected design, no phantom code removal to demand |
+| Implicit default60s export policy | Pass | Pass | Pass | Pass | Current explicit0; no old-policy branch retained |
+| Status config omission / late-only Detach verification | Pass | Pass | Pass | Pass | Validate early; keep final exact-owned removal check |
+| Old disposable test setups | Pass | Pass | Pass | Pass | Matching candidate drained detach before reinstall; preserve source/marker |
+| Existing engine/recovery/client/reader code | Pass | N/A | Pass | Pass | Reachable and preserved, not dead code |
 
-No additional dead code is established by this review. Remove genuinely unreachable touched helpers/imports/tests if implementation creates them; preserve reachable initial apply/recovery and local behavior. No unrelated cleanup expansion or new follow-up found.
+No additional dead source is established in the touched paths. Remove genuinely unreachable helpers/imports/tests caused by implementation, not existing supported local or engine/recovery behavior. No new unrelated follow-up found; FUP001 remains PM-owned.
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Area | Legacy/Dual Path? | Clean-Cut Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- |
-| Docker recovery | No | Pass | Pass | One qualified current path, no arbitrary-error fallback |
-| Existing attachment/receipt formats | No | Pass | Pass | Known-field direct use is not version branching |
-| Automatic versus explicit reconnect | No | Pass | Pass | Distinct current authority, not compatibility fallback |
-| Source/profile/local/runtime and engine contracts | No | Pass | Pass | Prior corrections remain unchanged |
+| Generated config | No | Pass | Pass | Exact current bytes only; different retained/refused |
+| Old candidate fixture handling | No | Pass | Pass | Test-resource disposition, not runtime compatibility promise |
+| Source/attachment/project/runtime formats | No | Pass | Pass | Unchanged; no migration reader |
+| Loaded engine config | No | Pass | Pass | No guessed SIGHUP/hot replacement guarantee |
 
 ## Persisted-Data Transition Verdict (When Applicable)
 
 | Subject | Decision | Reader/Semantic Evidence? | Proportionate? | Migration Safety | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Attachment/node refs/source marker/receipts | Directly Usable — No Migration | Pass | Pass | N/A | Pass | Current readers/opaque node config, same meaning/UUID |
-| start-attempt per selected node | New bounded subject — no migration | Pass | Pass | N/A | Pass | Missing means no completion attempt recorded, not permission to run |
-| Runtime/source/workspace/history | Not Affected | Pass | Pass | N/A | Pass | No rewrite or global admission gate |
-| Engine/release artifacts | Retain engine pair; rebuild actual CLI metadata | Pass | Pass | N/A | Pass | No user-data transition or old candidate qualification |
+| Generated Ganesha config | Fresh current generation; discard/rebuild disposable test setup only | Pass | Pass | N/A | Pass | Current bytes reusable; different bytes preserved/refused; no evidenced released predecessor |
+| Source data/marker/recovery | Not Affected | Pass | Pass | N/A | Pass | No source deletion, marker regeneration or recovery-data cleanup |
+| Attachment/node/attempt/profile/session records | Directly usable unchanged | Pass | Pass | N/A | Pass | No schema or meaning change |
+| Release/CLI metadata | Regenerate actual source identity, retain exact engine pair | Pass | Pass | N/A | Pass | Build artifact, not user-data migration |
 
-Existing `config.Store` checks directory/file owner/mode/no-symlink and bounded JSON; `AtomicFile` writes/fsyncs/renames/fsyncs directory. A new record is written before Start under existing admin lock; failure to persist prevents that Start. At most32 current selected entries, no expiry/history growth, exact detach cleanup. Malformed record inhibits only its node's automatic action. Successful process startup gives a new StartedAt; failed pre-process mount does not itself advance that process timestamp. Thus repeated supervisor cycles need not become repeated Starts. This is one-attempt accounting, not exactly-once distributed execution: interruption after recording may require confirmed reconnect. No migration framework justified.
+Inspected release lock has empty qualification/physical fields, userVerified=false and engine=null; retained candidates are test artifacts, and cleanup receipts retire known test deployments. This supports the stated first-delivery scope, not a universal claim that no installation could exist. A discovered supported retained installation is a concrete transition question for Solution Designer before changing it. Do not infer authority to delete/rebuild user state from disposable-test disposition. Current mismatch refusal and early checks protect exact ownership; no generalized migration or global startup gate.
 
 ## Change / Refactor Safety Verdict
 
-| Area | Realistic Sequence? | Temporary Seams Explicit? | Cleanup Explicit? | Verdict |
+| Area | Sequence Realistic? | Temporary Seams Explicit? | Cleanup Explicit? | Verdict |
 | --- | --- | --- | --- | --- |
-| Add public state/volume classification and attempt types | Pass | Pass | Pass | Pass |
-| Extend Reconnect after host proof, separate explicit retry | Pass | Pass | Pass | Pass |
-| Preserve initial recreation/pending/drain and runtime policy | Pass | Pass | Pass | Pass |
-| Exact probe receipt and detach attempt cleanup | Pass | Pass | Pass | Pass |
-| Focused fixtures/source review -> two public reboots -> remaining matrix | Pass | Pass | Pass | Pass |
+| Common generator option + focused regression | Pass | Pass | Pass | Pass |
+| Status / pre-teardown verifier and partial retry | Pass | Pass | Pass | Pass |
+| Current public setup/reconnect with retained packages | Pass | Pass | Pass | Pass |
+| Source review -> API-F004 first -> complete remaining gates | Pass | Pass | Pass | Pass |
 
-No dependency rebuild is required by this lifecycle change. Retain verified engine assets; build the actual corrected CLI/source metadata. No broader product score or release qualification follows from unit controls.
+No hot replacement seam: fresh activation consumes current bytes. Old test instances must detach with matching old candidate before changing command/template. Exact current repeat/reconnect remains normal idempotent behavior, without extra end-user setup steps.
 
 ## Example Adequacy Verdict
 
-| Topic | Example Needed? | Clear Example? | Avoided Shape Explained? | Verdict | Notes |
+| Topic | Needed? | Clear Example? | Avoided Shape Explained? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Failed start versus ordinary Stop | Yes | Pass | Pass | Pass | Exact public state plus cleared successful-start error |
-| Policy=no versus no-op Stop on failed node | Yes | Pass | Pass | Pass | Explicit durable veto; no imaginary inspect/manual flag |
-| One consumed incarnation versus continuous retry | Yes | Pass | Pass | Pass | Pre-Start record, later process timestamp, explicit retry only |
-| Same identity versus recreation | Yes | Pass | Pass | Pass | Exact immutable Start after fresh daemon proof; no pull/config rewrite |
+| Server versus client expiry | Yes | Pass | Pass | Pass | Source-close -> stale attributes -> old peer bytes despite actimeo1 |
+| Config lifecycle states | Yes | Pass | Pass | Pass | Absent/current/different and partial-detach retry distinguished |
+| Dependency experiment versus finished product | Yes | Pass | Pass | Pass | A/B/A diagnostic edits cannot stand in for public apply/read validation |
+| Migration/hot reload rejection | Yes | Pass | Pass | Pass | No evidenced released predecessor; retained entry expiry and Docker file bind preclude casual live-update claim |
 
 ## Material Premise Validation (Only When Needed)
 
-### MP-006 — Ordinary host restart can strand a selected client before its process starts
+### MP-009 — Healthy direct-source publication must become visible on fresh peer opens
 
-- Authority/behaviors: REQ014/019, AC007/014/018/019, SCN009/013, BEH001/004/005; AC009/017 preservation.
-- Initiating kind: **Operational / Supported Normal Scenario**. The owner normally reboots a supported computer after successful public create/connect with an opted-in running managed client, expecting the same workspace and node to return without extra setup commands.
-- Independent trigger/surface: supported OS whole-host reboot, not a proposed retry or synthetic edit of hidden Docker state. API003 executes `systemctl reboot` on a disposable Ubuntu24.04.5/Docker29.1.3 reference.
-- Forward witness: successful consented Apply/probe/recreation/publication -> ordinary reboot -> independent Docker engine/client restore -> local-driver selected NFS volume mount before Ganesha accepts connections -> pre-process connection refusal leaves exited/Pid0/error -> existing service establishes host mount/UUID/access only -> selected API remains unavailable. Public reconnect also lacks that last step.
-- Preconditions/consequence: healthy completed setup, selected unless-stopped node, preserved source/nonroot settings. Two distinct boots reach failure;15 second-boot observations through148.599s show stopped node/API failure despite later host readiness. This duration is evidence, not a150s product SLA. Same observed container/config/image succeeds after diagnostic named Start; no recreation was needed.
-- Reachability: **Reachable**. Raw lifecycle/repro/inspect journals independently corroborate production trace; no generalized outage assumption.
-- Proportionate response: existing setup/Docker owner completes only the exact qualified failed start after positive daemon-side proof; no engine-ready fixed sleep, global ordering, app-entrypoint wait or runtime restart-manager takeover.
+- Authority/behaviors: SCN002, BEH002/003/006, REQ004, AC003, QR001; original source-folder contract.
+- Initiating kind: **User / Supported Normal Scenario**. User/native tool saves an ordinary shared project file in the chosen original folder so another participating tool/user can read it. This is an exposed supported filesystem workflow, not internal-cache mutation.
+- Forward witness: public setup exports that actual folder -> writer writes/flushes/fsyncs/closes -> Ganesha/VFS serves mounted native or managed-node client -> fresh open (managed HTTP additionally uses existing workspace REST stream) -> old bytes beyond5s in API004. Source inode/UUID retained; mtime and source hash update; native observations exclude renderer-only attribution.
+- Preconditions/consequence: healthy reference storage/LAN, completed <=1MiB write, no held reader FD or concurrent conflicting write. Two unique1024byte trials have243 observations and first exact native/HTTP results61.149/60.975s. This violates the approved bound without invoking outages.
+- Reachability: **Reachable**. Public source-writer contract independently establishes it; API004 corroborates the complete path.
+- Proportionate response: existing export owner sets expiry0, retaining client policy. Exact source plus controlled A/B/A native experiment supports the mechanism choice; it is not proof that every stale read has one cause or every mode passes.
 
-### MP-007 — Ordinary operator Stop must not become authority for background restart
+### MP-010 — Current hosted readiness and teardown must respect exact configuration ownership
 
-- Authority/behaviors: REQ010/014/019, AC009/014/017, BEH004/005; existing Docker restart-policy contract.
-- Initiating kind: **User / Supported Normal Scenario**. Operator stops a successfully running selected node through the existing launcher Stop or Docker control to suspend that node.
-- Forward witness: launcher `commands.sh:stop_nodes` -> Docker Stop -> normal process stop. A prior successful Docker start cleared State.Error; the stopped container therefore lacks the required NFS startup diagnostic. Under unless-stopped, normal manual stop also suppresses Docker boot restore. SR021 rejects it both in background and explicit reconnect; `always` retains Docker's different own boot behavior, not a new AutoByteus promise.
-- Preconditions/consequence: currently working node, serial supported control, not a fabricated concurrent command race. Starting it merely from old Apply Running or current Running=false would override the preserved control.
-- Reachability: **Reachable** from existing exposed control. Public normal-stop validation still required; source reasoning is not an executed control Pass.
-- Proportionate response: live failed-start eligibility and current policy, not remembered desired-running state. No new general cancellation subsystem.
+- Authority/behaviors: UC004/005, BEH004/005, REQ010, AC009/017 and existing exact-owned Write/Verify/removal contract.
+- Initiating kind: **Contract exercised by supported user operations**. User invokes public `status` to inspect the configured attachment or consented `detach --drained` to remove owned integration without modifying unrelated data.
+- Forward witness: CLI/admin lock -> SetupService.CheckConfiguration -> hosted descriptor. Status currently reaches mount/UUID probe and HostReady without consulting hosted config; Detach currently mutates selected nodes/mount/job/engine before late RemoveGaneshaConfiguration exact-byte refusal. Target delegates the same comparison to the existing backend before those respective outcomes.
+- Preconditions/consequence: hosted Ganesha attachment; only exact generated resources may be represented as current or removed. Existing teardown removes config before final descriptors, so its already-supported retry can encounter missing config. The early check must not make absence fatal on that retry or permit a different existing config to be torn down.
+- Reachability: **Reachable governing ownership contract**, not a claim that manual tampering is a supported workflow. Mismatch/absence fixtures test the boundary; they do not authorize automatic old-template migration, hot reload or arbitrary recovery machinery.
+- Proportionate response: two narrow existing-verifier calls; preserve final exact removal checks, Apple/connect-only behavior and source/recovery data. No new policy/state/transaction owner.
 
-### MP-008 — Stop on an already non-running failed start records no new intent
+The versioned [Ganesha export contract](https://raw.githubusercontent.com/nfs-ganesha/nfs-ganesha/V4.3/src/doc/man/ganesha-export-config.rst) describes the default60 and export/client inheritance; [MDCACHE validity source](https://raw.githubusercontent.com/nfs-ganesha/nfs-ganesha/V4.3/src/FSAL/Stackable_FSALs/FSAL_MDCACHE/mdcache_int.h) rejects cached attribute validity at expiry0. The retained exact archive additionally connects export parsing/inheritance, entry initialization and getattrs refresh. These support the selected policy, not an all-platform runtime certification.
 
-- Authority/behaviors: truthful control/preservation under REQ010/014/019, BEH004/005; applicable public Docker Stop contract.
-- Initiating kind: **User / Supported Normal Scenario**. After observing the failed selected node, operator invokes the existing Stop command intending to keep it down.
-- Forward witness: launcher forwards Docker Stop -> Docker sees not running -> returns NotModified before signal/manual-stop/event path; existing failed-start observation is unchanged. A later qualifying reconnect cannot observe that no-op as fresh durable intent. The new adapter is not proof of this absence; the preexisting public Stop source contract establishes it.
-- Preconditions/consequence: exact already-failed/non-running state after MP006. No-op Stop is distinct from MP007. A private veto invisible to Docker would not inhibit Docker's own future restore.
-- Reachability: **Reachable**; current primary source and forwarding path establish the limit. A fresh public no-op/control demonstration remains downstream work.
-- Proportionate response: disclose the distinction and use current explicit restart-policy=no as the durable veto, rechecked before Start. Do not invent manuallyStopped inspect data or change policy automatically. This preserves the existing dependency contract, not a new mandatory setup step or permission to start ordinary stopped nodes.
-
-Primary corroboration, independently read: [Moby start path](https://raw.githubusercontent.com/moby/moby/docker-v29.1.3/daemon/start.go) fails volume setup before process creation; [state transitions](https://raw.githubusercontent.com/moby/moby/docker-v29.1.3/daemon/container/state.go) clear error on successful running state and update process timestamps at their actual boundaries. [Reset](https://raw.githubusercontent.com/moby/moby/docker-v29.1.3/daemon/container/monitor.go) cleans streams/logging, not a new process incarnation. [Stop](https://raw.githubusercontent.com/moby/moby/docker-v29.1.3/daemon/stop.go) returns early for an already stopped node. [Docker restart-policy guidance](https://docs.docker.com/engine/containers/start-containers-automatically/) distinguishes policy/manual stops and cautions against competing process managers. These versioned contracts support the narrow design; they do not assert all distributions/diagnostic grammars are identical or establish a tested recovery result.
-
-Retained MP001/002: normal workspace media/HTML/completed artifact -> REST parent IO during storage loss is **Reachable but explicitly deferred** under DEC015, not healthy-preview failure. MP003 confirmed source changed-revision Update and MP004 confirmed Remove -> source cleanup/private-link or AGY missing-source outcome remain **Reachable**, with no byte-retention promise. MP005 supported native create -> stock directory incompatibility remains a valid historical witness; API003 now closes it at fresh no-preinstall native-Ubuntu scope. Prior full witnesses remain in ARCH003/004 history. No machinery requires contrived concurrent contradictory Docker actions; the design makes no race-free external-command transaction claim.
+Retained MP001/002 are reachable outage IO paths explicitly deferred DEC015, not fixed. MP003/004 source Update/Remove remain reachable with independent deletion/current-source links and AGY semantics. MP005's dependency failure is resolved at API003 native scope. MP006 normal boot failure is resolved at API004 stated scope; MP007 successful-running Stop and MP008 already-failed Stop/no new intent retain distinct controls and policy=no veto. Their full earlier witnesses remain in review history; no concurrent contradictory-action guarantee added. No Not-Reachable premise drives machinery. A hypothetical released-predecessor migrator is not selected without actual deployment evidence.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
-**None blocking architecture handoff.** CR005/API-F003 still requires implemented automatic completion and independent public revalidation. Unknown Docker error grammar fails closed and requires evidence, not a blanket retry. Remaining platform/physical/runtime/release gates are not design contradictions or new user-choice blockers. FUP001 remains in PM custody; separate peer-NAT environment limitation is unchanged.
+**None blocking architecture handoff.** Corrected public-command/native+managedHTTP/mode validation is not yet performed. This is an implementation/validation obligation, not missing intended behavior. If actual retained supported deployments or failure of the selected correction appear, return evidence to Solution Designer rather than invent compatibility or relax5s. FUP001 PM custody and separate peer-NAT/access limits remain.
 
 ## Review Decision
 
-**Pass — ARCH-REV-005 / Ready SR021 / unchanged Approved SR018.** The bounded same-ID failed-start completion closes the design ownership gap without taking over runtime restart policy or restoring DEC015 machinery. This is implementation-ready design, not proof that API-F003 is fixed.
+**Pass — ARCH-REV-006 / Ready SR022 / unchanged Approved SR018.** The bounded backend policy and lifecycle verification design is implementation-ready. It does **not** close CR006/API-F004 or change CRR010/API004 verdicts.
 
 ## Findings
 
 **No new blocking findings.**
 
-- **CR-005/API-F003:** design recovery accepted; implementation/source/API closure pending. Preserve ID and current policy; execute normal-stop/disabled-policy/unselected controls and two ordinary public reboots.
-- **CR-003/API-F002:** independently resolved at API003 fresh native-Ubuntu create/reconnect scope; broader qualification remains.
-- **D-001:** deferred/not repaired. **IMP-D001:** current-source/private-profile/AGY policy preserved.
-- **CR001/CR002/API-F001/CR004:** retain their reported mode/source/release-gate scopes, not a new all-platform Pass.
+- **CR006/API-F004:** design recovery accepted; implementation/source/API closure pending.
+- **CR005/API-F003:** independently resolved at API004 Linux arm64 Docker-storage/managed-client two-boot/control scope; preserve regression coverage, do not reopen as this failure.
+- **CR001–004/API-F001/F002:** retain independently recorded scopes, not all-mode qualification.
+- **D001:** deferred/not repaired; **IMP-D001:** current-source/private-profile/AGY policy unchanged.
 
-Prior-finding resolution is indexed in ARCH-REV-005. No downstream report edit, new aggregate score or renumbering of incoming findings.
+Prior-finding resolutions are recorded in ARCH-REV-006. No downstream report rewrite, invented score or renumbering.
 
 ## Classification
 
-**Pass**, Large/High retained. No new Design Impact, Requirement Gap or Unclear blocker. Docker no-op Stop is an explicit inherited observability limitation; source-derived negative cases are required implemented validation, not fabricated current success.
+**Pass**, Large/High retained. No new Design Impact, Requirement Gap or Unclear blocker. No changed approval, security policy, writer/platform narrowing or migration obligation.
 
 ## Recommended Recipient
 
-Primary exact implementation recipient from fresh handoff rules, with all cumulative upstream/IR/CRR/API evidence and this review. After confirmed primary success, informational Solution Designer notice only — **no action required**, no duplicate forwarding or delegation.
+Exact primary implementation recipient selected by fresh handoff rules, with the complete cumulative package and this review. No delegation/spawning or duplicate API dispatch. Any informational notification must follow the applicable routing rule, not trigger duplicate forwarding.
 
 ## Residual Risks
 
-- Current Docker grammar and state interpretation must be implemented narrowly with real-public-field fixtures. If mandatory normal-stop/policy controls cannot be enforced, return concrete Design Impact; do not broaden errors or silently narrow supported modes.
-- Probe/pre-Start record/one request is not a guaranteed availability deadline or exactly-once action. Ambiguous/interrupted completion can require explicit confirmed reconnect; policy=no still vetoes it. No-op Stop of an already-failed node is not durable cancellation and must not be advertised as such.
-- API003 Fail57.14% and CRR008 Fail remain. First revalidation is fresh public selected setup plus two ordinary host reboots with **no manual Start/reconnect**, real API/shared bytes and same identity/private/source/UUID; include normal-stop, disabled-policy and unselected controls. No150s SLA or forced-outage gate added.
-- Retain remaining both-OS native/managed-Docker/storage/peer/lifecycle/detach/physical matrix, actual native tools and unread linked assets/peer-close/restore/Standalone-Team-Org, remaining previews/completed artifacts, user verification and authorized release gates. API003 scoped Linux storage/HTTP/desktop passes are not full completion.
-- Exact engine pair/source artifacts remain usable; actual CLI metadata must match changed source. Nativeamd64 engine, hosted workflow/signing/published bootstrap remain unqualified; empty qualifiedTargets and unavailable Guide remain honest. No shipped command/merge/push/release/TaskDone authority.
-- Trusted-LAN plaintext/coarse host trust, hard-NFS parent stalls and original source-availability limits remain disclosed. Five old dist trees and11 retained IR005 candidate files were left untouched; no new live resources require cleanup.
+- A/B/A is designer-run native same-kernel dependency feasibility only. Default/restored phases miss5s in6s windows; candidate first exact reads0.001–0.927s do not certify independent peers, Docker STORAGE, Mac or actual managed HTTP.
+- API-F004 FIRST after implementation/source review: corrected public setup/reconnect, unique warmed1KiB/1MiB source fsync/close, fresh native and actual managedHTTP reads, exact bytes and <=5s per reader, actual loaded config/CLI/package/image/mount/source/private identities. No manual config/cacheflush/remount workaround. Continue atomic replace/create/delete/rename/symlink and existing bidirectional ACs.
+- Expiry0 costs additional backing metadata calls. Correctness-first tradeoff is explicit; no throughput guarantee or new performance project. Disk equality is not hot loaded-policy proof.
+- Keep ordinary reboot/Stop/currentpolicy=no/unselected/replacement/drained-detach regressions, no60s boot SLA. Existing no-op Stop on already-failed node is not durable cancellation; no private veto or policy rewriting.
+- Whole remaining bothOSnative+managedclients/LinuxnativeDockerstorage/independentphysical/actualnativetools+unreadlinkedassets+peerclose+restore/Standalone-Team-Org/completedartifact+healthy previews gates remain. Successful af9f23 test-code review still awaits a passed package.
+- Nativeamd64 engine/hostedworkflow/signing/publicbootstrap/docs/userverification/finalization/authorizedrelease remain unqualified. Empty release qualification and Guide unavailable state stay truthful. No release/merge/push/tag/TaskDone claim.
+- DEC015 hard-NFS process stalls, trusted-LAN plaintext/coarse trust and source-availability limits remain disclosed; IMP-D001/FUP001/peer-NAT/access questions unchanged.15 retained artifacts and five preexisting dist trees untouched. No reviewer live resources require cleanup.
 
 ## Latest Authoritative Result
 
-- Review Decision: **Pass — ARCH-REV-005 / Ready SR021 / Approved SR018**.
-- Material-Premise Gate: **Pass** — evidenced normal reboot gap and existing public stop/policy contracts support only the bounded recovery.
-- Notes: CR005 design accepted, product closure pending. API003/CRR008 remain authoritative at their own boundary. Reviewer changes only report/revision/evidence artifacts; no product execution, live mutation or release claim.
+- Review Decision: **Pass — ARCH-REV-006 / Ready SR022 / Approved SR018**.
+- Material-Premise Gate: **Pass** — supported source publishing and exact-owned lifecycle contract ground the bounded changes.
+- Notes: CR006 design accepted, public correction unproved. CRR010 Fail/API004 Fail57.14% remain authoritative. Reviewer changed only review/history/evidence; no product execution or release claim.
