@@ -2,283 +2,291 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `requirements-doc.md`, **Approved SR018**; approvals017/018 and DEC015 unchanged.
-- Upstream Investigation Notes: `investigation-notes.md`, current SR022 supplement inventory and cumulative context.
-- Upstream Solution Revision Record: `solution-revision-record.md`, **SR022**.
-- Reviewed Design Spec: `design-spec.md`, **Ready SR022**, commit `4c66567ccacf6552e0f21af5c4e7f177c312f5c4`.
-- Supplemental Task Artifacts Reviewed: current solution handoff; CRR010/CR006 source/failure-origin evidence; API004 report/ledger/history, raw visibility and prior reboot/control receipts; SR022 exact-source audit, A/B/A scripts/raw results, cleanup and integrity records; prior IR001–007/ARCH001–005/CRR001–010/API001–004 at their recorded scopes. Full1036-reference input: `evidence/design-recovery/sr022/package-index.json`, retaining all1003 incoming references.
-- Relevant Solution Revision IDs: SR022 correction; ApprovedSR018, SR019 source/profile, SR020 dependency and SR021 node-start policies retained.
+- Upstream Requirements Doc: `requirements-doc.md`, **Approved SR018**; approval017/018 and DEC015 unchanged.
+- Upstream Investigation Notes: `investigation-notes.md`, current SR023 supplement inventory.
+- Upstream Solution Revision Record: `solution-revision-record.md`, **SR023**; previous history retained.
+- Reviewed Design Spec: `design-spec.md`, **Ready SR023**, commit **a4be96c45d4e9799c3dc18fc6b690b7edf579477**.
+- Supplemental Task Artifacts Reviewed: current handoff; CRR012 report/source trace/mac evidence and API005 raw Mac receipts; SR023 identity investigation, primary contracts/installed manuals, persisted-state evidence, probe source/build/harness/results/attempts/cleanup; prior resolution reports and raw API005 Linux freshness receipts. Full1346-reference input `evidence/design-recovery/sr023/package-index.json` preserves all1302 incoming references. Prior IR001–008/ARCH001–006/CRR001–012/API001–005 remain at their recorded scopes, not wholly reexecuted.
+- Relevant Solution Revision IDs: SR023 correction; ApprovedSR018 and SR019–022 policies preserved.
 - Architecture Review Revision Record: `architecture-review-revision-record.md`.
-- Current Architecture Review Revision ID: **ARCH-REV-006**; round **6**, 2026-10-15.
-- Trigger: **CRR010 Fail / Design Impact CR006 P1 / API-F004**, healthy committed-source visibility.
-- Prior Review Round Reviewed: ARCH005 Pass on SR021; rechecked prior finding dispositions before current verdict. It did not approve SR022.
-- Latest Authoritative Round: this architecture report only. **CRR010 Fail and API004 Fail57.14% / broader Required remain current at their boundaries.**
-- Ticket root: `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces`. Ticket links below are relative to this root; production paths are worktree-relative.
+- Current Architecture Review Revision ID: **ARCH-REV-007**; round **7**, 2026-10-15.
+- Trigger: **CRR012 Fail / Design Impact CR007 P1 / API-F005**, ordinary native-Mac boot rejects the same source.
+- Prior Review Round Reviewed: ARCH006 Pass on SR022, not approval of SR023; prior dispositions rechecked first.
+- Latest Authoritative Round: this architecture report only. **CRR012 Fail and API005 Fail57.14% / broader Required remain current at their boundaries.**
+- Ticket root: `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces`. Ticket links below are relative; production paths are worktree-relative.
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces`; branch `codex/shared-network-workspaces`; finalization `origin/personal`.
-- Current-State Evidence Basis: personal source/contract/raw-receipt review and `architecture-review-evidence/arch-rev-006/review-audit.py` / `review-checks.json`. Exact six engine source members/excerpts checked against retained archive;127 SR022 and243 API004 raw observations audited. All1036 references exist;997 protected designer-input paths excluding the two reviewer outputs and15 retained candidate artifacts remain unchanged. Approved basis byte-identical; production aggregate **968f6d000d4b6c2cc3c66cd3add5845cb30385cdad752fe831b564823db9b764** unchanged. Root DESIGN/TESTING, shared principles/full template and applicable instructions applied; no closer NFS/scripts AGENTS. **No reviewer product suite/build/VM/runtime/live-resource operation.**
+- Current-State Evidence Basis: personal source/contract/raw-receipt review and `architecture-review-evidence/arch-rev-007/review-audit.py` / `review-checks.json`.1346 existing unique refs;1342 manifest and1296 protected hashes checked excluding two reviewer authorities;286 old dist files unchanged. Current designer authorities compared to input commit; production d65aeda24fc4b9a534a3941b194dd4a55b88c00c unchanged; approved basis byte-identical to prior review.11 dependency observations,9 incoming Mac failure observations and80 prior freshness checks re-evaluated. Root DESIGN/TESTING, migration guideline, shared principles, Example9 and full28-section template applied; no closer NFS/ticket AGENTS. **No reviewer build, suite, VM, mount, Docker, app or provider execution.**
 
 ## Routing Classification Review
 
-- Task size **Large**, architectural risk **High**; independent review required **Yes**.
-- Cumulative privileged multi-platform storage/client/runtime/release integration justifies classification, not1036 evidence files. Current delta is small in source footprint but changes data-plane consistency and generated-config lifecycle; retain independent review.
-- No classification correction or new behavior approval required. Fresh rules govern the completed result.
+- Task size **Large**, architectural risk **High**; independent architecture review required **Yes**.
+- Cumulative privileged multiplatform storage/client/runtime integration remains Large. This bounded delta spans a few files but changes persisted source identity and retry admission: High independently of evidence volume. No new subsystem or broad reaudit justified.
+- No classification correction or renewed behavior approval required. Fresh handoff rules govern routing.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Overall Basis Status: **Confirmed**.
-- Approved authority: SCN002, BEH002/003, REQ004/AC003/QR001 require fresh participating-client opens to obtain successfully synced/closed <=1MiB source writes within5s on the healthy reference topology. REQ010/AC009/017 and BEH004/005 preserve owned configuration/source/private state and safe lifecycle. BEH006 retains healthy previews.
-- Current behavior: source-folder publishing is ordinary supported use. Common Ganesha generator omits server expiry; clients already use actimeo1. API004 native and actual managed HTTP readers remain stale about61s despite successful source close and updated mtime/same inode/UUID. This is not an IR007 regression, held-descriptor promise, renderer-only failure or DEC015 outage issue.
-- Target: common owned EXPORT expiry0, existing client policy/security/source identity unchanged; strict config writer/verifier retained, with narrow verification before Status HostReady and before Detach side effects. No new data plane, retry or migration subsystem.
-- Scope Guardrail: UC001–007 retained; current changes only generator, setup validation, nearest tests/docs/actual CLI metadata. No runtime/REST/UI/private-source/restart-policy change. Only Mac Docker STORAGE is deferred; native/managed clients on both OSes remain required.
-- Every prospective blocking Design Impact maps to approved authority: **Yes; no new blocker accepted**. Remaining material ambiguity blocking implementation: **None**. Public correction validation is still pending.
+- Approved SCN009/012/013, BEH001/004/005, REQ014/017/019 and AC007/014/017/018/019 require healthy same-source restart/retry without manual mounting, while preserving original bytes and refusing replacement. DEC015 does not defer ordinary healthy boot.
+- Current path: public create -> Plan/SourceIdentity -> Apply/hosted and pending records -> launchd RunAtLoad -> serial supervisor/admin lock -> Reconnect/CheckConfiguration/CheckSource -> Apple Ensure/mount/nonroot proof. Raw st_dev+inode is currently durable on both OSes. API005 shows changed raw device with unchanged APFS volume/inode/source; the guard fails before backend/mount. Status separately sees no matching mount. This is not an IR008 regression or nfsd-start failure.
+- Target: Mac APFS volumeUuid+inode, Linux device+inode unchanged; platform captures, config validates shape, setup binds/persists once. Trusted actual-device diskutil observation, not guessed device or marker-only fallback. Existing supervisor/consent/order remains.
+- Scope Guardrail: UC001–007 retained; affected source/identity/pending wiring/tests/docs only. No source/marker/private-data migration, runtime/REST/UI, engine, mount-policy or restart-policy expansion. Only Mac Docker STORAGE is deferred; native Mac and both-OS clients remain required. New product/migration/security obligations require upstream approval, not reviewer invention.
+- Every prospective blocking Design Impact traceable to approved authority: **Yes; no new blocker accepted**. Remaining ambiguity blocking implementation: **None**. Public corrected lifecycle remains unverified.
 
 | Behavior ID | Kind | Design Alignment | Trigger / Current Evidence | Target Path Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH001 | Operational | Pass | Pass — public create/reconnect and generated-config ownership | Pass — DS001 activates corrected bytes through existing backend | Confirmed | Fresh current public setup/reconnect proof |
-| BEH002 | User/System | Pass | Pass — native tools use selected project paths | Pass — DS003 unchanged | Confirmed | Retain actual runtime/private-link matrix |
-| BEH003 | Contract | Pass | Pass — synced source publisher -> fresh native/managed reader; API004 failure | Pass — DS002 server attribute refresh + unchanged client bound | Confirmed | API-F004 first; repeated1KiB/1MiB exact reads |
-| BEH004 | Operational | Pass | Pass — Status/Reconnect/job current code and API004 reboots | Pass — verify hosted config before HostReady; no lifecycle mutation from Status | Confirmed | Current-config and prior reboot/Stop regressions |
-| BEH005 | Operational | Pass | Pass — public Detach and exact-owned removal | Pass — preflight before teardown; retain mismatched bytes and partial retry | Confirmed | No-side-effect mismatch and exact missing-config retry tests |
-| BEH006 | User/System | Pass | Pass — normal explorer/preview content reads via mounted path | Pass — DS004 unchanged; no UI workaround | Confirmed | Healthy previews/completed-artifact coverage remains |
-| BEH007 | User/Interaction | Pass | Pass — release unavailable state | Pass — DS005 remains truthful | Confirmed | No qualified Guide/publication claim |
+| BEH001 | Operational | Pass | Pass — public create and chosen-source contract | Pass — DS001 captures correct identity before export | Confirmed | Current public Mac create proof |
+| BEH002 | User/System | Pass | Pass — workspace/run/native tools | Pass — DS003 unchanged | Confirmed | Retain private-link/tool matrix |
+| BEH003 | Contract | Pass | Pass — healthy shared IO, API005 Linux freshness | Pass — DS002 unchanged | Confirmed | Preserve scoped resolution and remaining modes |
+| BEH004 | Operational | Pass | Pass — ordinary boot/reconnect, MP011 | Pass — DS001/006 stable binding before effects | Confirmed | Automatic mounted nonroot RW first |
+| BEH005 | Operational/Contract | Pass | Pass — retry/source preservation, MP012 | Pass — bound pending reused, detach exact-owned | Confirmed | Bind-once/refusal/partial-retry checks |
+| BEH006 | User/System | Pass | Pass — normal previews/completed artifacts | Pass — DS004 unchanged | Confirmed | Healthy current-product coverage remains |
+| BEH007 | User/Interaction | Pass | Pass — Guide/release availability | Pass — DS005 unchanged | Confirmed | No qualification/publication claim |
 
-**Prior dispositions:** CR005/API-F003 is independently scoped resolved by API004's first two ordinary Linux Docker-storage/selected-client reboots, without manual Start/reconnect, plus separate Stop/policy/replacement/detach controls. Reviewer rechecked distinct boot IDs, actual health/status, same ID/Image/Config and HostConfig except recorded empty-DNS normalization (null -> []). Do not call this raw byte equality. CR001–004/API-F001/F002 keep recorded resolutions; API-F002 remains fresh no-preinstall native-Ubuntu scope, not full qualification. D001 remains deferred/not repaired; IMP-D001 current-source/AGY policy unchanged. **CR006 design recovery is accepted, not product closure.**
-
-**Earlier review limitation:** client actimeo1 and earlier ordinary IO examples did not establish the server-side freshness budget for warmed direct-source writes. API004 proves the missing invariant. The correction belongs to the current export owner, not a reader retry or a narrower writer/platform contract.
-
-Forward source trace: user/native tool publishes original source -> existing `setup/apply.go`-configured `backend.GaneshaConfig`/VFS export -> `platform.MountOptions` or `docker.VolumeOptions` -> native fresh open; managed HTTP additionally resolves workspace path and `createReadStream` -> exact bytes. `WriteGanesha`/native `EnsureGanesha`/Docker `VerifyGanesha` already compare current template; `Status` currently discards hosted metadata and `Detach` checks config late. SR022 moves no ownership: it adds the missing calls at those lifecycle boundaries.
+**Prior findings:** CR006/API-F004 independently resolved by API005 at Linux native+Docker STORAGE/native+actual managedHTTP scope:40 unique1KiB/1MiB fixtures,80 reads, all<=5s. Recomputed maxima native storage0.927933s/native and0.934914s/HTTP; Docker storage0.827498s/native and0.839105s/HTTP. Not full AC003. CR005 retains API004/005 normalboots and separate Stop/policy/replacement/detach controls; recorded DNS null->[] normalization is not raw HostConfig equality. CR001–004 retain exact scopes. D001 deferred/not repaired; IMP-D001 current-source links/independent Source Update-Remove/AGY policy unchanged. **CR007 design accepted, not product closure.** Earlier raw-device selection lacked cross-boot evidence; the existing comparison faithfully exposed that design limitation.
 
 ## Supplemental Artifact Coherence Verdict
 
 | Artifact | Scope Clear? | Linked To Core? | Complete At Scope? | Consistent? | Status/Approval Clear? | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| Requirements/approvals/scope feedback | Pass | Pass | Pass | Pass | Pass | Preserve5s and source-writer/platform scope |
-| SR022 design/investigation/history/handoff | Pass | Pass | Pass | Pass | Pass | Current SR022/API-F004-first paragraph expressly supersedes historical SR021 sequence |
-| CRR010/API004 reports/history/raw receipts | Pass | Pass | Pass | Pass | Pass | Preserve current failure and separate prior scoped resolutions |
-| SR022 exact-source/A-B-A evidence and cleanup | Pass | Pass | Pass | Pass | Pass | Dependency feasibility only; diagnostic config edits are not product fix |
-| Earlier IR/ARCH/CRR/API/feasibility supplements | Pass | Pass | Pass | Pass | Pass | Carry cumulative context without reopening unaffected work |
-| Reviewer audit and attempt note | Pass | Pass | Pass | Pass | Pass | Raw/integrity checks, not executable qualification |
+| Requirements/approval/scope feedback | Pass | Pass | Pass | Pass | Pass | No new approval inferred |
+| SR023 design/investigation/history/handoff | Pass | Pass | Pass | Pass | Pass | Current API-F005-first sequence supersedes historical orders |
+| CRR012/API005 failure and prior-resolution evidence | Pass | Pass | Pass | Pass | Pass | Preserve current Fail and scoped independent closures |
+| SR023 probe/contracts/state/cleanup | Pass | Pass | Pass | Pass | Pass | Dependency feasibility only, not public product |
+| Earlier cumulative supplements | Pass | Pass | Pass | Pass | Pass | Reuse unaffected evidence, do not repeat whole audit |
+| Reviewer audit/attempt note | Pass | Pass | Pass | Pass | Pass | Receipt checks only; no runtime signoff |
 
-SR022 changed four designer canonical documents and evidence only, not source/tests or specialist verdicts. External Product spec **N/A — not applicable**; Delivery **N/A — not performed**. Prototype's two mount instances share one kernel; independent peers, managed HTTP, Docker STORAGE and Mac qualification are explicitly not inferred.
+Four designer canonical documents and evidence changed; production, requirements and specialist authorities did not. External Product specification **N/A — not applicable**; Delivery **N/A — not performed**. Actual helper rejects symlinks/permission failure; replacement “refusal” is harness comparison of captured values, not a product command. The design states that distinction correctly.
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Current posture assessed | Pass | Current-state section and SR022 freshness/config-lifecycle decision address CR006 | None |
-| Root classification supported | Pass | Missing end-to-end freshness invariant: server60s metadata cache versus approved5s | Not an IR007 regression or new product requirement |
-| Refactor/no-refactor explicit | Pass | Existing backend/setup owners suffice; no new coherence owner, engine patch or migration | Keep bounded extension |
-| Concrete sections implement decision | Pass | Single generator, two verifier entry points, exact state disposition and tests | Implement affected delta only |
+| Current posture assessed | Pass | SR023 health paragraph and exact current-source trace | None |
+| Root classification supported | Pass | Missing invariant/shared-model lifetime mismatch; rawdev changes on ordinary boot | Do not label local IR008 regression |
+| Refactor/no-refactor explicit | Pass | Small OS-specific extraction, strict binding validation and existing pending sequencing | No broad source/supervision owner |
+| Concrete design supports decision | Pass | Identity variants, fd mapping, state dispositions, file map and tests | Implement bounded correction only |
 
 ## Spine Inventory Verdict
 
 | Spine | Scope | Readable? | Narrative Clear? | Facade/Owner Clear? | Naming Clear? | Ownership Clear? | Off-Spine Appropriate? | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| DS001 | Command -> consent/apply -> engine/mount -> verified usable path; status/detach lifecycle | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS002 | Ordinary source writer -> export/VFS -> NFS client -> peer fresh open | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS003 | Workspace/run -> binding/private profile -> runtime/native tool | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS004 | File/preview request -> existing REST/OS reader -> bytes/stream -> UI | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS005 | Nodes Guide -> release descriptor/copy -> user's terminal -> DS001 | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS006 / DS006-L | Reboot/job -> locked selected-start completion; eligibility/probe/consume/Start/result | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS001 | Command -> plan/consent -> bind/persist -> engine/mount -> usable path; retry/detach | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS002 | Original source write -> engine/VFS -> client -> fresh peer read | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS003 | Workspace/run -> binding/private exposure -> runtime/native tools | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS004 | Preview/content request -> existing REST/OS reader -> stream -> UI | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS005 | Nodes Guide -> release descriptor -> user's terminal -> DS001 | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS006 / DS006-L | Boot/job -> host proof -> selected failure eligibility/probe/consume/same-ID Start -> API | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 
-No new spine owner is needed. Expiry policy is part of existing DS002 backend semantics; checks remain inside DS001 setup lifecycle. Existing return/status paths communicate errors; Status does not reconfigure or restart. Source-hash regeneration remains packaging-owned, not an engine rebuild.
+SR023 adds detail inside DS001 and the host-proof portion of DS006, not another primary owner. Bounded local capture is canonical-path/fd observation -> actual volume query -> correlation -> persistent identity/error. Bound/unbound pending sequencing remains within SetupService. Return errors propagate without exporting, rebinding or false readiness.
 
 ## Boundary Encapsulation Verdict
 
 | Boundary | Entry Clear? | Internals Internal? | Bypass Controlled? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Setup -> backend config | Pass | Pass | Pass | Pass | Backend owns generation/verification; no duplicated parser in CLI |
-| Backend -> Ganesha/VFS | Pass | Pass | Pass | Pass | Export-local policy, no unrelated/global exports |
-| Status / Detach | Pass | Pass | Pass | Pass | Read-only verification / pre-teardown admission, not overwrite |
-| Runtime/HTTP/Docker node/release owners | Pass | Pass | Pass | Pass | Existing boundaries preserved |
+| CLI -> SetupService | Pass | Pass | Pass | Pass | Consent/admin lock and lifecycle stay authoritative |
+| Setup -> platform source | Pass | Pass | Pass | Pass | Capture/comparison below platform; no per-caller diskutil policy |
+| Config -> current Identity validation | Pass | Pass | Pass | Pass | Metadata versus complete binding explicit |
+| Platform -> Commands / OS | Pass | Pass | Pass | Pass | Fixed trusted executable, clean environment, actual fd mount mapping |
+| Backend/runtime/HTTP | Pass | Pass | Pass | Pass | No identity repair or alternate reader |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
 | Boundary | Allowed Dependencies Clear? | Shortcuts Explicit? | Coherent? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| CLI -> SetupService -> backend | Pass | Pass | Pass | Pass | No direct template editing in commands |
-| Native/Docker engine -> common config | Pass | Pass | Pass | Pass | One export policy, distinct source/recovery path rendering retained |
-| Readers -> existing mounted paths | Pass | Pass | Pass | Pass | No read-retry/proxy/UI workaround or source-copy fallback |
-| Packaging -> retained engine + current CLI metadata | Pass | Pass | Pass | Pass | No engine rebuild, qualification fabrication or kernel toggle |
+| Setup -> config/platform/backend | Pass | Pass | Pass | Pass | Persist binding before later source/export effects |
+| Platform -> fixed system command | Pass | Pass | Pass | Pass | No shell/PATH lookup/guessed disk/all-disk enumeration |
+| Supervisor -> Reconnect | Pass | Pass | Pass | Pass | No duplicate capture policy or pending recreation |
+| Current reader -> current binding | Pass | Pass | Pass | Pass | No old-pair fallback, marker-only match or mismatch rewrite |
 
 ## Interface Boundary Verdict
 
 | Interface | Subject Clear? | Singular Responsibility? | Identity Explicit? | Generic Risk | Verdict |
 | --- | --- | --- | --- | --- | --- |
-| GaneshaConfig(hosted, privateRoot, container) | Pass | Pass | Pass | Low | Pass |
-| WriteGanesha / VerifyGanesha | Pass | Pass | Pass | Low | Pass |
-| Status() hosted validation before HostReady | Pass | Pass | Pass | Low | Pass |
-| Detach(consented) existing-config preflight | Pass | Pass | Pass | Low | Pass |
+| SourceIdentity / CheckSource with existing Runner | Pass | Pass | Pass | Low | Pass |
+| Identity validation selected by Hosted.Backend | Pass | Pass | Pass | Low | Pass |
+| Plan / Apply / PendingPlan / SaveIntent | Pass | Pass | Pass | Low | Pass |
+| CheckConfiguration / Reconnect / Status / Detach | Pass | Pass | Pass | Low | Pass |
 
-No new public option or generic gate framework. If absence handling merits a helper, backend config ownership contains it. Missing during Detach is not missing-during-Status success. Same bytes on disk do not constitute claimed live hot-policy verification.
+OS capture seams belong at platform, not independently injectable per-caller policy. Status reports errors without repair; Detach does not gain a live-source-availability dependency. No new public setup command or durable selector.
 
 ## Existing Capability / Subsystem Reuse Verdict
 
 | Need | Existing Area Checked? | Extension Sound? | New Piece Justified? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Server freshness | Pass | Pass | N/A | Pass | Existing supported export option; unchanged engine |
-| Owned config readiness/removal | Pass | Pass | Pass | Pass | Existing verifier reused at two relevant entries |
-| Atomic config creation/private state | Pass | Pass | N/A | Pass | Existing Write/Store; no new journal/state |
-| Runtime/preview correctness | Pass | Pass | N/A | Pass | Actual downstream reads validate integration; no implementation change presumed |
+| Persistent source observation | Pass | Pass | Pass | Pass | OS-specific files within existing platform |
+| Trusted commands | Pass | Pass | N/A | Pass | Reuse Commands; no runner framework overhaul |
+| Current binding shape | Pass | Pass | Pass | Pass | Config extraction optional and cohesive |
+| Retry persistence | Pass | Pass | N/A | Pass | Existing atomic Store/SaveIntent/admin lock |
+| Nonroot/source marker proof | Pass | Pass | N/A | Pass | Separate existing checks retained |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
 | Area | Ownership Clear? | Reuse/Extend Sound? | Correct Spine Owner? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| backend | Pass | Pass | Pass | Pass | Export template and exact config validation |
-| setup | Pass | Pass | Pass | Pass | Lifecycle sequencing and result/error publication |
-| platform/docker | Pass | Pass | Pass | Pass | Client options and existing node recovery unchanged |
-| docs/tests/packaging | Pass | Pass | Pass | Pass | Truthful policy, boundary controls and actual build identity |
+| platform | Pass | Pass | Pass | Pass | Observation/correlation/comparison |
+| config | Pass | Pass | Pass | Pass | Shape and private exact persistence |
+| setup | Pass | Pass | Pass | Pass | Binding moment, consented retry, ordered effects |
+| service/backend/docker | Pass | Pass | Pass | Pass | Existing lifecycle/data plane, no new policy |
+| tests/docs/packaging | Pass | Pass | Pass | Pass | Boundary coverage/current CLI metadata, retained engine |
 
 ## Reusable Owned Structures Verdict
 
 | Structure | Extraction Evaluated? | File Choice Sound? | Ownership Clear? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Native/Docker Ganesha template | Pass | Pass | Pass | Pass | Already shared; one option at EXPORT, not duplicated per mode |
-| Exact config verification | Pass | Pass | Pass | Pass | Reuse existing backend function; no second format reader |
-| Hosted/attachment/attempt records | Pass | Pass | Pass | Pass | Current structures remain unchanged; no extraction needed |
+| config.Identity | Pass | Pass | Pass | Pass | Tight backend-selected variants, no schema version |
+| Common source path/correlation checks | Pass | Pass | Pass | Pass | Existing platform source owner, OS capture split |
+| Pending plan/hosted records | Pass | Pass | Pass | Pass | No second journal/READY cache/history |
 
 ## Shared Structure / Data Model Tightness Verdict
 
 | Structure | One Meaning? | Redundancy Controlled? | Overlap Controlled? | Core/Variant Sound? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| HostedFilesystem / Connection | Pass | Pass | Pass | Pass | Pass | Source/UUID/backend/private root retain current meanings |
-| Generated Ganesha config | Pass | Pass | Pass | Pass | Pass | One expiry policy, no old/current discriminator or user knob |
-| Status / persisted state | Pass | Pass | Pass | Pass | Pass | Observed HostReady is not a saved config/current-policy cache |
+| Apple Identity | Pass | Pass | Pass | Pass | Pass | Canonical nonzero volumeUuid + nonzero inode; Device absent/zero |
+| Linux Identity | Pass | Pass | Pass | Pass | Pass | Positive device/inode; no volumeUuid; existing semantics |
+| Unbound new-source intent | Pass | Pass | Pass | Pass | Pass | All-zero only before first binding; not partial or old Apple state |
+| Raw mount observation | Pass | Pass | Pass | Pass | Pass | Capture-local device/fsid/mount mapping, not durable equality |
+| Marker / attachment / runtime data | Pass | Pass | Pass | Pass | Pass | Storage UUID remains separate; unchanged meaning |
+
+Adding volumeUuid does not reinterpret Device. Mixed/partial bindings refuse; a complete binding wins over stale NewSource. No duplicated platform tag, magic sentinel, schemaVersion or fallback representation.
 
 ## File Responsibility Mapping Verdict
 
 | File | Clear Responsibility? | Matches Owner? | Re-Tightened? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| internal/backend/ganesha.go | Pass | Pass | N/A | Pass | Common current generator |
-| internal/backend/ganesha_native.go if helper needed | Pass | Pass | N/A | Pass | Existing exact config owner; no engine lifecycle rewrite |
-| internal/setup/status.go | Pass | Pass | N/A | Pass | Validate hosted config before readiness |
-| internal/setup/lifecycle.go | Pass | Pass | N/A | Pass | Detach preflight before node/mount/job/engine actions |
-| Backend/setup focused tests, NFS README | Pass | Pass | N/A | Pass | Positive/negative current-template lifecycle and honest fixture disposition |
-| Existing engine build/node/runtime/REST/UI files | Pass | Pass | N/A | Pass | Not correction targets; current source metadata regenerated normally |
+| internal/platform/source.go | Pass | Pass | Pass | Pass | Common path checks and binding comparison |
+| internal/platform/source_darwin.go / source_linux.go | Pass | Pass | Pass | Pass | Darwin fd/diskutil observation; Linux current pair |
+| internal/config/state.go; optional source_identity.go | Pass | Pass | Pass | Pass | Typed binding validation, not command execution |
+| internal/setup/plan.go / apply.go / pending.go | Pass | Pass | Pass | Pass | Initial/resumed binding and save-before-effects |
+| internal/setup/lifecycle.go / CheckConfiguration owner | Pass | Pass | Pass | Pass | Complete current validation/check before backend/mount |
+| Adjacent tests / NFS README | Pass | Pass | N/A | Pass | Actual variants/lifecycle and fixture-cutover instructions |
+| Engine/REST/UI/runtime/release workflow | Pass | Pass | N/A | Pass | Unchanged, not correction targets |
 
 ## Subsystem / Folder / File Placement Verdict
 
 | Path | Placement Clear? | Matches Owner? | Mixed/Over-Split Risk | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| internal/backend | Pass | Pass | Low | Pass | Existing config concern, no new subsystem |
-| internal/setup | Pass | Pass | Low | Pass | Thin lifecycle calls rather than duplicated config parsing |
-| Nearby tests/docs | Pass | Pass | Low | Pass | No broad folder restructuring justified |
+| platform OS source files | Pass | Pass | Low | Pass | Build-selected capture, not new subsystem |
+| config binding validator | Pass | Pass | Low | Pass | Optional extraction justified by cohesive invariant |
+| setup and adjacent tests | Pass | Pass | Low | Pass | Existing sequencing owner, no generic recovery folder |
 
 ## Removal / Decommission Completeness Verdict
 
 | Item | Obsolete Piece Named? | Replacement Clear? | Scope Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Implicit default60s export policy | Pass | Pass | Pass | Pass | Current explicit0; no old-policy branch retained |
-| Status config omission / late-only Detach verification | Pass | Pass | Pass | Pass | Validate early; keep final exact-owned removal check |
-| Old disposable test setups | Pass | Pass | Pass | Pass | Matching candidate drained detach before reinstall; preserve source/marker |
-| Existing engine/recovery/client/reader code | Pass | N/A | Pass | Pass | Reachable and preserved, not dead code |
+| Cross-OS durable device equality | Pass | Pass | Pass | Pass | Remove on Mac, retain Linux pair semantics |
+| Bound pending recapture on NewSource | Pass | Pass | Pass | Pass | Compare/reuse complete binding; distinguish true zero intent |
+| Legacy Apple acceptance/refresh branch | Pass | Pass | Pass | Pass | Not introduced; old bound fixtures explicitly disposed |
+| Existing source/marker/permission/reconnect machinery | Pass | N/A | Pass | Pass | Reachable and preserved, not dead code |
 
-No additional dead source is established in the touched paths. Remove genuinely unreachable helpers/imports/tests caused by implementation, not existing supported local or engine/recovery behavior. No new unrelated follow-up found; FUP001 remains PM-owned.
+No additional dead source established. Remove imports/helpers/tests actually made unreachable by this correction; no broad cleanup of reachable platform/backend code. No new unrelated follow-up; FUP001 remains PM-owned.
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Area | Legacy/Dual Path? | Clean-Cut Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- |
-| Generated config | No | Pass | Pass | Exact current bytes only; different retained/refused |
-| Old candidate fixture handling | No | Pass | Pass | Test-resource disposition, not runtime compatibility promise |
-| Source/attachment/project/runtime formats | No | Pass | Pass | Unchanged; no migration reader |
-| Loaded engine config | No | Pass | Pass | No guessed SIGHUP/hot replacement guarantee |
+| Current identity reader | No | Pass | Pass | Strict current backend variant; no old Apple fallback |
+| Linux pair | No | Pass | Pass | Current platform variant, not legacy compatibility |
+| Plist extra fields | No | Pass | Pass | Ignore irrelevant typed content, reject ambiguous required values |
+| Owned unqualified fixture rebuild | No | Pass | Pass | Matching old candidate detach before new install; no runtime migration |
 
 ## Persisted-Data Transition Verdict (When Applicable)
 
 | Subject | Decision | Reader/Semantic Evidence? | Proportionate? | Migration Safety | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Generated Ganesha config | Fresh current generation; discard/rebuild disposable test setup only | Pass | Pass | N/A | Pass | Current bytes reusable; different bytes preserved/refused; no evidenced released predecessor |
-| Source data/marker/recovery | Not Affected | Pass | Pass | N/A | Pass | No source deletion, marker regeneration or recovery-data cleanup |
-| Attachment/node/attempt/profile/session records | Directly usable unchanged | Pass | Pass | N/A | Pass | No schema or meaning change |
-| Release/CLI metadata | Regenerate actual source identity, retain exact engine pair | Pass | Pass | N/A | Pass | Build artifact, not user-data migration |
+| Current Apple bound hosted/pending | Directly usable | Pass | Pass | N/A | Pass | UUID+inode survives observed device reassignment |
+| Current Linux bound state | Directly usable unchanged | Pass | Pass | N/A | Pass | No new UUID requirement |
+| Truly zero NewSource intent, no hosted record | First binding on consented retry | Pass | Pass | N/A | Pass | Not an established source identity; absence retains intent |
+| Partial/old bound Apple / hosted-unbound inconsistency | Preserve/refuse; owned fixture rebuild only | Pass | Pass | N/A | Pass | Cannot infer original UUID from current path |
+| Project/marker/attachment/node/private/runtime state | Directly usable unchanged | Pass | Pass | N/A | Pass | No source deletion/copy/relocation/UUID regeneration |
+| Actual supported retained installation, if discovered | Return concrete transition evidence before cutover | Pass | Pass | N/A | Pass | No unsupported claim of universal deployment absence |
 
-Inspected release lock has empty qualification/physical fields, userVerified=false and engine=null; retained candidates are test artifacts, and cleanup receipts retire known test deployments. This supports the stated first-delivery scope, not a universal claim that no installation could exist. A discovered supported retained installation is a concrete transition question for Solution Designer before changing it. Do not infer authority to delete/rebuild user state from disposable-test disposition. Current mismatch refusal and early checks protect exact ownership; no generalized migration or global startup gate.
+Local origin/personal tree, containing-tag search, release lock with empty qualification and known installed API fixture/cleanup evidence support no established released predecessor here. Old Apple bytes do not contain the missing historical volume fact. A tolerant reader cannot safely invent it. Matching-old-candidate drained detach precedes replacing the command; fresh current create reuses preserved source/marker for exact-owned unqualified fixtures. New readers retain unsupported records with an actionable error, not silent conversion or deletion. No server migration/startup owner is added. The narrow unavailable storage capability must not become application-wide history/startup gating.
 
 ## Change / Refactor Safety Verdict
 
 | Area | Sequence Realistic? | Temporary Seams Explicit? | Cleanup Explicit? | Verdict |
 | --- | --- | --- | --- | --- |
-| Common generator option + focused regression | Pass | Pass | Pass | Pass |
-| Status / pre-teardown verifier and partial retry | Pass | Pass | Pass | Pass |
-| Current public setup/reconnect with retained packages | Pass | Pass | Pass | Pass |
-| Source review -> API-F004 first -> complete remaining gates | Pass | Pass | Pass | Pass |
+| Config variant + platform capture | Pass | Pass | Pass | Pass |
+| Plan/new Apply/pending bind-once persistence | Pass | Pass | Pass | Pass |
+| Current validation before reconnect effects | Pass | Pass | Pass | Pass |
+| Exact old fixture teardown then current public setup | Pass | Pass | Pass | Pass |
+| Source review -> API-F005 first -> remaining gates | Pass | Pass | Pass | Pass |
 
-No hot replacement seam: fresh activation consumes current bytes. Old test instances must detach with matching old candidate before changing command/template. Exact current repeat/reconnect remains normal idempotent behavior, without extra end-user setup steps.
+No cross-resource atomicity claim. Save failure stops before export. Existing supervisor still refuses pending setup; consented retry, not automatic rebind, owns it. No engine rebuild or temporary dual-runtime identity path.
 
 ## Example Adequacy Verdict
 
 | Topic | Needed? | Clear Example? | Avoided Shape Explained? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Server versus client expiry | Yes | Pass | Pass | Pass | Source-close -> stale attributes -> old peer bytes despite actimeo1 |
-| Config lifecycle states | Yes | Pass | Pass | Pass | Absent/current/different and partial-detach retry distinguished |
-| Dependency experiment versus finished product | Yes | Pass | Pass | Pass | A/B/A diagnostic edits cannot stand in for public apply/read validation |
-| Migration/hot reload rejection | Yes | Pass | Pass | Pass | No evidenced released predecessor; retained entry expiry and Docker file bind preclude casual live-update claim |
+| Mac versus Linux identity | Yes | Pass | Pass | Pass | volumeUuid/inode versus device/inode |
+| Complete/stale-flag versus unbound pending | Yes | Pass | Pass | Pass | Complete reused, all-zero may bind; partial/hosted inconsistency refuses |
+| Real replacement control | Yes | Pass | Pass | Pass | Same inode/rawdev/copied marker but different volume UUID |
+| Dependency versus product acceptance | Yes | Pass | Pass | Pass | Helper boots/comparison do not prove automatic public mounted RW |
 
 ## Material Premise Validation (Only When Needed)
 
-### MP-009 — Healthy direct-source publication must become visible on fresh peer opens
+### MP-011 — Same original APFS source after ordinary machine restart
 
-- Authority/behaviors: SCN002, BEH002/003/006, REQ004, AC003, QR001; original source-folder contract.
-- Initiating kind: **User / Supported Normal Scenario**. User/native tool saves an ordinary shared project file in the chosen original folder so another participating tool/user can read it. This is an exposed supported filesystem workflow, not internal-cache mutation.
-- Forward witness: public setup exports that actual folder -> writer writes/flushes/fsyncs/closes -> Ganesha/VFS serves mounted native or managed-node client -> fresh open (managed HTTP additionally uses existing workspace REST stream) -> old bytes beyond5s in API004. Source inode/UUID retained; mtime and source hash update; native observations exclude renderer-only attribution.
-- Preconditions/consequence: healthy reference storage/LAN, completed <=1MiB write, no held reader FD or concurrent conflicting write. Two unique1024byte trials have243 observations and first exact native/HTTP results61.149/60.975s. This violates the approved bound without invoking outages.
-- Reachability: **Reachable**. Public source-writer contract independently establishes it; API004 corroborates the complete path.
-- Proportionate response: existing export owner sets expiry0, retaining client policy. Exact source plus controlled A/B/A native experiment supports the mechanism choice; it is not proof that every stale read has one cause or every mode passes.
+- Authority/behaviors: SCN009/012/013, BEH001/004/005, REQ014/017/019; AC007/014/017/018/019. Reuses CRR012 premise ID.
+- Initiating basis: **Operational / Supported Normal Scenario**. Owner completes public native-Mac create on a supported nonempty APFS source, ordinarily reboots the same host, then resumes shared work. Approved restart contract exists independently of the proposed identity mechanism.
+- Forward witness: create -> Plan/SourceIdentity -> Apply saved pair -> OS launchd service -> locked serial Reconnect -> CheckConfiguration/CheckSource -> pair mismatch before Apple Ensure/mount. Public reconnect reaches the same guard; Status observes no mount.
+- Preconditions/consequence: original source remains available; raw device16777228 becomes30/27/30 across three boots, inode506781/501:20/755 and bytes/marker/saved record unchanged. Third-boot actual-device plist confirms same APFS VolumeUUID. Nine second/third-boot observations and two explicit reconnect failures corroborate the deterministic predicate, not a210s SLA. No manual hidden-state edit establishes reachability.
+- Reachability: **Reachable**. Corrected capture must survive reassignment without accepting a different directory/volume.
+- Response: platform observes persistent volume UUID+inode; existing config/setup persist and validate it. No retry escalation, marker bypass or identity rewrite. Eleven designer dependency observations support feasibility; current public correction still required.
 
-### MP-010 — Current hosted readiness and teardown must respect exact configuration ownership
+### MP-012 — Retry must preserve an already-established source binding
 
-- Authority/behaviors: UC004/005, BEH004/005, REQ010, AC009/017 and existing exact-owned Write/Verify/removal contract.
-- Initiating kind: **Contract exercised by supported user operations**. User invokes public `status` to inspect the configured attachment or consented `detach --drained` to remove owned integration without modifying unrelated data.
-- Forward witness: CLI/admin lock -> SetupService.CheckConfiguration -> hosted descriptor. Status currently reaches mount/UUID probe and HostReady without consulting hosted config; Detach currently mutates selected nodes/mount/job/engine before late RemoveGaneshaConfiguration exact-byte refusal. Target delegates the same comparison to the existing backend before those respective outcomes.
-- Preconditions/consequence: hosted Ganesha attachment; only exact generated resources may be represented as current or removed. Existing teardown removes config before final descriptors, so its already-supported retry can encounter missing config. The early check must not make absence fatal on that retry or permit a different existing config to be torn down.
-- Reachability: **Reachable governing ownership contract**, not a claim that manual tampering is a supported workflow. Mismatch/absence fixtures test the boundary; they do not authorize automatic old-template migration, hot reload or arbitrary recovery machinery.
-- Proportionate response: two narrow existing-verifier calls; preserve final exact removal checks, Apple/connect-only behavior and source/recovery data. No new policy/state/transaction owner.
+- Authority/behaviors: REQ014/017, AC014/017, SCN009/012, BEH001/005; supported partial-setup retry and same-source preservation contract.
+- Initiating basis: **Contract exercised by public consented create/reconnect**. User creates a new source through guided setup; a later setup step does not complete, then user reviews and retries the same intended configuration. Approved partial retry, not an invented corrupt-record workflow, supplies the basis.
+- Forward witness: Apply saves NewSource intent -> nonroot CreateSource -> capture -> existing marker/handle/hosted work -> SaveIntent currently retains NewSource -> later mount/node/job step may leave pending setup under the explicitly supported incomplete-setup contract -> interactive PendingPlan currently recaptures when that flag is true. Service refuses pending setup, so it cannot be an automatic recreation owner.
+- Preconditions/consequence: an identity can already be bound while the old flag says new. Recapture would discard the evidence that retry must compare; genuinely zero initial intent has no such evidence. Same-source refusal applies at this boundary without inventing hostile timing or a new security promise.
+- Reachability: **Reachable governing retry/preservation contract**. Failed-step fixtures exercise this actual sequence, not proof of arbitrary corruption support.
+- Response: bind once, clear NewSource and atomically save before later source effects; complete pending identity reused/compared regardless of stale flag. True zero intent may establish first binding only through fresh plan/consent; old/partial/mixed and hosted-unbound inconsistency refuse. Reuse existing Store/lock, not a second journal.
 
-The versioned [Ganesha export contract](https://raw.githubusercontent.com/nfs-ganesha/nfs-ganesha/V4.3/src/doc/man/ganesha-export-config.rst) describes the default60 and export/client inheritance; [MDCACHE validity source](https://raw.githubusercontent.com/nfs-ganesha/nfs-ganesha/V4.3/src/FSAL/Stackable_FSALs/FSAL_MDCACHE/mdcache_int.h) rejects cached attribute validity at expiry0. The retained exact archive additionally connects export parsing/inheritance, entry initialization and getattrs refresh. These support the selected policy, not an all-platform runtime certification.
+Apple's pinned [XNU mount header](https://raw.githubusercontent.com/apple-oss-distributions/xnu/xnu-12377.1.9/bsd/sys/mount.h) supplies mount-observation fields and local flag. Retained installed diskutil(8)/statfs(2) manuals document device info-plist and fd filesystem observation. Actual SR023 plists validate the selected field names; `Mounted` is absent. The older [getattrlist manual](https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/getattrlist.2.html) distinguishes device/object attributes but is not a modern APFS lifetime guarantee. UUID+inode stability is an evidence-supported inference from actual boots/replacements, not an anti-clone guarantee or all-platform certification.
 
-Retained MP001/002 are reachable outage IO paths explicitly deferred DEC015, not fixed. MP003/004 source Update/Remove remain reachable with independent deletion/current-source links and AGY semantics. MP005's dependency failure is resolved at API003 native scope. MP006 normal boot failure is resolved at API004 stated scope; MP007 successful-running Stop and MP008 already-failed Stop/no new intent retain distinct controls and policy=no veto. Their full earlier witnesses remain in review history; no concurrent contradictory-action guarantee added. No Not-Reachable premise drives machinery. A hypothetical released-predecessor migrator is not selected without actual deployment evidence.
+MP001/002 remain reachable outage IO explicitly deferred DEC015; MP003/004 independent source deletion/current links unchanged. MP005 dependency fix, MP006 reboot fix and MP009 freshness now retain their independent scoped closures; MP007/008 Stop distinctions and MP010 exact-owned config lifecycle remain. No unsupported/Not-Reachable premise drives new machinery. Hypothetical supported old deployments are not established by schema existence; no migrator is selected. Evidence of an actual retained supported install must resolve its transition before that cutover, rather than being guessed safe.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
-**None blocking architecture handoff.** Corrected public-command/native+managedHTTP/mode validation is not yet performed. This is an implementation/validation obligation, not missing intended behavior. If actual retained supported deployments or failure of the selected correction appear, return evidence to Solution Designer rather than invent compatibility or relax5s. FUP001 PM custody and separate peer-NAT/access limits remain.
+**None blocking architecture handoff.** Public corrected Mac lifecycle and remaining qualification are downstream implementation/validation obligations, not ambiguous approved intent. If actual deployment evidence or current-product failure contradicts this choice, return it to Solution Designer; do not silently weaken replacement protection or narrow the platform. FUP001/access prerequisites unchanged.
 
 ## Review Decision
 
-**Pass — ARCH-REV-006 / Ready SR022 / unchanged Approved SR018.** The bounded backend policy and lifecycle verification design is implementation-ready. It does **not** close CR006/API-F004 or change CRR010/API004 verdicts.
+**Pass — ARCH-REV-007 / Ready SR023 / unchanged Approved SR018.** Bounded persistent identity, trusted capture and bind-once lifecycle design is implementation-ready. This does **not** close CR007/API-F005 or replace CRR012/API005 verdicts.
 
 ## Findings
 
 **No new blocking findings.**
 
-- **CR006/API-F004:** design recovery accepted; implementation/source/API closure pending.
-- **CR005/API-F003:** independently resolved at API004 Linux arm64 Docker-storage/managed-client two-boot/control scope; preserve regression coverage, do not reopen as this failure.
-- **CR001–004/API-F001/F002:** retain independently recorded scopes, not all-mode qualification.
-- **D001:** deferred/not repaired; **IMP-D001:** current-source/private-profile/AGY policy unchanged.
+- CR007/API-F005: design recovery accepted; implementation/source/API closure pending.
+- CR006/API-F004: independently resolved at API005 Linux native+Docker STORAGE/native+managedHTTP scope only.
+- CR005/API-F003 and CR001–004: retain independently recorded scopes, no reopening.
+- D001: deferred/not repaired. IMP-D001: current-source/private-profile/AGY policy preserved.
 
-Prior-finding resolutions are recorded in ARCH-REV-006. No downstream report rewrite, invented score or renumbering.
+Prior-finding resolutions are in ARCH-REV-007; no renumbering or downstream report rewrite.
 
 ## Classification
 
-**Pass**, Large/High retained. No new Design Impact, Requirement Gap or Unclear blocker. No changed approval, security policy, writer/platform narrowing or migration obligation.
+**Pass**, Large/High retained. No new Design Impact, Requirement Gap or Unclear blocker; no new behavior/security/migration obligation.
 
 ## Recommended Recipient
 
-Exact primary implementation recipient selected by fresh handoff rules, with the complete cumulative package and this review. No delegation/spawning or duplicate API dispatch. Any informational notification must follow the applicable routing rule, not trigger duplicate forwarding.
+Exact primary implementation recipient from fresh rules, with complete cumulative package. Personal work only; no delegation/spawning or duplicate API dispatch. Informational Solution Designer notice only under the applicable post-primary-success rule; not duplicate forwarding authority.
 
 ## Residual Risks
 
-- A/B/A is designer-run native same-kernel dependency feasibility only. Default/restored phases miss5s in6s windows; candidate first exact reads0.001–0.927s do not certify independent peers, Docker STORAGE, Mac or actual managed HTTP.
-- API-F004 FIRST after implementation/source review: corrected public setup/reconnect, unique warmed1KiB/1MiB source fsync/close, fresh native and actual managedHTTP reads, exact bytes and <=5s per reader, actual loaded config/CLI/package/image/mount/source/private identities. No manual config/cacheflush/remount workaround. Continue atomic replace/create/delete/rename/symlink and existing bidirectional ACs.
-- Expiry0 costs additional backing metadata calls. Correctness-first tradeoff is explicit; no throughput guarantee or new performance project. Disk equality is not hot loaded-policy proof.
-- Keep ordinary reboot/Stop/currentpolicy=no/unselected/replacement/drained-detach regressions, no60s boot SLA. Existing no-op Stop on already-failed node is not durable cancellation; no private veto or policy rewriting.
-- Whole remaining bothOSnative+managedclients/LinuxnativeDockerstorage/independentphysical/actualnativetools+unreadlinkedassets+peerclose+restore/Standalone-Team-Org/completedartifact+healthy previews gates remain. Successful af9f23 test-code review still awaits a passed package.
-- Nativeamd64 engine/hostedworkflow/signing/publicbootstrap/docs/userverification/finalization/authorizedrelease remain unqualified. Empty release qualification and Guide unavailable state stay truthful. No release/merge/push/tag/TaskDone claim.
-- DEC015 hard-NFS process stalls, trusted-LAN plaintext/coarse trust and source-availability limits remain disclosed; IMP-D001/FUP001/peer-NAT/access questions unchanged.15 retained artifacts and five preexisting dist trees untouched. No reviewer live resources require cleanup.
+- **API-F005 FIRST after implementation and selected source review:** current PUBLIC nativeMac create, >=2 ordinary whole-host boots (more if needed to witness actual raw-device change), automatic mounted nonroot RW before any manual reconnect/repair; separately public reconnect and real directory/volume replacement refusal. Retain original bytes/marker/identity/modes/private config and actual installed CLI/job/export/mount proof. No synthetic identity edits, manual repair or helper substitution.
+- Prototype is no-cgo arm64 dependency execution on one Mac26.6.2/25G83 guest. amd64 compile is not execution; same-volume public clones do not establish global UUID uniqueness. Replacement and symlink controls are limited to their actual helper/comparison scope. Private/OS-permission refusal still needs product coverage.
+- Implement the specified parser, not a blind probe copy: complete single plist/dict, unique typed keys, bounded accepted input, trailing-data refusal, valid nonzero UUID and exact device/mount/filesystem correlation; recheck observation and close fd on every exit. Probe success is not adversarial parser coverage. The1MiB accepted-payload bound is not a newly promised global process memory/time deadline for existing Commands.
+- One trusted diskutil query per capture adds observed0.0788–0.7405s dependency cost, not a restart SLA. No cache/global enumeration/runner overhaul or hostile administrator atomic-mount guarantee justified.
+- Focused durable tests must cover existing/new/unbound/complete/stale-flag/partial/old binding, save-before-later-failure, no stored mutation on mismatch, no backend/mount effects after refusal, plus Linux pair/path/nonroot regressions and fd/parser controls. Current Apple strict variants cannot silently adopt old bound state.
+- Preserve proportionate Linux freshness and ordinary reboot/Stop/policy-no/unselected/replacement/detach regressions. Keep full remaining bothOSnative+managedclients/LinuxnativeDockerstorage/independentphysical/nativeactualtools+unreadlinkedassets+peerclose+restore/Standalone-Team-Org/completedartifact+healthy previews gates. af9f23 successful test-code review still awaits a passed API package.
+- Nativeamd64 engine/hostedworkflow/signing/publicbootstrap/docs/userverification/finalization/authorizedrelease remain unqualified. Empty release qualification/Guide unavailable stay truthful. D001/DEC015, IMP-D001, FUP001 PMcustody, trusted-LAN/privateLAN/peerNAT/profile/inference prerequisites unchanged. No release/merge/push/tag/TaskDone/user-verification claim.
+- No reviewer live resource requires cleanup; upstream exact-owned cleanup Complete, five old dist trees untouched. Reviewer audit timestamp assertion correction is recorded, not hidden as product evidence.
 
 ## Latest Authoritative Result
 
-- Review Decision: **Pass — ARCH-REV-006 / Ready SR022 / Approved SR018**.
-- Material-Premise Gate: **Pass** — supported source publishing and exact-owned lifecycle contract ground the bounded changes.
-- Notes: CR006 design accepted, public correction unproved. CRR010 Fail/API004 Fail57.14% remain authoritative. Reviewer changed only review/history/evidence; no product execution or release claim.
+- Review Decision: **Pass — ARCH-REV-007 / Ready SR023 / Approved SR018**.
+- Material-Premise Gate: **Pass** — supported ordinary boot and established retry/source-preservation contracts ground the correction.
+- Notes: CR007 design accepted, corrected public product unproved. **CRR012 Fail / API005 Fail57.14% remain authoritative.** Reviewer changes only report/history/evidence; no source execution or release claim.
