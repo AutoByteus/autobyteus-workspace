@@ -59,6 +59,11 @@ func TestGaneshaPolicyAndPersistentRecovery(t *testing.T) {
 				t.Fatal(s)
 			}
 		}
+		export := strings.SplitN(s, "EXPORT {", 2)[1]
+		beforeClient := strings.SplitN(export, " CLIENT {", 2)[0]
+		if strings.Count(s, "Attr_Expiration_Time") != 1 || !strings.Contains(beforeClient, "Attr_Expiration_Time = 0;") {
+			t.Fatal("fresh source attributes require one EXPORT-level zero expiry", s)
+		}
 		if strings.Contains(s, "No_Root_Squash") || strings.Contains(s, "Clients = *") {
 			t.Fatal(s)
 		}

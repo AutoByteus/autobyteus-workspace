@@ -115,6 +115,28 @@ persisted READY flag. Healthy repeat/reconnect preserves the source UUID. Safe
 detach retains source/marker, named volumes and private recovery evidence; busy
 unmounts fail without force/lazy unmount.
 
+Owned native Linux and Linux Docker Ganesha exports set
+`Attr_Expiration_Time = 0` at EXPORT level so fresh source attributes are not
+hidden behind the server's default cache window. Client hard NFSv4.1 mounts keep
+`actimeo=1`; Apple exports are unchanged. The healthy acceptance target is a
+fresh open seeing a synced/closed source write of up to 1 MiB within 5 seconds,
+not instant watcher notification or visibility through an already-open handle.
+
+Status verifies the hosted Ganesha configuration before reporting host readiness;
+it does not rewrite configuration or restart an engine. Detach checks an existing
+configuration before touching nodes, mounts, jobs or engines. Different or
+unreadable bytes are retained and refused. Missing configuration permits retry
+of an already-partial owned detach, but never readiness. Exact unit/container
+ownership checks and source/marker/recovery preservation still apply.
+
+There is no live configuration migration or hot-reload promise. For disposable
+older test setups, drain and detach with their matching candidate **before**
+installing the corrected candidate, then set up again against the preserved
+source and marker. Do not overwrite a different config or delete the source to
+get past refusal. Matching disk bytes alone do not prove a running daemon loaded
+a changed policy. Reuse of retained supported deployments would require a
+separately established transition, not this test-fixture procedure.
+
 Configured shared-workspace skills for Claude/Codex/Grok use execution-private
 **directory links**, not snapshots. Closing a peer removes only its own wrappers/
 links after native process close. Existing user-confirmed source Update/Remove

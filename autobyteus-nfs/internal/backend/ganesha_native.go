@@ -123,6 +123,17 @@ func VerifyGanesha(h config.HostedFilesystem, root string, container bool) error
 	return nil
 }
 
+// VerifyGaneshaForDetach permits an absent config after a partial owned teardown.
+// A present but unreadable/different file must fail before any teardown effects.
+func VerifyGaneshaForDetach(h config.HostedFilesystem, root string, container bool) error {
+	if _, err := os.Lstat(filepath.Join(root, "ganesha", "ganesha.conf")); os.IsNotExist(err) {
+		return nil
+	} else if err != nil {
+		return err
+	}
+	return VerifyGanesha(h, root, container)
+}
+
 // Remove only the still-matching generated config after stopping its engine.
 // Source files, persistent recovery state and logs remain owned by the operator.
 func RemoveGaneshaConfiguration(h config.HostedFilesystem, root string, container bool) error {

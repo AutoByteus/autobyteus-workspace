@@ -3,6 +3,8 @@ package setup
 import (
 	"errors"
 	"fmt"
+
+	"github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/backend"
 	"github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/config"
 	"github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/docker"
 	"github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/platform"
@@ -19,9 +21,14 @@ type Status struct {
 
 func (s *Service) Status() (Status, error) {
 	result := Status{Nodes: map[string]string{}, Limitation: "Hard NFS checks may stall; no outage deadline or local substitute"}
-	a, _, err := s.CheckConfiguration()
+	a, h, err := s.CheckConfiguration()
 	if err != nil {
 		return result, err
+	}
+	if h != nil && (h.Backend == "ganesha-native" || h.Backend == "ganesha-docker") {
+		if err = backend.VerifyGanesha(*h, s.Store.Directory, h.Backend == "ganesha-docker"); err != nil {
+			return result, err
+		}
 	}
 	var publicBinding config.Connection
 	if err = s.Public.Read("attachment.json", &publicBinding); err != nil {

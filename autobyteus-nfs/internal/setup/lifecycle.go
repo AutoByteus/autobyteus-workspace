@@ -86,6 +86,11 @@ func (s *Service) Detach(consented bool) error {
 	} else if err != nil {
 		return err
 	}
+	if h != nil && (h.Backend == "ganesha-native" || h.Backend == "ganesha-docker") {
+		if err = backend.VerifyGaneshaForDetach(*h, s.Store.Directory, h.Backend == "ganesha-docker"); err != nil {
+			return err
+		}
+	}
 	if (len(a.Nodes) > 0 || (h != nil && h.Backend == "ganesha-docker")) && s.Docker == nil {
 		return errors.New("selected Docker daemon unavailable; cannot safely detach nodes")
 	}

@@ -37,6 +37,7 @@ NFSv4 {
 }
 EXPORT {
  Export_Id = 1;
+ Attr_Expiration_Time = 0;
  Path = "%s";
  Pseudo = "/autobyteus/%s";
  Protocols = 4;
