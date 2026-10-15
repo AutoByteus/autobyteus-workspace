@@ -731,3 +731,60 @@ The canonical [code-review-report.md](code-review-report.md) is authoritative fo
   `api_e2e_engineer_4b3516b0eb7d448586471bee29383f50`; accepted=true/DELIVERED,
   1488 cumulative references. Single most-specific primary source-Pass recipient
   only; no duplicate informational message, delegation or recipient polling.
+
+## CRR-014 — API007 unsaved editor refresh failure origin
+
+- 2026-10-15; canonical `code-review-report.md`; **API/E2E Failure-Origin Review**,
+  round14; implementation review scope **N/A**. Large/High/Reviewed unchanged.
+- Trigger API-REV-007 at f70912934b2a660a92574b777edc7e465a6d34df;
+  API-F007-UNSAVED, L02/L23, AC010 / REQ011 / BEH006 / SCN006 / IV-F05.
+- Authority **ApprovedSR025/DEC017**, technicalSR023/ARCH007/IR009;
+  ARCH008 applies historicalSR024 alignment, not a new SR025 review. Delivery N/A.
+- Prior review CRR013 source-only Pass100; current **Fail / CR008 / implementation-
+  owned Local Fix**. API007 remains Fail82.14%, broaderRequired and executed.
+  No new full structural audit or numeric scorecard; af9f23 successful-test review
+  remains pending. Acceptance-topology decision is settled, not reopened.
+- CAND019 promoted: explicit AC010 preservation obligation supports the unsaved
+  draft + peer commit edge within SCN006. No competing-save/merge promise, precise
+  race or guaranteed remote notification is assumed. Real public shared-file
+  modification and native-input/save control establish independent scenario proof;
+  the real-store test corroborates, not invents, that supported path.
+- Actual frontend flow: streamed modify → content invalidation/loading/refetch →
+  deep activeFileData watch replaces local draft; FileViewer passes committed
+  content to Monaco, so rendered model and subsequent Save argument are affected.
+- Baseline: eleven relevant production files byte-identical to ancestorf13bdd0e;
+  pre-existing implementation, not an IR009 regression. No separate baseline
+  runtime run claimed. **In-scope**, because active AC010/L23 fails without a fix;
+  not a follow-up merely because unchanged. Existing architecture/behavior already
+  requires preservation, so no Design Impact or Requirement Gap established.
+- Personally reran exact new+existing frontend suites in clean owned HOME/TMPDIR:
+  exit1, **3Pass/1Fail**. Peer event changes expected local draft Save argument to
+  peer committed bytes; no-peer and existing lifecycle controls pass. Childeditor/
+  GraphQL/persistence mocked; API's live current-build evidence separately proves
+  visible overwrite. No new live desktop/NFS or packet-level proof by reviewer.
+- Prior review gap: unconditional draft replacement and store-content editor input
+  were statically visible against AC010; unchanged-path carry was insufficient.
+  Only affected preserved-behavior/correctness/readiness rationale reopened. Earlier
+  synthetic EditContext preservation is not proof against native-input failure.
+
+### Prior finding resolution
+
+| Finding | Prior | Current / evidence |
+| --- | --- | --- |
+| CR007 / API-F005 | CRR013 source correction accepted, API validation pending then | API006 executed native-Mac scoped resolution retained by API007; not independently reexecuted or expanded here |
+| CR001–006 | Scoped source/runtime resolutions | Retained; no new contrary evidence in this failure-origin boundary |
+| FUP001; D001/IMP-D001 | Prior custody/deferral/corrected scope | Unchanged; no duplicate follow-up or new machinery |
+
+- New/open finding **CR008 / API-F007-UNSAVED**; required outcome is actual draft
+  and Save preservation across refresh while clean readers retain fresh content.
+  No generalized merge framework, NFS policy change or unrelated editor redesign.
+- Evidence `code-review-evidence/crr-014/`: input provenance/50hashes, independently
+  executed log/result and runner. API007 raw live/save-control/source trace stay
+  linked in canonical report, with UI screenshot-tool-output limitation explicit.
+  All prior evidence remains in place; no legacy cumulative index recreated.
+- Runner first-root lookup error occurred before tests, corrected without product
+  changes. All50inputs unchanged during execution; own scratch removed, olddist
+  untouched. No source/durable-test edits, VM/app/mount/provider work or delegation.
+- Recommended recipient `/software_engineering_team/implementation_engineer`;
+  fresh rule governs sole handoff. Source review then affected API rerun and
+  successful-test review remain required after fix. No Delivery/TaskDone/release.
