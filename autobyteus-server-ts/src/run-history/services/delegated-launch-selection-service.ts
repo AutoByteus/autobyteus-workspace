@@ -51,7 +51,7 @@ const updateResult = (outcome: DelegatedLaunchUpdateOutcome, message: string, fi
 const errorMessage = (error: unknown): string => error instanceof Error ? error.message : String(error);
 
 /**
- * API entry for the user Stop and model choice of delegated copies and collaborators (DS-001,
+ * API entry for the user Stop and model choice of delegated copies (DS-001,
  * DS-002). It finds the root by kind and ID and routes: a live root runs the command itself; a
  * stopped root's manager saves the stored tree, together with the root's own settings (AR-004).
  * It never mutates a tree or touches a handle.

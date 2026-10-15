@@ -53,39 +53,54 @@ describe("approved AgentTeam collaboration LLM contract", () => {
       delegateReferences: sha256(DELEGATE_TASK_REFERENCE_FILES_DESCRIPTION),
       collaborationPrompt: sha256(AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION),
     }).toEqual({
-      sendTool: "c9968c5dc5ad2ca6999d36b5a284df3cbc27202da144ca2d1ea5ff829d53972b",
-      sendRecipient: "b9c340525eb1af6c31faaa12c1cb8ccb18d7110cec8577bef85df196dfd0b801",
+      sendTool: "e86152fe7f9ea53242d34371bf081113643187a5128888755a045ed2e7ab1393",
+      sendRecipient: "ffd63b769bf57f6a959e82fcb0f3669f3ce606513a214fdffde571cb011d0c06",
       sendExactRun: "62e7add6181c1521f41ddaad05b9a87a0d3320f673bf6fc4bd851d4d9f9dc1c4",
-      delegateTool: "4de7936767fb1acd82a1c39f1f407ae0647159e9ed41b7e250bdeb615cbd4e82",
-      delegateRecipient: "1b715bcac89ebc4a77e7fda6b63397b940358cd0a17f91317b26419909e43af5",
+      delegateTool: "fe83fb24df74e83c8fba534feadf52fa695683d6682a85ddd81468ee55db8a8a",
+      delegateRecipient: "c995523a24656245ec0f9290b77128a44ea91cc51f664e40027e8d1c74aeddd0",
       delegateDescription: "a2165576362e49586aef4ccef6338288d5ba865fd50363d1fd65494b173ca49a",
       delegateReferences: "43d07f7e31b5b6f03e0327fa89f427fb70dc5da6a91ec098a3430cd56ccb2533",
-      collaborationPrompt: "35aa83224ee028cdf86f1a484d1aacb8791aa546408b5f4f60edb3587be92f62",
+      collaborationPrompt: "efc500b6232d659d1ef8f7e4317eef3f6273be9e68068e51fe4ba1424b786680",
     });
   });
 
   it("describes the one instance at an address, a new copy per address delegation, and agent-run-ID follow-up (REQ-009)", () => {
     const prompt = AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION;
-    expect(prompt).toContain("`send_message_to` reaches the one instance at an address, brought in on first use.");
+    expect(prompt).toContain("`send_message_to` reaches the one instance at an address in your run and never creates a run.");
     expect(prompt).toContain("`delegate_task` with an address spawns a new copy of an Agent or AgentTeam for new work;\nwith a copy's own ID it gives a new saved Task to that existing copy.");
     expect(prompt).toContain("that Team instance's coordinator");
     expect(prompt).toContain("Inside your own team instance, a teammate's address reaches the member of\n  that same instance.");
-    expect(prompt).toContain("A run ID\n  never brings anything in.");
+    expect(prompt).toContain("An address that is not in your run is not found. To give work to an outside\n  Agent or AgentTeam, use `delegate_task`, then message the copy by its run ID.");
     expect(prompt).toContain("### Delegated Agents");
     expect(prompt).toContain("Message a copy only through `send_message_to` with an agent run ID: its\n`target_agent_run_id`, or for a Team copy its `target_team_coordinator_agent_run_id`");
     expect(prompt).toContain("A copy that stays quiet is shut down after a while, but not\nwhile it has a running background task; a message to it restores it with its\nconversation");
     expect(prompt).toContain("including a\n  shut-down delegated agent");
     expect(prompt).not.toMatch(/submit_task_result|review_task_result|Task Lifecycle|not_started|live-only|always spawns/);
+    // AC-008: no text on any runtime says a message brings an agent in or starts it.
+    for (const text of [prompt, SEND_MESSAGE_TO_LLM_DESCRIPTION, SEND_MESSAGE_TO_RECIPIENT_ADDRESS_DESCRIPTION, DELEGATE_TASK_LLM_DESCRIPTION]) {
+      expect(text).not.toMatch(/brought in|brings? (it |them )?in|on first use|bring-in/i);
+    }
     expect(prompt).not.toMatch(/REQ-|DEC-|TODO|TBD/);
     expect(SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION).toContain("shut-down delegated agent");
     expect(SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION).not.toContain("live-only");
     expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("restored with its conversation");
-    expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("brought in on first use");
+    expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("send_message_to never creates a run:");
+    expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("use delegate_task first, then message the copy by its run ID.");
     expect(SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION).toContain("a run ID never brings anything in");
     expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("On failure delegated is false\nand message explains why; nothing was started.");
     // A description-only delegation that creates a Task returns its task_id; no text tells the agent how to close it (AC-001).
     expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("that creates a\nTask also returns its task_id.");
     expect(prompt).toContain("A description-only delegation that creates a Task also returns its\n  `task_id`.\n");
+  });
+
+  it("states the two-relationship model: message inside the run, delegate outside, never bring in or delegate to your own team (AC-008)", () => {
+    for (const text of [SEND_MESSAGE_TO_LLM_DESCRIPTION, DELEGATE_TASK_LLM_DESCRIPTION, AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION]) {
+      expect(text).not.toMatch(/brought in on first use|a collaborator|bring(s)? .{0,20} in/i);
+    }
+    expect(SEND_MESSAGE_TO_RECIPIENT_ADDRESS_DESCRIPTION).toContain("An address that is not in your run is not found (messaging never creates a run): use delegate_task for an outside Agent or AgentTeam.");
+    expect(DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION).toContain("Delegating to yourself, a teammate or your own team is refused: use send_message_to.");
+    expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("Delegating to yourself, a teammate or your own team is refused: use send_message_to");
+    expect(AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION).toContain("Never delegate to yourself, a teammate or your own team:");
   });
 
   it("names no task tool anywhere: closing and reopening guidance lives only in update_task's description (AC-001, AC-004, AC-005)", () => {

@@ -71,14 +71,8 @@ export declare const teamTaskExecutionsReopenedPayloadSchema: z.ZodObject<{
     }, z.core.$strict>]>>;
 }, z.core.$strict>;
 export type TeamTaskExecutionsReopenedPayload = TeamTaskExecutionsClosedPayload;
-/** A collaborator entry was committed at the root; it precedes any task execution at its address. */
-export declare const teamCollaboratorAddedPayloadSchema: z.ZodObject<{
-    change_sequence: z.ZodNumber;
-    collaborator: z.ZodType<import("./team-execution-view-dtos.js").CollaboratorEntryDto, unknown, z.core.$ZodTypeInternals<import("./team-execution-view-dtos.js").CollaboratorEntryDto, unknown>>;
-}, z.core.$strict>;
-export type TeamCollaboratorAddedPayload = Readonly<z.infer<typeof teamCollaboratorAddedPayloadSchema>>;
 /**
- * The user's model choices of these delegated copies or collaborators were saved on the live run
+ * The user's model choices of these delegated copies were saved on the live run
  * (DS-001). Each names one record by its run ID (unique in the tree) with its choice as now recorded.
  */
 export declare const teamDelegatedLaunchSelectionsChangedPayloadSchema: z.ZodObject<{

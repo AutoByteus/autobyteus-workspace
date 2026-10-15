@@ -37,11 +37,11 @@ const scopeOf = (
  * The one owner of a member's collaboration scope (CR-001), used by every root at construction
  * and restore. A member's scope comes from the authored unit its placement belongs to:
  * 1. a direct member of the non-root Team instance hosting it (configured or mounted Team,
- *    collaborator Team, ordinary or catalog copy — each TeamRun is prepared from its own source)
+ *    ordinary or catalog copy — each TeamRun is prepared from its own source)
  *    gets that instance's handoffs and Team instruction;
  * 2. a root-level member at a configured root placement (or a task copy at that address) gets the
  *    root's handoffs and instruction;
- * 3. anything else (a collaborator Agent, a catalog Agent copy, an Agent-root child outside a
+ * 3. anything else (a catalog Agent copy, an Agent-root child outside a
  *    Team instance, an Agent hosted by a Team it is not a member of) gets none.
  * `hostTeam` is absent for Agents hosted directly by an Org or Agent root.
  */

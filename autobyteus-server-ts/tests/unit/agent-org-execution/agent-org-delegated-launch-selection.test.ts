@@ -1,9 +1,8 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { AgentOrgExecutionIndex } from "../../../src/agent-org-execution/services/agent-org-execution-index.js";
 import type { RunModelSelectionValidator } from "../../../src/llm-management/services/run-model-selection-service.js";
 import type { TaskAgentExecution, TaskTeamExecution } from "../../../src/run-history/domain/run-execution-tree-shared-records.js";
 import { buildOrg } from "./helpers/org-task-root-harness.js";
-import { bringIn, buildOrg as buildCollaboratorOrg, cleanupDirectories } from "./helpers/org-collaborator-harness.js";
 
 /**
  * DS-001 / DS-002 on a live AgentOrg root (real tree, persistence, task lifecycle and root
@@ -112,38 +111,5 @@ describe("AgentOrg delegated copy Stop and model choice", () => {
       .resolves.toMatchObject({ outcome: "VALIDATION_FAILED", fieldErrors: [expect.objectContaining({ path: "changes[0]" })] });
     await expect(f.owner.stopDelegatedExecution({ agentRunId: "director" })).resolves.toMatchObject({ outcome: "NOT_FOUND" });
     await expect(f.owner.stopDelegatedExecution({ teamRunId: "configured-team" })).resolves.toMatchObject({ outcome: "NOT_FOUND" });
-  });
-});
-
-describe("AgentOrg collaborator Stop and model choice", () => {
-  afterEach(cleanupDirectories);
-
-  it("stops a running collaborator with the copies it started, then saves its choice for its next activation", async () => {
-    const f = await buildCollaboratorOrg();
-    await bringIn(f.owner, "/code_reviewer", "director");
-    const [reviewer] = f.owner.getExecutionTreeSnapshot().rootOrg.collaborators;
-    if (reviewer?.kind !== "agent") throw new Error("collaborator was not added");
-    const hosted = f.handles.get(reviewer.agentRunId)!;
-    await hosted.handle.getOrCreateAgentRun();
-    const started = await f.owner.delegateToNewCopy({ identity: hosted.input.identity }, { recipient_address: "/target", description: "Draft it" });
-    if (!started.delegated || started.copy.kind !== "team") throw new Error("the collaborator's Team copy did not start");
-    const copyTeamRunId = started.copy.teamRunId;
-    expect(f.teams.get(copyTeamRunId)).not.toBeNull();
-
-    await expect(f.owner.updateDelegatedLaunchSelections([{ agentRunId: reviewer.agentRunId, selection: choice }], acceptingValidator()))
-      .resolves.toMatchObject({ outcome: "COPY_RUNNING" });
-
-    await expect(f.owner.stopDelegatedExecution({ agentRunId: reviewer.agentRunId })).resolves.toMatchObject({ outcome: "STOPPED" });
-    expect(hosted.finish).toHaveBeenCalled();
-    expect(hosted.handle.withActivationFence).toHaveBeenCalled();
-    // AR-002: the Team copy the collaborator started stops with it; the configured members keep running.
-    expect(f.teams.get(copyTeamRunId)).toBeNull();
-    expect(f.teams.get("configured-team")).not.toBeNull();
-
-    await expect(f.owner.updateDelegatedLaunchSelections([{ agentRunId: reviewer.agentRunId, selection: choice }], acceptingValidator()))
-      .resolves.toMatchObject({ outcome: "UPDATED" });
-    expect(hosted.handle.replaceModelChoice).toHaveBeenCalledWith(expect.objectContaining(choice));
-    const durable = (await f.executionTreeStore.read(f.orgMemoryDir, f.root.rootRunId))!;
-    expect(durable.rootOrg.collaborators[0]).toMatchObject({ userLaunchSelection: choice, launchConfiguration: reviewer.launchConfiguration });
   });
 });

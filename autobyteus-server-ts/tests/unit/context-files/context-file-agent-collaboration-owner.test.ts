@@ -39,12 +39,8 @@ const fixture = async () => {
   await put(path.join(hostDir, "collaboration", "collaboration_tree.json"), {
     subjectKind: "agent", createdAt: "2026-09-30T00:00:00.000Z",
     host: { address: "/assistant", agentRunId: "host", agentDefinitionId: "def" },
-    collaborators: [{
-      kind: "agent", address: "/code_reviewer", agentDefinitionId: "reviewer", agentRunId: "reviewer-run", platformAgentRunId: null,
-      launchConfiguration: testOrgLaunchConfiguration(),
-      addedAt: "2026-09-30T00:00:00.000Z", addedViaAgentRunId: "host",
-    }],
-    taskExecutions: [{ address: "/code_reviewer", agentRunId: "child", platformAgentRunId: null, delegatorAgentRunId: "host", startedAt: "2026-09-30T00:00:01.000Z" }],
+    taskExecutions: [{ address: "/code_reviewer", agentRunId: "child", platformAgentRunId: null, delegatorAgentRunId: "host", startedAt: "2026-09-30T00:00:01.000Z",
+      source: { kind: "agent", agentDefinitionId: "reviewer", launchConfiguration: testOrgLaunchConfiguration() } }],
   });
   await put(path.join(hostDir, "collaboration", "communication_messages.json"), { schemaVersion: 1, subjectKind: "agent", hostRunId: "host", messages: [] });
   // Startup admits current packages before any context-file access.

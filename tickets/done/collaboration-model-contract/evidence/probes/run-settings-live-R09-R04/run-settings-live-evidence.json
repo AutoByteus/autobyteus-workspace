@@ -1,0 +1,71 @@
+{
+  "startedAt": "2026-10-15T15:04:45.036Z",
+  "cases": {
+    "R09": {
+      "title": "S5 AC-019: Agent Run → New chat with Codex, Thinking Low and Fast; the two are independent; the run llmConfig is {reasoning_effort: low, service_tier: fast}; a first-send `@Scout` is admitted",
+      "result": "Fail",
+      "ms": 65239,
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"chat-model-list-codex_app_server\"]').locator('button[role=\"menuitemradio\"][data-test^=\"chat-model-option-\"][data-test=\"chat-model-option-gpt-5.6-luna\"]').first()\n",
+      "details": null
+    },
+    "R04": {
+      "title": "S1 AC-008 / SR-009: Agent \"+\" from the host run and from its delegated copy view → New chat for the agent on screen, prefilled",
+      "result": "Blocked",
+      "ms": 0,
+      "reason": "producer failed: R09"
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 53732
+    },
+    {
+      "label": "frontend",
+      "pid": 54077
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 54077,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 53732,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-v4vRxS"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-v4vRxS",
+  "backendUrl": "http://127.0.0.1:62051",
+  "frontUrl": "http://127.0.0.1:62052",
+  "definitions": {
+    "planner": "planner",
+    "drafter": "drafter",
+    "checker": "checker",
+    "scout": "scout",
+    "fragile": "fragile-helper",
+    "docsTeam": "docs-team",
+    "org": "docs-org",
+    "fragileOrg": "fragile-org"
+  },
+  "fastCandidates": [
+    "gpt-5.6-luna",
+    "gpt-5.6-sol",
+    "gpt-5.6-terra",
+    "gpt-6-astra",
+    "gpt-6-luna",
+    "gpt-6-sol",
+    "gpt-6.1-sol"
+  ],
+  "browserErrors": [],
+  "summary": {
+    "pass": 0,
+    "fail": 1,
+    "blocked": 1
+  },
+  "completedAt": "2026-10-15T15:06:28.500Z"
+}

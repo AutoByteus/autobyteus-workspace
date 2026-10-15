@@ -5,7 +5,7 @@ import type {
   FlatTeamMemberExecutionContext,
 } from "../flat-team-execution-context.js";
 
-/** Source nodes of a TeamRun's configured members (collaborator Agents live in their own registry). */
+/** Source nodes of a TeamRun's configured members. */
 export class FlatTeamMemberConfigResolver {
   constructor(private readonly teamContext: TeamRunContext<FlatTeamExecutionContext>) {}
 

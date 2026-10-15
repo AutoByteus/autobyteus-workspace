@@ -1,5 +1,4 @@
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
-import { messagePlacement } from "../../collaborators/message-recipient-resolution.js";
 import { dispatchTaskCopy, type TaskExecutionJoin } from "./root-task-dispatch.js";
 import { notACopyOfThisRun, resolveExistingCopy } from "./existing-copy-target.js";
 import { RootTaskExecutionResourceScope, asTaskDelegationError } from "./root-task-execution-resource-scope.js";
@@ -13,7 +12,6 @@ import { TaskExecutionLiveHolds } from "./task-execution-live-holds.js";
 import {
   TaskDelegationError,
   TaskDispatchIndeterminateError,
-  copyTargetOf,
   delegatedCopyOf,
   type AssignToExistingCopyInput,
   type SpawnTaskInput,
@@ -58,9 +56,6 @@ export type StoppedTaskExecutionsStep<T> =
   | Readonly<{ ran: true; value: T }>
   | Readonly<{ ran: false; running: readonly TaskExecutionReference[] }>;
 
-/** A Task's helper and, only when this call started it (or joined the attempt starting it), its launch notes. */
-export type TaskHelperResult = Readonly<{ target: TaskExecutionTarget; launchNotes?: readonly string[] }>;
-
 /**
  * Root-neutral resource lifecycle for delegated children (task executions) of
  * one root. It owns delegation admission, the serialized activation / wake /
@@ -72,7 +67,6 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
   private readonly schedule: TaskExecutionIdleShutdownSchedule;
   private accepting = true;
   private readonly resourceScope: RootTaskExecutionResourceScope<TPlacement>;
-  private readonly helperAttempts = new Map<string, Promise<TaskHelperResult>>();
   /** Live leases and user Stops in progress (SR-006). */
   private readonly holds = new TaskExecutionLiveHolds();
 
@@ -222,50 +216,11 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
 
   assertInputAllowed(agentRunId: string): void { this.resourceScope.assertInputAllowed(agentRunId); }
   assertMessageScope(sender: string, recipient: string): void { this.resourceScope.assertMessageScope(sender, recipient); }
-  /** The Task owning the copy that contains the agent, as an opaque key; `null` when unowned. */
-  taskOwnerOf(agentRunId: string): Readonly<{ taskId: string }> | null {
-    const owner = this.resourceScope.ownerOf(agentRunId);
-    return owner ? { taskId: owner.taskId } : null;
-  }
   releaseTaskExecutions(executions: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionStopResult[]> {
     return this.resourceScope.releaseTaskExecutions(executions);
   }
   /** Closed (Task DONE or CANCELLED) task executions of the root's current tree, for its package snapshot. */
   closedTaskExecutions(): readonly TaskExecutionReference[] { return this.resourceScope.closedTaskExecutions(); }
-
-  /**
-   * One seedless brought-in copy per Task/address among the Task's open helpers; rejects when it could not be
-   * started. Launch notes come only from this call's own dispatch (or the pending attempt it joined); an
-   * existing helper has none.
-   */
-  async ensureTaskHelper(context: TaskDelegationContext, address: string, placement: TPlacement): Promise<TaskHelperResult> {
-    const owner = this.resourceScope.ownerOf(context.identity.agentRunId);
-    if (!owner) throw new TaskDelegationError("TASK_AGENT_RESOURCES_UNAVAILABLE", "Helper bring-in requires a Task-owned sender.");
-    if (!owner.open) throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "The Task work for this agent run is closed (its Task is DONE or CANCELLED).");
-    const existing = this.adapter.taskExecutionAt(address, this.resourceScope.port().openTaskExecutions(owner.taskId, "broughtIn"));
-    if (existing) return Object.freeze({ target: existing });
-    const key = `${owner.taskId}:${address}`;
-    const pending = this.helperAttempts.get(key);
-    if (pending) return pending;
-    const attempt = dispatchTaskCopy({ adapter: this.adapter, queue: this.queue, context, placement,
-      join: { role: "broughtIn", creator: owner.execution }, resources: this.resourceScope.port(),
-      assertAdmitting: () => this.assertAdmitting(context.identity),
-    }).then((outcome) => {
-      if (!outcome.delegated) throw new Error(outcome.message);
-      return Object.freeze({
-        target: Object.freeze({ root: this.adapter.root, ...copyTargetOf(outcome.copy) }),
-        ...(outcome.launchNotes ? { launchNotes: outcome.launchNotes } : {}),
-      });
-    });
-    this.helperAttempts.set(key, attempt);
-    try { return await attempt; } finally { if (this.helperAttempts.get(key) === attempt) this.helperAttempts.delete(key); }
-  }
-
-  helperPlacement(taskId: string, address: string) {
-    const helper = this.adapter.taskExecutionAt(address, this.resourceScope.port().openTaskExecutions(taskId, "broughtIn"));
-    return helper ? messagePlacement("agentRunId" in helper.execution ? "agent" : "agent_team", address,
-      { agentRunId: helper.ingressAgentRunId, address }) : null;
-  }
 
   /** Actual input fence shared by all root facades: wakes the chain and holds it live for the operation. */
   async withLiveLease(agentRunId: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {

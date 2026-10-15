@@ -235,7 +235,7 @@ describe("AgentRunService termination", () => {
     expect(agentRunManager.terminateAgentRun).not.toHaveBeenCalled();
     expect(historyCatalogService.recordRunTerminated).toHaveBeenCalledOnce();
 
-    // A run that cannot host collaborators stops on the plain path.
+    // A run that cannot host delegated copies stops on the plain path.
     standaloneRuns.stopRoot.mockResolvedValueOnce(null);
     agentRunManager.getActiveRun.mockReturnValue({ runtimeKind: RuntimeKind.AUTOBYTEUS });
     await expect(service.terminateAgentRun("run-1")).resolves.toMatchObject({ success: true, route: "native" });

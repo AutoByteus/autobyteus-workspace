@@ -10,8 +10,8 @@ import { useDelegatedLaunchDraftStore } from '~/stores/delegatedLaunchDraftStore
 // runtime stores and leaf controls are replaced; the stale live view deliberately never changes.
 const mocks = vi.hoisted(() => ({ read: vi.fn(), mutate: vi.fn(), live: null as any, stored: null as any, active: false, schema: null as any }))
 const launch = () => ({ runtimeKind: 'codex_app_server', llmModelIdentifier: 'old', llmConfig: null, autoExecuteTools: false, workspaceRootPath: null })
-const snapshot = () => ({ execution_tree: { collaborators: [{ kind: 'agent', address: '/writer', agentRunId: 'copy',
-  agentDefinitionId: 'writer', launchConfiguration: launch(), addedAt: '2026-10-13T00:00:00.000Z' }], taskExecutions: [] }, closed_task_executions: [] })
+const snapshot = () => ({ execution_tree: { taskExecutions: [{ address: '/writer', agentRunId: 'copy', platformAgentRunId: null, delegatorAgentRunId: 'host',
+  startedAt: '2026-10-13T00:00:00.000Z', source: { kind: 'agent', agentDefinitionId: 'writer', launchConfiguration: launch() } }] }, closed_task_executions: [] })
 const choice = (id: string) => ({ llmModelIdentifier: id, displayName: id, canonicalName: id, providerName: 'test', configSchema: null })
 const options = () => ({ status: 'ready', options: { currentModelIdentifier: 'old', currentModel: choice('old'), replacements: [choice('new')], unavailableReason: null } })
 vi.mock('~/services/agentCollaboration/agentRunCollaborationHydration', () => ({ readAgentRunCollaboration: mocks.read }))
@@ -48,7 +48,7 @@ beforeEach(() => {
   mocks.read.mockImplementation(async () => structuredClone(mocks.stored))
   mocks.mutate.mockImplementation(async ({ changes }) => {
     for (const { key, selection } of changes) {
-      const entries = mocks.stored.execution_tree.collaborators.flatMap((e: any) => [e, ...(e.members ?? [])])
+      const entries = mocks.stored.execution_tree.taskExecutions.flatMap((e: any) => [e, ...(e.members ?? [])])
       const entry = entries.find((e: any) => key === `agent:${e.agentRunId}` || key === `team:${e.teamRunId}`)
       entry[key.startsWith('team:') ? 'userTeamLaunchSelection' : 'userLaunchSelection'] = { ...selection, selectedAt: '2026-10-13T01:00:00.000Z' }
     }
@@ -64,8 +64,8 @@ describe('stopped Agent same-view canonical saved rows', () => {
     await wrapper.get('[data-test="edit-/writer@copy"]').trigger('click'); await flushPromises()
     expect(row()).toBe('new:null')
     await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
-    expect(mocks.stored.execution_tree.collaborators[0].userLaunchSelection.llmModelIdentifier).toBe('new')
-    expect(mocks.live.execution_tree.collaborators[0].launchConfiguration.llmModelIdentifier).toBe('old')
+    expect(mocks.stored.execution_tree.taskExecutions[0].userLaunchSelection.llmModelIdentifier).toBe('new')
+    expect(mocks.live.execution_tree.taskExecutions[0].source.launchConfiguration.llmModelIdentifier).toBe('old')
     expect(row()).toBe('new:null')
     expect(useDelegatedLaunchDraftStore().dirty).toBe(false)
     expect(useExistingRunConfigStore().reconciliationRequired).toBe(false)
@@ -171,12 +171,16 @@ it('renders the refreshed canonical summary in real member rows and preserves th
 
 
 it('refreshes a Team selection and its follower, preserves own defaults and neighboring instances', async () => {
-  mocks.stored.execution_tree.collaborators.push({ kind: 'agent_team', address: '/team', teamRunId: 'team-copy',
-    teamDefinitionId: 'team', coordinatorAddress: '/team/lead', defaultLaunchConfiguration: launch(),
-    taskExecutions: [], handoffs: [], members: [
-      { address: '/team/lead', agentRunId: 'follower', agentDefinitionId: 'lead' },
-      { address: '/team/own', agentRunId: 'own', agentDefinitionId: 'own', launchConfiguration: { ...launch(), llmModelIdentifier: 'own-model' }, launchSource: { origin: 'agent_default', fallbacks: [] } },
-    ] })
+  const own = { ...launch(), llmModelIdentifier: 'own-model' }
+  mocks.stored.execution_tree.taskExecutions.push({ address: '/team', teamRunId: 'team-copy', delegatorAgentRunId: 'host', startedAt: '2026-10-13T00:00:00.000Z',
+    taskExecutions: [], members: [
+      { address: '/team/lead', agentRunId: 'follower', platformAgentRunId: null },
+      { address: '/team/own', agentRunId: 'own', platformAgentRunId: null },
+    ],
+    source: { kind: 'agent_team', teamDefinitionId: 'team', coordinatorAddress: '/team/lead', handoffs: [], defaultLaunchConfiguration: launch(), members: [
+      { address: '/team/lead', agentDefinitionId: 'lead' },
+      { address: '/team/own', agentDefinitionId: 'own', launchConfiguration: own, launchSource: { origin: 'agent_default', fallbacks: [] } },
+    ] } })
   const wrapper = mountEditor(); await flushPromises()
   await wrapper.get('[data-test="edit-/team@team-copy"]').trigger('click')
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()

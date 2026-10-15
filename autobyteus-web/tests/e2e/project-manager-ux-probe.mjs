@@ -159,8 +159,8 @@ const createDefinitions = async (label) => {
   const team = async (name, coordinatorMemberName, nodes) => (await gql('mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}',
     { input: { name, description: name, instructions: 'Deliver.', coordinatorMemberName, nodes } })).createAgentTeamDefinition.id;
   ids.squad = await team(names.squad, 'reviewer', [{ memberName: 'reviewer', ref: ids.worker, refScope: 'SHARED' }, { memberName: 'editor', ref: ids.helper, refScope: 'SHARED' }]);
-  ids.team = await team(names.team, 'manager', [{ memberName: 'manager', ref: ids.manager, refScope: 'SHARED' },
-    { memberName: 'worker', ref: ids.worker, refScope: 'SHARED' }, { memberName: 'helper', ref: ids.helper, refScope: 'SHARED' }]);
+  // A Team root delegates only outside its own Team (collaboration-model-contract): its worker and helper are catalog Agents, not members.
+  ids.team = await team(names.team, 'manager', [{ memberName: 'manager', ref: ids.manager, refScope: 'SHARED' }]);
   ids.org = (await gql('mutation($input:CreateAgentOrgDefinitionInput!){createAgentOrgDefinition(input:$input){id}}',
     { input: { name: names.org, description: 'Org root', instructions: 'Deliver.', handoffs: [], members: [
       { memberName: 'manager', ref: ids.manager, refType: 'AGENT', refScope: 'SHARED' },
@@ -186,7 +186,7 @@ const createRoot = async (kind, ids) => {
   }
   if (kind === 'team') {
     const r = (await gql('mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}',
-      { input: { teamDefinitionId: ids.team, teamConfigs: [{ teamAddress: '/', ...config() }], memberConfigs: ['manager', 'worker', 'helper']
+      { input: { teamDefinitionId: ids.team, teamConfigs: [{ teamAddress: '/', ...config() }], memberConfigs: ['manager']
         .map((m) => ({ memberAddress: `/${m}`, agentDefinitionId: ids[m], ...config() })) } })).createAgentTeamRun;
     assert(r.success, r.message);
     const tree = (await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: r.teamRunId })).getTeamRunResumeConfig.executionTree;
@@ -387,7 +387,7 @@ const teamAndOtherHosts = async () => {
       const root = await createRoot(kind, s.ids);
       const input = await managerInput(root);
       const taskId = await createTask(s.projectId, `Hosted by an Agent ${kind === 'team' ? 'Team' : 'Org'} run`);
-      input.send(callTool('delegate_task', { recipient_address: '/worker', task_id: taskId }));
+      input.send(callTool('delegate_task', { recipient_address: kind === 'team' ? `/${segment(s.names.worker)}` : '/worker', task_id: taskId }));
       await until(`${kind}-hosted root started`, async () => (await rootOf(s.projectId, taskId))?.start === 'started', 60000);
       const hosted = await rootOf(s.projectId, taskId);
       await goto(page, `/projects/${s.projectId}`);
@@ -736,49 +736,14 @@ const tempReactivationAndChatDeletion = async () => {
   } finally { input.close(); }
 };
 
-/** AC-007 rendered from a real start failure: a Team member configured with a model its runtime does not offer. */
-const couldntStartRendered = async () => {
-  const { ids, names } = await createDefinitions('PmuFail');
-  const r = (await gql('mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}',
-    { input: { teamDefinitionId: ids.team, teamConfigs: [{ teamAddress: '/', ...config() }], memberConfigs: ['manager', 'worker', 'helper']
-      .map((m) => ({ memberAddress: `/${m}`, agentDefinitionId: ids[m], ...config(), ...(m === 'worker' ? { llmModelIdentifier: 'pmu-no-such-model' } : {}) })) } })).createAgentTeamRun;
-  assert(r.success, r.message);
-  const tree = (await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: r.teamRunId })).getTeamRunResumeConfig.executionTree;
-  const root = { kind: 'team', rootId: r.teamRunId, managerRunId: tree.root_team.members.find((m) => m.address === '/manager').agent_run_id };
-  const input = await managerInput(root);
-  const projectId = await createProject(`Start Failure ${randomUUID().slice(0, 6)}`);
-  const taskId = await createTask(projectId, 'Translate the notes.');
-  const { page, errors } = await newPage();
-  try {
-    await goto(page, `/projects/${projectId}`);
-    await row(page, taskId).waitFor({ timeout: 30000 });
-    input.send(callTool('delegate_task', { recipient_address: '/worker', task_id: taskId }));
-    const failed = await until('Couldn\'t start arrives live', async () => { const s = await rootState(page, taskId); return s?.state === 'failed' ? s : null; }, 60000);
-    assert(failed.openable === 'false' && failed.tag === 'DIV', 'not openable', failed);
-    const statusText = await row(page, taskId).getByTestId('project-task-root-status').innerText();
-    const tooltip = await rootLine(page, taskId).getAttribute('title');
-    const color = await row(page, taskId).getByTestId('project-task-root-status').evaluate((e) => getComputedStyle(e).color);
-    assert(/Couldn.t start/.test(statusText) && /AGY_MODEL_UNAVAILABLE/.test(tooltip ?? ''), 'red Couldn\'t start with the reason as tooltip', { statusText, tooltip, color });
-    assert((await columnOf(page, taskId)) === 'project-task-column-TODO', 'the Task stays in its column');
-    await shot(page, 'pmu-010-board-couldnt-start');
-    await row(page, taskId).getByTestId('project-task-row-link').click();
-    const reason = await page.getByTestId('project-task-root-error').innerText({ timeout: 30000 });
-    assert(/AGY_MODEL_UNAVAILABLE/.test(reason), 'reason under the row on the Task page', { reason });
-    assert(await page.getByTestId('task-page-root-help').count() === 0, 'no help line for a failed root');
-    await shot(page, 'pmu-010-task-page-couldnt-start');
-    // Re-delegation replaces it (live on the open Task page).
-    input.send(callTool('delegate_task', { recipient_address: '/helper', task_id: taskId }));
-    const replaced = await until('re-delegated root replaces it', async () => {
-      const line = page.getByTestId('task-page-assigned').locator('[data-testid^="project-task-root-"][data-openable]');
-      const state = (await line.getAttribute('data-testid').catch(() => ''))?.replace('project-task-root-', '');
-      return ['idle', 'running'].includes(state) && (await line.getAttribute('data-openable')) === 'true' ? state : null;
-    }, 60000);
-    assert(await page.getByTestId('project-task-root-error').count() === 0, 'no stale reason after re-delegation');
-    await shot(page, 'pmu-010-task-page-redelegated');
-    assertNoBrowserErrors(errors);
-    return { failed, statusText, tooltip, color, reason, replaced };
-  } finally { input.close(); }
-};
+/**
+ * AC-007 (Couldn't start rendered from a real start failure) lost its only trigger in collaboration-model-contract: it needed a Team
+ * member configured with a model its runtime does not offer and then delegated by its own manager, and a Team member can no longer
+ * be delegated to; an Org refuses an unavailable model at run creation, and a catalog copy falls back to the root's model or is
+ * refused before it starts. The rendering is covered by ProjectTaskWorkers.spec.ts, taskRootPresentation.spec.ts and
+ * projectLiveChanges.spec.ts; the server side by the task-execution unit tests.
+ */
+const couldntStartRendered = async () => ({ skipped: 'No deterministic real start failure remains for a delegated copy (collaboration-model-contract); rendering is unit-covered' });
 
 /** Two windows on the same node follow the same write live (feed fan-out). */
 const twoWindows = async () => {
@@ -1082,7 +1047,7 @@ const projectsTabOtherRootsAndNarrow = async () => {
       const taskId = await createTask(projectId, `Work hosted by the ${kind} run`);
       const root = await createRoot(kind, ids);
       const input = await managerInput(root); inputs.push(input);
-      input.send(callTool('delegate_task', { recipient_address: '/worker', task_id: taskId }));
+      input.send(callTool('delegate_task', { recipient_address: kind === 'team' ? `/${segment(names.worker)}` : '/worker', task_id: taskId }));
       await until(`${kind}: worker started`, async () => (await rootOf(projectId, taskId))?.start === 'started', 60000);
       // Open the root's conversation the way a user does: from the left panel.
       await goto(page, '/workspace');

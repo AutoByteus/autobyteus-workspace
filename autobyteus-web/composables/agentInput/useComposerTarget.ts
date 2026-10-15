@@ -30,7 +30,7 @@ export interface ComposerTarget {
   /** Owner under which draft uploads are stored, or null when uploads are not allowed. */
   readonly draftOwner: DraftContextFileOwnerDescriptor | null;
   readonly access: ComposerTargetAccess;
-  /** The live run `@` brings collaborators into; absent for launch drafts and read-only views. */
+  /** The live run `@` involves other units in; absent for launch drafts and read-only views. */
   readonly mentionScope?: RunMentionScope | null;
   send(): Promise<void>;
   interrupt?(): Promise<void> | void;

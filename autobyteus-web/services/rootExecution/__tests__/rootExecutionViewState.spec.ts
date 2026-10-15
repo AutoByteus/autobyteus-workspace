@@ -25,7 +25,6 @@ const view = (): AgentOrgExecutionViewDto => ({
     applicationBinding: null,
     handoffs: [],
     rootOrg: {
-      collaborators: [],
       address: '/',
       orgDefinitionId: 'org-def',
       orgDefinitionName: 'Org',

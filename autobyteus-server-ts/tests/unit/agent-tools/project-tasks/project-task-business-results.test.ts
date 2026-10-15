@@ -59,7 +59,7 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
     await tasks.markFailed({ teamRunId: "failed-team" }, { code: "TASK_DISPATCH_FAILED", message: "Internal dispatch detail" });
     await assigned({ agentRunId: "starting-agent" }, "agent_org");
     await tasks.linkNewTaskExecution({ role: "delegated", creator: { agentRunId: "accepted-agent" }, hostRoot: root("agent"), execution: { agentRunId: "internal-delegate" } });
-    await tasks.linkNewTaskExecution({ role: "broughtIn", creator: { agentRunId: "accepted-agent" }, hostRoot: root("agent"), execution: { agentRunId: "owned-helper" } });
+    await tasks.linkNewTaskExecution({ role: "delegated", creator: { agentRunId: "accepted-agent" }, hostRoot: root("agent"), execution: { agentRunId: "owned-helper" } });
 
     const native = JSON.parse(await new ListProjectTasksTool().execute(null, { project_id: projectId }));
     expect((await mcp("list_project_tasks", { project_id: projectId })).structuredContent).toEqual(native);

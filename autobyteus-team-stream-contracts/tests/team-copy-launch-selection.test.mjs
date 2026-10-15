@@ -1,7 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
-  collaboratorEntryDtoSchema,
   parseTeamStreamServerMessage,
   taskAgentExecutionDtoSchema,
   taskTeamExecutionDtoSchema,
@@ -13,7 +12,7 @@ const claude = { runtime_kind: "claude_agent_sdk", llm_model_identifier: "opus",
 const sonnet = { llm_model_identifier: "sonnet", llm_config: { thinking: "low" }, selected_at: "2026-10-13T00:00:00.000Z" };
 const haiku = { llm_model_identifier: "haiku", llm_config: null, selected_at: "2026-10-13T00:00:00.000Z" };
 
-test("copy and collaborator DTOs carry optional user choices; malformed ones are refused", () => {
+test("copy DTOs carry optional user choices; malformed ones are refused", () => {
   const agent = { kind: "task_agent", address: "/ie", agent_run_id: "ie", platform_agent_run_id: null, delegator_agent_run_id: "pm",
     started_at: "t", user_launch_selection: haiku };
   assert.deepEqual(taskAgentExecutionDtoSchema.parse(agent), agent);
@@ -21,9 +20,6 @@ test("copy and collaborator DTOs carry optional user choices; malformed ones are
     members: [{ kind: "task_team_agent", address: "/se/lead", agent_run_id: "l", platform_agent_run_id: null, user_launch_selection: haiku }],
     user_team_launch_selection: sonnet };
   assert.deepEqual(taskTeamExecutionDtoSchema.parse(team), team);
-  const entry = { kind: "agent", address: "/r", agent_definition_id: "r", agent_run_id: "r", platform_agent_run_id: null,
-    launch_configuration: claude, added_at: "t", added_via_agent_run_id: "pm", user_launch_selection: sonnet };
-  assert.deepEqual(collaboratorEntryDtoSchema.parse(entry), entry);
   assert.throws(() => taskAgentExecutionDtoSchema.parse({ ...agent, user_launch_selection: { llm_model_identifier: "x", llm_config: null } }));
   const { user_launch_selection: _omitted, ...older } = agent;
   assert.deepEqual(taskAgentExecutionDtoSchema.parse(older), older);

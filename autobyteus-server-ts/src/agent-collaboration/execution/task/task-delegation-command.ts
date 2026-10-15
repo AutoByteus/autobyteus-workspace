@@ -13,7 +13,7 @@ export type AssignToExistingCopyInput = Readonly<{ copy: TaskExecutionReference;
 
 /**
  * What dispatch reads from a root's placement: the launch notes of a fresh catalog admission (DS-003).
- * Structural, so task execution never depends on collaborator admission.
+ * Structural, so task execution never depends on catalog admission.
  */
 export type TaskCopyPlacementLaunchNotes = Readonly<{ launchNotes?: readonly string[] }>;
 

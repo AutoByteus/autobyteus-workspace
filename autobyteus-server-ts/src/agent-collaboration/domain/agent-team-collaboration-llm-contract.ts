@@ -23,11 +23,11 @@ export const SEND_MESSAGE_TO_LLM_DESCRIPTION = lines(
   "address, or target_agent_run_id for one exact AgentRun. An Agent address",
   "reaches that Agent's instance; an AgentTeam address reaches that Team",
   "instance's coordinator; inside your own team instance, a teammate's address",
-  "reaches the member of that same instance. An available agent or team that is",
-  "not yet in the run is brought in on first use, and later messages reach that",
-  "same instance. A run ID reaches an existing AgentRun only, including a",
-  "shut-down delegated agent (restored with its conversation), and never brings",
-  "anything in. target_agent_run_id takes agent run IDs only: to message a Team copy, use",
+  "reaches the member of that same instance. send_message_to never creates a run:",
+  "an address that is not in your run is not found; to give work to an outside",
+  "Agent or AgentTeam, use delegate_task first, then message the copy by its run ID.",
+  "A run ID reaches an existing AgentRun only, including a",
+  "shut-down delegated agent (restored with its conversation). target_agent_run_id takes agent run IDs only: to message a Team copy, use",
   "its coordinator's ID (target_team_coordinator_agent_run_id from delegate_task); a team",
   "run ID is refused with the coordinator's ID to use. A copy whose Task is DONE or CANCELLED is",
   "stopped: the run that assigned it can continue that same Task with it by first moving the",
@@ -40,7 +40,7 @@ export const SEND_MESSAGE_TO_LLM_DESCRIPTION = lines(
 );
 
 export const SEND_MESSAGE_TO_RECIPIENT_ADDRESS_DESCRIPTION =
-  "Canonical absolute non-root Agent-or-AgentTeam address beginning with '/'. It reaches the one instance at that address: an Agent's instance, or an AgentTeam instance's coordinator; inside your own team instance, a teammate's address reaches the member of that same instance. An available agent or team that is not yet in the run is brought in on first use. Provide either recipient_address or target_agent_run_id, never both.";
+  "Canonical absolute non-root Agent-or-AgentTeam address beginning with '/'. It reaches the one instance at that address: an Agent's instance, or an AgentTeam instance's coordinator; inside your own team instance, a teammate's address reaches the member of that same instance. An address that is not in your run is not found (messaging never creates a run): use delegate_task for an outside Agent or AgentTeam. Provide either recipient_address or target_agent_run_id, never both.";
 
 export const SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION =
   "Exact agent run ID (AgentRun.runId) to receive a work request, result, or blocker: any AgentRun in the same root, including a shut-down delegated agent (restored with its conversation before delivery), or a currently active AgentRun elsewhere. For a Team copy, use its coordinator's agent run ID (target_team_coordinator_agent_run_id); a team run ID is refused. A delegated copy whose Task is DONE or CANCELLED is reactivated only by the run that assigned it, after it moves the Task to TODO or IN_PROGRESS. Unknown run IDs are rejected; a run ID never brings anything in. Provide either target_agent_run_id or recipient_address, never both.";
@@ -53,8 +53,9 @@ export const DELEGATE_TASK_LLM_DESCRIPTION = lines(
   "to an existing copy you delegated in this run, named by its own ID (a Team copy by its team run",
   "ID, an Agent copy by its agent run ID). Never supply project_id. With an address, every call spawns",
   "another copy, so copies can work in parallel; recipient_address identifies what to copy: a",
-  "mounted Agent or AgentTeam, a collaborator, or an available agent or team that is not yet in the",
-  "run. An AgentTeam copy's coordinator receives the work. With a copy's ID, the copy resumes with its",
+  "mounted Agent or AgentTeam outside your own team, or an available agent or team that is not yet in",
+  "the run. Delegating to yourself, a teammate or your own team is refused: use send_message_to",
+  "with that address. An AgentTeam copy's coordinator receives the work. With a copy's ID, the copy resumes with its",
   "conversation and receives the Task's work as a message from you; use it for follow-up work that",
   "builds on what the copy already did. A copy has one current Task at a time: you can give it a new",
   "Task only if you made its most recent assignment and its current Task is DONE or CANCELLED; that",
@@ -74,7 +75,7 @@ export const DELEGATE_TASK_LLM_DESCRIPTION = lines(
 );
 
 export const DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION =
-  "For a new copy: exact canonical absolute non-root address beginning with '/' of the Agent or AgentTeam to copy: a mounted one, a collaborator, or an available agent or team. With an address, every call spawns a new copy; an AgentTeam copy's coordinator receives the work. Omit it when you give a Task to an existing copy with target_team_run_id or target_agent_run_id.";
+  "For a new copy: exact canonical absolute non-root address beginning with '/' of the Agent or AgentTeam to copy: a mounted one outside your own team, or an available agent or team. Delegating to yourself, a teammate or your own team is refused: use send_message_to. With an address, every call spawns a new copy; an AgentTeam copy's coordinator receives the work. Omit it when you give a Task to an existing copy with target_team_run_id or target_agent_run_id.";
 
 export const DELEGATE_TASK_TARGET_TEAM_RUN_ID_DESCRIPTION =
   "For an existing Team copy: the target_team_run_id an earlier delegate_task returned (the team run ID, not its coordinator's agent run ID). Supply only it and task_id. The copy gets that saved Task and resumes with its conversation; you must have made its most recent assignment, and its current Task must be DONE or CANCELLED.";
@@ -98,7 +99,7 @@ export const AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION = lines(
   WORK_REQUEST_EXECUTION_LLM_INSTRUCTION,
   "",
   "Choose the collaboration mode based on your primary intent.",
-  "`send_message_to` reaches the one instance at an address, brought in on first use.",
+  "`send_message_to` reaches the one instance at an address in your run and never creates a run.",
   "`delegate_task` with an address spawns a new copy of an Agent or AgentTeam for new work;",
   "with a copy's own ID it gives a new saved Task to that existing copy.",
   "Never use both to deliver the same work.",
@@ -114,12 +115,11 @@ export const AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION = lines(
   "  to that Team instance's coordinator.",
   "- Inside your own team instance, a teammate's address reaches the member of",
   "  that same instance.",
-  "- An available agent or team that is not yet in the run is brought in on",
-  "  first use; later messages to its address reach the same instance.",
+  "- An address that is not in your run is not found. To give work to an outside",
+  "  Agent or AgentTeam, use `delegate_task`, then message the copy by its run ID.",
   "- When an exact AgentRun ID is known, `target_agent_run_id` may instead",
   "  select that specific execution: any AgentRun in the same root, including a",
-  "  shut-down delegated agent, or a currently active AgentRun elsewhere. A run ID",
-  "  never brings anything in.",
+  "  shut-down delegated agent, or a currently active AgentRun elsewhere.",
   "",
   "A successful call returns the exact AgentRun that accepted the message as",
   "`target_agent_run_id`. For an AgentTeam recipient, this is its coordinator",
@@ -130,9 +130,10 @@ export const AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION = lines(
   "",
   "Use `delegate_task` with `recipient_address` to spawn a new copy of an Agent or",
   "AgentTeam for new work. The `recipient_address` identifies what to copy (a mounted",
-  "Agent or AgentTeam, a collaborator, or an available agent or team); it is not an",
+  "Agent or AgentTeam outside your own team, or an available agent or team); it is not an",
   "alias for the new copy. Every call with an address spawns another copy, so copies",
-  "can work in parallel.",
+  "can work in parallel. Never delegate to yourself, a teammate or your own team:",
+  "use `send_message_to` with that address.",
   "",
   "- Supply task_id alone for saved Task text/files, or description and optional reference_files without task_id.",
   "- The work description and reference files become the copy's first message,",

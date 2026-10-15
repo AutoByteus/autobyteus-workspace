@@ -94,7 +94,7 @@ const createRecordRepository = async (): Promise<AppDataMigrationRecordRepositor
 /** The migration exactly as the production registry constructs it from the configured agents directory. */
 const registeredMigration = (): AppDataMigrationDefinition => {
   const definitions = new AppDataMigrationRegistry().listDefinitions();
-  const definition = definitions.at(-1);
+  const definition = definitions.find((candidate) => candidate.id === MIGRATION_ID);
   expect(definition?.id).toBe(MIGRATION_ID);
   return definition!;
 };

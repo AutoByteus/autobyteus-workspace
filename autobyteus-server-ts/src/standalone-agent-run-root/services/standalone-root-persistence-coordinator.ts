@@ -15,9 +15,9 @@ export class StandaloneRootPersistenceFailStoppedError extends Error {
 
 /**
  * Serializes the Agent-root package writes. The package is created lazily: the first tree
- * commit (the first collaborator, or the first catalog copy started by `delegate_task`) writes
- * the messages file, then the tree, and then records the catalog flag. A run that never brings
- * anyone in never gets a package; listing writes nothing.
+ * commit (the first catalog copy started by `delegate_task`) writes
+ * the messages file, then the tree, and then records the catalog flag. A run that never delegates
+ * never gets a package; listing writes nothing.
  */
 export class StandaloneRootPersistenceCoordinator {
   private tail: Promise<void> = Promise.resolve();

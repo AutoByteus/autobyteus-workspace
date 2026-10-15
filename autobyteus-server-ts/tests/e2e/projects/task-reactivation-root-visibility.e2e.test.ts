@@ -97,7 +97,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
   let dataDir = "", workspace = "", app: FastifyInstance | undefined, url!: URL;
   const sockets: WebSocket[] = [];
   const active: Array<{ kind: Kind; rootId: string }> = [];
-  const ids = { manager: "", worker: "", helper: "", assistant: "", squad: "", team: "", org: "", claudeOrg: "" };
+  const ids = { manager: "", worker: "", helper: "", peer: "", assistant: "", squad: "", team: "", org: "", claudeOrg: "" };
   const names = { worker: "", helper: "", assistant: "", squad: "" };
   const savedEnv = new Map<string, string | undefined>();
   const evidence: Record<string, unknown> = {};
@@ -165,6 +165,8 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     ids.manager = await agentDefinition(`TRA Manager ${suffix}`, PROJECT_TOOLS);
     ids.worker = await agentDefinition(names.worker, []);
     ids.helper = await agentDefinition(names.helper, []);
+    // The Team root's configured teammate (a non-assigner); an outside Agent is delegated by its catalog address instead.
+    ids.peer = await agentDefinition(`TRA Peer ${suffix}`, []);
     ids.assistant = await agentDefinition(names.assistant, []);
     ids.squad = (await graphql(`mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}`,
       { input: { name: names.squad, description: "Task Team", instructions: "Follow requests.", coordinatorMemberName: "lead",
@@ -172,8 +174,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     )).createAgentTeamDefinition.id;
     ids.team = (await graphql(`mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}`,
       { input: { name: `TRA Team ${suffix}`, description: "Team root", instructions: "Follow requests.", coordinatorMemberName: "manager",
-        nodes: [{ memberName: "manager", ref: ids.manager, refScope: "SHARED" }, { memberName: "worker", ref: ids.worker, refScope: "SHARED" },
-          { memberName: "helper", ref: ids.helper, refScope: "SHARED" }] } },
+        nodes: [{ memberName: "manager", ref: ids.manager, refScope: "SHARED" }, { memberName: "worker", ref: ids.peer, refScope: "SHARED" }] } },
     )).createAgentTeamDefinition.id;
     const orgMembers = [{ memberName: "manager", ref: ids.manager, refType: "AGENT", refScope: "SHARED" },
       { memberName: "worker", ref: ids.worker, refType: "AGENT", refScope: "SHARED" },
@@ -218,8 +219,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
       const created = (await graphql(`mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}`,
         { input: { teamDefinitionId: ids.team, teamConfigs: [{ teamAddress: "/", ...config() }], memberConfigs: [
           { memberAddress: "/manager", agentDefinitionId: ids.manager, ...config() },
-          { memberAddress: "/worker", agentDefinitionId: ids.worker, ...config() },
-          { memberAddress: "/helper", agentDefinitionId: ids.helper, ...config() }] } })).createAgentTeamRun;
+          { memberAddress: "/worker", agentDefinitionId: ids.peer, ...config() }] } })).createAgentTeamRun;
       expect(created.success, created.message).toBe(true);
       rootId = created.teamRunId;
       const tree = (await graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: rootId })).getTeamRunResumeConfig.executionTree;
@@ -305,12 +305,13 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
       { input: { name: `Task reactivation ${kind} ${randomUUID().slice(0, 8)}` } })).createProject.projectId as string;
     const task = async (description: string) => (await graphql(
       `mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`, { input: { projectId, description } })).createProjectTask.taskId as string;
-    const workerAddress = kind === "agent" ? `/${segment(names.worker)}` : "/worker";
-    const helperAddress = kind === "agent" ? `/${segment(names.helper)}` : "/helper";
+    // A Team-root member is not delegable by its own Team (collaboration-model-contract): the Team root delegates by catalog address, as the Agent root does; an Org keeps its sibling units.
+    const workerAddress = kind !== "org" ? `/${segment(names.worker)}` : "/worker";
+    const helperAddress = kind !== "org" ? `/${segment(names.helper)}` : "/helper";
     const teamAddress = kind === "org" ? "/squad" : `/${segment(names.squad)}`;
-    // Task A: the worker's own work sub-delegates to the helper, which brings in the assistant (two helpers of Task A).
+    // Task A: the worker's own work sub-delegates to the helper, which sub-delegates to the assistant (two helpers of Task A).
     const taskA = await task(callTool("delegate_task", { recipient_address: helperAddress,
-      description: callTool("send_message_to", { recipient_address: `/${segment(names.assistant)}`, content: "Reply OK." }) }));
+      description: callTool("delegate_task", { recipient_address: `/${segment(names.assistant)}`, description: "Reply OK." }) }));
     const taskB = await task("Review the docs site.");
     const root = await startRoot(kind);
     const { managerRunId } = root;
@@ -542,7 +543,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     const taskC = (await graphql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`,
       { input: { projectId, description: "Draft the migration guide." } })).createProjectTask.taskId as string;
     const cDir = projectTaskDir(projectId, taskC);
-    const workerAddress = kind === "agent" ? `/${segment(names.worker)}` : "/worker";
+    const workerAddress = kind !== "org" ? `/${segment(names.worker)}` : "/worker";
     // A raw /ws/projects client: every frame must satisfy the strict server schema, including CANCELLED views.
     const feed = new WebSocket(`ws://${url.host}/ws/projects`);
     sockets.push(feed);

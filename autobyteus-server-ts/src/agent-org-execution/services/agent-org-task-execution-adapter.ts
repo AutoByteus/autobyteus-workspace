@@ -2,13 +2,11 @@ import type { AgentOperationResult } from "../../agent-execution/domain/agent-op
 import type { CommittedTaskExecution, TaskExecutionPreparationOperation } from "../../agent-team-execution/domain/prepared-task-execution.js";
 import { taskExecutionReferenceKey } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { beginRootTaskActivation, type RegisteredTaskActivation, type TaskExecutionActivationPlan, type TaskExecutionActivationOperation,
-  type PreparedTaskExecutionActivation,
   type RootTaskExecutionAdapter,
   type TaskExecutionActivationCommitResult,
   type TaskExecutionActivationPreparation,
 } from "../../agent-collaboration/execution/task/root-task-execution-adapter.js";
 import type { DelegationPlacement } from "../../agent-collaboration/collaborators/catalog-delegation.js";
-import { resolveTaskCopyHost } from "../../agent-collaboration/execution/task/task-copy-host.js";
 import type { TaskExecutionSource } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import {
   TaskDelegationError,
@@ -94,10 +92,8 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
   assertCurrentSchemaReady(): void { this.readiness.assertCurrentSchemaReady(); }
 
   async planActivation(input: TaskExecutionActivationPreparation<ResolvedAgentOrgRecipient>): Promise<TaskExecutionActivationPlan<ResolvedAgentOrgRecipient>> {
-    const copyHost = resolveTaskCopyHost(this.options.getIndex(), input.identity.agentRunId, input.placement.address);
-    const host = createTaskExecutionHostIdentity(copyHost.hostKind === "team"
-      ? { root: this.root, hostKind: "team", hostRunId: copyHost.hostRunId, hostAddress: copyHost.hostAddress }
-      : { root: this.root, hostKind: "root", hostRunId: this.root.rootRunId, hostAddress: "/" });
+    // CM-1 refuses every target inside the delegator's own Team, so a new copy is always hosted at the root.
+    const host = createTaskExecutionHostIdentity({ root: this.root, hostKind: "root", hostRunId: this.root.rootRunId, hostAddress: "/" });
     let beginLocal: () => TaskExecutionPreparationOperation;
     let execution: TaskExecutionReference;
     let ingressAgentRunId: string;
@@ -107,8 +103,7 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
       const agentRunId = await this.options.taskExecutionIdentity.agentRuns.allocateForAgentDefinition(source.agentDefinitionId);
       const command = { address: input.placement.address, agentRunId, sourceNode: source, message: input.workPacket };
       execution = { agentRunId }; ingressAgentRunId = agentRunId; ownedAgentRunIds = [agentRunId];
-      beginLocal = () => host.hostKind === "root" ? this.options.rootAgents.beginTaskPreparation(command)
-        : this.options.teams.require(host.hostRunId).beginTaskAgent(command);
+      beginLocal = () => this.options.rootAgents.beginTaskPreparation(command);
     } else {
       const source = this.sources.require(input.placement.address, "agent_team", input.placement.source);
       const materialized = await this.options.taskExecutionIdentity.taskTeams.create({ source: source.node });
@@ -117,10 +112,10 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
       const coordinator = command.teamNode.children.find((node) => node.kind === "agent" && node.address === command.teamNode.coordinatorAddress);
       if (!coordinator || coordinator.kind !== "agent") throw new Error("Planned Team has no exact coordinator ingress.");
       execution = { teamRunId: command.teamRunId }; ingressAgentRunId = coordinator.agentRunId; ownedAgentRunIds = command.teamNode.children.flatMap(node => node.kind === "agent" ? [node.agentRunId] : []);
-      beginLocal = () => host.hostKind === "root" ? this.options.teams.beginRootTaskTeam({
+      beginLocal = () => this.options.teams.beginRootTaskTeam({
         task: command, physicalScope: createRootExecutionPhysicalScope({ root: this.root, ancestorTeamRunIds: [command.teamRunId] }),
         callbacks: this.options.callbacks,
-      }) : this.options.teams.require(host.hostRunId).beginTaskTeam(command);
+      });
     }
     const plan = Object.freeze({ ...input, ownedAgentRunIds, recipientAddress: input.placement.address, target: Object.freeze({ root: this.root, execution, ingressAgentRunId }) });
     this.plans.set(plan, { host, beginLocal });
@@ -165,13 +160,6 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
     const chain = this.taskExecutionChainFor(agentRunId);
     return chain.length ? chain : [...this.registrations.values()]
       .filter(entry => entry.ownedAgentRunIds.includes(agentRunId)).map(entry => entry.target.execution);
-  }
-  taskExecutionAt(address: string, among: readonly TaskExecutionReference[]) {
-    for (const reference of among) {
-      const entry = this.options.getIndex().getTaskExecution(reference);
-      if (entry?.address === address) return Object.freeze({ root: this.root, execution: reference, ingressAgentRunId: this.ingressAgentRunId(entry) });
-    }
-    return null;
   }
   taskExecutionTargetOf(reference: TaskExecutionReference) {
     // The index is keyed by run ID alone: the copy must also be of the requested kind.

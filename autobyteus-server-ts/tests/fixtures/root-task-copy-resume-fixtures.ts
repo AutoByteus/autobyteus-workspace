@@ -34,7 +34,7 @@ export function fixture() {
   const chainOf = (agentRunId: string) => (chains[agentRunId] ?? []).filter(inTree);
   const adapter: RootTaskExecutionAdapter<string> = {
     root, isOpen: () => true, authorize: () => undefined, assertCurrentSchemaReady: () => undefined,
-    planActivation: vi.fn(), beginActivation: vi.fn(), registrationFor: () => null, taskExecutionAt: () => null,
+    planActivation: vi.fn(), beginActivation: vi.fn(), registrationFor: () => null,
     ownershipChainFor: chainOf,
     taskExecutionChainFor: chainOf,
     listTaskExecutions: () => [worker, team, helper],

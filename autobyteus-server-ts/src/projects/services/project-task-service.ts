@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import type { MultipartFile } from "@fastify/multipart";
 import type {
   ExistingTaskExecutionAssignInput, NewTaskExecutionLinkInput, TaskExecutionResourcePort, TaskExecutionReleaseRequest, TaskExecutionReopenInput,
-  TaskExecutionReopenResult, TaskExecutionRole,
+  TaskExecutionReopenResult,
 } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
@@ -272,7 +272,6 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
   markFailed(execution: TaskExecutionReference, error: { code: string; message: string }): Promise<void> { return this.resources.markFailed(execution, error); }
   ownerOf(chain: readonly TaskExecutionReference[]) { return this.resources.ownerOf(chain); }
   isOpen(execution: TaskExecutionReference): boolean { return this.resources.isOpen(execution); }
-  openTaskExecutions(taskId: string, role: TaskExecutionRole) { return this.resources.openTaskExecutions(taskId, role); }
   closedTaskExecutionsIn(hostRoot: RootExecutionIdentity) { return this.resources.closedTaskExecutionsIn(hostRoot); }
   assertResourceDataReadable(): void { this.resources.assertAllReadable(); }
   /** Marks the Tasks whose root is one of these task executions; the status is read later. Never throws. */

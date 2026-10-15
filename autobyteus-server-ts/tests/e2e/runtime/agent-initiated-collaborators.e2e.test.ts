@@ -13,34 +13,34 @@ import { buildE2eClientCommandIds, sendE2eSendMessageCommand } from "../helpers/
 import { closeLiveRuntimeSecretVault, initializeLiveRuntimeSecretVaultFromEnvironment } from "../helpers/live-runtime-secret-vault-helpers.js";
 
 /**
- * agent-initiated-collaborators (SR-005) on real runtimes (live, paid/local inference).
+ * The collaboration model on real runtimes (live, paid/local inference): agent-initiated-collaborators SR-005 as revised by
+ * collaboration-model-contract. Inside your run you message; outside it you delegate, then message the copy by run ID;
+ * messaging never brings anyone in; delegating a teammate or your own Team is refused.
  *
  * Standalone (Agent root), per enabled runtime:
  * - LE-A1: `list_available_agents` is absent unless the definition selects it (AC-001); its result is
  *   `{agents:[{name, kind, address, description}]}` with the `@` menu's eligibility, distinct hashed
  *   addresses for two same-name definitions, and no write (AC-002/003/008); an unknown address and an
- *   unknown run ID create nothing (AC-003/004); the first `send_message_to` to a listed address brings
- *   the agent in (added by the sender, the run's settings) and delivers, a second message reaches the
- *   same run ID (AC-004); `@` after a bring-in and a bring-in after `@` reuse one instance (AC-010); a
- *   re-list gives identical addresses, in-run ones at their in-run address (AC-002/003).
- * - LE-A2: three `delegate_task` calls to a listed team start three copies with a persisted `source` and
- *   no collaborator; each copy follows its own handoff inside itself and reports back by run ID; no
- *   message crosses copies (AC-005/007/008); after Stop, a message wakes a copy from its `source`.
+ *   unknown run ID create nothing (AC-003/004); a message to a listed address that is not in the run is not found, with
+ *   guidance to use delegate_task, and creates nothing (AC-005); following it, delegate_task starts a root-hosted copy that is
+ *   then messaged by its run ID (AC-004/AC-006); a re-list is identical (AC-002/003).
+ * - LE-A2: three `delegate_task` calls to a listed team start three copies with a persisted `source`; each copy follows
+ *   its own handoff inside itself and reports back by run ID; no message crosses copies (AC-005/007/008); after Stop, a
+ *   message wakes a copy from its `source`.
+ * - LE-A3: a delegated Team copy's member delegates a top-level (catalog) address: the copy is placed at the Agent root; it
+ *   delegating its own teammate is refused and starts nothing; placement is kept after Stop.
  * Every catalog Team copy gets its own handoff rules and team instruction and hands off to its mate before
  *   reporting; a catalog Agent copy gets neither (SR-006 member scope).
- * Team root (LE-T1): configured handoffs and instruction kept; two catalog copies and a brought-in instance of
- *   the same team follow their handoffs inside themselves (AC-007); catalog Agent copies (root-level and from a
- *   copy member) get no scope; a brought-in team's member brings in a listed agent (AC-006/008); two members'
- *   concurrent first messages to one new address make one instance (RS-003); scopes survive Stop → reopen.
+ * Team root (LE-T1): configured handoffs and instruction kept; two catalog copies of a team follow their handoffs inside
+ *   themselves (AC-007); a configured teammate is refused as a delegation target, a copy member's own teammate too; catalog
+ *   Agent copies (root-level and from a copy member) get no scope and are placed at the Team root; scopes survive Stop → reopen.
  * Org root (LE-O1): configured, mounted and cross-placement handoffs and instructions kept (also after Stop →
- *   reopen, AC-012); a copy of a mounted Team stays inside the copy (SC-003, approved behavior change); a
- *   catalog copy follows its own handoffs; a member brings a listed agent in (AC-008).
- * Copy placement (AC-013 / REQ-012): a copy is recorded at the level of its address — a collaborator-team or mounted-team
- *   member's copy of a top-level address at the root (LE-A3, LE-T1, LE-O1), its teammate copy inside the team; placement
- *   is unchanged after Stop → reopen.
+ *   reopen, AC-012); a copy of a mounted Team stays inside the copy (SC-003); a catalog copy follows its own handoffs;
+ *   a mounted member's catalog copy is placed at the Org top level and its teammate is refused; a message to an outside
+ *   address is not found.
  * LE-F1 (SC-004): a run on a model its runtime still runs but the catalog no longer offers (Claude: the full Haiku
- *   ID, CLAUDE_E2E_STALE_MODEL; Codex only with CODEX_E2E_STALE_MODEL) gets the failure reason for a bring-in and a
- *   catalog copy; nothing is added.
+ *   ID, CLAUDE_E2E_STALE_MODEL; Codex only with CODEX_E2E_STALE_MODEL) gets the failure reason for a catalog copy and
+ *   the not-found answer for an outside message; nothing is added.
  *
  * Gates (each runtime independently): RUN_LMSTUDIO_E2E=1 (AutoByteus over LM Studio), RUN_DEEPSEEK_E2E=1 with
  * DEEPSEEK_API_KEY in the environment (AutoByteus over DeepSeek; the key is saved into the test vault), RUN_CODEX_E2E=1,
@@ -134,7 +134,7 @@ type ListedAgent = { name: string; kind: string; address: string; description: s
 type Record_ = Record<string, unknown>;
 type CollaborationView = {
   is_active: boolean;
-  execution_tree: { collaborators: Record_[]; taskExecutions: Record_[] };
+  execution_tree: { taskExecutions: Record_[] };
   communication_messages: { messages: Array<{ senderAgentRunId: string; receiverAgentRunId: string; content: string }> };
 };
 type ConversationEntry = { kind: string; role?: string | null; content?: string | null; senderAgentRunId?: string | null };
@@ -161,6 +161,8 @@ const agentToolName = (payload: Record_): string => {
 };
 const isToolDone = (message: WsMessage, tool: string): boolean =>
   ["TOOL_EXECUTION_SUCCEEDED", "TOOL_EXECUTION_FAILED"].includes(message.type) && agentToolName(message.payload).endsWith(tool);
+/** The call's arguments as text: lets a wait pick the tool call it is about (an earlier call's completion may arrive late). */
+const toolArgumentsText = (message: WsMessage): string => JSON.stringify(message.payload.arguments ?? {});
 /** Finds `key` in a tool result, whatever the runtime's encoding (object, JSON text, MCP content blocks). */
 const findInResult = (payload: Record_, key: string): unknown => {
   const visit = (value: unknown, depth: number): unknown => {
@@ -199,7 +201,6 @@ const normalizeFrame = (parsed: { type: string; payload: Record_ }): WsMessage =
   }
   if (event.kind === "communication") return { type: "TEAM_COMMUNICATION_MESSAGE", payload: { message: event.message } };
   if (event.kind === "task_execution_started") return { type: "TASK_EXECUTION_STARTED", payload: event };
-  if (event.kind === "collaborator_added") return { type: "COLLABORATOR_ADDED", payload: event };
   return parsed;
 };
 const commOf = (message: WsMessage): Comm | null => {
@@ -449,7 +450,7 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
   for (const runtime of RUNTIMES) {
     const rootCases = runtime.enabled && (ROOT_RUNTIMES.has(runtime.runtimeKind) || ROOT_RUNTIMES.has(runtime.id ?? ""));
 
-    it.runIf(runtime.enabled)(`${runtime.id ?? runtime.runtimeKind}: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing`, async () => {
+    it.runIf(runtime.enabled)(`${runtime.id ?? runtime.runtimeKind}: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID`, async () => {
       const available = await modelsFor(runtime);
       const model = runtime.pickModel(available);
       expect(model, `no model for ${runtime.runtimeKind} in ${JSON.stringify(available).slice(0, 400)}`).toBeTruthy();
@@ -525,51 +526,46 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
       expect(rejected(unknownAddress), JSON.stringify(unknownAddress.payload).slice(0, 600)).toBe(true);
       const unknownRun = await callTool(pm, "send_message_to", { target_agent_run_id: `aic_missing_run_${suffix}`, content: "hello" }, "unknown run ID", false);
       expect(rejected(unknownRun), JSON.stringify(unknownRun.payload).slice(0, 600)).toBe(true);
-      expect((await collaborationView(pmRunId))?.execution_tree.collaborators ?? []).toEqual([]);
+      expect((await collaborationView(pmRunId))?.execution_tree.taskExecutions ?? []).toEqual([]);
       expect(await packageExists(pmRunId), "failed sends write nothing").toBe(false);
 
-      // AC-004: the first message to a listed address brings it in and delivers.
-      const bringIn = await callTool(pm, "send_message_to", { recipient_address: helperAddress,
-        content: `Reply to me with send_message_to and the exact text ${token}.` }, "bring-in");
-      const helperRunId = resultRunId(bringIn);
-      expect(helperRunId, JSON.stringify(bringIn.payload).slice(0, 600)).toBeTruthy();
+      // AC-005: a listed address that is not in the run is not found; the guidance names delegate_task; nothing is created.
+      const outside = await callTool(pm, "send_message_to", { recipient_address: helperAddress, content: "hello" }, "message to an outside address", false);
+      expect(rejected(outside), JSON.stringify(outside.payload).slice(0, 600)).toBe(true);
+      expect(JSON.stringify(outside.payload), "the guidance reaches the agent").toMatch(/COLLABORATION_TARGET_NOT_FOUND|delegate_task/);
+      expect((await collaborationView(pmRunId))?.execution_tree.taskExecutions ?? [], "a message brings nobody in").toEqual([]);
+      expect(await packageExists(pmRunId), "the outside message writes nothing").toBe(false);
+
+      // AC-004: following the guidance, delegation starts a root-hosted copy, which reports back by run ID.
+      const delegated = await callTool(pm, "delegate_task", { recipient_address: helperAddress,
+        description: `Reply to me with send_message_to and the exact text ${token}.` }, "delegate the helper");
+      const helperRunId = resultRunId(delegated);
+      expect(helperRunId, JSON.stringify(delegated.payload).slice(0, 600)).toBeTruthy();
       const added = (await collaborationView(pmRunId))!;
-      expect(added.execution_tree.collaborators).toHaveLength(1);
-      expect(added.execution_tree.collaborators[0]).toMatchObject({ kind: "agent", address: helperAddress, agentDefinitionId: helperId, agentRunId: helperRunId, addedViaAgentRunId: pmRunId });
-      expect(field(added.execution_tree.collaborators[0], "launchConfiguration")).toMatchObject({ runtimeKind: runtime.runtimeKind, llmModelIdentifier: model });
-      expect(await packageExists(pmRunId), "the first bring-in creates the package").toBe(true);
-      await poll("briefing and report", async () => {
+      expect((added.execution_tree as Record_)["collaborators"], "collaborators no longer exist").toBeUndefined();
+      expect(added.execution_tree.taskExecutions).toHaveLength(1);
+      expect(added.execution_tree.taskExecutions[0]).toMatchObject({ address: helperAddress, agentRunId: helperRunId, delegatorAgentRunId: pmRunId });
+      expect(field(field(added.execution_tree.taskExecutions[0], "source"), "agentDefinitionId")).toBe(helperId);
+      expect(await packageExists(pmRunId), "the first delegation creates the package").toBe(true);
+      await poll("the copy's report", async () => {
         const messages = (await collaborationView(pmRunId))?.communication_messages.messages ?? [];
-        return messages.some((message) => message.senderAgentRunId === pmRunId && message.receiverAgentRunId === helperRunId)
-          && messages.some((message) => message.senderAgentRunId === helperRunId && message.receiverAgentRunId === pmRunId && message.content.includes(token));
+        return messages.some((message) => message.senderAgentRunId === helperRunId && message.receiverAgentRunId === pmRunId && message.content.includes(token));
       });
-      const helperConversation = await memberConversation(pmRunId, helperAddress, helperRunId!);
-      expect(helperConversation[0], JSON.stringify(helperConversation.slice(0, 2)).slice(0, 600)).toMatchObject({ kind: "inter_agent_message", senderAgentRunId: pmRunId });
 
-      // AC-004: a second message reaches the same run ID.
-      const again = await callTool(pm, "send_message_to", { recipient_address: helperAddress, content: "Reply in one short sentence, without tools." }, "second message");
+      // AC-006: the copy is messaged by its run ID.
+      const again = await callTool(pm, "send_message_to", { target_agent_run_id: helperRunId, content: "Reply in one short sentence, without tools." }, "message by run ID");
       expect(resultRunId(again)).toBe(helperRunId);
-      expect((await collaborationView(pmRunId))!.execution_tree.collaborators.map((entry) => entry.agentRunId)).toEqual([helperRunId]);
+      expect((await collaborationView(pmRunId))!.execution_tree.taskExecutions.map((copy) => field(copy, "agentRunId"))).toEqual([helperRunId]);
+      // The address still resolves to nothing for messaging: a copy is reached by its run ID only.
+      const byAddress = await callTool(pm, "send_message_to", { recipient_address: helperAddress, content: "By address?" }, "message by address after delegation", false);
+      expect(rejected(byAddress), JSON.stringify(byAddress.payload).slice(0, 600)).toBe(true);
 
-      // AC-010: @ after a bring-in reuses it; a bring-in after @ reuses the @ instance.
-      const mentionHelper = await sendTurn(pm, "Reply with the single word NOTED. Do not call any tool.", [{ kind: "agent", definition_id: helperId }]);
-      await waitIdle(pm, mentionHelper, "@ after bring-in");
-      expect((await collaborationView(pmRunId))!.execution_tree.collaborators.map((entry) => entry.agentRunId)).toEqual([helperRunId]);
-      const mentionTwin = await sendTurn(pm, "Reply with the single word NOTED. Do not call any tool.", [{ kind: "agent", definition_id: twinAId }]);
-      await waitIdle(pm, mentionTwin, "@ twin");
-      const twinEntry = (await collaborationView(pmRunId))!.execution_tree.collaborators.find((entry) => entry.agentDefinitionId === twinAId)!;
-      expect(twinEntry, "the @ instance").toBeTruthy();
-      expect(twinEntry.address, "@ uses the listed address").toBe(twinAAddress);
-      const twinMessage = await callTool(pm, "send_message_to", { recipient_address: twinAAddress, content: "Reply in one short sentence, without tools." }, "bring-in after @");
-      expect(resultRunId(twinMessage)).toBe(twinEntry.agentRunId);
-      expect((await collaborationView(pmRunId))!.execution_tree.collaborators).toHaveLength(2);
-
-      // AC-002/003: a re-list gives identical addresses; in-run definitions at their in-run address.
+      // AC-002/003: a re-list gives identical addresses.
       const second = await listOnce("re-list");
       if (listed) expect(second).toEqual(first);
     }, 2_400_000);
 
-    it.runIf(runtime.enabled)(`${runtime.id ?? runtime.runtimeKind}: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop`, async () => {
+    it.runIf(runtime.enabled)(`${runtime.id ?? runtime.runtimeKind}: LE-A2 three catalog copies with source, each one unit; restore after Stop`, async () => {
       const model = runtime.pickModel(await modelsFor(runtime));
       const hint = runtime.toolHint ?? "";
       instructionsVisible = runtime.runtimeKind === "claude_agent_sdk";
@@ -593,7 +589,7 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
       }
       expect(new Set(copyRunIds).size).toBe(3);
       const view = (await collaborationView(pmRunId))!;
-      expect(view.execution_tree.collaborators, "delegation adds no collaborator (Q-1)").toEqual([]);
+      expect((view.execution_tree as Record_)["collaborators"], "collaborators no longer exist").toBeUndefined();
       const copies = view.execution_tree.taskExecutions;
       expect(copies).toHaveLength(3);
       for (const copy of copies) {
@@ -661,7 +657,7 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
       expect(toolCallResults(woken, "get_handoff_rules").at(-1), "a restored catalog copy keeps its own handoffs").toContain(`${squad.squadAddress}/mate`);
     }, 2_400_000);
 
-    it.runIf(runtime.enabled)(`${runtime.id ?? runtime.runtimeKind}: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop`, async () => {
+    it.runIf(runtime.enabled)(`${runtime.id ?? runtime.runtimeKind}: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop`, async () => {
       const model = runtime.pickModel(await modelsFor(runtime));
       const hint = runtime.toolHint ?? "";
       instructionsVisible = runtime.runtimeKind === "claude_agent_sdk";
@@ -674,60 +670,67 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
         + `and keep every reply to one short sentence.${hint}`, ["list_available_agents"]);
       const pmRunId = await createAgentRun(pmId, runtime.runtimeKind, model!);
       const pm = await openSocket(`/ws/agent/${pmRunId}`, "CONNECTED");
-      const bring = await callTool(pm, "send_message_to", { recipient_address: squad.squadAddress, content: `Task code PA-${suffix}. Follow your handoff rules, then report DONE PA-${suffix} to me (my sender id).` }, "bring in the squad");
-      expect(resultRunId(bring)).toBeTruthy();
-      const collaborator = (await collaborationView(pmRunId))!.execution_tree.collaborators.find((entry) => entry.address === squad.squadAddress)!;
-      const collaboratorLead = memberRunId(collaborator, "/lead");
+      const delegatedSquad = await callTool(pm, "delegate_task", { recipient_address: squad.squadAddress,
+        description: `Task code PA-${suffix}. Follow your handoff rules, then report DONE PA-${suffix} to me by my run ID.` }, "delegate the squad");
+      expect(resultRunId(delegatedSquad)).toBeTruthy();
+      const squadCopy = (await collaborationView(pmRunId))!.execution_tree.taskExecutions[0]!;
+      const copyLead = memberRunId(squadCopy, "/lead");
       const members = await openSocket(`/ws/agent-collaboration/${pmRunId}`, "ROOT_EXECUTION_VIEW_SNAPSHOT");
       const sendTo = (agentRunId: string, content: string) => members.socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: {
         root_subject_kind: "agent", root_run_id: pmRunId, target_agent_run_id: agentRunId, command_id: randomUUID(), content,
         context_file_paths: [], image_urls: [], ...buildE2eClientCommandIds(),
       } }));
-      await poll("collaborator lead idle after its task", async () => {
+      await poll("the copy's lead reported", async () => {
         const messages = (await collaborationView(pmRunId))?.communication_messages.messages ?? [];
-        return messages.some((message) => message.senderAgentRunId === collaboratorLead && message.receiverAgentRunId === pmRunId) ? messages : null;
+        return messages.some((message) => message.senderAgentRunId === copyLead && message.receiverAgentRunId === pmRunId) ? messages : null;
       });
       const delegatedBy = (tree: unknown, address: string): boolean => {
         let hit = false;
         const scan = (value: unknown): void => {
           if (Array.isArray(value)) { value.forEach(scan); return; }
           const record = asRecord(value); if (!record) return;
-          if (record.delegatorAgentRunId === collaboratorLead && record.address === address) hit = true;
+          if (record.delegatorAgentRunId === copyLead && record.address === address) hit = true;
           Object.values(record).forEach(scan);
         };
         scan(tree);
         return hit;
       };
-      const leadToolCalls = async () => toolCallResults(await memberConversation(pmRunId, `${squad.squadAddress}/lead`, collaboratorLead), "delegate_task");
-      let placed: unknown = null;
-      for (const address of [`/${segmentFor(echoName)}`, `${squad.squadAddress}/mate`]) {
-        sendTo(collaboratorLead, operatorPrompt("delegate_task", { recipient_address: address, description: "Reply in one short sentence." }));
-        placed = await poll(`copy of ${address} recorded`, async () => {
-          const tree = (await collaborationView(pmRunId))?.execution_tree;
-          return tree && delegatedBy(tree, address) ? tree : null;
-        }).catch(async (error: unknown) => { throw new Error(`${error instanceof Error ? error.message : String(error)} Lead delegate_task results: ${JSON.stringify(await leadToolCalls()).slice(0, 1_500)}`); });
-      }
+      const leadResults = async () => toolCallResults(await memberConversation(pmRunId, `${squad.squadAddress}/lead`, copyLead), "delegate_task");
+      // A top-level (catalog) address: the copy is recorded at the Agent root, with its delegator kept.
+      const echoAddress = `/${segmentFor(echoName)}`;
+      sendTo(copyLead, operatorPrompt("delegate_task", { recipient_address: echoAddress, description: "Reply in one short sentence." }));
+      const placed = await poll(`copy of ${echoAddress} recorded`, async () => {
+        const tree = (await collaborationView(pmRunId))?.execution_tree;
+        return tree && delegatedBy(tree, echoAddress) ? tree : null;
+      }).catch(async (error: unknown) => { throw new Error(`${error instanceof Error ? error.message : String(error)} Lead delegate_task results: ${JSON.stringify(await leadResults()).slice(0, 1_500)}`); });
       const copies: Array<Record_> = [];
       const collect = (value: unknown): void => {
         if (Array.isArray(value)) { value.forEach(collect); return; }
         const record = asRecord(value); if (!record) return;
-        if (record.delegatorAgentRunId === collaboratorLead) copies.push(record);
+        if (record.delegatorAgentRunId === copyLead) copies.push(record);
         Object.values(record).forEach(collect);
       };
       collect(placed);
-      const echoCopy = copies.find((copy) => copy.address === `/${segmentFor(echoName)}`)!;
-      const mateCopy = copies.find((copy) => copy.address === `${squad.squadAddress}/mate`)!;
-      expect(copyPath(placed, String(echoCopy.agentRunId)), "a collaborator member's top-level copy is at the Agent root").toMatch(/^taskExecutions\[\d+\]$/);
-      expect(copyPath(placed, String(mateCopy.agentRunId)), "its teammate copy stays inside the collaborator team").toMatch(/^collaborators\[\d+\]\.taskExecutions\[\d+\]$/);
+      const echoCopy = copies.find((copy) => copy.address === echoAddress)!;
+      expect(copyPath(placed, String(echoCopy.agentRunId)), "a copy member's top-level copy is at the Agent root").toMatch(/^taskExecutions\[\d+\]$/);
+      // Its own teammate: refused with guidance, nothing started (AC-002).
+      const mateAddress = `${squad.squadAddress}/mate`;
+      const resultsBefore = (await leadResults()).length;
+      sendTo(copyLead, operatorPrompt("delegate_task", { recipient_address: mateAddress, description: "Reply with the single word CONFIRMED." }));
+      const refusal = await poll("the lead's refused teammate delegation", async () => {
+        const results = await leadResults();
+        return results.length > resultsBefore ? results[results.length - 1] : null;
+      });
+      expect(refusal, "the refusal reaches the agent (its code, or the guidance text on runtimes that show only the message)").toMatch(/COLLABORATION_SELF_TARGET_REJECTED|is in your own team/);
+      expect(delegatedBy((await collaborationView(pmRunId))!.execution_tree, mateAddress), "no teammate copy is started").toBe(false);
       const stopped = await gql<{ terminateAgentRun: { success: boolean; message: string } }>(
         "mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success message } }", { id: pmRunId });
       expect(stopped.terminateAgentRun.success, stopped.terminateAgentRun.message).toBe(true);
       const stored = await poll("stored view after Stop", async () => { const value = await collaborationView(pmRunId); return value && !value.is_active ? value : null; });
       expect(copyPath(stored.execution_tree, String(echoCopy.agentRunId)), "placement kept after Stop").toBe(copyPath(placed, String(echoCopy.agentRunId)));
-      expect(copyPath(stored.execution_tree, String(mateCopy.agentRunId)), "teammate placement kept after Stop").toBe(copyPath(placed, String(mateCopy.agentRunId)));
     }, 2_400_000);
 
-    it.runIf(rootCases)(`${runtime.id ?? runtime.runtimeKind}: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen`, async () => {
+    it.runIf(rootCases)(`${runtime.id ?? runtime.runtimeKind}: LE-T1 Team root — catalog copies stay apart with their own scope; a teammate is refused; catalog Agent copies get none; configured scope kept after Stop → reopen`, async () => {
       const model = runtime.pickModel(await modelsFor(runtime));
       const hint = runtime.toolHint ?? "";
       instructionsVisible = runtime.runtimeKind === "claude_agent_sdk";
@@ -735,12 +738,6 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
       const squad = await createSquad(suffix, hint);
       const operator = "You are a precise tool operator. Follow the user's instructions exactly, call only the tools the user names, "
         + `and keep every reply to one short sentence.${hint}`;
-      const replyBack = "When another agent messages you, call send_message_to exactly once with target_agent_run_id set to the sender id given in the "
-        + `message and content set to the exact text it asks for. Then reply 'sent'.${hint}`;
-      const helperName = `AIC Helper ${suffix}`;
-      await createAgentDefinition(helperName, "Replies to whoever messages it.", replyBack, []);
-      const racerName = `AIC Racer ${suffix}`;
-      await createAgentDefinition(racerName, "Replies to whoever messages it.", replyBack, []);
       const echoName = `AIC Echo ${suffix}`;
       const echoId = await createAgentDefinition(echoName, "Answers delegated tasks.",
         `When you get a task, do exactly what it says, then reply in one short sentence.${hint}`, []);
@@ -793,19 +790,19 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
           expect(instructions, "…not the root team's").not.toContain(hostInstruction);
         }
       }
-      expect(field(await teamTree(teamRunId), "collaborators") ?? [], "delegation adds no collaborator (Q-1)").toEqual([]);
+      expect((await teamTree(teamRunId))["collaborators"], "collaborators no longer exist").toBeUndefined();
 
-      // SC-001 in a Team root: the coordinator then brings the same listed team in by message (a third instance).
-      const bringCode = `B-${suffix}`;
-      const bringFrom = team.messages.length;
-      sendTo(coordRunId, operatorPrompt("send_message_to", { recipient_address: squad.squadAddress, content: `Task code ${bringCode}. Follow your handoff rules, then report DONE ${bringCode} to me (my sender id).` }));
-      const added = await waitFor(team.messages, bringFrom, (message) => message.type === "COLLABORATOR_ADDED", "collaborator added");
-      const collaborator = field(added.payload, "collaborator");
-      expect(collaborator).toMatchObject({ kind: "agent_team", address: squad.squadAddress });
-      expect(str(collaborator, "addedViaAgentRunId")).toBe(coordRunId);
-      const instances = [collaborator, ...started];
+      // AC-001 in a Team root: the coordinator cannot delegate its configured teammate; the refusal names the code and nothing starts.
+      const refusedFrom = team.messages.length;
+      sendTo(coordRunId, operatorPrompt("delegate_task", { recipient_address: "/worker", description: "Reply OK." }));
+      const refusedTeammate = await waitFor(team.messages, refusedFrom, (message) => message.payload.agent_run_id === coordRunId && isToolDone(message, "delegate_task") && toolArgumentsText(message).includes('"/worker"'), "refused teammate delegation");
+      expect(JSON.stringify(refusedTeammate.payload), "the teammate refusal reaches the agent").toMatch(/COLLABORATION_SELF_TARGET_REJECTED|is in your own team/);
+      expect(team.messages.slice(refusedFrom).some((message) => message.type === "TASK_EXECUTION_STARTED"), "the refusal starts nothing").toBe(false);
+
+      // The two catalog copies follow their own handoffs inside themselves and report to the coordinator.
+      const instances = started;
       let recorded: unknown = null;
-      await poll("three instances: lead → own mate → lead → coordinator", async () => {
+      await poll("two copies: lead → own mate → lead → coordinator", async () => {
         const messages = comms(team);
         recorded = messages.map((message) => `${message.sender} → ${message.receiver}: ${message.content.slice(0, 50)}`);
         return instances.every((instance) => {
@@ -816,7 +813,7 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
             && messages.some((message) => message.sender === lead && message.receiver === coordRunId && /DONE/.test(message.content));
         });
       }).catch((error: unknown) => { throw new Error(`${error instanceof Error ? error.message : String(error)} Recorded: ${JSON.stringify(recorded)}`); });
-      expect(crossings(comms(team), instances.map(memberRunIds), [coordRunId]), "the three instances never cross").toEqual([]);
+      expect(crossings(comms(team), instances.map(memberRunIds), [coordRunId]), "the two copies never cross").toEqual([]);
       for (const instance of instances) {
         const lead = memberRunId(instance, "/lead");
         const messages = comms(team);
@@ -847,43 +844,17 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
         }
       }
 
-      // AC-006: a member of the brought-in team brings in a listed agent.
-      const collaboratorLead = memberRunId(collaborator, "/lead");
-      const helperToken = `H-${suffix}`;
-      const helperFrom = team.messages.length;
-      sendTo(collaboratorLead, operatorPrompt("send_message_to", { recipient_address: `/${segmentFor(helperName)}`, content: `Reply to me with send_message_to and the exact text ${helperToken}.` }));
-      const helperAdded = await waitFor(team.messages, helperFrom, (message) => message.type === "COLLABORATOR_ADDED", "helper added by a collaborator member");
-      expect(str(field(helperAdded.payload, "collaborator"), "addedViaAgentRunId")).toBe(collaboratorLead);
-      await waitFor(team.messages, helperFrom, (message) => commOf(message)?.receiver === collaboratorLead && (commOf(message)?.content ?? "").includes(helperToken), "helper replies to the collaborator member");
-
-      // AC-013 / REQ-012: copies are placed by address — top-level targets at the root, teammates inside the team.
-      const placeFrom = team.messages.length;
-      sendTo(collaboratorLead, operatorPrompt("delegate_task", { recipient_address: `/${segmentFor(echoName)}`, description: "Reply in one short sentence." }));
-      const collaboratorEcho = field((await waitFor(team.messages, placeFrom, (message) => message.type === "TASK_EXECUTION_STARTED" && str(field(message.payload, "execution"), "delegatorAgentRunId") === collaboratorLead, "collaborator member delegates a top-level address")).payload, "execution");
+      // AC-002 in a Team root: a copy member cannot delegate its own teammate; its top-level copy is placed at the Team root.
       const teammateFrom = team.messages.length;
-      sendTo(collaboratorLead, operatorPrompt("delegate_task", { recipient_address: `${squad.squadAddress}/mate`, description: "Reply with the single word CONFIRMED." }));
-      const teammateCopy = field((await waitFor(team.messages, teammateFrom, (message) => message.type === "TASK_EXECUTION_STARTED" && str(field(message.payload, "execution"), "address") === `${squad.squadAddress}/mate`, "collaborator member delegates its teammate")).payload, "execution");
+      sendTo(copyLead, operatorPrompt("delegate_task", { recipient_address: `${squad.squadAddress}/mate`, description: "Reply with the single word CONFIRMED." }));
+      const refusedMate = await waitFor(team.messages, teammateFrom, (message) => message.payload.agent_run_id === copyLead && isToolDone(message, "delegate_task") && toolArgumentsText(message).includes(`${squad.squadAddress}/mate`), "copy member's refused teammate delegation");
+      expect(JSON.stringify(refusedMate.payload), "the copy member's teammate refusal reaches the agent").toMatch(/COLLABORATION_SELF_TARGET_REJECTED|is in your own team/);
+      expect(team.messages.slice(teammateFrom).some((message) => message.type === "TASK_EXECUTION_STARTED"), "the refusal starts nothing").toBe(false);
       const placed = await teamTree(teamRunId);
-      expect(copyPath(placed, str(collaboratorEcho, "agentRunId")), "a collaborator member's top-level copy is at the Team root").toMatch(/^task_executions\[\d+\]$/);
+      expect(copyPath(placed, str(rootEcho, "agentRunId")), "a root-level catalog copy is at the Team root").toMatch(/^task_executions\[\d+\]$/);
       expect(copyPath(placed, str(copyEcho, "agentRunId")), "a copy member's top-level copy is at the Team root").toMatch(/^task_executions\[\d+\]$/);
-      expect(copyPath(placed, str(teammateCopy, "agentRunId")), "a teammate copy stays inside its team").toMatch(/^collaborators\[\d+\]\.task_executions\[\d+\]$/);
-      expect(str(collaboratorEcho, "delegatorAgentRunId"), "the delegator is kept").toBe(collaboratorLead);
 
-      // RS-003: two members send their first message to the same new address at the same time → one instance.
-      const racerAddress = `/${segmentFor(racerName)}`;
-      const raceFrom = team.messages.length;
-      sendTo(coordRunId, operatorPrompt("send_message_to", { recipient_address: racerAddress, content: "Reply to me with send_message_to and the exact text RACE-COORD." }));
-      sendTo(workerRunId, operatorPrompt("send_message_to", { recipient_address: racerAddress, content: "Reply to me with send_message_to and the exact text RACE-WORKER." }));
-      const raceResults = await Promise.all([coordRunId, workerRunId].map((runId) => waitFor(team.messages, raceFrom,
-        (message) => message.payload.agent_run_id === runId && isToolDone(message, "send_message_to") && !rejected(message), `race send by ${runId}`)));
-      const raceTargets = raceResults.map((message) => resultRunId(message));
-      expect(raceTargets[0], JSON.stringify(raceResults.map((message) => message.payload.result)).slice(0, 600)).toBeTruthy();
-      expect(raceTargets[1], "both first messages reached the same instance").toBe(raceTargets[0]);
-      const racers = ((field(await teamTree(teamRunId), "collaborators") ?? []) as unknown[]).filter((entry) => str(entry, "address") === racerAddress);
-      expect(racers, "one instance for two concurrent first messages").toHaveLength(1);
-      console.log(`[LE-T1] race results: ${JSON.stringify(raceResults.map((message) => [message.payload.agent_run_id, resultRunId(message)]))}`);
-
-      // AC-012 after Stop → reopen: the configured, collaborator and catalog-copy scopes are restored.
+      // AC-012 after Stop → reopen: the configured and catalog-copy scopes are restored.
       const stopped = await gql<{ terminateAgentTeamRun: { success: boolean; message: string } }>(
         "mutation($id: String!) { terminateAgentTeamRun(teamRunId: $id) { success message } }", { id: teamRunId });
       expect(stopped.terminateAgentTeamRun.success, stopped.terminateAgentTeamRun.message).toBe(true);
@@ -891,14 +862,12 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
       await wait(3_000);
       team = await openSocket(`/ws/agent-team/${teamRunId}`, "TEAM_EXECUTION_VIEW_SNAPSHOT");
       expect(await rulesOf(team, sendTo, coordRunId, "reopened configured coord"), "configured handoffs after reopen").toContain("/worker");
-      expect(await rulesOf(team, sendTo, collaboratorLead, "reopened collaborator lead"), "collaborator team handoffs after reopen").toContain(`${squad.squadAddress}/mate`);
       expect(await rulesOf(team, sendTo, copyLead, "reopened catalog copy lead"), "catalog copy handoffs after reopen").toContain(`${squad.squadAddress}/mate`);
       const reopened = await teamTree(teamRunId);
-      expect(copyPath(reopened, str(collaboratorEcho, "agentRunId")), "placement kept after reopen").toBe(copyPath(placed, str(collaboratorEcho, "agentRunId")));
-      expect(copyPath(reopened, str(teammateCopy, "agentRunId")), "teammate placement kept after reopen").toBe(copyPath(placed, str(teammateCopy, "agentRunId")));
+      expect(copyPath(reopened, str(copyEcho, "agentRunId")), "placement kept after reopen").toBe(copyPath(placed, str(copyEcho, "agentRunId")));
     }, 2_400_000);
 
-    it.runIf(rootCases)(`${runtime.id ?? runtime.runtimeKind}: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in`, async () => {
+    it.runIf(rootCases)(`${runtime.id ?? runtime.runtimeKind}: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a mounted member's teammate is refused; an outside message is not found`, async () => {
       const model = runtime.pickModel(await modelsFor(runtime));
       const hint = runtime.toolHint ?? "";
       instructionsVisible = runtime.runtimeKind === "claude_agent_sdk";
@@ -1024,22 +993,21 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
       const mountedCatalogCopy = field((await waitFor(stream.messages, mountedCopyFrom, (message) => message.type === "TASK_EXECUTION_STARTED" && str(field(message.payload, "execution"), "delegatorAgentRunId") === mountedLead, "mounted member's catalog copy")).payload, "execution");
       const teammateFrom = stream.messages.length;
       sendTo(mountedLead, operatorPrompt("delegate_task", { recipient_address: "/squad/mate", description: "Reply with the single word NOTED." }));
-      const mountedTeammateCopy = field((await waitFor(stream.messages, teammateFrom, (message) => message.type === "TASK_EXECUTION_STARTED" && str(field(message.payload, "execution"), "address") === "/squad/mate", "mounted member's teammate copy")).payload, "execution");
+      const refusedMounted = await waitFor(stream.messages, teammateFrom, (message) => message.payload.agent_run_id === mountedLead && isToolDone(message, "delegate_task") && toolArgumentsText(message).includes('"/squad/mate"'), "mounted member's refused teammate delegation");
+      expect(JSON.stringify(refusedMounted.payload), "a mounted member cannot delegate its teammate").toMatch(/COLLABORATION_SELF_TARGET_REJECTED|is in your own team/);
+      expect(stream.messages.slice(teammateFrom).some((message) => message.type === "TASK_EXECUTION_STARTED"), "the refusal starts nothing").toBe(false);
       const placedOrg = await orgSnapshot();
       const catalogCopyRunId = str(mountedCatalogCopy, "teamRunId");
-      const teammateCopyRunId = str(mountedTeammateCopy, "agentRunId");
       expect(copyPath(placedOrg, catalogCopyRunId), "a mounted member's catalog copy is at rootOrg.taskExecutions").toMatch(/^taskExecutions\[\d+\]$/);
-      expect(copyPath(placedOrg, teammateCopyRunId), "a mounted member's teammate copy stays under its team").toMatch(/^members\[\d+\]\.taskExecutions\[\d+\]$/);
       expect(str(mountedCatalogCopy, "delegatorAgentRunId"), "the delegator is kept").toBe(mountedLead);
       await waitFor(stream.messages, mountedCopyFrom, (message) => { const comm = commOf(message); return comm?.receiver === mountedLead && /DONE/.test(comm.content) && memberRunIds(mountedCatalogCopy).includes(comm.sender); }, "the top-level copy still reports to its delegator");
 
-      // AC-008 in an Org: a member brings a listed agent in.
-      const helperToken = `OH-${suffix}`;
-      const helperFrom = stream.messages.length;
-      sendTo(coordRunId, operatorPrompt("send_message_to", { recipient_address: `/${segmentFor(helperName)}`, content: `Reply to me with send_message_to and the exact text ${helperToken}.` }));
-      const added = await waitFor(stream.messages, helperFrom, (message) => message.type === "COLLABORATOR_ADDED", "helper added in the Org");
-      expect(str(field(added.payload, "collaborator"), "addedViaAgentRunId")).toBe(coordRunId);
-      await waitFor(stream.messages, helperFrom, (message) => commOf(message)?.receiver === coordRunId && (commOf(message)?.content ?? "").includes(helperToken), "helper replies to the Org coordinator");
+      // AC-005 in an Org: a message to an outside address is not found; nothing is added.
+      const outsideFrom = stream.messages.length;
+      sendTo(coordRunId, operatorPrompt("send_message_to", { recipient_address: `/${segmentFor(helperName)}`, content: "hello" }));
+      const outsideDone = await waitFor(stream.messages, outsideFrom, (message) => message.payload.agent_run_id === coordRunId && isToolDone(message, "send_message_to"), "outside message result");
+      expect(rejected(outsideDone), JSON.stringify(outsideDone.payload).slice(0, 600)).toBe(true);
+      expect(JSON.stringify(outsideDone.payload), "the guidance reaches the agent").toMatch(/COLLABORATION_TARGET_NOT_FOUND|delegate_task/);
 
       // AC-012 after Stop → reopen.
       const stopped = await gql<{ terminateAgentOrgRun: { success: boolean; message: string } }>(
@@ -1059,10 +1027,9 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
       expect(await rulesOf(stream, sendTo, catalogLead, "reopened Org catalog copy lead"), "Org catalog copy handoffs after reopen").toContain(`${catalogSquad.squadAddress}/mate`);
       const reopenedOrg = await orgSnapshot();
       expect(copyPath(reopenedOrg, catalogCopyRunId), "placement kept after restore").toBe(copyPath(placedOrg, catalogCopyRunId));
-      expect(copyPath(reopenedOrg, teammateCopyRunId), "teammate placement kept after restore").toBe(copyPath(placedOrg, teammateCopyRunId));
     }, 2_400_000);
 
-    it.runIf(runtime.enabled && Boolean(staleModelFor(runtime.runtimeKind)))(`${runtime.id ?? runtime.runtimeKind}: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing`, async () => {
+    it.runIf(runtime.enabled && Boolean(staleModelFor(runtime.runtimeKind)))(`${runtime.id ?? runtime.runtimeKind}: LE-F1 SC-004 — a run whose model left the catalog: a catalog copy fails with the reason, an outside message is not found, and nothing is added`, async () => {
       const staleModel = staleModelFor(runtime.runtimeKind)!;
       const offered = await modelsFor(runtime);
       expect(offered.includes(staleModel), `${staleModel} must not be in the ${runtime.runtimeKind} catalog (${offered.join(", ")})`).toBe(false);
@@ -1076,16 +1043,16 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
         `You are a precise tool operator. Follow the user's instructions exactly and keep every reply to one short sentence.${hint}`, ["list_available_agents"]);
       const pmRunId = await createAgentRun(pmId, runtime.runtimeKind, staleModel);
       const pm = await openSocket(`/ws/agent/${pmRunId}`, "CONNECTED");
-      const bringIn = await callTool(pm, "send_message_to", { recipient_address: `/${segmentFor(helperName)}`, content: "hello" }, "stale bring-in", false);
-      const bringText = JSON.stringify(bringIn.payload);
-      expect(rejected(bringIn), bringText.slice(0, 800)).toBe(true);
-      expect(bringText, "the reason reaches the agent").toMatch(/COLLABORATOR_ADD_FAILED|not available/);
+      const outside = await callTool(pm, "send_message_to", { recipient_address: `/${segmentFor(helperName)}`, content: "hello" }, "outside message on a stale model", false);
+      const outsideText = JSON.stringify(outside.payload);
+      expect(rejected(outside), outsideText.slice(0, 800)).toBe(true);
+      expect(outsideText, "an outside message is not found whatever the model").toMatch(/COLLABORATION_TARGET_NOT_FOUND|delegate_task/);
       const delegated = await callTool(pm, "delegate_task", { recipient_address: squad.squadAddress, description: "ping" }, "stale catalog copy", false);
       const delegateText = JSON.stringify(delegated.payload);
       expect(resultRunId(delegated), delegateText.slice(0, 800)).toBeNull();
       expect(delegateText, "the delegation reason reaches the agent").toMatch(/cannot be delegated to|not available/);
       const view = await collaborationView(pmRunId);
-      expect(view?.execution_tree.collaborators ?? [], "nothing added").toEqual([]);
+      expect((view?.execution_tree as Record_ | undefined)?.["collaborators"], "collaborators no longer exist").toBeUndefined();
       expect(view?.execution_tree.taskExecutions ?? [], "no copy started").toEqual([]);
       expect(await packageExists(pmRunId), "nothing written").toBe(false);
     }, 1_200_000);

@@ -109,7 +109,7 @@
         </span>
       </span>
     </div>
-    <!-- SR-007: a running copy or collaborator has the same stop icon as a running run. -->
+    <!-- SR-007: a running copy has the same stop icon as a running run. -->
     <DelegatedStopButton
       v-if="stopRoot && stopReference"
       class="mr-1 self-center"
@@ -221,7 +221,7 @@ const rowClasses = computed(() => ({
   'text-gray-600 hover:bg-gray-50': !props.isSelected,
 }));
 
-/** A copy or collaborator itself (an Agent or a whole Team), never one member of a Team copy. */
+/** A copy itself (an Agent or a whole Team), never one member of a Team copy. */
 const stopReference = computed<DelegatedReference | null>(() => {
   if (props.row.transientKind === 'task_agent' && props.row.agentRunId) return { agentRunId: props.row.agentRunId };
   if (props.row.transientKind === 'task_team' && props.row.teamRunIdForNode) return { teamRunId: props.row.teamRunIdForNode };

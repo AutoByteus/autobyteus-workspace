@@ -17,7 +17,6 @@ const agentView = (closed) => ({
     execution_tree: {
       subjectKind: "agent", createdAt: at,
       host: { address: "/manager", agentRunId: "host-run", agentDefinitionId: "manager" },
-      collaborators: [],
       taskExecutions: [taskAgent("/writer", "writer-run"), taskTeam("/review", "review-team", "review-lead", [taskAgent("/helper", "helper-run")])],
     },
     closed_task_executions: closed,
@@ -42,7 +41,6 @@ const orgView = (closed) => ({
           members: [{ address: "/team/lead", agentDefinitionId: "lead", role: null, description: null, agentRunId: "lead-run", platformAgentRunId: null, launchConfiguration: launch }],
           taskExecutions: [taskAgent("/team/worker", "team-worker-run")] },
       ],
-      collaborators: [],
       taskExecutions: [taskAgent("/writer", "writer-run")],
     } },
     closed_task_executions: closed,

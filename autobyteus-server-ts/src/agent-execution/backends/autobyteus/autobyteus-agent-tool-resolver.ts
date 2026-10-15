@@ -81,7 +81,7 @@ export const resolveAutoByteusAgentTools = (input: {
     if (name.trim() === LIST_AVAILABLE_AGENTS_TOOL_NAME) {
       if (!memberExecutionContext?.collaboration.listAvailableAgents) {
         logger.warn(
-          `Tool '${name}' defined in agent definition '${agentDefinition.name}' requires a run that can bring in collaborators. Skipping.`,
+          `Tool '${name}' defined in agent definition '${agentDefinition.name}' requires a run that can delegate to available agents. Skipping.`,
         );
         continue;
       }

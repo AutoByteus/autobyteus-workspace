@@ -1,0 +1,65 @@
+{
+  "startedAt": "2026-10-15T14:55:59.209Z",
+  "cases": {
+    "R03": {
+      "title": "S2 AC-003: the server rejects the Org launch (its member definition was deleted meanwhile) → \"Couldn't start this Agent Org. Try again.\", values kept, Run enabled, no run created",
+      "result": "Fail",
+      "ms": 36504,
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"org-launch-run\"]')\n    - locator resolved to <button title=\"Run\" type=\"button\" aria-label=\"Run\" data-test=\"org-launch-run\" class=\"absolute bottom-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white shadow-sm transition-all duration-200 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:cursor-not-allowed disabled:opacity-50\">…</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not enabled\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not enabled\n    - retrying click action\n      - waiting 100ms\n    58 × waiting for element to be visible, enabled and stable\n       - element is not enabled\n     - retrying click action\n       - waiting 500ms\n",
+      "details": null
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 36957
+    },
+    {
+      "label": "frontend",
+      "pid": 37009
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 37009,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 36957,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-xpQqcM"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-xpQqcM",
+  "backendUrl": "http://127.0.0.1:61424",
+  "frontUrl": "http://127.0.0.1:61425",
+  "definitions": {
+    "planner": "planner",
+    "drafter": "drafter",
+    "checker": "checker",
+    "scout": "scout",
+    "fragile": "fragile-helper",
+    "docsTeam": "docs-team",
+    "org": "docs-org",
+    "fragileOrg": "fragile-org"
+  },
+  "fastCandidates": [
+    "gpt-5.6-luna",
+    "gpt-5.6-sol",
+    "gpt-5.6-terra",
+    "gpt-6-astra",
+    "gpt-6-luna",
+    "gpt-6-sol",
+    "gpt-6.1-sol"
+  ],
+  "browserErrors": [],
+  "summary": {
+    "pass": 0,
+    "fail": 1,
+    "blocked": 0
+  },
+  "completedAt": "2026-10-15T14:57:26.250Z"
+}

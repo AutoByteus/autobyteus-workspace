@@ -86,7 +86,7 @@ const createFakeAdapter = (overrides: Partial<RootTaskExecutionAdapter<string>> 
     beginActivation: vi.fn(() => ({ prepare: async () => ({ targetAgentRunId: "child-run",
       commit: async () => ({ committed: true }), acceptSeed: async guard => { guard(); return { accepted: true }; } }),
       cancel: vi.fn(), release: vi.fn(async () => ({ accepted: true })), })),
-    registrationFor: () => null, taskExecutionAt: () => null, taskExecutionTargetOf: () => null,
+    registrationFor: () => null, taskExecutionTargetOf: () => null,
     ownershipChainFor: (agentRunId) => state.chains.get(agentRunId) ?? [],
     cancelOwnedExecution: vi.fn(), releaseOwnedExecution: vi.fn(async () => ({ accepted: false, code: "UNAVAILABLE" })),
     taskExecutionChainFor: (agentRunId) => state.chains.get(agentRunId) ?? [],
@@ -511,10 +511,6 @@ describe("RootTaskExecutionLifecycle launch notes (DS-003, DS-004 b; REQ-008)", 
         const id = `run-${++next}`;
         return { ...input, ownedAgentRunIds: [id], target: { root: caller.root, execution: { agentRunId: id }, ingressAgentRunId: id } };
       }),
-      taskExecutionAt: (address, among) => {
-        const found = address === "/helper" ? among.find((reference) => "agentRunId" in reference && reference.agentRunId !== "run-1") : undefined;
-        return found && "agentRunId" in found ? { root: caller.root, execution: found, ingressAgentRunId: found.agentRunId } : null;
-      },
     });
     return fake;
   };
@@ -526,21 +522,6 @@ describe("RootTaskExecutionLifecycle launch notes (DS-003, DS-004 b; REQ-008)", 
       .resolves.toEqual({ delegated: true, copy: { kind: "agent", agentRunId: "run-1" }, taskId: "ad_hoc_task_1", launchNotes: ["worker: fell back"] });
     await expect(lifecycle.delegateToNewCopy({ identity: caller }, { recipient_address: "/worker", description: "Again" }, { launchNotes: [] }))
       .resolves.toEqual({ delegated: true, copy: { kind: "agent", agentRunId: "run-2" }, taskId: "ad_hoc_task_2" });
-  });
-
-  it("a Task helper returns notes only from the dispatch that started it (or the attempt it joined); a reused helper has none", async () => {
-    const { lifecycle, state } = notesSetup();
-    await lifecycle.delegateToNewCopy({ identity: caller }, { recipient_address: "/worker", description: "Do it" }, {});
-    state.chains.set("run-1", [{ agentRunId: "run-1" }]);
-    const placement = { launchNotes: ["helper: its agent default could not be used"] };
-    const [first, joined] = await Promise.all([
-      lifecycle.ensureTaskHelper({ identity: worker }, "/helper", placement),
-      lifecycle.ensureTaskHelper({ identity: worker }, "/helper", placement),
-    ]);
-    expect(first).toEqual({ target: { root: caller.root, execution: { agentRunId: "run-2" }, ingressAgentRunId: "run-2" }, launchNotes: placement.launchNotes });
-    expect(joined).toEqual(first);
-    const reused = await lifecycle.ensureTaskHelper({ identity: worker }, "/helper", placement);
-    expect(reused).toEqual({ target: { root: caller.root, execution: { agentRunId: "run-2" }, ingressAgentRunId: "run-2" } });
   });
 });
 

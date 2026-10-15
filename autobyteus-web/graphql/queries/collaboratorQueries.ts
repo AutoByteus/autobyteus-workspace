@@ -20,7 +20,7 @@ export const GetCollaboratorMentionCandidates = gql`
   }
 `
 
-/** The stored or active Agent-root view of a standalone run; null when it has no collaborators. */
+/** The stored or active Agent-root view of a standalone run; null when it has no delegated copies. */
 export const GetAgentRunCollaboration = gql`
   query GetAgentRunCollaboration($runId: String!) {
     agentRunCollaboration(runId: $runId)

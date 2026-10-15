@@ -1,4 +1,3 @@
-import { listCollaboratorAgentRunIds } from "../domain/run-execution-tree-shared-records.js";
 import {
   assertAgentTeamAddress,
   getParentAgentTeamAddress,
@@ -17,17 +16,14 @@ import {
   parseApplicationBinding,
   parseConfiguredAgent,
   parseConfiguredTeam,
-  parseCollaborators,
   parseLaunchConfiguration,
   parseTaskExecutions,
   requiredArray,
   requiredString,
   requireKeys,
-  validateCollaboratorInvariants,
+  validateCatalogCopyLayouts,
   validateConfiguredPlacementUniqueness,
   validateTaskExecutionDelegators,
-  collaboratorTaskOwners,
-  collectTaskExecutionRunIds,
 } from "./run-execution-tree-shared-record-schemas.js";
 
 const parseRootOrg = (value: unknown): RootConfiguredAgentOrgExecutionNode => {
@@ -60,7 +56,6 @@ const parseRootOrg = (value: unknown): RootConfiguredAgentOrgExecutionNode => {
     orgRunId: requiredString(root.orgRunId, "rootOrg.orgRunId"),
     defaultLaunchConfiguration: parseLaunchConfiguration(root.defaultLaunchConfiguration, "rootOrg.defaultLaunchConfiguration"),
     members,
-    collaborators: parseCollaborators(root.collaborators, "rootOrg.collaborators"),
     taskExecutions: parseTaskExecutions(root.taskExecutions, "rootOrg.taskExecutions"),
   };
 };
@@ -89,22 +84,8 @@ const validateHandoffEndpoints = (tree: AgentOrgRunExecutionTreeFile): void => {
     tree.rootOrg,
     ...members.flatMap((member) => "teamRunId" in member ? [member] : []),
   ];
-  const collaborators = tree.rootOrg.collaborators;
-  validateTaskExecutionDelegators(
-    [...agents.values(), ...listCollaboratorAgentRunIds(collaborators)],
-    [...owners, ...collaboratorTaskOwners(collaborators)],
-  );
-  validateCollaboratorInvariants({
-    collaborators,
-    reservedAddresses: [...agents.keys(), ...teams.keys()],
-    otherRunIds: [
-      tree.rootOrg.orgRunId,
-      ...agents.values(),
-      ...members.flatMap((member) => "teamRunId" in member ? [member.teamRunId] : []),
-      ...owners.flatMap((owner) => collectTaskExecutionRunIds(owner.taskExecutions)),
-    ],
-    owners,
-  });
+  validateTaskExecutionDelegators(agents.values(), owners);
+  validateCatalogCopyLayouts(owners);
 };
 
 /**

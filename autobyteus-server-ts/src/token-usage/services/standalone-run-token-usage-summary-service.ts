@@ -7,8 +7,7 @@ export type StandaloneRunTreeAgentRunIds = Readonly<{
 }>;
 
 /**
- * A standalone run's token usage including its collaborators, the members of its collaborator
- * Teams and its task copies (recursively), as a Team run's usage includes its members. It needs
+ * A standalone run's token usage including its delegated copies (recursively), as a Team run's usage includes its members. It needs
  * no attribution data beyond the run's collaboration tree, so it covers existing runs too; a run
  * without a package is its host alone.
  */

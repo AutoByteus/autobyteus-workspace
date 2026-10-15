@@ -3,7 +3,6 @@ import { composeCollaboratorMentionNote } from "@autobyteus/agent-presentation-c
 import type { StandaloneRunPostInput, StandaloneRunPostResult } from "../../agent-execution/services/standalone-run-ports.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { AgentRunInputReservationResult } from "../../agent-execution/input/agent-run-input-contract.js";
-import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 import { getAgentTeamAddressBasename, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import {
   createCollaborationMemberExecutionIdentity,
@@ -12,7 +11,7 @@ import {
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { MemberLogicalMessageInput } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import type { RootTaskExecutionLifecycle } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
-import { TaskDelegationError, type AssignToExistingCopyInput, type SpawnTaskInput, type TaskDelegationContext, type TaskDelegationOutcome } from "../../agent-collaboration/execution/task/task-delegation-command.js";
+import { type AssignToExistingCopyInput, type SpawnTaskInput, type TaskDelegationContext, type TaskDelegationOutcome } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { delegateToResolvedTarget } from "../../agent-collaboration/execution/task/task-delegation-target.js";
 import { buildTaskWorkMessageInput } from "../../agent-collaboration/execution/task/task-execution-input.js";
 import type { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
@@ -25,7 +24,6 @@ import { buildMemberInputPresentationEvent } from "../../agent-collaboration/exe
 import { projectAgentPresentationMessage } from "../../agent-collaboration/execution/events/agent-presentation-message-projector.js";
 import type { CollaboratorMention, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
-import { appendLaunchNotes } from "../../agent-collaboration/collaborators/launch-configuration-notes.js";
 import type { TeamMemberExecutionCommand } from "../../agent-team-execution/domain/team-member-execution-command.js";
 import { buildDirectAgentRunInterAgentEvent } from "../../agent-communication/services/global-agent-run-message-runtime-builders.js";
 import type { StandaloneHostAgentHandle } from "../domain/standalone-host-agent-handle.js";
@@ -45,8 +43,8 @@ type DeliveryInput = Readonly<{
 
 /**
  * The standalone root's message and delegation addressing, `@` mention resolution, input
- * routing and child commands. Every public method runs inside the root's operation gate, held by the caller, so a
- * catalog bring-in never re-enters it. The host is reached through its handle like any child:
+ * routing and child commands. Every public method runs inside the root's operation gate, held by
+ * the caller. Messaging only resolves; it never creates a run. The host is reached through its handle like any child:
  * a message to a host that is not running makes it ready first (no special wake path).
  */
 export class StandaloneRootMessageDelivery {
@@ -104,18 +102,17 @@ export class StandaloneRootMessageDelivery {
     return this.options.collaborators.listAvailable(sender.agentRunId);
   }
 
-  /** `send_message_to(address)`; a first message to a catalog address brings it in (with its launch notes). */
+  /** `send_message_to(address)`: delivers to a standing instance; any other address is not found. */
   async deliverToAddress(sender: CollaborationMemberExecutionIdentity, input: MemberLogicalMessageInput): Promise<AgentOperationResult> {
     this.options.authorizeIdentity(sender);
-    const resolution = await this.options.recipients.resolveMessageRecipient(sender, input.recipientAddress);
-    if (!resolution.resolved) return { accepted: false, code: resolution.code, message: resolution.message };
-    return appendLaunchNotes(await this.deliverTo(resolution.placement.receiver.agentRunId, {
+    const placement = this.options.recipients.resolveMessageRecipient(sender, input.recipientAddress);
+    return this.deliverTo(placement.receiver.agentRunId, {
       senderIdentity: sender,
       senderDisplayName: getAgentTeamAddressBasename(sender.memberAddress) ?? sender.agentRunId,
       content: input.content,
       messageType: input.messageType,
       referenceFiles: input.referenceFiles,
-    }), resolution.launchNotes);
+    });
   }
 
   /** `send_message_to(run ID)`: existing executions only; never brings anything in. */
@@ -134,22 +131,14 @@ export class StandaloneRootMessageDelivery {
   }
 
   /**
-   * `delegate_task(address)`: never to the caller's own address (as in Team and Org roots). The
-   * host is not a delegation placement, so its own address is refused before resolution.
+   * `delegate_task(address)`: never to the caller itself, a teammate or its own Team (CM-1, in the
+   * shared resolution, before any placement or Task link). The host is not a delegation placement.
    */
   delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput): Promise<TaskDelegationOutcome> {
     this.options.authorizeIdentity(context.identity);
-    const selfTarget = () => new CollaborationContractError(
-      "COLLABORATION_SELF_TARGET_REJECTED",
-      "An Agent cannot delegate a task to its own logical placement.",
-    );
-    if (input.recipient_address.trim() === context.identity.memberAddress) throw selfTarget();
     return delegateToResolvedTarget(
       () => this.options.recipients.resolveDelegationPlacement(context.identity, input.recipient_address),
-      (placement) => {
-        if (placement.kind === "agent" && placement.address === context.identity.memberAddress) throw selfTarget();
-        return this.options.taskExecutions.delegateToNewCopy(context, input, placement);
-      },
+      (placement) => this.options.taskExecutions.delegateToNewCopy(context, input, placement),
     );
   }
 
@@ -226,7 +215,7 @@ export class StandaloneRootMessageDelivery {
     const agent = this.options.getIndex().getAgent(agentRunId);
     if (!agent || agent.executionKind === "host") return false;
     if (agent.host.hostKind === "root") {
-      // A collaborator Agent keeps its handle (it starts lazily); a task Agent is live while active.
+      // A task Agent is live while active.
       return agent.executionKind === "task" ? this.options.rootAgents.isTaskLive(agentRunId) : this.options.rootAgents.get(agentRunId) !== null;
     }
     const host = this.options.teams.get(agent.host.hostRunId);

@@ -32,7 +32,7 @@ export const collaboratorMentionsDtoSchema = z.array(collaboratorMentionDtoSchem
 
 /**
  * Where a mentioned definition is relative to the run: `not_in_run` (delegate to its catalog
- * address), `in_run` (a configured member or a collaborator, also messageable directly), or
+ * address), `in_run` (a configured member of the run, messageable directly), or
  * `run_agent` (the standalone Agent run's own agent, reached only with `send_message_to`).
  */
 export type MentionedCollaboratorPresence = "not_in_run" | "in_run" | "run_agent";

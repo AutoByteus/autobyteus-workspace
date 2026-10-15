@@ -9,7 +9,7 @@ import {
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { MemberLogicalMessageInput } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import type { RootTaskExecutionLifecycle } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
-import { TaskDelegationError, type AssignToExistingCopyInput, type SpawnTaskInput, type TaskDelegationContext, type TaskDelegationOutcome } from "../../agent-collaboration/execution/task/task-delegation-command.js";
+import { type AssignToExistingCopyInput, type SpawnTaskInput, type TaskDelegationContext, type TaskDelegationOutcome } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { delegateToResolvedTarget } from "../../agent-collaboration/execution/task/task-delegation-target.js";
 import { buildTaskWorkMessageInput } from "../../agent-collaboration/execution/task/task-execution-input.js";
 import type { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
@@ -21,7 +21,6 @@ import { buildMemberInputPresentationEvent } from "../../agent-collaboration/exe
 import { projectAgentPresentationMessage } from "../../agent-collaboration/execution/events/agent-presentation-message-projector.js";
 import type { CollaboratorMention, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
-import { appendLaunchNotes } from "../../agent-collaboration/collaborators/launch-configuration-notes.js";
 import type { AgentOrgCommunicationMessagesFileV1 } from "../persistence/agent-org-communication-messages-v1.js";
 import type { AgentOrgRunEvent } from "../domain/agent-org-run-event.js";
 import type { AgentOrgExecutionIndex, AgentOrgIndexedAgentExecution } from "./agent-org-execution-index.js";
@@ -63,14 +62,12 @@ export class AgentOrgRunMessageDelivery {
     return this.options.collaborators.listAvailable();
   }
 
-  /** `send_message_to(address)`; a first message to a catalog address brings it in (with its launch notes). */
+  /** `send_message_to(address)`: delivers to a standing instance; any other address is not found. */
   async deliverToAddress(sender: CollaborationMemberExecutionIdentity, input: MemberLogicalMessageInput): Promise<AgentOperationResult> {
     this.options.authorizeIdentity(sender);
-    const resolution = await this.options.recipients.resolveMessageRecipient(sender, input.recipientAddress);
-    if (!resolution.resolved) return { accepted: false, code: resolution.code, message: resolution.message };
-    const target = resolution.placement.receiver;
+    const target = this.options.recipients.resolveMessageRecipient(sender, input.recipientAddress).receiver;
     const receiver = this.identityFor(target.agentRunId, target.address);
-    return appendLaunchNotes(await this.withLiveLease(receiver.agentRunId, () => this.options.getCommunication().deliver({
+    return this.withLiveLease(receiver.agentRunId, () => this.options.getCommunication().deliver({
       senderIdentity: sender,
       senderDisplayName: getAgentTeamAddressBasename(sender.memberAddress) ?? sender.agentRunId,
       receiverIdentity: receiver,
@@ -78,7 +75,7 @@ export class AgentOrgRunMessageDelivery {
       content: input.content,
       messageType: input.messageType,
       referenceFiles: input.referenceFiles,
-    })), resolution.launchNotes);
+    }));
   }
 
   /** `send_message_to(run ID)`: existing executions only; never brings anything in. */
@@ -99,15 +96,11 @@ export class AgentOrgRunMessageDelivery {
     }));
   }
 
-  /** `delegate_task(address)`: never to the caller's own placement. */
+  /** `delegate_task(address)`: never to the caller itself, a teammate or its own Team (CM-1, in the shared resolution). */
   delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput): Promise<TaskDelegationOutcome> {
     this.options.authorizeIdentity(context.identity);
-    return delegateToResolvedTarget(() => this.options.recipients.resolveDelegationPlacement(context.identity, input.recipient_address), (placement) => {
-      if (placement.kind === "agent" && placement.address === context.identity.memberAddress) {
-        throw new Error("An Agent cannot delegate a task to its own logical placement.");
-      }
-      return this.options.taskExecutions.delegateToNewCopy(context, input, placement);
-    });
+    return delegateToResolvedTarget(() => this.options.recipients.resolveDelegationPlacement(context.identity, input.recipient_address), (placement) =>
+      this.options.taskExecutions.delegateToNewCopy(context, input, placement));
   }
 
   /** `delegate_task` with a copy's own ID: its new Task's work is delivered by this root's exact delivery. */
@@ -179,7 +172,7 @@ export class AgentOrgRunMessageDelivery {
 
   /**
    * Runtime liveness (AR-005): the host is active and, for a delegated child Agent, its
-   * AgentRun is active. Configured Agents and collaborators keep host membership (they
+   * AgentRun is active. Configured Agents keep host membership (they
    * activate lazily on their first message).
    */
   isLiveAgent(agentRunId: string): boolean {

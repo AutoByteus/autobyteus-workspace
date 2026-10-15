@@ -1,0 +1,343 @@
+{
+  "startedAt": "2026-10-15T14:01:41.060Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PMU-003": {
+      "result": "Pass",
+      "description": "Task Team root opens the coordinator expanded; Team- and Org-hosted roots open in their views",
+      "durationMs": 9267,
+      "details": {
+        "teamRoot": {
+          "state": "idle",
+          "openable": "true",
+          "tag": "BUTTON",
+          "name": "docs review team pmuagent 6f7b"
+        },
+        "teamHosted": {
+          "line": {
+            "state": "idle",
+            "openable": "true",
+            "tag": "BUTTON",
+            "name": "release notes writer pmuagent 6f7b"
+          },
+          "hostRoot": {
+            "kind": "agent_team",
+            "runId": "delivery_team_pmuagent_6f7b_f458c35cc5044cacbb2dc4d0391780c0"
+          },
+          "url": "http://127.0.0.1:63560/workspace"
+        },
+        "orgHosted": {
+          "line": {
+            "state": "idle",
+            "openable": "true",
+            "tag": "BUTTON",
+            "name": "worker"
+          },
+          "hostRoot": {
+            "kind": "agent_org",
+            "runId": "delivery_org_pmuagent_6f7b_385643bc551c4bd89ba3bd00aa36477d"
+          },
+          "url": "http://127.0.0.1:63560/workspace?rootSubjectKind=agent_org&definitionId=delivery-org-pmuagent-6f7b&orgRunId=delivery_org_pmuagent_6f7b_385643bc551c4bd89ba3bd00aa36477d&mode=active&agentRunId=release_notes_writer_pmuagent_6f7b_066541d1b51a458488448bfad0965677"
+        },
+        "feed": {
+          "total": 28,
+          "byType": {
+            "project_upserted": 11,
+            "task_upserted": 10,
+            "task_worker_status": 7
+          }
+        },
+        "errors": []
+      }
+    },
+    "PMU-007": {
+      "result": "Pass",
+      "description": "Backend restart: reconnect + re-read (Offline), new writes; narrow layout",
+      "durationMs": 8344,
+      "details": {
+        "before": {
+          "state": "idle",
+          "openable": "true",
+          "tag": "BUTTON",
+          "name": "release notes writer pmuagent 6f7b"
+        },
+        "restart": {
+          "before": 2185,
+          "after": 3847,
+          "starts": 2
+        },
+        "narrow": {
+          "board": {
+            "scrollWidth": 340,
+            "clientWidth": 340,
+            "ok": true
+          },
+          "taskPage": {
+            "scrollWidth": 340,
+            "clientWidth": 340,
+            "ok": true
+          },
+          "tempBoard": {
+            "scrollWidth": 340,
+            "clientWidth": 340,
+            "ok": true
+          }
+        },
+        "restartWindowErrors": 7
+      }
+    },
+    "PMU-010": {
+      "result": "Pass",
+      "description": "AC-007: Couldn't start from a real start failure (board tooltip, Task page reason), then re-delegation",
+      "durationMs": 0,
+      "details": {
+        "skipped": "No deterministic real start failure remains for a delegated copy (collaboration-model-contract); rendering is unit-covered"
+      }
+    },
+    "PMU-016": {
+      "result": "Pass",
+      "description": "Projects tab in Team and Org conversations (worker opens, tab kept); constrained width: strip and drawer list Projects first",
+      "durationMs": 7130,
+      "details": {
+        "team": {
+          "order": [
+            "projects",
+            "files",
+            "teamMembers",
+            "terminal",
+            "progress",
+            "usage",
+            "artifacts",
+            "vnc"
+          ],
+          "url": "http://127.0.0.1:63560/workspace"
+        },
+        "org": {
+          "order": [
+            "projects",
+            "files",
+            "terminal",
+            "progress",
+            "usage",
+            "artifacts",
+            "vnc"
+          ],
+          "url": "http://127.0.0.1:63560/workspace?rootSubjectKind=agent_org&definitionId=delivery-org-pmutabroots-221f&orgRunId=delivery_org_pmutabroots_221f_2a59b2eefead450a8ac7489e2c928b57&mode=active&agentRunId=release_notes_writer_pmutabroots_221f_b48b76582aae4ed2877cd240d7d0d12a"
+        },
+        "narrow": {
+          "width": 1100,
+          "stripOrder": [
+            "projects",
+            "files",
+            "teamMembers",
+            "terminal",
+            "progress",
+            "usage",
+            "artifacts",
+            "vnc"
+          ],
+          "drawerOrder": [
+            "projects",
+            "files",
+            "teamMembers",
+            "terminal",
+            "progress",
+            "usage",
+            "artifacts",
+            "vnc"
+          ]
+        }
+      }
+    },
+    "PMU-020": {
+      "result": "Pass",
+      "description": "Task summaries under delegated copy rows (Agent host: agent, task Team, Temp copies; Team host): one line for members and sub-work; spec values, hover; GraphQL answers; batched reads, no Task-list reads",
+      "durationMs": 8739,
+      "details": {
+        "listed": [
+          {
+            "kind": "task_agent",
+            "address": "/release_notes_writer_pmulocate_0705",
+            "agentRunId": "release_notes_writer_pmulocate_0705_463cd5c527754be7a384b1870944f20d",
+            "height": 46,
+            "summary": "Ship the copy Task summary in the tree",
+            "label": "Temporary task agent, release notes writer pmulocate 0705, level 1, idle, Started by manager pmulocate 0705, /release_notes_writer_pmulocate_0705, Task: Ship the copy Task summary in the tree"
+          },
+          {
+            "kind": "task_team",
+            "address": "/docs_review_team_pmulocate_0705",
+            "agentRunId": null,
+            "height": 46,
+            "summary": "Review the locate journey with the docs review team and report back on every edge case found during the whole session",
+            "label": "Temporary task team, docs review team pmulocate 0705, level 1, offline, Started by manager pmulocate 0705, /docs_review_team_pmulocate_0705, Task: Review the locate journey with the docs review team and report back on every edge case found during the whole session"
+          },
+          {
+            "kind": "task_team_child",
+            "address": "/docs_review_team_pmulocate_0705/reviewer",
+            "agentRunId": "release_notes_writer_pmulocate_0705_1515239f856644dd82f51db077a18c01",
+            "height": 28,
+            "summary": null,
+            "label": "Temporary task agent, reviewer, level 2, idle, /docs_review_team_pmulocate_0705/reviewer"
+          },
+          {
+            "kind": "task_team_child",
+            "address": "/docs_review_team_pmulocate_0705/editor",
+            "agentRunId": "fact_checker_pmulocate_0705_ca0dabbc1d8149be93384bd2cc76f3e7",
+            "height": 28,
+            "summary": null,
+            "label": "Temporary task agent, editor, level 2, offline, /docs_review_team_pmulocate_0705/editor"
+          },
+          {
+            "kind": "task_agent",
+            "address": "/link_verifier_21e2",
+            "agentRunId": "link_verifier_21e2_3c5e69a6996e419eb2497bc187212ccc",
+            "height": 28,
+            "summary": null,
+            "label": "Temporary task agent, link verifier 21e2, level 1, idle, Started by release notes writer pmulocate 0705, /link_verifier_21e2"
+          },
+          {
+            "kind": "task_agent",
+            "address": "/fact_checker_pmulocate_0705",
+            "agentRunId": "fact_checker_pmulocate_0705_1dc498e1f2d04964942a24a4e57fce51",
+            "height": 46,
+            "summary": "Check the FAQ links.",
+            "label": "Temporary task agent, fact checker pmulocate 0705, level 1, idle, Started by manager pmulocate 0705, /fact_checker_pmulocate_0705, Task: Check the FAQ links."
+          }
+        ],
+        "style": {
+          "fontSize": "11px",
+          "lineHeight": "16px",
+          "fontWeight": "400",
+          "color": "rgb(128, 128, 128)",
+          "gapAbove": 2,
+          "textLeftMinusName": 0,
+          "title": "Show Task in Projects: Ship the copy Task summary in the tree",
+          "ariaLabel": "Show Task in Projects: Ship the copy Task summary in the tree",
+          "ariaCurrent": null,
+          "ariaSelected": null,
+          "tag": "BUTTON"
+        },
+        "team": {
+          "weight": "400",
+          "ellipsis": "ellipsis",
+          "truncated": true,
+          "elbowFromRowTop": 14,
+          "chevronCentre": 14,
+          "nameCentre": 14
+        },
+        "hover": {
+          "color": "rgb(67, 56, 202)",
+          "line": "underline",
+          "offset": "2px"
+        },
+        "answers": [
+          {
+            "workerKind": "agent",
+            "workerRunId": "release_notes_writer_pmulocate_0705_463cd5c527754be7a384b1870944f20d",
+            "task": {
+              "taskId": "project_task_90f59210-a1fa-44f5-a951-5cbfb42f4e12",
+              "projectId": "project_48086490-a0ff-4b1c-8192-d8f168e1bfb2",
+              "description": "Ship the copy Task summary in the tree\nCALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/link_verifier_21e2\",\"description\":\"Check the links.\"}}",
+              "status": "TODO"
+            }
+          },
+          {
+            "workerKind": "agent",
+            "workerRunId": "fact_checker_pmulocate_0705_1dc498e1f2d04964942a24a4e57fce51",
+            "task": {
+              "taskId": "ad_hoc_task_69a20e16-5964-4ea8-9e13-66254a97cf5d",
+              "projectId": null,
+              "description": "Check the FAQ links.\nReport broken ones.",
+              "status": "TODO"
+            }
+          },
+          {
+            "workerKind": "agent",
+            "workerRunId": "link_verifier_21e2_3c5e69a6996e419eb2497bc187212ccc",
+            "task": null
+          },
+          {
+            "workerKind": "agent",
+            "workerRunId": "release_notes_writer_pmulocate_0705_d0ec127b17cf4268859235c1c56484d3",
+            "task": {
+              "taskId": "project_task_b3bed4df-d8fa-4d63-9674-97dab83dd4f7",
+              "projectId": "project_d9305fb0-c0d3-4135-ad69-1d3cefab5973",
+              "description": "Draft the release notes for the beta",
+              "status": "TODO"
+            }
+          },
+          {
+            "workerKind": "team",
+            "workerRunId": "docs_review_team_pmulocate_0705_f996174807354412938cc854ebe34b4d",
+            "task": {
+              "taskId": "project_task_5013b355-5513-464f-b167-4aa8317500e0",
+              "projectId": "project_48086490-a0ff-4b1c-8192-d8f168e1bfb2",
+              "description": "Review the locate journey with the docs review team and report back on every edge case found during the whole session",
+              "status": "TODO"
+            }
+          }
+        ],
+        "reads": [
+          {
+            "agentRunIds": [
+              "release_notes_writer_pmulocate_0705_463cd5c527754be7a384b1870944f20d",
+              "link_verifier_21e2_3c5e69a6996e419eb2497bc187212ccc",
+              "fact_checker_pmulocate_0705_1dc498e1f2d04964942a24a4e57fce51"
+            ],
+            "teamRunIds": [
+              "docs_review_team_pmulocate_0705_f996174807354412938cc854ebe34b4d"
+            ]
+          },
+          {
+            "agentRunIds": [
+              "release_notes_writer_pmulocate_0705_463cd5c527754be7a384b1870944f20d",
+              "link_verifier_21e2_3c5e69a6996e419eb2497bc187212ccc",
+              "fact_checker_pmulocate_0705_1dc498e1f2d04964942a24a4e57fce51"
+            ],
+            "teamRunIds": [
+              "docs_review_team_pmulocate_0705_f996174807354412938cc854ebe34b4d"
+            ]
+          }
+        ],
+        "listScopes": [],
+        "teamHostSummary": "Draft the release notes for the beta",
+        "subWorkRunId": "link_verifier_21e2_3c5e69a6996e419eb2497bc187212ccc"
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 2867,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 3847,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [],
+  "feed": {
+    "total": 117,
+    "byType": {
+      "connected": 2,
+      "project_upserted": 47,
+      "task_upserted": 46,
+      "task_worker_status": 22
+    }
+  },
+  "stack": {
+    "backendUrl": "http://127.0.0.1:63559",
+    "frontendUrl": "http://127.0.0.1:63560",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-GzuUlI"
+  },
+  "browserVersion": "155.0.8059.41",
+  "warmup": {
+    "reloadsDuringWarmup": 0
+  },
+  "result": "Pass",
+  "finishedAt": "2026-10-15T14:02:38.530Z"
+}

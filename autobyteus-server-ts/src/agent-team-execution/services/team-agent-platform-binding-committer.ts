@@ -6,7 +6,7 @@ import type { TeamRunPersistenceCoordinator } from "./team-run-persistence-coord
 
 /**
  * Commits one provider platform-binding change into the root TeamRun execution tree.
- * Owned by `RootTeamRun`, which remains the only public authority; this collaborator
+ * Owned by `RootTeamRun`, which remains the only public authority; this helper
  * holds no tree state and publishes a durable change only through `replaceTree`.
  */
 export class TeamAgentPlatformBindingCommitter {

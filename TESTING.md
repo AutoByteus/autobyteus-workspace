@@ -86,7 +86,10 @@ not paid inference. Agent-run testing is not the user's verification.
 - **Clean environment elsewhere.** E2E folders, `autobyteus-ts` integration tests and live
   suites inherit the shell, which carries the live app's variables and provider keys. Run
   them with a clean environment, e.g. `env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" …`,
-  or unset the inherited `AUTOBYTEUS_*` roots, as the test file states.
+  or unset the inherited `AUTOBYTEUS_*` roots, as the test file states. A live suite that
+  uses a signed-in CLI (`claude`, `codex`) also needs the real `HOME` and, on macOS,
+  `USER` and `LOGNAME`; without them the CLI reports "Not logged in" and the run hangs
+  until its step timeout.
 - **Gates.** Live and costly tests stay skipped unless their gate is set. A skip is not a
   pass. Real-provider runs spend the user's credits: run them only when the change needs
   real-provider proof.
@@ -145,6 +148,14 @@ not paid inference. Agent-run testing is not the user's verification.
   <test> tar -C <dir> -xf -`. Remove the container with `docker rm -f -v` afterwards.
 - **Data.** Every run uses its own data root, database, ports and processes. Create data
   through public APIs or the UI, never by editing another run's files.
+- **Migrations and upgrades are tested on small synthesized data.** The source is a few
+  test-made records with the released structure, covering each shape that exists, older
+  ones included; the target is what the new build makes of it. Learn the structure by
+  reading real user data (read-only) or what a released build wrote, and check that the
+  synthesized records have the same keys and shapes. Never copy real data into a test, and
+  never run a migration, startup or conversion on real user data or a copy of it; use a
+  test-owned data root, and never wake a converted run against real runtime sessions.
+  Prove the conversion, that nothing is lost, and that a second start changes nothing.
 - **Build outputs** such as the application SDK `dist/` folders and
   `autobyteus-web/electron-dist/` are untracked. Stage paths explicitly; never `git add -A`.
   Exception: the three contract packages (`autobyteus-agent-presentation-contracts`,

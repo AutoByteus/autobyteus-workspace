@@ -112,7 +112,7 @@ export class AgentRunCommandCoordinator {
 
   /**
    * An eligible standalone run is activated, resolves its mentions (adds nothing) and posts inside its root's
-   * gate; any other run posts directly to its command-ready AgentRun (it hosts no collaborators).
+   * gate; any other run posts directly to its command-ready AgentRun (it hosts no delegated copies).
    */
   private async post(record: AgentRunCommandRecord, input: AgentRunCommandCoordinatorInput): Promise<StandaloneRunPostResult> {
     const message = this.withCommandMetadata(input.message, record);
@@ -129,7 +129,7 @@ export class AgentRunCommandCoordinator {
     onActiveRunReady(run);
     if (input.mentions?.length) {
       return { kind: "admission_rejected", run, admission: {
-        admitted: false, code: "COLLABORATOR_MENTION_UNAVAILABLE", message: "This run cannot bring in collaborators.",
+        admitted: false, code: "COLLABORATOR_MENTION_UNAVAILABLE", message: "This run cannot involve other agents.",
       } };
     }
     const post: AgentOperationResult = await run.postUserMessage(message, postOptions);

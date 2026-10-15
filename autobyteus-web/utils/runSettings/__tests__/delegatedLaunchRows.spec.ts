@@ -19,11 +19,11 @@ const tree = (): TeamRunExecutionTreeDto => ({
     address: '/', team_definition_id: 'pm', team_definition_name: 'PM', team_run_id: 'root', coordinator_address: '/pm',
     default_launch_configuration: claude,
     members: [{ kind: 'configured_agent', address: '/pm', agent_definition_id: 'pm', role: null, description: null, agent_run_id: 'pm-run', platform_agent_run_id: null, launch_configuration: claude }],
-    collaborators: [{
-      kind: 'agent', address: '/writer', agent_definition_id: 'writer', agent_run_id: 'writer-run', platform_agent_run_id: null,
-      launch_configuration: claude, added_at: created, added_via_agent_run_id: 'pm-run',
-    }],
     task_executions: [
+      {
+        kind: 'task_agent', address: '/writer', agent_run_id: 'writer-run', platform_agent_run_id: null, delegator_agent_run_id: 'pm-run', started_at: created,
+        source: { kind: 'agent', agent_definition_id: 'writer', launch_configuration: claude },
+      },
       {
         kind: 'task_team', address: '/se', team_run_id: 'se-copy', delegator_agent_run_id: 'pm-run', started_at: created, task_executions: [],
         members: [
@@ -49,10 +49,10 @@ const tree = (): TeamRunExecutionTreeDto => ({
 })
 
 describe('delegated launch nodes (REQ-007, AC-010, SR-006)', () => {
-  it('Team root: one read-only row per collaborator and open copy; a Team copy has its agents as child rows', () => {
+  it('Team root: one read-only row per open copy; a Team copy has its agents as child rows', () => {
     const nodes = teamDelegatedLaunchNodes(tree(), [{ agentRunId: 'closed-run' }], deps)
     expect(flat(nodes)).toEqual([
-      ['/writer@writer-run', 0, 'collaborator', 'not_recorded', 'claude_agent_sdk', 'opus'],
+      ['/writer@writer-run', 0, 'delegated_copy', 'not_recorded', 'claude_agent_sdk', 'opus'],
       ['/se@se-copy', 0, 'delegated_copy', 'inherited', 'claude_agent_sdk', 'opus'],
       ['/se/lead@lead-run', 1, undefined, 'inherited', 'claude_agent_sdk', 'opus'],
       ['/se/ie@ie-run', 1, undefined, 'agent_default', 'codex_app_server', 'sol-6.1'],
@@ -80,16 +80,6 @@ describe('delegated launch nodes (REQ-007, AC-010, SR-006)', () => {
   it('Org and Agent roots (camelCase): the same rules, with a launch lookup for copies without a recorded source', () => {
     const camel = { runtimeKind: 'claude_agent_sdk' as const, llmModelIdentifier: 'opus', llmConfig: null, autoExecuteTools: false, workspaceRootPath: null }
     const nodes = collaborationDelegatedLaunchNodes({
-      collaborators: [{
-        kind: 'agent_team', address: '/se', teamDefinitionId: 'se', teamRunId: 'se-run', coordinatorAddress: '/se/lead', handoffs: [],
-        members: [
-          { address: '/se/lead', agentDefinitionId: 'lead', agentRunId: 'l', platformAgentRunId: null },
-          { address: '/se/ie', agentDefinitionId: 'ie', agentRunId: 'i', platformAgentRunId: null,
-            launchConfiguration: { ...camel, llmModelIdentifier: 'sol-6.1' }, launchSource: { origin: 'agent_default', fallbacks: [] } },
-        ],
-        defaultLaunchConfiguration: camel, defaultLaunchSource: { origin: 'team_default', fallbacks: [] },
-        taskExecutions: [], addedAt: created, addedViaAgentRunId: 'h',
-      }],
       taskExecutions: [
         { address: '/se', agentRunId: 'extra', platformAgentRunId: null, startedAt: created } as never,
         { address: '/se', teamRunId: 'team-extra', members: [{ address: '/se/lead', agentRunId: 'l2', platformAgentRunId: null }], taskExecutions: [], startedAt: created } as never,
@@ -100,9 +90,6 @@ describe('delegated launch nodes (REQ-007, AC-010, SR-006)', () => {
     // A Team copy without a recorded source is led like the in-run Team at its address.
     expect(nodes.find((node) => node.key === '/se@team-extra')!.children[0]!.isCoordinator).toBe(true)
     expect(flat(nodes)).toEqual([
-      ['/se@se-run', 0, 'collaborator', 'team_default', 'claude_agent_sdk', 'opus'],
-      ['/se/lead@l', 1, undefined, 'team_default', 'claude_agent_sdk', 'opus'],
-      ['/se/ie@i', 1, undefined, 'agent_default', 'claude_agent_sdk', 'sol-6.1'],
       ['/se@extra', 0, 'delegated_copy', 'configured', 'claude_agent_sdk', 'opus'],
       // A Team copy without a recorded source shows its in-run Team's launch (not an empty model).
       ['/se@team-extra', 0, 'delegated_copy', 'configured', 'claude_agent_sdk', 'opus'],

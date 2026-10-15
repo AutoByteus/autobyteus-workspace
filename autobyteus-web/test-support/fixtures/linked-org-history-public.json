@@ -62,7 +62,6 @@
             }
           }
         ],
-        "collaborators": [],
         "taskExecutions": [
           {
             "address": "/manual",
@@ -193,7 +192,6 @@
             "taskExecutions": []
           }
         ],
-        "collaborators": [],
         "taskExecutions": [
           {
             "address": "/workers",
@@ -353,7 +351,6 @@
             }
           }
         ],
-        "collaborators": [],
         "taskExecutions": [
           {
             "address": "/borrowed",

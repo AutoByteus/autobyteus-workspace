@@ -266,7 +266,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
     const run = { runId: RUN_ID };
     const helper = metadata({ launchPurpose: "server_helper" });
     const current = harness({ metadataStates: [{ kind: "present", metadata: helper }], preparedCandidate: candidate({ run }) });
-    await expect(current.service.activateHost(RUN_ID, HOST)).rejects.toThrow("cannot host collaborators");
+    await expect(current.service.activateHost(RUN_ID, HOST)).rejects.toThrow("cannot host delegated copies");
     await expect(current.service.activateHost(RUN_ID, { memberExecutionContext: null })).resolves.toMatchObject({ run });
     expect(current.agentRunManager.newPreparation).toHaveBeenCalledWith({
       runId: RUN_ID,

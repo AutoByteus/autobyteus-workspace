@@ -45,7 +45,7 @@ export function useTokenUsageWorkspaceScope() {
     ? target.value.team.rootRunId
     : null);
   const focusedAgentRunId = computed(() => target.value?.context.state.runId ?? null);
-  // All workspace target variants expose the exact context, including delegated/collaborator copies.
+  // All workspace target variants expose the exact context, including delegated copies.
   const tps = computed<TokenUsageTps | null>(() => meter.getRunTps(target.value?.context.state.runId));
   const scopeKey = computed(() => {
     const current = target.value;
@@ -76,7 +76,7 @@ export function useTokenUsageWorkspaceScope() {
         agentRunId: identity.agentRunId,
       });
     }
-    // A standalone run's usage includes its collaborators and task copies (REQ-006).
+    // A standalone run's usage includes its delegated copies (REQ-006).
     if (current?.kind === 'standalone_agent') return meter.getStandaloneRunSummary(identity.agentRunId);
     return meter.getRunSummary(identity.agentRunId);
   };

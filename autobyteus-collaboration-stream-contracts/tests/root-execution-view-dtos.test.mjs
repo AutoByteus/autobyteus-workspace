@@ -32,7 +32,6 @@ const orgSnapshot = (orgRunId = "org-run-1") => ({
           workspaceRootPath: null,
         },
         members: [],
-        collaborators: [],
         taskExecutions: [],
       },
     },

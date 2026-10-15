@@ -41,17 +41,4 @@ describe('collaboratorCandidatesService', () => {
     await Promise.all([collaboratorCandidatesService.refresh(child), collaboratorCandidatesService.refresh(child)])
     expect(query).toHaveBeenCalledOnce()
   })
-
-  it('invalidating a root clears the list of every focused agent of that root and nothing else', async () => {
-    query.mockResolvedValue(payload(['reviewer']))
-    const otherRoot = { rootKind: 'agent', rootRunId: 'pm-run-2', focusedAgentRunId: 'pm-run-2' } as const
-    for (const subject of [host, child, team, otherRoot]) await collaboratorCandidatesService.refresh(subject)
-    collaboratorCandidatesService.invalidate('agent', 'pm-run')
-    expect(collaboratorCandidatesService.entry(host)).toBeNull()
-    expect(collaboratorCandidatesService.entry(child)).toBeNull()
-    expect(collaboratorCandidatesService.entry(team)).not.toBeNull()
-    expect(collaboratorCandidatesService.entry(otherRoot)).not.toBeNull()
-    collaboratorCandidatesService.invalidate('agent_team', 'team-run')
-    expect(collaboratorCandidatesService.entry(team)).toBeNull()
-  })
 })

@@ -47,7 +47,7 @@ export function useRunStart() {
    * "+" on an Agent run view (CR-001): New chat for the agent on screen, prefilled with its
    * workspace (temp when it has none), runtime, model, model config (thinking and other settings)
    * and tool approval. The view passes the displayed config, so the run's own agent and an `@`
-   * collaborator (a task child or a task team's member, whose contexts live in the run's
+   * delegated copy (a task child or a task team's member, whose contexts live in the run's
    * collaboration package) copy alike. No lookup by run id.
    */
   const copyAgentFromConfig = (config: AgentRunConfig): Promise<void> => {

@@ -63,7 +63,6 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore'
 import {
   collaborationTaskExecutionLists,
-  collaboratorAgentSourceAt,
 } from '~/services/collaborators/agentSourceSelectors'
 import {
   collaborationDelegatedLaunchNodes,
@@ -152,7 +151,7 @@ watch(selectedCanonical, (payload) => {
 }, { deep: true })
 
 const delegatedDraft = useDelegatedLaunchDraftStore()
-/** The run whose copies and collaborators are shown (DS-001): their choices are kept per run. */
+/** The run whose copies are shown (DS-001): their choices are kept per run. */
 const delegatedRoot = computed<DelegatedRoot | null>(() => {
   const kind = selectedKind.value, rootRunId = selectedRunId.value
   if (!kind || !rootRunId) return null
@@ -247,7 +246,7 @@ const delegatedControl = computed<DelegatedRowControl>(() => {
 })
 
 /**
- * REQ-007 (SR-007): collaborators and open delegated copies of the run. Team and Org runs read the
+ * REQ-007 (SR-007): open delegated copies of the run. Team and Org runs read the
  * saved tree; a stopped Agent reads its Settings snapshot, an active Agent its live view. Closed copies are left out.
  */
 const delegatedRows = computed<readonly RunMemberNode[]>(() => {
@@ -262,17 +261,13 @@ const delegatedRows = computed<readonly RunMemberNode[]>(() => {
     ? useAgentRunCollaborationStore().contextFor(current.runId)?.view ?? null : current.delegatedSnapshot) : null
   if (current.kind === 'agent' && !view) return []
   const org = current.kind === 'agent_org' ? current.executionTree.rootOrg : null
-  const collaborators = org?.collaborators ?? view!.execution_tree.collaborators
   const configured = (org?.members ?? []).flatMap((member) => 'agentRunId' in member ? [member] : member.members)
-  const teams = [...(org?.members ?? []).flatMap((member) => 'teamRunId' in member ? [member] : []),
-    ...collaborators.flatMap((entry) => entry.kind === 'agent_team' ? [entry] : [])]
+  const teams = (org?.members ?? []).flatMap((member) => 'teamRunId' in member ? [member] : [])
   return collaborationDelegatedLaunchNodes({
-    collaborators,
     taskExecutions: collaborationTaskExecutionLists({
-      taskExecutions: org?.taskExecutions ?? view!.execution_tree.taskExecutions, members: org?.members ?? [], collaborators,
+      taskExecutions: org?.taskExecutions ?? view!.execution_tree.taskExecutions, members: org?.members ?? [],
     }),
     launchAt: (address) => configured.find((agent) => agent.address === address)?.launchConfiguration
-      ?? collaboratorAgentSourceAt(collaborators, address)?.launchConfiguration
       ?? teams.find((team) => team.address === address)?.defaultLaunchConfiguration ?? null,
     coordinatorAt: (address) => teams.find((team) => team.address === address)?.coordinatorAddress ?? null,
     closed: current.kind === 'agent_org' ? history.agentOrgHistory.find((run) => run.rootRunId === current.orgRunId)?.closedTaskExecutions ?? []

@@ -181,7 +181,7 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
   const teamAggregateEntries = reactive<Record<string, TeamTokenUsageAggregateEntry>>({});
   const seenUsageKeys = new Set<string>();
   const teamAggregateRequests = new Map<string, Promise<TokenUsageRunSummary | null>>();
-  /** Standalone run roll-ups (host plus collaborators and copies), apart from the host's exact live summary. */
+  /** Standalone run roll-ups (host plus delegated copies), apart from the host's exact live summary. */
   const standaloneRunSummaries = reactive<Record<string, TokenUsageRunSummary>>({});
   const standaloneRunRequests = new Map<string, Promise<TokenUsageRunSummary | null>>();
   const { clearOnLiveModelCall, ...compactionMarks } = createTokenUsageCompactionMarks();

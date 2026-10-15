@@ -147,10 +147,10 @@ settings:
   and shows no note.
 
 What the form holds at Run is what runs: seeded rows are sent as ordinary member
-overrides. Delegated copies and collaborator Teams that an agent starts resolve
+overrides. Delegated Team copies that an agent starts resolve
 their members on the server with the same order; see the server
-`docs/modules/agent_communication.md` ("Launch configuration of collaborators and
-catalog copies").
+`docs/modules/agent_communication.md` ("Launch configuration of catalog
+copies").
 
 Fresh definition-based standalone Team setup starts the root automatic-approval
 setting **on**, on desktop (New chat) and mobile and after application restart. Members
@@ -289,29 +289,19 @@ No-context history still shows configured members only. This does not add
 nested configured-Team authoring or change Agent Orgs, delegation, identity, or
 persisted data.
 
-A collaborator (a shared Agent or Agent Team brought into the run by the user's
-`@` or by an agent's first `send_message_to` to its listed address) is
-one hosted instance per entry in `root_team.collaborators`. The views show it
-with the task-row look, Offline until its first message, ahead of the root's
-delegated children: `teamExecutionTreeSelectors.withCollaboratorExecutions`
-projects each entry (and a collaborator Team's members and own
-`task_executions`) into the view tree only and never persists it. The Team
-view applies `COLLABORATOR_ADDED` by adding the entry, its locations and its
-member contexts at once, and a collaborator Team row opens once when it
-appears (`opensOnAppear`). Contexts take the definition and launch settings
-from the entry (`services/collaborators/agentSourceSelectors.ts`). Rows and
-tab labels use `utils/collaboration/memberDisplayName.ts`. An extra copy that
-`delegate_task` starts at a collaborator address is an ordinary task row.
-A **catalog copy** (`delegate_task` to a listed catalog Agent or Team that is
-not in the run) is also an ordinary task row, but no configured member or
-collaborator entry describes it. Its task DTO carries `source`, so the view
-reads the definition and launch settings from there:
+A **catalog copy** (`delegate_task` to a listed catalog Agent or Team that is not in the
+run) is an ordinary task row, Offline until its first message. The Team view has no collaborator
+concept: runs that earlier releases recorded as collaborators were converted at startup into
+these rows. No configured member describes a catalog copy, so its task DTO carries `source`,
+and the view reads the definition and launch settings from there:
 - `agentSourceSelectors.teamCatalogAgentSourceAt` for the copy and its members;
 - `source.coordinator_address` for a Team copy's coordinator.
 
-Rows for collaborator and catalog-copy addresses use the display-name formatter
-(`readsAsDisplayName`). Copies are placed by address (REQ-012): a teammate copy
-inside the delegator's own Team instance, any other copy at the run's top level.
+A new copy arrives as `TASK_EXECUTION_STARTED`. Rows and tab labels use
+`utils/collaboration/memberDisplayName.ts`; rows for catalog-copy addresses use the
+display-name formatter (`readsAsDisplayName`). New copies are always placed at the run's
+top level (CM-1: delegation to the sender's own team is refused on the server); copies already
+stored inside a Team instance keep their recorded host.
 See [Chat](./chat.md#-in-a-live-run-delegation).
 
 ## History, Restore, Stop, And Delete

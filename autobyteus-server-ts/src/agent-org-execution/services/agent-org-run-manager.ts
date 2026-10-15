@@ -335,7 +335,7 @@ export class AgentOrgRunManager {
     });
   }
 
-  /** Model options of every editable delegated copy and collaborator of the run (its current tree). */
+  /** Model options of every editable delegated copy of the run (its current tree). */
   async delegatedLaunchModelOptions(
     orgRunIdInput: string,
     modelOptions: Pick<RunModelSelectionService, "listOptionsMany">,

@@ -101,7 +101,7 @@ describe("AgentRunService routes an eligible standalone run through its root (AR
     expect(lifecycleService.activateHost).not.toHaveBeenCalled();
   });
 
-  it("a run that cannot host collaborators is activated directly without a member context", async () => {
+  it("a run that cannot host delegated copies is activated directly without a member context", async () => {
     const { service, lifecycleService, standaloneRuns } = subject(false);
     await service.restoreAgentRun("run-1");
     expect(standaloneRuns.resolveRootAndEnsureHost).toHaveBeenCalledWith("run-1");

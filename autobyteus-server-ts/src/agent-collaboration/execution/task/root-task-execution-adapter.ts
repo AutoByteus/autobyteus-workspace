@@ -96,8 +96,6 @@ export interface RootTaskExecutionAdapter<TPlacement> {
    * agent of a copy not yet committed, the registered copies whose planned members include it.
    */
   ownershipChainFor(agentRunId: string): readonly TaskExecutionReference[];
-  /** The committed copy at `address` among the given references, with its ingress. */
-  taskExecutionAt(address: string, among: readonly TaskExecutionReference[]): TaskExecutionTarget | null;
   /** The copy with exactly this reference in this root's current tree (any depth), with its ingress; `null` otherwise. */
   taskExecutionTargetOf(reference: TaskExecutionReference): TaskExecutionTarget | null;
   cancelOwnedExecution(reference: TaskExecutionReference): void;

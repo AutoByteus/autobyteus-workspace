@@ -89,7 +89,7 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
   let dataDir = "", workspace = "", app: FastifyInstance | undefined, url!: URL;
   const sockets: WebSocket[] = [];
   const active: Array<{ kind: Kind; rootId: string }> = [];
-  const ids = { manager: "", worker: "", helper: "", squad: "", team: "", org: "" };
+  const ids = { manager: "", worker: "", helper: "", peer: "", squad: "", team: "", org: "" };
   const names = { worker: "", helper: "", squad: "" };
   const savedEnv = new Map<string, string | undefined>();
   const evidence: Record<string, unknown> = {};
@@ -181,14 +181,15 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     ids.manager = await agentDefinition(`EXC Manager ${suffix}`, PROJECT_TOOLS);
     ids.worker = await agentDefinition(names.worker, []);
     ids.helper = await agentDefinition(names.helper, []);
+    // The Team root's configured teammate (a non-assigner); an outside Agent is delegated by its catalog address instead.
+    ids.peer = await agentDefinition(`EXC Peer ${suffix}`, []);
     ids.squad = (await graphql(`mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}`,
       { input: { name: names.squad, description: "Task Team", instructions: "Follow requests.", coordinatorMemberName: "lead",
         nodes: [{ memberName: "lead", ref: ids.worker, refScope: "SHARED" }, { memberName: "mate", ref: ids.worker, refScope: "SHARED" }] } },
     )).createAgentTeamDefinition.id;
     ids.team = (await graphql(`mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}`,
       { input: { name: `EXC Team ${suffix}`, description: "Team root", instructions: "Follow requests.", coordinatorMemberName: "manager",
-        nodes: [{ memberName: "manager", ref: ids.manager, refScope: "SHARED" }, { memberName: "worker", ref: ids.worker, refScope: "SHARED" },
-          { memberName: "helper", ref: ids.helper, refScope: "SHARED" }] } },
+        nodes: [{ memberName: "manager", ref: ids.manager, refScope: "SHARED" }, { memberName: "worker", ref: ids.peer, refScope: "SHARED" }] } },
     )).createAgentTeamDefinition.id;
     ids.org = (await graphql(`mutation($input:CreateAgentOrgDefinitionInput!){createAgentOrgDefinition(input:$input){id}}`,
       { input: { name: `EXC Org ${suffix}`, description: "Org root", instructions: "Follow requests.", handoffs: [], members: [
@@ -237,8 +238,8 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
       rootId = managerRunId = created.runId;
     } else if (kind === "team") {
       const created = (await graphql(`mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}`,
-        { input: { teamDefinitionId: ids.team, teamConfigs: [{ teamAddress: "/", ...config() }], memberConfigs: ["manager", "worker", "helper"]
-          .map((member) => ({ memberAddress: `/${member}`, agentDefinitionId: (ids as any)[member], ...config(memberOverrides[`/${member}`]) })) } })).createAgentTeamRun;
+        { input: { teamDefinitionId: ids.team, teamConfigs: [{ teamAddress: "/", ...config() }], memberConfigs: ["manager", "worker"]
+          .map((member) => ({ memberAddress: `/${member}`, agentDefinitionId: member === "worker" ? ids.peer : (ids as any)[member], ...config(memberOverrides[`/${member}`]) })) } })).createAgentTeamRun;
       expect(created.success, created.message).toBe(true);
       rootId = created.teamRunId;
       const tree = (await graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: rootId })).getTeamRunResumeConfig.executionTree;
@@ -352,8 +353,9 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     const record: Record<string, unknown> = {};
     const projectId = await createProject(kind);
     const squadAddress = kind === "org" ? "/squad" : `/${segment(names.squad)}`;
-    const workerAddress = kind === "agent" ? `/${segment(names.worker)}` : "/worker";
-    const helperAddress = kind === "agent" ? `/${segment(names.helper)}` : "/helper";
+    // A Team-root member is not delegable by its own Team (collaboration-model-contract): the Team root delegates by catalog address, as the Agent root does; an Org keeps its sibling units.
+    const workerAddress = kind !== "org" ? `/${segment(names.worker)}` : "/worker";
+    const helperAddress = kind !== "org" ? `/${segment(names.helper)}` : "/helper";
     const taskA = await createTask(projectId, "Review the release checklist.");
     const taskB = await createTask(projectId, "Clean up the checklist wording you proposed.");
     // Task C's worker sub-delegates to the helper (sub-work of Task C).
@@ -684,7 +686,7 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     const rounds: unknown[] = [];
     for (const copyKind of ["team", "agent"] as const) {
       let current = await createTask(projectId, `Race ${copyKind} start.`);
-      const first = await root.managerCalls(callTool("delegate_task", { recipient_address: copyKind === "team" ? squadAddress : "/worker", task_id: current }));
+      const first = await root.managerCalls(callTool("delegate_task", { recipient_address: copyKind === "team" ? squadAddress : `/${segment(names.worker)}`, task_id: current }));
       expect(first.delegated, JSON.stringify(first)).toBe(true);
       const idField = copyKind === "team" ? "target_team_run_id" : "target_agent_run_id";
       const copyId = first[idField] as string;
@@ -769,33 +771,15 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     evidence.crossRoot = { team, coordinator, toTeamRun, crossAssign, inactive };
   }, 300000);
 
-  it("EXC-E2E-006 AC-009: a copy that never started (a real start failure, found through list_project_tasks) is refused as never started", async () => {
-    const projectId = await createProject("never-started");
-    // The /worker member is configured with a model its runtime does not offer: its copy cannot start (a real start failure).
-    const root = await startRoot("team", { "/worker": { llmModelIdentifier: "exc-no-such-model" } });
-    const taskF = await createTask(projectId, "Start-failure work.");
-    const taskG = await createTask(projectId, "Follow-up for a copy that never started.");
-    const failed = await root.managerCalls(callTool("delegate_task", { recipient_address: "/worker", task_id: taskF }));
-    expect(failed.delegated ?? false, JSON.stringify(failed)).toBe(false);
-    // The Manager finds the copy in a new chat through list_project_tasks (outcome failed), cancels F, and tries again.
-    const listed = await root.managerCalls(callTool("list_project_tasks", { project_id: projectId }));
-    const fAssignment = (listed.tasks as any[]).find((task) => task.taskId === taskF).assignments[0];
-    expect(fAssignment).toMatchObject({ kind: "agent", assignedBy: root.managerRunId, outcome: "failed" });
-    await root.managerCalls(callTool("update_task", { task_id: taskF, status: "CANCELLED" }));
-    const files = await projectFiles(projectId);
-    const neverStarted = await root.managerCalls(callTool("delegate_task", { target_agent_run_id: fAssignment.agentRunId, task_id: taskG }));
-    evidence.neverStarted = { failed, fAssignment, neverStarted };
-    expect(await projectFiles(projectId)).toEqual(files);
-    expect(neverStarted.delegated).toBe(false);
-    // REQ-005 / AC-009: the specific reason, not "not a delegated copy in this run" for an ID this run's Task lists.
-    expect(neverStarted.message).toMatch(/never started/);
-    root.close();
-    await terminate("team", root.rootId);
-  }, 300000);
+  // EXC-E2E-006 (AC-009: a copy that never started is refused as never started) lost its only trigger here: it needed a
+  // configured teammate placement with an unavailable model, and a Team member can no longer be delegated to
+  // (collaboration-model-contract), while an Org refuses an unavailable model at run creation. The refusal is covered by
+  // tests/unit/agent-collaboration/root-task-existing-copy-assignment.test.ts and tests/unit/projects/task-execution-existing-copy-assignment.test.ts.
+  it.skip("EXC-E2E-006 AC-009: a copy that never started (a real start failure) is refused as never started — no real-use trigger remains; unit-covered", () => undefined);
 
   it("EXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change", async () => {
     const projectId = await createProject("lost-conversation");
-    const root = await startRoot("team");
+    const root = await startRoot("org");
     // A copy whose saved conversation is gone (its memory folder removed while it is stopped): refused before the commit.
     const taskH = await createTask(projectId, "Helper work.");
     const taskI = await createTask(projectId, "Follow-up for a copy whose conversation is gone.");
@@ -815,7 +799,7 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     expect(root.reopenedSince(from)).toEqual([]);
     expect(processLive(helper)).toBe(false);
     root.close();
-    await terminate("team", root.rootId);
+    await terminate("org", root.rootId);
     evidence.lostConversation = { helper, memoryDirs: memoryDirs.length, lost };
   }, 300000);
 

@@ -7,7 +7,6 @@ import { AgentRunViewProjectionService, type RunProjection } from "./agent-run-v
 import { TeamRunExecutionTreeLocationService } from "./team-run-execution-tree-location-service.js";
 import {
   catalogCopyExecutionSource,
-  collaboratorExecutionSource,
   taskExecutionListsOf,
 } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
 import { TeamExecutionIndex } from "../../agent-team-execution/services/team-execution-index.js";
@@ -82,23 +81,22 @@ export class TeamMemberRunViewProjectionService {
       throw new Error(`AgentRun '${run}' was not found in root TeamRun '${root}'.`);
     }
     if (!location.configuredPlacement && !childSourceOf(location)) {
-      throw new Error(`AgentRun '${run}' has no configured launch placement, collaborator or catalog source.`);
+      throw new Error(`AgentRun '${run}' has no configured launch placement or catalog source.`);
     }
     return location;
   }
 }
 
 const childSourceOf = (location: import("./team-run-execution-tree-location-service.js").LocatedTeamAgentExecution) =>
-  collaboratorExecutionSource(location.tree.rootTeam.collaborators, location.memberAddress)
-  ?? catalogCopyExecutionSource(taskExecutionListsOf({
-    taskExecutions: location.tree.rootTeam.taskExecutions, collaborators: location.tree.rootTeam.collaborators,
+  catalogCopyExecutionSource(taskExecutionListsOf({
+    taskExecutions: location.tree.rootTeam.taskExecutions,
   }), location.agentRunId);
 
 const metadataFor = (
   location: import("./team-run-execution-tree-location-service.js").LocatedTeamAgentExecution,
 ): AgentRunMetadata => {
   const configured = location.configuredPlacement;
-  // A collaborator or catalog-copy run has no configured placement: its entry or recorded source supplies it.
+  // A catalog-copy run has no configured placement: its recorded source supplies it.
   const source = configured ?? childSourceOf(location)!;
   const launch = source.launchConfiguration;
   return {

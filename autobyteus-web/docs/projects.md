@@ -253,8 +253,8 @@ Under Agent runs (`AgentRunTaskRows`) and Team runs
 (`WorkspaceTeamExecutionTree`), a delegated copy row that is a **Task worker**
 (its Task's root) shows a second line under its name: the summary of its current
 Task (`TaskWorkerTaskSummary`, text from `taskSummaryLabel`), gray, indigo when
-the row is selected or on hover. Team members, sub-work copies and `@`
-collaborators keep one line. Agent Org rows are unchanged (not in scope). The
+the row is selected or on hover. Team members, sub-work copies and converted
+unowned runs keep one line. Agent Org rows are unchanged (not in scope). The
 row's elbow and chevron align with the name line
 (`WorkspaceHierarchyBranches` `anchor="name-line"`). Summaries exist only where
 the Projects tab does (`isFeatureAvailableInRuntime('projects')`).
@@ -550,7 +550,7 @@ strip](./workspace_layout.md#collapsed-strip-pages-and-workspaces) and
 **PMU-020–025** (`project-manager-ux-task-locator-cases.mjs`) cover the
 [Task summaries](#task-summaries-in-the-workspaces-tree):
 - summaries under Agent- and Team-hosted Task workers (agent, task Team and
-  Temp-task copies), one line for members, sub-work and the `@` collaborator,
+  Temp-task copies), one line for members, sub-work and converted unowned runs,
   and batched reads with no Task-list reads;
 - locate docked: picker switch, centred/focused/highlighted card, search kept or
   cleared, keyboard, only the latest highlighted, a row click still opening the

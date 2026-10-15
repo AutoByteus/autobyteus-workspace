@@ -150,8 +150,8 @@ const createDefinitions = async (label) => {
   const team = async (name, coordinatorMemberName, nodes) => (await gql('mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}',
     { input: { name, description: name, instructions: 'Deliver.', coordinatorMemberName, nodes } })).createAgentTeamDefinition.id;
   ids.squad = await team(names.squad, 'reviewer', [{ memberName: 'reviewer', ref: ids.worker, refScope: 'SHARED' }, { memberName: 'editor', ref: ids.helper, refScope: 'SHARED' }]);
-  ids.team = await team(names.team, 'manager', [{ memberName: 'manager', ref: ids.manager, refScope: 'SHARED' },
-    { memberName: 'worker', ref: ids.worker, refScope: 'SHARED' }, { memberName: 'helper', ref: ids.helper, refScope: 'SHARED' }]);
+  // A Team root delegates only outside its own Team (collaboration-model-contract): worker and helper are catalog Agents, not members.
+  ids.team = await team(names.team, 'manager', [{ memberName: 'manager', ref: ids.manager, refScope: 'SHARED' }]);
   ids.org = (await gql('mutation($input:CreateAgentOrgDefinitionInput!){createAgentOrgDefinition(input:$input){id}}',
     { input: { name: names.org, description: 'Org root', instructions: 'Deliver.', handoffs: [], members: [
       { memberName: 'manager', ref: ids.manager, refType: 'AGENT', refScope: 'SHARED' },
@@ -195,7 +195,7 @@ const createRoot = async (kind, ids) => {
   }
   if (kind === 'team') {
     const r = (await gql('mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}',
-      { input: { teamDefinitionId: ids.team, teamConfigs: [{ teamAddress: '/', ...config() }], memberConfigs: ['manager', 'worker', 'helper']
+      { input: { teamDefinitionId: ids.team, teamConfigs: [{ teamAddress: '/', ...config() }], memberConfigs: ['manager']
         .map((m) => ({ memberAddress: `/${m}`, agentDefinitionId: ids[m], ...config() })) } })).createAgentTeamRun;
     assert(r.success, r.message);
     const tree = (await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: r.teamRunId })).getTeamRunResumeConfig.executionTree;
@@ -229,13 +229,13 @@ const managerInput = async (root) => {
   return { send, close: () => socket.close() };
 };
 
-/** A root with Task A (Agent + delegated helper + brought-in researcher), Task B (a Team), and non-Task work. */
+/** A root with Task A (Agent + delegated helper + the helper's own delegation to a researcher), Task B (a Team), and non-Task work. */
 const setupRoot = async (kind, label, { withB = true, withPlain = true } = {}) => {
   const { ids, names } = await createDefinitions(label);
   const { projectId, task } = await createProject(label);
-  const at = (member, catalogName) => (kind === 'agent' ? `/${segment(catalogName)}` : `/${member}`);
+  const at = (member, catalogName) => (kind !== 'org' ? `/${segment(catalogName)}` : `/${member}`);
   const taskA = await task(callTool('delegate_task', { recipient_address: at('helper', names.helper),
-    description: callTool('send_message_to', { recipient_address: `/${segment(names.assistant)}`, content: 'Collect the changelog links.' }) }));
+    description: callTool('delegate_task', { recipient_address: `/${segment(names.assistant)}`, description: 'Collect the changelog links.' }) }));
   const taskB = await task('Review the docs site.');
   const root = await createRoot(kind, ids);
   const input = await managerInput(root);

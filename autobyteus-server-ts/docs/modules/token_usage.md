@@ -709,8 +709,8 @@ records:
 
 ### Standalone Run Roll-Up
 
-A standalone run's usage includes its collaborators, the members of its
-collaborator Teams and its task copies (recursively), as a Team run's usage
+A standalone run's usage includes its delegated copies and the members of its
+Team copies (recursively), as a Team run's usage
 includes its members (REQ-006). `StandaloneRunTokenUsageSummaryService`
 (`token-usage/services/`) reads the run's collaboration tree (the live root's
 tree, else the stored package; see

@@ -25,6 +25,7 @@ import { AgentOrgHistoryFirstMessageSummaryV1AppDataMigration } from "./migratio
 import { RemoveExternalMessagingDataMigration } from "./migrations/remove-external-messaging-data-migration.js";
 import { ProjectsPerFolderV1AppDataMigration } from "./migrations/projects-per-folder-v1/projects-per-folder-v1-app-data-migration.js";
 import { RemoveBuiltInProjectTaskManagerMigration } from "./migrations/remove-built-in-project-task-manager-migration.js";
+import { CollaboratorsToDelegatedRunsV1AppDataMigration } from "./migrations/collaborators-to-delegated-runs-v1/collaborators-to-delegated-runs-v1-app-data-migration.js";
 
 export class AppDataMigrationRegistry {
   private readonly definitions: AppDataMigrationDefinition[];
@@ -81,6 +82,8 @@ export class AppDataMigrationRegistry {
       new RemoveBuiltInProjectTaskManagerMigration(
         path.join(appConfigProvider.config.getAgentsDir(), "autobyteus-project-task-manager"),
       ),
+      // Converts stored collaborators into delegated runs; must stay after every tree-shape migration above.
+      new CollaboratorsToDelegatedRunsV1AppDataMigration(appConfigProvider.config.getMemoryDir()),
     ];
     this.validateDefinitions();
   }

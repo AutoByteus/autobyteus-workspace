@@ -81,7 +81,7 @@ describe("ad-hoc Tasks (no Project)", () => {
   it("DONE by task_id alone closes the copy and its sub-work, writes the status and asks its root to stop them (AC-004, AC-007)", async () => {
     const { taskId } = await delegate("copy-1");
     await tasks.markStarted({ agentRunId: "copy-1" });
-    await tasks.linkNewTaskExecution({ role: "broughtIn", creator: { agentRunId: "copy-1" }, hostRoot, execution: { agentRunId: "helper-1" } });
+    await tasks.linkNewTaskExecution({ role: "delegated", creator: { agentRunId: "copy-1" }, hostRoot, execution: { agentRunId: "helper-1" } });
     await expect(tasks.updateTaskById({ taskId, status: "DONE" })).resolves.toEqual({ projectId: null, taskId, status: "DONE" });
     await tasks.drainRuntimeReleases();
     expect((await taskFile(taskId)).status).toBe("DONE");

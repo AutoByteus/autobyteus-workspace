@@ -8,7 +8,6 @@ import type {
 } from "../../agent-collaboration/execution/domain/located-execution-structure.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
-import { effectiveMemberLaunchConfiguration, type CollaboratorEntry } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import { getStandaloneRootTreePath } from "../persistence/standalone-root-tree-path.js";
 import { StandaloneRootPackageStore } from "../persistence/standalone-root-package-store.js";
 import type { StandaloneRootTreeSnapshot } from "../domain/standalone-root-tree.js";
@@ -24,7 +23,7 @@ export type LocatedStandaloneRootAgentExecution = Readonly<{
   memberAddress: AgentTeamAddress;
   platformAgentRunId: string | null;
   configuredPlacement: null;
-  /** The collaborator's launch snapshot (a Team's members share its default). */
+  /** The copy's recorded launch snapshot (its catalog source). */
   launchConfiguration: AgentLaunchConfiguration | null;
   executionKind: Exclude<LocatedExecutionKind, "configured">;
   startedAt: string | null;
@@ -39,11 +38,6 @@ type ActiveRoots = Readonly<{
 }>;
 type AgentLookup = { rootRunId?: string | null; agentRunId?: string | null; memberAddress?: string | null; containingTeamRunId?: string | null };
 const STORED_ONLY: ActiveRoots = Object.freeze({ getActiveTree: () => null });
-
-/** The launch of the agent at `memberAddress` inside a collaborator: the Agent's, or a Team member's effective launch. */
-const collaboratorLaunchConfiguration = (entry: CollaboratorEntry | null, memberAddress: string): AgentLaunchConfiguration | null =>
-  !entry ? null : entry.kind === "agent" ? entry.launchConfiguration
-    : effectiveMemberLaunchConfiguration(entry, entry.members.find((member) => member.address === memberAddress) ?? {});
 
 /**
  * The third location family: children of Agent roots, stored under
@@ -163,8 +157,6 @@ export class StandaloneRootLocationService {
     const groups = agent.host.hostKind === "team"
       ? [...index.listTeamAncestorsDeepestFirst(agent.host.hostRunId)].reverse()
       : [];
-    const outermost = groups[0] ?? null;
-    const collaboratorAddress = outermost ? outermost.address : agent.address;
     return Object.freeze({
       rootSubjectKind: "agent",
       rootRunId: tree.host.agentRunId,
@@ -174,8 +166,7 @@ export class StandaloneRootLocationService {
       memberAddress: agent.address,
       platformAgentRunId: agent.platformAgentRunId,
       configuredPlacement: null,
-      launchConfiguration: collaboratorLaunchConfiguration(index.getCollaborator(collaboratorAddress), agent.address)
-        ?? catalogCopyExecutionSource(taskExecutionListsOf(tree), agentRunId)?.launchConfiguration ?? null,
+      launchConfiguration: catalogCopyExecutionSource(taskExecutionListsOf(tree), agentRunId)?.launchConfiguration ?? null,
       executionKind: agent.executionKind,
       startedAt: agent.startedAt,
       groupPath: Object.freeze(groups.map((team): LocatedExecutionGroup => Object.freeze({
