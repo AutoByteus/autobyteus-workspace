@@ -1,0 +1,40 @@
+{
+  "reason": "User explicitly requests command-only filesystem test cases; stop superseded application-validation orchestration",
+  "actions": [
+    {
+      "pid": 58317,
+      "observed": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-008/prepare-ln-sequence.py",
+      "action": "SIGTERM exact owned obsolete sequence/download"
+    },
+    {
+      "pid": 68611,
+      "observed": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-008/resume-guest.py",
+      "action": "SIGTERM exact owned obsolete sequence/download"
+    },
+    {
+      "pid": 68641,
+      "observed": "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart clone ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e ab-nfs-api008-linux-0c05c8d7",
+      "action": "SIGTERM exact owned obsolete sequence/download"
+    }
+  ],
+  "desktopStop": {
+    "argv": [
+      "pnpm",
+      "--silent",
+      "isolated-app",
+      "stop",
+      "iso-64733-d776"
+    ],
+    "rc": 0,
+    "stdout": "{\n  \"schemaVersion\": 1,\n  \"ok\": true,\n  \"command\": \"stop\",\n  \"result\": {\n    \"instanceId\": \"iso-64733-d776\",\n    \"wasRunning\": true,\n    \"forced\": false,\n    \"dataRoot\": \"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api008-0frlwk0o/desktop-tmp/autobyteus-isolated-root-7XNnUY\",\n    \"dataRootRemoved\": true,\n    \"controlPortReleased\": true,\n    \"serverPortReleased\": true,\n    \"logPath\": null\n  }\n}\n",
+    "stderr": ""
+  },
+  "desktopPortsClosed": {
+    "64733": true,
+    "64734": true
+  },
+  "remaining": "Owned partial VM download/cache, CLI/toolchain scratch and host test-image retained for inventory/next command-only stage, not final cleanup. No application test sequence will resume automatically.",
+  "linuxResourceFileExists": false,
+  "result": "Obsolete application automation stopped",
+  "remainingOwnedProcesses": []
+}

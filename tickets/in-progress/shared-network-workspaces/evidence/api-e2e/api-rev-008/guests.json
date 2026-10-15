@@ -1,0 +1,29 @@
+{
+  "result": "Ready",
+  "guests": {
+    "linux": {
+      "name": "ab-nfs-api008-linux-0c05c8d7",
+      "image": "ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e",
+      "env": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api008-0frlwk0o/home",
+        "TART_HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api008-0frlwk0o/tart-state",
+        "TART_NO_AUTO_PRUNE": "1"
+      },
+      "tart": "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "pid": 93222,
+      "runArgv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "run",
+        "ab-nfs-api008-linux-0c05c8d7",
+        "--no-graphics",
+        "--no-audio",
+        "--no-clipboard",
+        "--no-usb-accessories"
+      ],
+      "preflight": "Linux ubuntu 7.0.0-38-generic #38~24.04.4-Ubuntu SMP PREEMPT_DYNAMIC Mon Sep 14 17:12:37 UTC 2 aarch64 aarch64 aarch64 GNU/Linux\nuid=1000(admin) gid=109(admin) groups=109(admin)\n",
+      "ready": true
+    }
+  },
+  "commands": []
+}

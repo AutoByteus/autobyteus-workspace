@@ -1,0 +1,7 @@
+{
+  "result": "Test plan revised; validation not completed",
+  "freshRulesChecked": true,
+  "selectedRule": null,
+  "reason": "Direct user request to revise API-owned executable cases. No new validation Pass/Fail or unresolved requirement/design question is reported; no specialist handoff applies. User explicitly requested no Solution Designer contact.",
+  "messageSent": false
+}

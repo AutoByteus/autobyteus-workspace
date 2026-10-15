@@ -1,0 +1,16 @@
+{
+  "scope": "User revised command-only filesystem acceptance",
+  "scores": [
+    75,
+    75,
+    75,
+    95,
+    95,
+    95,
+    95
+  ],
+  "overall": 86.43,
+  "broader": "Required",
+  "basis": "Same NFS/launcher/server source and identical native binary; prior repository tests and scoped actual lifecycle/source/managed-node cases valid. New shell/truncation/atomic-reader/index-lock command cases need execution. App editor/UI category is not a gate; user-surface confidence here means public NFS commands, not desktop acceptance.",
+  "expectedGain": "Actual generic Linux containers read/write real NFS mount without application backend/UI; fill new command-case gaps and explicitly finalize cleanup."
+}

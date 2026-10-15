@@ -1,0 +1,8 @@
+{
+  "classification": "Environment/setup harness; not filesystem failure",
+  "original": "linux-docker-prepare-result.json",
+  "observation": "Redundant Docker apt install met guest unattended-upgrades lock after Docker already installed and all LN cases passed",
+  "correction": "Verify installed Docker, do not reinstall it; no lock removal, package-manager kill, firewall or production mutation",
+  "new": "prepare-linux-docker-v2.py",
+  "LNResult": "Pass: all13 command case groups plus safe detach"
+}

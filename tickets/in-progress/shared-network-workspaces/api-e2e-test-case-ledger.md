@@ -1,5 +1,50 @@
 # API/E2E Test-Case Ledger
 
+## Current active plan — command-only shared-filesystem validation (user revision, 2026-10-15)
+
+**This section supersedes the API008 application rerun plan and is the active test plan.** The user explicitly directs API/E2E to revise its own test cases without contacting Solution Designer. We test filesystem behavior with Linux commands in TWO Docker containers in ONE disposable Linux VM. Native-Linux storage (LN) and Docker-Linux storage (LD) remain sequential. No application UI, editor, preview, GraphQL/REST server, agent run, or model account is a prerequisite or a filesystem verdict gate.
+
+The writers/readers are independent shell/process actors A and B (`docker exec`), not application actions. Use standard command-capable containers; no application server needs to run to perform the byte tests. The NFS/setup CLI remains the component under test for create/status/reconnect/detach; do not replace its implementation with an ad-hoc export and then claim its setup passed. Existing selected-node/launcher preservation evidence is assessed separately at that actual management boundary, without adding a UI/backend health dependency to file operations.
+
+### Test cases (execute LN and LD unless stated)
+
+Each row is an independently meaningful case. Exact commands, UID/GID, paths, mount/export and container identities, expected fixture bytes/hashes, exit statuses and timing must accompany its result. `Not Tested` means not executed under this revised plan, not that historical evidence vanished. Validate and explicitly credit applicable API007 command evidence before deciding which checks need rerunning; do not rerun unchanged cases merely to inflate counts.
+
+| ID / earlier mapping | Linux-command test | Required observable result | Revised-plan result |
+| --- | --- | --- | --- |
+| FS01 / L01,03,05–07 | `uname`, `id`, `findmnt`, `stat`, Docker inspect; supported NFS create/status; original nonempty source marker/hash | Real NFS backing/export and both container mount paths proven; no accidental local-folder or bind-only substitute; original source preserved | Pass — fresh LN/LD |
+| FS02 / L08 | A `printf`/write, B `cat`/`cmp`/`sha256sum`; reverse B→A and backing-source checks | Exact committed bytes in both directions, not merely file existence or successful command exit | Pass — fresh LN/LD |
+| FS03 / L08 | Empty, Unicode/spaces and deterministic binary/1KiB/1MiB fixtures; `wc -c`, `cmp`, SHA256 | Exact names, length and bytes; no text-only oracle for binary files | Pass — fresh LN/LD |
+| FS04 / L08,09 | Append `>>`, in-place update, `sed -i`/temporary-file `mv`, `truncate` | Correct append/update/atomic replacement/truncation observed by peer and source | Pass — fresh LN/LD |
+| FS05 / L09 | `mkdir -p`, `find`/`ls`, nested create, file/directory `mv`, `rm`, `rmdir`; missing-path/nonempty-directory controls | Correct directory entries and peer-observed renames/deletions; expected failures do not mutate unrelated files | Pass — fresh LN/LD |
+| FS06 / L11 | Warm both readers; fsync/close actual writer; repeated fresh-open hash checks using monotonic timing | Healthy visibility <=5s A→B, B→A and source→A/B for new/in-place/atomic updates; no cache flush/remount to manufacture success | Pass — fresh LN/LD |
+| FS07 / L12 | Simultaneous shell/process writers using distinct files; `wait`, count and per-file hash verification | All planned independent writes survive exactly; no lost/crossed/truncated files | Pass — fresh LN/LD |
+| FS08 / L12 | Writer publishes complete fixtures by same-directory atomic `mv`; concurrent reader checks payload against allowed complete versions | Reader sees only a complete old/new version, not partial bytes; no claim that conflicting uncoordinated writes auto-merge | Pass — fresh LN/LD |
+| FS09 / L14 | Competing exclusive-create (`O_CREAT|O_EXCL` / noclobber) processes with controlled start | Exactly one winner; loser gets expected existence error; winning content remains intact | Pass — fresh LN/LD |
+| FS10 / L15 | Small Python `fcntl` advisory-lock holder/contender using actual mounted paths; release then retry | Documented lock conflicts while held and succeeds after release; plain `cat` is not treated as lock proof | Pass — fresh LN/LD |
+| FS11 / L10,16 | `ln -s`, `readlink`, `chmod`, executable invocation, different UID/GID access; source `stat` | Relative symlink and supported execution semantics; allowed access works, denied access fails; documented source ownership/mapall behavior; private paths not exported | Pass — fresh LN/LD |
+| FS12 / L13 | `git init`, add/commit/status/read in A then B; coordinated commits and index-lock control | Shared repository bytes/history are coherent; lock behavior explicit; no simultaneous uncoordinated Git-write guarantee | Pass — fresh LN/LD |
+| FS13 / L17–20 | Repeat status/reconnect; stop/start container; ordinary VM reboot and storage service recovery; commands re-read fixture hashes | Same source identity and bytes survive normal lifecycle; automatic readiness distinguished from manual repair; intentional stopped-node state preserved at managed-node boundary | Pass — audited scoped API007 carry |
+| FS14 / L04,21 | Unsafe-source/target/refusal controls; replace source inode with copied marker; restore original and reconnect | Unsafe/replaced source refused without silent rebinding or mutation; original source still usable when restored | Pass — audited scoped API007 carry |
+| FS15 / L05–07,20,25 | Inspect selected/unselected container config and synthetic private-volume hashes across supported setup/recreation/reconnect | Management changes only owned selected attachment; unrelated mounts/config/private bytes retained. Existing actual-launcher evidence may be carried explicitly; no application UI needed | Pass — audited scoped API007 carry |
+| FS16 / L25 | No-drain/busy detach controls, then actual drain and supported detach; `findmnt`, source hashes and marker | Safe refusal while busy; normal detach after drain, without force/lazy unmount or source-data deletion | Pass — fresh detach plus carried refusal |
+| FS17 / L26 | Exact owned container/volume/VM/process/image/scratch inventory and cleanup | Only test-owned resources retired; evidence retained; no user app/node/credential/host-network change | Pass — fresh cleanup |
+
+### Evidence and verdict separation
+
+- A filesystem result is based on FS01–FS17 only. Attribute a failed command first to test setup, harness or filesystem/setup behavior using its evidence; do not label every nonzero command a product defect.
+- A and B share one kernel/daemon and may share a Docker NFS cache. This is real two-container/process evidence, NOT independent-kernel/client-cache or external-computer qualification. Mac, separate kernels, physical nodes, external join and authenticated agents remain deferred, not Passed.
+- Application L22/L23/L24 and frontend-only L02 checks are **removed from this active filesystem gate**, not relabeled as Passed. Existing API008 repository/local UI results are supplementary historical evidence only. No new editor, preview, API or UI runs are scheduled.
+- Preserve API007 historical combined-scope **Fail82.14%**, API006 **Blocked67.86%**, original editor reproduction and CR-FUP002 follow-up as recorded. Neither historical combined result is a verdict that the stored filesystem bytes were corrupt. Original editor live revalidation is not completed by this scope change.
+- Final revised-plan execution is **Pass95%**. FS01–12 fresh LN/LD, FS13–15 audited scoped carry, FS16 fresh detach plus carried refusal, FS17 cleanup. The report identifies exact fresh/carried proof; no active gap remains.
+- Public release/signing/deployment and general application acceptance are not claimed by this command-only plan. No production fix/removal is requested; retain IR010 unchanged.
+
+### Interruption / resource checkpoint
+
+The previous application-oriented sequence is stopped and must not resume automatically. Stop only the owned isolated desktop by its normal stop command. The partial cache was safely resumed for the command-only run; final FS17 cleanup is now Complete, with exact VM/private cache/scratch/image removal. See `evidence/api-e2e/api-rev-008/scope-change-stop.json`. No Solution Designer, CodeReviewer, Delivery or other agent is contacted for this test-plan revision.
+
+## Historical ledgers and execution events (retained, not the active plan)
+
 Round API-REV-001. Worktree /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces. Investigation api-e2e-coverage-investigation.md; execution report api-e2e-execution-coverage-report.md. Evidence evidence/api-e2e/api-rev-001. Multiple meaningful cases and VM lifecycle require this durable checkpoint.
 
 ## Planned cases
@@ -2408,3 +2453,200 @@ durable coverage changes yet. Next action: canonical acceptance alignment, then 
 
 ## API007 completed result reconciliation
 24Pass/2Fail case groups; one underlying finding API-F007-UNSAVED (L02 red regression, L23 live). Full planned scoped categories attempted; not all acceptance passed. Final report Fail 82.14%, cleanupComplete. No deferred qualification counted as Pass.
+
+## API-REV-008 affected rerun (planned before execution)
+Prior API007 final rows remain historical. Carry unchanged L01/03–21/25 scoped proof after input diff; new environment/setup receipts supplement, not full rerun. Reuse L02/L22/L23/L24/L26 IDs.
+
+| Case | Expected | Current result |
+| --- | --- | --- |
+| R8-L02 | Original/draftViewer/adjacent/guards and HTTP coverage green; exact source audited | Not Tested |
+| R8-L23-LN | Real native draft survives B commit/reload; actual Save stores visible bytes | Not Tested |
+| R8-L23-LD | Same original affected journey on Docker storage, no earlier dirty-buffer regression | Not Tested |
+| R8-L22-L24 | Clean-reader and healthy preview/API/Guide/local-regression unchanged; mode scope explicit | Not Tested |
+| R8-L26 | Exact owned teardown and truthful carry/follow-up/score reconciliation | Not Tested |
+
+- R8-L02 original-and-viewer: Pass; E8/original-and-viewer.log
+
+- R8-L02 adjacent: Pass; E8/adjacent.log
+
+- R8-L02 web-boundary: Pass; E8/web-boundary.log
+
+- R8-L02 localization-boundary: Pass; E8/localization-boundary.log
+
+- R8-L02 public-http: Pass; E8/public-http.log
+
+- R8-L23 setup checkpoint: original/viewer12 and adjacent148, both guards, HTTP6 Pass. Private CLI Ready (same SHA as API007), full tracked server image Ready. Fresh private Linux image download and isolated desktop packaging still running; no live original-failure closure claimed.
+
+- R8-L24 current worktree-built isolated desktop Guide Pass via CUA: both copy buttons disabled/command unavailable, release unqualified, trusted network/unencrypted/nooffline and MacDocker-storage/client distinction. E8/desktop-build-guide-proof.json. Native peer journey awaits owned VM download.
+
+- R8-L23 setup interruption: public Ubuntu image download exceeded900s before guest creation/start. Original raw traceback retained. Resume same owned cache/digest/clone with1800s; no product mutation or runtime failure, no replacement Pass.
+
+- R8-L24 local clean-reader/Markdown preview Pass through actual isolated desktop. E8/local-ui-observation.json. R8-L23 sequence wait ended before any step started; raw sequence-console.log retained; same-clone download still progressing, no product failure.
+
+- 2026-10-15 command-only revision persisted: FS01–FS17 active at top of ledger. Superseded orchestration/download processes absent; isolated desktop stopped normally, own data root removed, ports64733/64734closed. No new filesystem execution verdict. Owned partial cache/scratch/image explicitly retained; final cleanup pending. No agent contacted.
+
+- Command-only execution plan: carry exact unchanged API007 management/lifecycle/source-refusal receipts for FS13–16. Fresh generic Linux shell containers (sleep only; no network/application) will execute FS01–12 on the actual NFS mount in LN/LD, including new concurrent atomic-reader, shell truncation/Unicode filename/nonempty-directory and Git index-lock controls. A bind of an actual proven NFS mount is explicitly one-kernel evidence, not local-folder or independent-client proof. Own partial VM download resumed only; no application orchestration.
+
+- FS13 Pass (scoped carry): actual API007 LN/LD command/inspection evidence audited against unchanged NFS/launcher/server source and same native binary. Exact credited/excluded cases and hashes: E8/command-carried-evidence.json. No raw failed attempt promoted wholesale.
+
+- FS14 Pass (scoped carry): actual API007 LN/LD command/inspection evidence audited against unchanged NFS/launcher/server source and same native binary. Exact credited/excluded cases and hashes: E8/command-carried-evidence.json. No raw failed attempt promoted wholesale.
+
+- FS15 Pass (scoped carry): actual API007 LN/LD command/inspection evidence audited against unchanged NFS/launcher/server source and same native binary. Exact credited/excluded cases and hashes: E8/command-carried-evidence.json. No raw failed attempt promoted wholesale.
+
+- FS16 Pass (scoped carry): actual API007 LN/LD command/inspection evidence audited against unchanged NFS/launcher/server source and same native binary. Exact credited/excluded cases and hashes: E8/command-carried-evidence.json. No raw failed attempt promoted wholesale.
+
+- 2026-10-15T15:59:38Z **Round8** — Started fresh owned guest has no NFS installation or attachment
+
+- 2026-10-15T15:59:38Z **Round8** — fresh owned guest has no NFS installation or attachment: Pass
+
+- 2026-10-15T15:59:38Z **Round8** — Started Docker only prerequisite in own fresh guest
+
+- 2026-10-15T16:00:00Z **Round8** — Docker only prerequisite in own fresh guest: Pass
+
+- 2026-10-15T16:00:00Z **Round8** — Started private guest loopback registry for current candidate image only
+
+- 2026-10-15T16:00:06Z **Round8** — private guest loopback registry for current candidate image only: Pass
+
+- 2026-10-15T16:00:06Z **Round8** — Started generic Linux command image build, no product application
+
+- 2026-10-15T16:00:58Z **Round8** — generic Linux command image build, no product application: Pass
+
+- 2026-10-15T16:01:00Z **Round8** — Started FS01 LN supported NFS create without application nodes
+
+- 2026-10-15T16:01:12Z **Round8** — FS01 LN supported NFS create without application nodes: Pass
+
+- 2026-10-15T16:01:12Z **Round8** — Started start command-only ab-nfs-api008-cmd-a
+
+- 2026-10-15T16:01:13Z **Round8** — start command-only ab-nfs-api008-cmd-a: Pass
+
+- 2026-10-15T16:01:13Z **Round8** — Started start command-only ab-nfs-api008-cmd-b
+
+- 2026-10-15T16:01:13Z **Round8** — start command-only ab-nfs-api008-cmd-b: Pass
+
+- 2026-10-15T16:01:14Z **Round8** — FS01–12 LN command-only actual NFS execution started; no application dependency
+
+- 2026-10-15T16:01:38Z **Round8** — LN FS01: Pass
+
+- 2026-10-15T16:01:38Z **Round8** — LN FS02-FS03: Pass
+
+- 2026-10-15T16:01:38Z **Round8** — LN FS05: Pass
+
+- 2026-10-15T16:01:38Z **Round8** — LN FS11-metadata: Pass
+
+- 2026-10-15T16:01:38Z **Round8** — LN FS06: Pass
+
+- 2026-10-15T16:01:38Z **Round8** — LN FS07: Pass
+
+- 2026-10-15T16:01:38Z **Round8** — LN FS12-Git: Pass
+
+- 2026-10-15T16:01:38Z **Round8** — LN FS09: Pass
+
+- 2026-10-15T16:01:38Z **Round8** — LN FS10: Pass
+
+- 2026-10-15T16:01:38Z **Round8** — LN FS11-permissions: Pass
+
+- 2026-10-15T16:01:38Z **Round8** — LN FS03-FS04-FS05 shell updates names truncate nonempty-directory: Pass
+
+- 2026-10-15T16:01:38Z **Round8** — LN FS08 atomic replacement concurrent complete-reader: Pass
+
+- 2026-10-15T16:01:38Z **Round8** — LN FS12 Git index-lock refusal and after-release success: Pass
+
+- 2026-10-15T16:01:38Z **Round8** — Started FS16 drain exact command-only containers
+
+- 2026-10-15T16:01:49Z **Round8** — FS16 drain exact command-only containers: Pass
+
+- 2026-10-15T16:01:49Z **Round8** — Started FS16 public LN drained detach
+
+- 2026-10-15T16:01:50Z **Round8** — FS16 public LN drained detach: Pass
+
+- 2026-10-15T16:01:50Z **Round8** — Started FS16 source and marker retained, mount and job absent
+
+- 2026-10-15T16:01:50Z **Round8** — FS16 source and marker retained, mount and job absent: Pass
+
+- 2026-10-15T16:01:50Z **Round8** — Started test-owned Docker prerequisite in owned detached LinuxVM
+
+- 2026-10-15T16:01:51Z **Round8** — test-owned Docker prerequisite in owned detached LinuxVM: Fail
+
+- 2026-10-15T16:01:51Z **Round8** — Setup incomplete RuntimeError('E: Could not get lock /var/lib/dpkg/lock-frontend. It is held by process 3845 (unattended-upgr)\nE: Unable to acquire the dpkg frontend lock (/var/lib/dpkg/lock-frontend), is another process using it?\n')
+
+- LN fresh FS01–12 command cases all Pass, including 200 atomic replacements and concurrent complete readers, then safe detach Pass. LD preparation met an unrelated guest unattended-upgrades lock on redundant Docker installation. Raw attempt retained; verify the already-installed prerequisite instead (no lock deletion/process kill); E8/ld-preparation-correction.json. No filesystem Fail inferred.
+
+- 2026-10-15T16:02:23Z **Round8** — Started verify already-installed Docker in owned detached LinuxVM
+
+- 2026-10-15T16:02:24Z **Round8** — verify already-installed Docker in owned detached LinuxVM: Pass
+
+- 2026-10-15T16:02:24Z **Round8** — Started build storage image from exact retained engine pair
+
+- 2026-10-15T16:02:57Z **Round8** — build storage image from exact retained engine pair: Pass
+
+- 2026-10-15T16:02:57Z **Round8** — Started clean image package and manifest verification
+
+- 2026-10-15T16:02:59Z **Round8** — clean image package and manifest verification: Pass
+
+- 2026-10-15T16:02:59Z **Round8** — Started existing own loopback registry ready
+
+- 2026-10-15T16:02:59Z **Round8** — existing own loopback registry ready: Pass
+
+- 2026-10-15T16:02:59Z **Round8** — Started retain image under actual local-registry immutable digest
+
+- 2026-10-15T16:02:59Z **Round8** — retain image under actual local-registry immutable digest: Pass
+
+- 2026-10-15T16:03:00Z **Round8** — Docker storage image ready, test-only loopback digest recorded; no public create yet
+
+- 2026-10-15T16:03:02Z **Round8** — Started FS01 LD supported NFS create without application nodes
+
+- 2026-10-15T16:03:03Z **Round8** — FS01 LD supported NFS create without application nodes: Pass
+
+- 2026-10-15T16:03:05Z **Round8** — Started start command-only ab-nfs-api008-cmd-a
+
+- 2026-10-15T16:03:05Z **Round8** — start command-only ab-nfs-api008-cmd-a: Pass
+
+- 2026-10-15T16:03:05Z **Round8** — Started start command-only ab-nfs-api008-cmd-b
+
+- 2026-10-15T16:03:06Z **Round8** — start command-only ab-nfs-api008-cmd-b: Pass
+
+- 2026-10-15T16:03:06Z **Round8** — FS01–12 LD command-only actual NFS execution started; no application dependency
+
+- 2026-10-15T16:03:30Z **Round8** — LD FS01: Pass
+
+- 2026-10-15T16:03:30Z **Round8** — LD FS02-FS03: Pass
+
+- 2026-10-15T16:03:30Z **Round8** — LD FS05: Pass
+
+- 2026-10-15T16:03:30Z **Round8** — LD FS11-metadata: Pass
+
+- 2026-10-15T16:03:30Z **Round8** — LD FS06: Pass
+
+- 2026-10-15T16:03:30Z **Round8** — LD FS07: Pass
+
+- 2026-10-15T16:03:30Z **Round8** — LD FS12-Git: Pass
+
+- 2026-10-15T16:03:30Z **Round8** — LD FS09: Pass
+
+- 2026-10-15T16:03:30Z **Round8** — LD FS10: Pass
+
+- 2026-10-15T16:03:30Z **Round8** — LD FS11-permissions: Pass
+
+- 2026-10-15T16:03:30Z **Round8** — LD FS03-FS04-FS05 shell updates names truncate nonempty-directory: Pass
+
+- 2026-10-15T16:03:30Z **Round8** — LD FS08 atomic replacement concurrent complete-reader: Pass
+
+- 2026-10-15T16:03:30Z **Round8** — LD FS12 Git index-lock refusal and after-release success: Pass
+
+- 2026-10-15T16:03:30Z **Round8** — Started FS16 drain exact command-only containers
+
+- 2026-10-15T16:03:41Z **Round8** — FS16 drain exact command-only containers: Pass
+
+- 2026-10-15T16:03:41Z **Round8** — Started FS16 public LD drained detach
+
+- 2026-10-15T16:03:42Z **Round8** — FS16 public LD drained detach: Pass
+
+- 2026-10-15T16:03:42Z **Round8** — Started FS16 source and marker retained, mount and job absent
+
+- 2026-10-15T16:03:42Z **Round8** — FS16 source and marker retained, mount and job absent: Pass
+
+- FS17 Pass: exact VM/clone/guest command containers/storage/registry, private cache/toolchain/scratch and unused host application tag removed; desktop previously stopped normally and ports remain closed. Source/marker proved before disposable VM retirement. Prior engine/public Mac cache/build trees preserved. E8/command-cleanup.json.
+
+## API008 final command-only reconciliation
+
+FS01–FS17 Pass95%;26fresh command subcases across LN/LD;48healthy visibility samples;160concurrent independent files;400atomic replacements/13031complete reads; audited unchanged-source lifecycle/source/managed-node carry. CleanupComplete. No application acceptance or deferred-platform Pass. E8/command-final-summary.json and current report govern.

@@ -1,5 +1,19 @@
 # API/E2E Coverage Investigation — Shared Network Workspaces
 
+## Current API008 completed decision — command-only filesystem Pass95%
+
+The user's 2026-10-15 correction explicitly requests that API/E2E revise its own cases, without contacting Solution Designer: prove shared filesystem behavior through Linux commands inside two Docker containers, not the application UI/backend/editor. The active FS01–FS17 table at the top of the canonical ledger is authoritative for this validation plan; older plans below are historical.
+
+The test boundary is mounted filesystem bytes/metadata/permissions/locks/Git, NFS setup/source identity and lifecycle, and exact cleanup. Actors are shell processes in A/B; use `cat`, `printf`, `cmp`, `sha256sum`, `sed`, `mv`, `rm`, `stat`, `chmod`, Git, and small explicit fsync/clock/concurrency/lock helpers where shell alone cannot prove the contract. Application servers and UI are not required writers/readers. The NFS command under test remains appropriate for setup/lifecycle; do not bypass it to fabricate setup coverage. Existing actual selected-node management proof remains reusable with its precise scope, separate from byte actors.
+
+Still Valid: existing filesystem/setup Go and launcher tests plus API007 actual command/kernel/lifecycle receipts, subject to unchanged-source/evidence checks. Out Of Scope for this filesystem gate: editor, previews, Guide and application HTTP/GraphQL/agent coverage. Retain all those tests and their real historical results; do not delete tests or fix production in a test-plan revision. Use temporary executable command probes for real owned NFS mounts; no new general harness framework.
+
+Broader validation remains Required at the actual command/kernel surface where valid carried evidence does not already close a case. Revised-plan execution is now Pass95%; exact reconciliation is in the report/ledger and E8/command-final-summary.json. API007's historical combined Fail82.14 and API006 Blocked67.86 are not retrospectively rewritten. CR-FUP002 remains unresolved in its separate PM Task. The original IR010 editor correction is retained, but no new live editor closure is claimed or required for the filesystem-only result requested here.
+
+One Linux VM/two containers, LN then LD; shared-kernel/cache limitation explicit. No Mac/independent-client/physical/external-join qualification. No user application or credentials used. Stop the superseded application automation; preserve precise partial-download and cleanup state. No agent handoff for this test-case revision, as explicitly requested.
+
+## Historical investigation decisions (superseded where the current plan differs)
+
 ## Investigation meta and authority
 **Active continuation: API007 planning updated by the user to one Linux VM/two Docker nodes; see Round7 scope-change section and active L01–L26 ledger. Canonical SR024 acceptance alignment requested; no new execution verdict.**
 
@@ -437,3 +451,26 @@ LD raw client stat reports1001:109 while actual backing file is1000:109; execute
 
 ### API007 completed reassessment
 Broader execution completed for SR025 one LinuxVM/two real launcher nodes and both sequential storage modes. Final category scores50/95/95/95/95/50/95 = 82.14% **Fail**; AC010 actual unsaved-buffer overwrite and matching new durable regression preventPass. Independent failure-origin review required; no productionfix. All storage/lifecycle/API categories have direct scoped evidence; samekernel/Mac/physical/agent/release limits unchanged. CleanupComplete. See current report ACproof for authoritative mapping and raw attempts.
+
+## API-REV-008 — IR010 original peer-refresh revalidation plan
+
+Entry CRR015 source Pass100, source a3f65bfe6e, current docs c01dbfdcb6. ApprovedSR025/DEC017 and technicalSR023/ARCH007 unchanged. Read current source-review/handoff/revisions, original API007 evidence/ledger/history, requirements/design/approval/investigation/history (unchanged authority), root TESTING/DESIGN and web AGENTS/ARCHITECTURE/README/isolated-app instructions. Source diff confined to three frontend owners, two test files and docs. Previous VM/image/scratch retired under complete API007 cleanup; provision fresh owned resources, not revive deleted identities.
+
+**Scope disposition:** retain IR010 correction and rerun ORIGINAL AC010/REQ011/SCN006 L23 draft preservation through real peer modify/reload and Save. CR-FUP002 pending-Save/later-input equality defect remains unresolved, explicitly user-directed outside this increment, PM Task project_task_a4f90984-add2-4300-983d-de54ded3032b TODO/notdispatched. Not a false Pass or unsupported scenario. No editor cleanup, new approval/design/implementation loop or rerouting for that separate finding.
+
+Changed boundaries: workspace-session draft owner → Tabs/FileViewer/Monaco view and native input; streamed filesystem/refetch → committed content; Save → actual server/NFS/original source. Existing untouched backend/storage/launcher can carry API007's exact scoped LN/LD lifecycle/operations/permissions/visibility proof after diff check. Same-kernel limits and deferred Mac/physical/independent-client/kernel/external-join/agents unchanged.
+
+Coverage validity: original FileExplorerTabs.unsaved regression **Still Valid**, unchanged assertion; new draftViewer eight tests and adjacent components/store/preview/path tests **Still Valid**, execute narrow then affected suite/guards. Retired context-menu test checks were dead listener assertions, valid keyboard lifecycle retained by IR010; no new coverage removal. Existing af9f23 REST/helper coverage **Still Valid**, rerun public HTTP subset. No additional durable test needed now: current original+real-viewer coverage and implementation native-Monaco fixture cover mechanism; **Use Temporary Executable Probe Only** for actual owned NFS peer/UI correlation. Do not re-run CR-FUP002 diagnostic as an active gate.
+
+Plan: repository checks → mandatory confidence / broader decision → fresh ONE LinuxVM/TWO actual launcher nodes, sequential LN/LD public setup with current-source isolated desktop. In both modes native edit/Save verified by B; fresh unsaved draft while B writes; no silent replacement before/after deliberate Files/Terminal remount/reopen of already-open path; Save visible draft and B/source exact bytes. Proportionate clean-reader/Markdown/HTML-relative/image/media APIs and visible previews; carry unchanged full storage matrix. Use CUA only for UI; public APIs/CLI for fixtures. Own loopback ports/HOME/DB, no credentials or host network/live-node changes. Cleanup desktop/tunnel/guest/image/scratch; preserve prior candidates/cache/preexisting build trees. API007 remains Fail until completed new verdict. Success requires >=95%, no category<90 and scoped critical proof; then fresh successful cumulative-test-review route, not direct Delivery.
+
+### API008 repository confidence checkpoint
+Original/viewer12 tests and adjacent148 tests plus guards and public HTTP passed (overlap not added as unique tests). Scores req75/direct75/integration75/env95/edge95/user75/durable95 =83.57%. Prior exact-source storage/fixture/lifecycle evidence supports95 categories; original live editor defect not yet closed. Broader **Required**: current-source isolated desktop, real peer writes/Save and clean previews on both sequential modes. No inference or pending-Save follow-up expansion.
+
+## Command-only post-repository/carry checkpoint (before new filesystem case execution)
+
+Scores75/75/75/95/95/95/95 =86.43%; broader Required. Native binary identical to API007, NFS/launcher/server source diff empty. FS13–16 exact carry audited. Fresh command cases on generic containers will close atomic-reader/shell-truncation/Unicode-name/index-lock gaps and refresh bytes/visibility/locks. User-surface score means supported NFS CLI; application GUI is out of this gate. E8/command-repository-confidence.json.
+
+## Final API008 confidence and outcome
+
+All17 active filesystem groups Pass. Fresh generic-command LN/LD receipts, exact carried source/lifecycle/management proof, and cleanupComplete close the scoped gaps. Final95/95/95/95/95/95/95 =95%. Broader Required and executed; no missing active critical proof. No production/durable-test edits in API008; cumulative successful-test review remains required on Large/High route. App/UI/API/editor gates removed by direct user instruction, not reported fixed or passed. Details/attempts/AC evidence in canonical report.
