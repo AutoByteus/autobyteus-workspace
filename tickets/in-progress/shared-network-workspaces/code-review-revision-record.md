@@ -544,3 +544,54 @@ The canonical [code-review-report.md](code-review-report.md) is authoritative fo
   `solution_designer_ff9bb51075be4fdbbcd1b6eceba5ccdf`; accepted=true/DELIVERED,
   1003 cumulative references. Single most-specific Design Impact recipient only;
   no duplicate notification, polling or delegation.
+
+
+## CRR-011 — SR022 healthy-freshness source correction accepted
+
+- Canonical report: code-review-report.md. Entry Implementation Review / round11.
+- Scope **Targeted Delta Review**: eight files/four production, within CR006's
+  export-policy/config-lifecycle correction. No spine/data-shape/owner move or
+  layered recovery change. Relevant24 checks/all10 scores revalidated; unchanged
+  CRR009 structural evidence carried forward. No successful test-code review.
+- Trigger implementation_engineer IR008 on source d65aeda24fc4b9a534a3941b194dd4a55b88c00c;
+  input1840ab1389728dd1ed733587732f2abf3fb8641b, design4c66567c, review9d0ff246.
+  ApprovedSR018 / ReadySR022 / ARCH-REV006 / IR008 / API-REV004; delivery N/A.
+- Prior authoritative CRR010 Fail / Design Impact / CR006P1. Current **Pass—source
+  review only**,10.0/10(100/100). API004 Fail57.14%/broaderRequired unchanged;
+  CR006/API-F004 product closure remains pending. No new finding/refactor.
+- MP009/010 Confirmed: supported source writer -> sync/close -> export/cache ->
+  fresh participant read; exact-config ownership on public status/drained detach.
+  CAND010 source resolution accepted, CAND011 bounded preflight mechanism valid;
+  CAND012 speculative released-predecessor migration/hot policy machinery rejected.
+  No new requirements or unsupported concurrency obligation.
+
+### Prior finding resolution
+
+| Finding | Prior status | Current status | Related revisions / verification |
+| --- | --- | --- | --- |
+| CR006 / API-F004 | CRR010 Fail Design Impact, healthy~61s staleness | Source correction accepted; NOT product closed | SR022/ARCH006/IR008; export expiry0, early exact verification/absence distinction, local tests/mutations. Independent API-F004-first required |
+| CR005 / API-F003 | Source accepted CRR009; independently resolved API004 | Resolution retained at tested Linux storage/client scope | Two ordinary boots no manual repair; separate Stop/policy/replacement/detach controls. Not raw HostConfig equality beyond recorded DNS normalization |
+| CR003 / API-F002 | NativeUbuntu fresh first-use scoped resolution | Retained | Exact corrected IR005 engine reused, not rebuilt; no full-platform claim |
+| CR002 / API-F001 | NativeMac cold-create scoped resolution | Retained | API004 adds nativeMac boot/reconnect/detach, not full clients |
+| CR001 / CR004 | Modes/release-gate source resolutions | Retained | Untouched current code; personal local regression/qualification refusal |
+| FUP001 | PM custody broader baseline non-green | Unchanged | No duplicate follow-up or deduction |
+
+- E11 personal checks:7Go race/vet packages;56topPass+onechildSkip (parent runschild),
+  140 total subtestPass=84depth1+42depth2+14depth3. Corrects IR008's `first-level`
+  label, not product behavior. Python18enum17Pass1Skip. Three copied mutations
+  fail intended assertions. Default/retainedengine source aggregates verified.
+- 1088 inputrefs present;1083 protected input paths,15 prior candidates,4current
+  candidates and286old-dist files verified; embedded metadata matches. Recomputed
+  127 designer A/B/A observations, diagnostic feasibility only. No reviewer VM/
+  daemon/root/liveapp/provider/build or production/durable-test edit. Initial
+  reviewer list-vs-map parser error recorded/corrected; no product attribution.
+- Own scratch/toolchain/copies removed; raw logs retained. No false full-log
+  whitespace Pass. Production whitespace separately checked. Complete cumulative
+  index in E11/package-index.json; prior CRR001–010 preserved byte-prefix.
+- Next recipient `/software_engineering_team/api_e2e_engineer` if fresh primary
+  implementation-source-Pass rule matches. API-F004 FIRST on corrected public
+  native+managedHTTP, then full remaining approved matrix. Single most-specific
+  recipient only, no duplicate informational forwarding or delegation.
+- D001 deferredNOTfixed/IMP-D001 current-source/AGYlocal/FUP001/peerNAT limits
+  preserved; only MacDockerSTORAGE deferred. No merge/push/tag/release/TaskDone.
+  Confirmed handoff receipt is appended only after the tool accepts delivery.

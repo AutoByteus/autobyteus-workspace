@@ -1,0 +1,18 @@
+{
+  "go": {
+    "skipPackage": 1,
+    "passDepth1": 84,
+    "passTop": 56,
+    "passDepth2": 42,
+    "passDepth3": 14,
+    "passPackage": 7,
+    "skipTop": 1
+  },
+  "goChildViaParentExecuted": true,
+  "python": {
+    "enumerated": 18,
+    "pass": 17,
+    "skip": 1
+  },
+  "countNote": "140 total subtest events:84 depth1,42 depth2,14 depth3. IR008 calls140 first-level; use this exact breakdown, not140 direct children."
+}

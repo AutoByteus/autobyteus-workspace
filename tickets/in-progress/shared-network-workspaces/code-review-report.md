@@ -1,225 +1,225 @@
-# Code Review Report — Shared Network Workspaces
+# Code Review Report — CRR-011
 
 ## Latest authoritative result
 
-**CRR-010 — Fail / Design Impact. CR006 (P1), API-F004: healthy committed-file
-visibility violates AC-003.** The selected Linux storage integration returns old
-bytes on fresh native NFS and actual managed-node HTTP reads for about61s instead
-of the approved5s. The reviewed end-to-end freshness policy is incomplete; the
-server's inherited60s attribute expiry is a strong source-backed explanation,
-**not yet a proven sole cause or validated repair**.
+**Pass — implementation-source review only.** SR022 / ARCH-REV006 / IR008 resolves
+CR006's bounded source/design correction for independent API validation. **CR006 /
+API-F004 product behavior is NOT closed. API004 remains Fail57.14%, broaderRequired.**
+No new actionable source finding. No refactor required. All24 structural checks pass;
+score10.0/10 (100/100) at source-review scope, not execution confidence or release approval.
 
-**CR005 / API-F003 is resolved at API004's independently tested Linux arm64
-Docker-storage/managed-client reboot scope.** Do not reopen it because the
-separate healthy-coherence scenario fails. API004 remains **Fail57.14% / broader
-Required**. CRR009's source Pass100 is historical, not the current result or a
-product/release Pass.
+## Review round meta and routing classification
 
-## Review meta and scope
+- Entry: Implementation Review, round11 / CRR-011, 2026-10-15.
+- Scope: **Targeted Delta Review**. CRR010 failure-origin identified common Ganesha
+  policy plus owned-config lifecycle. SR022/ARCH006 accepted precisely those changes;
+  IR008 changes eight files (four production). No data-flow spine, shared data shape,
+  authority or runtime owner moved. The small new absence-aware function extends the
+  existing backend boundary, not a new cross-cutting interface. Unaffected CRR009
+  structural evidence carried forward; relevant24 checks and all10 scores revalidated.
+- Prior result: CRR010 Fail/Design Impact, CR006 P1; CRR009 source Pass is historical.
+- Input HEAD1840ab1389728dd1ed733587732f2abf3fb8641b; source
+  d65aeda24fc4b9a534a3941b194dd4a55b88c00c; implementation base391d65a993fbb0ca891e043d6a7eea5e4981eebc.
+- Authority: requirements-doc.md ApprovedSR018 + approval-record-sr018.md; investigation-
+  notes.md, solution-revision-record.md, design-spec.md ReadySR022 / design4c66567c;
+  design-review-report.md and architecture-review-revision-record.md ARCH-REV006 Pass
+  / review9d0ff246. Current implementation-handoff.md and implementation-revision-
+  record.md IR008; canonical code-review-revision-record.md CRR001–010 read/preserved.
+- Trigger/evidence: CR006/API-F004; API report/investigation/ledger/history API-REV004,
+  E4 visibility script/raw results and E10 failure-origin audit; SR022 exact-source/
+  A-B-A investigation and ARCH006 premise review; I8 checks/build/audits/attempts.
+  All1088 incoming references retained by code-review-evidence/crr-011/package-index.json.
+  E4=`evidence/api-e2e/api-rev-004`; I8=`implementation-evidence/ir-008`;
+  E11=`code-review-evidence/crr-011`, paths relative to this ticket.
+- Task shared-network-workspaces / project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63,
+  worktree /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces;
+  branch codex/shared-network-workspaces, finalization origin/personal.
+- **Large / High / Reviewed** confirmed: cumulative privileged multi-platform export,
+  consistency, lifecycle and private-state scope. Bounded correction does not downgrade
+  route. Independent source review required. External Product spec N/A—not applicable;
+  delivery/release N/A—not performed. Successful API test-code review N/A—failed package.
+- Shared design principles/template/Example9, root AGENTS/DESIGN/TESTING and NFS guidance
+  applied. No closer NFS AGENTS/DESIGN/TESTING or authority conflict found.
+- Explicit exclusions: no full unrelated app re-audit, live runtime/VM/privileged checks,
+  migration/hot reload, dependency rebuild, outage redesign or successful-test review.
 
-- Entry: **API/E2E Failure-Origin Review**; round10; source Review Scope **N/A**.
-  No repeat full structural audit, source-size thresholds or full scorecard.
-- Task `shared-network-workspaces` /
-  `project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`; **Large / High / Reviewed**
-  retained. Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces`;
-  branch `codex/shared-network-workspaces`; finalization `origin/personal`.
-- Input `b5167131bfb4e93fc2a8d8216e83ac791d207cc7` includes API evidence
-  `41af4e7f82f1c2d9b4b58074b758540391674a4f`. API build input
-  `902638e584d8e669b632cf81bcc0a95074892403`; production unchanged at
-  `d318bd9db935affdf16d141ef4e88a6c0e4939b5`. No post-review implementation change.
-- Requirements/investigation/solution context: [Approved SR018](requirements-doc.md),
-  [approval](approval-record-sr018.md), [investigation](investigation-notes.md),
-  [solution history](solution-revision-record.md), [Ready SR021 design](design-spec.md),
-  [handoff](solution-design-handoff.md). Relevant DS002, BEH002/003, SCN002,
-  REQ004/AC003/QR001 and preserved source-folder/healthy preview behavior.
-- Independent design context: [ARCH-REV005](design-review-report.md) and
-  [architecture history](architecture-review-revision-record.md); IR007
-  [handoff](implementation-handoff.md) and [history](implementation-revision-record.md).
-  Prior review CRR009 and all CRR001–009 retained in
-  [code-review-revision-record](code-review-revision-record.md) and Git history.
-- Failure context: [API004 report](api-e2e-execution-coverage-report.md),
-  [investigation](api-e2e-coverage-investigation.md), [ledger](api-e2e-test-case-ledger.md),
-  [API history](api-e2e-revision-record.md). Earlier investigation headings are
-  historical; appended API004 section and canonical API report govern.
-- **E4** = `evidence/api-e2e/api-rev-004/`; **E10** = `code-review-evidence/crr-010/`.
-  Complete992 incoming references preserved by the E10 cumulative package index.
-  Relevant supplements/raw histories remain linked, not rewritten.
-- Trigger: API-F004 healthy source close -> fresh client read. Exact inherited
-  commands are in E4 `run-preview-external-change.py`, `reproduce-visibility.py`
-  and their JSON receipts (including executed guest argv). Failure summary,
-  identity corrections and source clues reviewed. No new live repro this round.
-- Reviewed minimum paths: common Ganesha generator/install/verify, setup apply/
-  reconnect callers, native/Docker mount options, real REST content reader and
-  exact retained engine cache sources. Excludes unrelated runtime/UI/source
-  changes and general test-suite review. Successful durable-test review still
-  awaits a passed package; unchanged af9f23 REST coverage is not signed off here.
-- Delivery/release revision: **N/A — not performed**. Product-owned specification:
-  **N/A — not applicable**. Personal work only; no delegation/spawning.
+## Upstream behavior and production-path basis
 
-## Supported behavior and candidate gate
+**Confirmed** at implementation scope. Requirements/scope guardrail UC001–007 remain;
+no new behavior, missing approval or material ambiguity. Change Scope is obeyed.
 
-Intended behavior is clear and unchanged. No requirement gap, new behavior ID,
-concurrent conflicting-write promise or broader latency SLA is introduced.
+| Behavior | Status | Current production path and lifecycle evidence |
+| --- | --- | --- |
+| BEH001 | Confirmed | Public CLI consent/lock -> setup.Apply -> backend.Write/InstallGanesha or Docker.EnsureEngine -> generated EXPORT -> mount/nonroot probe; fresh activation consumes current config. Current exact repeat is unchanged |
+| BEH003 / SCN002 | Confirmed | Source writer flush/fsync/close -> Ganesha VFS/MDCACHE with export expiry0 -> unchanged hard4.1/actimeo1 native or Docker nosharecache -> new open; managed HTTP continues workspaces.ts createReadStream. Source implements approved policy; actual5s current-product result pending |
+| BEH004 | Confirmed | CLI status -> CheckConfiguration -> VerifyGanesha -> public binding/mount/nonroot probe -> HostReady; false on config error. Reconnect/service retain existing Verify/Ensure and selected recovery |
+| BEH005 | Confirmed | Consented drained detach -> saved or pending descriptor -> VerifyGaneshaForDetach -> selected-node teardown -> unmount/job/engine -> exact config removal -> descriptors/attempts; source/marker/recovery preserved |
+| BEH002/006/007 | Confirmed/preserved | Runtime native-tool/private-link, file/preview and truthful unavailable Guide paths untouched; no app retry/workaround. CRR009 plus API004 evidence retained only at actual scope |
 
-| Basis | Actor / independent trigger / goal | Supported entry and forward path / lifecycle | Expected consequence / evidence | Validity and use |
+Spines: **DS001** public setup/lifecycle -> setup owner -> backend/platform/docker ->
+verified mount/teardown -> CLI returned status/error; **DS002** publishing actor ->
+source close -> existing export/cache -> mounted client -> exact new read; **DS004**
+file open -> workspace manager/path -> unchanged REST OS stream -> preview. DS003
+runtime and DS005 Guide, DS006 reboot/DS006-L consumed-start sequence are unchanged.
+No config lifetime inferred from disk equality: this is fresh activation/current
+reuse, not hot replacement or proof of a manually modified running daemon's policy.
+
+## Supported scenario and candidate gate
+
+| Scenario/contract | Actor, coherent goal and supported entry | Forward lifecycle / consequence | Independent authority | Validity / use |
 | --- | --- | --- | --- | --- |
-| SCN002; BEH002/003; REQ004 AC003 QR001 | User/native tool publishes a small changed ordinary project file for another participating reader | Original source-folder write -> successful flush/fsync/close -> healthy selected native Ganesha/VFS export -> distinct native or managed Docker NFS mount -> new open; HTTP additionally resolves workspace path then createReadStream | Exact committed bytes within5s for<=1MiB; requirements AC003 explicitly tests host/container directions, design DS002 and source-folder contract | **Supported Normal Scenario / Reachable / Use**. Source-first publishing is ordinary use, not a test-created concurrency premise |
-| SCN009/013; BEH004/005; prior CR005 | Normal whole-host reboot after selected attachment; preserve ordinary operator Stop/veto | Existing SR021 reconnect and daemon lifecycle; first two boots unmodified, later controls separate | Actual API/mounted bytes and identity/private preservation; E4 two-reboots and controls | **Supported Normal Scenario / Reachable / Use** only to verify prior resolution |
+| SCN002 / MP009 | User/native tool saves the chosen original shared-project file for a participating reader | Successful <=1MiB sync/close -> export -> fresh native/managed read must be exact<=5s; warmed server attrs previously hid updates | REQ004/AC003/QR001; E4 two unique1024byte trials61.149/60.975s, E10 audit; SR022 A/B/A | Supported Normal; reachable; Use |
+| SCN001/005 / MP010 | Operator invokes public status or consented drained detach; only owned current config may be claimed/removed | Hosted descriptor -> exact backend comparison before readiness or teardown; existing partial removal can leave config absent before final receipts removed | REQ010/AC009/017; design generated-state disposition; existing Write/Verify/Remove contract and actual lifecycle ordering | Supported Explicit Edge/ownership contract; reachable; Use |
 
-| Candidate | Observation / independent basis / consequence | Evidence | Disposition and proportional response |
+| Candidate | Observation / independent trigger / path | Evidence | Disposition and proportionate response |
 | --- | --- | --- | --- |
-| **CAND010** | Approved source publisher closes before each reader reopens, but current selected storage path retains old data past5s; client actimeo1 alone does not establish end-to-end freshness | E4 two unique fixtures, actual native config/findmnt/packages/CLI; E10 raw-observation audit and engine source trace; design filesystem-semantics paragraph | **Promote — this ticket -> CR006/P1.** In-scope AC failure; return narrowly to Solution Designer for selected backend freshness-policy recovery. Not an unrelated dependency follow-up |
-| CAND010 mechanism limit | A particular Attr_Expiration_Time value alone fixes every supported operation/mode | Default/inheritance/validity source supports investigation, but no cache instrumentation or controlled repair experiment | **Hold for Evidence — repair hypothesis only.** No finding/deduction or mandatory config value based on this claim. This does not hold the independently proven failure or its policy-gap classification |
-| Rejected extensions | Renderer-only defect, outage hardening, instantaneous open-FD updates, all-mode Docker STORAGE reproduction from common code, automatic watcher or new read-retry framework | Native fresh reads fail without renderer; no outage/heldFD; only native storage reproduced here | **Reject** as attribution/prescription from this evidence. No new UI finding or machinery |
+| CAND010 / CR006 | Healthy original-source publication must cross the server/client cache boundary, not just client actimeo1 | GaneshaConfig EXPORT line40; exact-source cache audit; SR022 warmed A/B/A; current template tests | Promote retained valid finding; source correction accepted. CR006 product closure pending independent API-F004, no read retry or lower5s target |
+| CAND011 / MP010 | Same exact-resource contract exercised by status and detach requires early verification and missing-config retry distinction | status.go:24–32; lifecycle.go:89–93; ganesha_native.go:128–135; existing final removal; both-mode fixtures | Promote supported mechanism, not new defect. Existing verifier owns bytes; Lstat distinguishes dangling/present error from absence, retaining remaining ownership checks |
+| CAND012 | Requiring a generic old-template migrator or hot loaded-policy detector for this release | No released predecessor established; empty qualification, cleaned prior runtime fixtures, retained files are test artifacts; SR022 explicit disposition | Reject unsupported machinery. No evidenced supported live-upgrade journey; no score deduction. Return concrete retained-deployment evidence upstream if discovered |
 
-Behavior basis **Confirmed**; observed BEH003/AC003 outcome **Contradicted**.
-No approval change is needed to retain the5s requirement. Any proposed narrowing
-of source writers, platforms, safety or that bound needs renewed approval.
+MP009/010 **Confirmed**, including preserved source/private guarantees. MP001/002 outage
+premises remain explicitly deferred, not fixed; MP003/004 source lifetime, MP005 corrected
+engine and MP006–008 restart/Stop premises unchanged at recorded scopes. No additional
+speculative concurrency premise or mechanism. Tests establish boundary conformance;
+synthetic missing/different files do not themselves establish a new product workflow.
 
-## Failure evidence and origin
+## Prior-finding resolution
 
-E4's native storage was created through public setup, then admitted the actual
-selected managed node through normal detach/create. Installed native CLI SHA
-`0036ccef0bbb2a2510064f2e882b692687a2288eb25563d89f9c4ac9150c860c` and actual package
-requery identify Ganesha/VFS `4.3-8ubuntu1+autobyteus1`, Ubuntu24.04.5/ext4/
-kernel7.0.0-38/aarch64, directorydelegationsY. Source and mounted UUID
-`982e2025-961c-4b25-ab83-24ff06debcfa`; selected node
-`c40d2221e0c821ea1a2c44cc9eba5c0fdf3a67179adeca98046ba7687a62a487` is running.
-Source directory `/home/admin/ab-nfs-api004-linux-9591ce1a-native-source`,
-original identity `64769:2359328:1000:109:755`. Actual engine/service active,
-HTTP successful, native mount hardTCP4.1 with all attribute bounds1s.
+- **CR006 P1/API-F004:** SR022 design accepted, IR008 source correction independently
+  accepted here. No current-public5s proof yet; API-F004 remains open. Earlier source
+  integration gap (server60s overlooked) is addressed, not erased from history.
+- **CR005/API-F003:** independently resolved by API004 in tested Linux Docker-storage/
+  selected-client scope: two ordinary full host boots without manual Start/reconnect,
+  normal Stop/current-policy-no/replacement/detach controls. Not reopened. Same ID/Image/
+  Config; HostConfig only documented empty-DNS null->[] normalization, not raw byte equality.
+- CR001–004/API-F001/F002 retain recorded scoped resolutions. FUP001 stays PM custody;
+  no duplicate follow-up or score deduction. Full prior table in CRR011 history entry.
 
-| Unique1024-byte fixture | Observation count | Old bytes after5s | Last old observation | First exact new observation (native / HTTP) |
-| --- | ---: | ---: | ---: | --- |
-| visibility-d3f108eedd3f48ebb44f9b86c3155066.bin |122|5.053s|60.644s|61.149s /61.149s|
-| visibility-930e44580b2c41aeaf35874512eec797.bin |121|5.051s|60.467s|60.975s /60.975s|
+## Structural / design checks
 
-All pre-fresh rows return old SHA `785b0751fc2c53dc14a4ce3d800e69ef9ce1009eb327ccf458afe09c242c26c9`.
-Source-after and eventual readers match new SHA
-`3af6dbef8362452d2b45ad97deb9e43180fb90aac309860e26e123860cce62a7`.
-Same inode; mtimeNs changes. Initial135-byte PNG also remains old through5.010s.
-The script closes each writer/read context; the timer starts after sync/close.
-Timestamps follow both serial reads, sampled about0.5s; they are not exact separate
-per-reader event times. Many stale observations far beyond5s remove threshold
-sampling ambiguity. Later freshness does not turn this into Pass.
+| Check | Result | Evidence | Required action |
+| --- | --- | --- | --- |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | SR022 health assessment: missing freshness invariant, existing owners suffice; four production files, no refactor needed. | None |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | Approved SR018, SR022/ARCH006 MP009/010 and current README agree; no five-second or writer narrowing. | None |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | DS001 create/status/detach and DS002 writer-to-reader traced below; DS003–006 unchanged from CRR009 plus API004 scoped evidence. | None |
+| Ownership boundary preservation and clarity | Pass | backend owns generation/comparison; setup owns admission/sequencing; callers use that boundary. | None |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | No added cache/registry/worker; config comparison serves the existing export/lifecycle owner. | None |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | GaneshaConfig and VerifyGanesha reused; new narrow absence-aware detach helper stays in existing backend file. | None |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | One native/Docker generator and existing exact comparator; test fixture centralizes hosted-config setup. | None |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | No HostedFilesystem/Attachment/Connection/Status schema change or extra saved readiness. | None |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Status and Detach share backend policy, differing only in supported absence semantics. | None |
+| Empty indirection check (no pass-through-only boundary) | Pass | VerifyGaneshaForDetach owns absence-versus-present error policy; not an empty forwarding wrapper. | None |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | ganesha.go template, ganesha_native.go file verification, lifecycle.go orchestration, status.go observation. | None |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | CLI -> setup -> backend/platform/docker remains; no runtime/REST/UI dependency added. | None |
+| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | CLI does not parse config or bypass SetupService; setup does not duplicate backend byte interpretation. | None |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Four production edits remain at approved existing concern locations; adjacent coherent tests. | None |
+| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | No additional subsystem or split; tiny helper avoids forcing a generic verification framework. | None |
+| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | No new public API/option; typed hosted identity/privateRoot/container flag already established; absence-specific helper explicit. | None |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | VerifyGaneshaForDetach describes its job; comments explain missing allowance; current errors propagated. | None |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | No duplicate template/parser; two short call sites select native/Docker mode. Existing comparison reused. | None |
+| Patch-on-patch complexity control | Pass | Fixes missing export policy directly; no layering over IR007 start recovery, read retries or cache flushing. | None |
+| Dead code removed in the touched files and modules (Core Principle 7) | Pass | All touched production functions have current callers in apply/lifecycle/status or owned backend; no retired branch added. | None |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Exact EXPORT assertion and both-mode lifecycle/mismatch/absence/retention outcomes match MP009/010. | None |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | hostedConfigFixture reuses saved/pending setup; deliberate mount sentinel prevents real effects and bounds claim. | None |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Old config is a refusal/control fixture, not a supported legacy runtime path. No test weakened or disabled. | None |
+| API/E2E readiness for the next workflow stage | Pass | Local checks and provenance pass; API-F004-first matrix explicit. Readiness for API is not API acceptance. | None |
 
-**Origin established:** selected native-Linux storage/data-plane coherence,
-not renderer-only, HTTP-only, stale source build, uncommitted writer, unsupported
-race, API-F003 recurrence or deferred outage. There is no production/durable-test
-delta since source review. API's helper-envelope and dpkg-guard mistakes are
-explicitly corrected; they do not invalidate actual installed-hash/config/raw
-read observations. No fresh package-absence proof is credited here.
+## Source-file size and structure audit
 
-**Mechanism investigated independently:** `backend/ganesha.go:38–54` emits no
-server attribute-expiry bound; the live native config agrees. `mounts.go:67–79`
-and `docker/volume.go:17–18` specify only client actimeo1. The exact retained
-source defaults export attribute expiry to60, inherits it into cached entries,
-and `mdcache_getattrs` can return those attributes without refreshing while
-`mdcache_is_attrs_valid` succeeds. Versioned upstream documents the same
-[export default/inheritance](https://github.com/nfs-ganesha/nfs-ganesha/blob/V4.3/src/doc/man/ganesha-export-config.rst).
-Full member hashes, line spans and inference limits are in
-[E10 primary contracts](code-review-evidence/crr-010/primary-contracts.md) and
-[engine source audit](code-review-evidence/crr-010/engine-source-audit.json).
+Finalization merge-base f13bdd0eb79aacc63dffa5995b9c86f359001468 has none of these new
+NFS files. Prior-round counts also shown; >220 check applies to this review delta.
+All files also remain below220 effective lines for the cumulative ticket. Tests and
+docs are excluded from source thresholds; adjacent187-line setup test is coherent.
 
-That mechanism is consistent with ~61s and explains why client1s is not by
-itself an end-to-end5s guarantee. **No packet trace, live cache instrumentation
-or controlled configuration-change test proves it is the sole cause or proves
-a specific setting repairs all operations.** No patch/cache drop/retry/workaround
-was applied. Native hosting is directly reproduced; the shared generator makes
-Docker storage a relevant correction/regression surface, not a reproduced mode.
+| Source file | Finalization-base nonempty | Prior round -> current nonempty | >500 | Delta >220 | SoC / placement / action |
+| --- | --- | --- | --- | --- | --- |
+| `autobyteus-nfs/internal/backend/ganesha.go` | 0 (new in ticket) | 54 -> 55 | Pass | +1/-0; Pass | Existing owner/placement; no action |
+| `autobyteus-nfs/internal/backend/ganesha_native.go` | 0 (new in ticket) | 133 -> 143 | Pass | +11/-0; Pass | Existing owner/placement; no action |
+| `autobyteus-nfs/internal/setup/lifecycle.go` | 0 (new in ticket) | 152 -> 157 | Pass | +5/-0; Pass | Existing owner/placement; no action |
+| `autobyteus-nfs/internal/setup/status.go` | 0 (new in ticket) | 70 -> 76 | Pass | +8/-1; Pass | Existing owner/placement; no action |
 
-### CR006 — selected backend freshness policy does not satisfy AC003 (P1)
+## Legacy, persisted state and cleanup
 
-- **Scope:** this ticket, CAND010, SCN002/REQ004/AC003/QR001. A core ordinary
-  shared-file publication contract fails while healthy. Not performance tuning,
-  an adjacent pre-existing issue, or permission to expand outage scope.
-- **Classification: Design Impact**, narrow selected-engine/cache integration.
-  Design DS002 assigns data semantics to OS client/backend, but the filesystem
-  policy specifies client actimeo1 without resolving server-side freshness for
-  supported original-source writes. Current implementation follows that incomplete
-  baseline. The design's escalation contract explicitly returns discovered
-  normal-connected-operation incompatibility to Solution Designer. This is not
-  a requirement ambiguity or a mandate for a new owner/subsystem/engine.
-- **Required outcome:** investigate and establish the smallest backend/client
-  freshness policy that meets unchanged AC003 on the approved reference; revise
-  only affected design/verification/owned-config lifecycle guidance, then implement
-  under existing owners. A bounded generator/config correction may suffice, but
-  this review does not certify one. Preserve exact ownership/external-change
-  refusal, source identity/data/UUID, hard mounts, private state, default kernel
-  support and the existing restart/Stop contract. A changed generated config
-  must have an explicit supported apply/reconnect disposition; do not bypass
-  `WriteGanesha`/`VerifyGanesha` or invent broad migration machinery.
-- **Verification:** independently rerun API-F004 first after accepted correction,
-  repeated unique synced/closed source edits and new native + real managed-node
-  reads with actual cache configuration/identity. Then continue existing approved
-  host/container directions and native/Docker-storage matrix, plus affected
-  reconnect/restart/detach/preservation regressions. No client cache flushing,
-  retries masking delay, changed5s criterion or source-copy proxy as test repair.
+| Check | Result | Evidence |
+| --- | --- | --- |
+| No backward compatibility mechanism | Pass | No old-template parser or selectable cache policy |
+| No legacy old behavior retention | Pass | One current EXPORT; old bytes are rejected, not silently served as current |
+| Dead code removed in touched scope | Pass | No newly dead code found; call traces cover all touched production functions |
+| Approved transition decision followed | Pass | User/source/marker/attachment formats Not Affected; same-current directly reusable; disposable prior test setup uses matching old public detach before reinstall |
+| No dual reads/writes or old-shape fallback | Pass | Exact current byte comparison retained; absent Detach is existing partial-removal semantics, not legacy acceptance |
+| Transition mechanics proportionate | Pass | No evidenced released predecessor; no migration required. No forced overwrite/source deletion/hot reload |
 
-### Earlier review gap / affected rationale only
+Dead/obsolete items requiring removal: **None**. Source ownership/0700/0600 and exact
+unit/container/removal checks unchanged. New helper has a real caller. Reviewer scratch
+removed;19 candidate files and286 old dist files retained unchanged. No new follow-up.
+Docs impact **Yes**, NFS README accurately states server policy,5s fresh-open target,
+configuration refusal/partial retry and matching-old-test-candidate retirement. Final
+release/docs synchronization remains delivery-owned, not falsely completed here.
 
-The source-visible invariant that should have been challenged is **end-to-end
-freshness includes the selected server's metadata cache for direct source
-writes**, not merely client actimeo1. The generator omission and dependency60s
-default were available during earlier backend/dependency review. Accepting that
-combination without resolving its AC003 consequence was an integration review
-gap. The exact observed61s and sufficiency of any fix still require runtime
-proof; they were not proven by source review. This is not a new IR007 recovery
-regression, and CRR009's focused recovery checks remain valid at their scopes.
+## Personal checks and evidence
 
-Affected rationale: Runtime Correctness/Behavioral Fidelity is now contradicted
-for AC003; API/E2E readiness cannot be used as completion evidence. **No new
-numeric score or full scorecard in this failure-origin-only round.** Unaffected
-structural evidence remains historical, not a current blanket100/100 Pass.
+E11/checks-and-limits.md, checks-result.json, test-counts.json, source-audit.json,
+execution-evidence-review.json and cleanup.json are authoritative for this review.
+Seven Go packages race/count1 and vet pass;56 top passes + one helper-only skip;
+140 total subtest passes (84/42/14 depths). Go bootstrap parent executed actual Python/
+Go child. Python18 enumerated17pass1skip. Three isolated mutation controls fail intended
+assertions. Default and retained-engine source aggregates match. Publication correctly
+refused. All1088 inputs present,1083 protected implementation-input paths unchanged;
+15 prior +4current candidates SHA/size checked, current embedded metadata matches.
+Recomputed127 designer raw A/B/A observations; that is evidence audit, not reviewer
+VM execution. Actual current fresh public/native+HTTP5s remains untested this round.
 
-## Prior findings and retained boundaries
+Counts nuance: I8's140 `first-level` label is total subtest events; exact depth counts
+above supersede that label for forwarding. No product failure or test pass inflated.
+Initial reviewer list-vs-map parser error corrected before result; retained attempts.
+Raw diagnostic whitespace preserved and excluded only from artifact blank-EOL policy,
+never production whitespace. No reviewer code/test fix, build/daemon/root operation,
+provider use, user app/network/config change or release action.
 
-| Finding | Current disposition / evidence |
-| --- | --- |
-| CR005 / API-F003 | **Scoped resolved:** audited fresh selected setup + two ordinary whole-host boots, distinct bootIDs and sameID/image/config/ports/aliases/mounts/private/source/API; normal Stop/veto/current-ref replacement/detach controls separately pass.60.879/59.991s observations are not a new SLA |
-| CR003 / API-F002 | API003 fresh no-preinstall native-Ubuntu public scope retained; API004 package identity/regression is not fresh absence proof |
-| CR002 / API-F001 | Prior scoped nativeMac cold-create resolution retained; API004 adds fresh nativeMac create/ordinaryboot/reconnect/detach, not all-client qualification |
-| CR001 / CR004 | Mode and release-gate scoped resolutions retained; no related source delta or new counterexample |
-| D001 / DEC015; IMP-D001 | Outage hardening deferred **NOT fixed**; private current-source links, independent confirmed Source Update/Remove, AGY/local policies unchanged |
-| FUP001 | Existing Project Task Manager custody, no duplicate follow-up/patch/notice; historical broad non-green remains distinct |
+## Review scorecard
 
-No new out-of-scope follow-up. Do not broaden source pin/refcount/retirement or
-restart machinery. Only MacDocker **storage hosting** is deferred, not clients.
+All scores assess supported source contract and readiness for independent validation,
+not a substitute for the still-failing execution report. No arbitrary deductions for
+untested downstream matrix or rejected speculative machinery. Simple average10.0/10,
+100/100; verdict also requires the gates and structural checks above.
 
-## Checks, provenance, limits and routing
+| Priority | Category | Score | Why | Weakness / drag | Improvement |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Data-Flow Spine Inventory and Clarity | 10.0 | DS001/002 full caller-to-reader and return paths explicit; unrelated spines unchanged | None in delta | None |
+| 2 | Ownership Clarity and Boundary Encapsulation | 10.0 | Config policy/comparison stays backend, sequencing setup; CAND011 | None | None |
+| 3 | API / Interface / Query / Command Clarity | 10.0 | Narrow absence-aware backend contract; no public/API change | None | None |
+| 4 | Separation of Concerns and File Placement | 10.0 | Four small concern-owned production edits | None | None |
+| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 10.0 | One generator/comparator; no new persisted shapes | None | None |
+| 6 | Naming Quality and Local Readability | 10.0 | Explicit detach absence policy and lifecycle comments | None | None |
+| 7 | API/E2E Readiness | 10.0 | Checked candidate provenance, clear API-F004-first and remaining matrix | No source blocker; execution pending | API owner must validate before closure |
+| 8 | Runtime Correctness And Behavioral Fidelity | 10.0 | MP009 server-policy gap corrected at existing owner; MP010 ordering locally proven | No evidenced remaining source defect; not a runtime Pass | Current public/native+HTTP5s validation |
+| 9 | No Backward-Compatibility / No Legacy Retention | 10.0 | Single current template, no migrator/hot reload/old-runtime branch | None | None |
+| 10 | Cleanup Completeness | 10.0 | No dead delta; own scratch removed, user/upstream artifacts preserved | None | None |
 
-Personal [audit](code-review-evidence/crr-010/audit-failure-package.py) passes:
-992refs exist; all15 retained candidate hashes/sizes match; source/durable tests
-unchanged;243 freshness rows and scoped prior closure checked; six exact engine
-source members inspected read-only. [Checks/limits](code-review-evidence/crr-010/checks-and-limits.md)
-distinguishes inherited execution from personal review and records exploratory
-read-only path/output errors. No source or durable-test edits, new VM/daemon/root/
-mount/app/provider/physical/network operation or engine rebuild. No runtime
-resources created; no reviewer cleanup outstanding. API004 cleanup Complete
-retained; five old untracked dist trees untouched by this review/unstaged, without
-claiming byteidentity across API builds.
+## Findings, classification and remaining risks
 
-Default aggregate968f6d000d4b6c2cc3c66cd3add5845cb30385cdad752fe831b564823db9b764;
-retained-engine metadata51f81cd187caf269ecffa83fecc35a4f665b70942716d7858fa7d964d3b335ed.
-Actual current full-server image
-sha256:c4338af68b8608226655056dc7c52d76250eba7c317f25ef43b9ca8458414dfb.
-E4 identity corrections govern native receipts, not inherited Docker envelopes.
-Qualification remains empty; candidate build is not release qualification.
+No new source findings. **Pass**, no failure classification; prior Design Impact is
+source-addressed through approved SR022, not waived. No refactor needed. Supported
+scenario gate **Pass**; material-premise gate **Pass**; behavior basis **Confirmed**.
+Primary next owner API/E2E under fresh configured rule; no duplicate pass notification.
 
-After bounded solution recovery: implementation -> selected source review ->
-API-F004 FIRST -> remaining bothOS/native/managedDocker-client/Linux-storage/
-independentpeer/physical/native-tools+assets+peerclose+restore/Standalone-Team-Org/
-completed-artifact/healthy preview/hosted-signing-amd64-publicbootstrap/docs/user/
-finalization/authorized-release gates. NAT peer limit and unanswered access/profile/
-inference questions remain; no permission or waiver inferred. Separate successful
-test review and Delivery follow only a passed package.
+1. **API-F004 FIRST** with corrected fresh public setup/reconnect: warmed unique repeated
+   1KiB/1MiB original-source in-place sync/close -> actual fresh native and managedHTTP
+   exact bytes<=5s; atomic/new-file controls. Record actual generated/activated config,
+   engine/package/CLI/image, cache/mount, source inode/device/UID/GID/mode/UUID and private
+   identity. No manual config/cacheflush/remount/read-retry workaround. Zero-policy A/B/A
+   is causal-lever evidence for native dependency behavior only; common generator is
+   not proof Docker STORAGE passed. Extra metadata work is accepted, not benchmarked.
+2. Preserve CR005/API-F003 scoped closure; retain ordinary boot/Stop/policy/unselected/
+   launcher replacement/drained detach controls. Observed~60s boot is not a new SLA.
+3. Complete remaining both-OS native/managedDocker clients; Linux native/Docker STORAGE;
+   independent physical peers; actual native tools/unread linked assets/peer close/
+   restore/Standalone-Team-Org; completed artifact/healthy previews; amd64 engine;
+   hosted workflow/signing/public bootstrap/docs/user verification/finalization/release.
+   Successful af9f23 REST test-code review still waits for a passed API package.
+4. Only MacDocker STORAGE deferred. D001/DEC015 outage isolation deferred NOTfixed;
+   IMP-D001 current-source private links/independent Update-Remove/unchanged AGY-local
+   policy retained. NAT2049/physical/access/profile limits remain; no permission inferred.
+   FUP001 retained in PM custody. Empty qualification/unavailable Guide remain truthful.
 
-**Latest result: Fail / Design Impact / CRR-010 / CR006 OPEN.** API004 retains
-independent Fail57.14%/broaderRequired. Obtain fresh handoff rules and send the
-complete cumulative failure package only to the single most-specific returned
-Solution Designer recipient. No duplicate forwarding, polling, delegation,
-merge/push/tag/release/TaskDone.
-
-Confirmed handoff: review1240527c804b291ae99c69d6f6cb58f4cba0a09c delivered with
-1003 references to `/software_engineering_team/solution_designer`, accepted=true/
-DELIVERED; exact receipt in E10/routing.json. No additional recipient notified.
+No merge/push/tag/release/TaskDone/user-verification authorization or claim.
