@@ -46,5 +46,12 @@
   "outcome": "Fail / Design Impact / CRR-010 / CR006 API-F004",
   "reason": "Supported healthy coherence failure exposes incomplete selected-server/client freshness policy; SR021 explicitly escalates normal-connected incompatibility. Exact repair remains unvalidated; no mandatory configuration value or new machinery.",
   "singleRecipientOnly": true,
-  "delivery": "pending"
+  "delivery": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to /software_engineering_team/solution_designer.",
+    "target_agent_run_id": "solution_designer_ff9bb51075be4fdbbcd1b6eceba5ccdf"
+  },
+  "reviewCommit": "1240527c804b291ae99c69d6f6cb58f4cba0a09c",
+  "referenceCountSent": 1003
 }

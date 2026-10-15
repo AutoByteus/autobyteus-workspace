@@ -538,3 +538,9 @@ The canonical [code-review-report.md](code-review-report.md) is authoritative fo
 - Routing: fresh rules, single most-specific Design Impact recipient only;
   full992-reference upstream chain plus current reviewer evidence. Confirmed
   delivery recorded separately after the send succeeds.
+
+- **Confirmed handoff:** review1240527c804b291ae99c69d6f6cb58f4cba0a09c delivered
+  to `/software_engineering_team/solution_designer`, AgentRun
+  `solution_designer_ff9bb51075be4fdbbcd1b6eceba5ccdf`; accepted=true/DELIVERED,
+  1003 cumulative references. Single most-specific Design Impact recipient only;
+  no duplicate notification, polling or delegation.
