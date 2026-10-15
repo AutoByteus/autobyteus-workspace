@@ -1,6 +1,8 @@
 # API/E2E Coverage Investigation — Shared Network Workspaces
 
 ## Investigation meta and authority
+**Active continuation: API007 planning updated by the user to one Linux VM/two Docker nodes; see Round7 scope-change section and active L01–L26 ledger. Canonical SR024 acceptance alignment requested; no new execution verdict.**
+
 **Latest complete: API-REV-006 Blocked/67.86%, broader Blocked; IR009 / CRR013 / ApprovedSR018 / ReadySR023 / ARCH007. API-F005 scoped nativeMac resolution proven by ordinary boots and real replacement controls; external physical/LAN/native-profile dependencies remain. Current [report](api-e2e-execution-coverage-report.md), [ledger](api-e2e-test-case-ledger.md), [revision](api-e2e-revision-record.md), and [E6 cumulative package](evidence/api-e2e/api-rev-006/package-index.json) govern. Round6 plan, corrections and final decision are below.**
 
 **Previous complete: API-REV-005 complete, Fail/57.14%, CRR011 / IR008 / ApprovedSR018 / ReadySR022 / ARCH006. API-F004 independently resolved at executed Linux native/Docker+native/managedHTTP scope; new API-F005 ordinary Mac reboot changes source device number, rejecting same source.** Historical [report](api-e2e-execution-coverage-report.md), [ledger](api-e2e-test-case-ledger.md), [revision](api-e2e-revision-record.md), [E5 cumulative package](evidence/api-e2e/api-rev-005/package-index.json) govern. Earlier decisions/results remain historical.
@@ -291,3 +293,93 @@ Linux new-source public create passes; actual0750 (private/group) differs from M
 ### Round6 final decision
 API-F005 nativeMac correction directly proven first: twoordinaryboots withactualrawdevicechange automaticmountednonrootRW/savedbindingunchanged, separatepublicreconnect and realdirectory/APFSvolume copiedmarker refusal; actualreplacementvolume has same rawdevice+inode butdifferentUUID. Exactoriginalrestored. Newsource/private-group/absentpathsafeDetach and Linuxnativepublicsetup/ordinaryboot/replacementregressions completed. E6 prior-failure-resolution.json and canonicalreport govern scopedclosure; no productwidePass.
 Finalscore50/75/50/75/75/75/75=67.86%, broader **Blocked** on independentphysical/privateLAN and authorizedisolatednativeprofiles/inferencebudget. ActualVMnative alternatives and peerTCPprobe attempted; no22/2049 peerroute despiteLinuxselflistenerready. Remaining feasiblemanaged/UI/amd64/hostedmatrix recordedNotTested, not allimpossible. No user-onlywaiver. No source/durablechanges, API-F004/F003 resolvedscopescarried; allrawharnessattempts preserved/correctedagainstapprovedbehavior. Publicdetach andexactownedresourcescleanupComplete; userdependencyquestionsunanswered. OnlyMacDockerSTORAGEdeferred; otherguardrails unchanged.
+
+## Round7 initial investigation — Approved SR024 / Ready SR024 / ARCH008
+
+API006 remains historical Blocked67.86%; this round has no completed result. Current
+increment permits distinct real Mac/Linux VMs and non-agent filesystem actors. IV-D01–D03
+are deferred NOT Passed, not prerequisite questions. Production remains IR009/d3c88;
+API-F003/F004/F005 retain their scoped resolutions. Complete incoming1618 references
+inventoried before edits in E7/input-audit.json. Personal execution, no delegation.
+
+Reread root AGENTS/DESIGN/TESTING, NFS README, current SR024 requirements/disposition,
+acceptance-aligned design, IR009 compatibility/persisted-data sections and ARCH008 receipt.
+Technical boundaries and durable assertions unchanged: existing coverage Still Valid,
+including cumulative af9f23 REST fixture/socket addition pending successful test review.
+No production changes or stale-test removal. Temporary executable probes appropriate for
+VM transport, actual public setup and kernel/ordinary restart; preserve all raw attempts.
+
+Required cases: F01 mode-specific public create/join/native and managed clients BOTH OSes;
+F02 reciprocal bytes/operations/warm <=5s; F03 actual peer concurrency/locks/Git/permissions;
+F04 restart/reconnect/selected-private/source identity and drained detach; F05 mounted
+APIs/previews and local regressions. Existing Linux native/Docker-storage API005 evidence
+proves only recorded same-kernel/HTTP combinations. API006 Mac own-mount and boot evidence
+is carried only for source identity/automatic lifecycle, not peer sharing. Full per-mode
+matrix will identify missing rather than silently discard cases. Native-agent artifacts
+are deferred; normal non-agent preview integration is not.
+
+First investigate prior VM transport gap. Tart default VZ NAT may isolate sibling guests;
+verify with fresh owned guests, interface identities and bounded bidirectional TCP checks.
+Read primary Tart/Softnet docs: standard Softnet needs host root/DHCP changes and is not
+within authority; host-only mode gives separate subnets, also not peer proof. Consider a
+newer documented Tart --net-fd isolated userspace Ethernet link between OWN guest NICs,
+without host network interfaces, bridge/firewall changes or physical LAN access. This is
+network fixture wiring, never storage copying, NFS proxying or a product override. Verify
+tool/version/support first; do not patch privileged tool checks. Guest-only static IPs on
+this isolated fixture may be configured BEFORE public product setup. Record exact topology.
+
+Host M1 Max cannot supply supported hardware nested virtualization; do not assume nested
+Docker Desktop works. Investigate actual local managed Docker client feasibility on owned
+Mac VM via documented software emulation, not a remote daemon substitution or user nodes.
+Do not declare it impossible without a focused safe attempt. No credentials/provider work.
+
+Broader validation Required, critical peer/native+managed coverage missing. Repository
+checks can carry unchanged exact source results provisionally; fresh focused tests follow
+changed harness and feasible application checks. No new percentage claimed before evidence.
+Owned clean HOME/scratch/tool/image/VMs only; retain public cache/23 candidates/286 old dist
+files. Capture each meaningful case checkpoint in ledger and exact command receipts; stop
+and remove owned processes/VMs after public drained detach, no global prune/host mounts.
+
+### Round7 user-approved topology change — supersedes the initial two-VM plan
+
+After asking why two VMs were necessary, the user accepted this recommendation:
+complete one-VM/two-Docker-node filesystem testing first and defer Mac/Linux cross-OS
+qualification, without calling it Passed. Latest exact instruction: “Yeah, sorry, then
+please make your test cases, yeah, update your test cases that you wanna test and then
+make sure we do full testing. I think the test ledger, right? That's a test ledger or
+test like, yeah, thanks.”
+
+Active proposed execution topology: **one owned Ubuntu24.04/ext4 VM, two actual launcher-
+managed Docker application nodes A/B**, both selected for the main shared-file matrix.
+Exercise native Linux Ganesha and Docker-on-Linux Ganesha storage sequentially; these are
+storage alternatives, not two simultaneous storage authorities. An initial A-only selection
+uses B as the unselected preservation control, then public drained detach/recreate selects
+both. No third application node is needed. Infrastructure containers are not agent nodes.
+Use original source/native host path and actual node NFS-volume paths, not a host bind
+shortcut or copied reader fixture. Scripts are file actors, not authenticated agents.
+
+This proves two application/container boundaries but **not two independent NFS kernels**:
+Docker can share the daemon's NFS volume. Do not claim Mac client parity, Mac/Linux peer
+interoperability, independent-network allowlist denial, or external-computer public join.
+Those remain deferred/not executed under the user's narrower direction. Source/private-
+state refusal, public create/reconnect and file/API preservation contracts are unchanged.
+Public connection parsing/refusal remains covered in repository tests; a same-machine
+connect contrivance must not be represented as a separate-computer public join.
+
+This conflicts with the literal SR024 required Mac/Linux/both-OS client gate. Classification:
+**Requirement/acceptance alignment needed, not a product/test failure**. User direction is
+explicit; send exact approval and ledger to Solution Designer to record the narrower current
+proof scope and resume API directly. No new intended product mechanism, source changes,
+architecture/source rereview or fresh approval questionnaire is requested. Do not privately
+rewrite owner requirements or award Pass against stale SR024. Complete ledger below is the
+execution plan, pending that canonical alignment; API006 result remains immutable.
+
+Preparation receipts only: current tracked server image build succeeded (E7/server-build-
+v2-result.json); no product functionality exercised. New Tart --net-fd tool downloaded and
+verified; no private-link test executed. Mac VM booted and test-only Colima/QEMU/Docker
+packages installed, but no NFS or Docker node setup ran. Cross-OS work stopped on user
+change; Mac clone removed. Linux download/start completed during interruption and its
+owned VM was stopped; see scope-change-cleanup-correction.json, which corrects an early
+cleanup-purpose claim. No guest running. Owned Linux disk/cache, scratch and built image
+retained for resumed single-VM work; they still require final cleanup. No host bridge,
+firewall, user node/profile/credential or source mutation performed.

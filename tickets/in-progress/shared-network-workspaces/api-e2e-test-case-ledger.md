@@ -1662,3 +1662,95 @@ N01 Passwith3Pythonskips+standaloneGochildskip; V03/API-F004 native+Dockerpublic
 - V05 Blocked authenticatedtestprofiles/providerbudget; currentnativeagentmatrixNotTested. V04/fullmanagedUI/amd64/hostedmatrixNotTestedthisround; notblanketdeclaredimpossible. PriorAPI005/003/004scope retained.
 - Allownedresourcespubliclydetached then exactVM/PID/clones/scratchremoved; cleanupComplete. No running case remains; interrupted attempts resolved via namedconfirmations.
 - FinalAPI-REV006 **Blocked67.86%, broaderBlocked**, not failure-originrework orPass. See currentreportACproof and E6/blockers.json. No release/TaskDone/userverification; await exactexternaldependencies.
+
+## Round7 / API-REV-007 — SR024 initialized before execution
+
+All prior round results preserved. Deferred IV-D01–D03 NOT Passed; not file-test prerequisites.
+
+| Case | Scope / expected | Initial status |
+| --- | --- | --- |
+| F01-NET | Distinct owned Mac/Linux guest transport; no host bridge/firewall changes | Not Tested |
+| F01-M | Native Mac storage -> native Linux + managed clients both OS; public setup, exact source | Not Tested |
+| F01-L | Native Linux storage -> native Mac + managed clients both OS | Not Tested |
+| F01-D | Docker Linux storage -> native Mac/Linux + managed clients both OS | Not Tested |
+| F02 | Each relevant mode reciprocal exact bytes, create/overwrite/append/atomic/new/delete/rename/list and <=5s <=1MiB warmed fresh-open visibility | Not Tested |
+| F03 | Independent-file concurrent peers, coordinated same-file/Git, exclusive-create, supported locks, symlink/execute/permission/privacy | Not Tested |
+| F04 | Peer automatic ordinary restart, reconnect, selected node image/config/private preservation, source refusal, drained detach | Not Tested; scoped API005/006 evidence to map |
+| F05 | Mounted filesystem-facing APIs/previews, Guide/local regression, no agent claim | Not Tested; scoped prior evidence to map |
+| N01 | Current relevant repository regression / exact source/candidate relevance | Not Tested; API006 same-source results available |
+
+## Active Round7 revised test ledger — one Linux VM, two Docker nodes
+
+**User accepted topology narrowing; awaiting Solution Designer's canonical acceptance
+alignment, not another technical review.** This section supersedes Round7 F01-NET/M/L/D
+execution planning above. It does not erase previous results or mark excluded cases Pass.
+All functional cases below are **Not Tested in API007**. Prior receipts may be carried only
+with exact case/build/mode relevance; “full testing” means completion of this explicit case
+set, not every OS, every runtime or release qualification.
+
+### Fixture and result rules
+
+- One owned Ubuntu24.04/ext4 VM; actual current public launcher creates application nodes
+  A and B with isolated private named volumes and synthetic, noncredential sentinels.
+- Modes: **LN** native Linux Ganesha storage; **LD** Docker-on-Linux Ganesha storage.
+  Run sequentially with public drained detach between them. Source is a nonempty ordinary
+  owned directory; retain its original contents, metadata and storage UUID across reuse.
+- Main actor pairs: A→B, B→A; source/native VM→A/B and A/B→original source controls.
+  Same guest/kernel/daemon limitation recorded, even if distinct container processes.
+- For each applicable row record mode, VM/boot ID, node/container/image ID, CLI/engine/source
+  hashes, source path/device/inode/UUID, real mount/options, actual UID/GID/groups, expected
+  and observed assertions, raw receipt, carried-evidence rationale, status and cleanup.
+- Failures are retained; harness corrections identify invalid assertions without changing
+  intended behavior. No skips, setup successes or old source review scores count as Pass.
+- Operations require actual supported public setup; no manual product mount/export edits,
+  state rewriting, cached reader injection, blanket chmod, force/lazy unmount or fake APIs.
+
+| ID | Mode | Case / required assertions | Planned evidence | API007 status |
+| --- | --- | --- | --- | --- |
+| L01 | Both | Environment and build identity: fresh guest OS/ext4, nonroot identity, exact candidate/engine/server image, no inherited credentials or old attachment | Guest preflight, hashes, version, mount/process inventory | Not Tested; VM/build setup receipts only |
+| L02 | Both | Relevant Go/packaging/launcher/binding/REST/Guide/local regressions; inspect carried exact-source results; skips explicitly enumerated | Current focused tests or justified unchanged receipts, source hash audit | Not Tested; prior API006 repository results available |
+| L03 | Both | Two nodes from current public launcher, real health endpoints; snapshot A/B image, Config/HostConfig, ports, aliases, volumes, running state and private sentinels | Launcher commands, actual Docker inspect and hashes | Not Tested |
+| L04 | Both | Consent/unsafe-target controls: decline required drain, reject nonempty mount target/private or symlink source; leave nodes/data/config unchanged | Public CLI exit/output, before/after snapshot; narrow unit cases for unavailable interactive privilege condition | Not Tested |
+| L05 | LN, LD | Public create selects A only, reports actual mapping and readiness; B remains unselected/local and unchanged; source bytes/UUID/nonroot mapping preserved | Public CLI/descriptor/mount, A RW, B inspect/private hashes | Not Tested |
+| L06 | LN, LD | Public drained detach A-only setup then fresh public create selecting A+B against preserved source/marker; no extra in-container mount/setup commands | Displayed plan, public results, source UUID continuity, both node mounts | Not Tested |
+| L07 | LN, LD | Real source proof: A/B see original nonempty project and same marker; reciprocal unique writes reach other node and original source; no local-folder substitute | Exact bytes/hashes, native and Docker NFS volume/mount records, actual UID/GID | Not Tested |
+| L08 | LN, LD | Reciprocal create/read/write/overwrite/append for text, Unicode and binary files (including empty,1KiB,1MiB); verify exact bytes | Independent actor results and source hashes | Not Tested |
+| L09 | LN, LD | mkdir/nested directories/listing, file+directory rename, atomic replacement, deletion and missing-path results visible to other actor | Peer directory listings/stat/open assertions | Not Tested |
+| L10 | LN, LD | Metadata/relative symlinks/chmod/executable-file behavior; preserve ordinary owner/group/mode contract, no global permission relaxation | Actual stat/readlink/execute and nonroot identity evidence | Not Tested |
+| L11 | LN, LD | Warm old bytes/negative lookups; in-place overwrite, atomic replacement and new publication,1KiB/1MiB, both A→B/B→A and source/native controls; fresh open exact bytes <=5s from successful flush/fsync/close | Per-fixture writer completion, reader observation/elapsed bound, expected/actual hash; no cacheflush/remount workaround | Not Tested |
+| L12 | LN, LD | Concurrent independent-file writers A/B; every file intact and cross-readable, no overwrite/loss; actual two-process overlap | Barrier/start/end timestamps, complete expected manifest and hashes | Not Tested |
+| L13 | LN, LD | Coordinated same-file edit handoff and Git status/edit/add/commit A then B; same repository state, scoped Git environment; no implicit merging/independent shared branches claim | Command/output and repository content/commit assertions | Not Tested |
+| L14 | LN, LD | Exclusive-create contention: one winner, other receives supported exists error, final bytes exactly winner; no silent overwrite | Both actor exits, actual contents | Not Tested |
+| L15 | LN, LD | Documented NFSv4 advisory lock contention/release with separate node processes; distinguish same-kernel lock proof from independent-kernel qualification | Holder/contender acquire/refusal/release receipts | Not Tested |
+| L16 | LN, LD | Nonroot authorized access, root-squash/mapall ownership, permission-denied path/error; private database/auth/profile sentinels remain node-private, nonexported and unchanged | UID/GID/mode/access errors, private hashes and export inspection | Not Tested |
+| L17 | LN, LD | Repeat status/reconnect with healthy configured source: same source/UUID/bytes/node configuration, no duplicate resources or local fallback | Public results and before/after mount/node/state inventories | Not Tested |
+| L18 | LN, LD | Ordinary VM reboot: service and both selected nodes automatically usable before manual reconnect/start; then separate explicit reconnect and reciprocal roundtrip | Distinct boot IDs, timed observations (not boot SLA), same IDs/image/config/private/source comparisons | Not Tested |
+| L19 | LN, LD | Normal Stop of one running unless-stopped node stays stopped through ticks/reconnect/reboot; peer remains healthy. Retain previously proven failed-start restart=no veto at its exact scope | Public Docker lifecycle, saved intent/config, valid API005 scope mapping or focused rerun | Not Tested |
+| L20 | LN, LD | Public launcher restart/upgrade/recreation retains shared attachment and each node's private data/config; current replacement reference resolves after reboot | Current launcher calls, old/new IDs/image provenance, volume/private hashes and RW | Not Tested |
+| L21 | LN, LD | Real source replacement with copied marker is refused without rebind/false ready; restore exact original, reconnect; unsupported configuration errors preserve evidence | Actual inode/source change, public refusal, saved binding/hash and restored original proof | Not Tested; API006 relevant refusal evidence available |
+| L22 | LN, LD | Filesystem-facing application GraphQL/REST and WebSocket terminal use mounted project; node B changes/removes content A serves, then reverse; existing path authorization and error behavior preserved | Real server endpoints, exact bytes/MIME/errors and scoped terminal/Git output | Not Tested |
+| L23 | LN, LD | Healthy text/Markdown/image/HTML+relative assets/PDF/audio/video previews, deliberate tree reload/reopen after other-node changes, preserve unsaved buffers; watcher behavior recorded, not required | Current worktree isolated app/API/DOM evidence; justified mode-invariant carried UI evidence where exact source unchanged | Not Tested |
+| L24 | Both | NFS Guide current unavailable release state and ordinary local workspace/preview regressions; no invented working public installer | Current UI/component and applicable real-surface evidence | Not Tested; earlier Guide receipts available |
+| L25 | LN, LD | Safe detach: busy/drain refusal leaves data intact; after actual drain public detach restores local node configuration, preserves private volumes/source/marker, removes only owned attachment/job/mount; repeat incomplete detach only if genuinely reached | Public output, no forced unmount, source/private/config/resource comparisons | Not Tested |
+| L26 | Final | Stop/remove only test-owned nodes/VM/processes/build tags/scratch; retain evidence and prior public cache/candidates/dist; reconcile every row and seven-category score | Cleanup receipt, source/durable diff and cumulative evidence audit; final API report | Not Tested |
+
+### Explicitly outside this revised increment's execution claim
+
+Mac↔Linux/native-Mac/managed-Mac-client cross-node qualification; independent physical/LAN
+and independent-kernel interoperability/host-allowlist denial; external-computer public
+join. These are **deferred/not executed, not Passed**. Existing Mac API006 source/reboot
+proof remains valid only at its recorded scope. Public join parser/validation regressions
+remain relevant but cannot stand in for an external-computer join. Designer owns recording
+this acceptance change from SR024. Mac Docker STORAGE remains deferred as before.
+Authenticated native-agent/tool/peer-close/artifact journeys, personal verification,
+advanced outage isolation and public release qualification retain their earlier deferrals.
+A completed artifact REST regression can be carried without claiming a native agent ran.
+
+### Scope-change checkpoint
+
+API007 has only setup/tool/build receipts, not a functional result. Mac clone removed;
+Linux preparation advanced during user interruption, then that exact VM was stopped.
+E7/scope-change-cleanup-correction.json controls over the initial premature no-running-VM
+purpose text. Linux clone/cache and current server build retained solely for single-VM
+resume, with final removal owned by L26. No two-VM network test executed. No production or
+durable coverage changes yet. Next action: canonical acceptance alignment, then run L01–L26.
