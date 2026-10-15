@@ -1,234 +1,289 @@
 # Code Review Report
 
-## Latest Authoritative Result / Review Meta
+## Latest Authoritative Result / Review Round Meta
 
-**CRR-008 — Fail / Design Impact. CR-005 P1 (API-F003): normal Linux host
-reboot can strand a previously-running selected managed Docker client after its
-NFS volume start fails, with no owned recovery after storage becomes ready.**
-**API-F002 is independently resolved at API003's fresh public native-Ubuntu
-create/reconnect scope. API-REV003 remains Fail /57.14% / broader Required.**
+**CRR-009 — Pass, implementation SOURCE review only; 10.0/10 (100/100).**
+**CR-005 is resolved at the SR021 design/source boundary. API-F003 remains OPEN
+until independent current-build ordinary-reboot validation. API003 remains
+Fail /57.14% / broader Required; this report does not replace that authority.**
 
-- Date2026-10-14. `shared-network-workspaces` /
-  `project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`; **Large/High Reviewed** retained.
-- Entry **API/E2E Failure-Origin Review**, round8. Review scope **N/A — focused
-  failure-origin**, not a full re-audit or successful test-code review.
+- Date2026-10-15; task `shared-network-workspaces` /
+  `project_task_0793009f-41bc-4684-9cbe-9a29ad26ed63`.
+- Entry **Implementation Review**, round9, **Full Re-Audit**. Prior canonical
+  **CRR008 Fail / Design Impact CR005 P1** reviewed first. The new post-host
+  selected-client spine, shared Snapshot lifecycle fields and persisted attempt
+  subject require the full structural checklist and scorecard, not a two-file
+  local-fix review. This audit covers the relevant implementation architecture,
+  new delta and affected dependencies, not every repository file or full runtime matrix.
 - Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces`,
   branch `codex/shared-network-workspaces`, finalization `origin/personal`.
-  API input/build HEAD`e8ed5627da2afa646c9ab89c6ce69b3a0bc0826c`; API report/evidence
-  `f76cf11a519c8f22fd89e5acc946802c5d23259f`; reviewed current receipt HEAD
-  `8f497a61fde65e44aefd2362f8fb37db91570997`. Source remains
-  `eb7934072a1f98832b7b6330a1bc6a7f348fd93d`.
+  Input/handoff `ec3bf6b270ef8d038f309b0fad1f599566d1b233`;
+  source `d318bd9db935affdf16d141ef4e88a6c0e4939b5`;
+  implementation base `50d9c9d0c883e1ad8d3a1808b9e980a7df4f132b`.
 - Authorities: [Approved SR018 requirements](requirements-doc.md),
   [approval018](approval-record-sr018.md), [scope feedback](architecture-review-scope-feedback.md),
-  [Ready SR020 design](design-spec.md), [investigation](investigation-notes.md),
+  [Ready SR021 design](design-spec.md), [investigation](investigation-notes.md),
   [solution history](solution-revision-record.md), [solution handoff](solution-design-handoff.md),
-  [ARCH004 Pass](design-review-report.md), [architecture history](architecture-review-revision-record.md),
-  [IR006 handoff](implementation-handoff.md), [implementation history](implementation-revision-record.md).
-  These are unchanged, not silently reapproved by this review.
-- Trigger: [API003 Fail report](api-e2e-execution-coverage-report.md),
-  [coverage investigation](api-e2e-coverage-investigation.md),
-  [ledger](api-e2e-test-case-ledger.md), [API history](api-e2e-revision-record.md),
-  [failure summary](evidence/api-e2e/api-rev-003/new-failure-summary.json), and
-  [625-reference input chain](evidence/api-e2e/api-rev-003/package-index.json).
-  Prior source result **CRR007 Pass100/100** is historical, not current lifecycle
-  qualification. [CRR001–008 history](code-review-revision-record.md) remains cumulative.
-- DR **N/A — not performed**. Successful test-code review **not triggered**;
-  cumulative af9f23 REST coverage unchanged and still awaits a passed package.
-  Personal review only; no source/test fix, delegation, new runtime resources or release.
+  [ARCH-REV005 Pass](design-review-report.md),
+  [architecture history](architecture-review-revision-record.md),
+  [SR021 lifecycle investigation](evidence/design-recovery/sr021/lifecycle-investigation.md),
+  [IR007 handoff](implementation-handoff.md), [implementation history](implementation-revision-record.md).
+  Complete739-reference incoming chain retained. Earlier evidence/approvals are
+  historical at their stated scope, not reapproved or relabelled here.
+- Trigger: IR007 implemented reviewed CR005 recovery. Relevant API authority:
+  [API003 report](api-e2e-execution-coverage-report.md),
+  [investigation](api-e2e-coverage-investigation.md), [ledger](api-e2e-test-case-ledger.md),
+  [API history](api-e2e-revision-record.md) and original failure/reboot receipts.
+  [CRR001–009 history](code-review-revision-record.md) preserves all prior results.
+  DR **N/A — not performed**. Successful API test-code review **not triggered**;
+  cumulative af9f23 REST tests await a passed API package, not reviewed as successful here.
+- Personal review/check execution only, no delegation/spawning or production/test fixes.
 
-## Bounded Scope And Evidence Integrity
+## Routing Classification Review
 
-The [focused audit](code-review-evidence/crr-008/focused-audit.json) confirms all625
-incoming paths exist, all169 API manifest entries match,22 focused source/authority
-paths equal reviewed input, and11 retained IR005 candidate files match. Only API
-artifacts changed since CRR007 input; **no post-review implementation/test edit**
-caused this failure. Identity checks are not a fresh source audit or test run.
+**Large / High / Reviewed**, independent source review required. Cumulative
+privileged multi-platform service/runtime scope and preservation risks support
+this classification. SR021's bounded lifecycle/persistence delta is Medium/High
+in isolation;739 references do not determine size. No classification correction.
 
-Reviewed only supported restart/preservation requirements and the smallest
-production chain: CLI service, serial supervisor, OS job, setup reconnect/apply/
-status, Docker engine/volume/recreation/config references, exact failing harnesses,
-raw journals/inspect observations, build provenance, prior failure resolution and
-cleanup. [Checks/limits](code-review-evidence/crr-008/checks-and-limits.md) and
-[execution evidence review](code-review-evidence/crr-008/execution-evidence-review.json)
-record personal checks versus inherited execution. No new VM reproduction was
-needed to classify this evidenced ownership gap; API disposed its test resources.
+## Review Scope And Prior Findings
 
-## Prior Finding Resolution — Checked First
+Reviewed all15 IR007 paths and full affected forward lifecycle: CLI consent and
+service entry, admin lock/supervisor, setup configuration/engine/host proof,
+selected discovery/reference/daemon, Docker Snapshot/volume/probe/receipt/start/
+API verification, Store atomic persistence, status, detach and launcher guidance.
+Rechecked unchanged DS001–005 boundaries/source identities against prior source
+review and current design. Full audit means renewed structural reasoning, not
+re-running unchanged web/server/physical suites or reopening approved business scope.
 
-| Finding | Current disposition | Evidence |
+| Finding | Verified disposition | Evidence |
 | --- | --- | --- |
-| CR-003 / API-F002 | **Resolved at independent public native-Ubuntu scope**; prior design/source acceptance retained | API003 `linux-public-final-result.json` and actual harness: fresh Ubuntu24.04.5/ext4/kernel7.0.0-38, default delegationsY, no engine preinstall/probe bypass, actual nonroot1000:109/no groups, public create16.778s; root-installed current CLI,700/600 private and644 public modes, hard4.1, original source inode/device/UID/GID/mode/bytes and mounted UUID, active managed jobs; reconnect0.508/0.605s and preservation pass. Seven cases independently reconciled to raw outputs. Two earlier fresh-create passes followed by harness errors remain separate incomplete attempts |
-| CR-004 | **Resolved at source/contract boundary, retained** | IR006/CRR007 four status gates and regression; no workflow change since. Hosted Actions/signing/publication not executed |
-| CR-002 / API-F001 | **Scoped native-Mac cold-create resolution retained** | API002 two fresh public passes and untouched source; no fresh Mac create claimed in API003 |
-| CR-001 | **Resolved, retained** | New-directory mode/trust correction unchanged; API003 fresh077/root/nonroot proof corroborates Linux scope |
-| FUP001 | **PM-owned out-of-scope follow-up unchanged** | Historical current-source Nuxt/Electron failures versus removed-candidate green remain distinct; no duplicate follow-up/task/patch/penalty |
+| CR-005 / CAND009 / API-F003 | **Resolved at design/source boundary; independent API-F003 still OPEN** | SR021/ARCH005 supplies missing owner; current locked Reconnect completes only eligible selected pre-process failure after host + fresh daemon proof, consumes attempt before same-ID Start and verifies actual API/current state. Source trace, all affected tests, mutation controls; no fresh reboot claimed |
+| CR-003 / API-F002 | **API003 independent fresh native-Ubuntu public scope resolution retained** | Original non-preinstalled default-kernel create16.778s/reconnect0.508/0.605s, source/modes/UUID evidence unchanged; engine pair unchanged |
+| CR-004 | **Source/contract resolution retained** | IR006/CRR007 actual workflow gates unchanged; current Python workflow regression passes, no hosted execution |
+| CR-002 / API-F001 | **Earlier native-Mac cold-create scope retained** | API002 independent receipts and unchanged Apple fix; no fresh Mac create in this round |
+| CR-001 | **Restrictive-mode fix retained** | Source unchanged, fresh Go parent/real child mode fixture passes; no root installation here |
+| FUP001 | **PM-owned out-of-scope custody retained** | Historical current-source Nuxt/Electron failures remain distinct from removed-candidate green; no duplicate task, patch, suppression or deduction |
 
-## Candidate And Supported Scenario Gate
+## Upstream Behavior And Production-Path Basis Confirmation
 
-### CAND009 — Selected managed client stranded by ordinary whole-host reboot
+Approved business intent and Scope Guardrail/Change Scope understood.
+**Behavior basis Confirmed**, no contradicted/new behavior or material ambiguity.
+Architecture MP006–008 and SR021 Stop observability decision were checked against
+actual source and captured public fields, not inferred from the new tests.
 
-**Promote -> CR-005. Supported Normal Scenario; Reachable; in this ticket.**
+| Behavior | Status | Current implementation / preserved production evidence |
+| --- | --- | --- |
+| BEH001/004/005 | Confirmed at source boundary | DS001 first-use remains intact; DS006 ordinary OS/job -> lock -> host proof -> selected recovery -> real API/current state. Source/private/config/selection preservation; status separate from action |
+| BEH002/003 | Confirmed, unchanged | DS002 direct OS NFS bytes; DS003 shared-run admission/private current-source profiles/native process owner unchanged. No data proxy/local fallback/source lease |
+| BEH006 | Confirmed, unchanged | DS004 existing healthy explorer/REST/static/completed-artifact/PTY readers retained; no outage isolation or automatic-notification claim |
+| BEH007 | Confirmed, unchanged | DS005 existing Guide/release availability owner; empty qualification keeps commands unavailable rather than inventing a release |
 
-- Independent basis: REQ014/019 and AC007/014/018/019; SCN009/013, BEH001/004/005.
-  AC009/017 and selected-node/private-state contracts constrain preservation.
-  Requirements explicitly retain normal repeat/restart in DEC015. This is not an
-  invented concurrent workflow, injected outage, or test-created product promise.
-- Actor/goal and trigger: owner has completed guided setup on a supported Linux
-  machine hosting Docker storage plus a selected running managed Docker client;
-  performs an ordinary host restart and resumes the same shared workspace without
-  extra Docker/mount/setup commands. Supported surface is public create/connect
-  and normal OS reboot, followed by saved managed service/daemon startup.
-- Preconditions: current public launcher node, completed public create with
-  selected-node consent/drain, exact running/restart state preserved, storage and
-  client on local Docker, network healthy when startup completes. Source is
-  nonempty and unchanged. A separate unselected node was deliberately stopped.
-- Forward path: first-use `setup.Apply` readies engine/host and probes volume before
-  recreation; saved service then starts on boot. Docker independently restores
-  engine and client; the client's local-driver NFS mount runs before its process
-  and before Ganesha is ready. That start fails. The service later reconciles
-  engine/host only; the client remains stopped even after public reconnect.
-- Consequence: same selected node/API remains unavailable, despite healthy host
-  mount/export; requires extra manual Docker start. No source loss, false-ready
-  status or changed private config is evidenced. That manual workaround conflicts
-  with the approved one-service normal lifecycle, so this is not a follow-up.
-- Evidence: two ordinary `sudo -n systemctl reboot` runs with distinct boot IDs,
-  before/after inspect, raw startup journals, repeated host/node/API status and
-  diagnostic-only start of the same node. Full source path below. The test
-  confirms a preapproved scenario; it does not establish that scenario itself.
-- Exclusions: no claim that every stopped node should start, every platform has
-  this failure, or recovery must meet150s. Neither observed stopped state nor an
-  old recreation receipt alone proves current operator intent. Do not infer an
-  all-stopped restart rule or deferred outage machinery from this finding.
+Detailed forward caller/state/evidence trace:
+[source-trace.md](code-review-evidence/crr-009/source-trace.md).
+Unchanged evidence remains scoped; source confirmation is not full acceptance-test proof.
 
-No additional speculative material premise. Unchanged earlier architecture
-premises remain at their recorded scope; the inadequate restart integration is
-captured completely by CAND009 rather than assigned a fictitious prior premise ID.
+## Supported Product Scenario And Reachability Gate
 
-## CR-005 — P1: Close the normal-boot storage/client lifecycle ownership gap
+| Scenario / contract | Kind / initiator and coherent goal | Independent entry / lifecycle -> outcome | Evidence and validity | Review use |
+| --- | --- | --- | --- | --- |
+| SCN009/013; AC007/014/018/019; BEH001/004/005 | Operational: owner restarts a normally configured supported host and resumes the same workspace | Public selected create/connect -> ordinary OS reboot -> Docker pre-process NFS mount refusal -> later healthy storage/host -> owned selected completion restores same node/API | Approved SR018; API003 two ordinary boots, raw state/journals and same-object diagnostic repair; SR021 MP006. **Supported Normal Scenario / Reachable** | Use: CR005 resolution and bounded completion machinery |
+| AC009/017; BEH005; MP007 | User: owner intentionally stops a successfully-running selected unless-stopped node | Existing launcher/Docker Stop -> successful-start error already cleared -> stopped observation -> no completion Start during tick/reconnect | Preservation requirements; versioned Moby start/stop contract and current eligibility; actual serial control remains API work. **Supported Normal Scenario / Reachable** | Use: preservation, no all-stopped restart rule |
+| AC007/009/017; MP008 | Operational: owner inspects a pending failed start and disables automatic completion | Already-failed raw Stop is no-op; documented existing Docker update --restart=no -> current policy veto on tick and confirmed reconnect | SR021 separately investigated public control contract; launcher still forwards Stop only, truthful guidance and adapter policy checks. **Supported Explicit Edge Scenario / Reachable** | Use: truthful limitation, policy veto; no invented inspect flag/private intent ledger |
+| SR021 DS006-L / approved bounded attempt and identity contract | Contract: setup owns exact selected start, Docker owns live state/config/process policy | Current ref/daemon/volume -> fresh isolated current-image proof -> reinspection -> atomic current attempt -> one immutable-ID Start -> actual API/binding/current state | ARCH005/SR021 state/identity/consent contract, existing Store/Probe/VerifyStarted, personal source and fixture checks. **Supported Explicit Edge Scenario / Reachable** | Use: persistence, authority and failure handling |
+| SR021 / shared structural principles | Contract: preserve established owner boundaries/current-schema runtime | CLI -> SetupService -> Docker adapter; reused Store/platform/probe; new attempt is distinct bounded subject, not migration/desiredRunning | Current source/diff and declared ownership/removal/transition maps. **Supported Normal Scenario** | Use: structural and size checks |
 
-### Production path and design evidence
+### Candidate Finding And Mechanism Gate
 
-| Boundary | Evidence / relevant invariant |
-| --- | --- |
-| First-use apply | `internal/setup/apply.go:122–153` orders host mount/nonroot proof, selected volume/probe/recreation, then installs job. This explains why initial setup works; it does not order later Docker daemon restoration |
-| Docker mount | `internal/docker/attachment.go:16–40` uses direct local-driver NFS volume. Mount occurs before application process startup; the application cannot wait for storage from an entrypoint it never reaches |
-| OS/service owner | `internal/platform/jobs.go:43–57` starts a simple service after network-online; `internal/cli/run.go:80–89` calls `service.Supervise -> s.Reconnect`; `internal/service/supervisor.go:15–29` serializes and repeats that same reconciliation |
-| Reconnect | `internal/setup/lifecycle.go:13–67` validates source, ensures engine, publishes/checks descriptor, ensures host mount and nonroot probe. **It never reconciles selected client startup.** Pending mutation is correctly refused rather than blindly resumed |
-| Engine versus application | `internal/docker/engine.go:18–59,82–86` owns the exact Ganesha container and persistent restart policy, not application client readiness ordering. Engine-only recovery does not restart the client whose earlier NFS mount failed |
-| Preservation and status | `internal/docker/recreate.go:113–131` preserves running/stopped state at apply; `snapshot.go` keeps opaque Config/HostConfig. `setup/status.go:76–78` truthfully reports attached/stopped/not ready. Config node references and completed receipts do not define current boot-recovery intent |
-| Reviewed design | `design-spec.md:157–159` limits supervisor to source/mount/engine and expects engine-before-client mount/healthy restart. Lines166–173 specify direct Docker NFS volumes and preserved running/restart state, but **do not assign or establish boot-time ordering/eligible failed-client recovery**. Current code follows that limited owner, leaving the required path incomplete |
+| Candidate | Observation / mechanism | Independent basis / forward consequence | Evidence | Disposition / scope / response |
+| --- | --- | --- | --- | --- |
+| CAND009 (reused) | Previously missing normal-boot completion owner; now exact selected failed-start completion | SCN009/013 + MP006: normal reboot can fail the client mount before process creation; existing host-only recovery was insufficient | CRR008/API003 raw receipts; SR021/ARCH005; current DS006/DS006-L trace and tests | **Promote — this ticket**, mechanism proportionate; **CR005 resolved at source boundary**. Require independent public reboot proof next, not source-review claim of runtime closure |
+| CAND009 preservation constraints | Current policy/state/identity guards and bounded write-ahead attempt | AC009/017, MP007/008 and SR021 state contract prevent starting intentional stopped/unselected nodes or repeated ambiguous same-incarnation starts | Exact current predicates, reused ownership checks, Store atomic0600, same-ID call, mutation controls and status/detach trace | **Promote — this ticket**, accepted necessary bounds, no new defect/deduction |
+| Excluded premise (no new finding) | Race-free cancellation against artificially timed contradictory external Docker commands; recovery from arbitrary diagnostics or all stopped nodes | Exposed commands alone do not establish this concurrent workflow; SR021 explicitly does not promise it | Example9, approved ordinary serial controls and MP008 observability limit | **Reject — Technically Possible but Unsupported/Contrived**; no fencing/event framework/private veto/blanket retry or score deduction |
 
-All source paths above are relative to `autobyteus-nfs/`. This is not a request to
-start arbitrary nodes, recreate them at every boot, rewrite restart policies or
-make status mutating. Exact current intent, selected identity, private volumes/
-auth/ports/aliases/image, unrelated nodes and source must remain preserved.
+No candidate held for missing scenario authority. Actual reboot testing is a
+known next validation stage, not a fabricated source premise or source Pass for
+unexecuted behavior. Original reported failure remains in independent API authority.
 
-### Runtime confirmation
+## Structural / Design Checks
 
-Selected node `689c89e631dd82ef0f57b454332f3a57d45806e898dc5c3e00f1c3240e7c0a38`,
-current full server image `sha256:dd986b8ae47f0947516d1b708df200161d28a33706eb177b59b1afa70be937b4`,
-was running with `unless-stopped`. Public selected create/reconnect and ordinary
-`docker restart` passed before whole-host reboot. The selected and unselected
-fixtures are test-owned; public launcher/current full image and before-NFS port
-fixture correction are documented, not stale beta/dist-overlay evidence.
+All mandatory checks renewed; evidence is [source trace](code-review-evidence/crr-009/source-trace.md),
+[source/delta audit](code-review-evidence/crr-009/source-audit.json), SR021/ARCH005 and current code.
+No required corrective action in any row.
 
-- First boot: Docker records selected-container NFS mount `connection refused`
-  at07:40:10.280246, then completes daemon initialization07:40:10.302066.
-  Selected node exited255, not restarting, not OOM; host later ready.
-- Read-only diagnosis preceded repair. Public reconnect returned hostReadytrue
-  with selected node still stopped. Diagnostic-only `docker start` restored the
-  **same ID/Config/HostConfig/image** and API readiness; this is not a Pass for
-  automatic recovery.
-- Second ordinary boot reproduces: mount refusal07:46:57.935220; engine log starts
-  Ganesha07:46:57.940143044; daemon completes07:46:57.962894. Fifteen observations
-  through148.599s show stopped client/API unavailable, while hostReadytrue from
-  the21.53s observation onward. Source inode/device/owner/mode/bytes and mounted
-  marker UUID`71887d49-17ec-4e6f-a734-03ebd3abaafd` remain correct.
+| Check | Result | Evidence | Required action |
+| --- | --- | --- | --- |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | SR021 identifies real boot ownership gap; existing setup/Docker owners extended narrowly | None |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | No behavior-defining supplement; current approved requirements and SR021/ARCH005 preserved | None |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | DS001–005 retained; full DS006 and bounded DS006-L traced through actual API/current state | None |
+| Ownership boundary preservation and clarity | Pass | Setup sequences, Docker classifies/acts, Store persists, daemon keeps process policy | None |
+| Off-spine concern clarity | Pass | Volume inspector/attempt representation serve Docker, no competing lifecycle owner | None |
+| Existing capability/subsystem reuse check | Pass | Existing Probe, VerifyStarted, Store, admin lock and supervisor reused | None |
+| Reusable owned structures check | Pass | One volume validator/options owner shared by EnsureVolume and recovery | None |
+| Shared-structure/data-model tightness check | Pass | Actual Snapshot fields; six-field current attempt, no auth/config/READY/desiredRunning | None |
+| Repeated coordination ownership check | Pass | One selected-set coordinator and one Docker observer reused for status/action | None |
+| Empty indirection check | Pass | Each new file owns selection, observation, action or volume invariant; no pass-through layer | None |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Parsing remains CLI, orchestration setup, Docker protocol/state in adapter | None |
+| Ownership-driven dependency check | Pass | No app/launcher-start/global daemon shortcut or new cycle | None |
+| Authoritative Boundary Rule check | Pass | Callers use setup/Docker entrypoints; no caller duplicates or bypasses failed-start policy | None |
+| File placement check | Pass | Concrete concerns reside under owning setup/docker packages | None |
+| Flat-vs-over-split layout judgment | Pass | Four short substantive files fit existing package layout without new subsystem scaffolding | None |
+| Interface/API/query/command/service-method boundary clarity | Pass | CompleteFailedStart current exact selected identity; retryConsumed only public consent; observation separate | None |
+| Naming quality and naming-to-responsibility alignment check | Pass | Start observation/recovery/reconnect names describe real concern; no generic manager/helper | None |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | Old EnsureVolume block moved into shared owned validator; no copied probe/atomic writer | None |
+| Patch-on-patch complexity control | Pass | One accepted recovery path replaces host-only ending; no fallback ladder or broad retry | None |
+| Dead code removed in the touched files and modules (Core Principle 7) | Pass | Old validator removed; Reconnect callers updated; new functions have production callers; no dormant old path identified | None |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Captured public error/state with explicit eligibility/preservation assertions; actual API verification invoked in fixture | None |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Cohesive HTTP harness, selected-set Unix fixture, scoped launcher fake; tests exempt from source thresholds | None |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Existing suites retained at active contracts; new mutation controls fail intended assertions, no version compatibility tests | None |
+| API/E2E readiness for the next workflow stage | Pass | Current reproducible source/CLI metadata and exact engine inputs; original failure and two-boot/negative-control plan remain explicit | None |
 
-Primary artifacts: [lifecycle](evidence/api-e2e/api-rev-003/managed-lifecycle-result.json),
-[read-only diagnosis](evidence/api-e2e/api-rev-003/managed-reboot-diagnostic.json),
-[second reproduction](evidence/api-e2e/api-rev-003/managed-reboot-repro-result.json),
-[exact repro harness](evidence/api-e2e/api-rev-003/reproduce-managed-reboot.py).
-No source or network change between diagnostic recovery and second reboot.
+## Source File Size And Structure Audit
 
-Supporting primary dependency contract: the versioned [Moby restore path](https://github.com/moby/moby/blob/docker-v29.1.3/daemon/daemon.go#L605-L642)
-logs this start error and finishes that restore task; [mount failure precedes
-process creation](https://github.com/moby/moby/blob/docker-v29.1.3/daemon/start.go#L154-L157).
-[Docker restart-policy documentation](https://docs.docker.com/engine/containers/start-containers-automatically/)
-does not provide this NFS readiness ordering and preserves manual-stop intent.
-These sources corroborate the observed mechanism, not an upstream-Docker defect
-or an assertion of distro-byte equality. [Fetch/interpretation limits](code-review-evidence/crr-008/primary-contracts.md)
-are retained. The failure is not merely a short observation timeout: current
-product reconciliation contains no selected-client recovery path.
+Changed production only; tests/README excluded from thresholds. Effective
+nonempty counts; base is origin/personal@f13bdd0…, prior is IR007 input50d9c9d….
+No >500 file, no >220 added+removed delta. Each row passes SoC/placement;
+no size-driven split or corrective classification warranted.
 
-## Origin, Review Gap, And Proportionate Routing
+| Source (relative to repo) | Base branch | Prior | After | Added + removed | >500 / >220 | Ownership / placement |
+| --- | ---: | ---: | ---: | ---: | --- | --- |
+| `autobyteus-nfs/internal/cli/run.go` | 0 | 190 | 193 | 5 + 2 | Pass / Pass | Pass — existing owning package |
+| `autobyteus-nfs/internal/docker/attachment.go` | 0 | 106 | 87 | 0 + 19 | Pass / Pass | Pass — existing owning package |
+| `autobyteus-nfs/internal/docker/snapshot.go` | 0 | 213 | 214 | 3 + 2 | Pass / Pass | Pass — existing owning package |
+| `autobyteus-nfs/internal/docker/start_observation.go` | 0 | 0 | 117 | 127 + 0 | Pass / Pass | Pass — existing owning package |
+| `autobyteus-nfs/internal/docker/start_recovery.go` | 0 | 0 | 92 | 96 + 0 | Pass / Pass | Pass — existing owning package |
+| `autobyteus-nfs/internal/docker/volume.go` | 0 | 0 | 42 | 47 + 0 | Pass / Pass | Pass — existing owning package |
+| `autobyteus-nfs/internal/setup/lifecycle.go` | 0 | 143 | 152 | 12 + 3 | Pass / Pass | Pass — existing owning package |
+| `autobyteus-nfs/internal/setup/reconnect_nodes.go` | 0 | 0 | 65 | 68 + 0 | Pass / Pass | Pass — existing owning package |
+| `autobyteus-nfs/internal/setup/status.go` | 0 | 91 | 70 | 17 + 38 | Pass / Pass | Pass — existing owning package |
+| `scripts/public/docker/autobyteus-docker.d/bash/commands.sh` | 266 | 266 | 267 | 2 + 1 | Pass / Pass | Pass — existing owning package |
 
-**Origin: inadequate reviewed dependency/lifecycle design, realized by the
-implementation; earlier source-review coverage gap. Classification: Design Impact.**
+## Legacy / Backward-Compatibility Verdict
 
-Not a requirement gap: intended normal restart and preservation are explicit.
-Not an invalid/stale test, fixture/VM availability issue, unrelated old app bug,
-implementation edit after review, or deferred outage requirement. No evidence
-requires blaming Docker for violating its own restart contract. Exact boot order
-is runtime evidence; source alone could not establish its occurrence. However,
-the earlier review should have challenged the absence of an owned, evidenced
-engine-ready-to-selected-client boot path when checking AC014/019: first-use
-ordering plus preserved restart policy was insufficient evidence. CRR007's
-carried ownership/API-readiness/runtime-correctness rationale does not establish
-normal selected-client boot completion. Other reviewed corrections remain valid.
+| Check | Result | Notes |
+| --- | --- | --- |
+| No backward-compatibility mechanisms in changed scope | Pass | No versioned old reader/dual writer |
+| No legacy old-behavior retention in changed scope | Pass | No host-only completion bypass or old EnsureVolume duplicate |
+| Dead code removed in touched files/modules | Pass | No obsolete implementation/test item identified; new APIs reached by service/status/detach |
+| Approved persisted-data transition followed | Pass | Existing attachment/refs/source/receipts directly usable; attempt is a separate new bounded current subject |
+| No version-specific dual reads/writes or old-shape fallback | Pass | Current parser ignores irrelevant fields normally; no legacy branch |
+| Transition mechanics match reviewed design | Pass | No migration required; reuse atomic0600/root0700 Store, per-node failures, exact detach cleanup |
 
-**No new aggregate score or full structural checklist in this failure-origin
-round.** The prior100/100 stays historical, not a current source/lifecycle Pass.
-API confidence remains its owner's57.14%; this review does not rewrite that report.
+**Dead/obsolete/legacy items requiring removal: None identified.**
 
-Solution Designer must investigate and revise the smallest coherent startup/
-recovery responsibility that satisfies the already-approved normal lifecycle,
-including how eligibility differs from intentional stop, and how exact node/
-source/private-state preservation holds. Select and evidence the owner/dependency
-contract before implementation; do not prescribe blanket retries, arbitrary fixed
-sleeps, all-stopped-node starts, global Docker changes, an app entrypoint workaround
-or a generalized outage worker. A changed intended behavior needs renewed approval;
-an architecture-only repair within approved intent does not silently narrow it.
-Update investigation/design/solution history and use configured architecture
-routing. Implementation-owned correction must return through source review and
-API/E2E; after a passed cumulative API package, separate proportional test review
-still precedes Delivery. Documentation impact: normal lifecycle/recovery contract
-and validation guidance need synchronization by their owners, not a manual-start
-workaround relabeled as completion.
+## Docs-Impact Verdict
 
-## Residual Evidence, Scope And Handoff
+**Yes.** README and actual launcher Stop output now distinguish ordinary running
+Stop from already-failed no-op Stop, current policy=no veto and confirmed consumed
+retry. No policy mutation, new mandatory setup step or invented release command.
+Delivery still owns integrated docs/release/user-verification sync. Root DESIGN.md
+and TESTING.md are unchanged. No closer NFS/scripts AGENTS.md was found; project
+and shared guidance applied with no new conflict. FUP001 retains its existing
+scope disposition rather than using baseline failure as a Pass.
 
-API003's additional scoped passes remain evidence, not broad qualification:
-Linux native/Docker storage lifecycle and preservation; selected Linux Docker
-create/reconnect/node restart; actual mounted HTTP/GraphQL CRUD/static/HTML/image,
-PTY Git and same-kernel two-mount record locks; current isolated Mac desktop
-remote-window Guide/HTML-relative-image/image/text after deliberate Files refresh.
-Go7 race/vet and Python52 enumerated/49pass/3skip belong to API003, not reviewer
-reruns. Raw harness errors and45 upstream/raw build whitespace warnings remain
-recorded separately; they are not additional product findings.
+## Additional Material Premise Validation
 
-Mandatory remaining both-OS native/managed-Docker client matrix, Mac managed
-Docker client, independent physical Mac/Linux/Docker/healthy peer proof, actual
-native tools/unread linked assets/peer close/restore/Standalone-Team-Org, completed
-artifact/remaining healthy previews and docs/finalization/user/release gates stay
-open. Native amd64 engine, hosted workflow/signing/publication/public installer
-remain unqualified. Only MacDocker **storage** is deferred; peer-network limits
-are separate. D001/DEC015 outage isolation remains deferred/not fixed, not a new
-gate. IMP-D001 private current-source links/independent Update-Remove/AGY/local
-policy unchanged; no pin/copy/refcount/retirement. FUP001 remains PM-owned; no new
-out-of-scope follow-up or duplicate notification.
+| Upstream premise | Current status | Evidence / limits |
+| --- | --- | --- |
+| MP006 | Confirmed | Independent ordinary-boot failure + current missing-owner correction traced; new actual reboot proof pending API |
+| MP007 | Confirmed at contract/source boundary | Normal successful-running Stop has empty startup error; fixture rejects it; actual serial control remains mandatory |
+| MP008 | Confirmed at contract/source boundary | Already-failed Stop no-op documented; current policy veto, no fictitious manuallyStopped field/private veto |
+| MP001–004 | Unchanged at recorded dispositions | DEC015 outage deferral and independent source-update/private-profile boundaries untouched |
+| MP005 | Prior scoped resolution retained | API003 fresh public native-Ubuntu no-preinstall proof, not broadened to all targets |
 
-Exact retained engine pair/source remains unchanged; API regenerated current
-native CLI`0f7d6a37e8d418f3fd16ae83e16ef4ca45fd75311a93cb40237665afca4db2b4`
-and Docker CLI`532b98169d7434cd76d9e279397fc6a03a00f9dabb1fcf951dfdad75471169ff`.
-Current aggregate hashes and all limits are in the audit. Empty qualifiedTargets
-remain; current default unavailable Guide is intentional. No release confidence
-is inferred from package checks or the older ignored IR005 CLI.
+No additional new/reclassified premise beyond the scenario gate.
 
-Review Decision **Fail**; Scenario/Material-Premise gates **Pass** (basis proven,
-not product success). Recommended owner **Solution Designer**. Fresh matching
-rule and handoff state (receipt when confirmed) recorded in
-[CRR008 routing](code-review-evidence/crr-008/routing.json); complete chain in
-[CRR008 package index](code-review-evidence/crr-008/package-index.json). API cleanup
-complete; no live failing VM retained. No duplicate forwarding, Task Done,
-merge/push/tag/release or user-verification claim.
+## Review Scorecard
+
+**10.0/10;100/100**, simple average of ten categories. This is source-review
+quality for the supported scope, not API coverage confidence or a release score.
+No evidenced promoted deficiency warrants a deduction; unexecuted downstream
+validation is listed explicitly rather than silently scored as proven.
+
+| Priority | Category | Score | Why | Weakness / drag | Required improvement |
+| --- | --- | ---: | --- | --- | --- |
+| 1 | Data-Flow Spine Inventory and Clarity | 10 | DS006 spans ordinary reboot through real readiness; local attempt spine explicit | None found | None |
+| 2 | Ownership Clarity and Boundary Encapsulation | 10 | Setup/Docker/Store/daemon boundaries coherent; CR005 missing owner supplied | None found | None |
+| 3 | API / Interface / Query / Command Clarity | 10 | Exact identities, consent retry and read-only status distinct | None found | None |
+| 4 | Separation of Concerns and File Placement | 10 | Cohesive bounded selection/observation/action/volume files | None found | None |
+| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 10 | Public Snapshot facts, single validator, minimal current attempt | None found | None |
+| 6 | Naming Quality and Local Readability | 10 | Concrete function/result/reason names; qualification/consumption order visible | None found | None |
+| 7 | API/E2E Readiness | 10 | Focused tests and exact input/build chain; original API failure and real next-case plan preserved | No source-readiness gap; actual API gate pending | Execute independent matrix, not a source change |
+| 8 | Runtime Correctness And Behavioral Fidelity | 10 | Supported CAND009/MP006–008 paths/negative bounds align in source and local tests | No source defect evidenced; no hosted/reboot qualification asserted | API-F003 current public two-boot proof first |
+| 9 | No Backward-Compatibility / No Legacy Retention | 10 | Current schema only, no migration/version fallback or old policy retained | None found | None |
+| 10 | Cleanup Completeness | 10 | Duplicate volume block removed; exact attempt/probe ownership; reviewer scratch cleaned | None found | None |
+
+## Checks, Provenance And Limits
+
+Personal commands/raw outcomes, input hashes and cleanup are in
+[checks-and-limits](code-review-evidence/crr-009/checks-and-limits.md),
+[checks-result](code-review-evidence/crr-009/checks-result.json),
+[source audit](code-review-evidence/crr-009/source-audit.json),
+[attempts](code-review-evidence/crr-009/audit-attempts.json) and
+[cleanup](code-review-evidence/crr-009/cleanup.json).
+
+- Seven Go packages race/count1 pass;52 top-level enumerated,51 pass/1 standalone
+  child-helper skip;100 direct subcases pass. Go vet passes.
+  Four Python modules18 enumerated/17 pass/1 standalone Go-child skip; Go's real
+  parent/child fixture executed. Bash syntax passes. Two reviewer mutation controls
+  fail intended assertions (policy=no admission, missing write-ahead), not compilation.
+- Source aggregate recomputed968f6d000d4b6c2cc3c66cd3add5845cb30385cdad752fe831b564823db9b764;
+  default publish refuses unqualified candidate as expected.739 references exist,
+  all15 changed paths and1350 prior package paths match received hashes.
+  Eleven retained IR005 files and four IR007 candidate files independently match.
+- IR007 four-target compilation/seven mutations and actual CLI builds are inherited
+  evidence, not relabelled reviewer executions. Retained arm64 CLI/metadata source
+  hash51f81cd187caf269ecffa83fecc35a4f665b70942716d7858fa7d964d3b335ed with same engine
+  pair; current candidate has no Docker image identity. API must bind actual owned
+  current image. No engine rebuild required or performed. Empty qualification honest.
+- Reviewer first attempt failed before tests on Python tarfile keyword support;
+  second download was interrupted after observed IPv6 connection stall. Original
+  runners/traces/cleanups retained. Final same official SHA-verified Go archive
+  used request-local IPv4, no system network change. No product failure inferred.
+- No real Docker daemon, VM, root installation, source mount, desktop/UI, provider,
+  physical peer, public installer, hosted Actions/signing or release execution here.
+  Synthetic daemon fixtures do not prove boot scheduling or normal real Stop behavior.
+  No source/durable-test edits, global cache cleanup or unrelated resource mutation.
+
+## Findings / Follow-ups / Classification
+
+**No new or unresolved source finding. CR005 source correction accepted.**
+Failure classification **N/A — source Pass**, not a reclassification of API003.
+FUP001 remains with Project Task Manager under existing receipt; no new follow-up
+or duplicate notification. D001/DEC015 remains deferred **NOT fixed**; IMP-D001
+private current links/independent confirmed Source Update/Remove/unchanged AGY and
+local behavior preserved. No pin/copy/refcount/retirement or outage framework.
+
+## Residual Risks And Next Validation Gate
+
+1. **API-F003 first:** current public selected setup and **two ordinary whole-host
+   reboots without manual Start/reconnect**; actual API/mounted bytes, same immutable
+   node/image/Config/HostConfig/ports/aliases/private volumes+bytes/source inode,
+   device/UID/GID/mode/bytes/UUID. Preserve normal node restart and safe detach.
+2. Real normal-running unless-stopped Stop, current policy=no on captured failed
+   start, already-failed raw Stop no-op/guidance and unselected control. Do not
+   count diagnostic manual Start as automatic recovery, infer all stopped nodes
+   should start, or convert150s observation into a new SLA. Unknown error grammar
+   fails closed; ambiguous consumed attempt requires confirmed reconnect.
+3. Continue full remaining current-product matrix: both OSes/native+managedDocker
+   clients, Linux native/Docker storage, independent peers/locks/Git/lifecycle/
+   preservation; actual native tools/unread linked assets/peer close/restore/
+   Standalone-Team-Org/completed-artifact and all healthy previews; independent
+   physical Mac/Linux/Docker and explicit user verification. Only MacDocker
+   **STORAGE** hosting is deferred, not clients; peer-NAT limit remains separate.
+4. API003's scoped mounted HTTP/GraphQL/PTY/locks and isolated desktop Guide/HTML/
+   image/text-refresh gains retained, not entire acceptance proof. Actual amd64
+   engine/hosted workflow/signing/public bootstrap qualification still absent.
+5. After successful API execution, separate proportional test-code review, then
+   Delivery/docs/finalization and user/release-guide authorized release. No merge,
+   push, release, TaskDone or user-verification claim in this review.
+
+## Latest Authoritative Result / Routing
+
+- Decision **Pass — CRR009 source only**; scenario and material-premise gates **Pass**.
+- Prior CRR008 remains preserved history; CR005 resolved at design/source boundary.
+- API003 **Fail57.14% / broader Required / API-F003 OPEN** remains independent authority.
+- Recommended next owner: fresh configured implementation-review Pass rule's exact
+  `/software_engineering_team/api_e2e_engineer`. Record rules/receipt in review evidence;
+  notify only the single most-specific recipient under the current team contract.
+  No informational duplicate, polling, delegation or premature Delivery forwarding.

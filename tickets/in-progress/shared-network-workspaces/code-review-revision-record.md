@@ -392,3 +392,76 @@ The canonical [code-review-report.md](code-review-report.md) is authoritative fo
   `solution_designer_ff9bb51075be4fdbbcd1b6eceba5ccdf`; accepted=true/DELIVERED,
   641 cumulative references. Only the most-specific Design Impact recipient
   notified; no duplicate API/implementation forwarding or polling.
+
+
+### CRR-009 — SR021/IR007 selected failed-start completion accepted; source Pass only
+
+- Date2026-10-15; canonical [code-review-report.md](code-review-report.md) now
+  **Pass /100/100**, entry **Implementation Review**, round9 **Full Re-Audit**.
+  Prior CRR008 Fail/Design Impact CR005 P1 checked first. New selected post-host
+  spine, Snapshot public fields and private attempt subject require full24-check
+  structural review and ten-category scorecard, not a narrow two-file delta.
+- Inputec3bf6b270ef8d038f309b0fad1f599566d1b233;
+  sourced318bd9db935affdf16d141ef4e88a6c0e4939b5;
+  base50d9c9d0c883e1ad8d3a1808b9e980a7df4f132b.
+  ApprovedSR018 / ReadySR021 / ARCH-REV005 / IR007 / API-REV003;
+  **Large/High Reviewed**, finalization origin/personal retained. DR N/A.
+
+#### Prior Finding Resolution
+
+| Finding | Prior status | Current status | Verification |
+| --- | --- | --- | --- |
+| CR005 / CAND009 / API-F003 | CRR008 Design Impact/P1; normal reboot client stranded | **Resolved at design/source boundary; API-F003 OPEN pending independent runtime validation** | SR021/ARCH005 exact owner/eligibility/consumption contract; actual locked Reconnect -> host proof -> current selected ref/daemon/volume -> fresh Probe -> reinspection -> atomic attempt -> same-ID Start -> real API/current-state verify; fixtures and intended mutation failures |
+| CR003 / API-F002 | API003 independently resolved fresh native Ubuntu | **Scoped resolution retained** | Unchanged exact engine inputs/source; original no-preinstall public create/reconnect receipts preserved |
+| CR004 | IR006/CRR007 source gate fix resolved | **Retained** | Workflow unchanged; Python regression rerun; no hosted/signing claim |
+| CR002 / API-F001 | Earlier native-Mac cold-create resolution | **Retained at prior scope** | Apple correction and API002 receipts unchanged, no fresh Mac execution |
+| CR001 | Restrictive-mode fix resolved | **Retained** | Current Go parent/child fixture passes; no root installer executed |
+| FUP001 | Historical current-source failures in PM custody | **Unchanged follow-up, no deduction** | No duplicate task/patch or candidate-green substitution |
+
+- CAND009 Promote/Supported Normal/Reachable remains independent of new code:
+  ordinary supported reboot and API003 raw evidence, not synthetic tests, justify
+  recovery. MP006–008 confirmed at source/contract boundary. Normal running Stop
+  remains untouched; already-failed Stop is no-op with truthful current policy=no
+  veto guidance. No invented manuallyStopped/private-veto, all-stopped restart,
+  arbitrary-error retry, app wait/global Docker order or outage framework.
+  Artificially timed contradictory command races rejected, no added machinery.
+- Existing admin lock, Store, Probe/VerifyStarted reused; shared read-only volume
+  validator extracted, opaque config preserved, Mounts order ignored but exact
+  entries checked. Attempt key excludes diagnostic/policy; max32 current files,
+ 0600, no desiredRunning/READY/history/expiry; explicit confirmed retry only;
+  detach removes exact entries after attachment removal. Existing state directly
+  usable, no migration/legacy branch. All mandatory structural/size checks Pass.
+- Personal checks: seven Go packages race52top enumerated/51pass/1standalone-childskip,
+ 100direct subcases pass; actual child launches pass; vet; Python18enumerated/
+ 17pass/1standaloneGochildskip (real child via Go), bash syntax; unqualified publish
+  refusal, aggregatehash; two intended mutation failures. No actual reboot/daemon/
+  VM/root/mount/UI/provider/physical/hosted execution. Initial Python extractor
+  harness error and IPv6 toolchain download interruption preserved separately;
+  final official SHA-verified request-local IPv4 download, owned cleanup complete.
+- Audit:739 incoming references exist;15 changed paths and1350 prior package files
+  hash-match;11 IR005 +4 IR007 ignored candidate files unchanged. Changed production
+  max267nonempty; no>500 or>220delta; tests exempt. Default source aggregate
+ 968f6d000d4b6c2cc3c66cd3add5845cb30385cdad752fe831b564823db9b764;
+  retained-engine current metadata51f81cd187caf269ecffa83fecc35a4f665b70942716d7858fa7d964d3b335ed.
+  No engine rebuild; API must bind current owned Docker image. Empty qualification
+  and Guide unavailable remain truthful. IR007 builds/seven controls inherited,
+  not relabelled personal. No source/durable-test edits.
+- Evidence: code-review-evidence/crr-009/source-trace.md, source-audit.json,
+  checks-and-limits.md, checks-result.json, audit-attempts.json, cleanup.json,
+  final-checks.json and complete cumulative package-index.json. CRR001–008 prefix
+  preserved byte-for-byte. Current canonical report supersedes prior source result
+  only; **API003 Fail57.14% / broader Required / API-F003 OPEN remains**.
+- Next API-F003 FIRST: fresh public selected setup, TWO ordinary whole-host
+  reboots without manual Start/reconnect; actual API/mounted bytes/same identity,
+  private/config/ports/aliases/source/UUID and normal-running Stop/policyNo/
+  alreadyfailedStop/unselected controls. No150s SLA/forced-outage test mandate.
+  Then full remaining bothOS/native+Docker-client/Linuxstorage/peer/current native
+  tools/assets/peerclose/restore/modes/completed previews/physical/docs/user/
+  finalization/authorized-release gates. Separate successful test-code review
+  awaits passed API package; cumulative REST tests unchanged.
+- D001/DEC015 deferred NOTfixed; IMP-D001 private current links/independent Source
+  UpdateRemove/AGY/local unchanged; FUP001 PMcustody and peerNAT limit retained.
+  Only MacDocker STORAGE deferred. No merge/push/release/TaskDone/delegation.
+- Route: obtain fresh rules; select only most-specific implementation-review Pass
+  primary recipient. Full739-reference chain plus current evidence preserved;
+  actual send confirmation will be recorded. No duplicate informational forwarding.

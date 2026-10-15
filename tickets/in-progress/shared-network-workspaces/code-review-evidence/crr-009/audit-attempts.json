@@ -1,0 +1,7 @@
+{
+  "attempt1": "Reviewer runner used Python tarfile filter keyword unavailable in system Python; failed before product checks. Hash-verified official archive and owned scratch cleaned. Original runner/traceback/cleanup preserved. Corrected runner uses system tar on same SHA-verified archive, no source/test change.",
+  "readOnlyCommandError": "Earlier template read was attempted relative to worktree where .codex does not exist; reread authoritative superrepo skill root. No product effect.",
+  "attempt2": "Official toolchain download stalled before product checks. Read-only process/socket audit showed owned Python83265 in IPv6 SYN_SENT after 3m36s. Interrupted that exact process with SIGINT; finally cleaned its owned scratch, original traceback/runner/cleanup retained. Retried same official URL with request-local curl IPv4/connect20s/max180s; no system network change, no product defect.",
+  "readOnlyCwdTypo": "One read-only combined command had misspelled autobyus-worktrees cwd; process creation failed, no command executed. Reissued at canonical worktree.",
+  "testCounting": "Independent raw Go count: 52 top-level enumerated (51 pass, standalone TestInstallerDirectoryModeChild skipped), 100 direct subcases pass. Parent fixture executes two child invocations (one fixture entry; one mac/linux directory-mode pair). IR007 prose 51top/105subcases is retained as inherited reporting, not used as the reviewer enumeration. No product failure or test omission."
+}

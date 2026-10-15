@@ -1,0 +1,9 @@
+go-version 0
+go-race 0
+go-vet 0
+python-packaging 0
+shell-syntax 0
+source-hash 0
+publish-refusal 1
+policy-no-control 1
+write-ahead-control 1
