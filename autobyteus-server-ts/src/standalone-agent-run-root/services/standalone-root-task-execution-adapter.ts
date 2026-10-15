@@ -168,13 +168,6 @@ export class StandaloneRootTaskExecutionAdapter implements RootTaskExecutionAdap
     return chain.length ? chain : [...this.registrations.values()]
       .filter(entry => entry.ownedAgentRunIds.includes(agentRunId)).map(entry => entry.target.execution);
   }
-  taskExecutionAt(address: string, among: readonly TaskExecutionReference[]) {
-    for (const reference of among) {
-      const entry = this.options.getIndex().getTaskExecution(reference);
-      if (entry?.address === address) return Object.freeze({ root: this.root, execution: reference, ingressAgentRunId: this.ingressAgentRunId(entry) });
-    }
-    return null;
-  }
   taskExecutionTargetOf(reference: TaskExecutionReference) {
     // The index is keyed by run ID alone: the copy must also be of the requested kind.
     const entry = this.options.getIndex().getTaskExecution(reference);

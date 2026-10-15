@@ -163,7 +163,7 @@ export async function nestedReleaseScenario(kind: RootSubjectKind) {
   for (const agentRun of [{ agentRunId: 'A-child' }, { teamRunId: 'A-nested' }, { agentRunId: 'A-grand' }]) {
     await resources.linkNewTaskExecution({ role: 'delegated', creator: { teamRunId: 'A-team' }, hostRoot, execution: agentRun });
   }
-  await resources.linkNewTaskExecution({ role: 'broughtIn', creator: { teamRunId: 'A-team' }, hostRoot, execution: { agentRunId: 'A-helper' } });
+  await resources.linkNewTaskExecution({ role: 'delegated', creator: { teamRunId: 'A-team' }, hostRoot, execution: { agentRunId: 'A-helper' } });
   await resources.linkNewTaskExecution({ ...assigned, taskId: 'B', execution: { agentRunId: 'B-worker' } });
   const quiet = rootTeam ? await rootTeam.tryShutDownDirectTaskExecutionIfQuiet({ teamRunId: 'A-team' })
     : await f.teams.tryShutDownRootTaskTeamIfQuiet('A-team');

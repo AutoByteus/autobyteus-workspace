@@ -2,7 +2,6 @@ import type { CommittedTaskExecution, TaskExecutionPreparationOperation } from "
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { taskExecutionReferenceKey } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { beginRootTaskActivation, type RegisteredTaskActivation, type TaskExecutionActivationPlan, type TaskExecutionActivationOperation,
-  type PreparedTaskExecutionActivation,
   type RootTaskExecutionAdapter,
   type TaskExecutionActivationCommitResult,
   type TaskExecutionActivationPreparation,
@@ -131,13 +130,6 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
     const chain = this.taskExecutionChainFor(agentRunId);
     return chain.length ? chain : [...this.registrations.values()]
       .filter(entry => entry.ownedAgentRunIds.includes(agentRunId)).map(entry => entry.target.execution);
-  }
-  taskExecutionAt(address: string, among: readonly TaskExecutionReference[]) {
-    for (const reference of among) {
-      const entry = this.options.getIndex().getTaskExecution(reference);
-      if (entry?.address === address) return Object.freeze({ root: this.root, execution: reference, ingressAgentRunId: this.ingressOf(entry).agentRunId });
-    }
-    return null;
   }
   taskExecutionTargetOf(reference: TaskExecutionReference) {
     // The index is keyed by run ID alone: the copy must also be of the requested kind.

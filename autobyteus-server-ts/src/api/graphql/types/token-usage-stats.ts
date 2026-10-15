@@ -1,5 +1,5 @@
-import { Arg, Field, Float, Int, ObjectType, Query, Resolver } from "type-graphql";
-import { GraphQLJSON, GraphQLSafeInt } from "graphql-scalars";
+import { Arg, Field, Float, ObjectType, Query, Resolver } from "type-graphql";
+import { GraphQLSafeInt } from "graphql-scalars";
 import type { TokenUsageRunSummaryPayload } from "../../../agent-execution/domain/agent-run-token-usage.js";
 import type { TokenUsageCostSummaryAggregate } from "../../../token-usage/projections/token-usage-cost-summary-aggregate.js";
 import { TokenUsageCostSummaryAggregateGraphql, toTokenUsageCostSummaryAggregateGraphql } from "./token-usage-cost-summary.js";

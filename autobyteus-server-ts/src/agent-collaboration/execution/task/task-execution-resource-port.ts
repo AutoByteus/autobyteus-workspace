@@ -19,7 +19,7 @@ export type NewTaskExecutionLinkInput = Readonly<{
 }> & (
   | (Readonly<{ role: "assigned"; assignedBy: string; /** The address delegated to (the root's display name). */ recipientAddress: string }>
     & TaskExecutionAssignmentTarget)
-  | Readonly<{ role: "delegated" | "broughtIn"; creator: TaskExecutionReference }>
+  | Readonly<{ role: "delegated"; creator: TaskExecutionReference }>
 );
 
 /**
@@ -49,7 +49,6 @@ export interface TaskExecutionResourcePort {
   ownerOf(chain: readonly TaskExecutionReference[]): TaskExecutionOwner | null;
   /** The copy's current Task entry is open. */
   isOpen(execution: TaskExecutionReference): boolean;
-  openTaskExecutions(taskId: string, role: TaskExecutionRole): readonly TaskExecutionReference[];
   /** Every copy hosted by this root whose current Task entry is closed; an unreadable Task contributes none. Never throws. */
   closedTaskExecutionsIn(hostRoot: RootExecutionIdentity): readonly TaskExecutionReference[];
   /** Rejects TASK_AGENT_RESOURCES_UNAVAILABLE while any Task's resource data is unreadable. */

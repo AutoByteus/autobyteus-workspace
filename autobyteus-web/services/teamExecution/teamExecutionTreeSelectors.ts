@@ -71,9 +71,8 @@ export const findConfiguredTeamByAddress = (
   collectConfiguredTeams(tree).find((team) => (team === tree.root_team ? '/' : team.address) === address) ?? null;
 
 export const collectAgentExecutionLocations = (
-  storedTree: TeamRunExecutionTreeDto,
+  tree: TeamRunExecutionTreeDto,
 ): readonly TeamAgentExecutionLocation[] => {
-  const tree = storedTree;
   const output: TeamAgentExecutionLocation[] = [];
   const addLocation = (
     agentRunId: string,
@@ -125,10 +124,9 @@ export const collectAgentExecutionLocations = (
 
 /** Run ID of the innermost delegated child (task Agent or task Team) containing the agent, if any. */
 export const findContainingTaskExecutionRunId = (
-  storedTree: TeamRunExecutionTreeDto,
+  tree: TeamRunExecutionTreeDto,
   agentRunId: string,
 ): string | null => {
-  const tree = storedTree;
   type Member = ConfiguredMemberExecutionDto | TaskTeamMemberExecutionDto;
   const search = (
     tasks: readonly TaskExecutionDto[],

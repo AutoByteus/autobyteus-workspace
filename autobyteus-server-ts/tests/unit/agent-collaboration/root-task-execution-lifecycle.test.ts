@@ -86,7 +86,7 @@ const createFakeAdapter = (overrides: Partial<RootTaskExecutionAdapter<string>> 
     beginActivation: vi.fn(() => ({ prepare: async () => ({ targetAgentRunId: "child-run",
       commit: async () => ({ committed: true }), acceptSeed: async guard => { guard(); return { accepted: true }; } }),
       cancel: vi.fn(), release: vi.fn(async () => ({ accepted: true })), })),
-    registrationFor: () => null, taskExecutionAt: () => null, taskExecutionTargetOf: () => null,
+    registrationFor: () => null, taskExecutionTargetOf: () => null,
     ownershipChainFor: (agentRunId) => state.chains.get(agentRunId) ?? [],
     cancelOwnedExecution: vi.fn(), releaseOwnedExecution: vi.fn(async () => ({ accepted: false, code: "UNAVAILABLE" })),
     taskExecutionChainFor: (agentRunId) => state.chains.get(agentRunId) ?? [],
@@ -511,10 +511,6 @@ describe("RootTaskExecutionLifecycle launch notes (DS-003, DS-004 b; REQ-008)", 
         const id = `run-${++next}`;
         return { ...input, ownedAgentRunIds: [id], target: { root: caller.root, execution: { agentRunId: id }, ingressAgentRunId: id } };
       }),
-      taskExecutionAt: (address, among) => {
-        const found = address === "/helper" ? among.find((reference) => "agentRunId" in reference && reference.agentRunId !== "run-1") : undefined;
-        return found && "agentRunId" in found ? { root: caller.root, execution: found, ingressAgentRunId: found.agentRunId } : null;
-      },
     });
     return fake;
   };

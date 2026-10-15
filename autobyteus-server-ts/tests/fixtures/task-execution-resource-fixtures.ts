@@ -96,9 +96,6 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
     return { taskId: innermost.taskId, execution: innermost.execution, open: innermost.open };
   }
   isOpen(execution: TaskExecutionReference): boolean { return this.entry(execution)?.open === true; }
-  openTaskExecutions(taskId: string, role: TaskExecutionRole): TaskExecutionReference[] {
-    return [...this.entries.values()].filter(e => e.taskId === taskId && e.role === role && e.open).map(e => e.execution);
-  }
   closedTaskExecutionsIn(hostRoot: RootExecutionIdentity): TaskExecutionReference[] {
     return [...this.entries.values()].filter(e => !e.open && !this.damaged.has(e.taskId)
       && rootExecutionIdentityKey(e.hostRoot) === rootExecutionIdentityKey(hostRoot)).map(e => e.execution);
