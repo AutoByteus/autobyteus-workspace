@@ -117,6 +117,26 @@ flowchart TD
 
 ## Core Components
 
+### Committed content and unsaved editor drafts
+
+Open text files keep a session-only `editorDraft` alongside the committed
+`content` in the workspace-scoped File Explorer store. Editor input updates the
+draft; peer modification/invalidation still fetches committed bytes for clean
+readers and previews, but does not replace the editable draft. FileExplorerTabs
+passes the draft to the existing FileViewer/Monaco boundary in edit mode and
+keeps that editor mounted during a background refresh. A refresh error remains
+visible without hiding the draft.
+
+Tab/workspace selection, reopening an already-open path, edit/preview switching,
+and Files/Zen remounts retain the draft. Previews (including read-only Event
+Monitor previews) use committed content, not unsubmitted edits. Successful Save
+clears only the draft it submitted; failed Save or typing more while Save is in
+flight retains pending work. Returning the editor to the current committed text
+makes it clean again. Explicit tab close retains its existing discard behavior;
+reopening a closed file fetches committed content. Drafts are not persisted across
+application/page restarts. This does not add remote notifications, automatic
+merge, competing-write arbitration, or an outage-isolation guarantee.
+
 ### Event Monitor Preview Requests
 
 Incidental absolute paths in the central Event Monitor use the existing Files
