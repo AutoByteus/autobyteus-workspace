@@ -966,3 +966,42 @@ The canonical [code-review-report.md](code-review-report.md) is authoritative fo
   api_e2e_engineer_4b3516b0eb7d448586471bee29383f50,18 selected references.
   Review commit8082eb2478016b9a1ac0402a937846c5906e54df. Single recipient;
   no duplicate notification, delegation or polling.
+
+## CRR-018 — API009 successful integrated durable-test review
+
+- 2026-10-15; **Proportional Successful API/E2E Test-Code Review / Pass**,
+  separate report round2. No findings, thresholds, source audit/scorecard or new
+  confidence score. CRR017 canonical source report unchanged; prior CRR016
+  cumulative af9f23/API007/IR010 test conclusions carried for unchanged scope.
+- Trigger API0096904190d616eb43da17f52dafdad48dc742a1da1, tested receiptbd57ef932d;
+  integrated sourcea4afd758; related IR011/DR001/CRR017, SR025/DEC017 and technical
+  SR023/ARCH007; later E8 direct user command-only direction controls. Large/High/
+  Reviewed retained, no Designer approval loop or application acceptance gate.
+- One durable delta: REST fixture6add/2del from IR011, no API009 edits. All6 case
+  bodies byte-identical. Existing suite-scoped composed runtime/public removal
+  retained; public active/registry absence postconditions valid. No private-map
+  bypass, weakened assertion, skipped test or transplanted per-test shutdown.
+- All9 proportional checks Pass. Independent TESTING ownership contract and
+  existing healthy-content/access scenario confirmed before judging fixtures.
+  Fresh API009 build/typecheck/REST6/workspace48/adjacent12 plus repeatREST6 logs
+  reviewed;66unique/12files,72executions, not72unique. Log hashes verified. Repeat
+  uses a separate process, not shared-process order-independence proof.
+- Source/evidence identity and cleanup Complete inspected; archive attempt1
+  stopped before install/tests, corrected before proof. No reviewer runtime
+  repeat needed, no resources created or source/test edit. Old dist untouched.
+  E18/review-audit.json preserves history/source report identity.
+
+### Prior finding / result disposition
+
+| Item | Current disposition |
+| --- | --- |
+| CRR016 proportional findings | None; unchanged cumulative coverage carries forward |
+| IR011 / DR001 integration | CRR017 reviewed resolution now independently validated API009; Delivery must resume own gates |
+| API008 FS01–17 | Pass95 carried at exact command-only scope; no new VM/platform qualification |
+| CR008 / API-F007 / IR010 | Retained source/component correction; no new live editor closure or removed gate reinstatement |
+| CR-FUP002 | Unresolved/nonblocking existing PM Task project_task_a4f90984-add2-4300-983d-de54ded3032b; no duplicate/retest |
+| CR001–007 / FUP001 / D001 / IMP-D001 | Prior scoped resolution/custody/deferral unchanged |
+
+- Next fresh successful-test rule -> Delivery only. No further runtime cycle
+  requested. No target merge/push/tag/release/deployment/TaskDone/userverify or
+  delegation by reviewer; no release remains guide default.
