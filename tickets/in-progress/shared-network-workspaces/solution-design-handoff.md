@@ -91,18 +91,31 @@ review, then Delivery integration/docs/available candidate entrypoint/verificati
 finalization/cleanup. No immediate Delivery/TaskDone/all-platform-Pass/release claim.
 
 Ticket root `/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces`.
-Full1644 incoming references retained in evidence/acceptance-revision/sr025/package-index.json
-plus current owned alignment files. Prior owned docs are immutable in git at input commit;
-old solution history exact prefix. Current requirements, approval025, investigation, design,
-solution history and this handoff govern. Prior approvals/reviews retain their actual scope;
-API007 ledger remains API owned. Product supplement N/A; delivery not yet performed.
+### Selected handoff references
+
+Attach only these ten current documents: this handoff, requirements-doc.md,
+investigation-notes.md, solution-revision-record.md, design-spec.md,
+approval-record-sr025.md, api-e2e-coverage-investigation.md, api-e2e-test-case-ledger.md,
+api-e2e-execution-coverage-report.md and api-e2e-revision-record.md. These establish the
+approved change and the API-owned work to resume. The updated solution-designer SKILL and
+references/handoff-references.md were read in full before selecting these references.
+
+Earlier evidence stays at its existing paths, linked by the API report/proof tables and
+revision records. implementation-handoff.md, code-review-report.md and
+design-review-report.md are available in the ticket if needed; their prior review scopes
+are unchanged. The corrective API007 cleanup receipt named above is the resumption
+reference. No repository source files or whole historical evidence folders are attached.
+The existing SR025 package-index/input-audit are pre-handoff historical checkpoints, not
+an instruction to attach or regenerate a cumulative manifest. Prior owned docs remain
+available in git. Product supplement N/A; delivery not yet performed.
 
 ## Routing
 
-Fresh designer rules match NONE: no new architecture package awaiting independent review,
-no Low-risk implementation package and no delivery receipt. Return this resolved request
-ONLY to `/software_engineering_team/api_e2e_engineer` under the no-match caller contract
-and the user's explicit direct-API instruction. Technical design/review stays unchanged;
-this is not review bypass. No architecture/source/implementation/Delivery/PM duplicate.
-The exact rules/evaluation are in evidence/acceptance-revision/sr025/routing.json.
-Dispatch success depends on send_message_to confirmation, not this pre-dispatch record.
+Fresh get_handoff_rules after the updated-skill context persistence matches none: no new
+technical package awaiting architecture review, no implementation delta and no delivery
+receipt. Return the resolved request ONLY to /software_engineering_team/api_e2e_engineer
+under the no-match caller contract and the user's explicit direct-API instruction. No
+architecture/source/implementation/Delivery duplicate. Attach the ten selected documents
+above; do not use the legacy cumulative index as the attachment list. Fresh rules and
+evaluation are in evidence/acceptance-revision/sr025/routing.json. Dispatch success depends
+on send_message_to confirmation, not this pre-dispatch record.

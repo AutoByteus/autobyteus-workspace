@@ -29,7 +29,13 @@ TESTING. Current canonical approval/design/history read before alignment. No new
 investigation/migration design. New evidence inventory: API007 scope handoff/ledger (API
 owned); approval-record-sr025 and evidence/acceptance-revision/sr025 input-audit/package-index/
 routing (Designer owned). Prior owned versions retained at git a6c274d96f; old history exact
-prefix. All1644 incoming refs retained. Findings outside agreed scope remain follow-ups.
+prefix. Historical input references remain on disk. Findings outside agreed scope remain follow-ups.
+
+Handoff guidance update, 2026-10-15: reread the updated solution-designer SKILL.md and
+references/handoff-references.md in full at the user's request. Select ten current owned/
+API working documents for the next action, not all inherited references. Earlier indices
+are historical checkpoints, not dispatch manifests; no evidence/source deletion or new
+hash/index construction. API still owns execution and verdict, with no new approval gate.
 
 ## Historical SR024 — User-approved VM filesystem acceptance boundary
 

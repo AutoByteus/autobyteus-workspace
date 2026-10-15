@@ -25,5 +25,7 @@
   "recipient_address": "/software_engineering_team/api_e2e_engineer",
   "authority": "Return resolved request to API/E2E requester under no-match contract; user also explicitly requested direct API continuation.",
   "no_duplicate_dispatch": true,
-  "delivery_status": "Pending actual send_message_to confirmation."
+  "delivery_status": "Pending actual send_message_to confirmation.",
+  "handoff_guidance": "Updated SKILL.md and references/handoff-references.md read in full; ten selected current documents, not inherited cumulative references.",
+  "selected_reference_count": 10
 }

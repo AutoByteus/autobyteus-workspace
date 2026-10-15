@@ -646,3 +646,11 @@ SR025 routing: fresh rules match none; no technical package awaiting review, new
 implementation work or Delivery receipt. Return resolved acceptance request ONLY to
 `/software_engineering_team/api_e2e_engineer` (also the user's expressly named collaborator).
 No duplicate architecture/source/implementation/Delivery/PM dispatch; no test approval gate.
+
+SR025 handoff-guidance update — 2026-10-15: user requested the updated skill be read before
+handoff. Read solution-designer SKILL.md and references/handoff-references.md in full.
+Attach the five required current solution documents, approval025 and four API working
+documents (ten total), selected for API007 resumption. Do not forward all historical inputs
+or build a new cumulative index. Existing evidence/checkpoints stay linked and untouched.
+Approval, technical scope, source and execution statuses are unchanged. Fresh routing is
+recorded in the handoff and SR025 routing.json before direct dispatch.
