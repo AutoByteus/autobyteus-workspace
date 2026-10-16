@@ -5,7 +5,7 @@ import {
 } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { DelegateTaskResult } from "../../agent-team-execution/task-delegation/task-delegation-result-contract.js";
 import type { TaskDelegationToolErrorPayload } from "./task-delegation-tool-contract.js";
-import { isCollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
+import { collaborationErrorTextForAgent, isCollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 
 export const toTaskDelegationToolErrorPayload = (
   error: unknown,
@@ -14,7 +14,7 @@ export const toTaskDelegationToolErrorPayload = (
     return {
       error: {
         code: error.code,
-        message: error.message,
+        message: collaborationErrorTextForAgent(error),
       },
     };
   }

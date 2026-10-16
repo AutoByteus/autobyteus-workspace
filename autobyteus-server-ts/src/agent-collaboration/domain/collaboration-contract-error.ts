@@ -15,14 +15,26 @@ export type CollaborationContractErrorCode =
   (typeof COLLABORATION_CONTRACT_ERROR_CODES)[number];
 
 export class CollaborationContractError extends Error {
+  /**
+   * `message` is the text for definition and configuration callers. `agentMessage` is the text an
+   * agent reads when the same error reaches it through `send_message_to` or `delegate_task`
+   * (wording §7.3: the agent's words and a next step); absent when `message` already serves both.
+   */
   constructor(
     readonly code: CollaborationContractErrorCode,
     message: string,
+    readonly agentMessage?: string,
   ) {
     super(message);
     this.name = "CollaborationContractError";
   }
 }
+
+/** The text of a contract error for an agent: its agent-facing message when it has one. */
+export const collaborationErrorTextForAgent = (error: Error): string => {
+  const { agentMessage } = error as Error & { agentMessage?: unknown };
+  return typeof agentMessage === "string" && agentMessage ? agentMessage : error.message;
+};
 
 export const isCollaborationContractError = (
   error: unknown,

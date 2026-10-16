@@ -184,8 +184,12 @@ Rules every role follows:
   (the agents it can reach, its handoff recipients, `@` mentions). Every
   message an agent receives names its sender and gives its ID
   (`You received a message from sender name: <name>, sender id: <id>`), and the
-  agent answers with `send_message_to` and that ID. A task message reads
-  `You have a new task from <name> (ID: <id>).` followed by the description.
+  agent answers with `send_message_to` and `target_agent_run_id` set to that ID
+  (the name is not an address or an ID: run IDs start with the name, and models
+  used it as one). A task message reads
+  `You have a new task from the agent named "<name>".`, then the exact reply call
+  with the delegator's ID, then the description; a saved Task given to an
+  existing task agent carries the same reply line.
 - **Handoffs.** A `Handoffs` subsection is added only when the agent has handoff
   rules; an agent without rules is never told to call `get_handoff_rules`.
 - **Vocabulary.** The agent-facing words are "task agent" / "task agent team",
@@ -205,7 +209,13 @@ prompt says who the agent can reach and when to message, and the tool
 description says only how the tool works. Argument fields and runtime dispatch
 are unchanged. Refusal and result texts (for example a message to an address
 that is not in the run, a delegation to your own team, a Task that is closed)
-use the same vocabulary and say what to do next; their codes are unchanged.
+use the same vocabulary and say what to do next; their codes are unchanged. Every
+such refusal reaches the agent as the tool's refusal result, including the
+cross-Task and closed-Task refusals of `send_message_to` (the communication
+engine returns them instead of throwing, so they no longer surface as an MCP
+internal error). An invalid `recipient_address` is converted to the agent's text
+at the `send_message_to` / `delegate_task` boundary (the address validator keeps
+its own text for definition and configuration callers).
 
 Agent/team authors should not copy dynamic member addresses or tool schemas into
 `agent.md` or `team.md`. This is model guidance, not runtime enforcement or a

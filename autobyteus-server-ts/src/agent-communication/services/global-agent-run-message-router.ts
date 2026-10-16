@@ -147,7 +147,7 @@ export class GlobalAgentRunMessageRouter {
       const result = {
         accepted: false,
         code: "TARGET_AGENT_RUN_NOT_ACTIVE",
-        message: `Exact AgentRun target '${targetAgentRunId}' is not active.`,
+        message: `No running agent has the ID '${targetAgentRunId}', so the message was not sent. Use an exact ID you were given: the one in your task message, a message's sender id, or one delegate_task returned to you.`,
       } satisfies AgentOperationResult;
       this.recordGrantUsage(grantDecision.kind === "allowed" ? grantDecision.grant : null, {
         ...result,
@@ -223,7 +223,9 @@ export class GlobalAgentRunMessageRouter {
       return {
         ...postResult,
         code: postResult.code ?? "TARGET_AGENT_RUN_REJECTED_INPUT",
-        message: postResult.message ?? `Exact AgentRun target '${targetAgentRunId}' rejected the message.`,
+        message: postResult.message
+          ? `The agent '${targetAgentRunId}' did not accept the message: ${postResult.message}`
+          : `The agent '${targetAgentRunId}' did not accept the message.`,
       };
     }
 

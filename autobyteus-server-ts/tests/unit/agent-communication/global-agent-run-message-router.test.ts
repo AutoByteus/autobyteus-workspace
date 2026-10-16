@@ -235,7 +235,7 @@ describe("GlobalAgentRunMessageRouter", () => {
     expect(result).toEqual({
       accepted: false,
       code: "TARGET_AGENT_RUN_NOT_ACTIVE",
-      message: "Exact AgentRun target 'preallocated-or-recoverable-run' is not active.",
+      message: "No running agent has the ID 'preallocated-or-recoverable-run', so the message was not sent. Use an exact ID you were given: the one in your task message, a message's sender id, or one delegate_task returned to you.",
     });
   });
 
@@ -251,6 +251,7 @@ describe("GlobalAgentRunMessageRouter", () => {
 
     expect(result.accepted).toBe(false);
     expect(result.code).toBe("TARGET_AGENT_RUN_REJECTED_INPUT");
+    expect(result.message).toBe("The agent 'target-run' did not accept the message: busy");
     expect(result.agentRunId).toBeUndefined();
     expect(target.emittedEvents).toEqual([]);
   });

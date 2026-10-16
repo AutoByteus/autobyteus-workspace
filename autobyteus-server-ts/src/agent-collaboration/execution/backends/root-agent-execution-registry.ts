@@ -209,14 +209,14 @@ export class RootAgentExecutionRegistry {
     const handle = this.active.get(agentRunId);
     return handle
       ? handle.reserveInput(message, options)
-      : Promise.resolve({ reserved: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: `Root-hosted AgentRun '${agentRunId}' is not active.` });
+      : Promise.resolve({ reserved: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: `The agent '${agentRunId}' is not running, so the message was not sent.` });
   }
   async executeCommand(agentRunId: string, command: TeamMemberExecutionCommand): Promise<AgentOperationResult> {
     const handle = this.active.get(agentRunId);
-    if (!handle) return { accepted: false, code: "RUN_NOT_FOUND", message: `Root-hosted AgentRun '${agentRunId}' is not active.` };
+    if (!handle) return { accepted: false, code: "RUN_NOT_FOUND", message: `The agent '${agentRunId}' is not running, so the message was not sent.` };
     // AR-005: never let approve/interrupt re-activate a shut-down task run through the handle.
     if (command.kind !== "post_message" && this.taskAgentRunIds.has(agentRunId) && !this.isTaskLive(agentRunId)) {
-      return { accepted: false, code: "RUN_NOT_ACTIVE", message: `Task AgentRun '${agentRunId}' is shut down.` };
+      return { accepted: false, code: "RUN_NOT_ACTIVE", message: `The task agent '${agentRunId}' has stopped, so the message was not sent.` };
     }
     switch (command.kind) {
       case "post_message": return handle.postMessage(command.message);

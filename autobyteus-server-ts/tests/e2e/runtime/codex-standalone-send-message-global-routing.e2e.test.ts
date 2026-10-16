@@ -759,7 +759,7 @@ describeCodexStandaloneDirect(
         expect(inactivePublicResult).toEqual({
           accepted: false,
           code: "TARGET_AGENT_RUN_NOT_ACTIVE",
-          message: `Exact AgentRun target '${targetRunId}' is not active.`,
+          message: expect.stringContaining(`No running agent has the ID '${targetRunId}'`),
           target_agent_run_id: null,
         });
         expect(inactivePublicResult).not.toHaveProperty("result");

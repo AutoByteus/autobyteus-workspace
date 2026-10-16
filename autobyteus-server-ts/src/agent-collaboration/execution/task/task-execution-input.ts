@@ -35,19 +35,24 @@ const taskBodyLines = (description: string, referenceFiles: readonly string[]): 
 ];
 
 /**
- * The delegated work as the task agent's first message (wording §7.1): who gave it (name and ID, the
- * way to answer; no address, which would not reach a task agent), the description and any reference files.
- * The name is the last segment of the delegating agent's address, as a label only.
+ * The delegated work as the task agent's first message (wording §7.1, SR-003): who gave it (the name
+ * as a label, then the exact reply call with the delegator's ID, and that the name is neither an
+ * address nor an ID), the description and any reference files. The name is the last segment of the
+ * delegating agent's address, which is also the prefix of its ID, so the text says which is which.
  */
 export const buildTaskWorkText = (input: {
   delegator: CollaborationMemberExecutionIdentity;
   description: string;
   referenceFiles: readonly string[];
-}): string => [
-  `You have a new task from ${getAgentTeamAddressBasename(input.delegator.memberAddress) ?? input.delegator.agentRunId} (ID: ${input.delegator.agentRunId}).`,
-  "",
-  ...taskBodyLines(input.description, input.referenceFiles),
-].join("\n");
+}): string => {
+  const name = getAgentTeamAddressBasename(input.delegator.memberAddress) ?? input.delegator.agentRunId;
+  return [
+    `You have a new task from the agent named "${name}".`,
+    `When you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id "${input.delegator.agentRunId}". "${name}" is its name, not an address or an ID.`,
+    "",
+    ...taskBodyLines(input.description, input.referenceFiles),
+  ].join("\n");
+};
 
 /** The child's first message: the delegated work as a system Task notification. */
 export const buildTaskAssigneeWorkPacket = (input: Parameters<typeof buildTaskWorkText>[0]): AgentInputUserMessage =>
@@ -60,9 +65,11 @@ export const buildTaskAssigneeWorkPacket = (input: Parameters<typeof buildTaskWo
  */
 export const buildExistingCopyTaskMessage = (input: {
   taskId: string;
+  delegatorAgentRunId: string;
   description: string;
 }): string => [
   `New Task assigned to you: ${input.taskId}. Your previous Task is closed; this is the work to do now.`,
+  `When you finish, or need something you can't get yourself, tell the agent that gave it using send_message_to with target_agent_run_id "${input.delegatorAgentRunId}".`,
   "",
   ...taskBodyLines(input.description, []),
 ].join("\n");

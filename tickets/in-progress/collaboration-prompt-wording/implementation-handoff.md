@@ -23,12 +23,12 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002 on top of the IR-001 baseline)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/tickets/in-progress/collaboration-prompt-wording/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-001`, `SR-002`
-- Related architecture-review / code-review / API-E2E / delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Current implementation revision ID: `IR-002` (baseline `IR-001`)
+- Related solution revision IDs: `SR-001`, `SR-002`, `SR-003`
+- Related architecture-review / delivery revision IDs: `N/A`; code-review: `CRR-001` (`code-review-report.md`); API/E2E: `API-REV-001`
+- Triggering finding IDs: `F-3a`, `F-3b`, `F-1` (C-3 covered by F-3a)
 
 What was built:
 
@@ -82,6 +82,31 @@ local `ROOT_NOT_ACTIVE` constant in the host builder removed; `carriesTeamInstru
 no new file above 500 lines; no compatibility wrapper (only the contracts parser keeps reading earlier
 forms, as designed for saved history).
 
+## IR-002 (SR-003) Delta
+
+- **F-3a.** Task message is now `You have a new task from the agent named "<name>".` + the exact reply call with
+  `target_agent_run_id "<id>"` + "`<name>` is its name, not an address or an ID."; the mode-3 body has the same reply
+  line (`buildExistingCopyTaskMessage` now takes `delegatorAgentRunId`, passed from the lifecycle). The answering bullet
+  of all four prompts and the §4.2 opening name `target_agent_run_id`. Snapshots regenerated and re-checked equal to the
+  updated complete views (20/20).
+- **F-3b.** `COLLABORATION_ADDRESS_INVALID` from the address validator carries an `agentMessage` (new optional field of
+  `CollaborationContractError`); `send-message-to-dispatcher.ts` and `toTaskDelegationToolErrorPayload` convert at the
+  two tool boundaries via `collaborationErrorTextForAgent`; the validator's own `message` is unchanged. Router
+  `TARGET_AGENT_RUN_NOT_ACTIVE` and "did not accept the message: <reason>", engine self-target and context refusals, and
+  the registry's not-running / stopped texts use the SR-003 T-3 texts.
+- **F-1 / T-4.** The first `assertAllowed()` in `RootCommunicationEngine.deliver` returns
+  `{accepted:false, code, message}` for `TASK_AGENT_RESOURCE_CLOSED` / `TASK_AGENT_RESOURCE_CONFLICT`; other errors and the
+  later re-checks still throw. Condition unchanged.
+- Tests: engine refusals (`root-communication-engine-refusals.test.ts`), `send_message_to` invalid-address envelope
+  native and MCP, `delegate_task` payload, router texts, the refusal-vocabulary scan extended to the router, engine,
+  registry and address validator, first-message tests. The API/E2E engineer's `CPW-R2` (cross-Task refusal through the real
+  MCP tool) was skipped as a known gap; I enabled it (`it.skip` → `it`) and it passes with the full file (8/8).
+- Docs: `prompt_engineering.md` and `agent_communication.md`.
+- Left unchanged on purpose: `AGENT_RUN_NOT_ACCEPTING_INPUT`/teardown-internal texts in the registry, and the other
+  `COLLABORATION_ADDRESS_INVALID` texts (parser, recipient resolvers), which are already specific and have a next step or are
+  configuration-side.
+- Not covered by me: AC-008 (`LE-A1` ≥5 per runtime, J1/J3 ≥4, branch and base) — needs real models; left to API/E2E.
+
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
@@ -128,7 +153,7 @@ forms, as designed for saved history).
      "The task agent `<id>` could not continue with its conversation: `<reason>`" (was "The delegated
      execution for AgentRun '…' could not be restored: …").
   3. `task-delegation-tool-input-parsers.ts` parameter errors and `task-execution-input.ts` first-message text (in T-3).
-  Texts found and **left unchanged** (infrastructure phrasing with no §2 forbidden word; reachable only
+  **IR-002: the texts below are now rewritten per the SR-003 T-3 rows.** Texts found in IR-001 and left unchanged then (infrastructure phrasing with no §2 forbidden word; reachable only
   through a refused/failed `send_message_to` or `delegate_task`; listed for the Solution Designer to
   decide whether to follow up): `Exact AgentRun target '<id>' is not active.` and `… rejected the
   message.` (`global-agent-run-message-router.ts`); `Root-hosted AgentRun '<id>' is not active.`,
@@ -174,7 +199,7 @@ forms, as designed for saved history).
 
 ## Environment Or Dependency Notes
 
-- Implementation commit `290d32dd4b`. Worktree build only; `pnpm run prepare:shared` and `prisma generate` were needed before the server
+- Implementation commits `290d32dd4b` (IR-001) and the IR-002 commit named in the revision record. Worktree build only; `pnpm run prepare:shared` and `prisma generate` were needed before the server
   typecheck; `pnpm test:integration:prepare` before the integration run; `pnpm exec nuxt prepare` before
   the web unit specs. No use of the user's running app or `~/.autobyteus`; the e2e run used a clean
   environment (`env -i`, temp `HOME`) with the scripted AGY CLI (`RUN_AGY_FAILURE_E2E=1`).
@@ -217,6 +242,13 @@ Clean environment (`env -i`, temp `HOME`), `RUN_AGY_FAILURE_E2E=1`, `ANTIGRAVITY
 the update); `tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts` passes.
 Scripted AGY drives real tools but not a real model, so it proves the texts and paths, not model
 behavior. Other gated suites (real Codex / Claude / LM Studio) were not run.
+
+### IR-002 local checks
+
+- Server `tsc -p tsconfig.build.json --noEmit` clean; `vitest run tests/unit`: 5583 passed, 7 skipped.
+- `vitest run tests/integration`: all pass except the same two pre-existing `agent-status-websocket` timing tests.
+- Scripted-AGY e2e (clean env): `collaboration-prompt-wording.e2e.test.ts` 8/8 including `CPW-R2` (enabled); the wider
+  `tests/e2e/projects` run: see the revision record for the final result.
 
 ## Frontend Rendered-Result Check (When Applicable)
 

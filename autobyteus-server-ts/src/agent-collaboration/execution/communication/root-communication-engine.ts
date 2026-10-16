@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { ROOT_NOT_ACTIVE_MESSAGE } from "../task/task-delegation-command.js";
+import { ROOT_NOT_ACTIVE_MESSAGE, TaskDelegationError } from "../task/task-delegation-command.js";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import {
   rootExecutionIdentityKey,
@@ -11,6 +11,8 @@ import type {
 } from "./root-communication-adapter.js";
 import { validateCollaborationCommunicationMessageArrayV1 } from "./collaboration-communication-message-v1-schema.js";
 import type { CollaborationCommunicationMessageV1 } from "./collaboration-communication-message-v1.js";
+
+const DELIVERY_REFUSAL_CODES: ReadonlySet<string> = new Set(["TASK_AGENT_RESOURCE_CLOSED", "TASK_AGENT_RESOURCE_CONFLICT"]);
 
 /** Same-root message validation, accepted-record construction, and reservation lifecycle. */
 export class RootCommunicationEngine {
@@ -32,13 +34,20 @@ export class RootCommunicationEngine {
       || !sameRootExecutionIdentity(input.receiverIdentity.root, this.adapter.root)
       || !this.adapter.isCurrentAgent(input.senderIdentity)
       || !this.adapter.isCurrentAgent(input.receiverIdentity)) {
-      return { accepted: false, code: "COLLABORATION_CONTEXT_REQUIRED", message: "Sender and receiver must be exact live executions in the same collaboration root." };
+      return { accepted: false, code: "COLLABORATION_CONTEXT_REQUIRED", message: "The agent with that ID is not running here, so the message was not sent. Use an exact ID you were given." };
     }
     if (input.senderIdentity.agentRunId === input.receiverIdentity.agentRunId) {
-      return { accepted: false, code: "COLLABORATION_SELF_TARGET_REJECTED", message: "An AgentRun cannot send an ordinary collaboration message to itself." };
+      return { accepted: false, code: "COLLABORATION_SELF_TARGET_REJECTED", message: "You can't send a message to yourself." };
     }
     const assertAllowed = () => this.adapter.assertDeliveryAllowed(input.senderIdentity, input.receiverIdentity);
-    assertAllowed();
+    // The Task-scope refusal (a different Task, or a closed one) is an ordinary refusal the agent reads
+    // (SR-003 T-4); the later re-checks inside reservation and commit keep throwing.
+    try { assertAllowed(); } catch (error) {
+      if (error instanceof TaskDelegationError && DELIVERY_REFUSAL_CODES.has(error.code)) {
+        return { accepted: false, code: error.code, message: error.message };
+      }
+      throw error;
+    }
     const content = input.content.trim();
     if (!content) return { accepted: false, code: "INVALID_MESSAGE", message: "Message content is required." };
     const createdAt = new Date().toISOString();

@@ -49,7 +49,8 @@ mention gate; `isOwnTeamAddress` on every index), IN-009/IN-010 (texts and pins)
 ## Change Scope (Mandatory)
 
 In: the files of the Final File Responsibility Mapping, their tests, the docs listed, the
-contracts `dist/`. Out: anything that changes who may message or delegate, tool exposure,
+contracts `dist/`, and (SR-003) returning the delivery-scope refusal of
+`RootCommunicationEngine.deliver` as a result. Out: anything that changes who may message or delegate, tool exposure,
 storage, migrations, user-facing Settings/history texts (except REQ-010). A problem found
 outside this scope becomes a follow-up for the Project Task Manager.
 
@@ -293,7 +294,9 @@ used by compose and parse only.
 | `agent-tools/agent-discovery/list-available-agents-contract.ts` | wording §6 |
 | `agent-communication/services/get-handoff-rules-tool-contract.ts` | wording §6 |
 | `agent-tools/project-tasks/project-task-tool-contract.ts` | `update_task`, `list_project_tasks` wording §6 |
-| `agent-collaboration/execution/task/task-execution-input.ts` | wording §7.1 |
+| `agent-collaboration/execution/task/task-execution-input.ts` | wording §7.1 (SR-003 text) |
+| `agent-collaboration/execution/communication/root-communication-engine.ts` | T-4; T-3 engine texts |
+| `agent-communication/services/global-agent-run-message-router.ts`, `agent-collaboration/execution/backends/root-agent-execution-registry.ts`, the `send_message_to`/`delegate_task` tool boundaries | T-3 SR-003 rows |
 | the three header builders (IN-001) | wording §7.2 |
 | refusal sites (T-3) | wording §7.3 |
 | `agent-collaboration/collaborators/collaborator-admission.ts` + the three roots' mention paths (`team-run-collaborators.ts`/`root-team-run.ts`, `agent-org-run-collaborators.ts`/`agent-org-run-message-delivery.ts`, `standalone-root-collaborators.ts`) | viewer relation |
@@ -354,6 +357,21 @@ only if it has rules). Host of a standalone run → `standalone_agent`; its Agen
 | `project-task-service.ts:370-371` | "This Task is <s>. The run that assigned it can reopen the Task (move it to TODO or IN_PROGRESS) and then message this run ID again." | "This Task is <s>. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this ID again." |
 | `project-task-service.ts` `notCurrentTaskMessage` | (check for "copy"/"run") | vocabulary |
 | `task-delegation-tool-input-parsers.ts` | "(a Team copy)" / "(an Agent copy)" / "for a new copy … for an existing copy" / "task_id (an existing copy takes a saved Task)" | "(a task agent team)" / "(a task agent)" / "for a new task agent … to give a Task to one of your task agents" / "task_id (the saved Task to give)" |
+| `agent-team-address.ts` `COLLABORATION_ADDRESS_INVALID`, when it reaches an agent through `send_message_to` or `delegate_task` (SR-003) | "AgentTeam address '<x>' is invalid: <detail>" | "'<x>' is not a valid address (<detail>). An address is exact and begins with '/', for example /team/agent. To answer an agent that wrote to you or gave you a task, use target_agent_run_id with its ID instead." Convert at the two tools' boundary (the shared validator keeps its text for definition and configuration callers). |
+| `global-agent-run-message-router.ts` `TARGET_AGENT_RUN_NOT_ACTIVE` (SR-003) | "Exact AgentRun target '<id>' is not active." | "No running agent has the ID '<id>', so the message was not sent. Use an exact ID you were given: the one in your task message, a message's sender id, or one delegate_task returned to you." |
+| `global-agent-run-message-router.ts` "… rejected the message." (SR-003) | "<id> rejected the message …" | "The agent '<id>' did not accept the message: <reason>." (keep the reason when there is one) |
+| `root-communication-engine.ts` `COLLABORATION_SELF_TARGET_REJECTED` (SR-003) | "An AgentRun cannot send an ordinary collaboration message to itself." | "You can't send a message to yourself." |
+| `root-communication-engine.ts` `COLLABORATION_CONTEXT_REQUIRED` (SR-003) | "Sender and receiver must be exact live executions in the same collaboration root." | "The agent with that ID is not running here, so the message was not sent. Use an exact ID you were given." |
+| `root-agent-execution-registry.ts` "Root-hosted AgentRun '<id>' is not active." / "Task AgentRun '<id>' is shut down." (SR-003) | as quoted | "The agent '<id>' is not running, so the message was not sent." / "The task agent '<id>' has stopped, so the message was not sent." (teardown-internal texts stay) |
+
+**T-4 Delivery-scope refusal surfaced as a result (SR-003, DEC-009).** In
+`RootCommunicationEngine.deliver` (`root-communication-engine.ts:40-41`), the first
+`assertAllowed()` call converts a `TaskDelegationError` whose code is a refusal code
+(`TASK_AGENT_RESOURCE_CLOSED`, `TASK_AGENT_RESOURCE_CONFLICT`; the existing `refusalCode`
+helper's set) into `{ accepted: false, code, message }`. Anything else still throws. The later
+re-checks inside reservation and commit keep throwing (a race between check and commit is not a
+normal agent path). The refusal condition does not change. Tests: native and MCP
+`send_message_to` across Tasks and to a closed Task return the refusal result with the §7.3 text.
 
 Internal-invariant messages that an agent cannot normally trigger ("A Team agent run needs its
 coordinator.", "The agent run is already linked to this Task.", schema "Duplicate AgentRun ID")
@@ -406,5 +424,5 @@ N/A.
   where possible. Any wording change needed returns to the Solution Designer.
 - Validation (TESTING.md): server unit/integration/typecheck; contracts package tests and
   `dist/` rebuild; web unit tests for parse; rendered-prompt snapshots for every §3 row on the
-  native, Codex and Claude paths; AC-008 on an isolated desktop instance of the worktree build
-  with a real model (no user data, test-owned data root).
+  native, Codex and Claude paths; AC-008 as revised in SR-003 (repeated samples per runtime,
+  branch vs base, helper traces kept) on test-owned data roots and an isolated desktop instance.

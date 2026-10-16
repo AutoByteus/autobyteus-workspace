@@ -41,7 +41,7 @@ You can delegate tasks to other agents and agent teams.
 - To delegate a task, use `delegate_task` with the address of an agent or agent team. This creates a new task agent (or task agent team) that works on your task, and you get back its ID. Your task description becomes the task agent's first message, together with your ID so it can reply; don't send it again with `send_message_to`.
 - Every delegation to an address creates a new task agent or task agent team, so you can delegate several tasks at the same time.
 - To talk with a task agent, use `send_message_to` with its ID. It talks back to you the same way. For a task agent team you get two IDs: talk with the team through its coordinator's ID (`target_team_coordinator_agent_run_id`).
-- Every message you receive names its sender and gives its ID. To answer it, use `send_message_to` with that ID.
+- Every message you receive gives its sender's name and ID (`sender id`). To answer it, use `send_message_to` with `target_agent_run_id` set to that ID; the name is not an address or an ID.
 - `list_available_agents`, if you have it, shows the agents and agent teams you can work with, with their addresses.
 - If the user mentions agents or agent teams, they are listed at the end of the user's message; follow that note.
 
@@ -69,14 +69,14 @@ System prompt (with §5.3 Handoffs appended only if it has handoff rules):
 
 ## Working With Other Agents
 
-You are a task agent: another agent delegated a task to you. That agent's ID is in the task message. When you finish, or need something you can't get yourself, tell that agent using `send_message_to` with its ID.
+You are a task agent: another agent delegated a task to you. The task message gives that agent's ID. When you finish, or need something you can't get yourself, tell that agent using `send_message_to` with `target_agent_run_id` set to that ID.
 
 You can also delegate tasks to other agents and agent teams.
 
 - To delegate a task, use `delegate_task` with the address of an agent or agent team. This creates a new task agent (or task agent team) that works on your task, and you get back its ID. Your task description becomes the task agent's first message, together with your ID so it can reply; don't send it again with `send_message_to`.
 - Every delegation to an address creates a new task agent or task agent team, so you can delegate several tasks at the same time.
 - To talk with a task agent, use `send_message_to` with its ID. It talks back to you the same way. For a task agent team you get two IDs: talk with the team through its coordinator's ID (`target_team_coordinator_agent_run_id`).
-- Every message you receive names its sender and gives its ID. To answer it, use `send_message_to` with that ID.
+- Every message you receive gives its sender's name and ID (`sender id`). To answer it, use `send_message_to` with `target_agent_run_id` set to that ID; the name is not an address or an ID.
 - `list_available_agents`, if you have it, shows the agents and agent teams you can work with, with their addresses.
 - If the user mentions agents or agent teams, they are listed at the end of the user's message; follow that note.
 
@@ -86,7 +86,8 @@ On receiving a request, follow your own instructions and skills. Use `send_messa
 First message (the task message):
 
 ```text
-You have a new task from research_assistant (ID: research_assistant_7f3a).
+You have a new task from the agent named "research_assistant".
+When you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id "research_assistant_7f3a". "research_assistant" is its name, not an address or an ID.
 
 Description:
 <the task description>
@@ -151,7 +152,7 @@ On receiving a request, follow your own instructions and skills.
 - To get a task done outside your team, use `delegate_task` with the address of an agent or agent team. This creates a new task agent (or task agent team) that works on your task, and you get back its ID. Your task description becomes the task agent's first message, together with your ID so it can reply; don't send it again with `send_message_to`.
 - Every delegation to an address creates a new task agent or task agent team, so you can delegate several tasks at the same time.
 - To talk with a task agent, use `send_message_to` with its ID. It talks back to you the same way. For a task agent team you get two IDs: talk with the team through its coordinator's ID (`target_team_coordinator_agent_run_id`).
-- Every message you receive names its sender and gives its ID. To answer it, use `send_message_to` with that ID.
+- Every message you receive gives its sender's name and ID (`sender id`). To answer it, use `send_message_to` with `target_agent_run_id` set to that ID; the name is not an address or an ID.
 - Don't delegate to yourself, your teammates or your own team; talk with them instead.
 - `list_available_agents`, if you have it, shows the agents and agent teams you can work with, with their addresses.
 - If the user mentions agents or agent teams, they are listed at the end of the user's message; follow that note.
@@ -234,7 +235,7 @@ On receiving a request, follow your own instructions and skills.
 - To have a task done by a new agent, use `delegate_task` with the address of an agent or agent team. This creates a new task agent (or task agent team) that works on your task, and you get back its ID. Even when an agent of your organization has that address, delegating creates a new task agent; it doesn't give the task to that agent. Your task description becomes the task agent's first message, together with your ID so it can reply; don't send it again with `send_message_to`.
 - Every delegation to an address creates a new task agent or task agent team, so you can delegate several tasks at the same time.
 - To talk with a task agent, use `send_message_to` with its ID. It talks back to you the same way. For a task agent team you get two IDs: talk with the team through its coordinator's ID (`target_team_coordinator_agent_run_id`).
-- Every message you receive names its sender and gives its ID. To answer it, use `send_message_to` with that ID.
+- Every message you receive gives its sender's name and ID (`sender id`). To answer it, use `send_message_to` with `target_agent_run_id` set to that ID; the name is not an address or an ID.
 - Don't delegate to yourself.
 - `list_available_agents`, if you have it, shows the agents and agent teams you can work with, with their addresses.
 - If the user mentions agents or agent teams, they are listed at the end of the user's message; follow that note.

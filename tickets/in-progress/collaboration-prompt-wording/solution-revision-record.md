@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Requirements + Design | The user's direction in the Solution Designer conversation (2026-10-15) | N/A | N/A | Requirements Approved; Architecture Design Complete; Medium / Low | BEH-001..010; REQ-001..011; AC-001..008; DEC-001..007 | Direct implementation |
 | SR-002 | Design (wording supplement + design) | Solution Designer end-to-end consistency walk before implementation (the user asked whether the design is consistent once implemented) | SD-C-001..005 | SR-001 | Requirements Approved (unchanged REQs; wording supplement clarified within the direction); Architecture Design Complete; Medium / Low | REQ-002, REQ-005, REQ-006, REQ-008, BEH-002, BEH-005 | Revised before implementation began |
+| SR-003 | Mixed (requirements, wording supplement, design) | Code review CRR-001 failure-origin round after API/E2E API-REV-001 (Fail, 80%) | F-3a, F-3b, F-1 (C-3 held, addressed by F-3a) | SR-002 | Requirements Approved (revised within the direction, user informed); Architecture Design Complete; Medium / Low | BEH-005, BEH-008; REQ-008; AC-005, AC-008; DEC-008, DEC-009; Scope Guardrail | Revised; back to implementation |
 
 ## Revision Entries
 
@@ -64,3 +65,34 @@
   role cases cover every root kind; the handoff paragraph's recipients are reachable.
 - Requirements unchanged; the wording supplement changed within the user's direction (the
   phone rule applied to answering); the user is informed.
+
+### SR-003 — Task message labels the reply call; every refusal reaches the agent
+
+- Trigger: `code-review-report.md` CRR-001 (failure-origin review of API/E2E API-REV-001).
+- F-3a (Design Impact, accepted): wording §7.1 `You have a new task from <name> (ID: <id>).` put an
+  unlabelled name beside the ID, and run IDs start with the name, so models used the name as an
+  address or as the ID (LE-A1 Claude 1/5 vs base 3/3; LM Studio 0/2 vs 1/1; J1 built
+  `/research_lead`). Fix: §7.1 now says `You have a new task from the agent named "<name>".` and
+  `… tell that agent using send_message_to with target_agent_run_id "<id>". "<name>" is its name,
+  not an address or an ID.`; the mode-3 body carries the same reply line. The general answering
+  bullet in every prompt and the §4.2 opening name `target_agent_run_id` explicitly (DEC-008).
+  Because every task agent team's coordinator reads the task message, this also covers C-3
+  (the coordinator's §5.1 prompt lists reporting back only as a purpose).
+- F-3b (Design Impact, accepted): T-3 missed refusals a misled agent receives. Added with next
+  steps: `COLLABORATION_ADDRESS_INVALID` at the two tools' boundary, `TARGET_AGENT_RUN_NOT_ACTIVE`
+  and "rejected the message" (router), the engine's self-target and context refusals, and the
+  registry's not-active / shut-down texts (the ones the implementation handoff left for decision).
+- F-1 (Requirement Gap, decided): fold in (DEC-009). REQ-008 requires that agents receive these
+  refusals; today the cross-Task / closed-Task refusal reaches them as `MCP error -32603`. Design
+  T-4: the first `assertAllowed()` in `RootCommunicationEngine.deliver` returns
+  `{accepted:false, code, message}` for refusal codes; the condition is unchanged. Scope
+  Guardrail, REQ-008 and AC-005 updated.
+- Validation (AC-008 revised): `LE-A1` at least 5 times on each of Claude, Codex and LM Studio
+  and J1/J3 at least 4 times each, branch and base; pass when the branch succeeds at least as
+  often as the base on each runtime, no reply goes to the name, and every failing trace is kept
+  and explained (the reviewer's evidence limit).
+- F-2: not this ticket (sent by the reviewer to the Project Task Manager as FU-CPW-1).
+- Approval: within the user's direction (precise wording that agents follow; replies by ID;
+  refusals agents can act on); the Solution Designer approves and informs the user.
+- Classification: unchanged, Medium / Low (texts plus one boundary conversion of an existing
+  refusal). Route: `get_handoff_rules` → `/software_engineering_team/implementation_engineer`.

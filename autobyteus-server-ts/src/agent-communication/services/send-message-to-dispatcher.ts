@@ -1,7 +1,7 @@
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { AgentRunMessageSenderContext } from "../domain/agent-run-message-sender.js";
 import { describeSendMessageTargetSelector } from "../domain/send-message-target-selector.js";
-import { isCollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
+import { collaborationErrorTextForAgent, isCollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 import {
   getGlobalAgentRunMessageRouter,
   type GlobalAgentRunMessageDeliveryInput,
@@ -90,7 +90,7 @@ export class SendMessageToDispatcher {
       if (!isCollaborationContractError(error)) {
         throw error;
       }
-      return { accepted: false, code: error.code, message: error.message };
+      return { accepted: false, code: error.code, message: collaborationErrorTextForAgent(error) };
     }
     if (!result.accepted) {
       return result;

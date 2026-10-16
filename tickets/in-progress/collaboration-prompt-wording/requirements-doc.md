@@ -2,7 +2,7 @@
 
 ## Document Status
 
-- Status: `Approved` (SR-001). The user directed and approved the wording in conversation with
+- Status: `Approved` (SR-001; revised within the direction in SR-003, user informed). The user directed and approved the wording in conversation with
   the Solution Designer on 2026-10-15 ("now I think it's clear you can start to work on it
   now"); decisions the Solution Designer made within that direction are marked in §Decisions
   and the user is informed.
@@ -72,7 +72,9 @@ vocabulary, each fact said once, with the exact wording of the wording authority
 
 - Tool behavior: who may message or delegate to whom, Task ownership, lifecycle, address
   resolution and refusal conditions stay exactly as they are; only text changes, plus the
-  internal fact that selects the prompt and the viewer relation the `@` note needs.
+  internal fact that selects the prompt, the viewer relation the `@` note needs, and (SR-003)
+  returning the existing cross-Task / closed-Task refusal of `send_message_to` as a refusal result
+  instead of an internal error (the condition is unchanged).
 - Which tools an agent gets (`get_handoff_rules` stays tied to `teamScoped`).
 - UI wording for users (Settings, run history "copy" texts), except the optional badge in REQ-010.
 - Memory and message storage (Task 8641c0ac).
@@ -109,7 +111,8 @@ here (they change intended behavior).
   (native tools and the Agent Tools MCP server).
 - REQ-008 (BEH-008): Every result and refusal an agent can receive from `delegate_task`,
   `send_message_to`, `update_task`, `list_project_tasks` and `list_available_agents` follows
-  wording §7.3 (vocabulary and a next step); the design spec lists them.
+  wording §7.3 (vocabulary and a next step); the design spec lists them. Each such refusal
+  reaches the agent as the tool's refusal result, never as an internal error (SR-003).
 - REQ-009 (BEH-009): The `@` note follows wording §8 for the agent the user is talking to;
   saved notes in every earlier form still parse.
 - REQ-010 (optional): the UI badge "Delegated copy" reads "Task agent" / "Task agent team".
@@ -129,7 +132,9 @@ here (they change intended behavior).
   saved headers.
 - AC-004 (REQ-007): The tool descriptions and parameter descriptions exposed natively and over
   MCP equal wording §6.
-- AC-005 (REQ-008): Each listed refusal is produced in a test and matches the design's text.
+- AC-005 (REQ-008): Each listed refusal is produced in a test and matches the design's text; the
+  cross-Task and closed-Task refusals of `send_message_to` arrive through the real tool path
+  (native and MCP) as `{accepted: false, code, message}` with the §7.3 text, not as an error.
 - AC-006 (REQ-009): For a team member, a teammate mention gives the "in your team" line and no
   `delegate_task` suggestion; an organization agent mention to the Project Task Manager gives
   the talk-or-delegate line; a catalog-only mention gives the delegate line; a self mention
@@ -137,10 +142,13 @@ here (they change intended behavior).
   gives the "you can't delegate" line. Saved notes of every earlier form parse.
 - AC-007 (all): Wording §10 checks 1–11 pass; a scripted check fails the build if agent-facing
   sources contain a §2 forbidden word.
-- AC-008 (UC-001..UC-004): On an isolated desktop instance of the worktree build with a real
-  model: a standalone agent delegates and its task agent reports back by ID; a team member
-  hands off by its rules; the Project Task Manager delegates to an organization team and the
-  team reports back by ID. No agent addresses a reply to an address.
+- AC-008 (UC-001..UC-004): With real models: a standalone agent delegates and its task agent
+  reports back by ID; a team member hands off by its rules; the Project Task Manager delegates
+  to an organization team and the team reports back by ID. Run the report-back case (`LE-A1`) at
+  least 5 times on each of Claude, Codex and LM Studio, and the desktop journeys J1/J3 at least 4
+  times each on an isolated instance, on the branch and on the base. Pass: on each runtime the
+  branch succeeds at least as often as the base, no reply is sent to the delegating agent's
+  name, and every failing sample's helper trace is kept and explained.
 
 ## Relevant Scenarios And Journeys
 
@@ -202,6 +210,12 @@ every earlier note and header form. No loss is acceptable.
   and follow the vocabulary (REQ-008).
 - DEC-007 (Solution Designer, within the direction): a task agent with handoff rules gets the
   task agent prompt plus §5.3; tool exposure unchanged.
+- DEC-008 (Solution Designer, within the direction, SR-003): the task message labels the ID,
+  names the exact reply call and says the name is not an address or an ID (live evidence: models
+  used the bare name).
+- DEC-009 (Solution Designer, within the direction, SR-003): the cross-Task / closed-Task refusal
+  of `send_message_to` is returned as a refusal result instead of an internal error, so agents
+  read it (REQ-008); the refusal condition is unchanged.
 
 ## Traceability
 

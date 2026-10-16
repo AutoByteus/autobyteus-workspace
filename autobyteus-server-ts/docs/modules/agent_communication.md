@@ -284,7 +284,10 @@ against Task data. Every delegated copy is Task-owned: a linked copy by its
 Project Task, sub-work by its creator's Task, and a description-only copy of an
 unowned sender by the Task with no Project that its delegation created. So two
 copies owned by different Tasks cannot message each other by run ID; messages to
-and from their delegators and configured members work.
+and from their delegators and configured members work. The refusal (a different
+Task, or a closed Task) is returned to the sender as `{accepted: false, code, message}`
+by `RootCommunicationEngine.deliver`, so the agent reads the next step; only that first
+delivery-scope check returns it, and the later re-checks inside reservation and commit still throw.
 
 A Task-owned sender resolves an address exactly like any other sender (below).
 There is no per-Task helper bring-in any more: `broughtIn` records already stored

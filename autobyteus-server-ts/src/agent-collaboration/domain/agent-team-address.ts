@@ -11,6 +11,7 @@ const invalidAddress = (value: unknown, detail: string): never => {
   throw new CollaborationContractError(
     "COLLABORATION_ADDRESS_INVALID",
     `AgentTeam address '${String(value)}' is invalid: ${detail}`,
+    `'${String(value)}' is not a valid address (${detail}). An address is exact and begins with '/', for example /team/agent. To answer an agent that wrote to you or gave you a task, use target_agent_run_id with its ID instead.`,
   );
 };
 

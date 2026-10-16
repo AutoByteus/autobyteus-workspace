@@ -174,7 +174,13 @@ describe("RootTaskExecutionLifecycle delegation result", () => {
     const { lifecycle, adapter } = setup();
     await lifecycle.delegateToNewCopy({ identity: caller }, { recipient_address: "/worker", description: "Review the plan" }, "placement");
     const packet = vi.mocked(adapter.planActivation).mock.calls[0]![0].workPacket as AgentInputUserMessage;
-    expect(packet.content).toMatch(/^You have a new task from coordinator \(ID: coordinator-run\)\.\n\nDescription:\nReview the plan/);
+    expect(packet.content).toBe([
+      'You have a new task from the agent named "coordinator".',
+      'When you finish, or need something you can\'t get yourself, tell that agent using send_message_to with target_agent_run_id "coordinator-run". "coordinator" is its name, not an address or an ID.',
+      "",
+      "Description:",
+      "Review the plan",
+    ].join("\n"));
     expect(packet.content).not.toContain("/coordinator");
     expect(packet.content).toContain("Review the plan");
   });

@@ -105,7 +105,7 @@ You can delegate tasks to other agents and agent teams.
 - To delegate a task, use `delegate_task` with the address of an agent or agent team. This creates a new task agent (or task agent team) that works on your task, and you get back its ID. Your task description becomes the task agent's first message, together with your ID so it can reply; don't send it again with `send_message_to`.
 - Every delegation to an address creates a new task agent or task agent team, so you can delegate several tasks at the same time.
 - To talk with a task agent, use `send_message_to` with its ID. It talks back to you the same way. For a task agent team you get two IDs: talk with the team through its coordinator's ID (`target_team_coordinator_agent_run_id`).
-- Every message you receive names its sender and gives its ID. To answer it, use `send_message_to` with that ID.
+- Every message you receive gives its sender's name and ID (`sender id`). To answer it, use `send_message_to` with `target_agent_run_id` set to that ID; the name is not an address or an ID.
 - `list_available_agents`, if you have it, shows the agents and agent teams you can work with, with their addresses.
 - If the user mentions agents or agent teams, they are listed at the end of the user's message; follow that note.
 
@@ -117,14 +117,14 @@ On receiving a request, follow your own instructions and skills. Use `send_messa
 ```markdown
 ## Working With Other Agents
 
-You are a task agent: another agent delegated a task to you. That agent's ID is in the task message. When you finish, or need something you can't get yourself, tell that agent using `send_message_to` with its ID.
+You are a task agent: another agent delegated a task to you. The task message gives that agent's ID. When you finish, or need something you can't get yourself, tell that agent using `send_message_to` with `target_agent_run_id` set to that ID.
 
 You can also delegate tasks to other agents and agent teams.
 
 - To delegate a task, use `delegate_task` with the address of an agent or agent team. This creates a new task agent (or task agent team) that works on your task, and you get back its ID. Your task description becomes the task agent's first message, together with your ID so it can reply; don't send it again with `send_message_to`.
 - Every delegation to an address creates a new task agent or task agent team, so you can delegate several tasks at the same time.
 - To talk with a task agent, use `send_message_to` with its ID. It talks back to you the same way. For a task agent team you get two IDs: talk with the team through its coordinator's ID (`target_team_coordinator_agent_run_id`).
-- Every message you receive names its sender and gives its ID. To answer it, use `send_message_to` with that ID.
+- Every message you receive gives its sender's name and ID (`sender id`). To answer it, use `send_message_to` with `target_agent_run_id` set to that ID; the name is not an address or an ID.
 - `list_available_agents`, if you have it, shows the agents and agent teams you can work with, with their addresses.
 - If the user mentions agents or agent teams, they are listed at the end of the user's message; follow that note.
 
@@ -209,7 +209,7 @@ On receiving a request, follow your own instructions and skills.
 - To get a task done outside your team, use `delegate_task` with the address of an agent or agent team. This creates a new task agent (or task agent team) that works on your task, and you get back its ID. Your task description becomes the task agent's first message, together with your ID so it can reply; don't send it again with `send_message_to`.
 - Every delegation to an address creates a new task agent or task agent team, so you can delegate several tasks at the same time.
 - To talk with a task agent, use `send_message_to` with its ID. It talks back to you the same way. For a task agent team you get two IDs: talk with the team through its coordinator's ID (`target_team_coordinator_agent_run_id`).
-- Every message you receive names its sender and gives its ID. To answer it, use `send_message_to` with that ID.
+- Every message you receive gives its sender's name and ID (`sender id`). To answer it, use `send_message_to` with `target_agent_run_id` set to that ID; the name is not an address or an ID.
 - Don't delegate to yourself, your teammates or your own team; talk with them instead.
 - `list_available_agents`, if you have it, shows the agents and agent teams you can work with, with their addresses.
 - If the user mentions agents or agent teams, they are listed at the end of the user's message; follow that note.
@@ -232,7 +232,7 @@ On receiving a request, follow your own instructions and skills.
 - To have a task done by a new agent, use `delegate_task` with the address of an agent or agent team. This creates a new task agent (or task agent team) that works on your task, and you get back its ID. Even when an agent of your organization has that address, delegating creates a new task agent; it doesn't give the task to that agent. Your task description becomes the task agent's first message, together with your ID so it can reply; don't send it again with `send_message_to`.
 - Every delegation to an address creates a new task agent or task agent team, so you can delegate several tasks at the same time.
 - To talk with a task agent, use `send_message_to` with its ID. It talks back to you the same way. For a task agent team you get two IDs: talk with the team through its coordinator's ID (`target_team_coordinator_agent_run_id`).
-- Every message you receive names its sender and gives its ID. To answer it, use `send_message_to` with that ID.
+- Every message you receive gives its sender's name and ID (`sender id`). To answer it, use `send_message_to` with `target_agent_run_id` set to that ID; the name is not an address or an ID.
 - Don't delegate to yourself.
 - `list_available_agents`, if you have it, shows the agents and agent teams you can work with, with their addresses.
 - If the user mentions agents or agent teams, they are listed at the end of the user's message; follow that note.
@@ -339,7 +339,8 @@ Unchanged (they contain no collaboration wording).
 ### 7.1 The task message (the first message of a task agent)
 
 ```text
-You have a new task from research_assistant (ID: research_assistant_7f3a).
+You have a new task from the agent named "research_assistant".
+When you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id "research_assistant_7f3a". "research_assistant" is its name, not an address or an ID.
 
 Description:
 <the task description>
@@ -348,12 +349,23 @@ Reference files:
 - /abs/path/to/file.md
 ```
 
-The name is the last segment of the delegating agent's address, as a label only; the ID is how
-to answer. No address (§1 principle 6). A saved Task given to an existing task agent (mode 3)
-arrives as a message from the delegating agent, so it already has the header of §7.2 with the
-sender's name and ID; its body is "New Task assigned to you: <task_id>. Your previous Task is
-closed; this is the work to do now." followed by the Description and Reference files lines, with
-no "You have a new task from" line.
+The name is the last segment of the delegating agent's address; run IDs start with that same
+segment, so the text labels the ID, names the exact call, and says the name is neither an address
+nor an ID (SR-003: models used the bare name as an address or ID). No address (§1 principle 6).
+This message is the one text every task agent and every task agent team's coordinator reads
+before it answers, so it carries the reporting instruction even though §4.2 also gives it (the
+coordinator's §5.1 prompt does not).
+
+A saved Task given to an existing task agent (mode 3) arrives as a message from the delegating
+agent with the header of §7.2; its body is:
+
+```text
+New Task assigned to you: <task_id>. Your previous Task is closed; this is the work to do now.
+When you finish, or need something you can't get yourself, tell the agent that gave it using send_message_to with target_agent_run_id "<delegating agent's ID>".
+
+Description:
+<the Task description>
+```
 
 ### 7.2 The header of a received message
 
@@ -383,6 +395,11 @@ what to do next. Examples:
 | "<id> is not a delegated copy in this run. Use the ID delegate_task returned for a copy delegated in this run, or delegate to a new copy with recipient_address." | "<id> is not one of your task agents. Use an ID that delegate_task returned to you, or delegate to a new task agent with recipient_address." |
 | "<id> is the coordinator of Team copy <team>; use target_team_run_id \"<team>\"." | "<id> is the coordinator of task agent team <team>; use target_team_run_id \"<team>\"." |
 | "This copy is being stopped by the user." | "The user is stopping this task agent." |
+| "AgentTeam address '<x>' is invalid: <detail>" (from `send_message_to` or `delegate_task`) | "'<x>' is not a valid address (<detail>). An address is exact and begins with '/', for example /team/agent. To answer an agent that wrote to you or gave you a task, use target_agent_run_id with its ID instead." |
+| "Exact AgentRun target '<id>' is not active." | "No running agent has the ID '<id>', so the message was not sent. Use an exact ID you were given: the one in your task message, a message's sender id, or one delegate_task returned to you." |
+| "An AgentRun cannot send an ordinary collaboration message to itself." | "You can't send a message to yourself." |
+| "Sender and receiver must be exact live executions in the same collaboration root." | "The agent with that ID is not running here, so the message was not sent. Use an exact ID you were given." |
+| a cross-Task or closed-Task refusal of `send_message_to` that today reaches the agent as "MCP error -32603: Internal error" | the §7.3 text above, returned as a refusal result (`target_agent_run_id` null, with the reason) |
 
 The design spec lists every message in scope.
 
@@ -453,7 +470,10 @@ Fixed (the pre-refactor wording was ambiguous, contradictory or wrong):
 6. Agents without handoff rules get no handoff text; agents with handoff rules get §5.3.
 7. No agent-facing text states the agent's own address; the task message and the header of a
    received message give the sender's name and ID only, and every prompt says to answer a
-   message with the sender's ID.
+   message with `target_agent_run_id` set to the sender's ID. The task message names that call
+   with the exact ID and says the name is not an address or an ID.
+7b. Every refusal an agent can receive from `send_message_to` or `delegate_task` reaches it as a
+   refusal result (never as an internal error) and says what to do next.
 8. Rendered prompts and tool descriptions for every row of §3, on AutoByteus, Codex and Claude,
    are snapshotted and reviewed against checks 1–7.
 9. No forbidden word from §2 in agent-facing text, outside parameter and result field names.

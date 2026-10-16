@@ -19,6 +19,9 @@ import {
   DELEGATE_TASK_TARGET_TEAM_RUN_ID_DESCRIPTION,
 } from "../../../../src/agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
 
+import { assertAgentTeamAddress } from "../../../../src/agent-collaboration/domain/agent-team-address.js";
+import { toTaskDelegationToolErrorPayload } from "../../../../src/agent-tools/task-delegation/task-delegation-tool-serialization.js";
+
 const findParameter = (schema: ParameterSchema, name: string) =>
   schema.parameters.find((parameter) => parameter.name === name);
 
@@ -31,6 +34,19 @@ const memberExecutionContext = testMemberExecutionContext({
   rootTeamRunId: "team-run-1",
   memberAddress: "/coordinator",
   agentRunId: "run-coordinator",
+});
+
+describe("delegate_task refuses an invalid address with a next step (SR-003 F-3b)", () => {
+  it("converts the address validator's text at the tool boundary only", () => {
+    let thrown: unknown;
+    try { assertAgentTeamAddress("research_lead"); } catch (error) { thrown = error; }
+    expect(thrown).toBeInstanceOf(Error);
+    expect((thrown as Error).message).toBe("AgentTeam address 'research_lead' is invalid: a canonical rooted value beginning with '/' is required");
+    expect(toTaskDelegationToolErrorPayload(thrown)).toEqual({ error: {
+      code: "COLLABORATION_ADDRESS_INVALID",
+      message: "'research_lead' is not a valid address (a canonical rooted value beginning with '/' is required). An address is exact and begins with '/', for example /team/agent. To answer an agent that wrote to you or gave you a task, use target_agent_run_id with its ID instead.",
+    } });
+  });
 });
 
 describe("task delegation runtime descriptions", () => {

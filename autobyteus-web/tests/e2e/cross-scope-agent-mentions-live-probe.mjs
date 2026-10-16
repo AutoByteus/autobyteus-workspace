@@ -536,7 +536,7 @@ defineCase('A01', 'SCN-001 standalone run: menu (VIS-011, a11y), inline mention;
   await page.locator(sel('user-message-mention')).first().waitFor({ timeout: 30000 })
   assert(!(await conversationShowsNote(page)), 'the note is shown as text instead of a chip (AC-002)')
   assert((await input.inputValue()) === '' && !(await page.locator('[data-test="composer-mention-mirror"] .mention-highlight').count()), 'composer not cleared after an accepted send')
-  assertStoredNote(await conversationJson('agent', state.agentRunId, state.agentRunId), [`- Code Reviewer (Agent) at ${REVIEWER_ADDRESS}`])
+  assertStoredNote(await conversationJson('agent', state.agentRunId, state.agentRunId), [`- Code Reviewer (agent) at ${REVIEWER_ADDRESS}`])
   r.rowSeen = await waitFor('delegated Code Reviewer row', async () => {
     const rows = await rowFacts(taskRowsUnder(page, state.agentRunId))
     return rows.find((row) => /code reviewer/i.test(row.text)) ?? null
@@ -721,7 +721,7 @@ defineCase('S01', 'AC-005 / SCN-004 (collaboration-model-contract): a send_messa
   // Only some runtimes show a tool result in the conversation (Claude does; Codex does not): where it is shown it must be the
   // not-found answer; on every runtime the server facts below (nothing created) must hold. The live server suite
   // agent-initiated-collaborators proves the not-found answer on each enabled runtime.
-  if (runtime === 'claude_agent_sdk') await waitFor('the not-found answer', async () => /COLLABORATION_TARGET_NOT_FOUND|is not in this run/.test(await conversationJson('agent', runId, runId)), 240000, 1500)
+  if (runtime === 'claude_agent_sdk') await waitFor('the not-found answer', async () => /COLLABORATION_TARGET_NOT_FOUND|No agent or agent team you can talk with has the address/.test(await conversationJson('agent', runId, runId)), 240000, 1500)
   else await delay(20000)
   await waitHostIdle(page)
   const afterMessage = await agentRootView(runId)
@@ -817,7 +817,7 @@ defineCase('T01', 'SCN-001 Team run: VIS-001 menu; @Product Team → no Team col
   state.teamChildren = { productTeam: t.node.runId }; state.teamTasks = { productTeam: t.task.id }
   r.teamDelegation = { copyRunId: t.node.runId, kind: t.node.kind, taskId: t.task.id, maxCollaborators: t.maxCollaborators }
   assert(r.collaboratorsRightAfterSend === 0 && t.maxCollaborators === 0 && t.node.kind === 'team', 'Team root: no collaborator; a Team copy (AC-001, AC-003)', r)
-  assertStoredNote(await conversationJson('team', state.teamRunId, researcherRunId), [`- Product Team (Agent Team) at ${PRODUCT_TEAM_ADDRESS}`])
+  assertStoredNote(await conversationJson('team', state.teamRunId, researcherRunId), [`- Product Team (agent team) at ${PRODUCT_TEAM_ADDRESS}`])
   const teamRows = page.locator(sel('workspace-team-transient-execution-row'))
   await waitFor('delegated Team row', async () => (await rowFacts(teamRows)).some((row) => row.kind === 'task_team'), 60000)
   await shot(page, 'T01-02-team-copy-delegated')
@@ -914,7 +914,7 @@ defineCase('O01', 'SCN-001 Org run: VIS-008 menu; two mentions → no Org collab
   r.delegations = { notes: { runId: d.node.runId, taskId: d.task.id }, productTeam: { runId: t.node.runId, kind: t.node.kind, taskId: t.task.id } }
   assert(r.collaboratorsRightAfterSend === 0 && d.maxCollaborators === 0 && t.maxCollaborators === 0 && d.task.id !== t.task.id && t.node.kind === 'team', 'Org: two copies with two ad-hoc Tasks and no collaborator', r)
   assertStoredNote(await conversationJson('org', state.orgRunId, analystRunId, '/analyst'),
-    [`- Note Taker (Agent) at ${NOTE_TAKER_ADDRESS}`, `- Product Team (Agent Team) at ${PRODUCT_TEAM_ADDRESS}`])
+    [`- Note Taker (agent) at ${NOTE_TAKER_ADDRESS}`, `- Product Team (agent team) at ${PRODUCT_TEAM_ADDRESS}`])
   await page.locator('[data-test^="agent-org-task-agent-row-"]').first().waitFor({ timeout: 60000 })
   await page.locator('[data-test^="agent-org-task-team-row-"]').first().waitFor({ timeout: 60000 })
   await shot(page, 'O01-02-org-two-copies')
@@ -1196,7 +1196,7 @@ defineCase('N02', 'AF-009 + AC-001/003: an Agent New chat first send with an `@T
   await page.locator(sel('user-message-mention')).first().waitFor({ timeout: 30000 })
   r.userMention = await page.locator(sel('user-message-mention')).first().innerText()
   assert(/Product Team/.test(r.userMention), 'stored first message does not show the mention', r.userMention)
-  assertStoredNote(await conversationJson('agent', r.runId, r.runId), [`- Product Team (Agent Team) at ${PRODUCT_TEAM_ADDRESS}`])
+  assertStoredNote(await conversationJson('agent', r.runId, r.runId), [`- Product Team (agent team) at ${PRODUCT_TEAM_ADDRESS}`])
   await waitHostIdle(page, 420000); await delay(1500)
   await shot(page, 'N02-agent-first-send-delegated')
   return r

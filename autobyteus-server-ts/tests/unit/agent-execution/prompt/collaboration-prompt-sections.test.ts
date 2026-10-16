@@ -105,7 +105,7 @@ describe("collaboration prompt properties", () => {
 
   it("tells every prompt how to answer a message by its ID, and that a task agent is reached by ID", () => {
     for (const [label, input] of VIEWS) {
-      expect(rendered(input), label).toContain("Every message you receive names its sender and gives its ID. To answer it, use `send_message_to` with that ID.");
+      expect(rendered(input), label).toContain("Every message you receive gives its sender's name and ID (`sender id`). To answer it, use `send_message_to` with `target_agent_run_id` set to that ID; the name is not an address or an ID.");
     }
   });
 

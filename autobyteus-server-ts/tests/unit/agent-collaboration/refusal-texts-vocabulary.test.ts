@@ -17,6 +17,10 @@ import { notCurrentTaskMessage } from "../../../src/projects/domain/task-executi
 const FORBIDDEN = /\b(copy|copies|spawn\w*|this run|your run|mounted|collaborators?|brought in|nested|task worker|work packet|pause[ds]?|wake[ds]?|restor\w+|shut down)\b/i;
 
 const REFUSAL_SITES = [
+  "src/agent-communication/services/global-agent-run-message-router.ts",
+  "src/agent-collaboration/execution/communication/root-communication-engine.ts",
+  "src/agent-collaboration/execution/backends/root-agent-execution-registry.ts",
+  "src/agent-collaboration/domain/agent-team-address.ts",
   "src/agent-collaboration/collaborators/collaborator-errors.ts",
   "src/agent-collaboration/collaborators/message-recipient-resolution.ts",
   "src/agent-collaboration/execution/task/root-task-execution-lifecycle.ts",
