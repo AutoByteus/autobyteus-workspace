@@ -15,6 +15,11 @@ import {
   type MessageRecipientIndexPort,
   type SenderTeamInstance,
 } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
+import {
+  instanceDefinitionsFromSource,
+  type InstanceDefinitions,
+  type MentionViewerIndexPort,
+} from "../../agent-collaboration/collaborators/mention-viewer.js";
 import type {
   TaskAgentExecution,
   TaskExecution,
@@ -53,7 +58,7 @@ export type StandaloneRootIndexedTaskExecution =
   | Readonly<{ kind: "team"; address: AgentTeamAddress; host: TaskExecutionHostIdentity; teamRunId: string; source: TaskTeamExecution }>;
 
 /** Immutable lookup over one Agent-root collaboration tree: the host plus its delegated children. */
-export class StandaloneRootExecutionIndex implements MessageRecipientIndexPort {
+export class StandaloneRootExecutionIndex implements MessageRecipientIndexPort, MentionViewerIndexPort {
   readonly root: RootExecutionIdentity;
   private readonly rootHost: TaskExecutionHostIdentity;
   private readonly agentsByRunId = new Map<string, StandaloneRootIndexedAgent>();
@@ -116,6 +121,13 @@ export class StandaloneRootExecutionIndex implements MessageRecipientIndexPort {
     return Object.freeze(this.listTeamAncestorsDeepestFirst(agent.host.hostRunId)
       .map((team) => Object.freeze({ teamRunId: team.teamRunId, address: team.address })));
   }
+
+  instanceDefinitionsOf(teamRunId: string): InstanceDefinitions | null {
+    const team = this.getTeam(teamRunId);
+    return team ? instanceDefinitionsFromSource(team.source) : null;
+  }
+
+  agentAddressOf(agentRunId: string): AgentTeamAddress | null { return this.getAgent(agentRunId)?.address ?? null; }
 
   /** Inside one Team instance: its coordinator for its own address, else its member Agent. */
   memberOfInstance(teamRunId: string, address: AgentTeamAddress): StandaloneRootMessagePlacement | null {

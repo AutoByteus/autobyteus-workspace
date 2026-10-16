@@ -1,4 +1,5 @@
 import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
+import { ROOT_NOT_ACTIVE_MESSAGE } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { CollaborationAgentActivationError } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
 import { RootTaskPersistenceFinalizationIndeterminateError, TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { MemberCollaborationContext, MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
@@ -74,9 +75,14 @@ export class AgentOrgExecutionScopeBuilder {
       // CR-001: the one owner decides the member's handoffs and enclosing instruction.
       const scope = resolveMemberCollaborationScope({
         memberAddress: identity.memberAddress,
+        agentRunId: identity.agentRunId,
         hostTeam,
         root: {
-          configuredRootAddresses: tree.rootOrg.members.flatMap((member) => "agentRunId" in member ? [member.address] : []),
+          configured: {
+            addresses: tree.rootOrg.members.flatMap((member) => "agentRunId" in member ? [member.address] : []),
+            agentRunIds: tree.rootOrg.members.flatMap((member) => "agentRunId" in member ? [member.agentRunId] : []),
+            role: "org_agent",
+          },
           handoffs: tree.handoffs,
           definition: { kind: "agent_org", definitionId: tree.rootOrg.orgDefinitionId },
         },
@@ -84,6 +90,7 @@ export class AgentOrgExecutionScopeBuilder {
       return new MemberExecutionContext({
         identity,
         teamScoped: true,
+        collaborationRole: scope.role,
         authoredEnclosingScopeInstruction: mode === "fresh" ? await this.resolveInstruction(scope.instructionDefinition) : null,
         collaboration: new MemberCollaborationContext({
           outgoingHandoffs: scope.outgoingHandoffs,
@@ -198,7 +205,7 @@ export class AgentOrgExecutionScopeBuilder {
   }
 
   private requireActive(run: AgentOrgRun | null): AgentOrgRun {
-    if (!run?.isActive()) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", "AgentOrg is not active.");
+    if (!run?.isActive()) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", ROOT_NOT_ACTIVE_MESSAGE);
     return run;
   }
   /**

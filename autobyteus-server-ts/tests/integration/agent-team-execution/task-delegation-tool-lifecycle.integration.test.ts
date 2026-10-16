@@ -491,7 +491,7 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
     expect(harness.backend.preparedAgents[0]).toMatchObject({
       address: "/scope_helper",
       agentRunId: taskAgentRunId,
-      message: expect.objectContaining({ content: expect.stringContaining("Task delegator AgentRun ID: run-coordinator") }),
+      message: expect.objectContaining({ content: expect.stringContaining('sender run id "run-coordinator"') }),
     });
     expect(harness.root.getExecutionTreeSnapshot().rootTeam.taskExecutions).toEqual([expect.objectContaining({
       address: "/scope_helper",
@@ -621,7 +621,7 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
       recipient_address: "/design_team", description: "Coordinate a design exercise", reference_files: [],
     })).resolves.toEqual({
       delegated: false,
-      message: expect.stringContaining("is not a mounted Agent or Agent Team or an available agent"),
+      message: expect.stringContaining("is not the address of an available agent or agent team"),
     });
     expect(harness.root.getExecutionTreeSnapshot().rootTeam.taskExecutions).toEqual([]);
   });

@@ -2,10 +2,12 @@ import { describe, expect, it, vi } from "vitest";
 import {
   isInsideSenderTeamInstances,
   messagePlacement,
+  reachingAddressOf,
   resolveMessageRecipient,
   type MessageRecipientIndexPort,
   type SenderTeamInstance,
 } from "../../../../src/agent-collaboration/collaborators/message-recipient-resolution.js";
+import { mentionViewerOf, mentionViewerRelation } from "../../../../src/agent-collaboration/collaborators/mention-viewer.js";
 import { resolveDelegationPlacement } from "../../../../src/agent-collaboration/collaborators/catalog-delegation.js";
 import { CollaboratorAddError } from "../../../../src/agent-collaboration/collaborators/collaborator-errors.js";
 import { CollaborationContractError } from "../../../../src/agent-collaboration/domain/collaboration-contract-error.js";
@@ -63,9 +65,30 @@ describe("MessageRecipientResolution (DS-002, CM-4)", () => {
     const attempt = () => resolve("pm", "/product_team");
     expect(attempt).toThrow(CollaborationContractError);
     expect(attempt).toThrow(
-      "/product_team is not in this run. To give work to an outside Agent or Team, use delegate_task, then send_message_to its run ID.",
+      "No agent or agent team you can talk with has the address /product_team. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run id. To have a task done by a new agent, use delegate_task.",
     );
     expect(attempt).toThrow(expect.objectContaining({ code: "COLLABORATION_TARGET_NOT_FOUND" }));
+  });
+});
+
+describe("reachingAddressOf (design T-5, SR-015)", () => {
+  const agent = (memberAddress: string, agentRunId: string) => ({ memberAddress: a(memberAddress), agentRunId });
+
+  it("gives a configured agent's address when it reaches exactly that agent, run-wide (task message) and from a viewer (header)", () => {
+    expect(reachingAddressOf(port(), null, agent("/pm", "wide-pm"))).toBe("/pm");
+    expect(reachingAddressOf(port(), "copy-1-lead", agent("/pm", "wide-pm"))).toBe("/pm");
+  });
+
+  it("gives no address for a task agent at a configured address: the address reaches the configured agent, not it", () => {
+    expect(reachingAddressOf(port(), null, agent("/pm", "pm-task-agent"))).toBeNull();
+  });
+
+  it("gives a team member's address to a teammate, but not run-wide or from outside its team", () => {
+    expect(reachingAddressOf(port(), "copy-1-lead", agent("/team/writer", "copy-1-writer"))).toBe("/team/writer");
+    // Run-wide `/team/writer` is another agent; from copy-2 there is no writer at all.
+    expect(reachingAddressOf(port(), null, agent("/team/writer", "copy-1-writer"))).toBeNull();
+    expect(reachingAddressOf(port(), "copy-2-lead", agent("/team/writer", "copy-1-writer"))).toBeNull();
+    expect(reachingAddressOf(port(), "pm", agent("/team/lead", "copy-1-lead"))).toBeNull();
   });
 });
 
@@ -82,6 +105,49 @@ describe("own-Team membership test (CM-1, DEC-008)", () => {
     expect(isInsideSenderTeamInstances(instances, "/team/lead", "/other/x")).toBe(false);
     expect(isInsideSenderTeamInstances([], "/pm", "/team")).toBe(false);
     expect(isInsideSenderTeamInstances([], "/pm", "/pm")).toBe(true);
+  });
+});
+
+describe("mention viewer relation (REQ-008)", () => {
+  const placements = new Map<string, unknown>([
+    ["/pm", { kind: "agent", receiver: { agentRunId: "run-pm" } }],
+    ["/pm/helper", { kind: "agent", receiver: { agentRunId: "run-helper" } }],
+  ]);
+  const index = {
+    getMessagePlacement: (address: string) => (placements.get(address) ?? null) as never,
+    isOwnTeamAddress: (_sender: string, address: string) => address === "/pm" || address === "/pm/helper" || address === "/team",
+  };
+  it("is self by the viewer's own placement identity, own_team for its own team, and other otherwise", () => {
+    const relation = mentionViewerRelation(index, "run-pm");
+    expect(relation(a("/pm"))).toBe("self");
+    expect(relation(a("/pm/helper"))).toBe("own_team");
+    expect(relation(a("/team"))).toBe("own_team");
+    expect(relation(a("/catalog_unit"))).toBe("other");
+  });
+  it("does not treat a task agent running at a configured address as that agent (identity, not address)", () => {
+    expect(mentionViewerRelation(index, "run-task-agent")(a("/pm"))).toBe("own_team");
+  });
+});
+
+describe("mention viewer facts (SR-011)", () => {
+  const index = {
+    getMessagePlacement: () => null,
+    isOwnTeamAddress: () => true,
+    teamInstancesOf: (agentRunId: string) => agentRunId === "run-designer" ? [{ teamRunId: "team-1", address: a("/software_team") }] : [],
+    instanceDefinitionsOf: (teamRunId: string) => teamRunId === "team-1"
+      ? { teamDefinitionId: "software-team", members: [{ address: a("/software_team/designer"), definitionId: "designer" }, { address: a("/software_team/reviewer"), definitionId: "reviewer" }] }
+      : null,
+    agentAddressOf: (agentRunId: string) => agentRunId === "run-designer" ? a("/software_team/designer") : null,
+  };
+  it("carries the focused agent's own team instance by definition", () => {
+    expect(mentionViewerOf(index, "run-designer").ownTeam).toEqual({
+      selfAddress: "/software_team/designer", teamAddress: "/software_team", teamDefinitionId: "software-team",
+      members: [{ address: "/software_team/designer", definitionId: "designer" }, { address: "/software_team/reviewer", definitionId: "reviewer" }],
+    });
+  });
+  it("has no own team for an agent outside any team instance, or an instance that recorded no definitions", () => {
+    expect(mentionViewerOf(index, "run-host").ownTeam).toBeNull();
+    expect(mentionViewerOf({ ...index, instanceDefinitionsOf: () => null }, "run-designer").ownTeam).toBeNull();
   });
 });
 
@@ -120,7 +186,7 @@ describe("catalog delegation placement (DS-001)", () => {
     });
     await expect(attempt).rejects.toMatchObject({
       code: "COLLABORATION_SELF_TARGET_REJECTED",
-      message: "/product_team/designer is in your own team. Use send_message_to with recipient_address /product_team/designer.",
+      message: "/product_team/designer is in your own team; you can't delegate to it. Talk with it using send_message_to.",
     });
     expect(resolveInRun).not.toHaveBeenCalled();
     expect(catalogSource).not.toHaveBeenCalled();

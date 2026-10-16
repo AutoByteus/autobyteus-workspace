@@ -337,7 +337,7 @@ const agentRootOnBoard = async () => {
     await shot(page, 'pmu-002-board-moved-highlight');
     // Opening the root: the worker's conversation in its hosting Agent run, selected in the left panel.
     await rootLine(page, s.taskA).click();
-    await until('worker conversation opened', async () => inWorkspace(page) && /Task delegator address/.test(await centerText(page)), 30000);
+    await until('worker conversation opened', async () => inWorkspace(page) && /You have a new task from/.test(await centerText(page)), 30000);
     const assigned = await rootOf(s.projectId, s.taskA);
     const workerRow = page.locator(`[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${assigned.ingressAgentRunId}"]`);
     await until('worker row selected', async () => (await workerRow.getAttribute('aria-selected')) === 'true', 15000);
@@ -375,7 +375,7 @@ const teamAndOtherHosts = async () => {
     assert(details.teamRoot.name === displayName(`/${segment(s.names.squad)}`), 'team root shows its address name', details.teamRoot);
     await rootLine(page, s.taskB).click();
     const teamRoot = await rootOf(s.projectId, s.taskB);
-    await until('coordinator conversation opened', async () => /Task delegator address/.test(await centerText(page)), 30000);
+    await until('coordinator conversation opened', async () => /You have a new task from/.test(await centerText(page)), 30000);
     const teamRow = page.locator('[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]');
     await until('task Team expanded', async () => (await teamRow.getAttribute('aria-expanded')) === 'true', 15000);
     const coordinatorRow = page.locator(`[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${teamRoot.ingressAgentRunId}"]`);
@@ -394,7 +394,7 @@ const teamAndOtherHosts = async () => {
       await row(page, taskId).waitFor({ timeout: 30000 });
       const line = await until(`${kind}-hosted root openable`, async () => { const r = await rootState(page, taskId); return r?.openable === 'true' ? r : null; }, 30000);
       await rootLine(page, taskId).click();
-      await until(`${kind}-hosted worker conversation`, async () => inWorkspace(page) && /Task delegator address/.test(await centerText(page)), 30000);
+      await until(`${kind}-hosted worker conversation`, async () => inWorkspace(page) && /You have a new task from/.test(await centerText(page)), 30000);
       await shot(page, `pmu-003-opened-${kind}-hosted-root`);
       details[`${kind}Hosted`] = { line, hostRoot: hosted.hostRoot, url: page.url() };
       shared[`${kind}Hosted`] = { root, taskId, projectId: s.projectId };
@@ -493,7 +493,7 @@ const leftPanelTaskRowFromOtherPage = async () => {
     }
     await shot(page, 'pmu-006-on-projects-run-still-selected');
     await workerRow.click();
-    await until('worker conversation opened from another page', async () => inWorkspace(page) && /Task delegator address/.test(await centerText(page)), 30000);
+    await until('worker conversation opened from another page', async () => inWorkspace(page) && /You have a new task from/.test(await centerText(page)), 30000);
     await shot(page, 'pmu-006-f006-opened');
     assertNoBrowserErrors(errors);
     return { taskId: temp.taskId, url: page.url(), errors };
@@ -781,7 +781,7 @@ const orgRootUnhydrated = async () => {
     const line = page.getByTestId('task-page-assigned').locator('[data-testid^="project-task-root-"][data-openable="true"]');
     await line.waitFor({ timeout: 30000 });
     await line.click();
-    await until('org worker conversation opened', async () => inWorkspace(page) && /Task delegator address/.test(await centerText(page)), 30000);
+    await until('org worker conversation opened', async () => inWorkspace(page) && /You have a new task from/.test(await centerText(page)), 30000);
     const workerRow = page.locator(`[data-test="agent-org-task-agent-row-${hosted.ingressAgentRunId}"]`);
     const selected = await until('org worker row selected', () => isSelected(workerRow), 15000).catch(() => false);
     await shot(page, 'pmu-012-org-root-opened-cold');
@@ -1000,7 +1000,7 @@ const projectsTab = async () => {
   const workerLine = panelRow(existing).locator('[data-testid^="project-task-root-"][data-openable="true"]');
   await workerLine.waitFor({ timeout: 60000 });
   await workerLine.click();
-  await until('worker conversation in the center', async () => /Task delegator address/.test(await centerText(page)), 30000);
+  await until('worker conversation in the center', async () => /You have a new task from/.test(await centerText(page)), 30000);
   assert(await tabButton().getAttribute('aria-selected') === 'true' && await panel.isVisible(), 'the Projects tab stays selected');
   await shot(page, 'pmu-015-worker-open-tab-kept');
   // Card → detail in the tab → back, with search kept.
@@ -1067,7 +1067,7 @@ const projectsTabOtherRootsAndNarrow = async () => {
       const line = panel.locator(`[data-testid="project-task-row-${taskId}"] [data-testid^="project-task-root-"][data-openable="true"]`);
       await line.waitFor({ timeout: 60000 });
       await line.click();
-      await until(`${kind}: worker conversation in the center`, async () => /Task delegator address/.test(await centerText(page)), 30000);
+      await until(`${kind}: worker conversation in the center`, async () => /You have a new task from/.test(await centerText(page)), 30000);
       const kept = await tabList.first().getAttribute('aria-selected') === 'true' && await panel.isVisible();
       assert(kept, `${kind}: the Projects tab stays selected after opening the worker`);
       await shot(page, `pmu-016-${kind}-worker-open-tab-kept`);
@@ -1411,7 +1411,7 @@ const collapsedStripWorkspaces = async () => {
       const line = panel.locator(`[data-testid="project-task-row-${taskId}"] [data-testid^="project-task-root-"][data-openable="true"]`);
       await line.waitFor({ timeout: 60000 });
       await line.click();
-      await until(`${host.kind}: worker conversation in the center`, async () => /Task delegator address/.test(await centerText(page)), 30000);
+      await until(`${host.kind}: worker conversation in the center`, async () => /You have a new task from/.test(await centerText(page)), 30000);
       // AC-001/AC-011: Workspaces is lit, Chat is not.
       const before = await until(`${host.kind}: Workspaces lit for the open worker`, async () => { const n = await shellNavState(page); return n.workspacesLit ? n : null; }, 15000);
       assert(before.stripChatLit === false, `${host.kind}: Chat is not lit on an open run`, before);
@@ -1438,7 +1438,7 @@ const collapsedStripWorkspaces = async () => {
       assert(page.url() === url, `${host.kind}: Workspaces changed the route`, { url, now: page.url() });
       // AC-008: the same worker is still shown and nothing else was selected or opened.
       assert(JSON.stringify(selectionAfter) === JSON.stringify(selectionBefore), `${host.kind}: Workspaces changed the selection`, { selectionBefore, selectionAfter });
-      assert(/Task delegator address/.test(await centerText(page)), `${host.kind}: the center no longer shows the worker`);
+      assert(/You have a new task from/.test(await centerText(page)), `${host.kind}: the center no longer shows the worker`);
       assert(await tabList.first().getAttribute('aria-selected') === 'true', `${host.kind}: the Projects tab stays selected`);
       assert(after.panelChatLit === false, `${host.kind}: the docked Chat row is not lit on a run`, after);
       assert(settled?.visible && settled.focused && settled.agentRunId === worker.ingressAgentRunId && settled.selectedRows === 1,
@@ -1569,7 +1569,7 @@ const collapsedStripOtherEntries = async () => {
     const line = projectsPanel.locator(`[data-testid="project-task-row-${taskId}"] [data-testid^="project-task-root-"][data-openable="true"]`);
     await line.waitFor({ timeout: 60000 });
     await line.click();
-    await until(`${label}: worker conversation in the center`, async () => /Task delegator address/.test(await centerText(page)), 30000);
+    await until(`${label}: worker conversation in the center`, async () => /You have a new task from/.test(await centerText(page)), 30000);
   };
   try {
     // A. A non-coordinator member inside a nested task Team (AC-002, D-5). The right Team tab shows only messages in this

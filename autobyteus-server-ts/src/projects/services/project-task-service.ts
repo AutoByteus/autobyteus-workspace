@@ -48,7 +48,7 @@ const normalizeDescription = (description: unknown): string => {
   return description.trim();
 };
 const terminalAssignment = (status: ProjectTaskStatus): ProjectError => new ProjectError("TASK_AGENT_RESOURCE_CLOSED",
-  `The Task is ${status}; move it to TODO or IN_PROGRESS before assigning new work.`);
+  `The Task is ${status}; set it to TODO or IN_PROGRESS before you delegate it.`);
 const compareTasks = (a: ProjectTask, b: ProjectTask): number => b.updatedAt.localeCompare(a.updatedAt) || a.taskId.localeCompare(b.taskId);
 const cleanup = async (operation: () => Promise<unknown>): Promise<void> => {
   try { await operation(); } catch (e) { console.warn("Task context cleanup failed.", e); }
@@ -359,7 +359,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
    */
   private async assertReopenTaskNotTerminal(location: TaskLocation, execution: TaskExecutionReference): Promise<void> {
     const task = await this.readTaskAt(location);
-    if (!task) throw new ProjectError("TASK_NOT_FOUND", "The Task was deleted; its work cannot be reactivated.");
+    if (!task) throw new ProjectError("TASK_NOT_FOUND", "The Task was deleted, so its task agent cannot continue.");
     if (!isTerminalTaskStatus(task.status)) return;
     for (const earlier of this.resources.earlierTaskLocationsOf(execution)) {
       const reopened = await this.readTaskAt(earlier);
@@ -368,7 +368,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
       }
     }
     throw new ProjectError("TASK_AGENT_RESOURCE_CLOSED",
-      `This Task is ${task.status}. The run that assigned it can reopen the Task (move it to TODO or IN_PROGRESS) and then message this run ID again.`);
+      `This Task is ${task.status}. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again.`);
   }
   /** A Task's metadata (with or without a Project); null when it (or its Project) was deleted. */
   private async readTaskAt(location: TaskLocation): Promise<{ status: ProjectTaskStatus } | null> {

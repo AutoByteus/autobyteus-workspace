@@ -56,7 +56,7 @@ describe("AutoByteus server-owned send_message_to", () => {
     const adapter = new SendMessageToMcpAdapterProvider(dispatcher).getAdapters()[0]!;
     expect(AutoByteusSendMessageToTool.getDescription()).toBe(SEND_MESSAGE_TO_TOOL_DESCRIPTION);
     expect(adapter.definition.description).toBe(SEND_MESSAGE_TO_TOOL_DESCRIPTION);
-    expect(adapter.definition.description).toContain("work request, result, or blocker");
+    expect(adapter.definition.description).toContain("self-contained request, result, question or blocker");
     const schema = AutoByteusSendMessageToTool.getArgumentSchema();
     expect(adapter.definition.inputSchema).toEqual(schema);
     expect(schema.parameters.map(({ name, required }) => ({ name, required }))).toEqual([
@@ -237,5 +237,28 @@ describe("AutoByteus server-owned send_message_to", () => {
     expect(projected.result.content).toEqual([{ type: "text", text: nativeText }]);
     expect(projected.result.structuredContent).toEqual(JSON.parse(nativeText));
     expect(projected.result.isError).toBe(isError);
+  });
+  it("an invalid recipient_address is refused with a next step (by ID, not by name), natively and over MCP (SR-003 F-3b)", async () => {
+    const memberExecutionContext = createMemberExecutionContext(vi.fn());
+    const sender = buildAgentRunMessageSenderContext({
+      senderRunId: memberExecutionContext.identity.agentRunId,
+      senderName: "professor",
+      runtimeKind: RuntimeKind.AUTOBYTEUS,
+      memberExecutionContext,
+    });
+    const { dispatcher } = createDispatcher();
+    const input = { recipient_address: "research_lead", content: "Done." };
+    const expected = {
+      accepted: false,
+      code: "COLLABORATION_ADDRESS_INVALID",
+      message: "'research_lead' is not a valid address (a canonical rooted value beginning with '/' is required). An address is exact and begins with '/', for example /team/agent. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run id.",
+      target_agent_run_id: null,
+    };
+    const nativeText = await createBoundAutoByteusSendMessageToTool(sender, dispatcher).execute({}, input);
+    expect(parseEnvelope(nativeText)).toEqual(expected);
+    const adapter = new SendMessageToMcpAdapterProvider(dispatcher).getAdapters()[0]!;
+    const projected = await adapter.execute({ session: { sender } as never, rawArguments: input });
+    if (projected.kind !== "mcp_tool_result") throw new Error("Expected MCP tool result.");
+    expect(projected.result.structuredContent).toEqual(expected);
   });
 });

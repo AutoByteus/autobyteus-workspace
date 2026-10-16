@@ -25,7 +25,7 @@ describe("`@` mentions of an AgentOrg run", () => {
     const posted = f.handles.get("director")!.handle.postMessage.mock.calls[0]![0] as { content: string };
     expect(collaboratorMentionNote.parse(posted.content)?.collaborators).toEqual([{ name: "Product Team", kind: "agent_team", address: "/product_team", presence: "not_in_run" }]);
     // REQ-002: the note tells the focused agent to delegate to the address.
-    expect(posted.content).toMatch(/\nDelegate the work with delegate_task to its address; it returns a run ID to follow up with\.$/);
+    expect(posted.content).toMatch(/\n- Product Team \(agent team\) at \/product_team: delegate the task to it with delegate_task; it returns a run id to follow up with\.$/);
     expect(posted.content).not.toMatch(/create_or_update_task|update_task|task_id/);
     expect((await f.executionTreeStore.read(f.orgMemoryDir, f.root.rootRunId))!.rootOrg.taskExecutions).toEqual([]);
     expect(wire.at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { state: "accepted" } });
@@ -35,11 +35,10 @@ describe("`@` mentions of an AgentOrg run", () => {
       content: "Ask the director", context_file_paths: [], image_urls: [], message_id: "m2", dedupe_key: "d2",
       mentions: [{ kind: "agent", definition_id: "definition-director" }],
     } }));
-    // A configured member is already in the Org: the mention is accepted, marked and addressed at its placement (REQ-002/003).
+    // The focused agent mentioning itself is accepted and marked "that is you" (viewer relation, REQ-008).
     expect(wire.at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { state: "accepted" } });
     const second = f.handles.get("director")!.handle.postMessage.mock.calls[1]![0] as { content: string };
-    expect(collaboratorMentionNote.parse(second.content)?.collaborators).toEqual([{ name: "Director", kind: "agent", address: "/director", presence: "in_run" }]);
-    expect(second.content).toContain("\n- Director (Agent) at /director, already in this run\n");
-    expect(second.content).toMatch(/messaged directly with send_message_to at its address, or use delegate_task for a separate copy\.$/);
+    expect(collaboratorMentionNote.parse(second.content)?.collaborators).toEqual([{ name: "Director", kind: "agent", address: "/director", presence: "self" }]);
+    expect(second.content).toMatch(/\n- Director \(agent\) at \/director: that is you\.$/);
   });
 });

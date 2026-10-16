@@ -1,4 +1,5 @@
 import { buildInRunPlacements, type CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
+import { type MentionViewer } from "../../agent-collaboration/collaborators/mention-viewer.js";
 import type {
   CatalogTaskSource,
   CollaboratorAdmission,
@@ -48,8 +49,8 @@ export class AgentOrgRunCollaborators {
   }>) {}
 
   /** `@`: each mentioned definition's name, kind and address; adds nothing. */
-  resolveMentions(definitions: readonly CollaboratorMention[]): Promise<CollaboratorAdmissionResult> {
-    return this.admission.resolveMentions(this.port(), definitions);
+  resolveMentions(definitions: readonly CollaboratorMention[], viewer: MentionViewer): Promise<CollaboratorAdmissionResult> {
+    return this.admission.resolveMentions(this.port(), definitions, viewer);
   }
 
   listAvailable(): Promise<readonly AvailableCollaborator[]> { return this.admission.policy.listEligible(this.port()); }

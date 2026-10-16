@@ -303,8 +303,8 @@ The tool description explains the field.
 
 An address that is neither a configured placement nor an
 available catalog agent of the run returns `{ delegated: false,
-message }` ("'…' is not a mounted Agent or Agent Team or an
-available agent of this run."); it is not a tool error. A catalog copy in which
+message }` ("'…' is not the address of an available agent or agent
+team. If you have list_available_agents, it shows the addresses you can use."); it is not a tool error. A catalog copy in which
 some agent has no usable layer, including the run root's settings, also starts
 nothing and returns
 `{ delegated: false, message: "<name> cannot be delegated to: <reason>" }`.

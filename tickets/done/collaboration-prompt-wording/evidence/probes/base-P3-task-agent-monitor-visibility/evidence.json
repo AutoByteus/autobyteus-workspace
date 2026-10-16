@@ -1,0 +1,169 @@
+{
+  "startedAt": "2026-10-15T22:21:30.169Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-check/autobyteus-web/tests/e2e/fixtures/task-agent-monitor-visibility.page.vue",
+  "scenarios": {
+    "API-E2E-TMV-001": {
+      "result": "Pass",
+      "description": "Mounted exact task selection hydrates retained conversation and Activity before focus commit",
+      "startedAt": "2026-10-15T22:21:38.131Z",
+      "details": {
+        "loadingState": {
+          "phase": "awaiting_connected_root",
+          "focusedAgentRunId": "task-monitor-teacher-run",
+          "focusedMemberAddress": "/Teacher",
+          "taskVisible": true,
+          "taskStatus": "idle",
+          "taskAuthoritative": false,
+          "teacherAuthoritative": false,
+          "taskConversationCount": 0,
+          "teacherConversationCount": 0,
+          "taskActivityCount": 0,
+          "teacherActivityCount": 0,
+          "taskAttempt": {
+            "state": "loading",
+            "detail": null
+          },
+          "teacherAttempt": null
+        },
+        "finalState": {
+          "phase": "awaiting_connected_root",
+          "focusedAgentRunId": "task-monitor-task-agent-run",
+          "focusedMemberAddress": "/Student",
+          "taskVisible": true,
+          "taskStatus": "idle",
+          "taskAuthoritative": true,
+          "teacherAuthoritative": false,
+          "taskConversationCount": 2,
+          "teacherConversationCount": 0,
+          "taskActivityCount": 1,
+          "teacherActivityCount": 0,
+          "taskAttempt": null,
+          "teacherAttempt": null
+        },
+        "taskRequest": {
+          "operationName": "GetTeamMemberRunProjection",
+          "teamRunId": "task-monitor-root-run",
+          "agentRunId": "task-monitor-task-agent-run",
+          "requestedAt": "2026-10-15T22:21:38.147Z"
+        },
+        "taskAriaLabel": "Student, Started by Teacher, /Student"
+      }
+    },
+    "API-E2E-TMV-002": {
+      "result": "Fail",
+      "description": "Snapshot invalidation reconciles the focused delegated Agent; idle shutdown keeps it visible and offline",
+      "startedAt": "2026-10-15T22:21:38.751Z",
+      "failure": {
+        "id": "API-E2E-TMV-002",
+        "description": "Snapshot invalidation reconciles the focused delegated Agent; idle shutdown keeps it visible and offline",
+        "message": "Timed out waiting for snapshot task reconciliation loading",
+        "stack": "Error: Timed out waiting for snapshot task reconciliation loading\n    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-check/autobyteus-web/tests/e2e/task-agent-monitor-visibility-probe.mjs:158:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-check/autobyteus-web/tests/e2e/task-agent-monitor-visibility-probe.mjs:317:5\n    at async scenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-check/autobyteus-web/tests/e2e/task-agent-monitor-visibility-probe.mjs:107:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-check/autobyteus-web/tests/e2e/task-agent-monitor-visibility-probe.mjs:315:3"
+      }
+    }
+  },
+  "projectionRequests": [
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "task-monitor-root-run",
+      "agentRunId": "task-monitor-task-agent-run",
+      "requestedAt": "2026-10-15T22:21:38.147Z"
+    }
+  ],
+  "browserEvents": [
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getRunFileChanges%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "Rejected invalid Team WebSocket message: ZodError: [\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"payload\",\n      \"agent_statuses\",\n      0,\n      \"recoverableBlock\"\n    ],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  },\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"payload\",\n      \"agent_statuses\",\n      1,\n      \"recoverableBlock\"\n    ],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  },\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"payload\",\n      \"agent_statuses\",\n      2,\n      \"recoverableBlock\"\n    ],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  },\n  {\n    \"expected\": \"array\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"payload\",\n      \"agent_input_states\"\n    ],\n    \"message\": \"Invalid input: expected array, received undefined\"\n  }\n]\n    at parseTeamStreamServerMessage (http://127.0.0.1:53945/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-check/autobyteus-team-stream-contracts/dist/team-stream-server-message.js:61:57)\n    at handleMessage (http://127.0.0.1:53945/_nuxt/services/agentStreaming/TeamStreamingService.ts:202:28)\n    at http://127.0.0.1:53945/_nuxt/pages/api-e2e-task-agent-monitor-visibility.vue:61:57\n    at Set.forEach (<anonymous>)\n    at ProbeWebSocketClient.emit (http://127.0.0.1:53945/_nuxt/pages/api-e2e-task-agent-monitor-visibility.vue:61:36)\n    at ProbeWebSocketClient.emitMessage (http://127.0.0.1:53945/_nuxt/pages/api-e2e-task-agent-monitor-visibility.vue:58:14)\n    at Object.admitSnapshot (http://127.0.0.1:53945/_nuxt/pages/api-e2e-task-agent-monitor-visibility.vue:160:20)\n    at eval (eval at evaluate (:290:30), <anonymous>:1:48)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:log",
+      "text": "Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    }
+  ],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 12255,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": null,
+      "finalSignalCode": "SIGTERM"
+    },
+    "nuxtLog": "closed",
+    "installedFixture": "removed"
+  },
+  "failures": [
+    {
+      "id": "API-E2E-TMV-002",
+      "description": "Snapshot invalidation reconciles the focused delegated Agent; idle shutdown keeps it visible and offline",
+      "message": "Timed out waiting for snapshot task reconciliation loading",
+      "stack": "Error: Timed out waiting for snapshot task reconciliation loading\n    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-check/autobyteus-web/tests/e2e/task-agent-monitor-visibility-probe.mjs:158:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-check/autobyteus-web/tests/e2e/task-agent-monitor-visibility-probe.mjs:317:5\n    at async scenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-check/autobyteus-web/tests/e2e/task-agent-monitor-visibility-probe.mjs:107:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-check/autobyteus-web/tests/e2e/task-agent-monitor-visibility-probe.mjs:315:3"
+    }
+  ],
+  "port": 53945,
+  "baseUrl": "http://127.0.0.1:53945",
+  "result": "Fail",
+  "finishedAt": "2026-10-15T22:23:09.232Z",
+  "artifacts": {
+    "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/tickets/in-progress/collaboration-prompt-wording/evidence/probes/base-P3-task-agent-monitor-visibility/evidence.json",
+    "nuxtLogPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/tickets/in-progress/collaboration-prompt-wording/evidence/probes/base-P3-task-agent-monitor-visibility/nuxt.log",
+    "taskScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/tickets/in-progress/collaboration-prompt-wording/evidence/probes/base-P3-task-agent-monitor-visibility/task-selected.png",
+    "shutdownScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/tickets/in-progress/collaboration-prompt-wording/evidence/probes/base-P3-task-agent-monitor-visibility/idle-shutdown-offline.png"
+  }
+}

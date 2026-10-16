@@ -28,6 +28,11 @@ listed in [Current State Versus Target](#5-current-state-versus-target).
 - **Coordinating run**: the run that records and coordinates a delegated run
   (see CM-7 for nested delegation).
 
+These are the engineer-facing terms. The words an agent reads in its prompt, tool
+descriptions and refusal texts ("task agent", "task agent team", "run id") are
+owned by the collaboration wording authority; see
+[Prompt Engineering](../modules/prompt_engineering.md#collaboration-sections-by-role).
+
 ## 2. Two Relationships, Nothing Else
 
 Agents relate to each other in exactly two ways.

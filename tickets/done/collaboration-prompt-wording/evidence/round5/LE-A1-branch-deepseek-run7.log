@@ -1,0 +1,1249 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:72107) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-yEPCjd
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-yEPCjd/.env
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mLoading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-yEPCjd/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-yEPCjd/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-yEPCjd
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-yEPCjd/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-yEPCjd/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-yEPCjd/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-yEPCjd/memory
+============================================================
+Initialized server settings service with 19 predefined settings
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-yEPCjd/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-yEPCjd/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-yEPCjd/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mSuccessfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mRegistered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent Definition created successfully with ID: aic-helper-4627be
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent Definition created successfully with ID: aic-twin-4627be
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent Definition created successfully with ID: aic-twin-4627be-2
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent Definition created successfully with ID: aic-plain-4627be
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent Definition created successfully with ID: aic-pm-4627be
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-DhBmsn
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-DhBmsn.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mCreated and registered workspace ID: agent_ws_ae183e99c5fd32d387d5352104a40f3cf154a5f7d7ccf50e303497301dd69e6a
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-DhBmsn
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-DhBmsn.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mReusing registered workspace ID: agent_ws_ae183e99c5fd32d387d5352104a40f3cf154a5f7d7ccf50e303497301dd69e6a
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mMediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-yEPCjd/media
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentRuntimeState initialized for agent_id 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f': LLM instance 'DeepSeekLLM' and 6 tools prepared and stored in state.
+AgentContext composed for agent_id 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f' with config: 'AIC Plain 4627be'.
+AgentWorker initialized for agent_id 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f'.
+Registered AgentContext for agent_id 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f'. Context registered.
+Agent facade initialized for agent_id 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f'.
+Agent 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f' created and stored successfully.
+Agent 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f' requesting runtime to start.
+AgentRuntime for 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f': Starting worker.
+AgentWorker 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f': Starting...
+AgentWorker 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f' asyncRun(): Starting.
+Agent 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f': Runtime init completed (event store initialized).
+Agent 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f': Runtime init completed (status deriver initialized).
+Agent 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f': Runtime init completed (AgentEventInbox initialized).
+Agent 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f' to become idle (timeout: 30s)...
+AgentEventStream (ID: 9c7fafe9-48ab-4f7d-ab58-7298b2ede3d3) initialized for agent_id 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f'. Subscribed to notifier.
+Agent 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 52c150b0-135f-4e6e-9708-4a17993e818b, AgentID: aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f': Bootstrapper starting direct lifecycle execution.
+Agent 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f': Executing SystemPromptProcessingStep.
+Agent 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f': No configured skills. Skipping skill catalog.
+Agent 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f': Final processed system prompt configured and captured. Trace ID: rt_1792175794689_322f05d0-5202-494e-9ee4-3804714bbb10. Final length: 4426.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 52c150b0-135f-4e6e-9708-4a17993e818b, AgentID: aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentWorker 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f' has become idle.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentEventStream (ID: 9c7fafe9-48ab-4f7d-ab58-7298b2ede3d3) for 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentEventStream (ID: beb14923-3cff-4f8c-bcdb-8481c9078bb5) initialized for agent_id 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f'. Subscribed to notifier.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent websocket attached for run aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f
+Created agent session e3f0b622-9738-4545-89d1-305a6c2c8f2d for run aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f
+Agent WebSocket connected: session=e3f0b622-9738-4545-89d1-305a6c2c8f2d, run=aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 52c150b0-135f-4e6e-9708-4a17993e818b, AgentID: aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 52c150b0-135f-4e6e-9708-4a17993e818b, AgentID: aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f': UserInputContextBuildingProcessor completed. Final content length: 134
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 52c150b0-135f-4e6e-9708-4a17993e818b, AgentID: aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 52c150b0-135f-4e6e-9708-4a17993e818b, AgentID: aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 52c150b0-135f-4e6e-9708-4a17993e818b, AgentID: aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 52c150b0-135f-4e6e-9708-4a17993e818b, AgentID: aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 52c150b0-135f-4e6e-9708-4a17993e818b, AgentID: aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 52c150b0-135f-4e6e-9708-4a17993e818b, AgentID: aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 52c150b0-135f-4e6e-9708-4a17993e818b, AgentID: aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-fni5Gl
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-fni5Gl.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mCreated and registered workspace ID: agent_ws_94ef9896044603667c174b8c990a86037ba08cdb18dd7c01911934011bac9bce
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-fni5Gl
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-fni5Gl.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mReusing registered workspace ID: agent_ws_94ef9896044603667c174b8c990a86037ba08cdb18dd7c01911934011bac9bce
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mMediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-yEPCjd/media
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentRuntimeState initialized for agent_id 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': LLM instance 'DeepSeekLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302' with config: 'AIC PM 4627be'.
+AgentWorker initialized for agent_id 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302'.
+Registered AgentContext for agent_id 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302'. Context registered.
+Agent facade initialized for agent_id 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302'.
+Agent 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302' created and stored successfully.
+Agent 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302' requesting runtime to start.
+AgentRuntime for 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': Starting worker.
+AgentWorker 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': Starting...
+AgentWorker 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302' asyncRun(): Starting.
+Agent 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': Runtime init completed (event store initialized).
+Agent 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': Runtime init completed (status deriver initialized).
+Agent 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': Runtime init completed (AgentEventInbox initialized).
+Agent 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302' to become idle (timeout: 30s)...
+AgentEventStream (ID: d1c0629f-d3b0-48b4-bfb6-d16ebf934bc5) initialized for agent_id 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302'. Subscribed to notifier.
+Agent 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': Bootstrapper starting direct lifecycle execution.
+Agent 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': Executing SystemPromptProcessingStep.
+Agent 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': No configured skills. Skipping skill catalog.
+Agent 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': Final processed system prompt configured and captured. Trace ID: rt_1792175795958_242ef162-9e7d-4099-ad37-7ced82cbbcdc. Final length: 4430.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentWorker 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302' has become idle.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentEventStream (ID: d1c0629f-d3b0-48b4-bfb6-d16ebf934bc5) for 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentEventStream (ID: 66aac09f-dcef-4d95-8229-08875fa2f6b3) initialized for agent_id 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302'. Subscribed to notifier.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent websocket attached for run aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302
+Created agent session a6bb21ac-9513-47aa-8cad-adbd941998d1 for run aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302
+Agent WebSocket connected: session=a6bb21ac-9513-47aa-8cad-adbd941998d1, run=aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': UserInputContextBuildingProcessor completed. Final content length: 188
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': UserInputContextBuildingProcessor completed. Final content length: 59
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': UserInputContextBuildingProcessor completed. Final content length: 240
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': UserInputContextBuildingProcessor completed. Final content length: 53
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': UserInputContextBuildingProcessor completed. Final content length: 246
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': UserInputContextBuildingProcessor completed. Final content length: 53
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': UserInputContextBuildingProcessor completed. Final content length: 240
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': UserInputContextBuildingProcessor completed. Final content length: 53
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': UserInputContextBuildingProcessor completed. Final content length: 300
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-fni5Gl
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-fni5Gl.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mReusing registered workspace ID: agent_ws_94ef9896044603667c174b8c990a86037ba08cdb18dd7c01911934011bac9bce
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mMediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-yEPCjd/media
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentRuntimeState initialized for agent_id 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': LLM instance 'DeepSeekLLM' and 6 tools prepared and stored in state.
+AgentContext composed for agent_id 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34' with config: 'AIC Helper 4627be'.
+AgentWorker initialized for agent_id 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34'.
+Registered AgentContext for agent_id 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34'. Total registered contexts: 3
+AgentRuntime initialized for agent_id 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34'. Context registered.
+Agent facade initialized for agent_id 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34'.
+Agent 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34' created and stored successfully.
+Agent 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34' requesting runtime to start.
+AgentRuntime for 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': Starting worker.
+AgentWorker 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': Starting...
+AgentWorker 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34' asyncRun(): Starting.
+Agent 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': Runtime init completed (event store initialized).
+Agent 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': Runtime init completed (status deriver initialized).
+Agent 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': Runtime init completed (AgentEventInbox initialized).
+Agent 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34' to become idle (timeout: 30s)...
+AgentEventStream (ID: 5ac587a2-3e63-4faf-a546-b6cf26ba5119) initialized for agent_id 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34'. Subscribed to notifier.
+Agent 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': Bootstrapper starting direct lifecycle execution.
+Agent 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': Executing SystemPromptProcessingStep.
+Agent 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': No configured skills. Skipping skill catalog.
+Agent 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': Final processed system prompt configured and captured. Trace ID: rt_1792175807693_2993a3ef-8520-4b88-b27e-4544ca0e7950. Final length: 4859.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentWorker 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34' has become idle.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentEventStream (ID: 5ac587a2-3e63-4faf-a546-b6cf26ba5119) for 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentEventStream (ID: a1efa9fe-b7de-41cb-9616-f214e045c1fd) initialized for agent_id 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34'. Subscribed to notifier.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': UserInputContextBuildingProcessor completed. Final content length: 438
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': UserInputContextBuildingProcessor completed. Final content length: 51
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': UserInputContextBuildingProcessor completed. Final content length: 130
+AgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': UserInputContextBuildingProcessor completed. Final content length: 53
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': UserInputContextBuildingProcessor completed. Final content length: 312
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': UserInputContextBuildingProcessor completed. Final content length: 195
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': UserInputContextBuildingProcessor completed. Final content length: 53
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': UserInputContextBuildingProcessor completed. Final content length: 246
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': UserInputContextBuildingProcessor completed. Final content length: 53
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': UserInputContextBuildingProcessor completed. Final content length: 188
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': UserInputContextBuildingProcessor completed. Final content length: 59
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent run 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mRemoving agent 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f'. Attempting graceful shutdown.
+Agent 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f' requesting runtime to stop (timeout: 10s).
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 52c150b0-135f-4e6e-9708-4a17993e818b, AgentID: aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentWorker 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f': Stop requested.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 52c150b0-135f-4e6e-9708-4a17993e818b, AgentID: aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mClosed agent session a6bb21ac-9513-47aa-8cad-adbd941998d1
+Agent WebSocket disconnected: a6bb21ac-9513-47aa-8cad-adbd941998d1
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mClosed agent session e3f0b622-9738-4545-89d1-305a6c2c8f2d
+Agent WebSocket disconnected: e3f0b622-9738-4545-89d1-305a6c2c8f2d
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 52c150b0-135f-4e6e-9708-4a17993e818b, AgentID: aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f' asyncRun() loop has finished.
+AgentWorker 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentWorker 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f': Shutdown resource cleanup completed successfully.
+AgentWorker 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f': Shutdown sequence completed.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mUnregistered AgentContext for agent_id 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f'.
+AgentRuntime for 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f': Context unregistered.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentRuntime for 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f' stop() method completed.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentEventStream (ID: beb14923-3cff-4f8c-bcdb-8481c9078bb5) for 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentEventStream (ID: beb14923-3cff-4f8c-bcdb-8481c9078bb5) for 'aic_plain_4627be_5776a2f5032f454c97e6f1eef5ed477f': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mRemoving agent 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34'. Attempting graceful shutdown.
+Agent 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34' requesting runtime to stop (timeout: 10s).
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentWorker 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': Stop requested.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a36aed5-e10b-4861-afe2-c67a343e9715, AgentID: aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34' asyncRun() loop has finished.
+AgentWorker 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentWorker 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': Shutdown resource cleanup completed successfully.
+AgentWorker 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': Shutdown sequence completed.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mUnregistered AgentContext for agent_id 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34'.
+AgentRuntime for 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': Context unregistered.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentRuntime for 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34' stop() method completed.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentEventStream (ID: a1efa9fe-b7de-41cb-9616-f214e045c1fd) for 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentEventStream (ID: a1efa9fe-b7de-41cb-9616-f214e045c1fd) for 'aic_helper_4627be_e91b5aefe2e14c6da51f9e35c8daed34': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mRemoving agent 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302'. Attempting graceful shutdown.
+Agent 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302' requesting runtime to stop (timeout: 10s).
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentWorker 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': Stop requested.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentExternalEventNotifier (NotifierID: 40b43851-4b46-4da2-8479-7a48db08702f, AgentID: aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302' asyncRun() loop has finished.
+AgentWorker 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentWorker 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': Shutdown resource cleanup completed successfully.
+AgentWorker 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': Shutdown sequence completed.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mUnregistered AgentContext for agent_id 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302'.
+AgentRuntime for 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': Context unregistered.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentRuntime for 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302' stop() method completed.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentEventStream (ID: 66aac09f-dcef-4d95-8229-08875fa2f6b3) for 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgentEventStream (ID: 66aac09f-dcef-4d95-8229-08875fa2f6b3) for 'aic_pm_4627be_768ad9e4bcdb46c6b18161952299f302': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent Definition with ID aic-helper-4627be deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent Definition with ID aic-twin-4627be deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent Definition with ID aic-twin-4627be-2 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent Definition with ID aic-plain-4627be deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mautobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent Definition with ID aic-pm-4627be deleted successfully.
+
+ [32m✓[39m tests/e2e/runtime/zz-keep-agent-initiated-collaborators.e2e.test.ts [2m([22m[2m36 tests[22m[2m | [22m[33m35 skipped[39m[2m)[22m[33m 30211[2mms[22m[39m
+     [33m[2m✓[22m[39m autobyteus_deepseek: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID [33m 29965[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m1 passed[39m[22m[2m | [22m[33m35 skipped[39m[90m (36)[39m
+[2m   Start at [22m 20:36:26
+[2m   Duration [22m 37.84s[2m (transform 5.03s, setup 24ms, import 7.10s, tests 30.21s, environment 0ms)[22m
+

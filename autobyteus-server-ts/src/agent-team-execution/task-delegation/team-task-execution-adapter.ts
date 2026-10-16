@@ -1,3 +1,5 @@
+import { reachingAddressOf } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
+import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { CommittedTaskExecution, TaskExecutionPreparationOperation } from "../domain/prepared-task-execution.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { taskExecutionReferenceKey } from "../../agent-collaboration/execution/task/task-execution-reference.js";
@@ -17,6 +19,7 @@ import { restoreTaskAgentNode, restoreTaskTeamNode } from "../../agent-collabora
 import {
   createCollaborationMemberExecutionIdentity,
   createTeamRootExecutionIdentity,
+  type CollaborationMemberExecutionIdentity,
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
 import { getAgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
@@ -150,6 +153,9 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
     const entry = this.options.getIndex().getTaskExecution(reference); if (!entry) return;
     this.options.teamRunResolver.getManaged(entry.ownerTeamRunId)?.discardReleasedDirectTaskExecution(reference);
     if ("teamRunId" in reference) this.options.teamRunResolver.retireTerminated(reference.teamRunId);
+  }
+  reachingAddressOf(agent: CollaborationMemberExecutionIdentity): AgentTeamAddress | null {
+    return reachingAddressOf(this.options.getIndex(), null, agent);
   }
   taskExecutionWithIngress(agentRunId: string): TaskExecutionReference | null {
     const innermost = this.options.getIndex().listTaskExecutionChainForAgent(agentRunId)[0];

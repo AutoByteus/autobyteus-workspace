@@ -1,3 +1,5 @@
+import { reachingAddressOf } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
+import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { CommittedTaskExecution, TaskExecutionPreparationOperation } from "../../agent-team-execution/domain/prepared-task-execution.js";
 import { taskExecutionReferenceKey } from "../../agent-collaboration/execution/task/task-execution-reference.js";
@@ -188,6 +190,9 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
     else if (entry.kind === "agent") this.options.rootAgents.discardReleasedTask(entry.agentRunId);
     // A task TeamRun is registered in the directory wherever it is hosted.
     if (entry.kind === "team") this.options.teams.discardReleasedTask(entry.teamRunId);
+  }
+  reachingAddressOf(agent: CollaborationMemberExecutionIdentity): AgentTeamAddress | null {
+    return reachingAddressOf(this.options.getIndex(), null, agent);
   }
   taskExecutionWithIngress(agentRunId: string): TaskExecutionReference | null {
     const innermost = this.options.getIndex().listTaskExecutionChainForAgent(agentRunId)[0];

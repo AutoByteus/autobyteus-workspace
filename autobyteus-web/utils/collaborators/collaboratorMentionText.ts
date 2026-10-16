@@ -63,7 +63,7 @@ export type SentUserMessagePresentation = Readonly<{
 
 /**
  * How a sent user message reads: the skill instruction prefix and the server-composed
- * `[Mentioned collaborators]` note are wrapper text, not the user's words.
+ * `[Mentioned agents]` note (or the earlier `[Mentioned collaborators]` form) are wrapper text, not the user's words.
  */
 export const presentSentUserMessage = (
   content: string,

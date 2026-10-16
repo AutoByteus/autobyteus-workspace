@@ -103,11 +103,11 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
   async assertReopenable(input: TaskExecutionReopenInput): Promise<void> {
     const entry = this.entry(input.execution);
     if (!entry) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "The agent run belongs to no Task.");
-    if (entry.role !== "assigned" || entry.assignedBy !== input.requestedBy) throw rejection("TASK_AGENT_RESOURCE_CLOSED", "Only the run that assigned it can reactivate it.");
+    if (entry.role !== "assigned" || entry.assignedBy !== input.requestedBy) throw rejection("TASK_AGENT_RESOURCE_CLOSED", "Only the agent that assigned the Task can continue it.");
     if (entry.start !== "started") throw rejection("TASK_REACTIVATION_UNAVAILABLE", "This assignment never started.");
     const task = this.tasks.get(entry.taskId);
-    if (!task) throw rejection("TASK_NOT_FOUND", "The Task was deleted; its work cannot be reactivated.");
-    if (task.done) throw rejection("TASK_AGENT_RESOURCE_CLOSED", "This Task is DONE. The run that assigned it can reopen the Task (move it to TODO or IN_PROGRESS) and then message this run ID again.");
+    if (!task) throw rejection("TASK_NOT_FOUND", "The Task was deleted, so its task agent cannot continue.");
+    if (task.done) throw rejection("TASK_AGENT_RESOURCE_CLOSED", "This Task is DONE. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again.");
   }
   async reopenAssignment(input: TaskExecutionReopenInput) {
     this.reopenRequests.push(input);
@@ -122,10 +122,10 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
     await this.resolveAssignment(input.taskId);
     const entry = this.entry(input.execution);
     if (!entry) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "This copy belongs to no Task.");
-    if (entry.role !== "assigned") throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "This copy is sub-work or a helper of a Task worker, not an assignment.");
-    if (entry.assignedBy !== input.requestedBy) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "Only the run that made this copy's most recent assignment can give it a new Task.");
-    if (entry.open) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", `This copy still works on Task ${entry.taskId}. Mark it DONE or CANCELLED first, or delegate Task ${input.taskId} to a new copy with recipient_address.`);
-    if (entry.taskId === input.taskId) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", `This copy's most recent assignment is already Task ${input.taskId}.`);
+    if (entry.role !== "assigned") throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "This task agent works on part of another agent's Task, so you can't give it a Task.");
+    if (entry.assignedBy !== input.requestedBy) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "Only the agent that gave this task agent its most recent Task can give it a new one.");
+    if (entry.open) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", `This task agent still works on Task ${entry.taskId}. Set it to DONE or CANCELLED first, or delegate Task ${input.taskId} to a new task agent with recipient_address.`);
+    if (entry.taskId === input.taskId) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", `This task agent already has Task ${input.taskId}.`);
     if (!entry.everStarted) throw rejection("TASK_REACTIVATION_UNAVAILABLE", "This copy never started, so it has no conversation to resume.");
   }
   async assignExistingTaskExecution(input: ExistingTaskExecutionAssignInput): Promise<void> {

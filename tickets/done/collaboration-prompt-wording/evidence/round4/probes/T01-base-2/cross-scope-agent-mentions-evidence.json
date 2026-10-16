@@ -1,0 +1,61 @@
+{
+  "startedAt": "2026-10-16T08:48:15.857Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "T01": {
+      "title": "SCN-001 Team run: VIS-001 menu; @Product Team → no Team collaborator (AC-001), stored note (AC-002), the focused researcher delegates a Team copy with an ad-hoc Task (AC-003); \"From Product Prototyper:\"; the next send with @Note Taker (CR-003) delegates an Agent copy",
+      "result": "Fail",
+      "ms": 35848,
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"chat-model-list-claude_agent_sdk\"]').locator('[data-test=\"chat-model-option-haiku\"]')\n",
+      "details": null
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 50835
+    },
+    {
+      "label": "frontend",
+      "pid": 50868
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 50868,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 50835,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-7Rx67C"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-7Rx67C",
+  "backendUrl": "http://127.0.0.1:49748",
+  "frontUrl": "http://127.0.0.1:49749",
+  "definitions": {
+    "research": "research-assistant",
+    "reviewer": "code-reviewer",
+    "researcher": "researcher",
+    "writer": "writer",
+    "analyst": "analyst",
+    "noteTaker": "note-taker",
+    "tempHelper": "temp-helper",
+    "prototyper": "product-prototyper",
+    "bootstrapper": "prototype-bootstrapper",
+    "productTeam": "product-team",
+    "reviewTeam": "review-team",
+    "org": "launch-org"
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 0,
+    "fail": 1,
+    "notApplicable": 0
+  },
+  "completedAt": "2026-10-16T08:49:12.641Z"
+}

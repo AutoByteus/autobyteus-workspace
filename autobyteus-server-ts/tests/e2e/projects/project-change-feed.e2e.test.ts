@@ -406,7 +406,7 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     expect(task.root).toMatchObject({ closed: true, status: "offline" });
     from = monitor.frames.length;
     const reactivated = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: worker, content: "Another round." }));
-    expect(reactivated.message).toMatch(/was reactivated\.$/);
+    expect(reactivated.message).toMatch(/continues with its conversation\.$/);
     task = await settledTask(scope, taskId, "reactivated", (t) => t.root?.closed === false && t.root?.status === "idle");
     // P-001: the first turn after the wake reports Running, never a final Initializing.
     const afterWake = monitor.frames.slice(from).filter((f) => f.type === "task_worker_status" && f.taskId === taskId).map((f) => f.status);

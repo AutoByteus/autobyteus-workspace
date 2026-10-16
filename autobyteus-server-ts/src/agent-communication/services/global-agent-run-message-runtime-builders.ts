@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { receivedMessageHeader } from "../../agent-collaboration/execution/communication/received-message-header.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import {
@@ -58,11 +59,8 @@ export const buildDirectAgentRunVisibleMessageContent = (
   input: DirectAgentRunMessageRuntimeInput,
 ): string => {
   const referenceFiles = normalizeReferenceFiles(input.referenceFiles);
-  // A sender inside a root (Team, Org or standalone collaboration) is addressable by its full address.
-  const senderAddress = input.sender.memberExecutionContext?.identity.memberAddress;
-  const addressPart = senderAddress ? `, sender address: ${senderAddress}` : "";
   return (
-    `You received a message from sender name: ${input.sender.senderName}${addressPart}, sender id: ${input.sender.senderRunId}\n` +
+    `${receivedMessageHeader({ runId: input.sender.senderRunId, address: null })}\n` +
     `message:\n${input.content}${buildReferenceFilesBlock(referenceFiles)}`
   );
 };

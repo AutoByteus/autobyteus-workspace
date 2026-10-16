@@ -19,6 +19,11 @@ import {
   type SenderTeamInstance,
 } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
 import {
+  instanceDefinitionsFromSource,
+  type InstanceDefinitions,
+  type MentionViewerIndexPort,
+} from "../../agent-collaboration/collaborators/mention-viewer.js";
+import {
   createRootExecutionPhysicalScope,
   createTeamRootExecutionIdentity,
   type RootExecutionPhysicalScope,
@@ -66,7 +71,7 @@ export type IndexedTaskExecution =
     }>;
 
 /** Immutable derived lookup/ancestry view over one validated execution tree. */
-export class TeamExecutionIndex implements MessageRecipientIndexPort {
+export class TeamExecutionIndex implements MessageRecipientIndexPort, MentionViewerIndexPort {
   private readonly agentsByRunId = new Map<string, IndexedAgentExecution>();
   private readonly teamsByRunId = new Map<string, IndexedTeamExecution>();
   private readonly configuredByAddress = new Map<AgentTeamAddress, ConfiguredAgentExecutionNode>();
@@ -141,6 +146,13 @@ export class TeamExecutionIndex implements MessageRecipientIndexPort {
     if (isInsideSenderTeamInstances(this.teamInstancesOf(senderAgentRunId), sender.address, address)) return true;
     return sender.executionKind === "configured" && this.configuredByAddress.has(address);
   }
+
+  instanceDefinitionsOf(teamRunId: string): InstanceDefinitions | null {
+    const team = this.getTeam(teamRunId);
+    return team ? instanceDefinitionsFromSource(team.source) : null;
+  }
+
+  agentAddressOf(agentRunId: string): AgentTeamAddress | null { return this.getAgent(agentRunId)?.address ?? null; }
 
   /** Inside one Team instance: its coordinator for its own address, else its member Agent. */
   memberOfInstance(teamRunId: string, address: AgentTeamAddress): TeamMessagePlacement | null {

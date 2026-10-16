@@ -170,7 +170,7 @@ describe("Agent root of a standalone run", () => {
     expect(automaticCollaborationToolNames(context)).toEqual(["send_message_to", "delegate_task"]);
     await f.manager.stopRoot(HOST);
     expect(await context!.tasks.delegateToNewCopy(context!.identity, { recipient_address: "/x", description: "d" }))
-      .toEqual({ delegated: false, message: "The collaboration root of this run is not active." });
+      .toEqual({ delegated: false, message: "This work is stopping or has stopped, so the message or delegation was not sent." });
     f.setMetadata({ launchPurpose: "server_helper" });
     expect(await f.manager.resolveRoot(HOST)).toBeNull();
     f.setMetadata({
@@ -214,7 +214,7 @@ describe("Agent root of a standalone run", () => {
 
     // An address that is neither in the run nor in the catalog starts nothing.
     expect(await root.delegateToNewCopy({ identity: f.hostIdentity }, { recipient_address: "/nobody", description: "Review" }))
-      .toEqual({ delegated: false, message: expect.stringContaining("'/nobody' is not a mounted Agent or Agent Team or an available agent of this run.") });
+      .toEqual({ delegated: false, message: expect.stringContaining("'/nobody' is not the address of an available agent or agent team.") });
     const policy = createCollaboratorAdmission(definitions().catalog, runnable, allAvailable).policy;
     expect((await policy.listCandidates(root.collaboratorPortFor(HOST))).candidates.map((c) => c.definitionId))
       .toEqual(["code-reviewer", "lead", "designer", "product-team"]);
@@ -634,7 +634,7 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     expect(outcome.kind).toBe("posted");
     expect(order).toEqual(["activate", `bind:${HOST}`, "post"]);
     const [posted, options] = f.host.run.postUserMessage.mock.calls[0]!;
-    expect(posted.content).toMatch(/^Please review\n\n\[Mentioned collaborators\]\n- Code Reviewer \(Agent\) at \/code_reviewer/);
+    expect(posted.content).toMatch(/^Please review\n\n\[Mentioned agents\]\n- Code Reviewer \(agent\) at \/code_reviewer: delegate the task to it with delegate_task; it returns a run id to follow up with\./);
     expect((posted as unknown as { metadata: unknown }).metadata).toMatchObject({ message_id: "m-1" });
     expect(options).toBe(postOptions);
   });
@@ -721,11 +721,11 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     const send = () => root.deliverExactAgentMessage({ sender: { kind: "agent", identity: f.hostIdentity, displayName: "research_assistant" },
       targetAgentRunId: copy.agentRunId, content: "Next round", messageType: "agent_message", referenceFiles: [] });
     // Still DONE: refused with the reopen-first hint; nothing is published.
-    expect(await send()).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: expect.stringContaining("reopen the Task (move it to TODO or IN_PROGRESS)") });
+    expect(await send()).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: expect.stringContaining("can set the Task to TODO or IN_PROGRESS and then message this run id again") });
     expect(events.some((entry) => entry.event.kind === "task_executions_reopened")).toBe(false);
 
     resources.setTaskOpen("A");
-    expect(await send()).toMatchObject({ accepted: true, message: expect.stringMatching(new RegExp(`${copy.agentRunId} was reactivated\\.$`)) });
+    expect(await send()).toMatchObject({ accepted: true, message: expect.stringMatching(new RegExp(`${copy.agentRunId} continues with its conversation\\.$`)) });
     // The released handle was discarded: the copy runs on a freshly restored handle with the same run ID.
     expect(f.handles.get(copy.agentRunId)).not.toBe(original);
     const reopened = events.find((entry) => entry.event.kind === "task_executions_reopened")!;
@@ -753,7 +753,7 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     await root.releaseTaskExecutions(resources.close("A"));
     // The coordinator-style mistakes are refused before anything changes.
     expect(await root.assignToExistingCopy({ identity: f.hostIdentity }, { copy: { teamRunId: copy.agentRunId }, taskId: "B" }))
-      .toEqual({ delegated: false, message: `${copy.agentRunId} is an Agent copy's agent run ID; use target_agent_run_id "${copy.agentRunId}".` });
+      .toEqual({ delegated: false, message: `${copy.agentRunId} is a task agent's run id; use target_agent_run_id "${copy.agentRunId}".` });
     expect(await root.assignToExistingCopy({ identity: f.hostIdentity }, { copy, taskId: "B" }))
       .toEqual({ delegated: true, copy: { kind: "agent", agentRunId: copy.agentRunId } });
     expect(f.handles.get(copy.agentRunId)).not.toBe(original);

@@ -58,6 +58,7 @@ export class TeamCommunicationAdapter implements RootCommunicationAdapter {
         identity: input.delivery.receiverIdentity,
         displayName: input.delivery.receiverDisplayName,
       })),
+      senderAddress: input.delivery.senderAddress,
       senderIdentity: input.delivery.senderIdentity,
       receiverIdentity: input.delivery.receiverIdentity,
       content: input.message.content,

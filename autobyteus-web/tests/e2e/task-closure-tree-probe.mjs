@@ -341,7 +341,7 @@ const liveDone = async (kind, label) => {
     s.input.send(callTool('send_message_to', { target_agent_run_id: s.aAssigned.agentRunId, content: 'Status of the release notes?' }));
     const worker = page.locator(rowSelector(kind, { agentRunId: s.aAssigned.agentRunId }));
     await worker.click();
-    await until('worker conversation open', async () => /Task delegator address/.test(await page.locator('[data-test="workspace-center-pane"]').innerText()), 30000);
+    await until('worker conversation open', async () => /You have a new task from/.test(await page.locator('[data-test="workspace-center-pane"]').innerText()), 30000);
     await worker.focus();
     await shot(page, `${kind}-live-before`);
     await startSampler(page, aSel);
@@ -358,7 +358,7 @@ const liveDone = async (kind, label) => {
     const active = await page.evaluate(() => document.activeElement?.getAttribute('data-test'));
     assert(active === await runRow.getAttribute('data-test'), 'focus did not move to the root run row', { active, leave });
     const center = await page.locator('[data-test="workspace-center-pane"]').innerText();
-    assert(!/Task delegator address/.test(center), 'main view still shows the closed worker conversation');
+    assert(!/You have a new task from/.test(center), 'main view still shows the closed worker conversation');
     const managerRow = kind === 'team' ? page.locator(`[data-test="workspace-team-member-${s.root.rootId}-/manager"]`)
       : kind === 'org' ? page.locator(`[data-test="agent-org-agent-row-${s.root.managerRunId}"]`) : null;
     const selection = managerRow ? await managerRow.getAttribute('aria-selected') : await runRow.evaluate((e) => getComputedStyle(e).backgroundColor);
@@ -605,7 +605,7 @@ const liveReactivation = async (kind, label) => {
     const text = await centerText(page);
     assert(text.indexOf('PRE-DONE-7731') < text.indexOf('POST-REOPEN-9902'), 'earlier conversation not before the new message');
     await shot(page, `${kind}-reactivated-conversation`);
-    // The Task Team copy (AC-002): DONE, reopen, then the coordinator's run ID brings back the Team and its members.
+    // The Task Team copy (AC-002): DONE, reopen, then the coordinator's run id brings back the Team and its members.
     const tree = await storedTree(s.root);
     const members = teamMembersOf(tree, s.bRef.teamRunId);
     const coordinator = members.find((m) => /\/reviewer$/.test(m.address));

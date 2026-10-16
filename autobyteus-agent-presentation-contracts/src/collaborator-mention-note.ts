@@ -31,11 +31,13 @@ export const collaboratorMentionsDtoSchema = z.array(collaboratorMentionDtoSchem
   });
 
 /**
- * Where a mentioned definition is relative to the run: `not_in_run` (delegate to its catalog
- * address), `in_run` (a configured member of the run, messageable directly), or
- * `run_agent` (the standalone Agent run's own agent, reached only with `send_message_to`).
+ * Where a mentioned definition is, for the agent the user is talking to (wording §8): `not_in_run`
+ * (only in the catalog: delegate a task to it), `in_run` (defined in the same team or organization
+ * run, outside the agent's own team: talk with it or delegate), `own_team` (the agent's teammate or
+ * own team: talk with it, never delegate), `self` (the agent itself), or `run_agent` (the agent the
+ * user started in a standalone run, mentioned to one of its task agents: talk with it, never delegate).
  */
-export type MentionedCollaboratorPresence = "not_in_run" | "in_run" | "run_agent";
+export type MentionedCollaboratorPresence = "not_in_run" | "in_run" | "own_team" | "self" | "run_agent";
 
 export type MentionedCollaborator = Readonly<{
   name: string;
@@ -50,8 +52,29 @@ export type ParsedCollaboratorMentionNote = Readonly<{
   collaborators: readonly MentionedCollaborator[];
 }>;
 
-const NOTE_HEADING = "[Mentioned collaborators]";
-const NOTE_GUIDANCE =
+const NOTE_HEADING = "[Mentioned agents]";
+const KIND_LABELS: Readonly<Record<CollaboratorMentionKind, string>> = Object.freeze({
+  agent: "agent",
+  agent_team: "agent team",
+});
+/** The guidance each line carries (wording §8): what the agent may do with the mentioned agent or team. */
+const GUIDANCE: Readonly<Record<MentionedCollaboratorPresence, string>> = Object.freeze({
+  self: "that is you.",
+  own_team: "talk with it using send_message_to; don't delegate to it.",
+  run_agent: "talk with it using send_message_to; you can't delegate to it.",
+  in_run: "talk with it using send_message_to, or delegate a task to it with delegate_task; that creates a new task agent and returns its run id to follow up with.",
+  not_in_run: "delegate the task to it with delegate_task; it returns a run id to follow up with.",
+});
+const OWN_TEAM_MARK = ", in your team";
+const PRESENCE_MARKS: Readonly<Record<MentionedCollaboratorPresence, string>> = Object.freeze({
+  self: "", own_team: OWN_TEAM_MARK, run_agent: "", in_run: "", not_in_run: "",
+});
+const PRESENCE_ORDER = Object.freeze(Object.keys(GUIDANCE) as MentionedCollaboratorPresence[]);
+const ENTRY_PATTERN = /^- (.+) \((agent|agent team)\) at (\/\S+?)(, in your team)?: (.+)$/;
+
+// --- Notes saved by earlier releases: parse only, never composed. ---
+const SAVED_NOTE_HEADING = "[Mentioned collaborators]";
+const SAVED_NOTE_GUIDANCE =
   "Delegate the work with delegate_task to its address; it returns a run ID to follow up with.";
 /**
  * The delegate sentence composed until the release that made the note tool-neutral; still
@@ -60,11 +83,9 @@ const NOTE_GUIDANCE =
  */
 const PREVIOUS_RELEASE_NOTE_GUIDANCE =
   "Delegate the work with delegate_task to its address; it returns a run ID to follow up with. If it also returns a task_id, call create_or_update_task with that task_id and status DONE when the work is finished; this stops it and removes it from the run.";
-/** Added after the guidance only when at least one mentioned agent or team is already in the run. */
-const IN_RUN_GUIDANCE =
+const SAVED_IN_RUN_GUIDANCE =
   "One already in this run can instead be messaged directly with send_message_to at its address, or use delegate_task for a separate copy.";
-const PRESENCE_SUFFIXES: Readonly<Record<MentionedCollaboratorPresence, string>> = Object.freeze({
-  not_in_run: "",
+const SAVED_PRESENCE_SUFFIXES = Object.freeze({
   in_run: ", already in this run",
   run_agent: ", the run's own agent",
 });
@@ -76,13 +97,17 @@ const SAVED_NOTE_GUIDANCES = Object.freeze([
   "Message a collaborator with send_message_to and its address; it starts on its first message. delegate_task to its address spawns a new copy instead, which you follow up by run ID.",
   "Message a collaborator with send_message_to and its address; it starts on its first message.",
 ]);
-const KIND_LABELS: Readonly<Record<CollaboratorMentionKind, string>> = Object.freeze({
-  agent: "Agent",
-  agent_team: "Agent Team",
-});
-const ENTRY_PATTERN = /^- (.+) \((Agent|Agent Team)\) at (\/\S+?)(, already in this run|, the run's own agent)?$/;
-const presenceOfSuffix = (suffix: string | undefined): MentionedCollaboratorPresence =>
-  suffix === PRESENCE_SUFFIXES.in_run ? "in_run" : suffix === PRESENCE_SUFFIXES.run_agent ? "run_agent" : "not_in_run";
+const SAVED_KIND_LABELS: Readonly<Record<string, CollaboratorMentionKind>> = Object.freeze({ Agent: "agent", "Agent Team": "agent_team" });
+const SAVED_ENTRY_PATTERN = /^- (.+) \((Agent|Agent Team)\) at (\/\S+?)(, already in this run|, the run's own agent)?$/;
+const savedPresenceOfSuffix = (suffix: string | undefined): MentionedCollaboratorPresence =>
+  suffix === SAVED_PRESENCE_SUFFIXES.in_run ? "in_run" : suffix === SAVED_PRESENCE_SUFFIXES.run_agent ? "run_agent" : "not_in_run";
+/** The guidance line a saved note's entries composed to (the saved wording). */
+const savedGuidanceFor = (collaborators: readonly MentionedCollaborator[], delegateSentence: string): string => [
+  ...(collaborators.some((collaborator) => collaborator.presence !== "run_agent") ? [delegateSentence] : []),
+  ...(collaborators.some((collaborator) => collaborator.presence === "in_run") ? [SAVED_IN_RUN_GUIDANCE] : []),
+  ...collaborators.filter((collaborator) => collaborator.presence === "run_agent").map((collaborator) =>
+    `Use send_message_to with recipient_address ${collaborator.address} to message ${collaborator.name}; delegate_task cannot target it.`),
+].join(" ");
 
 const singleLine = (value: string, label: string): string => {
   const normalized = value.replace(/\s+/g, " ").trim();
@@ -92,80 +117,86 @@ const singleLine = (value: string, label: string): string => {
 
 const entryLine = (collaborator: MentionedCollaborator): string => {
   const address = agentAddressSchema.parse(collaborator.address);
-  if (address === "/") throw new Error("A mentioned collaborator needs a non-root address.");
-  return `- ${singleLine(collaborator.name, "Collaborator name")} (${KIND_LABELS[collaborator.kind]}) at ${address}${PRESENCE_SUFFIXES[collaborator.presence]}`;
+  if (address === "/") throw new Error("A mentioned agent needs a non-root address.");
+  return `- ${singleLine(collaborator.name, "Agent name")} (${KIND_LABELS[collaborator.kind]}) at ${address}${PRESENCE_MARKS[collaborator.presence]}: ${GUIDANCE[collaborator.presence]}`;
 };
 
-/** One sentence per mentioned run agent: it is messaged, never delegated to. */
-const runAgentGuidance = (collaborator: MentionedCollaborator): string =>
-  `Use send_message_to with recipient_address ${collaborator.address} to message ${singleLine(collaborator.name, "Collaborator name")}; delegate_task cannot target it.`;
-
 /**
- * The guidance line for a note's entries, shared by compose and parse: the given delegate_task
- * sentence when any entry is not the run agent, the in-run sentence when any entry is in the
- * run, then one send_message_to sentence per run-agent entry.
- */
-const guidanceFor = (collaborators: readonly MentionedCollaborator[], delegateSentence: string): string => [
-  ...(collaborators.some((collaborator) => collaborator.presence !== "run_agent") ? [delegateSentence] : []),
-  ...(collaborators.some((collaborator) => collaborator.presence === "in_run") ? [IN_RUN_GUIDANCE] : []),
-  ...collaborators.filter((collaborator) => collaborator.presence === "run_agent").map(runAgentGuidance),
-].join(" ");
-
-/**
- * The one owner of the mention-note wording (server compose, web parse). The note tells the
- * focused agent to delegate the work to each mentioned address. An entry already in the run is
- * marked so, and the guidance then also offers messaging that instance directly. The run's own
- * agent (a standalone Agent run's host) is marked so and gets an explicit send_message_to
- * sentence instead, with no delegate_task alternative:
+ * The one owner of the mention-note wording (server compose, web parse). One line per mentioned
+ * agent or team, chosen for the agent the user is talking to; each line carries its own guidance:
  *
  *   compose("Please ask @Product Team", [{ name: "Product Team", kind: "agent_team", address: "/product_team", presence: "not_in_run" }])
- *   === "Please ask @Product Team\n\n[Mentioned collaborators]\n- Product Team (Agent Team) at /product_team\nDelegate the work with delegate_task …"
+ *   === "Please ask @Product Team\n\n[Mentioned agents]\n- Product Team (agent team) at /product_team: delegate the task to it with delegate_task; it returns a run id to follow up with."
  */
 export const composeCollaboratorMentionNote = (
   text: string,
   collaborators: readonly MentionedCollaborator[],
 ): string => {
   if (collaborators.length === 0) return text;
-  const note = [NOTE_HEADING, ...collaborators.map(entryLine), guidanceFor(collaborators, NOTE_GUIDANCE)].join("\n");
+  const note = [NOTE_HEADING, ...collaborators.map(entryLine)].join("\n");
   return text.trim() ? `${text}\n\n${note}` : note;
 };
 
-/**
- * Recognizes only a note at the very end of the content, in exactly the composed form: its
- * guidance line is the one its entries compose to, the one the previous release
- * composed, or a guidance saved by an earlier release.
- */
-export const parseCollaboratorMentionNote = (content: string): ParsedCollaboratorMentionNote | null => {
-  const headingAt = content.startsWith(`${NOTE_HEADING}\n`)
-    ? 0
-    : content.lastIndexOf(`\n\n${NOTE_HEADING}\n`);
-  if (headingAt < 0) return null;
-  const noteStart = headingAt === 0 && content.startsWith(NOTE_HEADING) ? 0 : headingAt + 2;
-  const lines = content.slice(noteStart).split("\n");
-  const entries = lines.slice(1, -1);
+const noteStartOf = (content: string, heading: string): number | null => {
+  const headingAt = content.startsWith(`${heading}\n`) ? 0 : content.lastIndexOf(`\n\n${heading}\n`);
+  return headingAt < 0 ? null : headingAt;
+};
+
+const parseCurrentNote = (content: string): ParsedCollaboratorMentionNote | null => {
+  const headingAt = noteStartOf(content, NOTE_HEADING);
+  if (headingAt === null) return null;
+  const noteStart = headingAt === 0 ? 0 : headingAt + 2;
+  const entries = content.slice(noteStart).split("\n").slice(1);
   if (entries.length === 0) return null;
   const collaborators: MentionedCollaborator[] = [];
   for (const line of entries) {
     const match = ENTRY_PATTERN.exec(line);
     if (!match) return null;
+    const presence = PRESENCE_ORDER.find((candidate) => GUIDANCE[candidate] === match[5] && PRESENCE_MARKS[candidate] === (match[4] ?? ""));
+    if (!presence) return null;
     collaborators.push(Object.freeze({
       name: match[1]!,
-      kind: match[2] === "Agent" ? "agent" : "agent_team",
+      kind: match[2] === "agent" ? "agent" : "agent_team",
       address: match[3]!,
-      presence: presenceOfSuffix(match[4]),
+      presence,
+    }));
+  }
+  return Object.freeze({ text: noteStart === 0 ? "" : content.slice(0, headingAt), collaborators: Object.freeze(collaborators) });
+};
+
+const parseSavedNote = (content: string): ParsedCollaboratorMentionNote | null => {
+  const headingAt = noteStartOf(content, SAVED_NOTE_HEADING);
+  if (headingAt === null) return null;
+  const noteStart = headingAt === 0 ? 0 : headingAt + 2;
+  const lines = content.slice(noteStart).split("\n");
+  const entries = lines.slice(1, -1);
+  if (entries.length === 0) return null;
+  const collaborators: MentionedCollaborator[] = [];
+  for (const line of entries) {
+    const match = SAVED_ENTRY_PATTERN.exec(line);
+    if (!match) return null;
+    collaborators.push(Object.freeze({
+      name: match[1]!,
+      kind: SAVED_KIND_LABELS[match[2]!]!,
+      address: match[3]!,
+      presence: savedPresenceOfSuffix(match[4]),
     }));
   }
   const guidance = lines[lines.length - 1]!;
   if (
-    guidance !== guidanceFor(collaborators, NOTE_GUIDANCE)
-    && guidance !== guidanceFor(collaborators, PREVIOUS_RELEASE_NOTE_GUIDANCE)
+    guidance !== savedGuidanceFor(collaborators, SAVED_NOTE_GUIDANCE)
+    && guidance !== savedGuidanceFor(collaborators, PREVIOUS_RELEASE_NOTE_GUIDANCE)
     && !SAVED_NOTE_GUIDANCES.includes(guidance)
   ) return null;
-  return Object.freeze({
-    text: noteStart === 0 ? "" : content.slice(0, headingAt),
-    collaborators: Object.freeze(collaborators),
-  });
+  return Object.freeze({ text: noteStart === 0 ? "" : content.slice(0, headingAt), collaborators: Object.freeze(collaborators) });
 };
+
+/**
+ * Recognizes only a note at the very end of the content, in exactly the composed form (every line
+ * with the guidance its presence composes to), or in any form saved by an earlier release.
+ */
+export const parseCollaboratorMentionNote = (content: string): ParsedCollaboratorMentionNote | null =>
+  parseCurrentNote(content) ?? parseSavedNote(content);
 
 /**
  * The code every transport uses when a mentioned definition cannot be resolved on send (it is

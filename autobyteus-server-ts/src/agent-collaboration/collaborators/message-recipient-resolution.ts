@@ -77,3 +77,29 @@ export const resolveMessageRecipient = (input: Readonly<{
   if (outside) return outside;
   throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", messageTargetNotFoundMessage(input.address));
 };
+
+/**
+ * T-5: the address to give for `agent` in a message `viewerAgentRunId` receives (or, with `null`,
+ * in a new task agent's first message): the agent's own address only when `send_message_to` with
+ * it reaches exactly that agent, from the viewer's position (its own team instances, then the run's
+ * standing placements) or run-wide for `null`. A task agent, or a member of a task agent team seen
+ * from outside its team, gets `null`: its address would reach someone else or no one.
+ */
+export const reachingAddressOf = (
+  port: MessageRecipientIndexPort,
+  viewerAgentRunId: string | null,
+  agent: Readonly<{ memberAddress: AgentTeamAddress; agentRunId: string }>,
+): AgentTeamAddress | null => {
+  let placement: CollaborationMessagePlacement | null;
+  if (viewerAgentRunId === null) {
+    placement = port.getMessagePlacement(agent.memberAddress);
+  } else {
+    try {
+      placement = resolveMessageRecipient({ port: () => port, senderAgentRunId: viewerAgentRunId, address: agent.memberAddress });
+    } catch (error) {
+      if (error instanceof CollaborationContractError && error.code === "COLLABORATION_TARGET_NOT_FOUND") return null;
+      throw error;
+    }
+  }
+  return placement?.kind === "agent" && placement.receiver.agentRunId === agent.agentRunId ? agent.memberAddress : null;
+};

@@ -157,7 +157,7 @@ use this path. When the target belongs to closed Task work, the root first
 reactivates it if the sender is the run that assigned it, the target is the
 copy's agent run ID (a Team copy's coordinator) and the copy's current Task is
 not DONE or CANCELLED;
-the accepted `message` then ends with "<run ID> was reactivated." Otherwise it
+the accepted `message` then ends with "<run id> continues with its conversation." Otherwise it
 refuses with `TASK_AGENT_RESOURCE_CLOSED` and guidance. See
 [Reactivation](projects.md#reactivation).
 
@@ -284,7 +284,10 @@ against Task data. Every delegated copy is Task-owned: a linked copy by its
 Project Task, sub-work by its creator's Task, and a description-only copy of an
 unowned sender by the Task with no Project that its delegation created. So two
 copies owned by different Tasks cannot message each other by run ID; messages to
-and from their delegators and configured members work.
+and from their delegators and configured members work. The refusal (a different
+Task, or a closed Task) is returned to the sender as `{accepted: false, code, message}`
+by `RootCommunicationEngine.deliver`, so the agent reads the next step; only that first
+delivery-scope check returns it, and the later re-checks inside reservation and commit still throw.
 
 A Task-owned sender resolves an address exactly like any other sender (below).
 There is no per-Task helper bring-in any more: `broughtIn` records already stored
@@ -316,9 +319,10 @@ operation gate. The function only resolves:
 2. **Run-wide standing placements**: a configured placement, or the run's own
    agent (an Agent root's host).
 
-Any other address is `COLLABORATION_TARGET_NOT_FOUND` ("<address> is not in this
-run. To give work to an outside Agent or Team, use delegate_task, then
-send_message_to its run ID."). Nothing is allocated, hosted or written, so a message
+Any other address is `COLLABORATION_TARGET_NOT_FOUND` ("No agent or agent team
+you can talk with has the address <address>. To answer a message or report your
+task result, use send_message_to with target_agent_run_id set to the sender run
+id. To have a task done by a new agent, use delegate_task."). Nothing is allocated, hosted or written, so a message
 can never start an agent; the first message to an existing but Offline agent
 starts it (`fresh` on first activation, `restore` after the run is reopened).
 
@@ -375,38 +379,38 @@ startup into ordinary, unowned delegated runs of the same root (migration
   inside its operation gate, before it is posted. Every mention is re-validated
   by the shared candidate policy (`requireEligible`: shared, not an Org, not a
   built-in, not the port's `ownDefinition()`; it may already be in the run) and
-  answered with its name, kind, address and `presence` (`not_in_run`, `in_run`
-  or `run_agent`): a definition already in the run resolves to its preferred
-  in-run placement address (the standalone host, a configured member, an Org
-  mounted Team); any other to its catalog address. `presence` is `run_agent` only
-  when that placement is the standalone host. **Nothing is written, allocated,
-  hosted or published.** `ownDefinition()` is a Team or Org run's own definition.
-  A standalone Agent root builds its port **per viewer** (the focused or sending
-  agent): its `ownDefinition()` is the host definition only when the viewer is the
-  host. The host is always an in-run placement at its host address, so the host's
-  own composer never offers the host, and a member of a delegated copy can mention
-  it. A host self-mention is still rejected ("… is this run's own definition."). The
-  `@` caller (Team, Org and collaboration stream handlers, and the standalone host
-  path `AgentRunCommandCoordinator.post` → `StandaloneAgentRunRoot.postUserMessage`
-  → `StandaloneRootMessageDelivery.postToHost`) appends a `[Mentioned
-  collaborators]` note with each name, kind and address, telling the agent to
-  `delegate_task` to the address and follow up by the returned run ID. The note
+  answered with its name, kind, address and `presence`, **decided for the agent the
+  user is talking to** (the viewer; each root passes `mentionViewerRelation(index,
+  focusedAgentRunId)`): `self` (the viewer's own placement, by identity, not by
+  address), `own_team` (its own team; exactly what `delegate_task` refuses),
+  `in_run` (another unit already in the run), `run_agent` (the standalone host,
+  mentioned from a task agent) or `not_in_run` (a catalog definition, which resolves
+  to its catalog address). A definition already in the run resolves to its preferred
+  in-run placement address. **Own team first (SR-011):** before a mentioned definition is treated as `not_in_run`, the focused agent's own team instance is checked by definition (the agent itself → `self`; a member → `own_team` at its address in the instance; the team itself → `own_team`), because the members of a task agent team are not configured placements. **Nothing is written, allocated, hosted or published.**
+  `ownDefinition()` is a Team or Org run's own definition. A standalone Agent root
+  builds its port **per viewer** (the focused or sending agent): its
+  `ownDefinition()` is the host definition only when the viewer is the host. The host
+  is always an in-run placement at its host address, so the host's own composer never
+  offers the host, and a task agent can mention it. A host self-mention is still
+  rejected ("… is this run's own definition."). The `@` caller (Team, Org and
+  collaboration stream handlers, and the standalone host path
+  `AgentRunCommandCoordinator.post` → `StandaloneAgentRunRoot.postUserMessage` →
+  `StandaloneRootMessageDelivery.postToHost`) appends a `[Mentioned agents]` note, one
+  line per mention: `- <Name> (agent|agent team) at <address>[, in your team]: <guidance>`.
+  The guidance depends on the presence: `not_in_run` → "delegate the task to it with
+  delegate_task; it returns a run id to follow up with."; `in_run` → "talk with it using send_message_to, or delegate a task
+  to it with delegate_task; that creates a new task agent and returns its run id to follow up with."; `own_team` → "talk
+  with it using send_message_to; don't delegate to it."; `run_agent` → "talk with it
+  using send_message_to; you can't delegate to it."; `self` → "that is you.". The note
   names no task tool and says nothing about closing a Task; an agent with
-  `update_task` learns that from the tool's own description. An entry already in
-  the run reads `- Name (Agent) at /address, already in this run`, and the
-  guidance adds that such an agent or team can be messaged directly with
-  `send_message_to` at its address, or `delegate_task` used for a separate copy; a
-  note with no in-run mention is unchanged. A `run_agent` entry (the standalone
-  host, mentioned from a copy member) reads `- Name (Agent) at /address, the run's
-  own agent` and gets its own sentence, `Use send_message_to with recipient_address
-  /address to message Name; delegate_task cannot target it.`. `delegate_task` to the
-  host stays refused, and nothing ever copies the host. Runnability is checked when
-  the agent delegates. An ineligible mention returns `COLLABORATOR_ADD_FAILED` with
-  its name and reason: nothing is posted and the client keeps the draft
+  `update_task` learns that from the tool's own description. Runnability is checked
+  when the agent delegates. An ineligible mention returns `COLLABORATOR_ADD_FAILED`
+  with its name and reason: nothing is posted and the client keeps the draft
   (agent-stream `AGENT_COMMAND_ACK`, Team-stream `ERROR`, collaboration-stream
   ack; each carries `collaborator_name`; the code keeps its name). The note wording
   is owned by `@autobyteus/agent-presentation-contracts` (`collaboratorMentionNote`),
-  which still parses the guidance lines of notes saved by earlier releases.
+  which composes the current form and still parses every earlier form (the saved
+  `[Mentioned collaborators]` notes), so stored history displays unchanged.
 - **Task closure (DONE or CANCELLED).** Every root view (Agent, Team, Org; live snapshot and
   stored read) carries `closed_task_executions` beside the unfiltered tree: the
   task executions whose current Task is DONE or CANCELLED, read through the Task port
@@ -576,11 +580,21 @@ Known limits:
 
 A `send_message_to` delivery reaches the receiver as input with
 `input_origin: inter_agent_delivery` and `sender_agent_id`. Its visible text names
-the sender by name, full address and run ID, so a reply by address reaches a
-sender inside a Team (REQ-005):
+the sender by its run id and, when that address reaches the sender from the
+receiver's position (`reachingAddressOf`, design T-5), by its address; never by
+name (the chat looks the name up by run ID):
 
 ```text
-You received a message from sender name: lead, sender address: /eng/lead, sender id: <runId>
+You received a message from the agent with sender address "/code_reviewer" and sender run id "<runId>".
+message:
+<body>
+```
+
+or, when the address would not reach the sender (a task agent, a member of a task
+agent team writing from outside its team, a sender in another run):
+
+```text
+You received a message from the agent with sender run id "<runId>".
 message:
 <body>
 ```
@@ -588,10 +602,11 @@ message:
 All three builders use this header: root deliveries
 (`root-communication-runtime-builder.ts`, Org and standalone roots),
 Team-run deliveries (`inter-agent-message-runtime-builders.ts`) and the direct
-`target_agent_run_id` route (`global-agent-run-message-runtime-builders.ts`, when
-the sender is inside a root; a sender outside any root has no address). Stored
-deliveries recorded before the address was added keep their old header; the web
-parser reads both forms. The released header is frozen in the Org first-message
+`target_agent_run_id` route (`global-agent-run-message-runtime-builders.ts`, never
+with an address). The two root builders take the address from the delivery input,
+which each root fills with `reachingAddressOf(index, receiver, sender)`. Stored
+deliveries recorded while the header also carried `sender address: <address>` keep
+that text (and `sender name: …, sender id: …` before that); the web parser reads every form, and the chat label comes only from the run ID. The released header is frozen in the Org first-message
 summary migration, which matches historical traces. Memory recording
 (native AutoByteus and the external-runtime recorder) stores that sender as the
 user trace's `senderId`; replay projects such a trace as an

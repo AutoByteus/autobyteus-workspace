@@ -345,7 +345,7 @@ export const createTaskLocatorCases = (h) => {
     await summaryIn(agentRow(page, s.workers.agent)).waitFor({ timeout: 30000 });
     await sleep(LIVE_HIGHLIGHT_MS);
     await agentRow(page, s.workers.agent).locator('span.block.truncate').click();
-    await until('agent copy opened', async () => (await agentRow(page, s.workers.agent).getAttribute('aria-selected')) === 'true' && /Task delegator address/.test(await centerText(page)), 20000);
+    await until('agent copy opened', async () => (await agentRow(page, s.workers.agent).getAttribute('aria-selected')) === 'true' && /You have a new task from/.test(await centerText(page)), 20000);
     await sleep(500);
     details.rowClick = await panelState(page);
     details.selectedSummaryColour = await summaryIn(agentRow(page, s.workers.agent)).evaluate((e) => getComputedStyle(e).color);

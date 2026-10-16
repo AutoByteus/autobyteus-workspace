@@ -1,0 +1,108 @@
+{
+  "startedAt": "2026-10-16T08:47:02.530Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "T01": {
+      "title": "SCN-001 Team run: VIS-001 menu; @Product Team → no Team collaborator (AC-001), stored note (AC-002), the focused researcher delegates a Team copy with an ad-hoc Task (AC-003); \"From Product Prototyper:\"; the next send with @Note Taker (CR-003) delegates an Agent copy",
+      "result": "Pass",
+      "ms": 30301,
+      "details": {
+        "teamRunId": "review_team_0ea2174b1e114bd7877dd510cd5f1bb1",
+        "options": [
+          "research-assistant",
+          "code-reviewer",
+          "researcher",
+          "writer",
+          "analyst",
+          "note-taker",
+          "temp-helper",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "product-team"
+        ],
+        "collaboratorsRightAfterSend": 0,
+        "teamDelegation": {
+          "copyRunId": "product_team_105b4e746cf54ef5b68040b190656c53",
+          "kind": "team",
+          "taskId": "ad_hoc_task_2712fb09-87fa-487f-ae73-bb3192125bed",
+          "maxCollaborators": 0
+        },
+        "cards": [
+          {
+            "text": "delegate_task",
+            "error": false,
+            "success": true,
+            "classes": "rounded-lg border overflow-hidden transition-all duration-200 bg-white border-gray-200 cursor-pointer hover:bg-gray-50"
+          }
+        ],
+        "teamClosedByAgent": false,
+        "rowsBoth": [
+          {
+            "kind": "task_team",
+            "label": "Temporary task team, product team, level 1, offline, Started by researcher, /product_team, Task: Design a tiny settings page. Produce a concise design for a minimal settings page: the list of settings it should…",
+            "text": "product team\nDesign a tiny settings page. Produce a concise design for a minimal settings page: the list of settings it should…",
+            "avatar": false,
+            "dot": false,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_agent",
+            "label": "Temporary task agent, note taker, level 1, idle, Started by researcher, /note_taker, Task: Note down the following text exactly as written: \"ship it\". Record it as a note and confirm when it is saved. Reply to…",
+            "text": "NT\nnote taker\nNote down the following text exactly as written: \"ship it\". Record it as a note and confirm when it is saved. Reply to…",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          }
+        ]
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 49149
+    },
+    {
+      "label": "frontend",
+      "pid": 49187
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 49187,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 49149,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-RJKruN"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-RJKruN",
+  "backendUrl": "http://127.0.0.1:49591",
+  "frontUrl": "http://127.0.0.1:49592",
+  "definitions": {
+    "research": "research-assistant",
+    "reviewer": "code-reviewer",
+    "researcher": "researcher",
+    "writer": "writer",
+    "analyst": "analyst",
+    "noteTaker": "note-taker",
+    "tempHelper": "temp-helper",
+    "prototyper": "product-prototyper",
+    "bootstrapper": "prototype-bootstrapper",
+    "productTeam": "product-team",
+    "reviewTeam": "review-team",
+    "org": "launch-org"
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 1,
+    "fail": 0,
+    "notApplicable": 0
+  },
+  "completedAt": "2026-10-16T08:48:01.134Z"
+}

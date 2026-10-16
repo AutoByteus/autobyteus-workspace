@@ -56,7 +56,7 @@ function fixture(kind: RootKind) {
     taskExecutionChainFor: agentRunId => committed.has(agentRunId) ? [{ agentRunId }] : [],
     listTaskExecutions: () => [...committed.keys()].map(agentRunId => ({ agentRunId })), taskExecutionStatus: () => 'offline',
     containsTaskExecution: ref => committed.has('agentRunId' in ref ? ref.agentRunId : ''), publishTaskExecutionsClosed: vi.fn(),
-    discardReleasedExecution: vi.fn(), taskExecutionWithIngress: agentRunId => committed.has(agentRunId) ? { agentRunId } : null,
+    discardReleasedExecution: vi.fn(), reachingAddressOf: () => null, taskExecutionWithIngress: agentRunId => committed.has(agentRunId) ? { agentRunId } : null,
     publishTaskExecutionsReopened: vi.fn(),
     isLive: () => false, assertRestorableChain: () => undefined, restoreChain: async () => undefined, tryShutDownIfQuiet: async () => false,
   };

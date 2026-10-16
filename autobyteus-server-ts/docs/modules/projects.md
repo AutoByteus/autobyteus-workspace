@@ -716,7 +716,7 @@ Task (see the reactivation table).
 | The copy's current Task is still open | It still works on Task A (status); mark it DONE or CANCELLED first, or delegate Task B to a new copy with `recipient_address` |
 | The sender did not make the copy's most recent assignment | Only that run can give it a new Task |
 | A sub-work or helper copy | Only an assigned copy can be given a new Task |
-| A Team coordinator passed as `target_agent_run_id` | It is the coordinator of Team copy X; use `target_team_run_id` "X" |
+| A Team coordinator passed as `target_agent_run_id` | It is the coordinator of task agent team X; use `target_team_run_id` "X" |
 | A team run ID as `target_agent_run_id`, an Agent copy as `target_team_run_id` | The field to use |
 | A Team member | The Team copy's `target_team_run_id` to use |
 | Unknown, or a copy of another root | Not a delegated copy in this run |

@@ -3,6 +3,7 @@ import type { AgentOperationResult } from "../../../agent-execution/domain/agent
 import type { TaskExecutionPreparationOperation } from "../../../agent-team-execution/domain/prepared-task-execution.js";
 import type { CollaborationMemberExecutionIdentity, RootExecutionIdentity } from "../domain/root-execution-identity.js";
 import type { TaskExecutionReference } from "./task-execution-reference.js";
+import type { AgentTeamAddress } from "../../domain/agent-team-address.js";
 import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 
 export type TaskExecutionActivationCommitResult = Readonly<{ committed: true }> | Readonly<{ committed: false; message: string }>;
@@ -106,6 +107,8 @@ export interface RootTaskExecutionAdapter<TPlacement> {
    * authority and retained registration of exactly this copy, so restore builds a fresh one.
    */
   discardReleasedExecution(reference: TaskExecutionReference): void;
+  /** The agent's own address when, run-wide, it reaches exactly that agent (design T-5, for the task message); null otherwise. */
+  reachingAddressOf(agent: CollaborationMemberExecutionIdentity): AgentTeamAddress | null;
   /** The task execution whose ingress (the Agent itself, or a Team's coordinator) is this agent run; `null` otherwise. */
   taskExecutionWithIngress(agentRunId: string): TaskExecutionReference | null;
   /** The reference is a task execution node of this root's current tree (at any depth). */

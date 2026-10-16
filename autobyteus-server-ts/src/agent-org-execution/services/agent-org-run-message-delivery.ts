@@ -1,4 +1,6 @@
+import { reachingAddressOf } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { mentionViewerOf } from "../../agent-collaboration/collaborators/mention-viewer.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { AgentRunInputOptions, AgentRunInputReservationResult } from "../../agent-execution/input/agent-run-input-contract.js";
 import { getAgentTeamAddressBasename, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
@@ -52,7 +54,7 @@ export class AgentOrgRunMessageDelivery {
   /** `@`: resolves the mentioned definitions for the focused agent (adds nothing); the caller composes the note. */
   resolveMentions(input: Readonly<{ focusedAgentRunId: string; mentions: readonly CollaboratorMention[] }>): Promise<RootCollaboratorAdmissionResult> {
     return this.options.getIndex().getAgent(input.focusedAgentRunId)
-      ? this.options.collaborators.resolveMentions(input.mentions)
+      ? this.options.collaborators.resolveMentions(input.mentions, mentionViewerOf(this.options.getIndex(), input.focusedAgentRunId))
       : Promise.resolve({ admitted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${input.focusedAgentRunId}' is not in AgentOrg '${this.options.orgRunId}'.` });
   }
 
@@ -70,6 +72,7 @@ export class AgentOrgRunMessageDelivery {
     return this.withLiveLease(receiver.agentRunId, () => this.options.getCommunication().deliver({
       senderIdentity: sender,
       senderDisplayName: getAgentTeamAddressBasename(sender.memberAddress) ?? sender.agentRunId,
+      senderAddress: reachingAddressOf(this.options.getIndex(), receiver.agentRunId, sender),
       receiverIdentity: receiver,
       receiverDisplayName: getAgentTeamAddressBasename(receiver.memberAddress) ?? receiver.agentRunId,
       content: input.content,
@@ -88,6 +91,7 @@ export class AgentOrgRunMessageDelivery {
     return this.withLiveLease(receiver.agentRunId, () => this.options.getCommunication().deliver({
       senderIdentity: input.sender.identity,
       senderDisplayName: input.sender.displayName,
+      senderAddress: reachingAddressOf(this.options.getIndex(), receiver.agentRunId, input.sender.identity),
       receiverIdentity: this.identityFor(receiver.agentRunId, receiver.address),
       receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId,
       content: input.content,
