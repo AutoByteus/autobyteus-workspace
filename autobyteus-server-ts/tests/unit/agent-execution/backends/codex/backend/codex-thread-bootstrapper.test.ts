@@ -1,4 +1,3 @@
-import { testCodexLeaseManager } from "../../../../../fixtures/agent-run-preparation-fixtures.js";
 import { WORK_REQUEST_EXECUTION_LLM_INSTRUCTION } from "../../../../../../src/agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
 import { createAgentRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import path from "node:path";
@@ -19,12 +18,10 @@ import {
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
 import { MemberCollaborationContext, MemberExecutionContext } from "../../../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 import { Skill } from "../../../../../../src/skills/domain/models.js";
-import type { WorkspaceSkillMaterializer } from "../../../../../../src/agent-execution/backends/shared/workspace-skill-materializer.js";
 import type { ConfiguredAgentSkillBinding } from "../../../../../../src/skills/domain/configured-agent-skill-binding.js";
 import type { CodexWorkspaceResolver } from "../../../../../../src/agent-execution/backends/codex/codex-workspace-resolver.js";
 import type { AgentDefinitionService } from "../../../../../../src/agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../../../../../src/skills/services/skill-service.js";
-import type { CodexAppServerClientManager } from "../../../../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import type { AgentToolMcpRunSessionActivator } from "../../../../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import type { AgentToolMcpDescriptor } from "../../../../../../src/agent-tools/mcp/agent-tool-mcp-session.js";
 import { testMemberExecutionContext } from "../../../../../fixtures/current-team-run-fixtures.js";
@@ -124,34 +121,14 @@ const createAgentToolMcpDescriptor = (enabledTools: string[] = ["send_message_to
   enabledTools,
 });
 
-const createMaterializerMock = () => ({
-  materializeConfiguredWorkspaceSkills: vi.fn(async (input: {
-    workingDirectory: string;
-    requests?: Array<{ kind: string; skill?: Skill }> | null;
-  }) =>
-    ({ effectiveRequests: input.requests ?? [], materializedSkills: (input.requests ?? []).filter((request) => request.kind === "expose-resolved").map((request) => ({
-      name: request.skill!.name,
-      sourceRootPath: request.skill!.rootPath,
-      materializedRootPath: path.join(input.workingDirectory, ".codex", "skills", request.skill!.name),
-      registryKey: `${input.workingDirectory}::${request.skill!.rootPath}`,
-    })) })),
-}) as unknown as WorkspaceSkillMaterializer;
-
 const createBootstrapper = (input: {
   skills: Skill[];
   bindings?: ConfiguredAgentSkillBinding[];
   requestImplementation: () => Promise<unknown>;
   toolNames?: string[];
   agentToolsDescriptor?: AgentToolMcpDescriptor;
-  materializeImplementation?: WorkspaceSkillMaterializer["materializeConfiguredWorkspaceSkills"];
   skillScope?: "CONFIGURED" | "ALL_INSTALLED";
 }) => {
-  const workspaceSkillMaterializer = createMaterializerMock();
-  if (input.materializeImplementation) {
-    workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills = vi.fn(
-      input.materializeImplementation,
-    );
-  }
   const workspaceResolver = {
     resolveWorkingDirectory: vi.fn(async () => WORKING_DIRECTORY),
   } as unknown as CodexWorkspaceResolver;
@@ -169,13 +146,6 @@ const createBootstrapper = (input: {
     resolveSkillScope: () => input.skillScope ?? "CONFIGURED", resolveConfiguredSkillBindingsForAgent: vi.fn(() =>
       input.bindings ?? input.skills.map(resolvedBinding)),
   } as unknown as SkillService;
-  const client = {
-    request: vi.fn(input.requestImplementation),
-  };
-  const clientManager = testCodexLeaseManager({
-    acquireClient: vi.fn(async () => client),
-    releaseClient: vi.fn(async () => undefined),
-  }) as unknown as CodexAppServerClientManager;
   const agentToolMcpRunSessions = {
     activateForRun: vi.fn((issueInput) => {
       const descriptor = input.agentToolsDescriptor ?? createAgentToolMcpDescriptor(
@@ -191,20 +161,11 @@ const createBootstrapper = (input: {
           });
     }),
   } as AgentToolMcpRunSessionActivator;
-  const bootstrapper = new CodexThreadBootstrapper(
-    agentToolMcpRunSessions,
-    workspaceSkillMaterializer,
-    workspaceResolver,
-    agentDefinitionService,
-    skillService,
-    clientManager,
+  const bootstrapper = new CodexThreadBootstrapper(agentToolMcpRunSessions, workspaceResolver, agentDefinitionService, skillService
   );
 
   return {
     bootstrapper,
-    workspaceSkillMaterializer,
-    client,
-    clientManager,
     agentToolMcpRunSessions,
   };
 };
@@ -267,8 +228,8 @@ describe("CodexThreadBootstrapper", () => {
       const { bootstrapper } = createBootstrapper({
         skills: [], requestImplementation: async () => ({ data: [] }),
       });
-      const created = await bootstrapper.bootstrapForCreate(createRunContext({ memberExecutionContext }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
-      const restored = await bootstrapper.bootstrapForRestore(createRestoreRunContext({ memberExecutionContext }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
+      const created = await bootstrapper.bootstrapForCreate(createRunContext({ memberExecutionContext }), { assertAccepting: () => undefined });
+      const restored = await bootstrapper.bootstrapForRestore(createRestoreRunContext({ memberExecutionContext }), { assertAccepting: () => undefined });
       for (const context of [created, restored]) {
         const prompt = context.runtimeContext.codexThreadConfig.baseInstructions!;
         expect(prompt.split(WORK_REQUEST_EXECUTION_LLM_INSTRUCTION)).toHaveLength(scope === "no-context" ? 1 : 2);
@@ -309,7 +270,7 @@ describe("CodexThreadBootstrapper", () => {
       requestImplementation: async () => ({ data: [] }),
     });
     const runContext = await bootstrapper.bootstrapForCreate(
-      createRunContext({ autoExecuteTools: true }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined },
+      createRunContext({ autoExecuteTools: true }), { assertAccepting: () => undefined },
     );
 
     expect(runContext.runtimeContext.codexThreadConfig.approvalPolicy).toBe("never");
@@ -323,7 +284,7 @@ describe("CodexThreadBootstrapper", () => {
       skills: [],
       requestImplementation: async () => ({ data: [] }),
     });
-    const runContext = await bootstrapper.bootstrapForRestore(createRestoreRunContext({ autoExecuteTools: true }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
+    const runContext = await bootstrapper.bootstrapForRestore(createRestoreRunContext({ autoExecuteTools: true }), { assertAccepting: () => undefined });
 
     expect(runContext.runtimeContext.threadId).toBe("thread-existing");
     expect(runContext.runtimeContext.codexThreadConfig.approvalPolicy).toBe("never");
@@ -341,9 +302,9 @@ describe("CodexThreadBootstrapper", () => {
     const memberExecutionContext = createMemberExecutionContext();
 
     const createdRunContext = await bootstrapper.bootstrapForCreate(
-      createRunContext({ autoExecuteTools: true, memberExecutionContext }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined },
+      createRunContext({ autoExecuteTools: true, memberExecutionContext }), { assertAccepting: () => undefined },
     );
-    const restoredRunContext = await bootstrapper.bootstrapForRestore(createRestoreRunContext({ autoExecuteTools: true, memberExecutionContext }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
+    const restoredRunContext = await bootstrapper.bootstrapForRestore(createRestoreRunContext({ autoExecuteTools: true, memberExecutionContext }), { assertAccepting: () => undefined });
 
     expect(createdRunContext.runtimeContext.codexThreadConfig.approvalPolicy).toBe("never");
     expect(createdRunContext.runtimeContext.codexThreadConfig.sandbox).toBe("danger-full-access");
@@ -384,122 +345,16 @@ describe("CodexThreadBootstrapper", () => {
     const memberExecutionContext = createMemberExecutionContext();
 
     const createdRunContext = await bootstrapper.bootstrapForCreate(
-      createRunContext({ autoExecuteTools: false, memberExecutionContext }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined },
+      createRunContext({ autoExecuteTools: false, memberExecutionContext }), { assertAccepting: () => undefined },
     );
 
     expect(createdRunContext.runtimeContext.codexThreadConfig.approvalPolicy).toBe("untrusted");
     expect(createdRunContext.runtimeContext.codexThreadConfig.sandbox).toBe("read-only");
   });
 
-  it("reconciles a configured skill when Codex discovers exactly the catalog's copy", async () => {
-    const skill = createSkill("installed_skill");
-    const { bootstrapper, workspaceSkillMaterializer, clientManager } = createBootstrapper({
-      skills: [skill],
-      requestImplementation: async () => ({
-        data: [
-          {
-            cwd: WORKING_DIRECTORY,
-            skills: [
-              {
-                name: "installed_skill",
-                enabled: true,
-                path: path.join(skill.rootPath, "SKILL.md"),
-                scope: "user",
-              },
-            ],
-            errors: [],
-          },
-        ],
-      }),
-    });
 
-    const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
 
-    expect(
-      workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills,
-    ).toHaveBeenCalledWith(
-      expect.objectContaining({
-        workingDirectory: WORKING_DIRECTORY,
-        runId: "run-1",
-        requests: [{ kind: "reconcile-discoverable", skill }],
-      }),
-    );
-    expect(runContext.runtimeContext.materializedConfiguredSkills).toEqual([]);
-    expect(clientManager.releaseClient).toHaveBeenCalledWith(WORKING_DIRECTORY);
-  });
 
-  it("exposes the catalog's copy and logs codex-runtime-duplicate when Codex lists another copy (D-19)", async () => {
-    const skill = createSkill("installed_skill");
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
-    const { bootstrapper, workspaceSkillMaterializer } = createBootstrapper({
-      skills: [skill],
-      requestImplementation: async () => ({
-        data: [{
-          cwd: WORKING_DIRECTORY,
-          skills: [
-            { name: "installed_skill", enabled: true, path: "/Users/someone/.codex/skills/installed_skill/SKILL.md", scope: "user" },
-            { name: "installed_skill", enabled: true, path: path.join(skill.rootPath, "SKILL.md"), scope: "repo" },
-          ],
-          errors: [],
-        }],
-      }),
-    });
-
-    await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
-
-    expect(workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills).toHaveBeenCalledWith(
-      expect.objectContaining({ requests: [{ kind: "expose-resolved", skill }] }));
-    const duplicate = warn.mock.calls.map(([message]) => String(message)).find((message) => message.startsWith("codex-runtime-duplicate"));
-    expect(duplicate).toContain("skill='installed_skill'");
-    expect(duplicate).toContain("codexPaths='/Users/someone/.codex/skills/installed_skill'");
-    expect(duplicate).toContain(`chosenPath='${path.resolve(skill.rootPath)}'`);
-    warn.mockRestore();
-  });
-
-  it("maps every binding exactly once while discovery changes only resolved request intent", async () => {
-    const installed = createSkill("installed_skill");
-    const missing = createSkill("missing_skill");
-    const bindings: ConfiguredAgentSkillBinding[] = [
-      resolvedBinding(installed),
-      { kind: "unresolved", name: "unresolved_skill" },
-      resolvedBinding(missing),
-    ];
-    const { bootstrapper, workspaceSkillMaterializer } = createBootstrapper({
-      skills: [installed, missing],
-      bindings,
-      requestImplementation: async () => ({
-        data: [{ cwd: WORKING_DIRECTORY, skills: [{ name: installed.name, enabled: true, path: path.join(installed.rootPath, "SKILL.md") }], errors: [] }],
-      }),
-    });
-
-    const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
-
-    expect(workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills).toHaveBeenCalledWith(expect.objectContaining({
-      runId: "run-1",
-      workingDirectory: WORKING_DIRECTORY,
-      requests: [
-        { kind: "reconcile-discoverable", skill: installed },
-        { kind: "reconcile-unresolved", name: "unresolved_skill" },
-        { kind: "expose-resolved", skill: missing },
-      ],
-      workspaceCollisionPolicy: "fail",
-    }));
-    expect(runContext.runtimeContext.materializedConfiguredSkills).toHaveLength(1);
-  });
-
-  it("prefers user-owned workspace entries for an ALL_INSTALLED definition (D-15 Rule 1)", async () => {
-    const installed = createSkill("installed_skill");
-    const { bootstrapper, workspaceSkillMaterializer } = createBootstrapper({
-      skills: [installed],
-      skillScope: "ALL_INSTALLED",
-      requestImplementation: async () => ({ data: [{ cwd: WORKING_DIRECTORY, skills: [], errors: [] }] }),
-    });
-
-    await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
-
-    expect(workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills).toHaveBeenCalledWith(
-      expect.objectContaining({ workspaceCollisionPolicy: "prefer_workspace", requests: [{ kind: "expose-resolved", skill: installed }] }));
-  });
 
   it("normalizes llmConfig service_tier into Codex thread serviceTier", async () => {
     const { bootstrapper } = createBootstrapper({
@@ -513,7 +368,7 @@ describe("CodexThreadBootstrapper", () => {
           reasoning_effort: "high",
           service_tier: " FAST ",
         },
-      }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined },
+      }), { assertAccepting: () => undefined },
     );
 
     expect(runContext.runtimeContext.codexThreadConfig.reasoningEffort).toBe("high");
@@ -528,7 +383,7 @@ describe("CodexThreadBootstrapper", () => {
 
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext({
       llmModelIdentifier: "gpt-5.6-luna",
-    }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
+    }), { assertAccepting: () => undefined });
 
     expect(runContext.runtimeContext.codexThreadConfig.model).toBe("gpt-5.6-luna");
   });
@@ -550,7 +405,7 @@ describe("CodexThreadBootstrapper", () => {
           llmConfig: {
             reasoning_effort: submittedEffort,
           },
-        }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined },
+        }), { assertAccepting: () => undefined },
       );
 
       expect(runContext.runtimeContext.codexThreadConfig.reasoningEffort).toBe(
@@ -572,7 +427,7 @@ describe("CodexThreadBootstrapper", () => {
       });
 
       const runContext = await bootstrapper.bootstrapForCreate(
-        createRunContext({ llmConfig }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined },
+        createRunContext({ llmConfig }), { assertAccepting: () => undefined },
       );
 
       expect(
@@ -581,36 +436,6 @@ describe("CodexThreadBootstrapper", () => {
     },
   );
 
-  it("falls back to workspace materialization when the discoverable-skill probe fails", async () => {
-    const skill = createSkill("missing_skill");
-    const { bootstrapper, workspaceSkillMaterializer, clientManager } = createBootstrapper({
-      skills: [skill],
-      bindings: [
-        resolvedBinding(skill),
-        { kind: "unresolved", name: "still_missing" },
-      ],
-      requestImplementation: async () => {
-        throw new Error("skills/list failed");
-      },
-    });
-
-    const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
-
-    expect(
-      workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills,
-    ).toHaveBeenCalledWith(
-      expect.objectContaining({
-        workingDirectory: WORKING_DIRECTORY,
-        runId: "run-1",
-        requests: [
-          { kind: "expose-resolved", skill },
-          { kind: "reconcile-unresolved", name: "still_missing" },
-        ],
-      }),
-    );
-    expect(runContext.runtimeContext.materializedConfiguredSkills).toHaveLength(1);
-    expect(clientManager.releaseClient).toHaveBeenCalledWith(WORKING_DIRECTORY);
-  });
 
   it("does not materialize Agent Tools MCP browser config unless browser tools are available", async () => {
     process.env[BROWSER_BRIDGE_BASE_URL_ENV] = "http://127.0.0.1:39001";
@@ -623,7 +448,7 @@ describe("CodexThreadBootstrapper", () => {
     });
 
     const noBrowserToolRunContext = await noBrowserToolBootstrapper.bootstrapForCreate(
-      createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined },
+      createRunContext(), { assertAccepting: () => undefined },
     );
 
     expect(noBrowserToolRunContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
@@ -638,7 +463,7 @@ describe("CodexThreadBootstrapper", () => {
       requestImplementation: async () => ({ data: [] }),
     });
 
-    const noBridgeRunContext = await noBridgeBootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
+    const noBridgeRunContext = await noBridgeBootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined });
 
     expect(noBridgeRunContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
   });
@@ -650,7 +475,7 @@ describe("CodexThreadBootstrapper", () => {
       requestImplementation: async () => ({ data: [] }),
     });
 
-    const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined });
 
     expect(runContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
     expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toEqual({
@@ -689,7 +514,7 @@ describe("CodexThreadBootstrapper", () => {
 
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext({
       applicationExecutionContext,
-    }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
+    }), { assertAccepting: () => undefined });
 
     expect(agentToolMcpRunSessions.activateForRun).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -717,7 +542,7 @@ describe("CodexThreadBootstrapper", () => {
       requestImplementation: async () => ({ data: [] }),
     });
 
-    const runContext = await bootstrapper.bootstrapForRestore(createRestoreRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
+    const runContext = await bootstrapper.bootstrapForRestore(createRestoreRunContext(), { assertAccepting: () => undefined });
 
     expect(runContext.runtimeContext.threadId).toBe("thread-existing");
     expect(agentToolMcpRunSessions.activateForRun).toHaveBeenCalledTimes(1);
@@ -737,13 +562,10 @@ describe("CodexThreadBootstrapper", () => {
       skills: [skill],
       toolNames: ["send_message_to"],
       requestImplementation: async () => ({ data: [] }),
-      materializeImplementation: async () => {
-        throw new Error("workspace materialization failed after issue");
-      },
     });
 
-    await expect(bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined })).rejects.toThrow(
-      "workspace materialization failed after issue",
+    await expect(bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined })).rejects.toThrow(
+      "absolute application-private execution storage",
     );
     expect(agentToolMcpRunSessions.activateForRun).toHaveBeenCalledTimes(1);
     expect(agentToolMcpRunSessions.activateForRun).toHaveBeenCalledWith(
@@ -759,7 +581,7 @@ describe("CodexThreadBootstrapper", () => {
       requestImplementation: async () => ({ data: [] }),
     });
 
-    const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined });
 
     expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toBeNull();
     expect(agentToolMcpRunSessions.activateForRun).toHaveBeenCalledTimes(1);
@@ -775,7 +597,7 @@ describe("CodexThreadBootstrapper", () => {
       requestImplementation: async () => ({ data: [] }),
     });
 
-    const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined });
     expect(runContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
     expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toMatchObject({
       mcp_servers: {
@@ -794,7 +616,7 @@ describe("CodexThreadBootstrapper", () => {
       requestImplementation: async () => ({ data: [] }),
     });
 
-    const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined });
 
     expect(runContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
     expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toMatchObject({
@@ -813,7 +635,7 @@ describe("CodexThreadBootstrapper", () => {
       requestImplementation: async () => ({ data: [] }),
     });
 
-    const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined });
 
     expect(runContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
     expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toMatchObject({
@@ -832,7 +654,7 @@ describe("CodexThreadBootstrapper", () => {
       requestImplementation: async () => ({ data: [] }),
     });
 
-    const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined });
 
     expect(runContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
   });
@@ -844,7 +666,7 @@ describe("CodexThreadBootstrapper", () => {
       requestImplementation: async () => ({ data: [] }),
     });
 
-    const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined });
 
     expect(runContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
     expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toMatchObject({

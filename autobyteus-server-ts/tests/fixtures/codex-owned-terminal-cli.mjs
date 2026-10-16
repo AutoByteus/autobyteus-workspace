@@ -2,6 +2,9 @@
 // 0.160.0 interruption order: interrupt response -> idle status -> turn/completed.
 // Tests explicitly release the final notification to witness the intervening boundary.
 import readline from 'node:readline';
+import fs from 'node:fs';
+import path from 'node:path';
+let extraRoots = [];
 let nextThread = 1;
 const requests = [];
 let holdStart = false;
@@ -14,6 +17,8 @@ for await (const line of readline.createInterface({ input: process.stdin })) {
   if (id === undefined) continue;
   requests.push({ method, params });
   let result = {};
+  if (method === 'skills/extraRoots/set') extraRoots = params.extraRoots;
+  if (method === 'skills/list') result = {data: (params.cwds ?? []).map(cwd => ({cwd,skills:extraRoots.flatMap(root => fs.readdirSync(root).map(name => ({name,enabled:true,path:path.join(root,name,'SKILL.md')})))}))};
   if (method === 'thread/start') result = { thread: { id: `owned-thread-${nextThread++}` } };
   if (method === 'turn/start') {
     result = { turn: { id: `${params.threadId}-turn` } };

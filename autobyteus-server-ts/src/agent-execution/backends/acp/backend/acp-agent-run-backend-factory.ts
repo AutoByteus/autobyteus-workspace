@@ -1,7 +1,6 @@
 import type { AcpPrivateSkillAdapter } from "../acp-private-skill-adapter.js";
 import type { RuntimeSkillProfile } from "../../shared/runtime-skill-profile.js";
 import { preparePrivateRuntimeSkills, privateSkillInstructions } from "../../shared/prepare-private-runtime-skills.js";
-import { scopedProjectGitEnvironment } from "../../../../runtime-management/shared/scoped-project-git-environment.js";
 import { workspaceCollisionPolicyForScope } from "../../shared/workspace-skill-collision-policy.js";
 import type { SystemInstructionTraceRecord } from "autobyteus-ts";
 import { createBackendPreparation, type AgentRunBackendPreparation } from "../../agent-run-backend-preparation.js";
@@ -42,15 +41,16 @@ export type AcpWorkingDirectoryResolver = Readonly<{
 
 export type AcpAgentRunBackendFactoryDependencies = Readonly<{
   launchProfile: AcpAgentLaunchProfile;
-  privateSkills?: AcpPrivateSkillAdapter;
   sessionProfile: AcpAgentSessionProfile;
   definitions: AgentDefinitionService;
   skills: SkillService;
   workspaces: AcpWorkingDirectoryResolver;
   mcpSessions: AgentToolMcpRunSessionActivator;
-  skillMaterializer: WorkspaceSkillMaterializer;
   instructionCapture?: SystemInstructionCaptureService;
-}>;
+}> & (
+  | Readonly<{ privateSkills: AcpPrivateSkillAdapter; skillMaterializer?: never }>
+  | Readonly<{ privateSkills?: undefined; skillMaterializer: WorkspaceSkillMaterializer }>
+);
 
 type PreparedRun = Readonly<{
   workingDirectory: string;
@@ -94,8 +94,10 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
           if (owner.connection) await owner.connection.close();
           else await owner.process?.stop();
         } catch (error) { errors.push(error); }
-        try { await this.deps.skillMaterializer.cleanupMaterializedWorkspaceSkills(owner.skills); }
-        catch (error) { errors.push(error); }
+        if (!this.deps.privateSkills) {
+          try { await this.deps.skillMaterializer.cleanupMaterializedWorkspaceSkills(owner.skills); }
+          catch (error) { errors.push(error); }
+        }
         if (!errors.length) try { await owner.profile?.release(); } catch (error) { errors.push(error); }
         if (errors.length) throw new AggregateError(errors, "ACP exact preparation release failed.");
       },
@@ -152,7 +154,7 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
       collisionPolicy: workspaceCollisionPolicyForScope(this.deps.skills.resolveSkillScope(definition)),
       guard: { assertAccepting, ownSkillProfile: (profile) => { owner.profile = profile; } },
     }) : null;
-    const { materializedSkills } = privateSkillProfile ? { materializedSkills: [] } : await this.deps.skillMaterializer.materializeConfiguredWorkspaceSkills({
+    const { materializedSkills } = this.deps.privateSkills ? { materializedSkills: [] } : await this.deps.skillMaterializer.materializeConfiguredWorkspaceSkills({
       runId, workingDirectory,
       onAcquired: (skill) => { owner.skills.push(skill); }, assertAccepting,
       workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.deps.skills.resolveSkillScope(definition)),
@@ -182,7 +184,7 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
     const process = AcpAgentProcess.spawn({
       command: launchProfile.command(),
       args: prepared.privateSkillProfile && this.deps.privateSkills ? this.deps.privateSkills.launchArgs(args, prepared.privateSkillProfile) : args,
-      env: prepared.privateSkillProfile ? scopedProjectGitEnvironment(env, prepared.workingDirectory) : env,
+      env,
       cwd: prepared.workingDirectory,
     });
     owner.process = process;

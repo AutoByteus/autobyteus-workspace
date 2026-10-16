@@ -1,7 +1,6 @@
 import type { RuntimeSkillProfile } from "../../shared/runtime-skill-profile.js";
 import { createBackendPreparation } from "../../agent-run-backend-preparation.js";
 import type { AgentRunBackendPreparationRequest } from "../../agent-run-backend-factory.js";
-import type { MaterializedWorkspaceSkill } from "../../shared/workspace-skill-materializer.js";
 import type { ClaudeRunContext } from "./claude-agent-run-context.js";
 import type { ClaudeSession } from "../session/claude-session.js";
 import { AgentRunConfig } from "../../../domain/agent-run-config.js";
@@ -25,13 +24,12 @@ export class ClaudeAgentRunBackendFactory implements AgentRunBackendFactory {
   }
 
   beginPreparation(request: AgentRunBackendPreparationRequest) {
-    const skills: MaterializedWorkspaceSkill[] = [];
     const profiles: RuntimeSkillProfile[] = [];
     let runContext: ClaudeRunContext | null = null;
     let session: ClaudeSession | null = null;
     return createBackendPreparation({
       prepare: async (assertAccepting) => {
-        const guard = { assertAccepting, ownSkillProfile: (profile: RuntimeSkillProfile) => { profiles.push(profile); }, ownSkill: (skill: MaterializedWorkspaceSkill) => { skills.push(skill); } };
+        const guard = { assertAccepting, ownSkillProfile: (profile: RuntimeSkillProfile) => { profiles.push(profile); } };
         let platformAgentRunId: string | null = null;
         if (request.kind === "restore") {
           const runtime = request.context.runtimeContext;
@@ -58,7 +56,6 @@ export class ClaudeAgentRunBackendFactory implements AgentRunBackendFactory {
         if (!errors.length) for (const profile of profiles) {
           try { await profile.release(); } catch (error) { errors.push(error); }
         }
-        try { await this.sessionBootstrapper.releaseSkills(skills); } catch (error) { errors.push(error); }
         if (errors.length) throw new AggregateError(errors, "Claude exact preparation release failed.");
       },
     });
