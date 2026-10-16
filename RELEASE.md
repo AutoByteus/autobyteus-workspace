@@ -254,8 +254,13 @@ What the release workflows build, validate and need.
 
 ### AutoByteus NFS assets
 
-The standalone service shares this repository's release tag/version; it is not an
-independent release stream. See [NFS distribution and qualification](autobyteus-nfs/packaging/RELEASE.md).
-Its manual build-only workflow does not publish. Public NFS assets remain unavailable
-until its current-source, physical topology and explicit user-verification gates pass;
-do not enable a working Nodes Guide command based on candidate/feasibility artifacts.
+AutoByteus NFS source, installer and distribution are maintained in the independent
+[AutoByteus NFS repository](https://github.com/AutoByteus/autobyteus-nfs).
+Its NFS-owned tags/workflow are separate from desktop version/tag publication;
+see its [release and qualification policy](https://github.com/AutoByteus/autobyteus-nfs/blob/main/packaging/RELEASE.md).
+This repository retains the installed-service launcher/descriptor consumers and
+pinned local contract fixture, not a second service implementation or release job.
+Public NFS assets remain unavailable until the service's current-source,
+physical/user/signing gates and explicit release approval pass. The app separately
+validates its tested service/consumer revisions before enabling a Guide command;
+candidate or historical feasibility artifacts do not enable it.

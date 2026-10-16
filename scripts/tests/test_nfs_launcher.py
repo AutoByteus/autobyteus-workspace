@@ -1,32 +1,15 @@
-"""Implementation unit fixtures only: no downloads, sudo, mounts or real Docker.
-Run: python3 -m unittest scripts/tests/test_nfs_packaging_and_launcher.py -v
-The shell fixture substitutes only its fixed reference-directory constant so it
-never writes /etc; CLI and Docker replies are test doubles, not live integration.
+"""Offline launcher fixtures: fake installed CLI/Docker, no mounts or /etc writes.
+Run: python3 -m unittest scripts/tests/test_nfs_launcher.py -v
 """
-import json
-import os
-import subprocess
 import tempfile
+import subprocess
 import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 MODULE = ROOT / 'scripts/public/docker/autobyteus-docker.d/bash/nfs-attachment.sh'
 
-
-class NfsPackagingAndLauncherTest(unittest.TestCase):
-    def test_unpublished_installer_fails_before_download(self):
-        result = subprocess.run(['/bin/bash', str(ROOT / 'scripts/public/nfs/install.sh')],
-                                capture_output=True, text=True, env={'PATH':'/usr/bin:/bin'})
-        self.assertNotEqual(result.returncode, 0)
-        self.assertIn('No qualified versioned release', result.stderr)
-
-    def test_unqualified_release_cannot_publish(self):
-        result = subprocess.run(['python3', str(ROOT / 'autobyteus-nfs/packaging/release.py'), '--check-publish'],
-                                capture_output=True, text=True)
-        self.assertNotEqual(result.returncode, 0)
-        self.assertIn('No qualified release targets', result.stderr)
-
+class NfsLauncherTest(unittest.TestCase):
     def test_shell_selected_attachment_arguments_and_wrong_daemon_refusal(self):
         with tempfile.TemporaryDirectory(prefix='nfs-launcher-unit-') as root:
             home=Path(root); (home/'.local/bin').mkdir(parents=True)
@@ -74,14 +57,6 @@ docker() { printf '%s\\n' "$*" >> "$HOME/calls"; }
             self.assertIn('docker update --restart=no node-one',q.stdout)
             self.assertIn('restart policy were kept',q.stdout)
 
-    def test_nfs_workflow_build_only_never_pushes_or_publishes(self):
-        content=(ROOT/'.github/workflows/release-nfs.yml').read_text()
-        self.assertIn('default: false',content)
-        self.assertIn("push: ${{ needs.prepare.outputs.publish == 'true' }}",content)
-        self.assertIn("if: needs.prepare.outputs.publish == 'true'",content)
-        self.assertIn('--check-publish',content)
-        self.assertNotIn('gh release create',content)
 
-
-if __name__=='__main__':
+if __name__ == "__main__":
     unittest.main()

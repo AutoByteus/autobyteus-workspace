@@ -1,5 +1,6 @@
 import {beforeEach,afterEach,describe,it,expect,vi} from "vitest";
 import fs from "node:fs/promises";
+import {createHash} from "node:crypto";
 import os from "node:os";
 import path from "node:path";
 import {SharedWorkspaceBinding,parseSharedMountBinding,isWithinSharedRoot} from "../../../src/workspaces/shared-workspace-binding.js";
@@ -59,9 +60,19 @@ describe("new-run shared binding",()=>{
 });
 
 it("reads the service's cross-language descriptor contract fixture", async () => {
-  const file = new URL("../../../../autobyteus-nfs/testdata/attachment.json", import.meta.url);
-  const binding = parseSharedMountBinding(JSON.parse(await fs.readFile(file, "utf8")));
+  // Offline consumer snapshot; paired integration checks compare the recorded
+  // producer commit via git show, never fetch a mutable branch during unit tests.
+  const file = new URL("../../fixtures/shared-network-workspaces/attachment.json", import.meta.url);
+  const provenance = JSON.parse(await fs.readFile(new URL("./provenance.json", file), "utf8"));
+  const bytes = await fs.readFile(file);
+  expect(provenance.repository).toBe("https://github.com/AutoByteus/autobyteus-nfs");
+  expect(provenance.commit).toMatch(/^[a-f0-9]{40}$/);
+  expect(provenance.path).toBe("testdata/attachment.json");
+  expect(createHash("sha256").update(bytes).digest("hex")).toBe(provenance.sha256);
+  const binding = parseSharedMountBinding(JSON.parse(bytes.toString("utf8")));
   expect(binding.storageId).toBe("5544dadc-86b0-43ba-9799-74728b442227");
+  expect(binding.endpoint).toBe("192.168.50.10");
+  expect(binding.export).toBe("/autobyteus/5544dadc-86b0-43ba-9799-74728b442227");
   expect(binding.protocol).toBe("4.1");
   expect(binding.mountRoot).toBe("/Volumes/autobyteus-shared");
 });

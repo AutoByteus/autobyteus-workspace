@@ -1,6 +1,6 @@
 # Shared network workspaces
 
-AutoByteus NFS is an independent OS service; see [the service guide](../../../autobyteus-nfs/README.md).
+AutoByteus NFS is an independent OS service; see [the service guide](https://github.com/AutoByteus/autobyteus-nfs/blob/main/README.md).
 Workspace registration remains metadata-only and does not mount storage or enumerate
 network directories at application startup.
 
@@ -44,6 +44,22 @@ application acceptance. Native-Linux and Docker-Linux storage are sequential.
 This same-kernel/cache evidence does not qualify independent clients, physical
 hosts, Mac/cross-OS, external join or authenticated-agent behavior. Existing
 repository content/lifecycle regressions are supplementary, not proof of a new
-live editor journey. See the [service validation boundary](../../../autobyteus-nfs/README.md#validation-boundary).
+live editor journey. See the [service validation boundary](https://github.com/AutoByteus/autobyteus-nfs/blob/main/README.md#validation-boundary).
 The service remains unpublished; neither an API regression Pass nor filesystem
 Pass changes the release lock or enables the Guide's install command.
+
+## Maintained service and consumer fixture
+
+The service source, installer, engine recipe and distribution workflow are owned
+by [AutoByteus NFS](https://github.com/AutoByteus/autobyteus-nfs), not this checkout.
+See its [installed contract](https://github.com/AutoByteus/autobyteus-nfs/blob/main/docs/integration-contract.md)
+and [release qualification policy](https://github.com/AutoByteus/autobyteus-nfs/blob/main/packaging/RELEASE.md).
+App production continues to consume the installed CLI/descriptor, not Go source.
+
+The local test snapshot at `tests/fixtures/shared-network-workspaces/attachment.json`
+has exact producer repository/commit/path/SHA in adjacent `provenance.json`.
+Ordinary parser tests are offline; changing the pin requires explicit equality
+against that committed producer and actual parser/launcher checks. Service
+source hashes cover service-owned inputs and declared contract, not arbitrary
+app bytes. Future integration evidence names both service/engine and app
+commit/image identities. Repository extraction does not publish or qualify them.
