@@ -145,7 +145,7 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
         : { role: "assigned", assignedBy: context.identity.agentRunId, adHocTask: { description, referenceFiles } };
     }
     return dispatchTaskCopy({ adapter: this.adapter, queue: this.queue, context, placement,
-      workPacket: buildTaskAssigneeWorkPacket({ delegator: context.identity, description, referenceFiles }),
+      workPacket: buildTaskAssigneeWorkPacket({ delegator: context.identity, delegatorAddress: this.adapter.reachingAddressOf(context.identity), description, referenceFiles }),
       join, resources: this.resourceScope.port(),
       assertAdmitting: () => this.assertAdmitting(context.identity),
     });
@@ -191,7 +191,7 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
       try { await port.markFailed(target.execution, { code: delivered.code ?? "TASK_WORK_NOT_DELIVERED", message: reason }); }
       catch (recordError) { throw new TaskDispatchIndeterminateError(target.execution, recordError); }
       return { delegated: false, message: `Task ${taskId} was given to the task agent, but the message with its work was not delivered (${reason}). `
-        + `Message the task agent's run ID ${target.ingressAgentRunId}, or set Task ${taskId} to CANCELLED, or delegate it to a new task agent.` };
+        + `Message the task agent's run id ${target.ingressAgentRunId}, or set Task ${taskId} to CANCELLED, or delegate it to a new task agent.` };
     }
     try { await port.markStarted(target.execution); }
     catch (error) { throw new TaskDispatchIndeterminateError(target.execution, error); }

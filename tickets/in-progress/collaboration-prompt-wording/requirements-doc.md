@@ -20,7 +20,7 @@
 
 Everything an agent reads about collaboration — its prompt sections, the tool descriptions,
 tool results and refusals, the task message, the header of a received message and the `@`
-note — was written from the system's point of view ("copy", "run ID", "this run", "spawn",
+note — was written from the system's point of view ("copy", "run id", "this run", "spawn",
 "nested AgentTeam") and has drifted into contradictions:
 
 - The `teamScoped` switch gives task agents in Team and Org runs the team prompt.
@@ -43,8 +43,8 @@ vocabulary, each fact said once, with the exact wording of the wording authority
 | BEH-002 | Collaboration sections use "copy", "run", "spawn", "mounted", "collaborator", "in this run". | Sections are the wording authority §4.1, §4.2, §5.0–§5.3, in the §2 vocabulary. |
 | BEH-003 | Handoff paragraph shown to every Team/Org-run agent. | Shown exactly to agents that have handoff rules (wording §5.3). |
 | BEH-004 | Prompts state the agent's own address ("Your address in this run is …", "Your Agent address is: …"). | No agent-facing text states the agent's own address (wording §1 principle 6). |
-| BEH-005 | Task message: "Task delegator address: …" / "Task delegator AgentRun ID: …" (the address may reach a different agent). | The sender described only by its sender id, plus the reply instruction; no name, no address (wording §7.1). |
-| BEH-006 | Received-message header always carries "sender address: …", even when it reaches a different agent. | Header is `You received a message from the agent with sender run ID "<id>".` — no name, no address; the user still sees the sender's name in the chat, from the app's run-ID lookup (wording §7.2). |
+| BEH-005 | Task message: "Task delegator address: …" / "Task delegator AgentRun ID: …" (the address may reach a different agent). | The sender described by its sender run id and, when that address reaches it, its sender address; no name; plus the reply instruction (wording §7.1). |
+| BEH-006 | Received-message header always carries "sender address: …", even when it reaches a different agent. | Header gives the sender run id and, exactly when it reaches the sender, the sender address; no name; the chat still shows "From <name>" from the run-ID lookup (wording §7.2). |
 | BEH-007 | Tool descriptions repeat prompt rules and use system vocabulary. | Tool descriptions as wording §6: mechanics only, each fact once. |
 | BEH-008 | Tool results and refusals use "copy", "run", "Task worker", "root". | Results and refusals use §2 vocabulary and say what to do next (wording §7.3). |
 | BEH-009 | `@` note: presence decided for the whole run (`in_run`); guidance offers `delegate_task` "for a separate copy" even for a teammate. | One line per mention chosen for the agent the user talks to (wording §8): itself, own team, the standalone run's own agent, reachable and delegable, catalog only. |
@@ -125,12 +125,14 @@ here (they change intended behavior).
   team; organization direct agent; member of an organization's team; a task agent that has
   handoff rules — equal the complete views (snapshot), on the AutoByteus prompt and on the
   Codex/Claude bootstrap paths.
-- AC-002 (REQ-004..006): No rendered prompt contains the receiving agent's own address; no task
-  message or received-message header contains a sender address; the task message contains no
-  bare name and gives the sender only as its sender id.
+- AC-002 (REQ-004..006): No rendered prompt contains the receiving agent's own address. A task
+  message or header contains the sender's address exactly when sending to it reaches the sender
+  (tests: a delegating Project Task Manager, the agent the user started and a teammate → included;
+  a delegating task agent and a task agent team member writing from outside its team →
+  omitted); no task message or header contains a name.
 - AC-003 (REQ-005, REQ-006): A task agent's first message (both forms) and a teammate's message
   to a member match wording §7.1/§7.2; the chat still shows "From <sender name>" and the body,
-  the name coming from the app's run-ID lookup (or a readable name made from the run ID), for
+  the name coming from the app's run-ID lookup (or a readable name made from the run id), for
   new messages and for every saved earlier header form.
 - AC-004 (REQ-007): The tool descriptions and parameter descriptions exposed natively and over
   MCP equal wording §6.
@@ -145,17 +147,17 @@ here (they change intended behavior).
   mentioning a teammate gets the "in your team" line with the teammate's address inside the
   team (SR-011). Saved notes of every earlier form parse.
 - AC-007 (all): Wording §10 checks 1–11 pass; a scripted check fails the build if agent-facing
-  sources contain a §2 forbidden word ("run" as a place; "run ID" allowed); every catalogue text
+  sources contain a §2 forbidden word ("run" as a place; "run id" allowed); every catalogue text
   (wording §7.3, M-01..M-45) is produced by the code exactly, each in a test (SR-014).
 - AC-008 (UC-001..UC-004): With real models: a standalone agent delegates and its task agent
-  reports back by ID; a team member hands off by its rules; the Project Task Manager delegates
-  to an organization team and the team reports back by ID. Run the report-back case (`LE-A1`) at
-  least 5 times on each of Claude and Codex, and the desktop journeys J1/J3 at least 4 times
+  reports back; a team member hands off by its rules; the Project Task Manager delegates to an
+  organization team and the team reports back. Run the report-back case (`LE-A1`) at least 15
+  times on Codex and at least 5 times on Claude, and the desktop journeys J1/J3 at least 4 times
   each on an isolated instance, on the branch and on the base. Pass: on Claude and Codex the
-  branch succeeds at least as often as the base, replies to the delegating agent use
-  `target_agent_run_id`, and every failing sample's helper trace is kept and explained. LM Studio
-  (a small local model) runs are recorded for information only and do not decide the result;
-  the wording is not tuned for it (DEC-010).
+  branch succeeds at least as often as the base; no unprompted send by the delegating agent after
+  the report (SR-015, the F-5 echo loop); replies use the sender run id or the sender address;
+  every failing sample's trace is kept and explained. LM Studio runs are information only
+  (DEC-010).
 
 ## Relevant Scenarios And Journeys
 
@@ -224,17 +226,26 @@ every earlier note and header form. No loss is acceptable.
   read it (REQ-008); the refusal condition is unchanged.
 - DEC-010 (user, SR-005): the wording is not changed for LM Studio; small local models struggle
   with any prompt, while Claude and Codex worked before. LM Studio results are information only.
-- DEC-014 (user, SR-013): one ID term everywhere, "run ID", matching the tool fields
+- DEC-017 (user, SR-016): lowercase "run id" in every agent-facing text, matching the tool argument names.
+- DEC-015 (user, SR-015): the header and the task message give the sender address as well as the
+  sender run id — "sender name does not give us any value, but sender address gives, because
+  send_message_to sometimes uses sender address" — exactly when that address reaches the sender
+  (design T-5), and no name. Supersedes the header part of DEC-014 and the address part of
+  DEC-012.
+- DEC-016 (Solution Designer, within the direction, SR-015; user informed): the F-5 no-reply rule —
+  "Reply only when the message asks you something or you need something from the sender; a
+  result or an answer needs no reply." — and purposes lines that no longer invite replies.
+- DEC-014 (user, SR-013): one ID term everywhere, "run id", matching the tool fields
   (`target_agent_run_id`, `target_team_run_id`, `target_team_coordinator_agent_run_id`): "its run
-  ID", "your run ID", "sender run ID", "it returns a run ID to follow up with". The header the
-  agent reads has no name: `You received a message from the agent with sender run ID "<id>".`,
+  ID", "your run id", "sender run id", "it returns a run id to follow up with". The header the
+  agent reads has no name: `You received a message from the agent with sender run id "<id>".`,
   the same phrase as the task message. The user still sees "From <name>" in the chat (the app's
   run-ID lookup); the parser accepts the new and every earlier form. Done in this ticket ("once
   for all"), so Project Task `project_task_9de99841-…` (the run-ID follow-up) is covered by it.
 - DEC-013 (user, SR-007; reverted by the user in SR-008 — the agent-facing word stays "task agent"): the agent-facing word was to be "copy" again ("a fresh copy", "a team copy",
   "your copies"), replacing "task agent". Evidence: with the pre-refactor prompts the Project
   Task Manager used "copy" correctly across many sessions (2026-10-16 screenshot: "That starts a
-  fresh copy of the team … the earlier copy's team run ID … wakes the same copy with its whole
+  fresh copy of the team … the earlier copy's team run id … wakes the same copy with its whole
   conversation … only works if I made that copy's latest assignment"), and the validation rounds
   showed no gain from "task agent" itself. Every other SR-001..SR-006 decision stays (talk with,
   no "this run"/"spawn", no lifecycle words, replies by ID, no own address). Engineer-facing

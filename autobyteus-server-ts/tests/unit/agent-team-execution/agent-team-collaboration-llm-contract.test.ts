@@ -37,13 +37,13 @@ describe("approved collaboration tool descriptions", () => {
       delegateDescription: sha256(DELEGATE_TASK_DESCRIPTION_FIELD_DESCRIPTION),
       delegateReferences: sha256(DELEGATE_TASK_REFERENCE_FILES_DESCRIPTION),
     }).toEqual({
-      sendTool: "43fd0983154b0d3c687a9c2209a2f704d0829e6a8d184216af2f0aa7f27b7de6",
+      sendTool: "6ff131924d8cef4ed04f0702af3544484356ec6f1947197da2192455db6dc18f",
       sendRecipient: "6be9ed29689ec44cf8775b00e0d34ab473126416a1330a63aa3ccef2b6d14806",
-      sendExactRun: "531f451cbf2a29698962ea66826ca019dce49b0a714279d25b505dcc9709c30e",
-      delegateTool: "ce8f689678db616b26a0463cd9998771c1bad1bd4b78219701eeefd0afddb939",
+      sendExactRun: "9a9c650c745f2fcaca353a639339f712e9d9bba60e3de0f3bbad5d43e1cc8b5f",
+      delegateTool: "60639174edf5b22729aad340d17fe94ae4a80f9a20c57f591a35de199d9390a2",
       delegateRecipient: "501c11b0aa0cf1eeb1c64e9d9c0b852356c5d55f45e8288ecbb16c4e60d18c7b",
-      delegateTeamId: "9da81cbd1c2bfe36eb32bee869e9ede41f182687a30aa61050621000663dae6b",
-      delegateAgentId: "adad013f7121d0616bfd04bfdd255a9ff4ebd9e8743b2bfd3afac6309ebdb4ce",
+      delegateTeamId: "2a50c7b86ae6fda3c7f5ad890631ad9d191bbd97fb99bf20bd9c7cca0ded0f6b",
+      delegateAgentId: "c6da81bc36fb30aa339f71451a2b0559fb251aad28030b305611c4fe3492f970",
       delegateTaskId: "d0ed960b9714eb20ac0a35c8d4c423ef5131983577b3b02ef5a6fa435afa8c17",
       delegateDescription: "e4b27c311d0bbe3a2a28745f12ecf495e9b4437d4c6ff36f95f7edda99993bb5",
       delegateReferences: "dc26162eff418e5fe6ee52377cc0e89521ac1206cc1a13a1ad3c0ac23a5e4610",
@@ -53,10 +53,10 @@ describe("approved collaboration tool descriptions", () => {
   it("states how each tool works, each fact once: messaging never creates an agent, delegation always does", () => {
     expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("send_message_to never creates an agent; to have work done by a new agent, use delegate_task.");
     expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("Use exactly one selector, never both:");
-    expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("For a task agent team, use its coordinator's run ID; a team's own run ID is refused.");
+    expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("For a task agent team, use its coordinator's run id; a team's own run id is refused.");
     expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("Delegating to yourself, a teammate or your own team is refused.");
     expect(DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION).toContain("Every call with an address creates another task agent or task agent team.");
-    expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("together with your run ID");
+    expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("together with your run id");
     expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("If you are a task agent yourself");
   });
 
@@ -75,8 +75,9 @@ describe("approved collaboration tool descriptions", () => {
       PROJECT_TASK_TOOL_DESCRIPTIONS.update_task, PROJECT_TASK_TOOL_DESCRIPTIONS.list_project_tasks,
     ];
     for (const text of texts) {
-      expect(text).not.toMatch(/\b(copy|copies|spawn|spawns|this run(?! ID)|your run(?! ID)|the run(?! ID)|in the run(?! ID)|mounted|collaborator|brought in|bring-in|pause|wake|restore|shut down|shut-down|nested|Task worker|work packet)\b/i);
+      expect(text).not.toMatch(/\b(copy|copies|spawn|spawns|this run(?! id)|your run(?! id)|the run(?! id)|in the run(?! id)|mounted|collaborator|brought in|bring-in|pause|wake|restore|shut down|shut-down|nested|Task worker|work packet)\b/i);
       expect(text).not.toMatch(/REQ-|DEC-|\bTBD\b/);
+      expect(text).not.toMatch(/(?<!Task's |Task |Unknown )\bIDs?\b|\bsender id\b/);
     }
   });
 

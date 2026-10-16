@@ -368,7 +368,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
       }
     }
     throw new ProjectError("TASK_AGENT_RESOURCE_CLOSED",
-      `This Task is ${task.status}. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run ID again.`);
+      `This Task is ${task.status}. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again.`);
   }
   /** A Task's metadata (with or without a Project); null when it (or its Project) was deleted. */
   private async readTaskAt(location: TaskLocation): Promise<{ status: ProjectTaskStatus } | null> {

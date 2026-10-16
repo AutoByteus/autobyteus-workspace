@@ -605,7 +605,7 @@ const liveReactivation = async (kind, label) => {
     const text = await centerText(page);
     assert(text.indexOf('PRE-DONE-7731') < text.indexOf('POST-REOPEN-9902'), 'earlier conversation not before the new message');
     await shot(page, `${kind}-reactivated-conversation`);
-    // The Task Team copy (AC-002): DONE, reopen, then the coordinator's run ID brings back the Team and its members.
+    // The Task Team copy (AC-002): DONE, reopen, then the coordinator's run id brings back the Team and its members.
     const tree = await storedTree(s.root);
     const members = teamMembersOf(tree, s.bRef.teamRunId);
     const coordinator = members.find((m) => /\/reviewer$/.test(m.address));

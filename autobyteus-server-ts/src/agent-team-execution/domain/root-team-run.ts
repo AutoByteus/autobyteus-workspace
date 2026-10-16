@@ -1,5 +1,5 @@
 import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
-import { mentionViewerOf } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
+import { mentionViewerOf } from "../../agent-collaboration/collaborators/mention-viewer.js";
 import type { TaskExecutionResourcePort, TaskExecutionStopResult } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";

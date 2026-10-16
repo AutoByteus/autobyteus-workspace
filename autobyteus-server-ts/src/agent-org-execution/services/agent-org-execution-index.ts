@@ -25,9 +25,12 @@ import {
   type CollaborationMessagePlacement,
   type MessageRecipientIndexPort,
   type SenderTeamInstance,
+} from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
+import {
   instanceDefinitionsFromSource,
   type InstanceDefinitions,
-} from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
+  type MentionViewerIndexPort,
+} from "../../agent-collaboration/collaborators/mention-viewer.js";
 
 export type AgentOrgExecutionKind = "configured" | "task" | "task_team_member";
 export type AgentOrgIndexedAgentExecution = Readonly<{
@@ -51,7 +54,7 @@ export type AgentOrgIndexedTaskExecution =
   | Readonly<{ kind: "team"; address: AgentTeamAddress; host: TaskExecutionHostIdentity; teamRunId: string; source: TaskTeamExecution }>;
 
 /** Immutable fixed-depth lookup over one strict AgentOrg tree. */
-export class AgentOrgExecutionIndex implements MessageRecipientIndexPort {
+export class AgentOrgExecutionIndex implements MessageRecipientIndexPort, MentionViewerIndexPort {
   readonly root;
   private readonly agentsByRunId = new Map<string, AgentOrgIndexedAgentExecution>();
   private readonly teamsByRunId = new Map<string, AgentOrgIndexedTeamExecution>();

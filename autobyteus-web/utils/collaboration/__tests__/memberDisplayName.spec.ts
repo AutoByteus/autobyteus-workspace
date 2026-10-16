@@ -17,8 +17,10 @@ describe('shared member display name (F-03)', () => {
 })
 
 describe('agent-to-agent delivery content (RD-004)', () => {
-  it('reads the current header (the sender run ID only; no name, no address)', () => {
-    expect(parseInterAgentDelivery('You received a message from the agent with sender run ID "researcher_r-1".\nmessage:\nHello\n\nReference files:\n- /a.md'))
+  it('reads the current header in both forms (sender address and run id, or run id only; never a name)', () => {
+    expect(parseInterAgentDelivery('You received a message from the agent with sender address "/code_reviewer" and sender run id "code_reviewer_91c2".\nmessage:\nDone.'))
+      .toEqual({ senderAgentRunId: 'code_reviewer_91c2', body: 'Done.' })
+    expect(parseInterAgentDelivery('You received a message from the agent with sender run id "researcher_r-1".\nmessage:\nHello\n\nReference files:\n- /a.md'))
       .toEqual({ senderAgentRunId: 'researcher_r-1', body: 'Hello\n\nReference files:\n- /a.md' })
     expect(parseInterAgentDelivery('plain text')).toEqual({ senderAgentRunId: null, body: 'plain text' })
   })

@@ -52,9 +52,11 @@ export class MemberExecutionContextBuilder {
       agentRunId: input.agentNode.agentRunId,
       hostTeam: input.hostTeam,
       root: {
-        configuredRootAddresses: input.teamContext.teamNode.children.map((child) => child.address),
-        configuredRootAgentRunIds: input.teamContext.teamNode.children.flatMap((child) => "agentRunId" in child ? [child.agentRunId] : []),
-        configuredRootRole: "team_member",
+        configured: {
+          addresses: input.teamContext.teamNode.children.map((child) => child.address),
+          agentRunIds: input.teamContext.teamNode.children.flatMap((child) => "agentRunId" in child ? [child.agentRunId] : []),
+          role: "team_member",
+        },
         handoffs: input.teamContext.handoffs,
         definition: { kind: "agent_team", definitionId: input.teamContext.teamNode.teamDefinitionId },
       },

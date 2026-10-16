@@ -23,11 +23,12 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (IR-004 on top of IR-001..IR-003; IR-003 and IR-004 committed together)
+- Implementation cycle: `Rework` (IR-005 on top of IR-001..IR-004)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/tickets/in-progress/collaboration-prompt-wording/implementation-revision-record.md`
-- Current implementation revision ID: `IR-004` (earlier: `IR-001`, `IR-002`, `IR-003`)
-- Related solution revision IDs: `SR-001`..`SR-014` (SR-005 superseded by SR-006; SR-007 reverted by SR-008, not implemented; SR-010 superseded by SR-013)
-- Related architecture-review / delivery revision IDs: `N/A`; code-review: `CRR-001` (`code-review-report.md`); API/E2E: `API-REV-001`
+- Current implementation revision ID: `IR-005` (earlier: `IR-001`..`IR-004`)
+- Related solution revision IDs: `SR-001`..`SR-016` (SR-005 superseded by SR-006; SR-007 reverted by SR-008, not implemented; SR-010 superseded by SR-013)
+- Related architecture-review / delivery revision IDs: `N/A`; code-review: `CRR-001`..`CRR-004` (`code-review-report.md`); API/E2E: `API-REV-001`..`API-REV-003`
+- Triggering finding IDs (IR-005): CRR-003 F-5; CRR-004 CR-001..CR-004
 - Triggering finding IDs: `F-3a`, `F-3b`, `F-1` (C-3 covered by F-3a)
 
 What was built:
@@ -199,7 +200,7 @@ forms, as designed for saved history).
 
 ## Environment Or Dependency Notes
 
-- Implementation commits `290d32dd4b` (IR-001), `6a3f6628b1` (IR-002) and `71db6bbdd8` (IR-003 + IR-004). Worktree build only; `pnpm run prepare:shared` and `prisma generate` were needed before the server
+- Implementation commits `290d32dd4b` (IR-001), `6a3f6628b1` (IR-002), `71db6bbdd8` (IR-003 + IR-004) and the IR-005 commit recorded in the revision record. Worktree build only; `pnpm run prepare:shared` and `prisma generate` were needed before the server
   typecheck; `pnpm test:integration:prepare` before the integration run; `pnpm exec nuxt prepare` before
   the web unit specs. No use of the user's running app or `~/.autobyteus`; the e2e run used a clean
   environment (`env -i`, temp `HOME`) with the scripted AGY CLI (`RUN_AGY_FAILURE_E2E=1`).
@@ -253,6 +254,24 @@ Supersedes the task message and answering text of IR-002; everything else in IR-
 - SR-009/SR-010 refusals: not-found, both-selector, no-selector and the `send_message_to` invalid-address texts share the next step "To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender id."; `TARGET_AGENT_RUN_NOT_ACTIVE` points to "a sender id (from a message or your new task)".
 - Invalid-address refusal is one text per tool (SR-004): `send_message_to` answers by ID; `delegate_task` points to `list_available_agents`.
 - Not built: the SR-005 "reaches" helper (T-5, withdrawn). Not applied: SR-007 "copy" wording (withdrawn by SR-008; the partial working-tree edits were reverted before commit, and the tool descriptions were checked equal to the current wording file).
+
+## IR-005 (SR-015, SR-016; CRR-004 local fixes) Delta
+
+Supersedes the IR-004 task message, header and answering text.
+
+- **No-reply rule (F-5).** Answering bullet in all four prompts: "Every message you receive, including a new task, gives its sender run id, and its sender address when that address reaches the sender. When you reply to it or report your task result, use `send_message_to` with `target_agent_run_id` set to the sender run id, or `recipient_address` set to the sender address (one of them, not both). Reply only when the message asks you something or you need something from the sender; a result or an answer needs no reply." Purposes lines per wording §4.1, §4.2, §5.1, §5.2.
+- **Sender address where it reaches (T-5).** `reachingAddressOf(port, viewer | null, agent)` (`message-recipient-resolution.ts`). Task message: `You have a new task from the agent with [sender address "<address>" and ]sender run id "<id>".` with the matching reply line, decided run-wide through `RootTaskExecutionAdapter.reachingAddressOf`. Header (`received-message-header.ts`, all three builders): `You received a message from the agent with [sender address "<address>" and ]sender run id "<id>".`, the address decided with the receiver as viewer; never on the global (cross-run) route; never a name.
+- **"run id" lowercase (SR-016)** in prompts, tool/parameter descriptions, task message, header, catalogue texts M-01..M-45 and `@` lines. Task IDs unchanged.
+- **Web.** Parser reads the two new forms and the released earlier form; the never-released `sender run ID` form is not read. The chat label still comes only from the run id.
+- **CR-001** `EARLIER_GUIDANCE` removed (+ test), `dist/` rebuilt. **CR-002** unused imports removed. **CR-003** `mention-viewer.ts` + `MentionViewerIndexPort`; `MessageRecipientIndexPort` narrowed. **CR-004** `MemberScopeRootFacts.configured: ConfiguredRootPlacements | null`; the Agent root passes `null`.
+
+### IR-005 local checks
+
+- Server `tsc -p tsconfig.build.json --noEmit` clean; `--noUnusedLocals` reports nothing in the files this ticket touched (CR-002).
+- `vitest run tests/unit`: 5687 passed, 7 skipped. New: `reachingAddressOf` cases (configured agent run-wide and from a viewer; task agent at a configured address → none; teammate inside its copy → address, run-wide or from outside → none); header builders with and without address; task message in both forms; a Team-root check that a lead's message to its teammate carries `sender address "/product_team/lead"` and the coordinator's task message carries `sender address "/coordinator"`. Prompt snapshots (20) regenerated and equal to the complete views; tool descriptions equal to the wording file and re-pinned; catalogue test regenerated from the wording file (45 texts; lowercase "run id"; ID rule).
+- `vitest run tests/integration`: all pass except the two `agent-status-websocket` tests that fail identically on the base.
+- Scripted-AGY e2e (clean env, `RUN_AGY_FAILURE_E2E=1`): `tests/e2e/projects` + live-refresh 88 passed, 4 skipped, 1 failed (`task-closure-root-visibility` standalone, a count under load) which passes 3/3 when run alone.
+- Contracts `pnpm test` 18 pass (`EARLIER_GUIDANCE` test removed); `dist/` rebuilt. Web: `utils`, `components/conversation`, `components/workspace`, `services` 1733 pass (two Event Monitor specs moved to the new header forms; parser spec covers both forms).
 
 ## IR-004 (SR-011..SR-014) Delta
 

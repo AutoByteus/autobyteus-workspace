@@ -483,8 +483,9 @@ target mode.
   `EventMonitorBrowseAssistantRow`). Older stored deliveries without a recorded
   sender stay user-style. `utils/collaboration/interAgentDelivery.ts` separates
   the delivery header from the body and reads the sender run ID from it, for the current
-  header (`from the agent with sender run ID "<id>"`) and every earlier one (`sender name`,
-  optional `sender address`, `sender id`), so stored history keeps rendering. The
+  header (`from the agent with [sender address "<address>" and ]sender run id "<id>"`)
+  and the released earlier one (`sender name`, optional `sender address`, `sender id`),
+  so stored history keeps rendering. The
   "From <Sender>:" label never comes from the header text: it comes from the sender's run ID
   (the app's lookup by run ID, else a readable form of the run ID).
 - **Standalone runs** gain children: rows under the run row

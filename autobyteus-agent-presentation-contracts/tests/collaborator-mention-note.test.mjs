@@ -8,8 +8,8 @@ import {
 const productTeam = { name: "Product Team", kind: "agent_team", address: "/product_team", presence: "not_in_run" };
 const reviewer = { name: "Code Reviewer (v2)", kind: "agent", address: "/code_reviewer", presence: "not_in_run" };
 const GUIDE = {
-  not_in_run: "delegate the task to it with delegate_task; it returns a run ID to follow up with.",
-  in_run: "talk with it using send_message_to, or delegate a task to it with delegate_task; that creates a new task agent and returns its run ID to follow up with.",
+  not_in_run: "delegate the task to it with delegate_task; it returns a run id to follow up with.",
+  in_run: "talk with it using send_message_to, or delegate a task to it with delegate_task; that creates a new task agent and returns its run id to follow up with.",
   own_team: "talk with it using send_message_to; don't delegate to it.",
   run_agent: "talk with it using send_message_to; you can't delegate to it.",
   self: "that is you.",
@@ -55,7 +55,8 @@ test("every presence composes its own line and parses back to the same presence"
 test("a delegate suggestion is never composed for the agent itself, its team or the agent the user started", () => {
   const content = collaboratorMentionNote.compose("x", [teammate, ownTeam, itself, projectTaskManager]);
   assert.ok(!content.includes("delegate a task"));
-  assert.ok(!/\b(copy|run ID|collaborator|brought in|already in this run)\b/i.test(content));
+  assert.ok(!/\b(copy|collaborator|brought in|already in this run)\b/i.test(content));
+  assert.ok(!/\bID\b/.test(content), "a run id is written in lowercase");
 });
 
 test("a line whose guidance does not match its presence is not parsed", () => {
@@ -138,7 +139,7 @@ test("composes the three worked examples of the complete views (§11) exactly", 
       "",
       "[Mentioned agents]",
       "- api_e2e_engineer (agent) at /api_e2e_engineer, in your team: talk with it using send_message_to; don't delegate to it.",
-      "- Web Researcher (agent) at /web_researcher: delegate the task to it with delegate_task; it returns a run ID to follow up with.",
+      "- Web Researcher (agent) at /web_researcher: delegate the task to it with delegate_task; it returns a run id to follow up with.",
       "- code_reviewer (agent) at /code_reviewer: that is you.",
     ].join("\n"),
   );
@@ -150,7 +151,7 @@ test("composes the three worked examples of the complete views (§11) exactly", 
       "Ask @Software Engineering Team to look at this.",
       "",
       "[Mentioned agents]",
-      "- Software Engineering Team (agent team) at /software_engineering_team: talk with it using send_message_to, or delegate a task to it with delegate_task; that creates a new task agent and returns its run ID to follow up with.",
+      "- Software Engineering Team (agent team) at /software_engineering_team: talk with it using send_message_to, or delegate a task to it with delegate_task; that creates a new task agent and returns its run id to follow up with.",
     ].join("\n"),
   );
   assert.equal(
@@ -164,17 +165,4 @@ test("composes the three worked examples of the complete views (§11) exactly", 
       "- Research Assistant (agent) at /research_assistant: talk with it using send_message_to; you can't delegate to it.",
     ].join("\n"),
   );
-});
-
-test("still parses the earlier composed guidance of the catalog and organization lines (SR-012)", () => {
-  const content = [
-    "Ask @Product Team and @Notes",
-    "",
-    "[Mentioned agents]",
-    "- Product Team (agent team) at /product_team: delegate a task to it with delegate_task.",
-    "- Notes (agent) at /notes: talk with it using send_message_to, or delegate a task to it with delegate_task to have a new task agent work on it.",
-  ].join("\n");
-  const parsed = collaboratorMentionNote.parse(content);
-  assert.deepEqual(parsed?.collaborators.map((entry) => entry.presence), ["not_in_run", "in_run"]);
-  assert.equal(parsed?.text, "Ask @Product Team and @Notes");
 });

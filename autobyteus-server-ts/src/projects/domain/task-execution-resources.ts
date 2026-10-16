@@ -174,7 +174,7 @@ export const assertTaskExecutionAssignable = (history: TaskExecutionHistory | nu
   }
   if (currentTaskId === input.taskId) {
     throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", `This task agent already has Task ${input.taskId}. To continue it, `
-      + `set Task ${input.taskId} to TODO or IN_PROGRESS, then message the task agent's run ID (for a task agent team, its coordinator's run ID).`);
+      + `set Task ${input.taskId} to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id).`);
   }
   if (!history.everStarted) {
     throw new ProjectError("TASK_REACTIVATION_UNAVAILABLE", `This task agent never started, so it has no conversation to continue. Delegate Task ${input.taskId} to a new task agent with recipient_address instead.`);

@@ -28,7 +28,7 @@ export const delegationTargetUnavailableMessage = (address: string): string =>
 
 /** `send_message_to(address)` to an address that is not a standing instance of the sender's run (CM-4). */
 export const messageTargetNotFoundMessage = (address: string): string =>
-  `No agent or agent team you can talk with has the address ${address}. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run ID. To have a task done by a new agent, use delegate_task.`;
+  `No agent or agent team you can talk with has the address ${address}. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run id. To have a task done by a new agent, use delegate_task.`;
 
 /** `delegate_task(address)` to the sender itself, a teammate or its own Team (CM-1). */
 export const ownTeamDelegationRefusedMessage = (address: string): string =>

@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { receivedMessageHeader } from "../../agent-collaboration/execution/communication/received-message-header.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import {
@@ -59,7 +60,7 @@ export const buildDirectAgentRunVisibleMessageContent = (
 ): string => {
   const referenceFiles = normalizeReferenceFiles(input.referenceFiles);
   return (
-    `You received a message from the agent with sender run ID "${input.sender.senderRunId}".\n` +
+    `${receivedMessageHeader({ runId: input.sender.senderRunId, address: null })}\n` +
     `message:\n${input.content}${buildReferenceFilesBlock(referenceFiles)}`
   );
 };

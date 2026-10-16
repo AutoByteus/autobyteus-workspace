@@ -1,5 +1,6 @@
+import { reachingAddressOf } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import { mentionViewerOf } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
+import { mentionViewerOf } from "../../agent-collaboration/collaborators/mention-viewer.js";
 import { composeCollaboratorMentionNote } from "@autobyteus/agent-presentation-contracts";
 import type { StandaloneRunPostInput, StandaloneRunPostResult } from "../../agent-execution/services/standalone-run-ports.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
@@ -228,6 +229,7 @@ export class StandaloneRootMessageDelivery {
     const receiver = this.options.getIndex().requireAgent(targetAgentRunId);
     const deliver = () => this.options.getCommunication().deliver({
       ...input,
+      senderAddress: reachingAddressOf(this.options.getIndex(), receiver.agentRunId, input.senderIdentity),
       receiverIdentity: this.identityFor(receiver.agentRunId, receiver.address),
       receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId,
     });

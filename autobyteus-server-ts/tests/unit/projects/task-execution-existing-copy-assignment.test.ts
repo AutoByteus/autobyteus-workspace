@@ -134,7 +134,7 @@ describe("existing-copy assignment on the Task side", () => {
     await expect(tasks.assertAssignable({ execution: team, requestedBy: "manager", taskId: a })).rejects.toMatchObject({ code: "TASK_AGENT_RESOURCE_CLOSED" });
     await setStatus(a, "TODO");
     await expect(tasks.assertAssignable({ execution: team, requestedBy: "manager", taskId: a })).rejects.toMatchObject({
-      code: "TASK_AGENT_RESOURCE_CONFLICT", message: expect.stringContaining(`This task agent already has Task ${a}. To continue it, set Task ${a} to TODO or IN_PROGRESS, then message the task agent's run ID`) });
+      code: "TASK_AGENT_RESOURCE_CONFLICT", message: expect.stringContaining(`This task agent already has Task ${a}. To continue it, set Task ${a} to TODO or IN_PROGRESS, then message the task agent's run id`) });
     // A copy that never started (its only start failed) has no conversation to resume.
     const c = (await tasks.createTask({ projectId, description: "C" })).taskId;
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: c, assignedBy: "manager", recipientAddress: "/w", hostRoot, execution: worker });

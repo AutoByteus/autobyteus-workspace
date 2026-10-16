@@ -14,7 +14,9 @@ import { notCurrentTaskMessage } from "../../../src/projects/domain/task-executi
  * Collaboration wording authority (ticket collaboration-prompt-wording, §10 check 9): the texts an
  * agent can receive from a refusal or result never use the retired vocabulary.
  */
-const FORBIDDEN = /\b(copy|copies|spawn\w*|this run(?! ID)|your run(?! ID)|mounted|collaborators?|brought in|nested|task worker|work packet|pause[ds]?|wake[ds]?|restor\w+|reactivat\w+|shut down)\b/i;
+/** SR-016: a run id is written in lowercase; "ID" stays only for a Task. */
+const ID_RULE = /(?<!Task's |Task |Unknown )\bIDs?\b|\bsender id\b/;
+const FORBIDDEN = /\b(copy|copies|spawn\w*|this run(?! id)|your run(?! id)|mounted|collaborators?|brought in|nested|task worker|work packet|pause[ds]?|wake[ds]?|restor\w+|reactivat\w+|shut down)\b/i;
 
 const REFUSAL_SITES = [
   "src/agent-communication/domain/send-message-target-selector.ts",
@@ -53,13 +55,13 @@ const textLiterals = (file: string): string[] => {
 
 describe("refusal and result texts use the agent-facing vocabulary (REQ-008, AC-005)", () => {
   it.each(REFUSAL_SITES)("%s has no retired word in a text an agent can read", (file) => {
-    const offenders = textLiterals(file).filter((text) => FORBIDDEN.test(text));
+    const offenders = textLiterals(file).filter((text) => FORBIDDEN.test(text) || ID_RULE.test(text));
     expect(offenders).toEqual([]);
   });
 
   it("the shared messages say what happened and what to do next, by ID and in task agent terms", () => {
     expect(messageTargetNotFoundMessage("/x")).toBe(
-      "No agent or agent team you can talk with has the address /x. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run ID. To have a task done by a new agent, use delegate_task.");
+      "No agent or agent team you can talk with has the address /x. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run id. To have a task done by a new agent, use delegate_task.");
     expect(ownTeamDelegationRefusedMessage("/x")).toBe("/x is in your own team; you can't delegate to it. Talk with it using send_message_to.");
     expect(delegationTargetUnavailableMessage("/x")).toBe(
       "'/x' is not the address of an available agent or agent team. If you have list_available_agents, it shows the addresses you can use.");
@@ -70,6 +72,6 @@ describe("refusal and result texts use the agent-facing vocabulary (REQ-008, AC-
     for (const text of [
       messageTargetNotFoundMessage("/x"), ownTeamDelegationRefusedMessage("/x"), delegationTargetUnavailableMessage("/x"),
       ROOT_NOT_ACTIVE_MESSAGE, ASSIGNER_ONLY_REACTIVATION_MESSAGE, current,
-    ]) expect(text).not.toMatch(FORBIDDEN);
+    ]) { expect(text).not.toMatch(FORBIDDEN); expect(text).not.toMatch(ID_RULE); }
   });
 });

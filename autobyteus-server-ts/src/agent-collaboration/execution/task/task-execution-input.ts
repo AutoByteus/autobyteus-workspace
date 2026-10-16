@@ -35,20 +35,25 @@ const taskBodyLines = (description: string, referenceFiles: readonly string[]): 
 ];
 
 /**
- * The delegated work as the task agent's first message (wording §7.1, SR-006): who gave it, described only by
- * its sender run ID (the label every received message header uses), the reply instruction, the description and any reference
- * files. No name and no address: one handle to answer with.
+ * The delegated work as the task agent's first message (wording §7.1, SR-015): who gave it, described only
+ * by the handles send_message_to takes (its sender address when that address reaches it, design T-5, and
+ * its sender run id; never a name), the reply instruction, the description and any reference files.
  */
 export const buildTaskWorkText = (input: {
   delegator: CollaborationMemberExecutionIdentity;
+  /** The delegator's address when it reaches the delegator run-wide (T-5); null otherwise. */
+  delegatorAddress: string | null;
   description: string;
   referenceFiles: readonly string[];
-}): string => [
-  `You have a new task from the agent with sender run ID "${input.delegator.agentRunId}".`,
-  "When you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id set to that sender run ID.",
-  "",
-  ...taskBodyLines(input.description, input.referenceFiles),
-].join("\n");
+}): string => {
+  const runId = input.delegator.agentRunId;
+  const [from, reply] = input.delegatorAddress
+    ? [`You have a new task from the agent with sender address "${input.delegatorAddress}" and sender run id "${runId}".`,
+      "When you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both)."]
+    : [`You have a new task from the agent with sender run id "${runId}".`,
+      "When you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id set to that sender run id."];
+  return [from, reply, "", ...taskBodyLines(input.description, input.referenceFiles)].join("\n");
+};
 
 /** The child's first message: the delegated work as a system Task notification. */
 export const buildTaskAssigneeWorkPacket = (input: Parameters<typeof buildTaskWorkText>[0]): AgentInputUserMessage =>

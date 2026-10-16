@@ -36,6 +36,7 @@ const buildRequest = (
     recipient: { participant: recipient },
     senderIdentity: sender.identity,
     receiverIdentity: recipient.identity,
+    senderAddress: null,
     content: "Please review the draft.",
     messageType: "direct_message",
     referenceFiles: [],
@@ -47,7 +48,7 @@ describe("inter-agent-message-runtime-builders", () => {
   it("formats content and exact current sender/receiver identity metadata", () => {
     const request = buildRequest();
     const expected =
-      "You received a message from the agent with sender run ID \"run-writer\".\nmessage:\nPlease review the draft.";
+      "You received a message from the agent with sender run id \"run-writer\".\nmessage:\nPlease review the draft.";
 
     expect(buildRecipientVisibleInterAgentMessageContent(request)).toBe(expected);
     const inputMessage = buildInterAgentDeliveryInputMessage(request);
@@ -66,6 +67,12 @@ describe("inter-agent-message-runtime-builders", () => {
     expect(inputMessage.metadata).not.toHaveProperty("sender_member_route_key");
   });
 
+  it("gives the sender address with the run id when it reaches the sender (design T-5)", () => {
+    expect(buildRecipientVisibleInterAgentMessageContent(buildRequest({ senderAddress: "/Writer" }))).toBe(
+      "You received a message from the agent with sender address \"/Writer\" and sender run id \"run-writer\".\nmessage:\nPlease review the draft.",
+    );
+  });
+
   it("appends a de-duplicated Reference files block", () => {
     const request = buildRequest({
       content: "Please review the draft summary.",
@@ -73,7 +80,7 @@ describe("inter-agent-message-runtime-builders", () => {
     });
 
     expect(buildRecipientVisibleInterAgentMessageContent(request)).toBe(
-      "You received a message from the agent with sender run ID \"run-writer\".\n" +
+      "You received a message from the agent with sender run id \"run-writer\".\n" +
         "message:\nPlease review the draft summary.\n\n" +
         "Reference files:\n- /tmp/report.md\n- /tmp/evidence.log",
     );
@@ -114,7 +121,7 @@ describe("inter-agent-message-runtime-builders", () => {
     });
 
     expect(buildRecipientVisibleInterAgentMessageContent(request)).toBe(
-      "You received a message from the agent with sender run ID \"run-writer-task-1\".\nmessage:\nhello",
+      "You received a message from the agent with sender run id \"run-writer-task-1\".\nmessage:\nhello",
     );
     expect(buildInterAgentDeliveryInputMessage(request).metadata).toEqual(
       expect.objectContaining({ sender_agent_id: "run-writer-task-1", sender_member_address: "/Writer" }),

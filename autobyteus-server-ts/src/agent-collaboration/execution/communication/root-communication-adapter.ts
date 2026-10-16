@@ -9,6 +9,8 @@ import type { CollaborationCommunicationMessageV1 } from "./collaboration-commun
 export type RootCommunicationDeliveryInput = Readonly<{
   senderIdentity: CollaborationMemberExecutionIdentity;
   senderDisplayName: string;
+  /** The sender's address when, from the receiver, it reaches the sender (design T-5); null otherwise. */
+  senderAddress: string | null;
   receiverIdentity: CollaborationMemberExecutionIdentity;
   receiverDisplayName: string;
   content: string;

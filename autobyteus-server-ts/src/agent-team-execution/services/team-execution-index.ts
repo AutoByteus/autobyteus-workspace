@@ -17,9 +17,12 @@ import {
   type CollaborationMessagePlacement,
   type MessageRecipientIndexPort,
   type SenderTeamInstance,
+} from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
+import {
   instanceDefinitionsFromSource,
   type InstanceDefinitions,
-} from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
+  type MentionViewerIndexPort,
+} from "../../agent-collaboration/collaborators/mention-viewer.js";
 import {
   createRootExecutionPhysicalScope,
   createTeamRootExecutionIdentity,
@@ -68,7 +71,7 @@ export type IndexedTaskExecution =
     }>;
 
 /** Immutable derived lookup/ancestry view over one validated execution tree. */
-export class TeamExecutionIndex implements MessageRecipientIndexPort {
+export class TeamExecutionIndex implements MessageRecipientIndexPort, MentionViewerIndexPort {
   private readonly agentsByRunId = new Map<string, IndexedAgentExecution>();
   private readonly teamsByRunId = new Map<string, IndexedTeamExecution>();
   private readonly configuredByAddress = new Map<AgentTeamAddress, ConfiguredAgentExecutionNode>();

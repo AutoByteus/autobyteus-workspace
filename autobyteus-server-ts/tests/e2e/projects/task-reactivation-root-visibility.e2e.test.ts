@@ -366,7 +366,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     let view = root.state.view; from = view.frames.length;
     const tooEarly = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: worker, content: "Too early?" }));
     expect(tooEarly).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
-    expect(tooEarly.message).toMatch(/This Task is DONE\. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run ID again\./);
+    expect(tooEarly.message).toMatch(/This Task is DONE\. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again\./);
     expect(await readBytes(path.join(aDir, "agent_run_resources.json"))).toBe(resourcesDone);
     expect(await readBytes(path.join(aDir, "task.json"))).toBe(taskDone);
     expect(view.frames.slice(from).some(root.reopenedFrame)).toBe(false);
@@ -386,7 +386,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     view = root.state.view; from = view.frames.length;
     const toHelper = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: helpers[0]!.agentRunId, content: "Helper?" }));
     expect(toHelper).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
-    expect(toHelper.message).toMatch(/Only the agent that assigned the Task can continue it.*message the task agent's run ID/);
+    expect(toHelper.message).toMatch(/Only the agent that assigned the Task can continue it.*message the task agent's run id/);
 
     // 7. QR-002 / AC-006: a sender that is not the assigner cannot reactivate. In a Team or Org root, a configured
     // teammate; in a standalone Agent root, the other senders are Task copies (a copy whose work is that message).
@@ -486,7 +486,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     const resourcesB = await readBytes(path.join(bDir, "agent_run_resources.json"));
     const toMember = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: mate, content: "Member?" }));
     expect(toMember).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
-    expect(toMember.message).toMatch(/for a task agent team, its coordinator's run ID/);
+    expect(toMember.message).toMatch(/for a task agent team, its coordinator's run id/);
     expect(await readBytes(path.join(bDir, "agent_run_resources.json"))).toBe(resourcesB);
     view = root.state.view; from = view.frames.length;
     const teamReactivated = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: coordinator, content: "Team, second round. Marker TEAM-REOPEN-5150." }));
@@ -600,7 +600,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
       message: "The Task is CANCELLED; set it to TODO or IN_PROGRESS before you delegate it." } });
     const fenced = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: worker, content: "While cancelled?" }));
     expect(fenced).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
-    expect(fenced.message).toMatch(/This Task is CANCELLED\. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run ID again\./);
+    expect(fenced.message).toMatch(/This Task is CANCELLED\. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again\./);
     await new Promise((resolve) => setTimeout(resolve, 1500));
     expect(taskNodes(await root.liveTree()).length).toBe(nodesBefore);
     expect(view.frames.slice(from).some(root.reopenedFrame)).toBe(false);

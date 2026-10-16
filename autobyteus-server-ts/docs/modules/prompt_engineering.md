@@ -182,21 +182,26 @@ Rules every role follows:
 
 - **No agent is told its own address.** Addresses are given only for others
   (the agents it can reach, its handoff recipients, `@` mentions). Every
-  message an agent receives gives only its sender's run ID
-  (`You received a message from the agent with sender run ID "<id>".`, then
-  `message:` and the content; no name, no address: the chat looks the name up
-  by run ID), and the agent answers with `send_message_to` and
-  `target_agent_run_id` set to that sender run ID: one handle to answer with
-  (tools still accept `recipient_address`, so an address taken from handoff
-  rules, `list_available_agents` or an `@` note works). A task message reads
-  `You have a new task from the agent with sender run ID "<id>".` and `When you
-  finish, or need something you can't get yourself, tell that agent using
-  send_message_to with target_agent_run_id set to that sender run ID.`, then the
-  description; answering a message and reporting a task result use the same
-  rule. A saved Task given to an existing task agent has no reply line (the
-  delivery header gives the sender run ID). The agent-facing ID term is "run
-  ID", the same as the parameter names (`target_agent_run_id`, …); "run" alone
-  as a place ("this run") is never used.
+  message an agent receives gives its sender's run id, and its sender address
+  when that address reaches the sender, never a name (the chat looks the name up
+  by run id):
+  `You received a message from the agent with [sender address "<address>" and ]sender run id "<id>".`,
+  then `message:` and the content. Whether the address is given is decided by
+  `reachingAddressOf` (`message-recipient-resolution.ts`, design T-5): the
+  sender's own address only when `send_message_to` with it, from the receiver's
+  position, reaches exactly the sender — so a teammate, a configured agent or the
+  agent the user started is given an address, a task agent (or a member of a task
+  agent team seen from outside its team) is not. The task message uses the same
+  two forms, decided run-wide (`You have a new task from the agent with [sender
+  address "<address>" and ]sender run id "<id>".` plus the matching reply line).
+  The answering bullet of every prompt says how to reply (`target_agent_run_id`
+  set to the sender run id, or `recipient_address` set to the sender address, one
+  of them) and when: only when the message asks something or the agent needs
+  something; a result or an answer needs no reply (SR-015, after delegating agents
+  on Codex answered every result and looped). A saved Task given to an existing
+  task agent has no reply line (the delivery header gives the handles). Agents
+  read "run id" in lowercase, like the parameter names (`target_agent_run_id`,
+  …); "run" alone as a place ("this run") is never used.
 - **Handoffs.** A `Handoffs` subsection is added only when the agent has handoff
   rules; an agent without rules is never told to call `get_handoff_rules`.
 - **Vocabulary.** The agent-facing words are "task agent" / "task agent team",
@@ -221,7 +226,7 @@ such refusal reaches the agent as the tool's refusal result, including the
 cross-Task and closed-Task refusals of `send_message_to` (the communication
 engine returns them instead of throwing, so they no longer surface as an MCP
 internal error). An invalid `recipient_address` is converted to the agent's text
-at the `send_message_to` / `delegate_task` boundary, one text per tool (answer by sender run ID for
+at the `send_message_to` / `delegate_task` boundary, one text per tool (answer by sender run id for
 `send_message_to`; `list_available_agents` for `delegate_task`); the address validator
 keeps its own text for definition and configuration callers. Every result and refusal
 text is catalogued once (wording §7.3, M-01..M-45) and checked against the source by

@@ -80,6 +80,7 @@ const createFakeAdapter = (overrides: Partial<RootTaskExecutionAdapter<string>> 
     isOpen: () => true,
     authorize: () => undefined,
     assertCurrentSchemaReady: () => undefined,
+    reachingAddressOf: vi.fn(() => null),
     root: caller.root,
     planActivation: vi.fn(async input => ({ ...input, ownedAgentRunIds: ["child-run"],
       target: { root: caller.root, execution: { agentRunId: "child-run" }, ingressAgentRunId: "child-run" } })),
@@ -170,19 +171,34 @@ describe("RootTaskExecutionLifecycle delegation result", () => {
       .resolves.toEqual({ delegated: false, message: "Agent '/missing' was not found." });
   });
 
-  it("builds the first message with the delegator's sender run ID, no name and no address (wording §7.1, SR-006)", async () => {
+  it("builds the first message with the delegator's sender run id only when its address does not reach it (wording §7.1, SR-015)", async () => {
     const { lifecycle, adapter } = setup();
     await lifecycle.delegateToNewCopy({ identity: caller }, { recipient_address: "/worker", description: "Review the plan" }, "placement");
     const packet = vi.mocked(adapter.planActivation).mock.calls[0]![0].workPacket as AgentInputUserMessage;
     expect(packet.content).toBe([
-      'You have a new task from the agent with sender run ID "coordinator-run".',
-      "When you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id set to that sender run ID.",
+      'You have a new task from the agent with sender run id "coordinator-run".',
+      "When you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id set to that sender run id.",
       "",
       "Description:",
       "Review the plan",
     ].join("\n"));
     expect(packet.content).not.toContain("/coordinator");
     expect(packet.content).toContain("Review the plan");
+  });
+
+  it("gives the delegator's sender address with its run id when that address reaches it run-wide (design T-5)", async () => {
+    const { lifecycle, adapter } = setup();
+    vi.mocked(adapter.reachingAddressOf).mockReturnValue("/coordinator" as never);
+    await lifecycle.delegateToNewCopy({ identity: caller }, { recipient_address: "/worker", description: "Review the plan" }, "placement");
+    expect(adapter.reachingAddressOf).toHaveBeenCalledWith(caller);
+    const packet = vi.mocked(adapter.planActivation).mock.calls[0]![0].workPacket as AgentInputUserMessage;
+    expect(packet.content).toBe([
+      'You have a new task from the agent with sender address "/coordinator" and sender run id "coordinator-run".',
+      "When you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both).",
+      "",
+      "Description:",
+      "Review the plan",
+    ].join("\n"));
   });
 });
 

@@ -117,7 +117,7 @@ describe("InterAgentMessageRouter Claude input admission", () => {
     expect(result).toEqual({ accepted: true, turnId: started.turnId });
     const deliveredText = JSON.stringify(fake.sent[1]!.message.content);
     expect(deliveredText).toContain("The delegated analysis is complete.");
-    expect(deliveredText).toContain('sender run ID \\"student-two-task-run\\"');
+    expect(deliveredText).toContain('sender run id \\"student-two-task-run\\"');
     expect(session.activeTurnId).toBe(started.turnId);
     expect(fake.interruptAndCancelQueued).not.toHaveBeenCalled();
     expect(sdkClient.acquireStreamingSession).toHaveBeenCalledTimes(1);

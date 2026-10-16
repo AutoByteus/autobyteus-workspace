@@ -18,6 +18,8 @@
 | SR-012 | Wording supplement + views | The user: the pre-refactor `@` sentence ("…; it returns a run ID to follow up with") is clearer | user decision | SR-011 | Requirements Approved (user); Architecture Design Complete; Medium / Low | BEH-009 | `@` note lines revised; back to implementation |
 | SR-013 | Mixed (requirements, wording supplement, design) | The user: no name in the agent's header (the app finds names by run ID) and "run ID" everywhere, "once for all" | user decision | SR-012 | Requirements Approved (user, DEC-014); Architecture Design Complete; Medium / Low | BEH-006; REQ-005..008; AC-003; web parser and sender label | Revised; back to implementation |
 | SR-014 | Wording supplement (catalogue + views) + design + requirements | The user: the views file is the foundation of agent orchestration and must document every case | SD-C-011..SD-C-013 | SR-013 | Requirements Approved (unchanged REQs; AC-007 sharpened); Architecture Design Complete; Medium / Low | BEH-008; AC-005, AC-007 | One catalogue; views complete; back to implementation |
+| SR-015 | Mixed (requirements, wording supplement, design) | Code review CRR-004 (full source review, Fail 9.0) with CRR-003 F-5; the user's decision on the header | F-5, CR-001, CR-005 (CR-002..CR-004 implementation) | SR-014 | Requirements Approved (user DEC-015; DEC-016 within the direction, user informed); Architecture Design Complete; Medium / Low | BEH-005, BEH-006; AC-002, AC-008; design T-2, T-5 | Revised; back to implementation |
+| SR-016 | Wording supplement + requirements + design | The user: lowercase "run id", as in the send_message_to and delegate_task arguments | user decision | SR-015 | Requirements Approved (user, DEC-017); Architecture Design Complete; Medium / Low | all agent-facing texts | Revised; back to implementation |
 
 ## Revision Entries
 
@@ -264,8 +266,9 @@
     delegate_task; it returns an ID to follow up with."
   - organization line: "- <Name> (agent / agent team) at <address>: talk with it using send_message_to, or delegate a task to it with delegate_task; that creates a new task agent and returns its ID to follow up with."
 - Approval: the user. Classification unchanged, Medium / Low. Route: implementation (contracts
-  compose text; parse keeps every earlier form, including this ticket's earlier composed lines
-  if any were saved by test builds — none in released data).
+  compose text; parse keeps every released earlier form). [Corrected in SR-015 (CR-001): the
+  clause "including this ticket's earlier composed lines if any were saved by test builds" is
+  withdrawn — those forms never shipped, so parse needs no support for them.]
 
 ### SR-013 — One ID term ("run ID"); the agent's header without a name
 
@@ -325,3 +328,47 @@
     AC-007 sharpened (every catalogue text produced exactly, each in a test).
 - Approval: within the user's direction (document every case, one consistent foundation); the
   user is informed. Classification unchanged, Medium / Low. Route: implementation.
+
+### SR-015 — No-reply rule (Codex echo loop); sender address back where it reaches; no name
+
+- Trigger: `code-review-report.md` CRR-004 (full source review at the user's request, Fail 9.0,
+  Medium / Low unchanged) with the open F-5 from CRR-003; the user's decision on the header.
+- F-5 (Design Impact): on Codex the delegating agent answered its task agent's result in 12/15
+  runs (base 0/15), and 5/15 became echo loops of 64–92 messages
+  (`evidence/round4/LE-A1-analysis.txt`); Claude unaffected. Cause: the SR-010 answering bullet
+  ("To answer it, or to report your task result, use send_message_to …") and the purpose "to
+  answer one" read as "answer every message"; nothing said a result needs no reply. Fix
+  (DEC-016): the answering bullet now separates how from when — "… When you reply to it or report
+  your task result, use send_message_to with target_agent_run_id set to the sender run ID, or
+  recipient_address set to the sender address (one of them, not both). Reply only when the
+  message asks you something or you need something from the sender; a result or an answer needs
+  no reply." — and the purposes lines say "answer a question it asks you" / "answer its
+  question". No runtime limit (new behavior, out of scope).
+- Header and task message (DEC-015, the user): the sender address is given again, with the sender
+  run ID and without a name, exactly when the address reaches the sender (design T-5 reinstated:
+  `reachingAddressOf`). Wording §1 principle 6, §7.1 (two forms), §7.2 (two forms), §10 check 7;
+  views regenerated (every journey shows the right form; §9 states where the address appears).
+- CR-001 (accepted): SR-012's clause asking parse to keep never-shipped composed forms is
+  withdrawn; implementation removes `EARLIER_GUIDANCE`, its use and its test, and rebuilds
+  `dist/`. Released forms stay.
+- CR-005 (accepted): design T-2 now matches §7.2; the T-3 paragraph is complete in the current
+  file (the reviewer read the committed copy).
+- CR-002..CR-004 (implementation, same pass): unused imports; the `@`-viewer concern moved to its
+  own file and port; `configuredRootRole` shaped so the Agent root needs no dummy value.
+- Validation: AC-008 revised (Codex LE-A1 ≥15 per side, assertion "no unprompted send by the
+  delegator after the report").
+- Classification unchanged, Medium / Low. Route: implementation, then targeted delta review, then
+  API/E2E.
+
+### SR-016 — "run id" in lowercase
+
+- Trigger: the user: lowercase "run id", matching `target_agent_run_id`, `target_team_run_id` and
+  `target_team_coordinator_agent_run_id`.
+- Change: every agent-facing "run ID" / "run IDs" is "run id" / "run ids" — prompts, task message
+  and header (`sender run id`), tool and parameter descriptions, the catalogue M-01..M-45, the
+  `@` note ("it returns a run id to follow up with"), principles, checks — and the ticket
+  documents (design T-3 keeps its "Now" quotes of today's code). The words table forbids "ID"
+  alone, "run ID" and "sender id" for a run id; the forbidden-word test allows a "run" phrase
+  followed by "id". Task IDs (`task_id`, "a saved Task's ID") are unchanged. Views regenerated:
+  132 uses of "run id", none of "run ID".
+- Approval: the user (DEC-017). Classification unchanged, Medium / Low. Route: implementation.

@@ -16,7 +16,7 @@ import type {
   CollaboratorEntryPlan,
 } from "./collaborator-entry-builder.js";
 import type { CollaboratorRootPort } from "./collaborator-root-port.js";
-import type { MentionViewer, MentionViewerRelation, OwnTeamMentionFacts } from "./message-recipient-resolution.js";
+import type { MentionViewer, MentionViewerRelation, OwnTeamMentionFacts } from "./mention-viewer.js";
 import { CollaboratorAddError, CollaboratorMentionError } from "./collaborator-errors.js";
 import type { CollaboratorLaunchResolver } from "./collaborator-launch-resolver.js";
 import { entryPlanLaunchNotes } from "./launch-configuration-notes.js";

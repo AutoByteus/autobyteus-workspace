@@ -397,8 +397,8 @@ startup into ordinary, unowned delegated runs of the same root (migration
   `StandaloneRootMessageDelivery.postToHost`) appends a `[Mentioned agents]` note, one
   line per mention: `- <Name> (agent|agent team) at <address>[, in your team]: <guidance>`.
   The guidance depends on the presence: `not_in_run` → "delegate the task to it with
-  delegate_task; it returns a run ID to follow up with."; `in_run` → "talk with it using send_message_to, or delegate a task
-  to it with delegate_task; that creates a new task agent and returns its run ID to follow up with."; `own_team` → "talk
+  delegate_task; it returns a run id to follow up with."; `in_run` → "talk with it using send_message_to, or delegate a task
+  to it with delegate_task; that creates a new task agent and returns its run id to follow up with."; `own_team` → "talk
   with it using send_message_to; don't delegate to it."; `run_agent` → "talk with it
   using send_message_to; you can't delegate to it."; `self` → "that is you.". The note
   names no task tool and says nothing about closing a Task; an agent with
@@ -579,12 +579,21 @@ Known limits:
 
 A `send_message_to` delivery reaches the receiver as input with
 `input_origin: inter_agent_delivery` and `sender_agent_id`. Its visible text names
-the sender by run ID only; the receiver answers with `send_message_to` and
-`target_agent_run_id` set to that run ID, so no name or address is needed (the chat
-looks the name up by run ID):
+the sender by its run id and, when that address reaches the sender from the
+receiver's position (`reachingAddressOf`, design T-5), by its address; never by
+name (the chat looks the name up by run ID):
 
 ```text
-You received a message from the agent with sender run ID "<runId>".
+You received a message from the agent with sender address "/code_reviewer" and sender run id "<runId>".
+message:
+<body>
+```
+
+or, when the address would not reach the sender (a task agent, a member of a task
+agent team writing from outside its team, a sender in another run):
+
+```text
+You received a message from the agent with sender run id "<runId>".
 message:
 <body>
 ```
@@ -592,7 +601,9 @@ message:
 All three builders use this header: root deliveries
 (`root-communication-runtime-builder.ts`, Org and standalone roots),
 Team-run deliveries (`inter-agent-message-runtime-builders.ts`) and the direct
-`target_agent_run_id` route (`global-agent-run-message-runtime-builders.ts`). Stored
+`target_agent_run_id` route (`global-agent-run-message-runtime-builders.ts`, never
+with an address). The two root builders take the address from the delivery input,
+which each root fills with `reachingAddressOf(index, receiver, sender)`. Stored
 deliveries recorded while the header also carried `sender address: <address>` keep
 that text (and `sender name: …, sender id: …` before that); the web parser reads every form, and the chat label comes only from the run ID. The released header is frozen in the Org first-message
 summary migration, which matches historical traces. Memory recording

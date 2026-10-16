@@ -18,13 +18,21 @@ export type MemberInstructionDefinition = Readonly<{ kind: "agent_team" | "agent
  */
 export type MemberCollaborationRole = "standalone_agent" | "task_agent" | "team_member" | "org_agent";
 
-/** A root's own scope facts: its configured root-level placements, its handoffs and its definition. */
-export type MemberScopeRootFacts = Readonly<{
-  configuredRootAddresses: Iterable<string>;
+/** A Team or Org root's configured root-level agent placements and the role of the agents configured there. */
+export type ConfiguredRootPlacements = Readonly<{
+  addresses: Iterable<string>;
   /** The run IDs of the agents configured at those placements (a task agent at the same address has another). */
-  configuredRootAgentRunIds: Iterable<string>;
-  /** The role of a configured root-level agent: `team_member` in a Team root, `org_agent` in an Org root. */
-  configuredRootRole: Extract<MemberCollaborationRole, "team_member" | "org_agent">;
+  agentRunIds: Iterable<string>;
+  /** `team_member` in a Team root, `org_agent` in an Org root. */
+  role: Extract<MemberCollaborationRole, "team_member" | "org_agent">;
+}>;
+
+/**
+ * A root's own scope facts: its configured root-level placements (none for an Agent root), its
+ * handoffs and its definition.
+ */
+export type MemberScopeRootFacts = Readonly<{
+  configured: ConfiguredRootPlacements | null;
   handoffs: readonly CollaborationHandoff[];
   definition: MemberInstructionDefinition | null;
 }>;
@@ -75,9 +83,10 @@ export const resolveMemberCollaborationScope = (input: Readonly<{
       host.teamDefinitionId ? Object.freeze({ kind: "agent_team", definitionId: host.teamDefinitionId }) : null,
       "team_member");
   }
-  if (parent === "/" && new Set(input.root.configuredRootAddresses).has(input.memberAddress)) {
-    return new Set(input.root.configuredRootAgentRunIds).has(input.agentRunId)
-      ? scopeOf(input.memberAddress, input.root.handoffs, input.root.definition, input.root.configuredRootRole)
+  const configured = input.root.configured;
+  if (configured && parent === "/" && new Set(configured.addresses).has(input.memberAddress)) {
+    return new Set(configured.agentRunIds).has(input.agentRunId)
+      ? scopeOf(input.memberAddress, input.root.handoffs, input.root.definition, configured.role)
       : scopeOf(input.memberAddress, input.root.handoffs, input.root.definition, "task_agent");
   }
   return Object.freeze({ outgoingHandoffs: Object.freeze([]), instructionDefinition: null, role: "task_agent" });

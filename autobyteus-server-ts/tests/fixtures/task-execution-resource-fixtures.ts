@@ -107,7 +107,7 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
     if (entry.start !== "started") throw rejection("TASK_REACTIVATION_UNAVAILABLE", "This assignment never started.");
     const task = this.tasks.get(entry.taskId);
     if (!task) throw rejection("TASK_NOT_FOUND", "The Task was deleted, so its task agent cannot continue.");
-    if (task.done) throw rejection("TASK_AGENT_RESOURCE_CLOSED", "This Task is DONE. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run ID again.");
+    if (task.done) throw rejection("TASK_AGENT_RESOURCE_CLOSED", "This Task is DONE. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again.");
   }
   async reopenAssignment(input: TaskExecutionReopenInput) {
     this.reopenRequests.push(input);

@@ -28,6 +28,8 @@ export class TeamCommunicationService {
     intent: InterAgentMessageDeliveryIntent;
     receiverIdentity: CollaborationMemberExecutionIdentity;
     receiverDisplayName: string;
+    /** The sender's address as the receiver can use it (design T-5); null otherwise. */
+    senderAddress: string | null;
   }): Promise<AgentOperationResult> {
     if (!this.accepting) {
       return Promise.resolve({ accepted: false, code: "TEAM_RUN_NOT_ACCEPTING_MESSAGES", message: ROOT_NOT_ACTIVE_MESSAGE });
@@ -35,6 +37,7 @@ export class TeamCommunicationService {
     return this.engine.deliver({
       senderIdentity: input.intent.sender.participant.identity,
       senderDisplayName: input.intent.sender.participant.displayName,
+      senderAddress: input.senderAddress,
       receiverIdentity: input.receiverIdentity,
       receiverDisplayName: input.receiverDisplayName,
       content: input.intent.content,

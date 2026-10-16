@@ -1,5 +1,5 @@
 import { buildInRunPlacements, type CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
-import { type MentionViewer } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
+import { type MentionViewer } from "../../agent-collaboration/collaborators/mention-viewer.js";
 import type {
   CatalogTaskSource,
   CollaboratorAdmission,

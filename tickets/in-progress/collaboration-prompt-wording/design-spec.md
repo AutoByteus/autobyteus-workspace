@@ -123,16 +123,15 @@ renderCollaborationSections → runtime bootstrap (native/Codex/Claude/ACP/AGY)`
 
 - **Spine 1.** Every root builds each agent's context through the scope resolver, which already
   knows whether the agent is a direct member of a team instance (hostTeam) or sits at a
-  configured root placement. Adding the agent's run ID and the root's configured agent run IDs
+  configured root placement. Adding the agent's run id and the root's configured agent run ids
   lets it tell a configured agent from a task agent at the same address. The role is stored on
   the context; the composer switches on it and appends Handoffs when the agent has rules.
-- **Spine 2.** `buildTaskWorkText` formats the first line from the delegator's run ID as its
-  sender run ID (SR-013; no name, no address). `buildExistingCopyTaskMessage` (mode 3) is delivered as a message, which
-  already carries the header with the sender's name and ID, so its body keeps the "New Task
-  assigned to you" line and the description without the "You have a new task from" line.
-- **Spine 3.** Each header builder writes `You received a message from the agent with sender run
-  ID "<id>".` (SR-013; no name, no address). The web parser accepts the new and every earlier
-  form, and the label comes from the run-ID lookup.
+- **Spine 2.** `buildTaskWorkText` formats the first line from the delegator's run id as its
+  sender run id and, when T-5 returns it, its sender address (SR-015; no name).
+- **Spine 3.** Each header builder writes `You received a message from the agent with [sender
+  address "<address>" and ]sender run id "<run id>".`, the address only when T-5 returns it for
+  the recipient (SR-015; no name). The web parser accepts every form, and the label comes from
+  the run-ID lookup.
 - **Spine 4.** At the mention gate each root knows the focused agent; it passes a relation
   function to `CollaboratorAdmission.resolveMentions`, which refines presence; the contract
   composes one line per mention with its guidance and parses new and earlier forms.
@@ -211,9 +210,9 @@ export type MemberCollaborationScope = Readonly<{
   role: Exclude<MemberCollaborationRole, "standalone_agent">;
 }>;
 // input gains: agentRunId: string; root.configuredRootAgentRunIds: Iterable<string>
-// (Team: teamNode.children agent run IDs; Org: rootOrg.members with agentRunId; Agent root: []).
+// (Team: teamNode.children agent run ids; Org: rootOrg.members with agentRunId; Agent root: []).
 // role: case (1) direct member of a non-root team instance → "team_member";
-//       case (2) root-level placement whose run ID is configured → "team_member" (Team root) or
+//       case (2) root-level placement whose run id is configured → "team_member" (Team root) or
 //                "org_agent" (Org root); a task agent at a configured address → "task_agent"
 //                (it keeps the root's handoffs, as today);
 //       case (3) → "task_agent".
@@ -296,9 +295,9 @@ used by compose and parse only.
 | --- | --- |
 | `agent-collaboration/execution/domain/member-instance-scope.ts` | role in scope (Interface) |
 | `agent-collaboration/execution/domain/member-execution-context.ts` | `collaborationRole` |
-| `agent-team-execution/services/member-team-context-builder.ts` | pass run ID, configured run IDs; set role |
+| `agent-team-execution/services/member-team-context-builder.ts` | pass run id, configured run ids; set role |
 | `agent-org-execution/services/agent-org-execution-scope-builder.ts` | same |
-| `standalone-agent-run-root/services/standalone-root-builder.ts` | same (configured run IDs empty) |
+| `standalone-agent-run-root/services/standalone-root-builder.ts` | same (configured run ids empty) |
 | `standalone-agent-run-root/services/standalone-host-member-context-builder.ts` | role `standalone_agent` |
 | `agent-execution/prompt/collaboration-prompt-sections.ts` (new) | wording §4.1, §4.2, §5.0–§5.3 and `renderCollaborationSections` |
 | `agent-execution/prompt/carpenter-prompt-composer.ts` | use it; drop `teamScoped` switch |
@@ -307,9 +306,9 @@ used by compose and parse only.
 | `agent-tools/agent-discovery/list-available-agents-contract.ts` | wording §6 |
 | `agent-communication/services/get-handoff-rules-tool-contract.ts` | wording §6 |
 | `agent-tools/project-tasks/project-task-tool-contract.ts` | `update_task`, `list_project_tasks` wording §6 |
-| `agent-collaboration/execution/task/task-execution-input.ts` | wording §7.1 (SR-010: one form, the delegator's sender id; no name, no address) |
-| the three header builders (IN-001) | wording §7.2 (SR-013: `You received a message from the agent with sender run ID "<id>".` + `message:`; no name, no address) |
-| `autobyteus-web/utils/collaboration/interAgentDelivery.ts` + `components/conversation/segments/InterAgentMessageSegment.vue` | SR-013 (made exact): the sender label ("From <name>") comes only from the run ID — the run-ID lookup (`senderDisplayName` / `senderNameByAgentRunId`), else the readable run ID; never from the header text, also not for old saved messages (they carry the run ID too). The parser keeps only two jobs: separate the header from the body (new form and every earlier form) and read the sender run ID from the header when the payload has no `sender_agent_run_id` (old saved messages). `senderName` / `senderAddress` are no longer read for the label |
+| `agent-collaboration/execution/task/task-execution-input.ts` | wording §7.1 (SR-015: two forms — sender address and run id when the address reaches the delegator, else run id only; no name) |
+| the three header builders (IN-001) and each root's message index | wording §7.2 (SR-015: two forms by T-5); T-5 helper `reachingAddressOf` |
+| `autobyteus-web/utils/collaboration/interAgentDelivery.ts` + `components/conversation/segments/InterAgentMessageSegment.vue` | SR-013 (made exact): the sender label ("From <name>") comes only from the run id — the run-ID lookup (`senderDisplayName` / `senderNameByAgentRunId`), else the readable run id; never from the header text, also not for old saved messages (they carry the run id too). The parser keeps only two jobs: separate the header from the body (new form and every earlier form) and read the sender run id from the header when the payload has no `sender_agent_run_id` (old saved messages). `senderName` / `senderAddress` are no longer read for the label |
 | `agent-collaboration/execution/communication/root-communication-engine.ts` | T-4; T-3 engine texts |
 | `agent-communication/services/global-agent-run-message-router.ts`, `agent-collaboration/execution/backends/root-agent-execution-registry.ts`, the `send_message_to`/`delegate_task` tool boundaries | T-3 SR-003 rows |
 | the three header builders (IN-001) | wording §7.2 |
@@ -340,7 +339,7 @@ The new prompt sections file sits beside the composer in `agent-execution/prompt
 only if it has rules). Host of a standalone run → `standalone_agent`; its Agent task execution →
 `task_agent`.
 
-**T-2 Header.** `You received a message from sender name: code_reviewer, sender id: <id>\nmessage:\n<content>`.
+**T-2 Header (SR-015).** `You received a message from the agent with sender address "<address>" and sender run id "<run id>".\nmessage:\n<content>`, the address only when it reaches the sender — as wording §7.2.
 
 **T-3 Refusals and results (REQ-008).** Codes unchanged. The new texts are written only in the
 wording file's §7.3 catalogue (M-01..M-45, SR-014); this table maps each code site to its IDs.
@@ -386,8 +385,22 @@ started, so there is nothing to reactivate."), M-31 (`project-task-service.ts`
 | `root-communication-engine.ts` `COLLABORATION_CONTEXT_REQUIRED` (SR-003) | "Sender and receiver must be exact live executions in the same collaboration root." | wording §7.3 M-14 |
 | `root-agent-execution-registry.ts` "Root-hosted AgentRun '<id>' is not active." / "Task AgentRun '<id>' is shut down." (SR-003) | as quoted | wording §7.3 M-15 / M-16 (teardown-internal texts stay) |
 
-**T-5 (SR-005) withdrawn in SR-006.** No "reaches" helper: the task message and the headers
-never carry a sender address (DEC-012).
+**T-5 "Reaches" — when a sender address is given (reinstated in SR-015, DEC-015).** One helper per
+root, next to `resolveMessageRecipient`:
+`reachingAddressOf(viewerAgentRunId | null, agent: CollaborationMemberExecutionIdentity): AgentTeamAddress | null`
+returns `agent.memberAddress` only when `resolveMessageRecipient` from the viewer's position (its
+own team instances, then the run's configured placements) reaches `agent.agentRunId`; otherwise
+`null` (including "not found"). Task message: the new task agent is not yet in the index and sits
+outside every existing team instance, so the check uses the run-wide placement only
+(`viewer = null` → `getMessagePlacement`). Headers: the recipient is the viewer. The global
+router's header (sender in another run) never gets an address. Examples (views §9): the Project
+Task Manager or the agent the user started → included; a teammate → included; a task agent →
+omitted; a member of a task agent team writing from outside its team → omitted.
+
+**F-5 no-reply rule (SR-015).** Prompt wording only (wording §4–§5 answering bullet and purposes
+lines): "Reply only when the message asks you something or you need something from the sender; a
+result or an answer needs no reply." No runtime limit is added (a limit on back-to-back sends is
+new behavior, out of scope).
 
 **T-4 Delivery-scope refusal surfaced as a result (SR-003, DEC-009).** In
 `RootCommunicationEngine.deliver` (`root-communication-engine.ts:40-41`), the first

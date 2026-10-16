@@ -29,7 +29,7 @@ export const buildSendMessageTargetSelector = (input: {
   if (recipientAddress && targetAgentRunId) {
     return {
       ok: false,
-      message: `${toolName} takes exactly one of recipient_address or target_agent_run_id, not both. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run ID.`,
+      message: `${toolName} takes exactly one of recipient_address or target_agent_run_id, not both. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run id.`,
     };
   }
   if (recipientAddress) {
@@ -40,7 +40,7 @@ export const buildSendMessageTargetSelector = (input: {
   }
   return {
     ok: false,
-    message: `${toolName} needs one of recipient_address or target_agent_run_id. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run ID.`,
+    message: `${toolName} needs one of recipient_address or target_agent_run_id. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run id.`,
   };
 };
 

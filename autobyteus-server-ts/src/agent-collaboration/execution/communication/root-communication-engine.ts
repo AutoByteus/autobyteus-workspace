@@ -34,7 +34,7 @@ export class RootCommunicationEngine {
       || !sameRootExecutionIdentity(input.receiverIdentity.root, this.adapter.root)
       || !this.adapter.isCurrentAgent(input.senderIdentity)
       || !this.adapter.isCurrentAgent(input.receiverIdentity)) {
-      return { accepted: false, code: "COLLABORATION_CONTEXT_REQUIRED", message: "The agent with that run ID is not running here, so the message was not sent. Use an exact run ID you were given." };
+      return { accepted: false, code: "COLLABORATION_CONTEXT_REQUIRED", message: "The agent with that run id is not running here, so the message was not sent. Use an exact run id you were given." };
     }
     if (input.senderIdentity.agentRunId === input.receiverIdentity.agentRunId) {
       return { accepted: false, code: "COLLABORATION_SELF_TARGET_REJECTED", message: "You can't send a message to yourself." };

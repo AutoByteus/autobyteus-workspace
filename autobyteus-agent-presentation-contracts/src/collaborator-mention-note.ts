@@ -62,19 +62,8 @@ const GUIDANCE: Readonly<Record<MentionedCollaboratorPresence, string>> = Object
   self: "that is you.",
   own_team: "talk with it using send_message_to; don't delegate to it.",
   run_agent: "talk with it using send_message_to; you can't delegate to it.",
-  in_run: "talk with it using send_message_to, or delegate a task to it with delegate_task; that creates a new task agent and returns its run ID to follow up with.",
-  not_in_run: "delegate the task to it with delegate_task; it returns a run ID to follow up with.",
-});
-/** Guidance sentences composed by builds before the current wording (no released data has them); still read, never composed. */
-const EARLIER_GUIDANCE: Readonly<Partial<Record<MentionedCollaboratorPresence, readonly string[]>>> = Object.freeze({
-  in_run: Object.freeze([
-    "talk with it using send_message_to, or delegate a task to it with delegate_task to have a new task agent work on it.",
-    "talk with it using send_message_to, or delegate a task to it with delegate_task; that creates a new task agent and returns its ID to follow up with.",
-  ]),
-  not_in_run: Object.freeze([
-    "delegate a task to it with delegate_task.",
-    "delegate the task to it with delegate_task; it returns an ID to follow up with.",
-  ]),
+  in_run: "talk with it using send_message_to, or delegate a task to it with delegate_task; that creates a new task agent and returns its run id to follow up with.",
+  not_in_run: "delegate the task to it with delegate_task; it returns a run id to follow up with.",
 });
 const OWN_TEAM_MARK = ", in your team";
 const PRESENCE_MARKS: Readonly<Record<MentionedCollaboratorPresence, string>> = Object.freeze({
@@ -137,7 +126,7 @@ const entryLine = (collaborator: MentionedCollaborator): string => {
  * agent or team, chosen for the agent the user is talking to; each line carries its own guidance:
  *
  *   compose("Please ask @Product Team", [{ name: "Product Team", kind: "agent_team", address: "/product_team", presence: "not_in_run" }])
- *   === "Please ask @Product Team\n\n[Mentioned agents]\n- Product Team (agent team) at /product_team: delegate the task to it with delegate_task; it returns a run ID to follow up with."
+ *   === "Please ask @Product Team\n\n[Mentioned agents]\n- Product Team (agent team) at /product_team: delegate the task to it with delegate_task; it returns a run id to follow up with."
  */
 export const composeCollaboratorMentionNote = (
   text: string,
@@ -163,7 +152,7 @@ const parseCurrentNote = (content: string): ParsedCollaboratorMentionNote | null
   for (const line of entries) {
     const match = ENTRY_PATTERN.exec(line);
     if (!match) return null;
-    const presence = PRESENCE_ORDER.find((candidate) => (GUIDANCE[candidate] === match[5] || (EARLIER_GUIDANCE[candidate] ?? []).includes(match[5]!)) && PRESENCE_MARKS[candidate] === (match[4] ?? ""));
+    const presence = PRESENCE_ORDER.find((candidate) => GUIDANCE[candidate] === match[5] && PRESENCE_MARKS[candidate] === (match[4] ?? ""));
     if (!presence) return null;
     collaborators.push(Object.freeze({
       name: match[1]!,

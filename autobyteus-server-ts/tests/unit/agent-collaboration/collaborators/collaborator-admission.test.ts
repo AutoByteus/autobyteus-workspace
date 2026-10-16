@@ -103,8 +103,8 @@ describe("catalog policy and mention resolution", () => {
     // Runnability is checked when the agent delegates, not here; nothing is allocated or added.
     expect(run.steps).toEqual([]);
     const note = composeCollaboratorMentionNote("please review", result.admitted ? result.collaborators : []);
-    expect(note).toContain("[Mentioned agents]\n- Code Reviewer (agent) at /reviewer: talk with it using send_message_to, or delegate a task to it with delegate_task; that creates a new task agent and returns its run ID to follow up with.");
-    expect(note).toContain("- Product Team (agent team) at /product_team: delegate the task to it with delegate_task; it returns a run ID to follow up with.");
+    expect(note).toContain("[Mentioned agents]\n- Code Reviewer (agent) at /reviewer: talk with it using send_message_to, or delegate a task to it with delegate_task; that creates a new task agent and returns its run id to follow up with.");
+    expect(note).toContain("- Product Team (agent team) at /product_team: delegate the task to it with delegate_task; it returns a run id to follow up with.");
     await expect(run.admission.resolveMentions(port(), [], other)).resolves.toEqual({ admitted: true, launchNotes: [], collaborators: [] });
   });
 

@@ -152,7 +152,7 @@ export class StandaloneRootBuilder {
       memberAddress: input.identity.memberAddress,
       agentRunId: input.identity.agentRunId,
       hostTeam: input.hostTeam,
-      root: { configuredRootAddresses: [], configuredRootAgentRunIds: [], configuredRootRole: "team_member", handoffs: [], definition: null },
+      root: { configured: null, handoffs: [], definition: null },
     });
     const instruction = scope.instructionDefinition
       ? (await this.dependencies.teamDefinitions.getDefinitionById(scope.instructionDefinition.definitionId).catch(() => null))?.instructions?.trim() || null

@@ -13,11 +13,12 @@ const identity = (rootSubjectKind: "agent_team" | "agent_org" | "agent", memberA
     agentRunId,
   });
 
-const build = (rootSubjectKind: "agent_team" | "agent_org" | "agent", senderAddress: string, referenceFiles: string[] = []) =>
+const build = (rootSubjectKind: "agent_team" | "agent_org" | "agent", senderAddress: string, referenceFiles: string[] = [], reaching: string | null = null) =>
   buildRootCommunicationInputMessage({
     delivery: {
       senderIdentity: identity(rootSubjectKind, senderAddress, "lead_9a"),
       senderDisplayName: "lead",
+      senderAddress: reaching,
       receiverIdentity: identity(rootSubjectKind, "/reviewer", "reviewer_1"),
       receiverDisplayName: "reviewer",
       content: "Please review.",
@@ -33,13 +34,13 @@ const build = (rootSubjectKind: "agent_team" | "agent_org" | "agent", senderAddr
     },
   });
 
-describe("buildRootCommunicationInputMessage (header: the sender run ID only)", () => {
+describe("buildRootCommunicationInputMessage (header: sender address when it reaches the sender, and run id; no name)", () => {
   it.each(["agent_team", "agent_org", "agent"] as const)(
-    "names the sender by name and ID, without its address, in a %s root",
+    "gives only the sender run id when the address does not reach the sender, in a %s root",
     (rootSubjectKind) => {
       const message = build(rootSubjectKind, "/eng/lead");
       expect(message.content).toBe(
-        "You received a message from the agent with sender run ID \"lead_9a\".\nmessage:\nPlease review.",
+        "You received a message from the agent with sender run id \"lead_9a\".\nmessage:\nPlease review.",
       );
       expect(message.content).not.toContain("/eng/lead");
       expect(message.metadata).toEqual(expect.objectContaining({
@@ -50,9 +51,15 @@ describe("buildRootCommunicationInputMessage (header: the sender run ID only)", 
     },
   );
 
+  it("gives the sender address and run id when that address reaches the sender (design T-5)", () => {
+    expect(build("agent_team", "/lead", [], "/lead").content).toBe(
+      "You received a message from the agent with sender address \"/lead\" and sender run id \"lead_9a\".\nmessage:\nPlease review.",
+    );
+  });
+
   it("keeps the de-duplicated Reference files block after the body", () => {
     expect(build("agent", "/lead", [" /a.md ", "/a.md", "/b.md"]).content).toBe(
-      "You received a message from the agent with sender run ID \"lead_9a\".\nmessage:\nPlease review."
+      "You received a message from the agent with sender run id \"lead_9a\".\nmessage:\nPlease review."
         + "\n\nReference files:\n- /a.md\n- /b.md",
     );
   });

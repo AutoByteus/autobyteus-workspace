@@ -38,7 +38,7 @@ describe("delegation and messaging in a Team root (CM-1, CM-4)", () => {
     const before = await f.dependencies.executionTreeStore.read(f.teamMemoryDir, ROOT);
     await expect(f.message(coordinatorOf(f), "/product_team", "Design it")).rejects.toMatchObject({
       code: "COLLABORATION_TARGET_NOT_FOUND",
-      message: "No agent or agent team you can talk with has the address /product_team. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run ID. To have a task done by a new agent, use delegate_task.",
+      message: "No agent or agent team you can talk with has the address /product_team. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run id. To have a task done by a new agent, use delegate_task.",
     });
     await expect(f.message(coordinatorOf(f), "/code_reviewer", "Review")).rejects.toMatchObject({ code: "COLLABORATION_TARGET_NOT_FOUND" });
     // A run ID or unknown run creates nothing either.
@@ -80,7 +80,7 @@ describe("delegation and messaging in a Team root (CM-1, CM-4)", () => {
     ] });
     const note = composeCollaboratorMentionNote("ask", result.admitted ? result.collaborators : []);
     expect(note).toContain("- Designer (agent) at /worker, in your team: talk with it using send_message_to; don't delegate to it.");
-    expect(note).toContain("- Code Reviewer (agent) at /code_reviewer: delegate the task to it with delegate_task; it returns a run ID to follow up with.");
+    expect(note).toContain("- Code Reviewer (agent) at /code_reviewer: delegate the task to it with delegate_task; it returns a run id to follow up with.");
   });
 
   it("a configured root-Team member may still delegate to an independent catalog unit (CM-2, AC-004)", async () => {
@@ -138,8 +138,15 @@ describe("delegation and messaging in a Team root (CM-1, CM-4)", () => {
     for (const copy of copies.slice(0, 2)) {
       const lead = f.identity("/product_team/lead", memberOf(copy, "/product_team/lead"));
       await expect(f.message(lead, "/product_team/designer", "UI please")).resolves.toMatchObject({ accepted: true });
-      expect(f.handles.get(memberOf(copy, "/product_team/designer"))!.handle.reserveInput).toHaveBeenCalledOnce();
+      const designer = f.handles.get(memberOf(copy, "/product_team/designer"))!.handle.reserveInput;
+      expect(designer).toHaveBeenCalledOnce();
+      // T-5: inside the copy the lead's address reaches the lead, so the teammate gets it with the run id.
+      expect((vi.mocked(designer).mock.calls[0] as unknown as [{ content: string }])[0].content).toMatch(
+        new RegExp(`^You received a message from the agent with sender address "/product_team/lead" and sender run id "${memberOf(copy, "/product_team/lead")}"\\.\\n`));
     }
+    // T-5: the coordinator (a configured agent) is reached by its address run-wide, so its task message gives it.
+    const firstWork = (vi.mocked(f.handles.get(memberOf(copies[0]!, "/product_team/lead"))!.handle.postMessage).mock.calls[0] as unknown as [{ content: string }])[0].content;
+    expect(firstWork).toMatch(/^You have a new task from the agent with sender address "\/coordinator" and sender run id "run-coordinator"\.\n/);
     expect(f.handles.has(memberOf(copies[2]!, "/product_team/designer"))).toBe(false);
     // AR-003: an address inside the copy without a member is not found, never run-wide or catalog.
     await expect(f.message(f.identity("/product_team/lead", memberOf(copies[0]!, "/product_team/lead")), "/product_team/nobody", "x"))

@@ -14,9 +14,12 @@ import {
   type CollaborationMessagePlacement,
   type MessageRecipientIndexPort,
   type SenderTeamInstance,
+} from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
+import {
   instanceDefinitionsFromSource,
   type InstanceDefinitions,
-} from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
+  type MentionViewerIndexPort,
+} from "../../agent-collaboration/collaborators/mention-viewer.js";
 import type {
   TaskAgentExecution,
   TaskExecution,
@@ -55,7 +58,7 @@ export type StandaloneRootIndexedTaskExecution =
   | Readonly<{ kind: "team"; address: AgentTeamAddress; host: TaskExecutionHostIdentity; teamRunId: string; source: TaskTeamExecution }>;
 
 /** Immutable lookup over one Agent-root collaboration tree: the host plus its delegated children. */
-export class StandaloneRootExecutionIndex implements MessageRecipientIndexPort {
+export class StandaloneRootExecutionIndex implements MessageRecipientIndexPort, MentionViewerIndexPort {
   readonly root: RootExecutionIdentity;
   private readonly rootHost: TaskExecutionHostIdentity;
   private readonly agentsByRunId = new Map<string, StandaloneRootIndexedAgent>();

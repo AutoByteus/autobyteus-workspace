@@ -21,12 +21,12 @@ describe("direct (cross-root) delivery text (REQ-005)", () => {
   it("names a sender inside a root by its run ID only: no name, no address", () => {
     const message = deliver(testMemberExecutionContext({ memberAddress: "/eng/lead", agentRunId: "lead_9a" }));
     expect(message.content).toBe(
-      "You received a message from the agent with sender run ID \"lead_9a\".\nmessage:\nStatus?",
+      "You received a message from the agent with sender run id \"lead_9a\".\nmessage:\nStatus?",
     );
     expect(message.content).not.toContain("/eng/lead");
   });
 
   it("gives the run ID only for a sender outside any root", () => {
-    expect(deliver(null).content).toBe("You received a message from the agent with sender run ID \"lead_9a\".\nmessage:\nStatus?");
+    expect(deliver(null).content).toBe("You received a message from the agent with sender run id \"lead_9a\".\nmessage:\nStatus?");
   });
 });

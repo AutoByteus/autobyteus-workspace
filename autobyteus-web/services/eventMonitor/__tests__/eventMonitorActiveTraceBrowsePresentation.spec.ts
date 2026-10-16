@@ -47,7 +47,7 @@ describe('event monitor active trace browse presentation', () => {
       }],
     });
     const presentation = buildEventMonitorActiveTraceBrowsePresentation([
-      delivery('with-address', 'You received a message from the agent with sender run ID "lead-run".\nmessage:\nStatus?', '/eng/lead'),
+      delivery('with-address', 'You received a message from the agent with sender run id "lead-run".\nmessage:\nStatus?', '/eng/lead'),
       textEvent('raw:reply', 'visual:reply', 'turn:with-address'),
       // A stored delivery from before the header carried the address, on a host page (no resolved address).
       delivery('stored', 'You received a message from sender name: lead, sender id: lead-run\nmessage:\nEarlier', null),

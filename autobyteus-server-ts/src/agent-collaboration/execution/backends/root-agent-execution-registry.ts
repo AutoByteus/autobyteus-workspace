@@ -11,7 +11,7 @@ import type { RootedAgentMemoryLocator } from "../services/rooted-agent-memory-l
 import { createCollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../domain/root-execution-identity.js";
 import { TaskAgentDurabilityEventGate } from "../services/task-agent-durability-event-gate.js";
 import type { FlatTeamExecutionCallbacks } from "../../../agent-team-execution/local/flat-team-execution-callbacks.js";
-import { createTaskExecutionPreparation, type TaskExecutionPreparationOperation, type PreparedTaskExecution } from "../../../agent-team-execution/domain/prepared-task-execution.js";
+import { createTaskExecutionPreparation, type TaskExecutionPreparationOperation } from "../../../agent-team-execution/domain/prepared-task-execution.js";
 import { TaskExecutionTeardownIndeterminateError } from "../task/task-delegation-command.js";
 import { isRunningTaskExecutionStatus } from "../task/task-execution-running-work.js";
 import { createCollaborationAgentStatusSnapshot, type CollaborationAgentStatusSnapshot } from "../domain/collaboration-agent-execution-event.js";

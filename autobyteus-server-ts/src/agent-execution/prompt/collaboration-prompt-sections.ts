@@ -14,14 +14,14 @@ const STANDALONE_AGENT_SECTION = [
   "",
   "You can delegate tasks to other agents and agent teams.",
   "",
-  "- To delegate a task, use `delegate_task` with the address of an agent or agent team. This creates a new task agent (or task agent team) that works on your task, and you get back its run ID. Your task description becomes the task agent's first message, together with your run ID so it can reply; don't send it again with `send_message_to`.",
+  "- To delegate a task, use `delegate_task` with the address of an agent or agent team. This creates a new task agent (or task agent team) that works on your task, and you get back its run id. Your task description becomes the task agent's first message, together with your run id so it can reply; don't send it again with `send_message_to`.",
   "- Every delegation to an address creates a new task agent or task agent team, so you can delegate several tasks at the same time.",
-  "- To talk with a task agent, use `send_message_to` with its run ID. It talks back to you the same way. For a task agent team you get two run IDs: talk with the team through its coordinator's run ID (`target_team_coordinator_agent_run_id`).",
-  "- Every message you receive, including a new task, gives its sender run ID. To answer it, or to report your task result, use `send_message_to` with `target_agent_run_id` set to that sender run ID.",
+  "- To talk with a task agent, use `send_message_to` with its run id. It talks back to you the same way. For a task agent team you get two run ids: talk with the team through its coordinator's run id (`target_team_coordinator_agent_run_id`).",
+  "- Every message you receive, including a new task, gives its sender run id, and its sender address when that address reaches the sender. When you reply to it or report your task result, use `send_message_to` with `target_agent_run_id` set to the sender run id, or `recipient_address` set to the sender address (one of them, not both). Reply only when the message asks you something or you need something from the sender; a result or an answer needs no reply.",
   "- `list_available_agents`, if you have it, shows the agents and agent teams you can work with, with their addresses.",
   "- If the user mentions agents or agent teams, they are listed at the end of the user's message; follow that note.",
   "",
-  "On receiving a request, follow your own instructions and skills. Use `send_message_to` for a purpose: to follow up with a task agent, or to answer one. Don't send acknowledgements, status chatter or promises to work."
+  "On receiving a request, follow your own instructions and skills. Use `send_message_to` for a purpose: to follow up with a task agent, or to answer a question it asks you. Don't send acknowledgements, status chatter or promises to work."
 ].join("\n");
 
 /** §4.2: an agent that another agent delegated a task to, outside any team. */
@@ -32,14 +32,14 @@ const TASK_AGENT_SECTION = [
   "",
   "You can also delegate tasks to other agents and agent teams.",
   "",
-  "- To delegate a task, use `delegate_task` with the address of an agent or agent team. This creates a new task agent (or task agent team) that works on your task, and you get back its run ID. Your task description becomes the task agent's first message, together with your run ID so it can reply; don't send it again with `send_message_to`.",
+  "- To delegate a task, use `delegate_task` with the address of an agent or agent team. This creates a new task agent (or task agent team) that works on your task, and you get back its run id. Your task description becomes the task agent's first message, together with your run id so it can reply; don't send it again with `send_message_to`.",
   "- Every delegation to an address creates a new task agent or task agent team, so you can delegate several tasks at the same time.",
-  "- To talk with a task agent, use `send_message_to` with its run ID. It talks back to you the same way. For a task agent team you get two run IDs: talk with the team through its coordinator's run ID (`target_team_coordinator_agent_run_id`).",
-  "- Every message you receive, including a new task, gives its sender run ID. To answer it, or to report your task result, use `send_message_to` with `target_agent_run_id` set to that sender run ID.",
+  "- To talk with a task agent, use `send_message_to` with its run id. It talks back to you the same way. For a task agent team you get two run ids: talk with the team through its coordinator's run id (`target_team_coordinator_agent_run_id`).",
+  "- Every message you receive, including a new task, gives its sender run id, and its sender address when that address reaches the sender. When you reply to it or report your task result, use `send_message_to` with `target_agent_run_id` set to the sender run id, or `recipient_address` set to the sender address (one of them, not both). Reply only when the message asks you something or you need something from the sender; a result or an answer needs no reply.",
   "- `list_available_agents`, if you have it, shows the agents and agent teams you can work with, with their addresses.",
   "- If the user mentions agents or agent teams, they are listed at the end of the user's message; follow that note.",
   "",
-  "On receiving a request, follow your own instructions and skills. Use `send_message_to` for a purpose: to report your result, to ask for input you need, or to follow up with or answer one of your task agents. Don't send acknowledgements, status chatter or promises to work."
+  "On receiving a request, follow your own instructions and skills. Use `send_message_to` for a purpose: to report your result, to ask for input you need, or to follow up with one of your task agents or answer its question. Don't send acknowledgements, status chatter or promises to work."
 ].join("\n");
 
 /** §5.0: how addresses work, for team and organization agents. */
@@ -68,7 +68,7 @@ const AGENT_TEAM_ADDRESSING_SECTION = [
   "",
   "The letters in this example are placeholders only. They do not identify available recipients. Use only an exact address you were given, for example in your handoff rules, your team instruction, the result of `list_available_agents` or the note about agents the user mentioned.",
   "",
-  "Every Agent and AgentTeam you can reach by address has one canonical absolute address beginning with `/`. Use that exact address when a tool asks for `recipient_address`. Relative addresses, bare names, `../`, backslashes, and `/` itself are not valid recipients. A task agent or task agent team that you create by delegating can't be reached by address: talk with it using its run ID.",
+  "Every Agent and AgentTeam you can reach by address has one canonical absolute address beginning with `/`. Use that exact address when a tool asks for `recipient_address`. Relative addresses, bare names, `../`, backslashes, and `/` itself are not valid recipients. A task agent or task agent team that you create by delegating can't be reached by address: talk with it using its run id.",
   "",
   "Sending a message to an AgentTeam address delivers it through that AgentTeam's configured coordinator."
 ].join("\n");
@@ -80,15 +80,15 @@ const TEAM_MEMBER_SECTION = [
   "On receiving a request, follow your own instructions and skills.",
   "",
   "- To talk with a teammate, use `send_message_to` with their address.{{organization_line}}",
-  "- To get a task done outside your team, use `delegate_task` with the address of an agent or agent team. This creates a new task agent (or task agent team) that works on your task, and you get back its run ID. Your task description becomes the task agent's first message, together with your run ID so it can reply; don't send it again with `send_message_to`.",
+  "- To get a task done outside your team, use `delegate_task` with the address of an agent or agent team. This creates a new task agent (or task agent team) that works on your task, and you get back its run id. Your task description becomes the task agent's first message, together with your run id so it can reply; don't send it again with `send_message_to`.",
   "- Every delegation to an address creates a new task agent or task agent team, so you can delegate several tasks at the same time.",
-  "- To talk with a task agent, use `send_message_to` with its run ID. It talks back to you the same way. For a task agent team you get two run IDs: talk with the team through its coordinator's run ID (`target_team_coordinator_agent_run_id`).",
-  "- Every message you receive, including a new task, gives its sender run ID. To answer it, or to report your task result, use `send_message_to` with `target_agent_run_id` set to that sender run ID.",
+  "- To talk with a task agent, use `send_message_to` with its run id. It talks back to you the same way. For a task agent team you get two run ids: talk with the team through its coordinator's run id (`target_team_coordinator_agent_run_id`).",
+  "- Every message you receive, including a new task, gives its sender run id, and its sender address when that address reaches the sender. When you reply to it or report your task result, use `send_message_to` with `target_agent_run_id` set to the sender run id, or `recipient_address` set to the sender address (one of them, not both). Reply only when the message asks you something or you need something from the sender; a result or an answer needs no reply.",
   "- Don't delegate to yourself, your teammates or your own team; talk with them instead.",
   "- `list_available_agents`, if you have it, shows the agents and agent teams you can work with, with their addresses.",
   "- If the user mentions agents or agent teams, they are listed at the end of the user's message; follow that note.",
   "",
-  "Use `send_message_to` for a purpose: to hand off your work, to ask for input you need, to follow up with or answer one of your task agents, or to reply to the agent that gave you a task (by its run ID). Don't send acknowledgements, status chatter or promises to work."
+  "Use `send_message_to` for a purpose: to hand off your work, to ask for input you need, to follow up with one of your task agents or answer its question, or to reply to the agent that gave you a task. Don't send acknowledgements, status chatter or promises to work."
 ].join("\n");
 
 /** §5.2: a direct agent of an organization. */
@@ -98,22 +98,22 @@ const ORG_AGENT_SECTION = [
   "On receiving a request, follow your own instructions and skills.",
   "",
   "- To talk with an agent or agent team of your organization, use `send_message_to` with its address.",
-  "- To have a task done by a new agent, use `delegate_task` with the address of an agent or agent team. This creates a new task agent (or task agent team) that works on your task, and you get back its run ID. Even when an agent of your organization has that address, delegating creates a new task agent; it doesn't give the task to that agent. Your task description becomes the task agent's first message, together with your run ID so it can reply; don't send it again with `send_message_to`.",
+  "- To have a task done by a new agent, use `delegate_task` with the address of an agent or agent team. This creates a new task agent (or task agent team) that works on your task, and you get back its run id. Even when an agent of your organization has that address, delegating creates a new task agent; it doesn't give the task to that agent. Your task description becomes the task agent's first message, together with your run id so it can reply; don't send it again with `send_message_to`.",
   "- Every delegation to an address creates a new task agent or task agent team, so you can delegate several tasks at the same time.",
-  "- To talk with a task agent, use `send_message_to` with its run ID. It talks back to you the same way. For a task agent team you get two run IDs: talk with the team through its coordinator's run ID (`target_team_coordinator_agent_run_id`).",
-  "- Every message you receive, including a new task, gives its sender run ID. To answer it, or to report your task result, use `send_message_to` with `target_agent_run_id` set to that sender run ID.",
+  "- To talk with a task agent, use `send_message_to` with its run id. It talks back to you the same way. For a task agent team you get two run ids: talk with the team through its coordinator's run id (`target_team_coordinator_agent_run_id`).",
+  "- Every message you receive, including a new task, gives its sender run id, and its sender address when that address reaches the sender. When you reply to it or report your task result, use `send_message_to` with `target_agent_run_id` set to the sender run id, or `recipient_address` set to the sender address (one of them, not both). Reply only when the message asks you something or you need something from the sender; a result or an answer needs no reply.",
   "- Don't delegate to yourself.",
   "- `list_available_agents`, if you have it, shows the agents and agent teams you can work with, with their addresses.",
   "- If the user mentions agents or agent teams, they are listed at the end of the user's message; follow that note.",
   "",
-  "Use `send_message_to` for a purpose: to hand off your work, to ask for input you need, to follow up with or answer one of your task agents, or to reply to the agent that gave you a task (by its run ID). Don't send acknowledgements, status chatter or promises to work."
+  "Use `send_message_to` for a purpose: to hand off your work, to ask for input you need, to follow up with one of your task agents or answer its question, or to reply to the agent that gave you a task. Don't send acknowledgements, status chatter or promises to work."
 ].join("\n");
 
 /** §5.3: added only for an agent that has handoff rules. */
 const HANDOFFS_SECTION = [
   "### Handoffs",
   "",
-  "When you finish your work or get stuck, call `get_handoff_rules`. Select the single rule whose `when` condition most specifically matches your outcome, and message only its `recipient_address` with `send_message_to`. Don't notify anyone else about the same outcome. If no rule fits and another agent gave you the task, tell that agent using its run ID; otherwise finish normally."
+  "When you finish your work or get stuck, call `get_handoff_rules`. Select the single rule whose `when` condition most specifically matches your outcome, and message only its `recipient_address` with `send_message_to`. Don't notify anyone else about the same outcome. If no rule fits and another agent gave you the task, tell that agent using its run id; otherwise finish normally."
 ].join("\n");
 
 const ORGANIZATION_LINE = " You can also talk with the organization's other agents and agent teams at their addresses.";

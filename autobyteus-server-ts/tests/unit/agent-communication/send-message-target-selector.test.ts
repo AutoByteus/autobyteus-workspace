@@ -5,14 +5,14 @@ describe("send_message_to target selector refusals (SR-009, wording §7.3 / view
   it("both selectors: takes exactly one, and says to answer with the sender id", () => {
     expect(buildSendMessageTargetSelector({ recipientAddress: "/project_task_manager", targetAgentRunId: "project_task_manager_3c9e" })).toEqual({
       ok: false,
-      message: "send_message_to takes exactly one of recipient_address or target_agent_run_id, not both. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run ID.",
+      message: "send_message_to takes exactly one of recipient_address or target_agent_run_id, not both. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run id.",
     });
   });
 
   it("no selector: needs one, and says to answer with the sender id", () => {
     expect(buildSendMessageTargetSelector({})).toEqual({
       ok: false,
-      message: "send_message_to needs one of recipient_address or target_agent_run_id. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run ID.",
+      message: "send_message_to needs one of recipient_address or target_agent_run_id. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run id.",
     });
   });
 

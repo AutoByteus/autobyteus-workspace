@@ -7,6 +7,7 @@ initial baseline and later implementation deltas.
 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
+| IR-005 | Solution Designer → SR-015 (code review CRR-004 + CRR-003 F-5) and SR-016 (user: lowercase "run id") | CRR-004 CR-001..CR-005; CRR-003 F-5 | `Design Impact` (F-5, header) + `Local Fix` (CR-001..CR-004) | SR-015, SR-016; CRR-003, CRR-004 | Implemented; next: targeted delta review by the code reviewer, then API/E2E |
 | IR-004 | Solution Designer → SR-011, SR-012, SR-013, SR-014 (received after IR-003 work, before any IR-003 commit) | SD-C-010 (own team by definition); user direction (run ID term, header without name, `@` lines); SR-014 catalogue M-01..M-45 | `Local wording change` / `Design correction` within the approved direction | SR-011..SR-014 | Implemented; unit, integration and scripted-AGY e2e results in the entry |
 | IR-003 | Solution Designer → SR-004, SR-005, SR-006, SR-009, SR-010 (SR-007 reverted by SR-008, never committed) | SD-C-006, SD-C-007; user review (one handle to answer with: the sender id) | `Local wording change` within the approved direction | SR-004, SR-005 (superseded by SR-006), SR-006, SR-008, SR-009, SR-010 (SR-009 addendum superseded by SR-010) | Implemented; unit, integration and scripted-AGY e2e results in the entry |
 | IR-002 | Solution Designer → SR-003, from code review `code-review-report.md` CRR-001 (failure-origin round after API-REV-001) | F-3a, F-3b, F-1 (C-3 covered by F-3a) | `Design Impact` (F-3a, F-3b) / `Requirement Gap` (F-1), decided in SR-003 | SR-003; CRR-001; API-REV-001 | Implemented; unit, integration and scripted-AGY e2e pass; AC-008 repeated live samples left to API/E2E |
@@ -110,3 +111,27 @@ initial baseline and later implementation deltas.
 - Local validation and result: see "IR-004 local checks" in `implementation-handoff.md`.
 - Next recipient or routing: `/software_engineering_team/api_e2e_engineer` (Medium + Low direct route).
 - Remaining limitations or risks: no real-model samples run by me (AC-008); views §10a result shapes, journeys J6–J10 and §12 are covered through the catalogue test and existing journey tests, not each replayed; the `zz-keep-agent-initiated-collaborators.e2e.test.ts` and `agent-initiated-collaborators.e2e.test.ts` edits in the working tree are not mine (their fixture prompts still say "sender id").
+
+### IR-005 — No-reply rule, sender address back where it reaches (T-5), "run id" lowercase, CRR-004 local fixes (SR-015, SR-016)
+
+- Triggering role, report path, and round: Solution Designer SR-015 (answering `code-review-report.md` CRR-004, full review round 4, and the open CRR-003 F-5) and SR-016 (the user), received in the same round.
+- Triggering finding IDs: CRR-003 F-5; CRR-004 CR-001, CR-002, CR-003, CR-004 (CR-005 is the Solution Designer's design fix)
+- Classification: F-5 and the header decision `Design Impact` (resolved upstream in SR-015); CR-001..CR-004 implementation `Local Fix`
+- Prior authoritative result: IR-004 (`71db6bbdd8`), code review CRR-004 Fail
+- Current authoritative result: the IR-005 commit named in `implementation-handoff.md`; Medium / Low confirmed
+- Related solution revision IDs: SR-015, SR-016; code-review CRR-003, CRR-004; API/E2E as before
+- Why recorded: Codex delegators answered every result (echo loops); the user restored the sender address where it reaches the sender and lowercased "run id"; the reviewer's local fixes.
+- Approved behavior or requirement IDs affected: BEH-005, BEH-006, BEH-008; REQ-004..REQ-008; AC-002, AC-003, AC-007, AC-008; DEC-015, DEC-016 and SR-016.
+- Implementation delta:
+  - Prompts regenerated from the wording file: the answering bullet of all four prompts (handles, one of them; "Reply only when the message asks you something or you need something from the sender; a result or an answer needs no reply.") and the purposes lines; "run id" lowercase. Tool and parameter descriptions regenerated (lowercase "run id"; checked equal to the wording file).
+  - Design T-5: `reachingAddressOf(port, viewer | null, agent)` in `message-recipient-resolution.ts` (the agent's own address only when `send_message_to` with it reaches exactly that agent from the viewer, or run-wide for `null`). Task message (`buildTaskWorkText`) takes `delegatorAddress` from the new `RootTaskExecutionAdapter.reachingAddressOf(agent)` (run-wide), implemented by the three root adapters; two forms per wording §7.1. Headers: new `received-message-header.ts` used by all three builders; `RootCommunicationDeliveryInput.senderAddress` and `ResolvedInterAgentMessageDeliveryRequest.senderAddress` are filled by the Team, Org and standalone deliveries with `reachingAddressOf(index, receiver, sender)`; the global router's header never has an address.
+  - Web: `interAgentDelivery.ts` parses the new forms (with and without `sender address`) and the released earlier form; the unreleased `sender run ID` form is not read (CR-001 principle). Label unchanged (run-id lookup only).
+  - SR-016: every agent-facing "run ID" in code texts is "run id" (catalogue M-01..M-45, refusals, `@` lines); Task IDs unchanged. Forbidden-word tests also reject "ID"/"IDs" for a run id and "sender id" (Task IDs allowed), and allow a "run" phrase followed by "id".
+  - CR-001: `EARLIER_GUIDANCE`, its parse use and its test removed; contracts `dist/` rebuilt.
+  - CR-002: unused imports removed (`PreparedTaskExecution`, `AgentRun`); `--noUnusedLocals` reports nothing in the touched files.
+  - CR-003: `mention-viewer.ts` with `MentionViewerIndexPort`, `MentionViewer`, `MentionViewerRelation`, `OwnTeamMentionFacts`, `InstanceDefinitions`, `mentionViewerRelation`, `mentionViewerOf`, `instanceDefinitionsFromSource`; `MessageRecipientIndexPort` no longer has `instanceDefinitionsOf` / `agentAddressOf`; the three indexes implement both ports. No behavior change.
+  - CR-004: `MemberScopeRootFacts.configured: ConfiguredRootPlacements | null` (addresses, run IDs, role); the Agent root passes `null`. No behavior change.
+- Changed files or areas: see the commit.
+- Local validation and result: see "IR-005 local checks" in `implementation-handoff.md`.
+- Next recipient or routing: `/software_engineering_team/code_reviewer` for the targeted delta review (as SR-015 routes it), then API/E2E.
+- Remaining limitations or risks: the no-reply rule is prompt wording only (no runtime limit, by design); its effect on Codex is proven only by the revised AC-008 runs (≥15 LE-A1 per side), which I did not run.

@@ -441,7 +441,7 @@ const conversationJson = async (kind, rootId, agentRunId, address) => {
   if (kind === 'team') return JSON.stringify((await gql('query($id:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$a){conversation}}', { id: rootId, a: agentRunId })).getTeamMemberRunProjection.conversation)
   return JSON.stringify((await gql('query($id:String!,$a:String!,$m:String!){getAgentOrgMemberRunProjection(orgRunId:$id,memberAddress:$m,agentRunId:$a){conversation}}', { id: rootId, a: agentRunId, m: address })).getAgentOrgMemberRunProjection.conversation)
 }
-const NOTE_GUIDANCE_START = ': delegate the task to it with delegate_task; it returns a run ID to follow up with.'
+const NOTE_GUIDANCE_START = ': delegate the task to it with delegate_task; it returns a run id to follow up with.'
 const assertStoredNote = (text, entries) => {
   assert(text.includes('[Mentioned agents]') && text.includes(NOTE_GUIDANCE_START), 'stored message lacks the delegate_task note (AC-002)', text.slice(0, 1500))
   for (const entry of entries) assert(text.includes(entry), `stored note lacks "${entry}"`, text.slice(0, 1500))

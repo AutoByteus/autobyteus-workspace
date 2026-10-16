@@ -4,16 +4,12 @@ import type { AgentTeamAddress } from "../../../../src/agent-collaboration/domai
 
 const a = (value: string) => value as AgentTeamAddress;
 const teamRoot = {
-  configuredRootAddresses: ["/coordinator"],
-  configuredRootAgentRunIds: ["run-coordinator"],
-  configuredRootRole: "team_member" as const,
+  configured: { addresses: ["/coordinator"], agentRunIds: ["run-coordinator"], role: "team_member" as const },
   handoffs: [{ from: "/coordinator", to: "/writer", rules: ["Root rule."] }],
   definition: { kind: "agent_team" as const, definitionId: "root-team" },
 };
 const orgRoot = {
-  configuredRootAddresses: ["/project_task_manager"],
-  configuredRootAgentRunIds: ["run-ptm"],
-  configuredRootRole: "org_agent" as const,
+  configured: { addresses: ["/project_task_manager"], agentRunIds: ["run-ptm"], role: "org_agent" as const },
   handoffs: [{ from: "/project_task_manager", to: "/team/lead", rules: ["Org rule."] }],
   definition: { kind: "agent_org" as const, definitionId: "org" },
 };
@@ -57,6 +53,6 @@ describe("resolveMemberCollaborationScope (CR-001, collaboration role)", () => {
     expect(resolveMemberCollaborationScope({ memberAddress: a("/code_reviewer"), agentRunId: "run-copy", hostTeam: copy, root: teamRoot })).toEqual(none);
     // An Agent-root child outside any Team instance.
     expect(resolveMemberCollaborationScope({ memberAddress: a("/writer"), agentRunId: "run-child",
-      root: { configuredRootAddresses: [], configuredRootAgentRunIds: [], configuredRootRole: "team_member", handoffs: [], definition: null } })).toEqual(none);
+      root: { configured: null, handoffs: [], definition: null } })).toEqual(none);
   });
 });

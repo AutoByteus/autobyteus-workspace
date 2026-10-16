@@ -35,7 +35,7 @@ const parseExistingCopyInput = (rawArguments: Record<string, unknown>): Delegate
   }
   const extra = Object.keys(rawArguments).filter(key => !["target_team_run_id", "target_agent_run_id", "task_id"].includes(key));
   if (extra.length) {
-    throw new Error(`Invalid delegate_task input: with target_team_run_id or target_agent_run_id, supply only that run ID and task_id (not ${extra.join(", ")}).`);
+    throw new Error(`Invalid delegate_task input: with target_team_run_id or target_agent_run_id, supply only that run id and task_id (not ${extra.join(", ")}).`);
   }
   if (Object.hasOwn(rawArguments, "target_team_run_id")) {
     const result = ExistingTeamCopyInputSchema.safeParse(rawArguments);

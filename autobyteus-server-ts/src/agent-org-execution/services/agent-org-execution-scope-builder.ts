@@ -78,9 +78,11 @@ export class AgentOrgExecutionScopeBuilder {
         agentRunId: identity.agentRunId,
         hostTeam,
         root: {
-          configuredRootAddresses: tree.rootOrg.members.flatMap((member) => "agentRunId" in member ? [member.address] : []),
-          configuredRootAgentRunIds: tree.rootOrg.members.flatMap((member) => "agentRunId" in member ? [member.agentRunId] : []),
-          configuredRootRole: "org_agent",
+          configured: {
+            addresses: tree.rootOrg.members.flatMap((member) => "agentRunId" in member ? [member.address] : []),
+            agentRunIds: tree.rootOrg.members.flatMap((member) => "agentRunId" in member ? [member.agentRunId] : []),
+            role: "org_agent",
+          },
           handoffs: tree.handoffs,
           definition: { kind: "agent_org", definitionId: tree.rootOrg.orgDefinitionId },
         },

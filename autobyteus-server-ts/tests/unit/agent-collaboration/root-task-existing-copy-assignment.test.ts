@@ -69,8 +69,8 @@ describe("assigning a new Task to an existing copy (DS-002)", () => {
 
   it.each([
     ["a Team coordinator passed as target_agent_run_id", { agentRunId: "lead" }, 'lead is the coordinator of task agent team review-team; use target_team_run_id "review-team".'],
-    ["a team run ID passed as target_agent_run_id", { agentRunId: "review-team" }, 'review-team is a task agent team\'s run ID; use target_team_run_id "review-team".'],
-    ["an Agent copy passed as target_team_run_id", { teamRunId: "worker" }, 'worker is a task agent\'s run ID; use target_agent_run_id "worker".'],
+    ["a team run ID passed as target_agent_run_id", { agentRunId: "review-team" }, 'review-team is a task agent team\'s run id; use target_team_run_id "review-team".'],
+    ["an Agent copy passed as target_team_run_id", { teamRunId: "worker" }, 'worker is a task agent\'s run id; use target_agent_run_id "worker".'],
     ["a Team member", { agentRunId: "member" }, 'member is a member of task agent team review-team; to give that team a Task, use target_team_run_id "review-team".'],
     ["an unknown ID or a copy of another root", { agentRunId: "elsewhere" }, "elsewhere is not one of your task agents."],
   ])("refuses %s with its specific reason; nothing changes (AC-008)", async (_case, copy, message) => {
@@ -159,7 +159,7 @@ describe("assigning a new Task to an existing copy (DS-002)", () => {
     const f = await afterTaskADone(["worker"]);
     f.control.deliveryRefusal = { accepted: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: "input closed" };
     expect(await f.assignTo(worker, "task-B")).toEqual({ delegated: false, message: "Task task-B was given to the task agent, but the message with its work was not delivered "
-      + "(input closed). Message the task agent's run ID worker, or set Task task-B to CANCELLED, or delegate it to a new task agent." });
+      + "(input closed). Message the task agent's run id worker, or set Task task-B to CANCELLED, or delegate it to a new task agent." });
     expect(f.resources.entry(worker)).toMatchObject({ taskId: "task-B", open: true, start: "failed" });
   });
 

@@ -1,4 +1,3 @@
-import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
 import { ROOT_NOT_ACTIVE_MESSAGE } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
@@ -130,7 +129,7 @@ export class GlobalAgentRunMessageRouter {
       const result = {
         accepted: false,
         code: "TARGET_IS_TEAM_RUN",
-        message: `${targetAgentRunId} is a task agent team's run ID, and send_message_to talks with agents. To talk with the team, use its coordinator's run ID: ${coordinator}.`,
+        message: `${targetAgentRunId} is a task agent team's run id, and send_message_to talks with agents. To talk with the team, use its coordinator's run id: ${coordinator}.`,
       } satisfies AgentOperationResult;
       this.recordGrantUsage(grantDecision.kind === "allowed" ? grantDecision.grant : null, {
         ...result,
@@ -147,7 +146,7 @@ export class GlobalAgentRunMessageRouter {
       const result = {
         accepted: false,
         code: "TARGET_AGENT_RUN_NOT_ACTIVE",
-        message: `No running agent has the run ID '${targetAgentRunId}', so the message was not sent. Use an exact run ID you were given: a sender run ID (from a message or your new task), or a run ID delegate_task returned to you.`,
+        message: `No running agent has the run id '${targetAgentRunId}', so the message was not sent. Use an exact run id you were given: a sender run id (from a message or your new task), or a run id delegate_task returned to you.`,
       } satisfies AgentOperationResult;
       this.recordGrantUsage(grantDecision.kind === "allowed" ? grantDecision.grant : null, {
         ...result,

@@ -39,86 +39,7 @@ export interface MessageRecipientIndexPort {
    * when the sender is a configured member and `address` is a configured placement of the root Team.
    */
   isOwnTeamAddress(senderAgentRunId: string, address: AgentTeamAddress): boolean;
-  /** The definitions of one team instance's members and of the team itself, from what the tree recorded; null when it recorded none. */
-  instanceDefinitionsOf(teamRunId: string): InstanceDefinitions | null;
-  /** The address of an agent execution in this root; null when it is not in the tree. */
-  agentAddressOf(agentRunId: string): AgentTeamAddress | null;
 }
-
-/** The definitions recorded for one team instance: the team's own (when known) and each member's, with its address in the instance. */
-export type InstanceDefinitions = Readonly<{
-  teamDefinitionId: string | null;
-  members: readonly Readonly<{ address: AgentTeamAddress; definitionId: string }>[];
-}>;
-
-/** How an address relates to the agent the user is talking to (decides the `@` note line). */
-export type MentionViewerRelation = (address: AgentTeamAddress) => "self" | "own_team" | "other";
-
-/**
- * The focused agent's own team instance by definition (SR-011): its own address, the team's address and
- * definition, and each member's definition and address inside the instance. Needed because the members
- * of a task agent team are not configured placements, so a mention of a teammate would otherwise
- * resolve to its catalog address and be offered `delegate_task`.
- */
-export type OwnTeamMentionFacts = Readonly<{
-  selfAddress: AgentTeamAddress;
-  teamAddress: AgentTeamAddress;
-  teamDefinitionId: string | null;
-  members: InstanceDefinitions["members"];
-}>;
-
-/** Everything the `@` note needs to know about the agent the user is talking to. */
-export type MentionViewer = Readonly<{ relation: MentionViewerRelation; ownTeam: OwnTeamMentionFacts | null }>;
-
-/**
- * The relation of an address to one focused agent, from a root's index. `self` is the agent's own
- * placement by identity (a task agent at a configured agent's address is not that agent);
- * `own_team` is exactly what `delegate_task` refuses (CM-1); everything else is `other`.
- */
-export const mentionViewerRelation = (
-  index: Pick<MessageRecipientIndexPort, "getMessagePlacement" | "isOwnTeamAddress">,
-  focusedAgentRunId: string,
-): MentionViewerRelation => (address) => {
-  const placement = index.getMessagePlacement(address);
-  if (placement?.kind === "agent" && placement.receiver.agentRunId === focusedAgentRunId) return "self";
-  return index.isOwnTeamAddress(focusedAgentRunId, address) ? "own_team" : "other";
-};
-
-type RecordedTeamDefinitions = Readonly<{
-  teamDefinitionId: string;
-  members: readonly Readonly<{ address: AgentTeamAddress; agentDefinitionId: string }>[];
-}>;
-
-/**
- * The definitions a team instance's tree record carries: a configured team node, or a task team copy's
- * catalog source. A record that carries neither (a nested team of a copy) yields null.
- */
-export const instanceDefinitionsFromSource = (source: object): InstanceDefinitions | null => {
-  const recorded: RecordedTeamDefinitions | null = "coordinatorAddress" in source
-    ? source as unknown as RecordedTeamDefinitions
-    : "source" in source && source.source ? source.source as RecordedTeamDefinitions : null;
-  return recorded
-    ? Object.freeze({
-      teamDefinitionId: recorded.teamDefinitionId,
-      members: Object.freeze(recorded.members.map((member) => Object.freeze({ address: member.address, definitionId: member.agentDefinitionId }))),
-    })
-    : null;
-};
-
-export const mentionViewerOf = (
-  index: Pick<MessageRecipientIndexPort, "getMessagePlacement" | "isOwnTeamAddress" | "teamInstancesOf" | "instanceDefinitionsOf" | "agentAddressOf">,
-  focusedAgentRunId: string,
-): MentionViewer => {
-  const selfAddress = index.agentAddressOf(focusedAgentRunId);
-  const instance = index.teamInstancesOf(focusedAgentRunId)[0];
-  const recorded = instance ? index.instanceDefinitionsOf(instance.teamRunId) : null;
-  return Object.freeze({
-    relation: mentionViewerRelation(index, focusedAgentRunId),
-    ownTeam: selfAddress && instance && recorded
-      ? Object.freeze({ selfAddress, teamAddress: instance.address, teamDefinitionId: recorded.teamDefinitionId, members: recorded.members })
-      : null,
-  });
-};
 
 /** Whether `address` is the instance's own address or lies inside it, at any depth. */
 export const isWithinTeamInstance = (address: string, instance: SenderTeamInstance): boolean =>
@@ -155,4 +76,30 @@ export const resolveMessageRecipient = (input: Readonly<{
   const outside = port.getMessagePlacement(input.address);
   if (outside) return outside;
   throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", messageTargetNotFoundMessage(input.address));
+};
+
+/**
+ * T-5: the address to give for `agent` in a message `viewerAgentRunId` receives (or, with `null`,
+ * in a new task agent's first message): the agent's own address only when `send_message_to` with
+ * it reaches exactly that agent, from the viewer's position (its own team instances, then the run's
+ * standing placements) or run-wide for `null`. A task agent, or a member of a task agent team seen
+ * from outside its team, gets `null`: its address would reach someone else or no one.
+ */
+export const reachingAddressOf = (
+  port: MessageRecipientIndexPort,
+  viewerAgentRunId: string | null,
+  agent: Readonly<{ memberAddress: AgentTeamAddress; agentRunId: string }>,
+): AgentTeamAddress | null => {
+  let placement: CollaborationMessagePlacement | null;
+  if (viewerAgentRunId === null) {
+    placement = port.getMessagePlacement(agent.memberAddress);
+  } else {
+    try {
+      placement = resolveMessageRecipient({ port: () => port, senderAgentRunId: viewerAgentRunId, address: agent.memberAddress });
+    } catch (error) {
+      if (error instanceof CollaborationContractError && error.code === "COLLABORATION_TARGET_NOT_FOUND") return null;
+      throw error;
+    }
+  }
+  return placement?.kind === "agent" && placement.receiver.agentRunId === agent.agentRunId ? agent.memberAddress : null;
 };

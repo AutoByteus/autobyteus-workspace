@@ -1,13 +1,13 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   isInsideSenderTeamInstances,
-  mentionViewerOf,
-  mentionViewerRelation,
   messagePlacement,
+  reachingAddressOf,
   resolveMessageRecipient,
   type MessageRecipientIndexPort,
   type SenderTeamInstance,
 } from "../../../../src/agent-collaboration/collaborators/message-recipient-resolution.js";
+import { mentionViewerOf, mentionViewerRelation } from "../../../../src/agent-collaboration/collaborators/mention-viewer.js";
 import { resolveDelegationPlacement } from "../../../../src/agent-collaboration/collaborators/catalog-delegation.js";
 import { CollaboratorAddError } from "../../../../src/agent-collaboration/collaborators/collaborator-errors.js";
 import { CollaborationContractError } from "../../../../src/agent-collaboration/domain/collaboration-contract-error.js";
@@ -65,9 +65,30 @@ describe("MessageRecipientResolution (DS-002, CM-4)", () => {
     const attempt = () => resolve("pm", "/product_team");
     expect(attempt).toThrow(CollaborationContractError);
     expect(attempt).toThrow(
-      "No agent or agent team you can talk with has the address /product_team. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run ID. To have a task done by a new agent, use delegate_task.",
+      "No agent or agent team you can talk with has the address /product_team. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run id. To have a task done by a new agent, use delegate_task.",
     );
     expect(attempt).toThrow(expect.objectContaining({ code: "COLLABORATION_TARGET_NOT_FOUND" }));
+  });
+});
+
+describe("reachingAddressOf (design T-5, SR-015)", () => {
+  const agent = (memberAddress: string, agentRunId: string) => ({ memberAddress: a(memberAddress), agentRunId });
+
+  it("gives a configured agent's address when it reaches exactly that agent, run-wide (task message) and from a viewer (header)", () => {
+    expect(reachingAddressOf(port(), null, agent("/pm", "wide-pm"))).toBe("/pm");
+    expect(reachingAddressOf(port(), "copy-1-lead", agent("/pm", "wide-pm"))).toBe("/pm");
+  });
+
+  it("gives no address for a task agent at a configured address: the address reaches the configured agent, not it", () => {
+    expect(reachingAddressOf(port(), null, agent("/pm", "pm-task-agent"))).toBeNull();
+  });
+
+  it("gives a team member's address to a teammate, but not run-wide or from outside its team", () => {
+    expect(reachingAddressOf(port(), "copy-1-lead", agent("/team/writer", "copy-1-writer"))).toBe("/team/writer");
+    // Run-wide `/team/writer` is another agent; from copy-2 there is no writer at all.
+    expect(reachingAddressOf(port(), null, agent("/team/writer", "copy-1-writer"))).toBeNull();
+    expect(reachingAddressOf(port(), "copy-2-lead", agent("/team/writer", "copy-1-writer"))).toBeNull();
+    expect(reachingAddressOf(port(), "pm", agent("/team/lead", "copy-1-lead"))).toBeNull();
   });
 });
 

@@ -12,7 +12,7 @@ const invalidAddress = (value: unknown, detail: string): never => {
     "COLLABORATION_ADDRESS_INVALID",
     `AgentTeam address '${String(value)}' is invalid: ${detail}`,
     {
-      send_message_to: `'${String(value)}' is not a valid address (${detail}). An address is exact and begins with '/', for example /team/agent. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run ID.`,
+      send_message_to: `'${String(value)}' is not a valid address (${detail}). An address is exact and begins with '/', for example /team/agent. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run id.`,
       delegate_task: `'${String(value)}' is not a valid address (${detail}). An address is exact and begins with '/', for example /team/agent; if you have list_available_agents, it shows the addresses you can delegate to.`,
     },
   );

@@ -101,8 +101,8 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s root: reactivat
     const refused = async (copy: { teamRunId: string } | { agentRunId: string }) => (await f.assignTo(copy, 'C') as { message: string }).message;
     expect(await refused({ agentRunId: 'A-lead' })).toBe('A-lead is the coordinator of task agent team A-team; use target_team_run_id "A-team".');
     expect(await refused({ agentRunId: 'A-nested-lead' })).toBe('A-nested-lead is the coordinator of task agent team A-nested; use target_team_run_id "A-nested".');
-    expect(await refused({ agentRunId: 'A-team' })).toBe('A-team is a task agent team\'s run ID; use target_team_run_id "A-team".');
-    expect(await refused({ teamRunId: 'B-worker' })).toBe('B-worker is a task agent\'s run ID; use target_agent_run_id "B-worker".');
+    expect(await refused({ agentRunId: 'A-team' })).toBe('A-team is a task agent team\'s run id; use target_team_run_id "A-team".');
+    expect(await refused({ teamRunId: 'B-worker' })).toBe('B-worker is a task agent\'s run id; use target_agent_run_id "B-worker".');
     expect(await refused({ agentRunId: 'A-child' })).toContain("works on part of another agent's Task");
     expect(await refused({ agentRunId: 'nobody' })).toContain('nobody is not one of your task agents.');
     // A copy whose start failed is linked on the Task side but never reached the actual tree (CR-001, AC-009).
