@@ -71,7 +71,7 @@ None.
 
 ## Repository Finalization
 
-- Ticket branch `codex/collaboration-prompt-wording` -> `origin/personal` via `finalize/collaboration-prompt-wording`, `merge --no-ff`. The result is in delivery-revision-record.md.
+- Ticket branch `codex/collaboration-prompt-wording` -> `origin/personal` via `finalize/collaboration-prompt-wording`, `merge --no-ff`: merge commit `d91298416e` pushed (the target was unchanged at `3712cd9bf0`). Status: Completed.
 
 ## Release / Publication / Deployment
 

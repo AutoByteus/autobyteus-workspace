@@ -22,4 +22,9 @@
 
 ## Finalization Result
 
-(Filled after the push.)
+- Ticket branch `codex/collaboration-prompt-wording` pushed with two delivery commits on the implementation commits: `4ce592a084` (the durable e2e suite, harness and approved-views fixture) and `e6fc0898a8` (doc corrections and the archived ticket).
+- `origin/personal` did not move (`3712cd9bf0`) before the merge or before the push.
+- Merged with `--no-ff` on `finalize/collaboration-prompt-wording`: merge commit `d91298416e`, pushed to `origin/personal`.
+- `check_licensing.py` and `check_repository_artifact_hygiene.py` passed on the staged state. The credential scan of the committed diff (`3712cd9bf0..HEAD`, 17 secrets) found 0 matches.
+- Release: none (the user's decision).
+- Cleanup: the worktree, the local `codex/` and `finalize/` branches and the remote `codex/collaboration-prompt-wording` are removed after this record is pushed. Untracked `dist/` output was not committed. Kept outside the repository: `_delivery-reports/collaboration-prompt-wording-traces/`.
