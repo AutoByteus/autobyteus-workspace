@@ -5,6 +5,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | code_reviewer package after CRR-007 pass | N/A | Verified; finalized; no release (user) | docs-sync-report.md, handoff-summary.md, release-deployment-report.md, release-notes.md |
+| DR-002 | The user's beta decision (relayed by the Solution Designer) | No release | Beta v1.5.5-beta.1 published (4/4 release workflows; NFS refused by design) | release-deployment-report.md (DR-002 section), beta-v1.5.5-beta.1-release-notes.md |
 
 ## Revision Entries
 
@@ -28,3 +29,12 @@
 - `check_licensing.py` and `check_repository_artifact_hygiene.py` passed on the staged state. The credential scan of the committed diff (`3712cd9bf0..HEAD`, 17 secrets) found 0 matches.
 - Release: none (the user's decision).
 - Cleanup: the worktree, the local `codex/` and `finalize/` branches and the remote `codex/collaboration-prompt-wording` are removed after this record is pushed. Untracked `dist/` output was not committed. Kept outside the repository: `_delivery-reports/collaboration-prompt-wording-traces/`.
+
+### DR-002 — Beta v1.5.5-beta.1
+
+- Trigger: the user's decision to release a beta, relayed by `/software_engineering_team/solution_designer` and confirmed by the user to me.
+- Prior result: DR-001, no release.
+- Current result: `v1.5.5-beta.1` published from `origin/personal` (`cf348d6dd6` plus release commit `84b89b14b4`). Desktop, Android, iOS (TestFlight upload) and Server Docker succeeded. The release has 17 assets; Docker `:beta` = `:1.5.5-beta.1` and `:latest` is unchanged. The NFS workflow refused publication at its gate, by design.
+- Deviations: curated notes on a pre-release; the internal Task ID was kept out of the notes; a fifth workflow not in RELEASE.md. Details and proposed guide fixes are in release-deployment-report.md, DR-002.
+- Remaining: the Codex rerun (Project Task 55107203, after 2026-10-22) gates the stable release.
+- Report: sent to `/project_task_manager` after this record was pushed, as requested.
