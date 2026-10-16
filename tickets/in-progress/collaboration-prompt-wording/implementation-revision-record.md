@@ -118,7 +118,7 @@ initial baseline and later implementation deltas.
 - Triggering finding IDs: CRR-003 F-5; CRR-004 CR-001, CR-002, CR-003, CR-004 (CR-005 is the Solution Designer's design fix)
 - Classification: F-5 and the header decision `Design Impact` (resolved upstream in SR-015); CR-001..CR-004 implementation `Local Fix`
 - Prior authoritative result: IR-004 (`71db6bbdd8`), code review CRR-004 Fail
-- Current authoritative result: the IR-005 commit named in `implementation-handoff.md`; Medium / Low confirmed
+- Current authoritative result: commit `5c94518446`; Medium / Low confirmed
 - Related solution revision IDs: SR-015, SR-016; code-review CRR-003, CRR-004; API/E2E as before
 - Why recorded: Codex delegators answered every result (echo loops); the user restored the sender address where it reaches the sender and lowercased "run id"; the reviewer's local fixes.
 - Approved behavior or requirement IDs affected: BEH-005, BEH-006, BEH-008; REQ-004..REQ-008; AC-002, AC-003, AC-007, AC-008; DEC-015, DEC-016 and SR-016.
