@@ -96,7 +96,7 @@ initial baseline and later implementation deltas.
 - Triggering finding IDs: SD-C-010 (SR-011); user direction (SR-012, SR-013); SR-014 catalogue
 - Classification: `Design correction` (SR-011) and wording changes within the approved direction (SR-012..SR-014)
 - Prior authoritative result: IR-003 work (SR-010 wording: "sender id")
-- Current authoritative result: the IR-004 commit named in `implementation-handoff.md`; Medium / Low confirmed
+- Current authoritative result: commit `71db6bbdd8`; Medium / Low confirmed
 - Related solution revision IDs: SR-011, SR-012, SR-013, SR-014 (SR-010 superseded by SR-013)
 - Why recorded: the agent-facing ID term became "run ID" and the header carries no name; the `@` note must be right for task agent team members; every result text is catalogued once.
 - Approved behavior or requirement IDs affected: BEH-005, BEH-006, BEH-008, BEH-009; REQ-005..REQ-009; AC-002, AC-003, AC-005, AC-006, AC-007; DEC-014.

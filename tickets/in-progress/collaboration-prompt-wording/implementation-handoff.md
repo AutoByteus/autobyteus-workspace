@@ -199,7 +199,7 @@ forms, as designed for saved history).
 
 ## Environment Or Dependency Notes
 
-- Implementation commits `290d32dd4b` (IR-001) and `6a3f6628b1` (IR-002). Worktree build only; `pnpm run prepare:shared` and `prisma generate` were needed before the server
+- Implementation commits `290d32dd4b` (IR-001), `6a3f6628b1` (IR-002) and `71db6bbdd8` (IR-003 + IR-004). Worktree build only; `pnpm run prepare:shared` and `prisma generate` were needed before the server
   typecheck; `pnpm test:integration:prepare` before the integration run; `pnpm exec nuxt prepare` before
   the web unit specs. No use of the user's running app or `~/.autobyteus`; the e2e run used a clean
   environment (`env -i`, temp `HOME`) with the scripted AGY CLI (`RUN_AGY_FAILURE_E2E=1`).
