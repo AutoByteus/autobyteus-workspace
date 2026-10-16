@@ -431,8 +431,8 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
       message: `${coordinator} is the coordinator of task agent team ${team}; use target_team_run_id "${team}".` });
     expect(idRefusals.memberAsAgent).toEqual({ delegated: false, message: `${mate} is a member of task agent team ${team}; `
       + `to give that team a Task, use target_team_run_id "${team}".` });
-    expect(idRefusals.teamRunAsAgent).toEqual({ delegated: false, message: `${team} is a task agent team's ID; use target_team_run_id "${team}".` });
-    expect(idRefusals.agentAsTeam).toEqual({ delegated: false, message: `${worker} is a task agent's ID; use target_agent_run_id "${worker}".` });
+    expect(idRefusals.teamRunAsAgent).toEqual({ delegated: false, message: `${team} is a task agent team's run ID; use target_team_run_id "${team}".` });
+    expect(idRefusals.agentAsTeam).toEqual({ delegated: false, message: `${worker} is a task agent's run ID; use target_agent_run_id "${worker}".` });
     expect(idRefusals.subWork).toMatchObject({ delegated: false });
     expect(idRefusals.subWork.message).toMatch(/works on part of another agent's Task, so you can't give it a Task/);
     expect(idRefusals.unknown).toMatchObject({ delegated: false });
@@ -463,8 +463,8 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     } else {
       const teammate = kind === "team" ? "/worker" : "/helper";
       nonAssigner = await root.agentCalls(root.members[teammate]!, teammate, callTool("delegate_task", { target_team_run_id: team, task_id: taskB }));
-      expect(nonAssigner).toEqual({ delegated: false, message: "Only the agent that gave this task agent its most recent Task can give it a new one; "
-        + `or delegate Task ${taskB} to a new task agent with recipient_address.` });
+      expect(nonAssigner).toEqual({ delegated: false, message: "Only the agent that gave this task agent its most recent Task can give it a new one. "
+        + `Delegate Task ${taskB} to a new task agent with recipient_address instead.` });
     }
     expect(await filesNow()).toEqual(files);
     expect(root.reopenedSince(from)).toEqual([]);
@@ -535,7 +535,7 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     // AC-012 (same-root sender): a team run ID is not a send_message_to target; the message names the coordinator.
     const toTeamRun = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: team, content: "Hello team?" }));
     expect(toTeamRun).toMatchObject({ accepted: false, code: "TARGET_IS_TEAM_RUN",
-      message: `${team} is a task agent team's ID, and send_message_to talks with agents. To talk with the team, use its coordinator's ID: ${coordinator}.` });
+      message: `${team} is a task agent team's run ID, and send_message_to talks with agents. To talk with the team, use its coordinator's run ID: ${coordinator}.` });
     const toCoordinator = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: coordinator, content: "B status?" }));
     expect(toCoordinator).toMatchObject({ accepted: true, target_agent_run_id: coordinator });
     expect(toCoordinator.message).not.toMatch(/reactivated/);
@@ -595,7 +595,7 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     files = await filesNow();
     const alreadyB = await root.managerCalls(callTool("delegate_task", { target_team_run_id: team, task_id: taskB }));
     expect(alreadyB).toEqual({ delegated: false, message: `This task agent already has Task ${taskB}. To continue it, `
-      + `set Task ${taskB} to TODO or IN_PROGRESS, then message the task agent's ID (for a task agent team, its coordinator's ID).` });
+      + `set Task ${taskB} to TODO or IN_PROGRESS, then message the task agent's run ID (for a task agent team, its coordinator's run ID).` });
     expect(await filesNow()).toEqual(files);
     expect(root.reopenedSince(from)).toEqual([]);
     expect(processLive(coordinator)).toBe(false);
@@ -754,10 +754,10 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     // AC-012 from another root's agent: the directory finds the Team copy in its active root and names the coordinator.
     const toTeamRun = await other.managerCalls(callTool("send_message_to", { target_agent_run_id: team, content: "Hello from another root." }));
     expect(toTeamRun).toMatchObject({ accepted: false, code: "TARGET_IS_TEAM_RUN",
-      message: `${team} is a task agent team's ID, and send_message_to talks with agents. To talk with the team, use its coordinator's ID: ${coordinator}.` });
+      message: `${team} is a task agent team's run ID, and send_message_to talks with agents. To talk with the team, use its coordinator's run ID: ${coordinator}.` });
     // AC-008: a copy hosted by another root is not a copy of the sender's run.
     const crossAssign = await other.managerCalls(callTool("delegate_task", { target_team_run_id: team, task_id: taskB }));
-    expect(crossAssign).toEqual({ delegated: false, message: `${team} is not one of your task agents. Use an ID that delegate_task returned to you, `
+    expect(crossAssign).toEqual({ delegated: false, message: `${team} is not one of your task agents. Use a run ID that delegate_task returned to you, `
       + "or delegate to a new task agent with recipient_address." });
     expect(await projectFiles(projectId)).toEqual(files);
     // A team run of a root that is no longer active gets the existing not-active refusal, as an agent run ID there would.

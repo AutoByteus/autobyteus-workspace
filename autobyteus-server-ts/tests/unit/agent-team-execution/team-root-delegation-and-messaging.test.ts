@@ -38,7 +38,7 @@ describe("delegation and messaging in a Team root (CM-1, CM-4)", () => {
     const before = await f.dependencies.executionTreeStore.read(f.teamMemoryDir, ROOT);
     await expect(f.message(coordinatorOf(f), "/product_team", "Design it")).rejects.toMatchObject({
       code: "COLLABORATION_TARGET_NOT_FOUND",
-      message: "No agent or agent team you can talk with has the address /product_team. To have a task done by a new agent, use delegate_task; then talk with it by its ID.",
+      message: "No agent or agent team you can talk with has the address /product_team. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run ID. To have a task done by a new agent, use delegate_task.",
     });
     await expect(f.message(coordinatorOf(f), "/code_reviewer", "Review")).rejects.toMatchObject({ code: "COLLABORATION_TARGET_NOT_FOUND" });
     // A run ID or unknown run creates nothing either.
@@ -80,7 +80,7 @@ describe("delegation and messaging in a Team root (CM-1, CM-4)", () => {
     ] });
     const note = composeCollaboratorMentionNote("ask", result.admitted ? result.collaborators : []);
     expect(note).toContain("- Designer (agent) at /worker, in your team: talk with it using send_message_to; don't delegate to it.");
-    expect(note).toContain("- Code Reviewer (agent) at /code_reviewer: delegate a task to it with delegate_task.");
+    expect(note).toContain("- Code Reviewer (agent) at /code_reviewer: delegate the task to it with delegate_task; it returns a run ID to follow up with.");
   });
 
   it("a configured root-Team member may still delegate to an independent catalog unit (CM-2, AC-004)", async () => {

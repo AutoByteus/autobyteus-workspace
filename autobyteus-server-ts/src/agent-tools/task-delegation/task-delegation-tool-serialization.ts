@@ -14,7 +14,7 @@ export const toTaskDelegationToolErrorPayload = (
     return {
       error: {
         code: error.code,
-        message: collaborationErrorTextForAgent(error),
+        message: collaborationErrorTextForAgent(error, "delegate_task"),
       },
     };
   }

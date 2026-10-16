@@ -180,7 +180,7 @@ suite("Agent-attached Task context files reach the worker and never break DONE o
       "worker read its reference files", 60_000);
     const firstMessage = workerTexts.find((text) => text.includes("Reference files:"))!;
     expect(firstMessage, JSON.stringify(workerTexts).slice(0, 2000)).toBeTruthy();
-    expect(firstMessage).toContain(`target_agent_run_id "${rootId}"`);
+    expect(firstMessage).toContain(`sender run ID "${rootId}"`);
     expect(firstMessage).toContain("Description:\nREAD_REFERENCE_FILES\n\nReference files:");
     expect(firstMessage.slice(firstMessage.indexOf("Reference files:")).trim()).toBe(["Reference files:", ...localPaths.map((file) => `- ${file}`)].join("\n"));
     const reply = workerTexts.find((text) => text.includes("REFERENCES:"))!;

@@ -1,5 +1,5 @@
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import { mentionViewerRelation } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
+import { mentionViewerOf } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
 import { composeCollaboratorMentionNote } from "@autobyteus/agent-presentation-contracts";
 import type { StandaloneRunPostInput, StandaloneRunPostResult } from "../../agent-execution/services/standalone-run-ports.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
@@ -67,7 +67,7 @@ export class StandaloneRootMessageDelivery {
   /** `@`: resolves the mentioned definitions for the focused agent (adds nothing); the caller composes the note. */
   resolveMentions(input: Readonly<{ focusedAgentRunId: string; mentions: readonly CollaboratorMention[] }>): Promise<RootCollaboratorAdmissionResult> {
     return this.options.getIndex().getAgent(input.focusedAgentRunId)
-      ? this.options.collaborators.resolveMentions(input.focusedAgentRunId, input.mentions, mentionViewerRelation(this.options.getIndex(), input.focusedAgentRunId))
+      ? this.options.collaborators.resolveMentions(input.focusedAgentRunId, input.mentions, mentionViewerOf(this.options.getIndex(), input.focusedAgentRunId))
       : Promise.resolve({ admitted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${input.focusedAgentRunId}' is not in Agent root '${this.options.hostRunId}'.` });
   }
 

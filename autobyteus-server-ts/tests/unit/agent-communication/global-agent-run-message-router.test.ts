@@ -207,7 +207,7 @@ describe("GlobalAgentRunMessageRouter", () => {
     const getActiveRun = vi.fn(() => null);
     const router = new GlobalAgentRunMessageRouter({ agentRunManager: { getActiveRun }, activeRootDirectory });
     const refusal = { accepted: false, code: "TARGET_IS_TEAM_RUN",
-      message: "copy-team is a task agent team's ID, and send_message_to talks with agents. To talk with the team, use its coordinator's ID: copy-lead." };
+      message: "copy-team is a task agent team's run ID, and send_message_to talks with agents. To talk with the team, use its coordinator's run ID: copy-lead." };
 
     // Same root as the copy, and an unrelated sender (another root, or none).
     await expect(router.deliver({ sender: sameRootSender, targetAgentRunId: "copy-team", content: "Hi." })).resolves.toEqual(refusal);
@@ -235,7 +235,7 @@ describe("GlobalAgentRunMessageRouter", () => {
     expect(result).toEqual({
       accepted: false,
       code: "TARGET_AGENT_RUN_NOT_ACTIVE",
-      message: "No running agent has the ID 'preallocated-or-recoverable-run', so the message was not sent. Use an exact ID you were given: the one in your task message, a message's sender id, or one delegate_task returned to you.",
+      message: "No running agent has the run ID 'preallocated-or-recoverable-run', so the message was not sent. Use an exact run ID you were given: a sender run ID (from a message or your new task), or a run ID delegate_task returned to you.",
     });
   });
 

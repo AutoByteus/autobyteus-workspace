@@ -44,7 +44,7 @@ describe("delegate_task refuses an invalid address with a next step (SR-003 F-3b
     expect((thrown as Error).message).toBe("AgentTeam address 'research_lead' is invalid: a canonical rooted value beginning with '/' is required");
     expect(toTaskDelegationToolErrorPayload(thrown)).toEqual({ error: {
       code: "COLLABORATION_ADDRESS_INVALID",
-      message: "'research_lead' is not a valid address (a canonical rooted value beginning with '/' is required). An address is exact and begins with '/', for example /team/agent. To answer an agent that wrote to you or gave you a task, use target_agent_run_id with its ID instead.",
+      message: "'research_lead' is not a valid address (a canonical rooted value beginning with '/' is required). An address is exact and begins with '/', for example /team/agent; if you have list_available_agents, it shows the addresses you can delegate to.",
     } });
   });
 });

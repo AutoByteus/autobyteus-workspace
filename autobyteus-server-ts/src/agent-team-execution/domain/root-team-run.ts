@@ -1,5 +1,5 @@
 import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
-import { mentionViewerRelation } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
+import { mentionViewerOf } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
 import type { TaskExecutionResourcePort, TaskExecutionStopResult } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
@@ -275,7 +275,7 @@ export class RootTeamRun {
     return this.materializationGate.run(async () => {
       this.assertAdmitting();
       return this.index.getAgent(input.focusedAgentRunId)
-        ? this.collaborators.resolveMentions(input.mentions, mentionViewerRelation(this.index, input.focusedAgentRunId))
+        ? this.collaborators.resolveMentions(input.mentions, mentionViewerOf(this.index, input.focusedAgentRunId))
         : { admitted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${input.focusedAgentRunId}' is not in root '${this.teamRunId}'.` };
     });
   }

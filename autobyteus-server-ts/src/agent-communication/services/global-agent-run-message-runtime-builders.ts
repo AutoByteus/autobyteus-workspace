@@ -59,7 +59,7 @@ export const buildDirectAgentRunVisibleMessageContent = (
 ): string => {
   const referenceFiles = normalizeReferenceFiles(input.referenceFiles);
   return (
-    `You received a message from sender name: ${input.sender.senderName}, sender id: ${input.sender.senderRunId}\n` +
+    `You received a message from the agent with sender run ID "${input.sender.senderRunId}".\n` +
     `message:\n${input.content}${buildReferenceFilesBlock(referenceFiles)}`
   );
 };

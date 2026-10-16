@@ -90,7 +90,7 @@ export class SendMessageToDispatcher {
       if (!isCollaborationContractError(error)) {
         throw error;
       }
-      return { accepted: false, code: error.code, message: collaborationErrorTextForAgent(error) };
+      return { accepted: false, code: error.code, message: collaborationErrorTextForAgent(error, "send_message_to") };
     }
     if (!result.accepted) {
       return result;

@@ -76,7 +76,7 @@ describe("collaboration prompt properties", () => {
     const prompt = composeSharedCarpenterPrompt({ agentDefinition: agent, memberExecutionContext: context(input) });
     expect(prompt).not.toContain(input.address);
     expect(prompt).not.toMatch(/\b(your address|Your Agent address)\b/i);
-    expect(prompt).not.toMatch(/\b(copy|copies|spawn|spawns|this run|your run|mounted|collaborator|brought in|nested|Task worker|root AgentTeam)\b/i);
+    expect(prompt).not.toMatch(/\b(copy|copies|spawn|spawns|this run(?! ID)|your run(?! ID)|mounted|collaborator|brought in|nested|Task worker|root AgentTeam)\b/i);
   });
 
   it("gives Handoffs exactly to an agent with handoff rules, at the end of its working section", () => {
@@ -103,9 +103,9 @@ describe("collaboration prompt properties", () => {
     expect(rendered(VIEWS[8]![1])).toContain(line);
   });
 
-  it("tells every prompt how to answer a message by its ID, and that a task agent is reached by ID", () => {
+  it("tells every prompt how to answer a message by its sender run ID", () => {
     for (const [label, input] of VIEWS) {
-      expect(rendered(input), label).toContain("Every message you receive gives its sender's name and ID (`sender id`). To answer it, use `send_message_to` with `target_agent_run_id` set to that ID; the name is not an address or an ID.");
+      expect(rendered(input), label).toContain("Every message you receive, including a new task, gives its sender run ID. To answer it, or to report your task result, use `send_message_to` with `target_agent_run_id` set to that sender run ID.");
     }
   });
 

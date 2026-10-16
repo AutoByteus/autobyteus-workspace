@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   isInsideSenderTeamInstances,
+  mentionViewerOf,
   mentionViewerRelation,
   messagePlacement,
   resolveMessageRecipient,
@@ -64,7 +65,7 @@ describe("MessageRecipientResolution (DS-002, CM-4)", () => {
     const attempt = () => resolve("pm", "/product_team");
     expect(attempt).toThrow(CollaborationContractError);
     expect(attempt).toThrow(
-      "No agent or agent team you can talk with has the address /product_team. To have a task done by a new agent, use delegate_task; then talk with it by its ID.",
+      "No agent or agent team you can talk with has the address /product_team. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run ID. To have a task done by a new agent, use delegate_task.",
     );
     expect(attempt).toThrow(expect.objectContaining({ code: "COLLABORATION_TARGET_NOT_FOUND" }));
   });
@@ -104,6 +105,28 @@ describe("mention viewer relation (REQ-008)", () => {
   });
   it("does not treat a task agent running at a configured address as that agent (identity, not address)", () => {
     expect(mentionViewerRelation(index, "run-task-agent")(a("/pm"))).toBe("own_team");
+  });
+});
+
+describe("mention viewer facts (SR-011)", () => {
+  const index = {
+    getMessagePlacement: () => null,
+    isOwnTeamAddress: () => true,
+    teamInstancesOf: (agentRunId: string) => agentRunId === "run-designer" ? [{ teamRunId: "team-1", address: a("/software_team") }] : [],
+    instanceDefinitionsOf: (teamRunId: string) => teamRunId === "team-1"
+      ? { teamDefinitionId: "software-team", members: [{ address: a("/software_team/designer"), definitionId: "designer" }, { address: a("/software_team/reviewer"), definitionId: "reviewer" }] }
+      : null,
+    agentAddressOf: (agentRunId: string) => agentRunId === "run-designer" ? a("/software_team/designer") : null,
+  };
+  it("carries the focused agent's own team instance by definition", () => {
+    expect(mentionViewerOf(index, "run-designer").ownTeam).toEqual({
+      selfAddress: "/software_team/designer", teamAddress: "/software_team", teamDefinitionId: "software-team",
+      members: [{ address: "/software_team/designer", definitionId: "designer" }, { address: "/software_team/reviewer", definitionId: "reviewer" }],
+    });
+  });
+  it("has no own team for an agent outside any team instance, or an instance that recorded no definitions", () => {
+    expect(mentionViewerOf(index, "run-host").ownTeam).toBeNull();
+    expect(mentionViewerOf({ ...index, instanceDefinitionsOf: () => null }, "run-designer").ownTeam).toBeNull();
   });
 });
 

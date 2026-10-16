@@ -40,8 +40,8 @@ describe('EventMonitorBrowseAssistantRow', () => {
       __typename: 'EventMonitorActiveTracePageEvent', eventId: 'e1', turnGroupId: 't1', occurredAtMs: 1,
       visuals: [{
         __typename: 'EventMonitorInterAgentVisual', kind: 'inter_agent', eventId: 'e1', visualId: 'v1', kindOrdinal: 0,
-        senderAgentRunId: 'host-run', senderAddress: '/general_agent', attachments: [],
-        text: 'You received a message from sender name: general_agent, sender address: /general_agent, sender id: host-run\nmessage:\nPlease provide a story.',
+        senderAgentRunId: 'general_agent_5b1c', attachments: [],
+        text: 'You received a message from the agent with sender run ID "general_agent_5b1c".\nmessage:\nPlease provide a story.',
       }],
     }]);
     if (item?.kind !== 'assistant') throw new Error('expected an assistant block');

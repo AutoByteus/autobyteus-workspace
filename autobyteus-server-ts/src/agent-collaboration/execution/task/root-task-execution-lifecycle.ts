@@ -181,7 +181,7 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
       throw error;
     }
     this.adapter.publishTaskExecutionsReopened(Object.freeze([target.execution]));
-    const content = buildExistingCopyTaskMessage({ taskId, delegatorAgentRunId: sender, description });
+    const content = buildExistingCopyTaskMessage({ taskId, description });
     let delivered: AgentOperationResult;
     try { delivered = await this.withLiveLease(sender, () => deliverWork(target.ingressAgentRunId, content, referenceFiles)); }
     catch (error) { delivered = { accepted: false, code: "TASK_WORK_NOT_DELIVERED", message: errorMessage(error) }; }
@@ -191,7 +191,7 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
       try { await port.markFailed(target.execution, { code: delivered.code ?? "TASK_WORK_NOT_DELIVERED", message: reason }); }
       catch (recordError) { throw new TaskDispatchIndeterminateError(target.execution, recordError); }
       return { delegated: false, message: `Task ${taskId} was given to the task agent, but the message with its work was not delivered (${reason}). `
-        + `Message the task agent's ID ${target.ingressAgentRunId}, or set Task ${taskId} to CANCELLED, or delegate it to a new task agent.` };
+        + `Message the task agent's run ID ${target.ingressAgentRunId}, or set Task ${taskId} to CANCELLED, or delegate it to a new task agent.` };
     }
     try { await port.markStarted(target.execution); }
     catch (error) { throw new TaskDispatchIndeterminateError(target.execution, error); }

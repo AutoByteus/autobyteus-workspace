@@ -49,7 +49,7 @@ export type ParsedCollaboratorMentionNote = Readonly<{
  * agent or team, chosen for the agent the user is talking to; each line carries its own guidance:
  *
  *   compose("Please ask @Product Team", [{ name: "Product Team", kind: "agent_team", address: "/product_team", presence: "not_in_run" }])
- *   === "Please ask @Product Team\n\n[Mentioned agents]\n- Product Team (agent team) at /product_team: delegate a task to it with delegate_task."
+ *   === "Please ask @Product Team\n\n[Mentioned agents]\n- Product Team (agent team) at /product_team: delegate the task to it with delegate_task; it returns a run ID to follow up with."
  */
 export declare const composeCollaboratorMentionNote: (text: string, collaborators: readonly MentionedCollaborator[]) => string;
 /**

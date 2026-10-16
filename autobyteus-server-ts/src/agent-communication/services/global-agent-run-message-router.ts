@@ -130,7 +130,7 @@ export class GlobalAgentRunMessageRouter {
       const result = {
         accepted: false,
         code: "TARGET_IS_TEAM_RUN",
-        message: `${targetAgentRunId} is a task agent team's ID, and send_message_to talks with agents. To talk with the team, use its coordinator's ID: ${coordinator}.`,
+        message: `${targetAgentRunId} is a task agent team's run ID, and send_message_to talks with agents. To talk with the team, use its coordinator's run ID: ${coordinator}.`,
       } satisfies AgentOperationResult;
       this.recordGrantUsage(grantDecision.kind === "allowed" ? grantDecision.grant : null, {
         ...result,
@@ -147,7 +147,7 @@ export class GlobalAgentRunMessageRouter {
       const result = {
         accepted: false,
         code: "TARGET_AGENT_RUN_NOT_ACTIVE",
-        message: `No running agent has the ID '${targetAgentRunId}', so the message was not sent. Use an exact ID you were given: the one in your task message, a message's sender id, or one delegate_task returned to you.`,
+        message: `No running agent has the run ID '${targetAgentRunId}', so the message was not sent. Use an exact run ID you were given: a sender run ID (from a message or your new task), or a run ID delegate_task returned to you.`,
       } satisfies AgentOperationResult;
       this.recordGrantUsage(grantDecision.kind === "allowed" ? grantDecision.grant : null, {
         ...result,

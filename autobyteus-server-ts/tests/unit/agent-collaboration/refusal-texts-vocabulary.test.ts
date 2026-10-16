@@ -14,9 +14,10 @@ import { notCurrentTaskMessage } from "../../../src/projects/domain/task-executi
  * Collaboration wording authority (ticket collaboration-prompt-wording, §10 check 9): the texts an
  * agent can receive from a refusal or result never use the retired vocabulary.
  */
-const FORBIDDEN = /\b(copy|copies|spawn\w*|this run|your run|mounted|collaborators?|brought in|nested|task worker|work packet|pause[ds]?|wake[ds]?|restor\w+|shut down)\b/i;
+const FORBIDDEN = /\b(copy|copies|spawn\w*|this run(?! ID)|your run(?! ID)|mounted|collaborators?|brought in|nested|task worker|work packet|pause[ds]?|wake[ds]?|restor\w+|reactivat\w+|shut down)\b/i;
 
 const REFUSAL_SITES = [
+  "src/agent-communication/domain/send-message-target-selector.ts",
   "src/agent-communication/services/global-agent-run-message-router.ts",
   "src/agent-collaboration/execution/communication/root-communication-engine.ts",
   "src/agent-collaboration/execution/backends/root-agent-execution-registry.ts",
@@ -58,7 +59,7 @@ describe("refusal and result texts use the agent-facing vocabulary (REQ-008, AC-
 
   it("the shared messages say what happened and what to do next, by ID and in task agent terms", () => {
     expect(messageTargetNotFoundMessage("/x")).toBe(
-      "No agent or agent team you can talk with has the address /x. To have a task done by a new agent, use delegate_task; then talk with it by its ID.");
+      "No agent or agent team you can talk with has the address /x. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run ID. To have a task done by a new agent, use delegate_task.");
     expect(ownTeamDelegationRefusedMessage("/x")).toBe("/x is in your own team; you can't delegate to it. Talk with it using send_message_to.");
     expect(delegationTargetUnavailableMessage("/x")).toBe(
       "'/x' is not the address of an available agent or agent team. If you have list_available_agents, it shows the addresses you can use.");

@@ -126,12 +126,13 @@ renderCollaborationSections → runtime bootstrap (native/Codex/Claude/ACP/AGY)`
   configured root placement. Adding the agent's run ID and the root's configured agent run IDs
   lets it tell a configured agent from a task agent at the same address. The role is stored on
   the context; the composer switches on it and appends Handoffs when the agent has rules.
-- **Spine 2.** `buildTaskWorkText` formats the first line from the delegator's address basename
-  (label) and run ID. `buildExistingCopyTaskMessage` (mode 3) is delivered as a message, which
+- **Spine 2.** `buildTaskWorkText` formats the first line from the delegator's run ID as its
+  sender run ID (SR-013; no name, no address). `buildExistingCopyTaskMessage` (mode 3) is delivered as a message, which
   already carries the header with the sender's name and ID, so its body keeps the "New Task
   assigned to you" line and the description without the "You have a new task from" line.
-- **Spine 3.** Each header builder drops the address part; the web regex already makes it
-  optional.
+- **Spine 3.** Each header builder writes `You received a message from the agent with sender run
+  ID "<id>".` (SR-013; no name, no address). The web parser accepts the new and every earlier
+  form, and the label comes from the run-ID lookup.
 - **Spine 4.** At the mention gate each root knows the focused agent; it passes a relation
   function to `CollaboratorAdmission.resolveMentions`, which refines presence; the contract
   composes one line per mention with its guidance and parses new and earlier forms.
@@ -241,6 +242,18 @@ export type MentionedCollaboratorPresence = "not_in_run" | "in_run" | "own_team"
 // guidance lines) — earlier forms map to the presences they had.
 ```
 
+**Own team first (SR-011).** Before a mentioned definition is treated as `not_in_run`, the root
+checks the focused agent's own team instance (the deepest instance containing it, as
+`teamInstancesOf` returns): if the mentioned definition is the definition of the focused agent
+itself → `self`; of a member of that instance → `own_team` with that member's address in the
+instance (e.g. `/software_engineering_team/code_reviewer`); of the instance's own team definition
+→ `own_team` with the instance address. Only otherwise does the configured-placement path
+(below) or the catalog address apply. Needed because members of a task agent team are not
+configured placements: in a standalone run (the Project Task Manager's setup) a teammate mention
+otherwise resolves to its catalog address and gets the "delegate" line, which would create a new
+task agent instead of talking with the teammate. Every member node already records its
+`agentDefinitionId`; the team node its `teamDefinitionId`.
+
 Each root builds the relation from its index for the focused agent:
 `address === focused.address → "self"`; `index.isOwnTeamAddress(focusedId, address) → "own_team"`;
 else `"other"`.
@@ -294,7 +307,9 @@ used by compose and parse only.
 | `agent-tools/agent-discovery/list-available-agents-contract.ts` | wording §6 |
 | `agent-communication/services/get-handoff-rules-tool-contract.ts` | wording §6 |
 | `agent-tools/project-tasks/project-task-tool-contract.ts` | `update_task`, `list_project_tasks` wording §6 |
-| `agent-collaboration/execution/task/task-execution-input.ts` | wording §7.1 (SR-003 text) |
+| `agent-collaboration/execution/task/task-execution-input.ts` | wording §7.1 (SR-010: one form, the delegator's sender id; no name, no address) |
+| the three header builders (IN-001) | wording §7.2 (SR-013: `You received a message from the agent with sender run ID "<id>".` + `message:`; no name, no address) |
+| `autobyteus-web/utils/collaboration/interAgentDelivery.ts` + `components/conversation/segments/InterAgentMessageSegment.vue` | SR-013 (made exact): the sender label ("From <name>") comes only from the run ID — the run-ID lookup (`senderDisplayName` / `senderNameByAgentRunId`), else the readable run ID; never from the header text, also not for old saved messages (they carry the run ID too). The parser keeps only two jobs: separate the header from the body (new form and every earlier form) and read the sender run ID from the header when the payload has no `sender_agent_run_id` (old saved messages). `senderName` / `senderAddress` are no longer read for the label |
 | `agent-collaboration/execution/communication/root-communication-engine.ts` | T-4; T-3 engine texts |
 | `agent-communication/services/global-agent-run-message-router.ts`, `agent-collaboration/execution/backends/root-agent-execution-registry.ts`, the `send_message_to`/`delegate_task` tool boundaries | T-3 SR-003 rows |
 | the three header builders (IN-001) | wording §7.2 |
@@ -327,42 +342,52 @@ only if it has rules). Host of a standalone run → `standalone_agent`; its Agen
 
 **T-2 Header.** `You received a message from sender name: code_reviewer, sender id: <id>\nmessage:\n<content>`.
 
-**T-3 Refusals and results (REQ-008).** New texts; codes unchanged.
+**T-3 Refusals and results (REQ-008).** Codes unchanged. The new texts are written only in the
+wording file's §7.3 catalogue (M-01..M-45, SR-014); this table maps each code site to its IDs.
+Also from the catalogue: M-05 (`global-agent-run-message-router.ts` `TARGET_IS_TEAM_RUN`), M-10
+(`task-execution-resources.ts` `TASK_REACTIVATION_UNAVAILABLE`, was "This assignment never
+started, so there is nothing to reactivate."), M-31 (`project-task-service.ts`
+`terminalAssignment`, was "… move it to TODO or IN_PROGRESS before assigning new work."), M-27
+(`task-delegation-tool-input-parsers.ts` input errors).
 
-| Site | Now | New |
+| Site | Now | New text (only in the wording file's catalogue) |
 | --- | --- | --- |
-| `collaborator-errors.ts` `messageTargetNotFoundMessage` | "<a> is not in this run. To give work to an outside Agent or Team, use delegate_task, then send_message_to its run ID." | "No agent or agent team you can talk with has the address <a>. To have a task done by a new agent, use delegate_task; then talk with it by its ID." |
-| `collaborator-errors.ts` `ownTeamDelegationRefusedMessage` | "<a> is in your own team. Use send_message_to with recipient_address <a>." | "<a> is in your own team; you can't delegate to it. Talk with it using send_message_to." |
-| `collaborator-errors.ts` `delegationTargetUnavailableMessage` | "'<a>' is not a mounted Agent or Agent Team or an available agent of this run." | "'<a>' is not the address of an available agent or agent team. If you have list_available_agents, it shows the addresses you can use." |
-| `root-task-execution-lifecycle.ts` `TASK_AGENT_RESOURCE_OWNED_SENDER` (×2) | "Task workers delegate sub-work without task_id." | "You are a task agent, so you can't use task_id. Delegate with a description instead; that work is part of your Task." |
-| `root-task-execution-lifecycle.ts` / `root-task-execution-resource-scope.ts` closed | "The Task work for this agent run is closed (its Task is DONE or CANCELLED)." | "Your Task is DONE or CANCELLED, so you can't start new work." |
-| `root-task-execution-lifecycle.ts:192-193` not delivered | "Task <t> was assigned to the copy but its work was not delivered (<r>). Message the copy's ingress <id>, or mark Task <t> CANCELLED or delegate it to a new copy." | "Task <t> was given to the task agent, but the message with its work was not delivered (<r>). Message the task agent's ID <id>, or set Task <t> to CANCELLED, or delegate it to a new task agent." |
-| `root-task-execution-lifecycle.ts:267` + `task-execution-resources.ts` `ASSIGNER_ONLY_REACTIVATION_MESSAGE` | "This run is part of closed Task work. Only the run that assigned the work can reactivate it: …" / "… message the copy's agent run ID (for a Team copy, its coordinator's)." | "This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, then message the task agent's ID (for a task agent team, its coordinator's ID)." |
-| `root-task-execution-lifecycle.ts` reactivated suffixes | "<id> was reactivated." / "… was reactivated (its Task work is open again) but did not receive this message; message it again." | "<id> continues with its conversation." / "<id> continues with its conversation (its Task is open again) but did not receive this message; send it again." |
-| `root-task-execution-lifecycle.ts` `ROOT_RUN_NOT_ACTIVE` | "The collaboration root is not accepting deliveries/commands/task commands." | "This work is stopping or has stopped, so the message or delegation was not sent." |
-| `root-task-execution-resource-scope.ts` `TASK_AGENT_RESOURCE_CONFLICT` | "A Task-owned worker cannot message another Task's work." | "You can't message this agent: it works on a different Task." |
-| `root-task-execution-resource-scope.ts:34` | "Task agent run resources are unavailable in this scope." | "Tasks are not available here, so this delegation can't be recorded." |
-| `root-task-dispatch.ts:40` | unchanged wording check: "The Task was marked DONE or CANCELLED; its new work was not started." | keep |
-| `task-execution-live-holds.ts:38` | "This copy is being stopped by the user." | "The user is stopping this task agent." |
-| `existing-copy-target.ts` `notACopyOfThisRun` | "<id> is not a delegated copy in this run. Use the ID delegate_task returned for a copy delegated in this run, or delegate to a new copy with recipient_address." | "<id> is not one of your task agents. Use an ID that delegate_task returned to you, or delegate to a new task agent with recipient_address." |
-| `existing-copy-target.ts` coordinator / team ID / member / agent ID refusals | "… coordinator of Team copy …", "… a Team copy's team run ID …", "… a member of Team copy …, not a copy itself …", "… an Agent copy's agent run ID …" | "<id> is the coordinator of task agent team <t>; use target_team_run_id \"<t>\"." / "<id> is a task agent team's ID; use target_team_run_id \"<id>\"." / "<id> is a member of task agent team <t>; to give that team a Task, use target_team_run_id \"<t>\"." / "<id> is a task agent's ID; use target_agent_run_id \"<id>\"." |
-| `task-execution-resources.ts:104` | "This copy already works on this Task." | "This task agent already works on this Task." |
-| `task-execution-resources.ts` `newCopyHint` | "or delegate Task <t> to a new copy with recipient_address." | "or delegate Task <t> to a new task agent with recipient_address." |
-| `task-execution-resources.ts:163` | "This copy belongs to no Task; delegate Task <t> with recipient_address instead." | "This task agent has no Task; delegate Task <t> with recipient_address instead." |
-| `task-execution-resources.ts:166-167` | "This copy is sub-work or a helper of a Task worker, not an assignment; only an assigned copy can be given a new Task. …" | "This task agent works on part of another agent's Task, so you can't give it a Task. Delegate Task <t> to a new task agent with recipient_address." |
-| `task-execution-resources.ts:170` | "Only the run that made this copy's most recent assignment can give it a new Task; …" | "Only the agent that gave this task agent its most recent Task can give it a new one; …" |
-| `task-execution-resources.ts:174-175` | "This copy still works on Task <c> (<s>). Mark it DONE or CANCELLED first, or delegate …" | "This task agent still works on Task <c> (<s>). Set it to DONE or CANCELLED first, or delegate …" |
-| `task-execution-resources.ts:178-179` | "This copy's most recent assignment is already Task <t>. To continue it, reopen … then message the copy (for a Team, its coordinator)." | "This task agent already has Task <t>. To continue it, set Task <t> to TODO or IN_PROGRESS, then message the task agent's ID (for a task agent team, its coordinator's ID)." |
-| `task-execution-resources.ts:182` | "This copy never started, so it has no conversation to resume; …" | "This task agent never started, so it has no conversation to continue; …" |
-| `project-task-service.ts:370-371` | "This Task is <s>. The run that assigned it can reopen the Task (move it to TODO or IN_PROGRESS) and then message this run ID again." | "This Task is <s>. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this ID again." |
-| `project-task-service.ts` `notCurrentTaskMessage` | (check for "copy"/"run") | vocabulary |
-| `task-delegation-tool-input-parsers.ts` | "(a Team copy)" / "(an Agent copy)" / "for a new copy … for an existing copy" / "task_id (an existing copy takes a saved Task)" | "(a task agent team)" / "(a task agent)" / "for a new task agent … to give a Task to one of your task agents" / "task_id (the saved Task to give)" |
-| `agent-team-address.ts` `COLLABORATION_ADDRESS_INVALID`, when it reaches an agent through `send_message_to` or `delegate_task` (SR-003) | "AgentTeam address '<x>' is invalid: <detail>" | "'<x>' is not a valid address (<detail>). An address is exact and begins with '/', for example /team/agent. To answer an agent that wrote to you or gave you a task, use target_agent_run_id with its ID instead." Convert at the two tools' boundary (the shared validator keeps its text for definition and configuration callers). |
-| `global-agent-run-message-router.ts` `TARGET_AGENT_RUN_NOT_ACTIVE` (SR-003) | "Exact AgentRun target '<id>' is not active." | "No running agent has the ID '<id>', so the message was not sent. Use an exact ID you were given: the one in your task message, a message's sender id, or one delegate_task returned to you." |
-| `global-agent-run-message-router.ts` "… rejected the message." (SR-003) | "<id> rejected the message …" | "The agent '<id>' did not accept the message: <reason>." (keep the reason when there is one) |
-| `root-communication-engine.ts` `COLLABORATION_SELF_TARGET_REJECTED` (SR-003) | "An AgentRun cannot send an ordinary collaboration message to itself." | "You can't send a message to yourself." |
-| `root-communication-engine.ts` `COLLABORATION_CONTEXT_REQUIRED` (SR-003) | "Sender and receiver must be exact live executions in the same collaboration root." | "The agent with that ID is not running here, so the message was not sent. Use an exact ID you were given." |
-| `root-agent-execution-registry.ts` "Root-hosted AgentRun '<id>' is not active." / "Task AgentRun '<id>' is shut down." (SR-003) | as quoted | "The agent '<id>' is not running, so the message was not sent." / "The task agent '<id>' has stopped, so the message was not sent." (teardown-internal texts stay) |
+| `collaborator-errors.ts` `messageTargetNotFoundMessage` (corrected SR-009) | "<a> is not in this run. To give work to an outside Agent or Team, use delegate_task, then send_message_to its run ID." | wording §7.3 M-01 |
+| `send-message-target-selector.ts` both selectors / no selector (SR-009) | "send_message_to requires exactly one target selector: recipient_address or target_agent_run_id, not both." / "… requires exactly one target selector: recipient_address or target_agent_run_id." | wording §7.3 M-02 / M-03 |
+| `collaborator-errors.ts` `ownTeamDelegationRefusedMessage` | "<a> is in your own team. Use send_message_to with recipient_address <a>." | wording §7.3 M-21 |
+| `collaborator-errors.ts` `delegationTargetUnavailableMessage` | "'<a>' is not a mounted Agent or Agent Team or an available agent of this run." | wording §7.3 M-22 |
+| `root-task-execution-lifecycle.ts` `TASK_AGENT_RESOURCE_OWNED_SENDER` (×2) | "Task workers delegate sub-work without task_id." | wording §7.3 M-28 |
+| `root-task-execution-lifecycle.ts` / `root-task-execution-resource-scope.ts` closed | "The Task work for this agent run is closed (its Task is DONE or CANCELLED)." | wording §7.3 M-29 |
+| `root-task-execution-lifecycle.ts:192-193` not delivered | "Task <t> was assigned to the copy but its work was not delivered (<r>). Message the copy's ingress <id>, or mark Task <t> CANCELLED or delegate it to a new copy." | wording §7.3 M-33 |
+| `root-task-execution-lifecycle.ts:267` + `task-execution-resources.ts` `ASSIGNER_ONLY_REACTIVATION_MESSAGE` | "This run is part of closed Task work. Only the run that assigned the work can reactivate it: …" / "… message the copy's agent run ID (for a Team copy, its coordinator's)." | wording §7.3 M-07 |
+| `root-task-execution-lifecycle.ts` reactivated suffixes | "<id> was reactivated." / "… was reactivated (its Task work is open again) but did not receive this message; message it again." | wording §7.3 M-18 / M-19 |
+| `root-task-execution-lifecycle.ts` `ROOT_RUN_NOT_ACTIVE` | "The collaboration root is not accepting deliveries/commands/task commands." | wording §7.3 M-20 |
+| `root-task-execution-resource-scope.ts` `TASK_AGENT_RESOURCE_CONFLICT` | "A Task-owned worker cannot message another Task's work." | wording §7.3 M-06 |
+| `root-task-execution-resource-scope.ts:34` | "Task agent run resources are unavailable in this scope." | wording §7.3 M-30 |
+| `root-task-dispatch.ts:40` | unchanged wording check: "The Task was marked DONE or CANCELLED; its new work was not started." | wording §7.3 M-32 |
+| `task-execution-live-holds.ts:38` | "This copy is being stopped by the user." | wording §7.3 M-17 |
+| `existing-copy-target.ts` `notACopyOfThisRun` | "<id> is not a delegated copy in this run. Use the ID delegate_task returned for a copy delegated in this run, or delegate to a new copy with recipient_address." | wording §7.3 M-34 |
+| `existing-copy-target.ts` coordinator / team ID / member / agent ID refusals | "… coordinator of Team copy …", "… a Team copy's team run ID …", "… a member of Team copy …, not a copy itself …", "… an Agent copy's agent run ID …" | wording §7.3 M-35 / M-36 / M-37 / M-38 |
+| `task-execution-resources.ts:104` | "This copy already works on this Task." | wording §7.3 M-39 |
+| `task-execution-resources.ts` `newCopyHint` | "or delegate Task <t> to a new copy with recipient_address." | wording §7.3 part of M-40..M-45 |
+| `task-execution-resources.ts:163` | "This copy belongs to no Task; delegate Task <t> with recipient_address instead." | wording §7.3 M-40 |
+| `task-execution-resources.ts:166-167` | "This copy is sub-work or a helper of a Task worker, not an assignment; only an assigned copy can be given a new Task. …" | wording §7.3 M-41 |
+| `task-execution-resources.ts:170` | "Only the run that made this copy's most recent assignment can give it a new Task; …" | wording §7.3 M-42 |
+| `task-execution-resources.ts:174-175` | "This copy still works on Task <c> (<s>). Mark it DONE or CANCELLED first, or delegate …" | wording §7.3 M-43 |
+| `task-execution-resources.ts:178-179` | "This copy's most recent assignment is already Task <t>. To continue it, reopen … then message the copy (for a Team, its coordinator)." | wording §7.3 M-44 |
+| `task-execution-resources.ts:182` | "This copy never started, so it has no conversation to resume; …" | wording §7.3 M-45 |
+| `project-task-service.ts:370-371` | "This Task is <s>. The run that assigned it can reopen the Task (move it to TODO or IN_PROGRESS) and then message this run ID again." | wording §7.3 M-08 |
+| `project-task-service.ts` `notCurrentTaskMessage` | (check for "copy"/"run") | wording §7.3 M-09 |
+| `task-delegation-tool-input-parsers.ts` | "(a Team copy)" / "(an Agent copy)" / "for a new copy … for an existing copy" / "task_id (an existing copy takes a saved Task)" | wording §7.3 M-24 / M-25 / M-26 |
+| `agent-team-address.ts` `COLLABORATION_ADDRESS_INVALID`, when it reaches an agent through `send_message_to` or `delegate_task` (SR-003, corrected SR-004) | "AgentTeam address '<x>' is invalid: <detail>" | wording §7.3 M-04 (send_message_to) / M-23 (delegate_task); convert at each tool's boundary, the shared validator keeps its text for definition and configuration callers |
+| `global-agent-run-message-router.ts` `TARGET_AGENT_RUN_NOT_ACTIVE` (SR-003) | "Exact AgentRun target '<id>' is not active." | wording §7.3 M-11 |
+| `global-agent-run-message-router.ts` "… rejected the message." (SR-003) | "<id> rejected the message …" | wording §7.3 M-12 |
+| `root-communication-engine.ts` `COLLABORATION_SELF_TARGET_REJECTED` (SR-003) | "An AgentRun cannot send an ordinary collaboration message to itself." | wording §7.3 M-13 |
+| `root-communication-engine.ts` `COLLABORATION_CONTEXT_REQUIRED` (SR-003) | "Sender and receiver must be exact live executions in the same collaboration root." | wording §7.3 M-14 |
+| `root-agent-execution-registry.ts` "Root-hosted AgentRun '<id>' is not active." / "Task AgentRun '<id>' is shut down." (SR-003) | as quoted | wording §7.3 M-15 / M-16 (teardown-internal texts stay) |
+
+**T-5 (SR-005) withdrawn in SR-006.** No "reaches" helper: the task message and the headers
+never carry a sender address (DEC-012).
 
 **T-4 Delivery-scope refusal surfaced as a result (SR-003, DEC-009).** In
 `RootCommunicationEngine.deliver` (`root-communication-engine.ts:40-41`), the first

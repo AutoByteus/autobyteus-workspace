@@ -52,6 +52,6 @@ describe("RootCommunicationEngine refusals reach the agent as results (SR-003 T-
     const { engine: gone } = engineWith(() => undefined, () => false);
     await expect(deliver(gone)).resolves.toEqual({
       accepted: false, code: "COLLABORATION_CONTEXT_REQUIRED",
-      message: "The agent with that ID is not running here, so the message was not sent. Use an exact ID you were given." });
+      message: "The agent with that run ID is not running here, so the message was not sent. Use an exact run ID you were given." });
   });
 });

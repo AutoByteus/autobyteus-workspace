@@ -317,7 +317,7 @@ describe("Agent Tools MCP tokenless route integration", () => {
       expect(sendTool.inputSchema.properties).toMatchObject({
         content: { type: "string", description: expect.stringContaining("Self-contained work request, result, or specific blocker") },
         recipient_address: { type: "string", description: expect.stringContaining("An exact address beginning with '/'") },
-        target_agent_run_id: { type: "string", description: expect.stringContaining("An agent's ID") },
+        target_agent_run_id: { type: "string", description: expect.stringContaining("An agent's run ID") },
       });
       expect(Object.keys(sendTool.inputSchema.properties ?? {}).sort()).toEqual([
         "content", "message_type", "recipient_address", "reference_files", "target_agent_run_id",

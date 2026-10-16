@@ -289,7 +289,7 @@ suite("Delegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/s
     expect(reviewerText).toContain("[Mentioned agents]");
     expect(reviewerText).toContain(runAgentEntry);
     expect(reviewerText).toContain(runAgentGuidance);
-    expect(reviewerText).not.toContain("delegate a task to it with delegate_task");
+    expect(reviewerText).not.toContain("with delegate_task");
     expect(reviewerText).not.toContain("already in this run");
     let hostText = "";
     await until(async () => { hostText = JSON.stringify(await hostConversation()); return hostText.includes(marker); },

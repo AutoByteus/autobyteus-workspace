@@ -123,7 +123,7 @@ describe('handleMemberInputMessage', () => {
     expect(handleMemberInputMessage(delivery as any, context)).toBe(false);
     expect(context.conversation.messages).toHaveLength(1);
     expect(context.conversation.messages[0]).toMatchObject({ type: 'ai', segments: [{
-      type: 'inter_agent_message', messageId: 'memberinput_1', senderAgentRunId: 'researcher-run', senderName: 'researcher',
+      type: 'inter_agent_message', messageId: 'memberinput_1', senderAgentRunId: 'researcher-run',
       content: 'Please prototype the onboarding flow.',
     }] });
   });

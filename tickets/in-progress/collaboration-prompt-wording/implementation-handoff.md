@@ -23,10 +23,10 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (IR-002 on top of the IR-001 baseline)
+- Implementation cycle: `Rework` (IR-004 on top of IR-001..IR-003; IR-003 and IR-004 committed together)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/tickets/in-progress/collaboration-prompt-wording/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002` (baseline `IR-001`)
-- Related solution revision IDs: `SR-001`, `SR-002`, `SR-003`
+- Current implementation revision ID: `IR-004` (earlier: `IR-001`, `IR-002`, `IR-003`)
+- Related solution revision IDs: `SR-001`..`SR-014` (SR-005 superseded by SR-006; SR-007 reverted by SR-008, not implemented; SR-010 superseded by SR-013)
 - Related architecture-review / delivery revision IDs: `N/A`; code-review: `CRR-001` (`code-review-report.md`); API/E2E: `API-REV-001`
 - Triggering finding IDs: `F-3a`, `F-3b`, `F-1` (C-3 covered by F-3a)
 
@@ -242,6 +242,39 @@ Clean environment (`env -i`, temp `HOME`), `RUN_AGY_FAILURE_E2E=1`, `ANTIGRAVITY
 the update); `tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts` passes.
 Scripted AGY drives real tools but not a real model, so it proves the texts and paths, not model
 behavior. Other gated suites (real Codex / Claude / LM Studio) were not run.
+
+## IR-003 (SR-004, SR-006, SR-009, SR-010) Delta
+
+Supersedes the task message and answering text of IR-002; everything else in IR-002 stands.
+
+- Task message (SR-010): `You have a new task from the agent with sender id "<id>".` + `When you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id set to that sender id.` No name, no address. Mode-3 body: no reply line (the delivery header gives `sender id`).
+- Prompts: answering bullet in all four prompts ("Every message you receive, including a new task, gives its sender id. To answer it, or to report your task result, use `send_message_to` with `target_agent_run_id` set to that sender id.") and the §4.2 opening per SR-006/SR-010; snapshots regenerated, 20/20 equal to the complete views.
+- Header unchanged (`sender name`, `sender id`).
+- SR-009/SR-010 refusals: not-found, both-selector, no-selector and the `send_message_to` invalid-address texts share the next step "To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender id."; `TARGET_AGENT_RUN_NOT_ACTIVE` points to "a sender id (from a message or your new task)".
+- Invalid-address refusal is one text per tool (SR-004): `send_message_to` answers by ID; `delegate_task` points to `list_available_agents`.
+- Not built: the SR-005 "reaches" helper (T-5, withdrawn). Not applied: SR-007 "copy" wording (withdrawn by SR-008; the partial working-tree edits were reverted before commit, and the tool descriptions were checked equal to the current wording file).
+
+## IR-004 (SR-011..SR-014) Delta
+
+Supersedes the IR-003 task-message and answering text ("sender id" → "sender run ID").
+
+- **Run ID term (SR-013).** Task message: `You have a new task from the agent with sender run ID "<id>".` / `When you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id set to that sender run ID.` Header (all three builders): `You received a message from the agent with sender run ID "<id>".` + `message:` + content; no name, no address. Answering bullet in all four prompts: "Every message you receive, including a new task, gives its sender run ID. To answer it, or to report your task result, use `send_message_to` with `target_agent_run_id` set to that sender run ID." Tool descriptions, parameter descriptions, refusals and `@` lines say "run ID". Task IDs unchanged.
+- **Web (SR-013).** `interAgentDelivery.ts` separates header from body and reads the run ID (new and every earlier form); the "From <name>" label comes only from the run-ID lookup (`senderDisplayName`), else a readable form of the run ID (hex tail dropped). `senderName` / `senderAddress` are gone from the inter-agent segment.
+- **Own team first (SR-011).** `mentionViewerOf` + per-root `instanceDefinitionsOf` / `agentAddressOf`; `ownTeamMention` resolves self / a member / the team itself by definition before the configured and catalog paths, so a task agent team member mentioning a teammate in a standalone run gets "in your team" at the teammate's address inside the team.
+- **`@` lines (SR-012).** Catalog-only: "delegate the task to it with delegate_task; it returns a run ID to follow up with." Organization: "…delegate a task to it with delegate_task; that creates a new task agent and returns its run ID to follow up with." Earlier composed forms still parse.
+- **Catalogue (SR-014).** M-01..M-45 checked by `result-catalogue.test.ts` against the source and the forbidden-word rule (`run` only as a place; `reactivat…` forbidden). Changed texts: M-10, M-24, M-31, M-42, M-45 (and M-05, M-09 as already implemented). Additional agent-reachable text found and changed (not in the catalogue): the deleted-Task refusal on the reopen path → "The Task was deleted, so its task agent cannot continue." (the old text contained "reactivated").
+
+### IR-004 local checks
+
+- Server `tsc -p tsconfig.build.json --noEmit` clean; `vitest run tests/unit`: 5681 passed, 7 skipped (includes `result-catalogue.test.ts`, the regenerated prompt snapshots — 20/20 equal to the complete views — the own-team `@` test, the header/task-message builder tests and the hash-pinned tool descriptions, also checked equal to the wording file).
+- `vitest run tests/integration`: all pass except the two `agent-status-websocket` timing tests that fail identically on the base (the MCP-route description test was updated and passes).
+- Scripted-AGY e2e in a clean env (`RUN_AGY_FAILURE_E2E=1`): all of `tests/e2e/projects` and `agent-package-definitions-live-refresh` pass (one `task-copy-idle-lifetime` timing failure in a full batch passed on rerun alone). I updated stale expected texts in the API/E2E engineer's untracked `collaboration-prompt-wording.e2e.test.ts` (six views blocks, run-ID texts, CPW-R2 enabled earlier); their other untracked files are untouched and uncommitted.
+- Contracts `pnpm test`: 19 pass (three `@` examples of views §11, earlier forms still parse). Web `NUXT_TEST=true vitest run`: 4421 pass; the one failure (`RightSideTabs.workspaceTarget.spec.ts`) fails identically on the untouched base.
+- Web probes under `autobyteus-web/tests/e2e/*.mjs`: expected texts updated (task message, `@` lines), not executed (need a live stack).
+
+### IR-003 local checks
+
+IR3_CHECKS_PLACEHOLDER
 
 ### IR-002 local checks
 

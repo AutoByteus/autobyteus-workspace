@@ -40,7 +40,7 @@ describe("reactivation of a closed assignment by its assigner (DS-L1)", () => {
   it.each([
     ["the Task is still DONE (AC-015)", "manager", "worker", false, { code: "TASK_AGENT_RESOURCE_CLOSED", message: expect.stringContaining("The agent that assigned it can set the Task to TODO or IN_PROGRESS") }],
     ["another sender (AC-006)", "intruder", "worker", true, { code: "TASK_AGENT_RESOURCE_CLOSED", message: expect.stringContaining("Only the agent that assigned the Task can continue it") }],
-    ["a Team member that is not the ingress (AC-007)", "manager", "member", true, { code: "TASK_AGENT_RESOURCE_CLOSED", message: expect.stringContaining("message the task agent's ID (for a task agent team, its coordinator's ID)") }],
+    ["a Team member that is not the ingress (AC-007)", "manager", "member", true, { code: "TASK_AGENT_RESOURCE_CLOSED", message: expect.stringContaining("message the task agent's run ID (for a task agent team, its coordinator's run ID)") }],
     ["a helper of the assignment (AC-005)", "manager", "helper", true, { code: "TASK_AGENT_RESOURCE_CLOSED", message: expect.stringContaining("Only the agent that assigned the Task can continue it") }],
   ])("refuses when %s; nothing is stopped, discarded, reopened or published", async (_case, sender, target, reopenTask, refusal) => {
     const f = fixture();

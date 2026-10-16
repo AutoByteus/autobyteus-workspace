@@ -491,7 +491,7 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
     expect(harness.backend.preparedAgents[0]).toMatchObject({
       address: "/scope_helper",
       agentRunId: taskAgentRunId,
-      message: expect.objectContaining({ content: expect.stringContaining('target_agent_run_id "run-coordinator"') }),
+      message: expect.objectContaining({ content: expect.stringContaining('sender run ID "run-coordinator"') }),
     });
     expect(harness.root.getExecutionTreeSnapshot().rootTeam.taskExecutions).toEqual([expect.objectContaining({
       address: "/scope_helper",

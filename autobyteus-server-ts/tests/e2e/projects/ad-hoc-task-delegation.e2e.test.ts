@@ -34,7 +34,7 @@ const keyOf = (ref: Record<string, any>) => ref.teamRunId ?? ref.team_run_id ? `
 const keys = (refs: readonly Record<string, any>[]) => refs.map(keyOf).sort();
 const callTool = (name: string, args: object) => `CALL_TOOL:${JSON.stringify({ name, arguments: args })}`;
 const TEAMMATE_GUIDANCE = "in your team: talk with it using send_message_to; don't delegate to it.";
-const IN_RUN_GUIDANCE = "talk with it using send_message_to, or delegate a task to it with delegate_task to have a new task agent work on it.";
+const IN_RUN_GUIDANCE = "talk with it using send_message_to, or delegate a task to it with delegate_task; that creates a new task agent and returns its run ID to follow up with.";
 
 /** Every task execution node (Agent or Team; nested anywhere), identified by its recorded start. */
 const taskNodes = (tree: unknown): TaskNode[] => {
@@ -312,7 +312,7 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     const managerText = JSON.stringify(await managerConversation());
     expect(managerText).toContain("[Mentioned agents]");
     expect(managerText).toContain(`- ${names.reviewer} (agent) at ${reviewerAddress}`);
-    expect(managerText).toContain("delegate a task to it with delegate_task");
+    expect(managerText).toContain("delegate the task to it with delegate_task; it returns a run ID to follow up with");
     expect(managerText).not.toContain("Message a collaborator with send_message_to");
     // mention-candidates-in-run AC-004: a mention of a definition not in the run carries no in-run marker or guidance.
     expect(managerText).not.toContain("in your team");
@@ -403,7 +403,7 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     const inRunMentions = [{ kind: "agent" as const, definition_id: ids.assistant },
       ...(kind === "agent" ? [] : [{ kind: "agent" as const, definition_id: ids.worker }])];
     send("Reply OK.", inRunMentions);
-    const assistantEntry = `- ${names.assistant} (agent) at ${assistantAddress}: delegate a task to it with delegate_task.`;
+    const assistantEntry = `- ${names.assistant} (agent) at ${assistantAddress}: delegate the task to it with delegate_task; it returns a run ID to follow up with.`;
     let inRunText = "";
     await until(async () => { inRunText = JSON.stringify(await managerConversation()); return inRunText.includes(assistantEntry); },
       "in-run mention note stored", 30_000);

@@ -8,8 +8,8 @@ import {
 const productTeam = { name: "Product Team", kind: "agent_team", address: "/product_team", presence: "not_in_run" };
 const reviewer = { name: "Code Reviewer (v2)", kind: "agent", address: "/code_reviewer", presence: "not_in_run" };
 const GUIDE = {
-  not_in_run: "delegate a task to it with delegate_task.",
-  in_run: "talk with it using send_message_to, or delegate a task to it with delegate_task to have a new task agent work on it.",
+  not_in_run: "delegate the task to it with delegate_task; it returns a run ID to follow up with.",
+  in_run: "talk with it using send_message_to, or delegate a task to it with delegate_task; that creates a new task agent and returns its run ID to follow up with.",
   own_team: "talk with it using send_message_to; don't delegate to it.",
   run_agent: "talk with it using send_message_to; you can't delegate to it.",
   self: "that is you.",
@@ -124,4 +124,57 @@ test("mentions are at most 8 and unique by kind and definition", () => {
   assert.throws(() => collaboratorMentionsDtoSchema.parse([{ kind: "agent", definition_id: "a" }, { kind: "agent", definition_id: "a" }]));
   assert.throws(() => collaboratorMentionsDtoSchema.parse(Array.from({ length: 9 }, (_, index) => ({ kind: "agent", definition_id: `a${index}` }))));
   assert.throws(() => collaboratorMentionsDtoSchema.parse([{ kind: "agent_org", definition_id: "a" }]));
+});
+
+test("composes the three worked examples of the complete views (§11) exactly", () => {
+  assert.equal(
+    collaboratorMentionNote.compose("Please check this with @api_e2e_engineer and @Web Researcher, and @code_reviewer you too.", [
+      { name: "api_e2e_engineer", kind: "agent", address: "/api_e2e_engineer", presence: "own_team" },
+      { name: "Web Researcher", kind: "agent", address: "/web_researcher", presence: "not_in_run" },
+      { name: "code_reviewer", kind: "agent", address: "/code_reviewer", presence: "self" },
+    ]),
+    [
+      "Please check this with @api_e2e_engineer and @Web Researcher, and @code_reviewer you too.",
+      "",
+      "[Mentioned agents]",
+      "- api_e2e_engineer (agent) at /api_e2e_engineer, in your team: talk with it using send_message_to; don't delegate to it.",
+      "- Web Researcher (agent) at /web_researcher: delegate the task to it with delegate_task; it returns a run ID to follow up with.",
+      "- code_reviewer (agent) at /code_reviewer: that is you.",
+    ].join("\n"),
+  );
+  assert.equal(
+    collaboratorMentionNote.compose("Ask @Software Engineering Team to look at this.", [
+      { name: "Software Engineering Team", kind: "agent_team", address: "/software_engineering_team", presence: "in_run" },
+    ]),
+    [
+      "Ask @Software Engineering Team to look at this.",
+      "",
+      "[Mentioned agents]",
+      "- Software Engineering Team (agent team) at /software_engineering_team: talk with it using send_message_to, or delegate a task to it with delegate_task; that creates a new task agent and returns its run ID to follow up with.",
+    ].join("\n"),
+  );
+  assert.equal(
+    collaboratorMentionNote.compose("Report this to @Research Assistant.", [
+      { name: "Research Assistant", kind: "agent", address: "/research_assistant", presence: "run_agent" },
+    ]),
+    [
+      "Report this to @Research Assistant.",
+      "",
+      "[Mentioned agents]",
+      "- Research Assistant (agent) at /research_assistant: talk with it using send_message_to; you can't delegate to it.",
+    ].join("\n"),
+  );
+});
+
+test("still parses the earlier composed guidance of the catalog and organization lines (SR-012)", () => {
+  const content = [
+    "Ask @Product Team and @Notes",
+    "",
+    "[Mentioned agents]",
+    "- Product Team (agent team) at /product_team: delegate a task to it with delegate_task.",
+    "- Notes (agent) at /notes: talk with it using send_message_to, or delegate a task to it with delegate_task to have a new task agent work on it.",
+  ].join("\n");
+  const parsed = collaboratorMentionNote.parse(content);
+  assert.deepEqual(parsed?.collaborators.map((entry) => entry.presence), ["not_in_run", "in_run"]);
+  assert.equal(parsed?.text, "Ask @Product Team and @Notes");
 });

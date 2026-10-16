@@ -8,7 +8,7 @@ import type { TaskExecutionReference } from "./task-execution-reference.js";
  */
 /** Refusal text when someone other than the assigner tries to continue a closed task agent (wording §7.3). */
 export const ASSIGNER_ONLY_REACTIVATION_MESSAGE = "This task agent's Task is closed. Only the agent that assigned the Task can continue it: "
-  + "set the Task to TODO or IN_PROGRESS, then message the task agent's ID (for a task agent team, its coordinator's ID).";
+  + "set the Task to TODO or IN_PROGRESS, then message the task agent's run ID (for a task agent team, its coordinator's run ID).";
 export type TaskExecutionRole = "assigned" | "delegated" | "broughtIn";
 export type TaskExecutionOwner = Readonly<{ taskId: string; execution: TaskExecutionReference; open: boolean }>;
 /** The text of a Task with no Project that an assignment creates (description-only delegation by an unowned sender). */

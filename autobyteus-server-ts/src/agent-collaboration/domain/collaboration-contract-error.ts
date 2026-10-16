@@ -14,26 +14,30 @@ export const COLLABORATION_CONTRACT_ERROR_CODES = [
 export type CollaborationContractErrorCode =
   (typeof COLLABORATION_CONTRACT_ERROR_CODES)[number];
 
+export type AgentFacingTool = "send_message_to" | "delegate_task";
+
 export class CollaborationContractError extends Error {
   /**
-   * `message` is the text for definition and configuration callers. `agentMessage` is the text an
-   * agent reads when the same error reaches it through `send_message_to` or `delegate_task`
-   * (wording §7.3: the agent's words and a next step); absent when `message` already serves both.
+   * `message` is the text for definition and configuration callers. `agentMessages` holds, per tool,
+   * the text an agent reads when the same error reaches it through `send_message_to` or
+   * `delegate_task` (wording §7.3: the agent's words and a next step that fits that tool); a tool
+   * without an entry shows `message`.
    */
   constructor(
     readonly code: CollaborationContractErrorCode,
     message: string,
-    readonly agentMessage?: string,
+    readonly agentMessages?: Readonly<Partial<Record<AgentFacingTool, string>>>,
   ) {
     super(message);
     this.name = "CollaborationContractError";
   }
 }
 
-/** The text of a contract error for an agent: its agent-facing message when it has one. */
-export const collaborationErrorTextForAgent = (error: Error): string => {
-  const { agentMessage } = error as Error & { agentMessage?: unknown };
-  return typeof agentMessage === "string" && agentMessage ? agentMessage : error.message;
+/** The text of a contract error for an agent using `tool`: that tool's agent-facing message when it has one. */
+export const collaborationErrorTextForAgent = (error: Error, tool: AgentFacingTool): string => {
+  const { agentMessages } = error as Error & { agentMessages?: Partial<Record<AgentFacingTool, unknown>> };
+  const text = agentMessages?.[tool];
+  return typeof text === "string" && text ? text : error.message;
 };
 
 export const isCollaborationContractError = (

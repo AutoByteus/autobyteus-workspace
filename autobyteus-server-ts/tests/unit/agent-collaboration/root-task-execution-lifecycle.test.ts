@@ -170,13 +170,13 @@ describe("RootTaskExecutionLifecycle delegation result", () => {
       .resolves.toEqual({ delegated: false, message: "Agent '/missing' was not found." });
   });
 
-  it("builds the first message with the delegator's name and ID, and no address (wording §7.1)", async () => {
+  it("builds the first message with the delegator's sender run ID, no name and no address (wording §7.1, SR-006)", async () => {
     const { lifecycle, adapter } = setup();
     await lifecycle.delegateToNewCopy({ identity: caller }, { recipient_address: "/worker", description: "Review the plan" }, "placement");
     const packet = vi.mocked(adapter.planActivation).mock.calls[0]![0].workPacket as AgentInputUserMessage;
     expect(packet.content).toBe([
-      'You have a new task from the agent named "coordinator".',
-      'When you finish, or need something you can\'t get yourself, tell that agent using send_message_to with target_agent_run_id "coordinator-run". "coordinator" is its name, not an address or an ID.',
+      'You have a new task from the agent with sender run ID "coordinator-run".',
+      "When you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id set to that sender run ID.",
       "",
       "Description:",
       "Review the plan",

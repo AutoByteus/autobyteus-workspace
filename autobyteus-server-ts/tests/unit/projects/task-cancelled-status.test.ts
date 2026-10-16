@@ -133,7 +133,7 @@ describe("CANCELLED ends a Task's work exactly like DONE", () => {
     const a = await tasks.createTask({ projectId, description: "A" });
     await assign(a.taskId, "before");
     await setStatus(a.taskId, "CANCELLED");
-    const refusal = { code: "TASK_AGENT_RESOURCE_CLOSED", message: "The Task is CANCELLED; move it to TODO or IN_PROGRESS before assigning new work." };
+    const refusal = { code: "TASK_AGENT_RESOURCE_CLOSED", message: "The Task is CANCELLED; set it to TODO or IN_PROGRESS before you delegate it." };
     await expect(assign(a.taskId, "after")).rejects.toMatchObject(refusal);
     await expect(tasks.resolveAssignment(a.taskId)).rejects.toMatchObject(refusal);
     await settle();
@@ -155,7 +155,7 @@ describe("CANCELLED ends a Task's work exactly like DONE", () => {
     for (const call of [() => tasks.assertReopenable({ execution: worker, requestedBy: "manager" }),
       () => tasks.reopenAssignment({ execution: worker, requestedBy: "manager" })]) {
       await expect(call()).rejects.toMatchObject({ code: "TASK_AGENT_RESOURCE_CLOSED",
-        message: "This Task is CANCELLED. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this ID again." });
+        message: "This Task is CANCELLED. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run ID again." });
     }
     expect(await resourcesFile(task.taskId)).toBe(closedFile);
     await setStatus(task.taskId, "IN_PROGRESS");

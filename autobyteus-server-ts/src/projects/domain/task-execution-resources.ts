@@ -133,7 +133,7 @@ export const assertTaskExecutionReopenable = (file: TaskExecutionResourceFile, e
     throw new ProjectError("TASK_AGENT_RESOURCE_CLOSED", ASSIGNER_ONLY_REACTIVATION_MESSAGE);
   }
   if (entry.start !== "started") {
-    throw new ProjectError("TASK_REACTIVATION_UNAVAILABLE", "This assignment never started, so there is nothing to reactivate. Delegate the work again.");
+    throw new ProjectError("TASK_REACTIVATION_UNAVAILABLE", "This task agent never started, so there is nothing to continue. Delegate the task again.");
   }
   return entry;
 };
@@ -165,8 +165,8 @@ export const assertTaskExecutionAssignable = (history: TaskExecutionHistory | nu
       + `Delegate Task ${input.taskId} to a new task agent with recipient_address.`);
   }
   if (current.assignedBy !== input.requestedBy) {
-    throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "Only the agent that gave this task agent its most recent Task can give it a new one; "
-      + newCopyHint(input.taskId));
+    throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "Only the agent that gave this task agent its most recent Task can give it a new one. "
+      + `Delegate Task ${input.taskId} to a new task agent with recipient_address instead.`);
   }
   if (current.closedAt === null) {
     throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", `This task agent still works on Task ${currentTaskId}`
@@ -174,10 +174,10 @@ export const assertTaskExecutionAssignable = (history: TaskExecutionHistory | nu
   }
   if (currentTaskId === input.taskId) {
     throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", `This task agent already has Task ${input.taskId}. To continue it, `
-      + `set Task ${input.taskId} to TODO or IN_PROGRESS, then message the task agent's ID (for a task agent team, its coordinator's ID).`);
+      + `set Task ${input.taskId} to TODO or IN_PROGRESS, then message the task agent's run ID (for a task agent team, its coordinator's run ID).`);
   }
   if (!history.everStarted) {
-    throw new ProjectError("TASK_REACTIVATION_UNAVAILABLE", `This task agent never started, so it has no conversation to continue; ${newCopyHint(input.taskId)}`);
+    throw new ProjectError("TASK_REACTIVATION_UNAVAILABLE", `This task agent never started, so it has no conversation to continue. Delegate Task ${input.taskId} to a new task agent with recipient_address instead.`);
   }
 };
 /** The reopen refusal when the reopened Task is not the copy's current Task (REQ-007): names it and the working next step. */

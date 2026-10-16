@@ -18,15 +18,15 @@ const deliver = (memberExecutionContext: ReturnType<typeof testMemberExecutionCo
   });
 
 describe("direct (cross-root) delivery text (REQ-005)", () => {
-  it("names a sender inside a root by name and ID only, never its address", () => {
+  it("names a sender inside a root by its run ID only: no name, no address", () => {
     const message = deliver(testMemberExecutionContext({ memberAddress: "/eng/lead", agentRunId: "lead_9a" }));
     expect(message.content).toBe(
-      "You received a message from sender name: lead, sender id: lead_9a\nmessage:\nStatus?",
+      "You received a message from the agent with sender run ID \"lead_9a\".\nmessage:\nStatus?",
     );
     expect(message.content).not.toContain("/eng/lead");
   });
 
-  it("keeps name and run ID only for a sender outside any root", () => {
-    expect(deliver(null).content).toBe("You received a message from sender name: lead, sender id: lead_9a\nmessage:\nStatus?");
+  it("gives the run ID only for a sender outside any root", () => {
+    expect(deliver(null).content).toBe("You received a message from the agent with sender run ID \"lead_9a\".\nmessage:\nStatus?");
   });
 });

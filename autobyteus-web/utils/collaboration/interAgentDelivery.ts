@@ -1,17 +1,22 @@
 /**
  * The visible content of an agent-to-agent delivery, as every root builds it:
- * `You received a message from sender name: <name>, sender id: <run id>\nmessage:\n<body>`.
- * Deliveries recorded while the header also carried `sender address: <address>` keep that part in
- * their stored text; both forms parse.
- * The "From <Sender>:" segment shows the sender and the body (RD-004).
+ * `You received a message from the agent with sender run ID "<run id>".\nmessage:\n<body>`.
+ * Earlier headers still parse: `You received a message from sender name: <name>, [sender address: <address>,] sender id: <run id>`.
+ * The parser only separates the header from the body and reads the sender run ID (used when a saved
+ * message has no separate sender field). The "From <Sender>:" label never comes from the header text:
+ * it comes from the sender's run ID (RD-004, SR-013).
  */
-export type InterAgentDelivery = Readonly<{ senderName: string | null; senderAgentRunId: string | null; body: string }>
+export type InterAgentDelivery = Readonly<{ senderAgentRunId: string | null; body: string }>
 
-const HEADER = /^You received a message from sender name: (.*?)(?:, sender address: \S+)?, sender id: (\S+)\r?\nmessage:\r?\n/
+const HEADERS = [
+  /^You received a message from the agent with sender run ID "([^"\s]+)"\.\r?\nmessage:\r?\n/,
+  /^You received a message from sender name: .*?(?:, sender address: \S+)?, sender id: (\S+)\r?\nmessage:\r?\n/,
+]
 
 export const parseInterAgentDelivery = (content: string): InterAgentDelivery => {
-  const match = HEADER.exec(content)
-  return match
-    ? Object.freeze({ senderName: match[1]!.trim() || null, senderAgentRunId: match[2]!, body: content.slice(match[0].length) })
-    : Object.freeze({ senderName: null, senderAgentRunId: null, body: content })
+  for (const header of HEADERS) {
+    const match = header.exec(content)
+    if (match) return Object.freeze({ senderAgentRunId: match[1]!, body: content.slice(match[0].length) })
+  }
+  return Object.freeze({ senderAgentRunId: null, body: content })
 }

@@ -251,7 +251,7 @@ describe("AutoByteus server-owned send_message_to", () => {
     const expected = {
       accepted: false,
       code: "COLLABORATION_ADDRESS_INVALID",
-      message: "'research_lead' is not a valid address (a canonical rooted value beginning with '/' is required). An address is exact and begins with '/', for example /team/agent. To answer an agent that wrote to you or gave you a task, use target_agent_run_id with its ID instead.",
+      message: "'research_lead' is not a valid address (a canonical rooted value beginning with '/' is required). An address is exact and begins with '/', for example /team/agent. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run ID.",
       target_agent_run_id: null,
     };
     const nativeText = await createBoundAutoByteusSendMessageToTool(sender, dispatcher).execute({}, input);

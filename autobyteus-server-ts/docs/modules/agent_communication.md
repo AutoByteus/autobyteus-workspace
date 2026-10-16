@@ -385,7 +385,7 @@ startup into ordinary, unowned delegated runs of the same root (migration
   `in_run` (another unit already in the run), `run_agent` (the standalone host,
   mentioned from a task agent) or `not_in_run` (a catalog definition, which resolves
   to its catalog address). A definition already in the run resolves to its preferred
-  in-run placement address. **Nothing is written, allocated, hosted or published.**
+  in-run placement address. **Own team first (SR-011):** before a mentioned definition is treated as `not_in_run`, the focused agent's own team instance is checked by definition (the agent itself → `self`; a member → `own_team` at its address in the instance; the team itself → `own_team`), because the members of a task agent team are not configured placements. **Nothing is written, allocated, hosted or published.**
   `ownDefinition()` is a Team or Org run's own definition. A standalone Agent root
   builds its port **per viewer** (the focused or sending agent): its
   `ownDefinition()` is the host definition only when the viewer is the host. The host
@@ -396,9 +396,9 @@ startup into ordinary, unowned delegated runs of the same root (migration
   `AgentRunCommandCoordinator.post` → `StandaloneAgentRunRoot.postUserMessage` →
   `StandaloneRootMessageDelivery.postToHost`) appends a `[Mentioned agents]` note, one
   line per mention: `- <Name> (agent|agent team) at <address>[, in your team]: <guidance>`.
-  The guidance depends on the presence: `not_in_run` → "delegate a task to it with
-  delegate_task."; `in_run` → "talk with it using send_message_to, or delegate a task
-  to it with delegate_task to have a new task agent work on it."; `own_team` → "talk
+  The guidance depends on the presence: `not_in_run` → "delegate the task to it with
+  delegate_task; it returns a run ID to follow up with."; `in_run` → "talk with it using send_message_to, or delegate a task
+  to it with delegate_task; that creates a new task agent and returns its run ID to follow up with."; `own_team` → "talk
   with it using send_message_to; don't delegate to it."; `run_agent` → "talk with it
   using send_message_to; you can't delegate to it."; `self` → "that is you.". The note
   names no task tool and says nothing about closing a Task; an agent with
@@ -579,11 +579,12 @@ Known limits:
 
 A `send_message_to` delivery reaches the receiver as input with
 `input_origin: inter_agent_delivery` and `sender_agent_id`. Its visible text names
-the sender by name and run ID; the receiver answers with `send_message_to` and that
-ID, so no address is needed:
+the sender by run ID only; the receiver answers with `send_message_to` and
+`target_agent_run_id` set to that run ID, so no name or address is needed (the chat
+looks the name up by run ID):
 
 ```text
-You received a message from sender name: lead, sender id: <runId>
+You received a message from the agent with sender run ID "<runId>".
 message:
 <body>
 ```
@@ -593,7 +594,7 @@ All three builders use this header: root deliveries
 Team-run deliveries (`inter-agent-message-runtime-builders.ts`) and the direct
 `target_agent_run_id` route (`global-agent-run-message-runtime-builders.ts`). Stored
 deliveries recorded while the header also carried `sender address: <address>` keep
-that text; the web parser reads both forms. The released header is frozen in the Org first-message
+that text (and `sender name: …, sender id: …` before that); the web parser reads every form, and the chat label comes only from the run ID. The released header is frozen in the Org first-message
 summary migration, which matches historical traces. Memory recording
 (native AutoByteus and the external-runtime recorder) stores that sender as the
 user trace's `senderId`; replay projects such a trace as an
