@@ -157,7 +157,7 @@ use this path. When the target belongs to closed Task work, the root first
 reactivates it if the sender is the run that assigned it, the target is the
 copy's agent run ID (a Team copy's coordinator) and the copy's current Task is
 not DONE or CANCELLED;
-the accepted `message` then ends with "<run ID> was reactivated." Otherwise it
+the accepted `message` then ends with "<run id> continues with its conversation." Otherwise it
 refuses with `TASK_AGENT_RESOURCE_CLOSED` and guidance. See
 [Reactivation](projects.md#reactivation).
 
@@ -319,9 +319,10 @@ operation gate. The function only resolves:
 2. **Run-wide standing placements**: a configured placement, or the run's own
    agent (an Agent root's host).
 
-Any other address is `COLLABORATION_TARGET_NOT_FOUND` ("<address> is not in this
-run. To give work to an outside Agent or Team, use delegate_task, then
-send_message_to its run ID."). Nothing is allocated, hosted or written, so a message
+Any other address is `COLLABORATION_TARGET_NOT_FOUND` ("No agent or agent team
+you can talk with has the address <address>. To answer a message or report your
+task result, use send_message_to with target_agent_run_id set to the sender run
+id. To have a task done by a new agent, use delegate_task."). Nothing is allocated, hosted or written, so a message
 can never start an agent; the first message to an existing but Offline agent
 starts it (`fresh` on first activation, `restore` after the run is reopened).
 

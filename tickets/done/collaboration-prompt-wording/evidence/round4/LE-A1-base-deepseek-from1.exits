@@ -1,0 +1,6 @@
+base deepseek run 1 exit 1
+base deepseek run 2 exit 0
+base deepseek run 3 exit 0
+base deepseek run 4 exit 0
+base deepseek run 5 exit 0
+done

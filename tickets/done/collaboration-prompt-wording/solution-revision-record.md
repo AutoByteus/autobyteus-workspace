@@ -20,6 +20,7 @@
 | SR-014 | Wording supplement (catalogue + views) + design + requirements | The user: the views file is the foundation of agent orchestration and must document every case | SD-C-011..SD-C-013 | SR-013 | Requirements Approved (unchanged REQs; AC-007 sharpened); Architecture Design Complete; Medium / Low | BEH-008; AC-005, AC-007 | One catalogue; views complete; back to implementation |
 | SR-015 | Mixed (requirements, wording supplement, design) | Code review CRR-004 (full source review, Fail 9.0) with CRR-003 F-5; the user's decision on the header | F-5, CR-001, CR-005 (CR-002..CR-004 implementation) | SR-014 | Requirements Approved (user DEC-015; DEC-016 within the direction, user informed); Architecture Design Complete; Medium / Low | BEH-005, BEH-006; AC-002, AC-008; design T-2, T-5 | Revised; back to implementation |
 | SR-016 | Wording supplement + requirements + design | The user: lowercase "run id", as in the send_message_to and delegate_task arguments | user decision | SR-015 | Requirements Approved (user, DEC-017); Architecture Design Complete; Medium / Low | all agent-facing texts | Revised; back to implementation |
+| SR-017 | Requirements (evidence / decision record) | API/E2E note (round 5, IR-005): the user's judging-runtime decision; Codex out of usage | N/A | SR-016 | Requirements Approved (user, DEC-018); design unchanged | AC-008 | Recorded; no implementation change |
 
 ## Revision Entries
 
@@ -372,3 +373,16 @@
   followed by "id". Task IDs (`task_id`, "a saved Task's ID") are unchanged. Views regenerated:
   132 uses of "run id", none of "run ID".
 - Approval: the user (DEC-017). Classification unchanged, Medium / Low. Route: implementation.
+
+### SR-017 — AC-008 judging runtimes (the user's decision)
+
+- Trigger: API/E2E note on IR-005 (round 5): the Codex CLI login is out of usage until
+  2026-10-22 09:16; the user directed that Claude Agent SDK with Sonnet and the AutoByteus runtime
+  with DeepSeek flash judge this ticket. On those, IR-005 passes: no unprompted delegator send in
+  50 report-back runs and 20 journeys (`api-e2e-execution-coverage-report.md`, "Judging
+  runtimes").
+- Recorded: AC-008 judging runtimes and the deferred Codex clause (DEC-018). Residual risk: the
+  SR-015 no-reply fix is unconfirmed on Codex, where the round-3 echo loop occurred. Follow-up: a
+  Codex-only rerun of LE-A1 (≥15 per side, branch vs base, assertion "no unprompted send after
+  the report") after the reset: Project Task `project_task_55107203-f674-488c-8a3c-00c2920ccf04` (TODO, not dispatched).
+- No wording, design or implementation change. Classification unchanged.

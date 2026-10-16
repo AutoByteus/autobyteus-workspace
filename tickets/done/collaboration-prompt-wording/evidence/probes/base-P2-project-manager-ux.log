@@ -1,0 +1,6 @@
+
+> autobyteus@1.5.4 test:e2e:project-manager-ux /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-check/autobyteus-web
+> node tests/e2e/project-manager-ux-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/tickets/in-progress/collaboration-prompt-wording/evidence/probes/base-P2-project-manager-ux
+
+Project manager UX probe: Fail. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/tickets/in-progress/collaboration-prompt-wording/evidence/probes/base-P2-project-manager-ux/evidence.json
+ ELIFECYCLE  Command failed with exit code 1.

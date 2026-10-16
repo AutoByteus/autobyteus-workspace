@@ -160,7 +160,9 @@ platform foundation with a second generic advice block.
 ## Collaboration Sections By Role
 
 The collaboration text is written for the agent that reads it (wording authority:
-the `collaboration-prompt-wording` ticket). Which text an agent gets is decided
+[the `collaboration-prompt-wording` proposal](../../../tickets/done/collaboration-prompt-wording/wording/collaboration-prompt-wording-proposal.md);
+the approved per-role prompt blocks that the e2e suite compares against are in
+`tests/e2e/fixtures/collaboration-prompt-complete-views.md`). Which text an agent gets is decided
 once, by an explicit `collaborationRole` on its member context, never by looking
 at addresses or at whether it is "team scoped":
 

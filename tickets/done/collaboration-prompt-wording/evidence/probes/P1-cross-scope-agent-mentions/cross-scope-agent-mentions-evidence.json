@@ -1,0 +1,82 @@
+{
+  "startedAt": "2026-10-15T22:23:46.317Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "A01": {
+      "title": "SCN-001 standalone run: menu (VIS-011, a11y), inline mention; the send adds no collaborator and no row (AC-001); stored delegate_task note, chip in the UI (AC-002); the host delegates (delegate_task card) and gets an ad-hoc Task, text only (AC-003, AC-015); the delegated row appears; the copy reports \"From Code Reviewer:\" (Task-linked scope allows its delegator); the host may close it on its own (SCN-002); a non-reporting copy and a Team copy are delegated the same way",
+      "result": "Fail",
+      "ms": 17265,
+      "error": "stored note lacks \"- Code Reviewer (Agent) at /code_reviewer\"",
+      "details": "[{\"kind\":\"message\",\"role\":\"user\",\"content\":\"Say hello in one short sentence.\",\"media\":null,\"ts\":1792103044.698},{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Hello!\",\"media\":null,\"ts\":1792103047.729},{\"kind\":\"message\",\"role\":\"user\",\"content\":\"please ask @Code Reviewer to review the phrase \\\"hello world\\\" and report back.\\n\\n[Mentioned agents]\\n- Code Reviewer (agent) at /code_reviewer: delegate a task to it with delegate_task.\",\"media\":null,\"ts\":1792103049.84},{\"kind\":\"tool_call\",\"invocationId\":\"toolu_016uykB7SjT7ULof7dpWDKyN\",\"role\":null,\"content\":\"\",\"toolName\":\"delegate_task\",\"toolArgs\":{\"recipient_address\":\"/code_reviewer\",\"description\":\"The user asked you to review the phrase \\\"hello world\\\". Review the phrase and report your findings back to the requesting agent (Research Assistant) in a short written review.\"},\"toolResult\":\"{\\\"delegated\\\":true,\\\"target_kind\\\":\\\"agent\\\",\\\"target_agent_run_id\\\":\\\"code_reviewer_e17558efeeee478bab03c10471a27320\\\",\\\"task_id\\\":\\\"ad_hoc_task_1154b85a-29fd-4cd6-befb-16cffbf9afaf\\\"}\",\"toolError\":null,\"media\":null,\"ts\":1792103052.836}]"
+    },
+    "A02": {
+      "title": "SCN-002 / AC-007 / AC-009: the user tells the host the notes are finished; the host (no Project tool selected) calls update_task by task_id alone; Task DONE, copy closed, its row leaves live; history kept",
+      "result": "Fail",
+      "ms": 302829,
+      "error": "Timed out waiting for Note Taker ad-hoc Task DONE and closed",
+      "details": null
+    },
+    "T01": {
+      "title": "SCN-001 Team run: VIS-001 menu; @Product Team → no Team collaborator (AC-001), stored note (AC-002), the focused researcher delegates a Team copy with an ad-hoc Task (AC-003); \"From Product Prototyper:\"; the next send with @Note Taker (CR-003) delegates an Agent copy",
+      "result": "Fail",
+      "ms": 9974,
+      "error": "stored note lacks \"- Product Team (Agent Team) at /product_team\"",
+      "details": "[{\"kind\":\"message\",\"role\":\"user\",\"content\":\"Say hello in one short sentence.\",\"media\":null,\"ts\":1792103358.513},{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Hello!\",\"media\":null,\"ts\":1792103360.714},{\"kind\":\"message\",\"role\":\"user\",\"content\":\"please ask @Product Team to design a tiny settings page and report back.\\n\\n[Mentioned agents]\\n- Product Team (agent team) at /product_team: delegate a task to it with delegate_task.\",\"media\":null,\"ts\":1792103362.662},{\"kind\":\"tool_call\",\"invocationId\":\"toolu_0151Q9jv3eaEyQxXvb55UQFb\",\"role\":null,\"content\":\"\",\"toolName\":\"delegate_task\",\"toolArgs\":{\"recipient_address\":\"/product_team\",\"description\":\"Design a tiny settings page. Produce a concise design: the purpose of the page, the list of settings it contains (name, control type, default value, and a one-line description for each), the layout and section order, and any key interaction or validation notes. Keep it small and practical. When finished, report the design back to the Researcher agent (the requester) in your reply.\"},\"toolResult\":\"{\\\"delegated\\\":true,\\\"target_kind\\\":\\\"team\\\",\\\"target_team_run_id\\\":\\\"product_team_3131122da06a4d859dd6a12bedd15b35\\\",\\\"target_team_coordinator_agent_run_id\\\":\\\"product_prototyper_68a80d3950054bc48037b895b0273679\\\",\\\"task_id\\\":\\\"ad_hoc_task_9dd6aa2f-9f0a-4caa-bfd6-5789574cbc0e\\\"}\",\"toolError\":null,\"media\":null,\"ts\":1792103365.043}]"
+    },
+    "O01": {
+      "title": "SCN-001 Org run: VIS-008 menu; two mentions → no Org collaborator (AC-001), stored note with both entries (AC-002); the analyst delegates an Agent and a Team copy, each with an ad-hoc Task (AC-003); \"From Product Prototyper:\"",
+      "result": "Fail",
+      "ms": 17117,
+      "error": "stored note lacks \"- Note Taker (Agent) at /note_taker\"",
+      "details": "[{\"kind\":\"message\",\"role\":\"user\",\"content\":\"please ask @Note Taker to note down the launch date and @Product Team to plan the launch page and report back.\\n\\n[Mentioned agents]\\n- Note Taker (agent) at /note_taker: delegate a task to it with delegate_task.\\n- Product Team (agent team) at /product_team: delegate a task to it with delegate_task.\",\"media\":null,\"ts\":1792103376.782},{\"kind\":\"tool_call\",\"invocationId\":\"toolu_0112JSxxb5E3WJrZTFERDCEF\",\"role\":null,\"content\":\"\",\"toolName\":\"delegate_task\",\"toolArgs\":{\"recipient_address\":\"/note_taker\",\"description\":\"Note down the launch date. The user's request was: \\\"ask @Note Taker to note down the launch date.\\\" No specific date was included in the request, so record the launch date from the user's context or any launch details available to you, and if no date is known, report that back so the user can supply it. Today's date is 2026-10-16. Reply to the Analyst with the launch date you recorded (or the fact that none was provided).\"},\"toolResult\":\"{\\\"delegated\\\":true,\\\"target_kind\\\":\\\"agent\\\",\\\"target_agent_run_id\\\":\\\"note_taker_de06944fc2fa4cf4ad3b9477158548f0\\\",\\\"task_id\\\":\\\"ad_hoc_task_2b8a4cce-ae18-4052-a07f-22e19e74b9df\\\"}\",\"toolError\":null,\"media\":null,\"ts\":1792103381.626},{\"kind\":\"tool_call\",\"invocationId\":\"toolu_01SjXMTFc1D6q1dichNQcerj\",\"role\":null,\"content\":\"\",\"toolName\":\"delegate_task\",\"toolArgs\":{\"recipient_address\":\"/product_team\",\"description\":\"Plan the launch page. Work description from the user: \\\"ask @Product Team to"
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 14462
+    },
+    {
+      "label": "frontend",
+      "pid": 14526
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 14526,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 14462,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-sEs1sz"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-sEs1sz",
+  "backendUrl": "http://127.0.0.1:54012",
+  "frontUrl": "http://127.0.0.1:54013",
+  "definitions": {
+    "research": "research-assistant",
+    "reviewer": "code-reviewer",
+    "researcher": "researcher",
+    "writer": "writer",
+    "analyst": "analyst",
+    "noteTaker": "note-taker",
+    "tempHelper": "temp-helper",
+    "prototyper": "product-prototyper",
+    "bootstrapper": "prototype-bootstrapper",
+    "productTeam": "product-team",
+    "reviewTeam": "review-team",
+    "org": "launch-org"
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 0,
+    "fail": 4,
+    "notApplicable": 0
+  },
+  "completedAt": "2026-10-15T22:29:44.127Z"
+}

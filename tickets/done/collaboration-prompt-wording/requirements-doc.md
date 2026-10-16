@@ -158,6 +158,13 @@ here (they change intended behavior).
   the report (SR-015, the F-5 echo loop); replies use the sender run id or the sender address;
   every failing sample's trace is kept and explained. LM Studio runs are information only
   (DEC-010).
+  Judging runtimes for this ticket (DEC-018, the user, round 5): Claude Agent SDK with Sonnet and
+  the AutoByteus runtime with DeepSeek flash (`deepseek-v4-flash`) — "as long as Claude Sonnet and
+  DeepSeek flash are successful then that's successful". The Codex clause (LE-A1 ≥15 per side)
+  was not run because the Codex CLI login is out of usage until 2026-10-22 09:16
+  (`evidence/round5/codex-usage-limit-probe.txt`). Residual risk: the SR-015 no-reply fix is not
+  yet confirmed on Codex, the only runtime where the echo loop was seen; a Codex-only rerun after
+  the reset is tracked as Project Task `project_task_55107203-f674-488c-8a3c-00c2920ccf04`.
 
 ## Relevant Scenarios And Journeys
 
@@ -226,6 +233,7 @@ every earlier note and header form. No loss is acceptable.
   read it (REQ-008); the refusal condition is unchanged.
 - DEC-010 (user, SR-005): the wording is not changed for LM Studio; small local models struggle
   with any prompt, while Claude and Codex worked before. LM Studio results are information only.
+- DEC-018 (user, round 5, recorded in SR-017): AC-008 is judged on Claude Agent SDK with Sonnet and the AutoByteus runtime with DeepSeek flash; the Codex clause is deferred to a follow-up rerun after the Codex usage reset (2026-10-22 09:16).
 - DEC-017 (user, SR-016): lowercase "run id" in every agent-facing text, matching the tool argument names.
 - DEC-015 (user, SR-015): the header and the task message give the sender address as well as the
   sender run id — "sender name does not give us any value, but sender address gives, because

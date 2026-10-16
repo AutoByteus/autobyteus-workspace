@@ -29,7 +29,7 @@ listed in [Current State Versus Target](#5-current-state-versus-target).
   (see CM-7 for nested delegation).
 
 These are the engineer-facing terms. The words an agent reads in its prompt, tool
-descriptions and refusal texts ("task agent", "task agent team", "its ID") are
+descriptions and refusal texts ("task agent", "task agent team", "run id") are
 owned by the collaboration wording authority; see
 [Prompt Engineering](../modules/prompt_engineering.md#collaboration-sections-by-role).
 

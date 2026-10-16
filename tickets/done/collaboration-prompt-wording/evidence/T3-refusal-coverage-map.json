@@ -1,0 +1,212 @@
+[
+ [
+  "send_message_to to an unknown address (TARGET_NOT_FOUND)",
+  0,
+  0,
+  3,
+  []
+ ],
+ [
+  "delegate to own team / teammate (SELF_TARGET_REJECTED)",
+  2,
+  0,
+  3,
+  [
+   "collaboration-prompt-wording.e2e.test.ts",
+   "delegated-copy-member-contact-host.e2e.test.ts"
+  ]
+ ],
+ [
+  "delegation target unavailable",
+  1,
+  1,
+  2,
+  [
+   "agent-package-definitions-live-refresh.e2e.test.ts"
+  ]
+ ],
+ [
+  "task agent uses task_id (RESOURCE_OWNED_SENDER)",
+  2,
+  0,
+  1,
+  [
+   "collaboration-prompt-wording.e2e.test.ts",
+   "task-existing-copy-assignment.e2e.test.ts"
+  ]
+ ],
+ [
+  "Task closed: start new work (RESOURCE_CLOSED)",
+  0,
+  0,
+  0,
+  []
+ ],
+ [
+  "delegated task message not delivered",
+  0,
+  0,
+  1,
+  []
+ ],
+ [
+  "non-assigner reactivation (ASSIGNER_ONLY)",
+  1,
+  0,
+  3,
+  [
+   "task-reactivation-root-visibility.e2e.test.ts"
+  ]
+ ],
+ [
+  "task agent continues with its conversation (reactivated)",
+  2,
+  0,
+  3,
+  [
+   "project-change-feed.e2e.test.ts",
+   "task-reactivation-root-visibility.e2e.test.ts"
+  ]
+ ],
+ [
+  "root stopping (ROOT_NOT_ACTIVE)",
+  0,
+  0,
+  2,
+  []
+ ],
+ [
+  "different Task (RESOURCE_CONFLICT)",
+  1,
+  0,
+  0,
+  [
+   "collaboration-prompt-wording.e2e.test.ts"
+  ]
+ ],
+ [
+  "tasks not available here",
+  0,
+  0,
+  0,
+  []
+ ],
+ [
+  "user stopping this task agent",
+  0,
+  0,
+  1,
+  []
+ ],
+ [
+  "ID is not one of your task agents",
+  1,
+  0,
+  2,
+  [
+   "task-existing-copy-assignment.e2e.test.ts"
+  ]
+ ],
+ [
+  "coordinator of a task agent team",
+  1,
+  0,
+  3,
+  [
+   "task-existing-copy-assignment.e2e.test.ts"
+  ]
+ ],
+ [
+  "task agent team's own ID",
+  2,
+  0,
+  1,
+  [
+   "collaboration-prompt-wording.e2e.test.ts",
+   "task-existing-copy-assignment.e2e.test.ts"
+  ]
+ ],
+ [
+  "already works on this Task",
+  0,
+  0,
+  0,
+  []
+ ],
+ [
+  "task agent has no Task",
+  0,
+  0,
+  0,
+  []
+ ],
+ [
+  "task agent works on part of another Task",
+  1,
+  0,
+  3,
+  [
+   "task-existing-copy-assignment.e2e.test.ts"
+  ]
+ ],
+ [
+  "only the agent that gave the most recent Task",
+  1,
+  0,
+  2,
+  [
+   "task-existing-copy-assignment.e2e.test.ts"
+  ]
+ ],
+ [
+  "busy: still works on Task",
+  1,
+  0,
+  2,
+  [
+   "task-existing-copy-assignment.e2e.test.ts"
+  ]
+ ],
+ [
+  "already has Task",
+  1,
+  0,
+  2,
+  [
+   "task-existing-copy-assignment.e2e.test.ts"
+  ]
+ ],
+ [
+  "task agent never started",
+  0,
+  0,
+  1,
+  []
+ ],
+ [
+  "project Task closed: assigner can set TODO",
+  1,
+  0,
+  3,
+  [
+   "task-reactivation-root-visibility.e2e.test.ts"
+  ]
+ ],
+ [
+  "send_message_to talks with agents (TARGET_IS_TEAM_RUN)",
+  2,
+  0,
+  1,
+  [
+   "collaboration-prompt-wording.e2e.test.ts",
+   "task-existing-copy-assignment.e2e.test.ts"
+  ]
+ ],
+ [
+  "task agent could not continue (restore failure)",
+  0,
+  0,
+  1,
+  []
+ ]
+]

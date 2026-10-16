@@ -1,0 +1,6 @@
+
+> autobyteus@1.5.4 test:e2e:cross-scope-agent-mentions /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-web
+> node tests/e2e/cross-scope-agent-mentions-live-probe.mjs --runtime claude_agent_sdk --model haiku --cases T01 --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/tickets/in-progress/collaboration-prompt-wording/evidence/round4/probes/T01-branch-2
+
+T01 Pass SCN-001 Team run: VIS-001 menu; @Product Team → no Team collaborator (AC-001), stored note (AC-002), the focused researcher delegates a Team copy with an ad-hoc Task (AC-003); "From Product Prototyper:"; the next send with @Note Taker (CR-003) delegates an Agent copy
+Summary: 1 Pass, 0 Fail, 0 Not Applicable
