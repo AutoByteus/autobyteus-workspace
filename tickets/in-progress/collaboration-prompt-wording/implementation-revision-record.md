@@ -45,7 +45,7 @@ initial baseline and later implementation deltas.
 - Triggering finding IDs: F-3a, F-3b, F-1 (C-3 held, covered by F-3a)
 - Classification: `Design Impact` (F-3a, F-3b), `Requirement Gap` decided as DEC-009 (F-1); both accepted upstream in SR-003
 - Prior authoritative result: IR-001 (`290d32dd4b`) — API/E2E API-REV-001 Fail (80%)
-- Current authoritative result: IR-002 commit on `codex/collaboration-prompt-wording` (see `git log`); Medium / Low confirmed
+- Current authoritative result: commit `6a3f6628b1` on `codex/collaboration-prompt-wording`; Medium / Low confirmed
 - Related solution revision IDs: SR-003 (builds on SR-001, SR-002)
 - Related architecture-review revision IDs: N/A
 - Related code-review revision IDs: CRR-001
