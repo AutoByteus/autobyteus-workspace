@@ -84,14 +84,17 @@ describeLive("Codex interrupted compaction (live E2E)", () => {
       autoByteusBackendFactory: unusedBackendFactory,
       codexBackendFactory: new CodexAgentRunBackendFactory(threadManager, new CodexThreadBootstrapper(
         { activateForRun: () => ({ kind: "not_exposed" }) },
-        { materializeConfiguredWorkspaceSkills: async () => ({ materializedSkills: [], effectiveRequests: [] }) } as never,
         { resolveWorkingDirectory: async () => workspaceRoot } as never,
         { getAgentDefinitionById: async () => ({ name: "Codex Compaction Agent", skillNames: [], toolNames: [],
           instructions: "Reply exactly as asked. Do not use tools.", description: "Compaction probe agent." }) } as never,
         { resolveConfiguredSkillBindingsForAgent: () => [], resolveSkillScope: () => "CONFIGURED",
           hasEffectiveSkills: () => false } as never,
         clientManager,
-      )ntRunActivationRegistry(new AgentRunResourceManager({
+      )),
+      claudeBackendFactory: unusedBackendFactory,
+      agyBackendFactory: unusedBackendFactory,
+      grokBackendFactory: unusedBackendFactory,
+      activationRegistry: new AgentRunActivationRegistry(new AgentRunResourceManager({
         runSessions: deactivator, runFileChangeService: noopSidecar() as never,
         publishedArtifactRelayService: noopSidecar() as never, memoryRecorder: recorder })),
       memoryRecorder: recorder,
