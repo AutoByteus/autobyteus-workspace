@@ -3166,7 +3166,6 @@ export type TaskWorkerTaskView = {
   projectId?: Maybe<Scalars['String']['output']>;
   status: ProjectTaskStatus;
   taskId: Scalars['String']['output'];
-  taskKey?: Maybe<Scalars['String']['output']>;
 };
 
 export type TeamCommunicationMessageObject = {
@@ -4777,7 +4776,7 @@ export type GetTaskWorkerTasksQueryVariables = Exact<{
 }>;
 
 
-export type GetTaskWorkerTasksQuery = { __typename?: 'Query', taskWorkerTasks: Array<{ __typename?: 'TaskWorkerTask', workerKind: string, workerRunId: string, task?: { __typename?: 'TaskWorkerTaskView', taskId: string, projectId?: string | null, description: string, status: ProjectTaskStatus, taskKey?: string | null } | null }> };
+export type GetTaskWorkerTasksQuery = { __typename?: 'Query', taskWorkerTasks: Array<{ __typename?: 'TaskWorkerTask', workerKind: string, workerRunId: string, task?: { __typename?: 'TaskWorkerTaskView', taskId: string, projectId?: string | null, description: string, status: ProjectTaskStatus } | null }> };
 
 export type GetTasksWithoutProjectQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -10781,7 +10780,6 @@ export const GetTaskWorkerTasksDocument = gql`
       projectId
       description
       status
-      taskKey
     }
   }
 }

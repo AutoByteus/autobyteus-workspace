@@ -44,7 +44,7 @@ export const GetTaskWorkerTasks = gql`
     taskWorkerTasks(agentRunIds: $agentRunIds, teamRunIds: $teamRunIds) {
       workerKind
       workerRunId
-      task { taskId projectId description status taskKey }
+      task { taskId projectId description status }
     }
   }
 `

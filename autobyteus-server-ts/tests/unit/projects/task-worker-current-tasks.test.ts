@@ -53,8 +53,8 @@ describe("ProjectTaskService.currentTasksOfTaskWorkers", () => {
       execution: team, teamCoordinatorAgentRunId: "lead", adHocTask: { description: "Review it", referenceFiles: [] } });
 
     expect(await tasks.currentTasksOfTaskWorkers([agent, team, { agentRunId: "unknown" }, { teamRunId: "unknown" }])).toEqual([
-      { execution: agent, task: { taskId, projectId, taskKey: "desktop-app-1", description: "Ship the summary line\nwith details", status: "TODO" } },
-      { execution: team, task: { taskId: tempTaskId, projectId: null, taskKey: null, description: "Review it", status: "TODO" } },
+      { execution: agent, task: { taskId, projectId, description: "Ship the summary line\nwith details", status: "TODO" } },
+      { execution: team, task: { taskId: tempTaskId, projectId: null, description: "Review it", status: "TODO" } },
       { execution: { agentRunId: "unknown" }, task: null },
       { execution: { teamRunId: "unknown" }, task: null },
     ]);
@@ -65,7 +65,7 @@ describe("ProjectTaskService.currentTasksOfTaskWorkers", () => {
     const followUp = await create("Follow-up Task");
     await assign(first, team);
     await tasks.updateTaskById({ taskId: first, status: "DONE" });
-    expect(await tasks.currentTasksOfTaskWorkers([team])).toEqual([{ execution: team, task: { taskId: first, projectId, taskKey: "desktop-app-1", description: "First Task", status: "DONE" } }]);
+    expect(await tasks.currentTasksOfTaskWorkers([team])).toEqual([{ execution: team, task: { taskId: first, projectId, description: "First Task", status: "DONE" } }]);
 
     await tasks.assignExistingTaskExecution({ hostRoot, execution: team, teamCoordinatorAgentRunId: "lead", taskId: followUp, assignedBy: "manager" });
     expect((await tasks.currentTasksOfTaskWorkers([team]))[0]!.task).toMatchObject({ taskId: followUp, status: "TODO" });
@@ -97,7 +97,7 @@ describe("ProjectTaskService.currentTasksOfTaskWorkers", () => {
     expect(await tasks.currentTasksOfTaskWorkers([agent, team, survivorWorker])).toEqual([
       { execution: agent, task: null },
       { execution: team, task: null },
-      { execution: survivorWorker, task: { taskId: survivor, projectId, taskKey: "desktop-app-2", description: "Still here", status: "TODO" } },
+      { execution: survivorWorker, task: { taskId: survivor, projectId, description: "Still here", status: "TODO" } },
     ]);
   });
 

@@ -88,8 +88,8 @@ export const createTaskLocatorCases = (h) => {
   const teamRow = (page, hostRunId, teamName) => page.locator(`[data-test="workspace-agent-run-task-tree"][data-run-id="${hostRunId}"] ${ROW}[data-transient-kind="task_team"][data-member-address="/${segment(teamName)}"]:visible`);
   const addressRow = (page, address) => page.locator(`${ROW}[data-member-address="${address}"]:visible`);
   const summaryIn = (row) => row.locator('[data-test="workspace-task-worker-task-summary"]');
-  // task-keys-and-dependencies (REQ-012): a Project Task's summary leads with its key ("<key> <summary>"); a Temp task has none.
-  const summaryLabel = (summary) => summary.evaluate((e) => e.textContent.slice((e.querySelector('[data-test="workspace-task-worker-task-key"]')?.textContent ?? '').length));
+  // task-keys-declutter (REQ-002): the tree shows only the Task summary, never a Task key.
+  const summaryLabel = (summary) => summary.evaluate((e) => e.textContent);
   const keyOf = async (projectId, taskId) => (await gql('query($id:String!){projectTasks(projectId:$id){taskId taskKey}}', { id: projectId })).projectTasks.find((t) => t.taskId === taskId)?.taskKey;
   const card = (page, taskId) => page.locator(`[data-testid="project-task-row-${taskId}"]:visible`);
   const panelState = (page) => page.evaluate(() => {
@@ -192,15 +192,14 @@ export const createTaskLocatorCases = (h) => {
     const listed = await page.locator(`[data-test="workspace-agent-run-task-tree"][data-run-id="${s.agentRoot.rootId}"] ${ROW}`).evaluateAll((es) => es.map((e) => ({
       kind: e.getAttribute('data-transient-kind'), address: e.getAttribute('data-member-address'), agentRunId: e.getAttribute('data-agent-run-id'),
       height: Math.round(e.getBoundingClientRect().height),
-      summary: ((x) => x ? x.textContent.slice((x.querySelector('[data-test="workspace-task-worker-task-key"]')?.textContent ?? '').length) : null)(e.querySelector('[data-test="workspace-task-worker-task-summary"]')),
-      key: e.querySelector('[data-test="workspace-task-worker-task-key"]')?.textContent ?? null,
+      summary: e.querySelector('[data-test="workspace-task-worker-task-summary"]')?.textContent ?? null,
       label: e.getAttribute('aria-label') })));
     const byRun = (id) => listed.find((r) => r.agentRunId === id);
     const teamListed = listed.find((r) => r.kind === 'task_team');
     const agentKey = await keyOf(s.projectA, s.tasks.agent), teamKey = await keyOf(s.projectA, s.tasks.team);
-    assert(byRun(s.workers.agent)?.summary === 'Ship the copy Task summary in the tree' && byRun(s.workers.agent).key === agentKey && byRun(s.workers.agent).height === 46, 'agent copy: key, then first line as summary, 46 px row', listed);
-    assert(byRun(s.workers.temp)?.summary === 'Check the FAQ links.' && byRun(s.workers.temp).key === null, 'Temp copy summary, no key', listed);
-    assert(teamListed?.summary?.startsWith('Review the locate journey') && teamListed.key === teamKey && teamListed.height === 46, 'task Team copy summary', listed);
+    assert(byRun(s.workers.agent)?.summary === 'Ship the copy Task summary in the tree' && !byRun(s.workers.agent).summary.includes(agentKey) && byRun(s.workers.agent).height === 46, 'agent copy: first line as summary, no key, 46 px row', listed);
+    assert(byRun(s.workers.temp)?.summary === 'Check the FAQ links.', 'Temp copy summary', listed);
+    assert(teamListed?.summary?.startsWith('Review the locate journey') && !teamListed.summary.includes(teamKey) && teamListed.height === 46, 'task Team copy summary', listed);
     const oneLine = listed.filter((r) => r.kind === 'task_team_child' || r.agentRunId === subWorkRunId);
     assert(oneLine.length >= 3 && oneLine.every((r) => r.summary === null && r.height === 28 && !/Task:/.test(r.label)), 'members and sub-work: one line, no Task in the name', oneLine);
     assert(byRun(s.workers.agent).label.endsWith(', Task: Ship the copy Task summary in the tree'), 'row accessible name gains the Task', byRun(s.workers.agent));
@@ -216,7 +215,7 @@ export const createTaskLocatorCases = (h) => {
     });
     assert(style.tag === 'BUTTON' && style.fontSize === '11px' && style.lineHeight === '16px' && style.fontWeight === '400' && style.color === GRAY_500
       && style.gapAbove === 2 && Math.abs(style.textLeftMinusName) <= 0.5 && style.ariaCurrent === null && style.ariaSelected === null
-      && style.title === `Show Task in Projects: ${agentKey} Ship the copy Task summary in the tree` && style.ariaLabel === style.title, 'summary presentation (REQ-002, REQ-010; task-keys REQ-012)', style);
+      && style.title === 'Show Task in Projects: Ship the copy Task summary in the tree' && style.ariaLabel === style.title, 'summary presentation (REQ-002, REQ-010; task-keys-declutter REQ-002)', style);
     const team = await teamRow(page, s.agentRoot.rootId, s.names.squad).evaluate((row) => {
       const top = row.getBoundingClientRect().top; const summary = row.querySelector('[data-test="workspace-task-worker-task-summary"]');
       const branch = row.querySelector('.hierarchy-current-branch'); const elbow = getComputedStyle(branch, '::after');
@@ -253,8 +252,7 @@ export const createTaskLocatorCases = (h) => {
     // Team host: its delegated member copy shows its Task summary (DEC-001 b).
     await openTeamHostRun(page, s);
     const teamHostSummary = await summaryLabel(summaryIn(agentRow(page, s.workers.teamHost)));
-    const teamHostKey = await summaryIn(agentRow(page, s.workers.teamHost)).locator('[data-test="workspace-task-worker-task-key"]').textContent();
-    assert(teamHostSummary === 'Draft the release notes for the beta' && teamHostKey === await keyOf(s.projectB, s.tasks.teamHost), 'Team-host copy summary', { teamHostSummary, teamHostKey });
+    assert(teamHostSummary === 'Draft the release notes for the beta', 'Team-host copy summary, no key', { teamHostSummary });
     await shot(page, 'pmu-020-rows-team-host');
     assertNoBrowserErrors(errors);
     return { listed, style, team, hover, answers, reads: reads.map((o) => o.variables), listScopes, teamHostSummary, subWorkRunId };
@@ -613,11 +611,10 @@ export const createTaskLocatorCases = (h) => {
     const { page, errors } = await newPage({ width: 1440, height: 900, locale: 'zh-CN' });
     await openHostRun(page, s);
     const summary = summaryIn(agentRow(page, s.workers.agent));
-    const agentKey = await keyOf(s.projectA, s.tasks.agent);
     const zh = { text: await summaryLabel(summary), title: await summary.getAttribute('title'), aria: await summary.getAttribute('aria-label'),
       row: await agentRow(page, s.workers.agent).getAttribute('aria-label') };
     const label = 'Ship the copy Task summary in the tree';
-    assert(zh.text === label && zh.title === `在项目中显示任务：${agentKey} ${label}` && zh.aria === zh.title && zh.row.endsWith(`, 任务：${label}`), 'zh-CN strings', zh);
+    assert(zh.text === label && zh.title === `在项目中显示任务：${label}` && zh.aria === zh.title && zh.row.endsWith(`, 任务：${label}`), 'zh-CN strings', zh);
     await summary.click();
     zh.located = await located(page, s.tasks.agent, 'zh-CN');
     await settledCard(page, s.tasks.agent);

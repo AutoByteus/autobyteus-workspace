@@ -405,9 +405,9 @@ in-memory index (no scan of Task files); otherwise null. It never throws.
 `ProjectTaskService.currentTasksOfTaskWorkers(workers)` is the only Projects
 read built on it (delegated-copy-task-locator). It waits for `load()`, then for
 each `{agentRunId}` or `{teamRunId}` reads the Task's change view and answers
-`{execution, task: {taskId, projectId, taskKey, description, status} | null}`
+`{execution, task: {taskId, projectId, description, status} | null}`
 (`TaskWorkerTaskResult` / `TaskWorkerTaskView` in `domain/models.ts`;
-`projectId` and `taskKey` null mean a Task with no Project). `task` is null when the copy is
+`projectId` null means a Task with no Project). `task` is null when the copy is
 no Task's root, or when its Task or that Task's Project no longer exists. A
 closed (DONE or CANCELLED) current Task is still answered. One worker never
 fails the batch: an unexpected read error is logged as
@@ -1035,7 +1035,7 @@ Project queries and mutations keep their names; there is no Projects capability 
 - `taskWorkerTasks(agentRunIds: [String!]!, teamRunIds: [String!]!)` returns
   `[TaskWorkerTask!]!`, one per listed run (agents first, then teams):
   `workerKind` (`agent` | `team`), `workerRunId` and a nullable `task`
-  `{taskId, projectId, taskKey, description, status}` (`taskKey` null for a Temp task). It is the batched
+  `{taskId, projectId, description, status}`. It is the batched
   [current Task of a Task worker](#current-task-of-a-task-worker) read used by
   the web app's Workspaces tree; an ID that is no Task's root answers
   `task: null`.

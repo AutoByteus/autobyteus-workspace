@@ -618,8 +618,9 @@ try {
     obs.toolAck = ack2;
     assert(JSON.stringify(ack2.dependsOn) === JSON.stringify(['keys-board-1']) && ack2.taskId === 'keys-board-2', 'Tool ack names the Task and dependencies by key: ' + JSON.stringify(ack2));
     await board(pid);
-    const keyLine = async t => row(t.taskId).getByTestId('project-task-row-key').getByTestId('task-key').getAttribute('data-key');
-    for (const t of [t1, t2, t4, t5]) assert(await keyLine(t) === t.taskKey, `Key line on ${t.taskKey}`);
+    // task-keys-declutter (REQ-001): cards show no key line; keys stay in the badge, the Task page and the lists.
+    const noKeyLine = async t => await row(t.taskId).getByTestId('project-task-row-key').count() === 0 && !(await row(t.taskId).getByTestId('project-task-row-link').innerText()).includes(t.taskKey);
+    for (const t of [t1, t2, t4, t5]) assert(await noKeyLine(t), `No key line on ${t.taskKey}`);
     const badgeOf = async t => {
       for (const kind of ['blocked', 'cancelled']) {
         const badge = row(t.taskId).getByTestId(`task-dependency-badge-${kind}`);
@@ -706,7 +707,7 @@ try {
     const t6 = (await api.tasks(nodeA, pid)).find(t => t.description === 'Follow-up: API examples');
     assert(t6.taskKey === 'keys-board-6' && JSON.stringify(t6.dependsOnTaskIds) === JSON.stringify([t2.taskId]), 'Next key, stored dependency: ' + JSON.stringify(t6));
     await waitFor('new card badge', async () => (await badgeOf(t6))?.text === 'Blocked by keys-board-2');
-    assert(await keyLine(t6) === 'keys-board-6', 'New card key line');
+    assert(await noKeyLine(t6), 'New card has no key line');
 
     // Live: another client clears keys-board-2's dependency; its badge disappears without a task-list request (AC-011, AC-012).
     let refreshes = 0; const countRefresh = req => { if (req.url().endsWith('/graphql') && req.postData()?.includes('projectTasks(')) refreshes++; }; page.on('request', countRefresh);
@@ -736,14 +737,15 @@ try {
     await goto(`/projects/${pid}/tasks/KEYS-BOARD-4`); await waitFor('upper-case key URL replaced', () => pathname() === `/projects/${pid}/tasks/keys-board-4`);
     await goto(`/projects/${pid}/tasks/keys-board-2`); await page.getByTestId('task-page-not-found').waitFor(); // deleted: its key opens nothing
 
-    // Long Project names: the whole key on the card; tooltip and data carry the full key; the number stays visible (AC-017).
+    // Long Project names: the card shows only its badge's key (no key line, task-keys-declutter REQ-001); tooltip and data
+    // carry the full key; the number stays visible (AC-017).
     const longP = await api.createProject(nodeA, 'Customer Onboarding Experience Redesign Program');
     const l1 = await api.createTask(nodeA, longP.projectId, 'Long key one'); const l2 = await api.createTask(nodeA, longP.projectId, 'Long key two');
     await toolWrite({ task_id: l2.taskKey, depends_on: [l1.taskKey] });
     await board(longP.projectId);
     obs.longKeys = await row(l2.taskId).evaluate(r => [...r.querySelectorAll('[data-testid="task-key"]')].map(e => ({ key: e.getAttribute('data-key'), title: e.getAttribute('title'), text: e.textContent, width: Math.round(e.getBoundingClientRect().width) })));
-    assert(obs.longKeys.length === 2 && obs.longKeys.every(k => k.title === k.key && k.text.endsWith(k.key.slice(k.key.lastIndexOf('-')))), 'Full key in title, number visible: ' + JSON.stringify(obs.longKeys));
-    assert(obs.longKeys[0].text === 'customer-onboarding-experience-redesign-program-2', 'Card key line whole where it fits: ' + JSON.stringify(obs.longKeys));
+    assert(obs.longKeys.length === 1 && obs.longKeys[0].key === l1.taskKey && (await row(l2.taskId).getByTestId('project-task-row-key').count()) === 0, 'Only the badge key on the card: ' + JSON.stringify(obs.longKeys));
+    assert(obs.longKeys.every(k => k.title === k.key && k.text.endsWith(k.key.slice(k.key.lastIndexOf('-')))), 'Full key in title, number visible: ' + JSON.stringify(obs.longKeys));
     await screenshot('PT-E2E-017-long-keys');
     assert(evidence.browserErrors.length === 0, 'No browser page errors: ' + evidence.browserErrors.join('; '));
     await api.deleteProject(nodeA, longP.projectId); await api.deleteProject(nodeA, pid);

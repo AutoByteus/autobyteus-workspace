@@ -69,6 +69,9 @@ describe("Project Tasks GraphQL schema", () => {
     // Key allocation state is never part of the Project type.
     const projectType = schema.getType("Project") as { getFields(): Record<string, unknown> };
     expect(Object.keys(projectType.getFields())).not.toContain("taskKeys");
+    // A Task worker's answer carries no key: the Workspaces tree shows only the summary (task-keys-declutter REQ-004).
+    const workerTaskType = schema.getType("TaskWorkerTaskView") as { getFields(): Record<string, unknown> };
+    expect(Object.keys(workerTaskType.getFields()).sort()).toEqual(["description", "projectId", "status", "taskId"]);
   });
 
   it("names Task types distinctly from delegated tasks (REQ-012)", () => {
@@ -93,20 +96,20 @@ describe("Project Tasks GraphQL schema", () => {
 
   it("answers taskWorkerTasks from typed agent and team run-ID lists in one service call", async () => {
     mockProjectTaskService.currentTasksOfTaskWorkers.mockResolvedValue([
-      { execution: { agentRunId: "a1" }, task: { taskId: "project_task_1", projectId: "project_1", taskKey: "autobyteus-1", description: "Ship it", status: "IN_PROGRESS" } },
-      { execution: { teamRunId: "t1" }, task: { taskId: "ad_hoc_task_1", projectId: null, taskKey: null, description: "Review it", status: "CANCELLED" } },
+      { execution: { agentRunId: "a1" }, task: { taskId: "project_task_1", projectId: "project_1", description: "Ship it", status: "IN_PROGRESS" } },
+      { execution: { teamRunId: "t1" }, task: { taskId: "ad_hoc_task_1", projectId: null, description: "Review it", status: "CANCELLED" } },
       { execution: { teamRunId: "t2" }, task: null },
     ]);
 
     const result = await graphql({
       schema,
-      source: `query { taskWorkerTasks(agentRunIds: ["a1"], teamRunIds: ["t1", "t2"]) { workerKind workerRunId task { taskId projectId taskKey description status } } }`,
+      source: `query { taskWorkerTasks(agentRunIds: ["a1"], teamRunIds: ["t1", "t2"]) { workerKind workerRunId task { taskId projectId description status } } }`,
     });
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toEqual({ taskWorkerTasks: [
-      { workerKind: "agent", workerRunId: "a1", task: { taskId: "project_task_1", projectId: "project_1", taskKey: "autobyteus-1", description: "Ship it", status: "IN_PROGRESS" } },
-      { workerKind: "team", workerRunId: "t1", task: { taskId: "ad_hoc_task_1", projectId: null, taskKey: null, description: "Review it", status: "CANCELLED" } },
+      { workerKind: "agent", workerRunId: "a1", task: { taskId: "project_task_1", projectId: "project_1", description: "Ship it", status: "IN_PROGRESS" } },
+      { workerKind: "team", workerRunId: "t1", task: { taskId: "ad_hoc_task_1", projectId: null, description: "Review it", status: "CANCELLED" } },
       { workerKind: "team", workerRunId: "t2", task: null },
     ] });
     expect(mockProjectTaskService.currentTasksOfTaskWorkers).toHaveBeenCalledTimes(1);
