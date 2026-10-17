@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin/personal` (merge; no release unless the user asks, per the Task and RELEASE.md default).
 - Bootstrap result: worktree created; `pnpm install --frozen-lockfile`, `pnpm -C autobyteus-server-ts prebuild`, `pnpm -C autobyteus-server-ts build` and `pnpm -C autobyteus-web exec nuxt prepare` all exited 0 (`evidence/setup-install.log`, `evidence/setup-nuxt-prepare.log`).
 - Bootstrap blocker: None.
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-002`
 - Authorities read: requirements gate `references/requirements-engineering.md` (2026-10-17); architecture gate `references/architecture-design.md`, `references/design-principles.md`, root `DESIGN.md` (2026-10-17); `TESTING.md`, `AGENTS.md`, `autobyteus-server-ts/AGENTS.md`, `autobyteus-web/AGENTS.md` (2026-10-17).
 - Investigation status: Complete for requirements and design. Every one of the 11 items has a reproduced failure on the current base and an identified cause.
 
@@ -55,6 +55,11 @@
 | 2026-10-17 | Command | `git log --since=2026-10-14 -- OrgLaunchPage.vue agentOrgLaunchDraftStore.ts run-settings-live-probe.mjs` | Is archived R03 evidence still current? | Only the probe's own 2026-10-15 update; launch-page logic unchanged | R03 not re-run on base (needs signed-in CLIs) |
 | 2026-10-17 | Code | `autobyteus-web/package.json` scripts | Probe discoverability | `interrupt-result-presentation-probe.mjs` has no `test:e2e:*` script (TESTING.md: probes are found through their script) | Add script |
 | 2026-10-17 | Code | `/Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-suite-repair` (read-only) | Prior art | Abandoned, uncommitted 2026-09-30 attempt on base `cb01dea239` touching several of the same suites (including renaming `hierarchical-team-run-config-graphql` → `team-run-config-graphql`) | Outdated base; ideas only, not reused as code |
+| 2026-10-17 | Other | Message from `/project_task_manager` (relaying the task-keys-and-dependencies delivery engineer) | Upstream overlap | `team-run-v1-production-upgrade` cause confirmed (flat migration moves the released root to `memory/agent_orgs/team-v1-supported-root/agent_org_run_execution_tree.json`); its ledger-count part is already fixed upstream in `fa49138794` | SR-002: build on it, don't duplicate |
+| 2026-10-17 | Command | `git log $(git merge-base HEAD origin/personal)..origin/personal`; `git merge-base --is-ancestor fa49138794 HEAD` | Where upstream stands | Branch is rebased on `66429d6f31`; `origin/personal` is now `516e592d7b`; `fa49138794` is on `origin/personal` but NOT in the branch | Implementation must refresh onto `origin/personal` before committing UC-004 |
+| 2026-10-17 | Command | `git log db00ba16a9..66429d6f31` | Other tickets' baseline fixes | UC-001 already fixed upstream (`e6ba249a96`, `2e70401f18`, `57d388a7fd`: TeamRun configuration e2e rewritten for flat Teams as `team-run-config-graphql.e2e.test.ts`); UC-007 already fixed upstream (`149bce0be9`: admit seeded packages, seed current team packages); `065430dd61` removed the remaining team-inside-a-team representations | UC-001/UC-007: verify only (AC-001, AC-007) |
+| 2026-10-17 | Data | `evidence/implementation/uc004-team-run-v1-production-upgrade.pending.patch`, `uc004-warning-case-flat-families-failure.txt` (implementation, in progress) | Avoid duplicate work | Pending patch re-implements the ledger change from `fa49138794`; warning case shows the flat migration FAILED_HISTORY on the seeded invalid history index, leaving `team-v1-warning-root` neither Team- nor Org-admitted | Ledger: drop in favour of upstream. Warning case: under investigation by implementation (REQ-011 gate) |
+| 2026-10-17 | Other | Same PTM message: PMU-021 (`project-manager-ux` probe) console error on file-explorer WebSocket during `page.reload()` | Scope check | Not one of this Task's 3 probes | Out of scope; stays in Task a1dfb6dc |
 
 ## Relevant Existing Behavior And Supported Product Paths
 
