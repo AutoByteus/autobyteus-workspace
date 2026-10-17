@@ -253,7 +253,8 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     expect(actions.onSelectTeam).not.toHaveBeenCalled();
     expect(actions.onOpenAgentOrgRun).not.toHaveBeenCalled();
     expect(state.toggleAgentOrgRun).not.toHaveBeenCalled();
-    expect(wrapper.get('[data-test="workspace-team-row-team-run-1"] [data-test="team-activity-dot"]').attributes('data-active')).toBe('true');
+    // The alive Team run row shows the universal Team status (its worker is running), not a binary activity dot.
+    expect(wrapper.get('[data-test="workspace-team-row-team-run-1"] [data-test="team-aggregate-status-dot"]').attributes('data-status')).toBe(AgentStatus.Running);
     expect(wrapper.get('[data-test="agent-org-run-open-org-run"] .bg-emerald-500').exists()).toBe(true);
     await wrapper.setProps({ state: { ...state, isRunTerminating: () => true, isTeamTerminating: () => true, isAgentOrgTerminating: () => true } });
     expect(button.attributes('disabled')).toBeDefined();
