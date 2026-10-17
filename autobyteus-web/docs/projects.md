@@ -54,8 +54,8 @@ redock and narrow transient-drawer interactions. Mobile support is not added.
 | `/projects/:id` | ProjectDetail, Tasks default; `?tab=workspaces` selects links |
 | `/projects/:id/edit` | ProjectEditor; return to originating Project tab |
 | `/projects/:id/tasks/new` | ProjectTaskEditor/ProjectTaskDraftEditor |
-| `/projects/:id/tasks/:taskId` | Concise ProjectTaskDetail |
-| `/projects/:id/tasks/:taskId/edit` | Ordinary Task edit page |
+| `/projects/:id/tasks/:taskId` | Concise ProjectTaskDetail; `:taskId` is a Task reference, canonically the key (see Key URLs) |
+| `/projects/:id/tasks/:taskId/edit` | Ordinary Task edit page (key URL) |
 | `/projects/temp-tasks` | TempTaskBoard: Tasks with no Project (Temp tasks), read only |
 | `/projects/temp-tasks/tasks/:taskId` | TempTaskDetail: one Temp task, read only |
 
