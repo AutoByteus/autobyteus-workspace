@@ -1,0 +1,29 @@
+{
+  "runId": "pts_new_tools_4e1b6f0f0e9245598dd5206ab70b0607",
+  "toolNames": [
+    "delegate_task",
+    "list_projects",
+    "send_message_to"
+  ],
+  "calls": [
+    {
+      "tool": "list_projects",
+      "arguments": {},
+      "isError": false,
+      "result": {
+        "projects": [
+          {
+            "projectId": "project_76c8a6c5-7296-4f77-a555-eaf1f6bfad45",
+            "name": "PTS Rel Mix e46e",
+            "description": "patched on release"
+          },
+          {
+            "projectId": "project_4044749b-c881-464f-aa10-7abd8af9f35d",
+            "name": "PTS Rel Old 9117",
+            "description": ""
+          }
+        ]
+      }
+    }
+  ]
+}

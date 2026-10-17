@@ -1,0 +1,95 @@
+{
+  "startedAt": "2026-10-17T07:30:29.637Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PMU-008": {
+      "result": "Pass",
+      "description": "AC-012/013: left panel kept across Chat, Projects, board and Task page; run, Team member and Org rows open from Projects",
+      "durationMs": 5887,
+      "details": {
+        "steps": [
+          {
+            "label": "chat",
+            "path": "/workspace",
+            "runRows": 1,
+            "runSelected": true,
+            "workerRowVisible": true,
+            "agentRowVisible": true
+          },
+          {
+            "label": "projects list",
+            "path": "/projects",
+            "runRows": 1,
+            "runSelected": true,
+            "workerRowVisible": true,
+            "agentRowVisible": true
+          },
+          {
+            "label": "board",
+            "path": "/projects/project_f291dbbf-a111-4d1a-b24f-1e24c734f017",
+            "runRows": 1,
+            "runSelected": true,
+            "workerRowVisible": true,
+            "agentRowVisible": true
+          },
+          {
+            "label": "task page",
+            "path": "/projects/project_f291dbbf-a111-4d1a-b24f-1e24c734f017/tasks/project_task_b283f51b-78c1-4688-bb40-fcb2d25838c0",
+            "runRows": 1,
+            "runSelected": true,
+            "workerRowVisible": true,
+            "agentRowVisible": true
+          },
+          {
+            "label": "back in chat via the run row",
+            "path": "/chat",
+            "runRows": 1,
+            "runSelected": true,
+            "workerRowVisible": true,
+            "agentRowVisible": true
+          }
+        ],
+        "opened": {
+          "run": "http://127.0.0.1:55179/chat?id=manager_pmuleft_3fb2_89558047e4614aa9b8a0b75c23e90753",
+          "team": "http://127.0.0.1:55179/workspace",
+          "org": "http://127.0.0.1:55179/workspace?rootSubjectKind=agent_org&definitionId=delivery-org-pmuleft-3fb2&orgRunId=delivery_org_pmuleft_3fb2_06115dcc6ec045bfa26af21b1afa8877&mode=active&memberAddress=/manager"
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 9327,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 9186,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [],
+  "feed": {
+    "total": 9,
+    "byType": {
+      "connected": 1,
+      "task_upserted": 4,
+      "task_worker_status": 2,
+      "project_upserted": 2
+    }
+  },
+  "stack": {
+    "backendUrl": "http://127.0.0.1:55178",
+    "frontendUrl": "http://127.0.0.1:55179",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-E2MIb5"
+  },
+  "browserVersion": "155.0.8059.84",
+  "warmup": {
+    "reloadsDuringWarmup": 0
+  },
+  "result": "Pass",
+  "finishedAt": "2026-10-17T07:31:08.581Z"
+}

@@ -1,0 +1,6 @@
+
+> autobyteus@1.5.5-beta.2 test:e2e:project-manager-ux /Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split/autobyteus-web
+> node tests/e2e/project-manager-ux-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split/tickets/in-progress/project-tool-split/evidence/api-e2e/probe-pmu-008-fixed --cases PMU-008
+
+Project manager UX probe: Pass. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split/tickets/in-progress/project-tool-split/evidence/api-e2e/probe-pmu-008-fixed/evidence.json
+exit 0

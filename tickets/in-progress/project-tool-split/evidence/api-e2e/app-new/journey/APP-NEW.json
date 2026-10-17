@@ -1,0 +1,174 @@
+{
+  "runId": "pts_new_tools_824da22573284e27a06be8f416c8425c",
+  "toolNames": [
+    "create_project",
+    "delegate_task",
+    "list_projects",
+    "send_message_to",
+    "update_project"
+  ],
+  "descriptions": {
+    "create_project": "Create a Project on the current node: required name, optional description and workspaces (absolute node-local folder paths; registration not required). Returns the saved Project (projectId, name, description, workspaces). Does not delegate work.",
+    "update_project": "Update a known Project by its project_id: name, description and/or workspaces. Omitted fields are kept; blank description clears. A supplied workspaces list replaces ALL links ([] unlinks all, folders are not deleted); retained links keep omitted descriptions. Returns the saved Project."
+  },
+  "projectId": "project_d7109746-b9c2-4783-ba04-aaec5317161b",
+  "stored": {
+    "projectId": "project_d7109746-b9c2-4783-ba04-aaec5317161b",
+    "name": "PTS New b4fe renamed",
+    "description": "Changed by update_project.",
+    "workspaces": []
+  },
+  "calls": [
+    {
+      "tool": "list_projects",
+      "arguments": {},
+      "isError": false,
+      "result": {
+        "projects": []
+      }
+    },
+    {
+      "tool": "create_project",
+      "arguments": {
+        "name": "PTS New b4fe",
+        "description": "Made by create_project.",
+        "workspaces": [
+          {
+            "workspace_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split/tickets/in-progress/project-tool-split/evidence/api-e2e/app-new/journey/workspace/linked-a",
+            "description": "A"
+          }
+        ]
+      },
+      "isError": false,
+      "result": {
+        "project": {
+          "projectId": "project_d7109746-b9c2-4783-ba04-aaec5317161b",
+          "name": "PTS New b4fe",
+          "description": "Made by create_project.",
+          "workspaces": [
+            {
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split/tickets/in-progress/project-tool-split/evidence/api-e2e/app-new/journey/workspace/linked-a",
+              "description": "A"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "tool": "update_project",
+      "arguments": {
+        "project_id": "project_d7109746-b9c2-4783-ba04-aaec5317161b",
+        "name": "PTS New b4fe renamed",
+        "description": "Changed by update_project."
+      },
+      "isError": false,
+      "result": {
+        "project": {
+          "projectId": "project_d7109746-b9c2-4783-ba04-aaec5317161b",
+          "name": "PTS New b4fe renamed",
+          "description": "Changed by update_project.",
+          "workspaces": [
+            {
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split/tickets/in-progress/project-tool-split/evidence/api-e2e/app-new/journey/workspace/linked-a",
+              "description": "A"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "tool": "update_project",
+      "arguments": {
+        "project_id": "project_d7109746-b9c2-4783-ba04-aaec5317161b",
+        "workspaces": [
+          {
+            "workspace_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split/tickets/in-progress/project-tool-split/evidence/api-e2e/app-new/journey/workspace/linked-b"
+          }
+        ]
+      },
+      "isError": false,
+      "result": {
+        "project": {
+          "projectId": "project_d7109746-b9c2-4783-ba04-aaec5317161b",
+          "name": "PTS New b4fe renamed",
+          "description": "Changed by update_project.",
+          "workspaces": [
+            {
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split/tickets/in-progress/project-tool-split/evidence/api-e2e/app-new/journey/workspace/linked-b",
+              "description": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "tool": "update_project",
+      "arguments": {
+        "project_id": "project_d7109746-b9c2-4783-ba04-aaec5317161b",
+        "workspaces": []
+      },
+      "isError": false,
+      "result": {
+        "project": {
+          "projectId": "project_d7109746-b9c2-4783-ba04-aaec5317161b",
+          "name": "PTS New b4fe renamed",
+          "description": "Changed by update_project.",
+          "workspaces": []
+        }
+      }
+    },
+    {
+      "tool": "create_project",
+      "arguments": {
+        "project_id": "project_d7109746-b9c2-4783-ba04-aaec5317161b",
+        "name": "Must not be created"
+      },
+      "isError": true,
+      "result": {
+        "error": {
+          "code": "PROJECT_TOOL_ARGUMENT_INVALID",
+          "message": "Unsupported tool argument."
+        }
+      }
+    },
+    {
+      "tool": "update_project",
+      "arguments": {
+        "project_id": "project_d7109746-b9c2-4783-ba04-aaec5317161b"
+      },
+      "isError": true,
+      "result": {
+        "error": {
+          "code": "PROJECT_PATCH_REQUIRED",
+          "message": "Supply name, description and/or workspaces to update a Project."
+        }
+      }
+    },
+    {
+      "tool": "update_project",
+      "arguments": {
+        "name": "x"
+      },
+      "isError": true,
+      "result": {
+        "error": {
+          "code": "PROJECT_TOOL_ARGUMENT_INVALID",
+          "message": "project_id must be a non-empty string."
+        }
+      }
+    },
+    {
+      "tool": "create_project",
+      "arguments": {
+        "name": "  "
+      },
+      "isError": true,
+      "result": {
+        "error": {
+          "code": "PROJECT_NAME_REQUIRED",
+          "message": "Project name is required."
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+[
+  {
+    "id": "pts-new-tools",
+    "name": "PTS New Tools",
+    "toolNames": [
+      "list_projects",
+      "create_project",
+      "update_project"
+    ]
+  },
+  {
+    "id": "pts-no-project-tool",
+    "name": "PTS No Project Tool",
+    "toolNames": [
+      "list_projects"
+    ]
+  },
+  {
+    "id": "pts-old-tool",
+    "name": "PTS Old Tool",
+    "toolNames": [
+      "list_projects",
+      "create_or_update_project"
+    ]
+  },
+  {
+    "id": "pts-transition",
+    "name": "PTS Transition",
+    "toolNames": [
+      "list_projects",
+      "create_or_update_project",
+      "create_project",
+      "update_project"
+    ]
+  }
+]

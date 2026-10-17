@@ -1,0 +1,31 @@
+AgentFactory (Singleton) initialized.
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+server: /Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+Project mutation tools this build registers (native): create_or_update_project, create_project, update_project
+Project mutation tools this build serves (Agent Tools MCP): create_project, update_project, create_or_update_project
+Successfully registered tool definition: 'send_message_to'
+
+[transition list (old + new names)] configured Project mutation names: create_or_update_project, create_project, update_project
+  AutoByteus (native) gets: ["create_or_update_project","create_project","update_project"]
+  Codex/Claude (Agent Tools MCP) get: ["create_or_update_project","create_project","update_project"]
+  resolver messages about project tools: []
+  resolver errors: 0
+
+[old name only] configured Project mutation names: create_or_update_project
+  AutoByteus (native) gets: ["create_or_update_project"]
+  Codex/Claude (Agent Tools MCP) get: ["create_or_update_project"]
+  resolver messages about project tools: []
+  resolver errors: 0
+
+[new names only] configured Project mutation names: create_project, update_project
+  AutoByteus (native) gets: ["create_project","update_project"]
+  Codex/Claude (Agent Tools MCP) get: ["create_project","update_project"]
+  resolver messages about project tools: []
+  resolver errors: 0
+exit 0

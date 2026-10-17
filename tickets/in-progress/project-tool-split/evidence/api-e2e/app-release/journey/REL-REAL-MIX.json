@@ -1,0 +1,52 @@
+{
+  "runtimeKind": "claude_agent_sdk",
+  "model": "haiku",
+  "launch": {
+    "success": true,
+    "message": "Agent run created successfully.",
+    "runId": "pts_transition_a29a976ad0aa408d82e47ae346fd19e2"
+  },
+  "outcome": {
+    "projectId": "project_f68ca8c2-3445-47b5-81af-a1c948198f3f",
+    "name": "PTS Rel Real 6be4",
+    "description": "release real",
+    "workspaces": []
+  },
+  "conversation": [
+    {
+      "kind": "message",
+      "role": "user",
+      "content": "Create a Project named \"PTS Rel Real 6be4\" with description \"release real\". Report the tool result.",
+      "media": null,
+      "ts": 1792224781.045
+    },
+    {
+      "kind": "tool_call",
+      "invocationId": "toolu_01Pk4vHuanLesyziwzoyf8AE",
+      "role": null,
+      "content": "",
+      "toolName": "create_or_update_project",
+      "toolArgs": {
+        "name": "PTS Rel Real 6be4",
+        "description": "release real"
+      },
+      "toolResult": "{\"project\":{\"projectId\":\"project_f68ca8c2-3445-47b5-81af-a1c948198f3f\",\"name\":\"PTS Rel Real 6be4\",\"description\":\"release real\",\"workspaces\":[]}}",
+      "toolError": null,
+      "media": null,
+      "ts": 1792224784.537
+    }
+  ],
+  "frameTypes": [
+    "CONNECTED",
+    "AGENT_STATUS",
+    "AGENT_INPUT_STATE",
+    "AGENT_COMMAND_ACK",
+    "TURN_STARTED",
+    "SYSTEM_INSTRUCTIONS_SUPPLIED",
+    "SEGMENT_START",
+    "TOOL_EXECUTION_STARTED",
+    "TOKEN_USAGE_UPDATED",
+    "SEGMENT_END",
+    "TOOL_EXECUTION_SUCCEEDED"
+  ]
+}
