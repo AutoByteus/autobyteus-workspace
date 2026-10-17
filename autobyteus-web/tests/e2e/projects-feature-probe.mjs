@@ -208,6 +208,11 @@ const inspectTaskPresentation = async (mode, obs) => {
     await waitFor(`${mode} ${locale} ready`, async () => await page.getByTestId('task-page-heading').innerText() === copy[mode]);
     for (const viewport of [{ width: 1512, height: 862 }, { width: 390, height: 844 }]) {
       await page.setViewportSize(viewport);
+      // The shell re-lays out on the window resize event: measure only once it shows the docked left panel (wide)
+      // or the left strip (narrow, below the 768 px breakpoint), not the previous viewport's layout.
+      await waitFor(`${mode} ${locale} ${viewport.width} shell layout`, () => page.evaluate(narrow =>
+        !!document.querySelector('[data-test="workspace-left-navigation-strip"]') === narrow
+          && !!document.querySelector('[data-test="app-left-panel-shell"]') === !narrow, viewport.width < 768));
       const surface = page.getByTestId('project-task-page');
       const text = await surface.innerText();
       assert(copy.removed.every(value => !text.includes(value)), 'Redundant task explanations and policy removed');
