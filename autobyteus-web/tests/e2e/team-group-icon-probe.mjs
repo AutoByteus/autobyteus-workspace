@@ -102,6 +102,8 @@ try {
   });
   // delegated-copy-task-locator: Task-worker rows read their Task and retain the Projects feed.
   await routeTaskWorkerBoundaries(page);
+  // The definitions change feed the Workspaces shell opens; the fixture has no backend (baseline fix).
+  await page.routeWebSocket(/\/ws\/agent-package-definitions(\?|$)/, (ws) => ws.send(JSON.stringify({ type: 'connected' })));
   await page.goto(url);
   await page.locator('[data-preview="team-icons"]').waitFor();
   await page.locator('[data-team-icon="temporary-task-team"] svg').first().waitFor();
