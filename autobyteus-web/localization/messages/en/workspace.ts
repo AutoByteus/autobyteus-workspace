@@ -2,6 +2,7 @@ import type { TranslationCatalog } from "../../runtime/types";
 
 const messages = {
   "workspace.components.conversation.SkillRequestChips.sentToTheAgentAs": "Sent to the agent as",
+  "workspace.components.conversation.segments.SystemTaskNotificationSegment.skillUpdated": "Skill updated",
   "fileExplorer.workspaceUnavailable": "Workspace details are unavailable. Refresh or reopen Settings to load the saved workspace.",
   "workspace.teamCopy.loading": "Reading saved Team configuration…",
   "workspace.runModelConfig.modelRequired": "Select a model before launch.",
@@ -223,8 +224,6 @@ const messages = {
     "Temporary task execution",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_running":
     "Team status: Running",
-  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_initializing":
-    "Team status: Initializing",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_error":
     "Team status: Error",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_idle":

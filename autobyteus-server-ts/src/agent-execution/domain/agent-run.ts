@@ -25,6 +25,8 @@ import type { AgentRunProviderInputNormalizer } from "../input/agent-run-provide
 import type { AgentRunContext } from "./agent-run-context.js";
 import { AgentRunEventType, type AgentRunEvent } from "./agent-run-event.js";
 import type { AgentRunCommandObserver } from "./agent-run-command-observer.js";
+import type { AgentRunInputPreface, AgentRunPreface } from "./agent-run-input-preface.js";
+import { AgentRunInputPrefaceDispatch, canCarryPreface, combinePreface } from "./agent-run-input-preface-dispatch.js";
 import { composeAgentRunInputObserver } from "./agent-run-command-observer-dispatch.js";
 import type { AgentOperationResult } from "./agent-operation-result.js";
 import { AgentRunInterruptState } from "./agent-run-interrupt-state.js";
@@ -37,12 +39,16 @@ import {
 } from "./agent-status-payload.js";
 
 type AgentRunEventListener = (event: AgentRunEvent) => void;
-type ClaimedInputDispatch = { claim: AgentRunInputDispatchClaim; commandToken: number | null; recovery: CompactionRetryRequest | null };
+type ClaimedInputDispatch = { claim: AgentRunInputDispatchClaim; commandToken: number | null; recovery: CompactionRetryRequest | null;
+  /** The platform notice combined into this dispatch, until its delivery is settled. */
+  preface?: AgentRunPreface | null };
 
 type AgentRunOptions = {
   context: AgentRunContext<unknown | null>; backend: AgentRunBackend;
   commandObservers?: AgentRunCommandObserver[];
   providerInputNormalizer: Pick<AgentRunProviderInputNormalizer, "normalizeForProvider">;
+  /** Supplies a pending platform notice to combine into the next external input (none by default). */
+  inputPreface?: AgentRunInputPreface | null;
 };
 
 const logger = console;
@@ -52,6 +58,7 @@ export class AgentRun {
   private readonly backend: AgentRunBackend;
   private readonly commandObservers: AgentRunCommandObserver[];
   private readonly providerInputNormalizer: Pick<AgentRunProviderInputNormalizer, "normalizeForProvider">;
+  private readonly prefaces: AgentRunInputPrefaceDispatch;
   private readonly listeners = new Set<AgentRunEventListener>();
   private readonly dispatchQueue = new AgentRunEventDispatchQueue();
   private readonly lifecycleState = new AgentTurnLifecycleState();
@@ -77,6 +84,8 @@ export class AgentRun {
       throw new Error("AgentRun provider input normalizer is required.");
     this.providerInputNormalizer = options.providerInputNormalizer;
     this.commandObservers = [...(options.commandObservers ?? [])];
+    this.prefaces = new AgentRunInputPrefaceDispatch({
+      run: this, port: options.inputPreface ?? null, publishEvent: (event) => this.publishEvent(event) });
     this.compactionRecovery = new AgentRunCompactionRecovery({ runInstanceId: this.runInstanceId, backend: this.backend,
       highWaterMark: () => this.inputAdmissionState.highWaterMark,
       serialize: action => this.dispatchQueue.enqueue(this.runId, action),
@@ -327,8 +336,12 @@ export class AgentRun {
     let normalized = false;
     try {
       this.executionAdmissionFence.assertOpen();
-      const dispatch = this.providerInputNormalizer.normalizeForProvider(input.claim.dispatch);
+      let dispatch = this.providerInputNormalizer.normalizeForProvider(input.claim.dispatch);
       normalized = true;
+      if (canCarryPreface(input.recovery !== null, dispatch.message)) {
+        input.preface = await this.prefaces.take();
+        if (input.preface) dispatch = combinePreface(dispatch, input.preface);
+      }
       result = await this.backend.dispatchUserInput(dispatch);
     } catch (error) {
       failure = error;
@@ -343,6 +356,7 @@ export class AgentRun {
       });
       return;
     }
+    this.settlePreface(input, result?.forwarded === true ? result.turnId : undefined);
     await this.dispatchQueue.enqueue(this.runId, () => {
       if (!this.inputAdmissionState.isClaimForEntry(input.claim, input.claim.entrySequence)) {
         return;
@@ -383,6 +397,13 @@ export class AgentRun {
     this.uncertainInputDispatch = null;
     const result = this.inputAdmissionState.applyDispatchResult(input.claim, { forwarded: true, turnId });
     if (input.commandToken !== null && result.forwarded) this.lifecycleState.acceptCommand(input.commandToken, turnId);
+  }
+
+  /** Settles the notice combined into a dispatch (undefined turn: not forwarded). */
+  private settlePreface(input: ClaimedInputDispatch, forwardedTurnId: string | null | undefined): void {
+    const preface = input.preface;
+    input.preface = null;
+    this.prefaces.settle(preface, forwardedTurnId);
   }
 
   private reconcileRecovery(): void {

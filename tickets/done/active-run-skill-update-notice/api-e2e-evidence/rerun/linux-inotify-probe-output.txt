@@ -1,0 +1,6 @@
+== dist
+Digest: sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+Status: Downloaded newer image for node:22-slim
+{"platform":"linux 6.12.54-linuxkit","node":"v22.23.3","before":0,"watchingBoth":68,"watchingKept":34,"keptChangeReported":true,"afterSyncEmpty":0,"afterRewatch":34,"rewatchedChangeReported":true,"afterSecondSyncEmpty":0,"afterClose":0}
+== .apar-prefix-dist
+{"platform":"linux 6.12.54-linuxkit","node":"v22.23.3","before":0,"watchingBoth":68,"watchingKept":67,"keptChangeReported":true,"afterSyncEmpty":66,"afterRewatch":67,"rewatchedChangeReported":true,"afterSecondSyncEmpty":67,"afterClose":0}

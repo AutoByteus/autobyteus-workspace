@@ -2,6 +2,7 @@ import type { TranslationCatalog } from "../../runtime/types";
 
 const messages = {
   "workspace.components.conversation.SkillRequestChips.sentToTheAgentAs": "发送给智能体的内容",
+  "workspace.components.conversation.segments.SystemTaskNotificationSegment.skillUpdated": "技能已更新",
   "fileExplorer.workspaceUnavailable": "工作目录信息暂不可用。请刷新或重新打开设置以加载已保存的工作目录。",
   "workspace.teamCopy.loading": "正在读取已保存的团队配置…",
   "workspace.runModelConfig.modelRequired": "启动前请选择模型。",
@@ -222,8 +223,6 @@ const messages = {
     "临时任务执行",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_running":
     "团队状态：运行中",
-  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_initializing":
-    "团队状态：正在初始化",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_error":
     "团队状态：错误",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_idle":

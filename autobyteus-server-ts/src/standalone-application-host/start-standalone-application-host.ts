@@ -64,6 +64,7 @@ import { createProcessAgentProviderFactoryBuilder } from "../compositions/create
 import { getActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { TaskExecutionResourcePort } from "../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { composeProjectTaskExecutionResources, releaseProjectTaskExecutionResources } from "../compositions/project-task-execution-resource-composition.js";
+import { createSkillUpdateNotices, type SkillUpdateNotices } from "../skill-update-notices/skill-update-notices.js";
 
 const logger = createServerLogger("standalone.application-host");
 
@@ -229,6 +230,7 @@ export const startStandaloneApplicationHost = async (
   let generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null = null;
   let generalProcessRunSupervisor:
     GeneralProcessRunSupervisor | null = null;
+  let skillUpdateNotices: SkillUpdateNotices | null = null;
   let taskExecutionResources: TaskExecutionResourcePort | null = null;
   let hostDefinitionServices: HostDefinitionServices | null = null;
   try {
@@ -269,6 +271,9 @@ export const startStandaloneApplicationHost = async (
     });
     taskExecutionResources = await composeProjectTaskExecutionResources({
       activeRootDirectory: getActiveCollaborationRootDirectory(), appDataDir: processResources.appConfig.getAppDataDir() });
+    skillUpdateNotices = createSkillUpdateNotices({
+      agentDefinitionService: hostDefinitionServices.agentDefinitionService,
+    });
     generalProcessRunSupervisor =
       createGeneralProcessRunSupervisor({
         memoryDir: processResources.appConfig.getMemoryDir(),
@@ -282,6 +287,7 @@ export const startStandaloneApplicationHost = async (
         agentToolMcpSessionAuthority: generalProcessAuthority,
         modelSelectionValidator,
         taskExecutionResources,
+        platformInputNotices: skillUpdateNotices.service,
       });
     generalProcessAuthority = null;
     const applicationRuntime = buildApplicationPlatformRuntime({
@@ -320,6 +326,8 @@ export const startStandaloneApplicationHost = async (
         try {
           await app!.close();
         } finally {
+          // Skill notices stop first, so none go out while runs stop.
+          await skillUpdateNotices?.close().catch((error) => console.warn("SKILL_UPDATE_NOTICES_CLOSE_FAILED", error));
           try {
             await generalProcessRunSupervisor!.close();
           } finally {
@@ -354,6 +362,7 @@ export const startStandaloneApplicationHost = async (
         await app.close();
       }
     } finally {
+      await skillUpdateNotices?.close().catch(() => undefined);
       if (processResources) {
         try {
           await generalProcessRunSupervisor?.close();

@@ -77,6 +77,8 @@ import {
   createCollaboratorDefinitionCatalog,
   releaseProcessCollaboratorAdmission,
 } from "../../agent-collaboration/collaborators/collaborator-definition-catalog.js";
+import type { AgentRunInputPreface } from "../domain/agent-run-input-preface.js";
+import type { AgentRunLifecycleObserver } from "../domain/agent-run-lifecycle-observer.js";
 
 export type GeneralProcessRunSupervisorInput = Readonly<{
   memoryDir: string;
@@ -91,6 +93,11 @@ export type GeneralProcessRunSupervisorInput = Readonly<{
   modelSelectionValidator: RunModelSelectionValidator & Pick<RunModelSelectionService, "listOptions" | "listOptionsMany">;
   /** Neutral Task agent resource port from the host composition, forwarded to every root builder. */
   taskExecutionResources: TaskExecutionResourcePort;
+  /**
+   * Platform notices that ride along with each run's next external input, told when runs are
+   * published and released (the host composition owns and closes it). None by default.
+   */
+  platformInputNotices?: (AgentRunInputPreface & AgentRunLifecycleObserver) | null;
 }>;
 
 const requireGeneralProcessRunSupervisorInput = (
@@ -199,6 +206,7 @@ export class GeneralProcessRunSupervisor {
         runFileChangeService,
         publishedArtifactRelayService: createGeneralProcessPublishedArtifactRelayService(),
         memoryRecorder,
+        lifecycleObserver: input.platformInputNotices ?? null,
       });
       const activationRegistry = new AgentRunActivationRegistry(resourceManager);
       const providerFactories = input.agentProviderFactoryBuilder.createForExecution({
@@ -217,6 +225,8 @@ export class GeneralProcessRunSupervisor {
         providerInputNormalizer,
         agentToolMcpRunSessionDeactivator:
           input.agentToolMcpSessionAuthority.runSessions,
+        inputPreface: input.platformInputNotices ?? null,
+        lifecycleObserver: input.platformInputNotices ?? null,
       });
 
       const metadataService = new AgentRunMetadataService(memoryDir);

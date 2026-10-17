@@ -29,6 +29,7 @@ import {
   removeReopenedTaskExecutions,
   type CollaborationTreeNode,
 } from '~/utils/collaboration/taskExecutionClosure'
+import { resolveTeamStatus, type TeamStatus } from '~/utils/workspaceTeamAggregateStatus'
 
 export type AgentRunCollaborationPhase = 'live' | 'historical' | 'reopen_required'
 export type AgentRunCollaborationEventApplication = 'applied' | 'checkpoint_required'
@@ -38,6 +39,8 @@ type Message = AgentRunCollaborationViewDto['communication_messages']['messages'
 
 export type AgentRunTaskTreeRow = Readonly<{
   row: RunHistoryTransientExecutionRow
+  /** A Team row's status, counted from every listed agent under it (collapsed too); null for an agent row. */
+  teamStatus: TeamStatus | null
   continuingAncestorDepths: number[]
   hasFollowingSibling: boolean
 }>
@@ -249,7 +252,7 @@ export class AgentRunCollaborationContext {
   /** The task rows under the run row: task Agents and task Teams with their members, without closed ones. */
   listTaskRows(isTeamExpanded: (teamRunId: string) => boolean): AgentRunTaskTreeRow[] {
     const hidden = this.closedSubtrees()
-    const flat: RunHistoryTransientExecutionRow[] = []
+    const flat: { row: RunHistoryTransientExecutionRow; teamStatus: TeamStatus | null }[] = []
     const statusOf = (agentRunId: string) => this.contexts.get(agentRunId)?.state.currentStatus ?? AgentStatus.Offline
     const delegatorName = (agentRunId: string | null) => {
       if (!agentRunId) return null
@@ -264,30 +267,40 @@ export class AgentRunCollaborationContext {
     })
     type Node = AgentRunCollaborationViewDto['execution_tree']['taskExecutions'][number]
       | Extract<AgentRunCollaborationViewDto['execution_tree']['taskExecutions'][number], { teamRunId: string }>['members'][number]
-    const visit = (node: Node, depth: number): void => {
-      if (hidden.has(collaborationTreeWalk.keyOf(node))) return
-      if ('agentRunId' in node) { flat.push(agentRow(this.index.requireAgent(node.agentRunId), depth)); return }
+    // Every listed node is walked, so a collapsed Team still counts its agents; only shown rows are emitted.
+    // Returns the statuses of the listed agents in the node's subtree.
+    const visit = (node: Node, depth: number, shown: boolean): AgentStatus[] => {
+      if (hidden.has(collaborationTreeWalk.keyOf(node))) return []
+      if ('agentRunId' in node) {
+        if (shown) flat.push({ row: agentRow(this.index.requireAgent(node.agentRunId), depth), teamStatus: null })
+        return [statusOf(node.agentRunId)]
+      }
       const team = this.index.teams.get(node.teamRunId)!
       const children = [...node.members, ...node.taskExecutions]
         .filter((child) => !hidden.has(collaborationTreeWalk.keyOf(child)))
-      flat.push({
+      const entry: { row: RunHistoryTransientExecutionRow; teamStatus: TeamStatus | null } = { row: {
         kind: 'transient_execution', transientKind: 'task_team', rowKey: `team:${node.teamRunId}`, teamRunId: this.hostRunId,
         memberAddress: node.address, agentRunId: null, teamRunIdForNode: node.teamRunId, memberKind: 'agent_team',
         displayName: nameAt(node.address), currentStatus: null, delegatedBy: delegatorName(team.delegatorAgentRunId),
         depth, hasChildren: children.length > 0,
-      })
-      if (isTeamExpanded(node.teamRunId)) children.forEach((child) => visit(child, depth + 1))
+      }, teamStatus: null }
+      if (shown) flat.push(entry)
+      const childrenShown = shown && isTeamExpanded(node.teamRunId)
+      const statuses = children.flatMap((child) => visit(child, depth + 1, childrenShown))
+      entry.teamStatus = resolveTeamStatus(statuses, this.isActive)
+      return statuses
     }
-    this.rootExecutionNodes().forEach((task) => visit(task as Node, 0))
+    this.rootExecutionNodes().forEach((task) => visit(task as Node, 0, true))
     const hasSibling = (index: number, depth: number): boolean => {
       for (let next = index + 1; next < flat.length; next += 1) {
-        if (flat[next]!.depth < depth) return false
-        if (flat[next]!.depth === depth) return true
+        if (flat[next]!.row.depth < depth) return false
+        if (flat[next]!.row.depth === depth) return true
       }
       return false
     }
-    return flat.map((row, index) => Object.freeze({
+    return flat.map(({ row, teamStatus }, index) => Object.freeze({
       row,
+      teamStatus,
       continuingAncestorDepths: Array.from({ length: row.depth }, (_, depth) => depth).filter((depth) => hasSibling(index, depth)),
       hasFollowingSibling: hasSibling(index, row.depth),
     }))

@@ -392,6 +392,16 @@ Skill names must be unique across AutoByteus's skills folder, agent packages
 and added skill folders: import validation rejects a duplicate, and the catalog
 uses exactly one copy of a name if a duplicate appears outside the app.
 
+## Skill Changes During Active Runs
+
+Runtimes read skill files from disk, so an edit is visible to the next read.
+What an agent already read into its conversation can be stale. When a folder
+of a skill used by an active or resumable run changes, that run receives one
+platform notice naming the changed skills and files and the current
+`SKILL.md` path. Busy runs get it like an agent message; idle or stopped runs
+get it with their next input. See
+[Skill Update Notices](./skill_update_notices.md).
+
 ## Operational Limits
 
 The catalog/path contract makes relevant instructions discoverable but does not

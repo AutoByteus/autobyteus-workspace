@@ -1,0 +1,22 @@
+// API/E2E temporary probe: does SkillFolderWatcher.syncWatchedFolders([]) release per-file watch handles on macOS?
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { execFileSync } from "node:child_process";
+const { SkillFolderWatcher } = await import(path.join(process.argv[2], "skill-update-notices/monitor/skill-folder-watcher.js"));
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const base = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "apar-unwatch-")));
+const skill = path.join(base, "probe-skill");
+await fs.mkdir(path.join(skill, "references"), { recursive: true });
+await fs.writeFile(path.join(skill, "SKILL.md"), "---\nname: probe\ndescription: d\n---\nx\n");
+for (let i = 0; i < 30; i++) await fs.writeFile(path.join(skill, "references", `r${i}.md`), `ref ${i}\n`);
+const handles = () => execFileSync("lsof", ["-p", String(process.pid)], { encoding: "utf8" }).split("\n").filter((l) => l.includes(base)).length;
+const watcher = new SkillFolderWatcher({ logger: { warn: (...a) => console.error("warn", ...a) } });
+const out = { before: handles() };
+watcher.syncWatchedFolders([skill]); await sleep(2500); out.afterWatch = handles(); out.watched = watcher.watchedFolders().length;
+watcher.syncWatchedFolders([]); await sleep(2500); out.afterSyncEmpty = handles(); out.watchedAfterSync = watcher.watchedFolders().length;
+watcher.syncWatchedFolders([skill]); await sleep(2500); out.afterRewatch = handles();
+watcher.syncWatchedFolders([]); await sleep(2500); out.afterSecondSyncEmpty = handles();
+await watcher.close(); await sleep(1000); out.afterClose = handles();
+await fs.rm(base, { recursive: true, force: true });
+console.log(JSON.stringify(out));

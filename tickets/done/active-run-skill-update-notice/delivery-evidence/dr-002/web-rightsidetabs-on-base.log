@@ -1,0 +1,222 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/active-run-skill-update-notice/autobyteus-web
+
+stderr | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Opening file: A.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Determined file type for "A.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: [32m'A.txt'[39m,
+  type: [32m'Text'[39m,
+  mode: [32m'edit'[39m,
+  accessIntent: [1mnull[22m,
+  content: [1mnull[22m,
+  url: [1mnull[22m,
+  relativeResourceContext: [1mnull[22m,
+  isLoading: [33mtrue[39m,
+  error: [1mnull[22m
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "A.txt" via GraphQL.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Opening file: C.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Determined file type for "C.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: [32m'C.txt'[39m,
+  type: [32m'Text'[39m,
+  mode: [32m'edit'[39m,
+  accessIntent: [1mnull[22m,
+  content: [1mnull[22m,
+  url: [1mnull[22m,
+  relativeResourceContext: [1mnull[22m,
+  isLoading: [33mtrue[39m,
+  error: [1mnull[22m
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "C.txt" via GraphQL.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Opening file: B.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Determined file type for "B.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: [32m'B.txt'[39m,
+  type: [32m'Text'[39m,
+  mode: [32m'edit'[39m,
+  accessIntent: [1mnull[22m,
+  content: [1mnull[22m,
+  url: [1mnull[22m,
+  relativeResourceContext: [1mnull[22m,
+  isLoading: [33mtrue[39m,
+  error: [1mnull[22m
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "B.txt" via GraphQL.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Opening file: A.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Determined file type for "A.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: [32m'A.txt'[39m,
+  type: [32m'Text'[39m,
+  mode: [32m'edit'[39m,
+  accessIntent: [1mnull[22m,
+  content: [1mnull[22m,
+  url: [1mnull[22m,
+  relativeResourceContext: [1mnull[22m,
+  isLoading: [33mtrue[39m,
+  error: [1mnull[22m
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "A.txt" via GraphQL.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Opening file: C.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Determined file type for "C.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: [32m'C.txt'[39m,
+  type: [32m'Text'[39m,
+  mode: [32m'edit'[39m,
+  accessIntent: [1mnull[22m,
+  content: [1mnull[22m,
+  url: [1mnull[22m,
+  relativeResourceContext: [1mnull[22m,
+  isLoading: [33mtrue[39m,
+  error: [1mnull[22m
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "C.txt" via GraphQL.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: false
+[FileExplorer] Opening file: /workspace/B/user.md
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: false
+[FileExplorer] Determined file type for "/workspace/B/user.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: [32m'/workspace/B/user.md'[39m,
+  type: [32m'Text'[39m,
+  mode: [32m'preview'[39m,
+  accessIntent: [1mnull[22m,
+  content: [1mnull[22m,
+  url: [1mnull[22m,
+  relativeResourceContext: [1mnull[22m,
+  isLoading: [33mtrue[39m,
+  error: [1mnull[22m
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: false
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: false
+[FileExplorer] Determined file type for "/workspace/B/brief.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: [32m'/workspace/B/brief.md'[39m,
+  type: [32m'Text'[39m,
+  mode: [32m'preview'[39m,
+  accessIntent: { source: [32m'event-monitor'[39m, readOnly: [33mtrue[39m },
+  content: [1mnull[22m,
+  url: [1mnull[22m,
+  relativeResourceContext: [1mnull[22m,
+  isLoading: [33mtrue[39m,
+  error: [1mnull[22m
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: false
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: true
+[FileExplorer] Opening file: /workspace/B/user.md
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: true
+[FileExplorer] Determined file type for "/workspace/B/user.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: [32m'/workspace/B/user.md'[39m,
+  type: [32m'Text'[39m,
+  mode: [32m'preview'[39m,
+  accessIntent: [1mnull[22m,
+  content: [1mnull[22m,
+  url: [1mnull[22m,
+  relativeResourceContext: [1mnull[22m,
+  isLoading: [33mtrue[39m,
+  error: [1mnull[22m
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: true
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: true
+[FileExplorer] Determined file type for "/workspace/B/brief.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: [32m'/workspace/B/brief.md'[39m,
+  type: [32m'Text'[39m,
+  mode: [32m'preview'[39m,
+  accessIntent: { source: [32m'event-monitor'[39m, readOnly: [33mtrue[39m },
+  content: [1mnull[22m,
+  url: [1mnull[22m,
+  relativeResourceContext: [1mnull[22m,
+  isLoading: [33mtrue[39m,
+  error: [1mnull[22m
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: true
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+ ❯ components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts (4 tests | 1 failed) 704ms
+   ✓ retains A while canonical B metadata fails; prior consumers mounted: false  647ms
+   × retains A while canonical B metadata fails; prior consumers mounted: true 20ms
+     → expected undefined to be 'dirty-C-not-saved' // Object.is equality
+   ✓ binds native preview visibly to selected B with null metadata; known ID: false 17ms
+   ✓ binds native preview visibly to selected B with null metadata; known ID: true 20ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+AssertionError: expected undefined to be 'dirty-C-not-saved' // Object.is equality
+
+[32m- Expected:[39m 
+"dirty-C-not-saved"
+
+[31m+ Received:[39m 
+undefined
+
+ ❯ components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts:152:78
+    150|       wrapper.getComponent(EditorRenderer).vm.$emit('update:modelValue…
+    151|       await flush()
+    152|       expect((wrapper.getComponent(FileExplorerTabs).vm as any).fileCo…
+       |                                                                              ^
+    153|       expect(write).not.toHaveBeenCalled()
+    154|       await wrapper.getComponent(FileExplorer).find('input').setValue(…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)
+   Start at  06:45:02
+   Duration  6.51s (transform 3.62s, setup 4.52s, collect 857ms, tests 704ms, environment 120ms, prepare 111ms)
+

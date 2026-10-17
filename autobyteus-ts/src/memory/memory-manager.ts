@@ -198,12 +198,13 @@ export class MemoryManager {
     return current;
   }
 
-  /** `senderId`: the sender AgentRun of an agent-to-agent delivery (null for user input). */
-  ingestUserMessage(llmUserMessage: LLMUserMessage, turnId: string, sourceEvent: string, fileAttachments: readonly ContextFileReference[], senderId: string | null = null, identity: Pick<RawTraceItemOptions, 'messageId' | 'dedupeKey'> = {}): void {
+  /** `senderId`: the sender AgentRun of an agent-to-agent delivery (null for user input). Returns the trace id. */
+  ingestUserMessage(llmUserMessage: LLMUserMessage, turnId: string, sourceEvent: string, fileAttachments: readonly ContextFileReference[], senderId: string | null = null, identity: Pick<RawTraceItemOptions, 'messageId' | 'dedupeKey'> = {}): string {
     const trace = buildNativeUserMessageTrace(llmUserMessage, {
       turnId, seq: this.nextSeq(turnId), sourceEvent, fileAttachments, senderId, ...identity,
     });
     this.store.add([trace]);
+    return trace.id;
   }
 
   ensureWorkingContextSystemMessage(content: string, options: WorkingContextAppendOptions = {}): boolean {

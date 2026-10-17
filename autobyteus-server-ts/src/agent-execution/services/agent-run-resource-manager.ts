@@ -5,6 +5,7 @@ import type {
 import type { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
 import type { ApplicationPublishedArtifactRelayService } from "../../application-orchestration/services/application-published-artifact-relay-service.js";
 import type { RunFileChangeService } from "../../services/run-file-changes/run-file-change-service.js";
+import type { AgentRunLifecycleObserver } from "../domain/agent-run-lifecycle-observer.js";
 
 export type AgentRunResourceReleaseResult = Readonly<{
   state: "released" | "already_released" | "failed";
@@ -48,6 +49,8 @@ export class AgentRunResourceManager {
     runFileChangeService: Pick<RunFileChangeService, "attachToRun">;
     publishedArtifactRelayService: Pick<ApplicationPublishedArtifactRelayService, "attachToRun">;
     memoryRecorder: Pick<AgentRunMemoryRecorder, "attachToRun">;
+    /** Told after a run's attachments are released, which every removal of a run goes through. */
+    lifecycleObserver?: Pick<AgentRunLifecycleObserver, "runReleased"> | null;
   }) {}
 
   attach(run: AgentRun): void {
@@ -108,6 +111,11 @@ export class AgentRunResourceManager {
     if (!errors.length) {
       this.resourcesByRunId.delete(runId);
       this.released.add(expectedRun);
+      try {
+        this.dependencies.lifecycleObserver?.runReleased(expectedRun);
+      } catch (error) {
+        console.warn(`AgentRun lifecycle observer failed on release of '${runId}': ${String(error)}`);
+      }
     }
 
     return Object.freeze({

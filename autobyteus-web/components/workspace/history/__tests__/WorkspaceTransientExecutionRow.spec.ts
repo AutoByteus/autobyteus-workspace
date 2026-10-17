@@ -51,6 +51,29 @@ describe('WorkspaceTransientExecutionRow clean delegated-row style', () => {
     expect(element.find('.font-semibold').text()).toContain('docs review team');
   });
 
+  // delegated-team-aggregate-status REQ-005/006/007, AC-001/010: one Team status dot before the icon.
+  it.each([AgentStatus.Running, AgentStatus.Error, AgentStatus.Idle, AgentStatus.Offline] as const)(
+    'shows the %s Team status as a dot before the slate people-group and in the accessible label',
+    (teamStatus) => {
+      const element = mount(WorkspaceTransientExecutionRow, { props: { row: teamRow(), teamStatus, hasChildren: true } });
+      const dots = element.findAll('[data-test="team-aggregate-status-dot"]');
+      expect(dots).toHaveLength(1);
+      expect(dots[0]!.attributes('data-status')).toBe(teamStatus);
+      const statusSlot = element.get('.member-status');
+      expect(statusSlot.find('[data-test="team-aggregate-status-dot"]').exists()).toBe(true);
+      expect(statusSlot.element.nextElementSibling?.querySelector('[data-team-icon="temporary-task-team"]')).not.toBeNull();
+      expect(element.get('[role="treeitem"]').attributes('aria-label')).toContain(`, level 1, ${teamStatus}, `);
+    },
+  );
+
+  it('reads offline for a Team row without a Team status and shows no Team dot on an Agent row', () => {
+    const team = mount(WorkspaceTransientExecutionRow, { props: { row: teamRow(), hasChildren: true } });
+    expect(team.get('[data-test="team-aggregate-status-dot"]').attributes('data-status')).toBe(AgentStatus.Offline);
+    const agent = mount(WorkspaceTransientExecutionRow, { props: { row: row(), teamStatus: AgentStatus.Running } });
+    expect(agent.find('[data-test="team-aggregate-status-dot"]').exists()).toBe(false);
+    expect(agent.get('[role="treeitem"]').attributes('aria-label')).toContain(', level 1, idle, ');
+  });
+
   it('keeps the status dot and initials avatar of a delegated Agent', () => {
     const element = mount(WorkspaceTransientExecutionRow, { props: { row: row() } });
     expect(element.find('[data-test="workspace-transient-status-dot"]').exists()).toBe(true);
