@@ -162,6 +162,7 @@ BEH-006, and the preserved columns of BEH-001..005. REQ-007 and AC-009/AC-010 ar
 | DEC-001 | Dot vs. coloured icon | Resolved by AP-001: dot before the slate icon |
 | DEC-002 | Five vs. three colours | Resolved by AP-001: busy (incl. starting) blue, error red, idle green, offline gray |
 | DEC-003 | Standalone run/group rows | Resolved by AP-001: universal rule applies |
+| DEC-004 | Presentation (REQ-006), reopened 2026-10-11 by user feedback during AC-011: dot before the slate icon (A, shipped), coloured people-group icon (B, the user's original idea), or a status badge on the icon (C)? | Open: user decision. Comparison mock: presentation-options/team-status-options.html / .png. AC-011 not passed; Delivery holds iso-51775-c59d. Choosing B or C changes REQ-006 (renewed approval) and needs a design and implementation revision |
 
 ## Traceability
 

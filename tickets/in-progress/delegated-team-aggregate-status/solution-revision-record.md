@@ -98,3 +98,17 @@
 - Intended behavior changed: No (the colour rule stands). The owner of the rule is in question: frontend derivation (SR-003) vs. server-owned Team status pushed to the frontend.
 - Approval impact: a server-owned, pushed Team status adds an API/stream contract, which R2 lists as out of scope → Requirement Gap needing renewed approval; design would become Large/High → architecture review.
 - Next action: user decision; implementation of SR-003 continues unless the user pauses it.
+
+### SR-007 — Presentation reopened during user verification
+
+- Trigger: user feedback in the AC-011 check (relayed by /project_task_manager, 2026-10-11, screenshot images/25.png). The user expected the people-group icon itself to be coloured by status, not a separate dot. They are unsure which is better.
+- Classification: Requirement Gap candidate on REQ-006 (presentation only; the status rule is unchanged).
+- Status: requirements DEC-004 open; AC-011 not passed; Delivery told to hold the instance and not finalize.
+- Evidence: presentation-options/team-status-options.html and .png (options A, B and C on the same rows).
+- Next action: user decision. B or C means a revised REQ-006 with renewed approval, then a design revision and an implementation round.
+
+### SR-008 — Integration overlap with the Task-summary line (evidence-only)
+
+- Trigger: /project_task_manager, 2026-10-11. Task b541c02a landed first (d110cb612, v1.5.1-beta.3) and touches the same rows.
+- Finding: investigation-notes "Integration Overlap With Task b541c02a". The only textual conflict is TESTING.md; row specs and probes must be re-run after merging origin/personal @ 96da4ba32.
+- Impact: the next implementation or delivery round must start from the refreshed base. No change to intended behavior. DEC-004 (presentation) is still open.

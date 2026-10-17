@@ -402,35 +402,73 @@ member is `running` or `initializing`; members keep their own scoped status or
 default to `offline/canInterrupt=false` until an exact `AGENT_STATUS` arrives.
 Frontend reconciliation must never fan root activity out to member rows.
 
-Workspace presentation may render that binary root fact without restoring a
-team status model. `TeamActivityDot.vue` accepts only `isActive` plus localized
-accessible copy. Each exact history or running team-run row passes only that
-run's authoritative `isActive`: active is a solid blue dot, inactive is a solid
-gray dot, and neither state pulses or encodes a five-state lifecycle. A rendered
-team-definition group derives a presentation-only `hasActiveRuns` value from
-`runs.some(run => run.isActive)` over the exact child runs it displays. That
-any-active cue remains visible while the group is collapsed, reacts when the
-last active child becomes inactive, and is not a persisted/transported
-definition field. Representative ordering, leaf-agent status, socket
-subscription, and Stop/pending state must not influence either the exact-run
-cue or the group projection.
+Every Team row in the Workspaces tree shows one universal, presentation-only
+Team status. A Team reads like one big Agent: it shows the highest state among
+the Agents it counts, ranked
 
-A direct mounted-Team row inside one AgentOrg may render a presentation-only
-five-state summary in `WorkspaceAgentOrgHistoryCollection`. The summary folds exact Agent
-statuses in that mounted Team branch with precedence `running > initializing >
-error > idle > offline`. Direct Team Agents plus task Agents and task-Team
-Agents beneath that mounted placement contribute; the Team container itself,
-direct Org Agents, sibling Teams, and other branches do not. Missing or empty
-input normalizes to `offline`. The dot remains visible when the Team is
-collapsed and reacts to the existing Org execution context without requesting
-or polling.
+```text
+busy (running or initializing) > error > idle > offline
+```
 
-This mounted-Team summary does not change status authority. It is neither a
-Team-root lifecycle nor a replacement for exact leaf `AGENT_STATUS` or the
-AgentOrg root lifecycle. It is not persisted or transported and cannot affect
-focus, readiness, command admission, interrupt/Stop, archive, delete, or
-lifecycle decisions. Standalone TeamRun rows retain their binary activity cue;
-task-Team rows do not gain the configured mounted-Team aggregate.
+with the Agent status colours: busy is a pulsing blue dot, error red, idle
+green, offline gray. Missing or unknown statuses count as offline. When the run
+that contains the Team is not alive, the Team is offline whatever its Agents
+last reported. A Team row counts every Agent row shown under it (its members,
+Agents of Teams nested in it, and Agents its members delegated), whether the
+row is expanded or collapsed. It never counts closed (DONE/CANCELLED) task work
+hidden from the tree, or Agents outside its subtree. Each Agent counts with the
+status its own row shows.
+
+One web owner holds the rule:
+`resolveTeamStatus(agentStatuses, runAlive): TeamStatus` in
+`utils/workspaceTeamAggregateStatus.ts`. It returns `offline` when the run is not
+alive. Otherwise it applies the shared contract fold (`foldTeamAggregateStatus`,
+authority `live`) and maps `initializing` to `running`. `TeamStatus` therefore
+has four values (`running | error | idle | offline`). Agent rows keep their own
+five-state dot, so a starting Agent row stays amber while its Team reads busy.
+No Team row calls the shared fold directly. Each root keeps its own counting
+and passes the counted statuses and its liveness to the rule:
+
+- Team runs (`workspaceHistoryTeamBranchStatus.ts`): `teamBranchStatus` counts
+  every Agent row beneath any `agent_team` row by depth, configured or
+  delegated. `teamRunStatus` counts all Agent rows of a run, gated by
+  `TeamTreeNode.isActive`. `teamDefinitionGroupStatus` gives a TEAMS group row the
+  highest status among its listed runs. `WorkspaceTeamExecutionTree` derives
+  these at render time from `executionRows`, so navigation patches stay current.
+- Agent runs (`AgentRunCollaborationContext.listTaskRows`): the walk visits
+  every listed node, collapsed ones included, skips closed subtrees, and sets
+  `AgentRunTaskTreeRow.teamStatus` on Team rows, gated by the host run's
+  `isActive`.
+- Org runs (`agentOrgTeamBranchStatus.ts`): one listed-Agent collector serves a
+  configured mounted Team (`projectAgentOrgTeamBranchStatus`) and a delegated
+  or nested task Team (`projectAgentOrgTaskTeamStatus`). The Org counts as alive
+  only while its status authority is `live`. The Org root row is an Org, not a
+  Team, and keeps its own dot.
+
+`TeamAggregateStatusDot` draws the status before the unchanged slate
+people-group icon on stable rows (`WorkspaceStableExecutionRow`), transient task
+rows (`WorkspaceTransientExecutionRow`, `team-status` prop), Org Team rows and
+the TEAMS run and group rows. The dot is non-interactive. Each row's accessible
+label and tooltip state the status in words. A restored Team run that is alive
+but has no started member reads gray while its Stop button remains. Stop,
+archive and delete availability is still driven by the run being alive, not by
+the Team status.
+
+The Team status does not change status authority. It is neither a Team-root
+lifecycle nor a replacement for exact leaf `AGENT_STATUS`, `TEAM_RUN_LIFECYCLE`
+or the AgentOrg root lifecycle. It is not persisted or transported, adds no
+request or polling, and cannot affect focus, readiness, command admission,
+interrupt/Stop, archive, delete or lifecycle decisions. A Team dot is only as
+fresh as the Agent statuses it is built from. Standalone TeamRuns and Teams
+inside them are live. Delegated Teams under an Agent run are live once that run
+has been selected in the session, and show a one-time snapshot before that.
+Teams inside an Org are live once the Org has been opened, and read gray before
+that. The server's Project Task worker status keeps the shared fold unchanged,
+so a starting delegated Team still reads `initializing` there.
+
+The unmounted `components/workspace/running/*` surface still uses the binary
+`TeamActivityDot.vue` (`isActive` only). It is not part of the Workspaces tree
+and is scheduled for removal.
 
 Delegated task executions are task-scoped execution projections rather than
 structural topology. Every Team Agent event carries one `agent_execution`

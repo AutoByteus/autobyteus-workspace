@@ -172,6 +172,19 @@ configured Agent remains Offline: the Team stream can reopen scope without
 starting providers. Green/Idle is not evidence of model reasoning. Do not copy
 Org container-status expectations onto a Team or start workers to reconcile status.
 
+Every Team row in the Workspaces tree (TEAMS run rows, nested and delegated
+Team rows under Agent, Team and Org runs, and Org-internal Team rows) shows one
+universal Team status dot before the slate people-group icon. It shows the
+highest state among the Agents shown under the row, collapsed or not:
+busy (running or starting, pulsing blue) > error (red) > idle (green) >
+offline (gray). Closed task work does not count. A stopped run is gray. A TEAMS
+group row shows the highest status among its runs. So the restored Team above
+reads gray while its Stop button stays. The status is derived on the client
+from the Agent statuses and root liveness. It is not a root lifecycle and does
+not decide Stop, archive or delete. See
+[Agent Execution Architecture](agent_execution_architecture.md) for the rule
+owner.
+
 Task delegation is a pure spawn. A delegated task Agent or task Team is shown
 as a transient execution row whose starter ("Started by <delegator>") is in the
 accessible label only (see below); there is no

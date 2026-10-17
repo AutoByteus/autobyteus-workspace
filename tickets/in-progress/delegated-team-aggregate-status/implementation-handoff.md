@@ -29,7 +29,7 @@ One web owner of the Team status rule, `resolveTeamStatus(agentStatuses, runAliv
 - Current implementation revision ID: `IR-001`
 - Related solution revision IDs: `SR-003` (requirements `SR-002`)
 - Related architecture-review revision IDs: `N/A`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001` (source, Pass 9.4/10, no findings) and `CRR-002` (API/E2E test code, Pass). These come from a user-requested review after API/E2E; see `code-review-report.md` and `code-review-revision-record.md`. Recorded as informational; no implementation action.
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
 - Triggering finding IDs: `N/A`

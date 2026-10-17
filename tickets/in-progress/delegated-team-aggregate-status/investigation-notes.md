@@ -202,3 +202,9 @@ Composition: a TeamRun's status = the approved rule over its own direct agents' 
 - Display: same dot palette for both kinds (busy and running blue pulse; initializing amber on agents only; error red; idle green; offline gray). The identity glyph stays separate: avatar for agents, people-group for teams, Org avatar for Orgs.
 - Display groupings (Team definition group under TEAMS) are not subjects: the highest of their runs' container statuses.
 - Current inconsistencies found: Org root row is a binary emerald/gray dot (`WorkspaceAgentOrgHistoryCollection.vue` l.61); agent definition group rows have no dot while Team definition group rows do (`WorkspaceHistoryWorkspaceSection.vue`). An agent run row shows only its own status, not its delegated children (agents are executors, not containers).
+
+## Integration Overlap With Task b541c02a (2026-10-11)
+
+- `origin/personal` is now `96da4ba32` (includes d110cb612, the Task-summary second line, released v1.5.1-beta.3). Our merge base is `bd45af839`.
+- Files changed on both sides (excluding tickets): `TESTING.md`; `autobyteus-web/components/workspace/history/{AgentRunTaskRows,WorkspaceHistoryWorkspaceSection,WorkspaceTeamExecutionTree,WorkspaceTransientExecutionRow}.vue`; `…/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts`; `autobyteus-web/localization/messages/{en,zh-CN}/workspace.ts`; `autobyteus-web/package.json`; `tests/e2e/fixtures/team-activity-presentation.page.vue`; `tests/e2e/nested-team-aggregate-status-probe.mjs`.
+- `git merge-tree --write-tree HEAD origin/personal`: one textual conflict (`TESTING.md`); all source files auto-merge. The row component overlap still needs re-run row specs and probes and a rendered check (dot or icon on the name line, summary line under the name).
