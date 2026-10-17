@@ -1,0 +1,65 @@
+// TEMPORARY ticket-local probe (agent-loop-structure-refactor, API/E2E round 2). Not committed; a copy is kept in
+// tickets/in-progress/agent-loop-structure-refactor/evidence/api-e2e/round2/. Checks that the native runtime's
+// token-usage events carry `context_compaction_threshold_tokens` through the real server (live frames and the
+// stored run summary), and that the value follows the compaction trigger-ratio setting (a live value, not a constant).
+import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import { NativeRuntimeLiveHarness, type Json, type WsMessage } from "../helpers/native-runtime-live-harness.js";
+
+const ENABLED = process.env.RUN_ALSR_PROBE === "1" && Boolean(process.env.ANTHROPIC_API_KEY?.trim());
+const run = ENABLED ? describe : describe.skip;
+const EVIDENCE_DIR = process.env.OUTPUT_LIMIT_E2E_EVIDENCE_DIR?.trim() || null;
+
+const usageFrames = (frames: WsMessage[]) => frames.filter((frame) => frame.type === "TOKEN_USAGE_UPDATED").map((frame) => frame.payload);
+const pick = (payload: Json) => ({
+  llm_call_id: payload.llm_call_id, ingestion_kind: payload.ingestion_kind, latest_prompt_tokens: payload.latest_prompt_tokens,
+  effective_context_window_tokens: payload.effective_context_window_tokens, context_compaction_threshold_tokens: payload.context_compaction_threshold_tokens,
+});
+
+run("native token-usage compaction threshold (live probe)", () => {
+  const harness = new NativeRuntimeLiveHarness({ evidenceDir: EVIDENCE_DIR, stepTimeoutMs: 600_000, tempPrefix: "alsr-threshold-probe" });
+  let definitionId = "";
+  beforeAll(async () => {
+    await harness.start();
+    definitionId = await harness.createDefinition("alsr-threshold-probe", "You are a concise assistant. Answer exactly what is asked.", []);
+  }, 300_000);
+  afterEach(async (context) => { await harness.finishCase(context); });
+  afterAll(async () => {
+    await harness.deleteServerSetting("AUTOBYTEUS_COMPACTION_TRIGGER_RATIO");
+    await harness.stop();
+  }, 180_000);
+
+  const turn = async (phase: string) => {
+    const model = await harness.catalogModel("ANTHROPIC", "claude-opus-5-5");
+    const session = await harness.startRun(definitionId, model.modelIdentifier, null);
+    const { error, frames } = await harness.runTurn(session, phase, "Reply with the single word pong.");
+    const usage = usageFrames(frames).map(pick);
+    const summary = await harness.gql<{ getAgentRunTokenUsageSummary: Json }>(
+      "query($id: String!) { getAgentRunTokenUsageSummary(runId: $id) { contextCompactionThresholdTokens effectiveContextWindowTokens latestPromptTokens latestRuntimeKind } }",
+      { id: session.runId });
+    await harness.stopRun(session);
+    return { error, usage, summary: summary.getAgentRunTokenUsageSummary };
+  };
+
+  it("ALSR-TU-001: the native frame and the stored run summary carry a numeric threshold that follows the trigger ratio", async () => {
+    const before = await turn("ALSR-TU-default");
+    const message = await harness.updateServerSetting("AUTOBYTEUS_COMPACTION_TRIGGER_RATIO", "0.5");
+    const after = await turn("ALSR-TU-ratio-0.5");
+    harness.recordCase("ALSR-TU-001", { before, settingMessage: message, after });
+
+    for (const result of [before, after]) {
+      expect(result.error, JSON.stringify(result.error?.payload)).toBeNull();
+      expect(result.usage.length).toBeGreaterThan(0);
+      const frame = result.usage.at(-1)!;
+      expect(typeof frame.context_compaction_threshold_tokens, "numeric on the native runtime (compaction always enabled)").toBe("number");
+      expect(frame.context_compaction_threshold_tokens as number).toBeGreaterThan(0);
+      expect(frame.context_compaction_threshold_tokens as number).toBeLessThan(frame.effective_context_window_tokens as number);
+      expect(result.summary.contextCompactionThresholdTokens, "stored run summary equals the live frame").toBe(frame.context_compaction_threshold_tokens);
+      expect(result.summary.latestRuntimeKind).toBe("autobyteus");
+    }
+    const t1 = before.usage.at(-1)!.context_compaction_threshold_tokens as number;
+    const t2 = after.usage.at(-1)!.context_compaction_threshold_tokens as number;
+    // Same model and input budget; threshold = floor(ratio × input budget): 0.5 vs the default 0.8.
+    expect(t2).toBeLessThan(t1);
+    expect(Math.abs(t2 / t1 - 0.5 / 0.8)).toBeLessThan(0.01);
+  }, 900_000);
+});

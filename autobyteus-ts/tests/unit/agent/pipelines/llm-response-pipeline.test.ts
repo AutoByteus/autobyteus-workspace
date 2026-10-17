@@ -18,7 +18,7 @@ describe('LLMResponsePipeline', () => {
             processResponse,
           }],
         },
-        state: { activeTurn: { turnId: 'turn-1' } },
+        state: {},
       } as any,
       notifier as any,
       { isError: true, turnId: 'turn-1' },

@@ -133,8 +133,26 @@ enter the runtime event inbox as `SenderType.TOOL` user input.
 
 ## Turn Execution Ownership
 
-`AgentTurnRunner` is the only normal owner of the LLM/tool reasoning loop. It
-uses these collaborators:
+`AgentTurnRunner` is the only normal owner of the LLM/tool reasoning loop. Each
+loop iteration applies the ready status, runs `LlmPhase.run(...)` and dispatches
+its outcome through one plain `switch` to a named handler:
+
+- `output_limited` → `handleOutputLimited(...)`: the consecutive-stop counter,
+  the hidden recovery note, `AgentTurn.beginContinuation()`, a runner-built
+  continuation input, or the exhaustion error after the last recovery;
+- `compaction_blocked` → `waitForCompactionRetry()`: waits for the user's
+  compaction retry and reruns the same prepared input;
+- `final` → `completeWithFinalResponse(...)`;
+- `tool_invocations` → `runToolStep(...)`: starts the tool batch, publishes the
+  pending statuses, runs `ToolPhase`, processes the results, clears the batch,
+  records the ordered results and builds the continuation input.
+
+The consecutive output-limit counter resets for every other outcome. The runner
+is the only owner of the tool-batch lifecycle (`AgentTurn.startToolInvocationBatch`
+/ `clearActiveToolInvocationBatch`); `AgentTurn` owns the turn state (LLM call
+sequence, continuation flag, active tool batch) and the phases read it there.
+
+The runner uses these collaborators:
 
 - `AgentInputPipeline`
   - converts external user/inter-agent triggers into an `LLMUserMessage`;
@@ -149,7 +167,16 @@ uses these collaborators:
     `original_message_type`, and `reference_files`;
   - adds exactly one generated `Reference files:` block to recipient-visible
     inter-agent input when structured `reference_files` are present.
-- `LlmPhase`
+- `LlmPhase` (the owner of one LLM call, one request attempt)
+  - runs one call as named steps: `beginCall` (validation, request capacity,
+    tool schemas, the call's `LlmCallCompaction`, the assembler, the call
+    identity from `AgentTurn.nextLlmCallSequence()`), `assembleRequest`,
+    `startStream` plus `LlmResponseStreamCollector.consume(...)`, `settle`
+    (stop error, output-limited or completed), `settleInterrupted` /
+    `settleFailed`, and `finishCall` (threshold evaluation, after-final
+    compaction, outcome);
+  - returns the `tool_invocations` outcome with the invocations the collector
+    parsed; it does not start, clear or read tool batches;
   - assembles memory-backed LLM requests;
   - executes an authorized pending compaction before parent dispatch; pre-parent
     input remains held rather than being silently consumed on final failure;
@@ -162,8 +189,8 @@ uses these collaborators:
     request capacity but perform no proactive or hard-cap compaction work and
     return the original response/tool outcome;
   - evaluates provider-normalized prompt observations after responses for
-    trigger-aligned compaction, while missing prompt-token observations leave
-    the threshold episode unchanged;
+    trigger-aligned compaction through its `LlmCallCompaction`, while missing
+    prompt-token observations leave the threshold episode unchanged;
   - opens a named `MemoryManager` LLM-request recovery boundary before request
     preparation, commits it after successful response/tool ingestion, and
     restores working context plus compaction state on assembly or provider
@@ -179,20 +206,44 @@ uses these collaborators:
     { logicalConversationId, tools: request.tools }, { promptCacheScope:
     'conversation', signal, turnId })`. The agent never renders a request; the
     provider adapter is the only request builder;
-  - publishes streamed segment facts through `AgentExternalEventNotifier`;
-  - creates one `LlmStreamingResponseHandler` for tool and no-tool streams,
-    builds `ToolSchemaProvider` schemas only when configured tools exist, and
-    normalizes native tool-call deltas only when the handler's explicit gate is
-    enabled; assistant text is never parsed into invocations;
-  - checks the `TurnExecutionScope` before starting or consuming LLM streams
-    and again after awaited LLM seams before publishing normal assistant
-    completion side effects;
-  - on accepted interrupt, terminalizes open stream segments as interrupted and
-    records already streamed assistant text/reasoning through
+  - builds `ToolSchemaProvider` schemas only when configured tools exist;
+  - settles the call's recovery snapshot exactly once (commit or restore) and
+    ingests the response per outcome; publishes the call's token usage;
+  - times the call's output speed with one `LlmCallTiming` (`llm-call-throughput.ts`):
+    started immediately before the stream is created, fed every chunk by the
+    collector after the chunk fence, reported as `output_throughput` on the
+    call's token-usage notification;
+  - checks the `TurnExecutionScope` before starting the stream, after
+    consumption (`llm_stream_finalize`), and after awaited LLM seams before
+    publishing normal assistant completion side effects;
+  - on accepted interrupt, has the collector terminalize open stream segments as
+    interrupted and records already streamed assistant text/reasoning through
     `MemoryManager.ingestAssistantResponse(..., 'LlmPhaseInterruptedPartial')`
     before rethrowing the interruption;
-  - on non-interrupt LLM stream errors, failed-terminalizes any active text,
-    tool, write/edit, or reasoning segments before publishing the runtime error.
+  - on non-interrupt LLM stream errors, rolls the request back and has the
+    collector failed-terminalize any active text, tool, write/edit, or reasoning
+    segments before publishing the runtime error.
+- `LlmResponseStreamCollector` (one per LLM call, owned by `LlmPhase`)
+  - consumes the provider stream under the turn's fences (`llm_stream`,
+    `llm_stream_chunk`) and accumulates text, reasoning, media, the
+    provider-native turn, usage and finish; it never creates the stream, touches
+    memory or the turn;
+  - owns the reasoning-segment lifecycle and one `LlmStreamingResponseHandler`,
+    which publishes text and tool segment facts through
+    `AgentExternalEventNotifier` and normalizes native tool-call deltas only when
+    its explicit gate is enabled; assistant text is never parsed into invocations;
+  - finalizes exactly once: `completeNormally()` (returns the invocations),
+    `completeOutputLimited(...)`, `abandonInterrupted(...)` or
+    `abandonFailed(...)`; an abandon after a normal completion emits nothing.
+- `LlmCallCompaction` (per LLM call, only when automatic compaction is enabled)
+  - holds the call's compaction reporter, token budget and
+    `PendingCompactionExecutor` with the `LlmPhaseSummaryPort`, and gives the
+    executor to `LLMRequestAssembler` for pre-request compaction;
+  - evaluates the compaction threshold after a response;
+  - runs after-final compaction only for a final outcome without tool calls,
+    after the stream is fully consumed: `bindRequestPrefix(request.tools)`, then
+    `executeIfAuthorized('after_final_response')`; a failure is reported and the
+    answer stands.
 - `ToolPhase`
   - runs tool invocations under the active `TurnExecutionScope`;
   - calls `BaseTool.prepareExecution(...)` before publishing started lifecycle
@@ -325,8 +376,9 @@ before performing normal side effects:
   before and after final response processing, after tool phase, before and
   after terminal tool lifecycle, after continuation processing, and before
   continuation status publication.
-- `LlmPhase` fences before stream start/iteration/finalization and before
-  publishing normal LLM-derived assistant response side effects.
+- `LlmPhase` fences before stream start and finalization and before publishing
+  normal LLM-derived assistant response side effects; its
+  `LlmResponseStreamCollector` fences the stream iteration and each chunk.
 - `ToolPhase` fences before tool execution, after awaited execution, and before
   terminal success/result publication.
 

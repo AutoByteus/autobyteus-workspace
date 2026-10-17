@@ -1,0 +1,146 @@
+[
+  {
+    "case": "TPS-001",
+    "name": "TPS-001: DeepSeek, thinking off, a ~150-word answer: generation speed, numerator = reported output",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "model": "deepseek-v4-flash",
+      "llmConfig": {
+        "extra_params": {
+          "thinking_type": "disabled"
+        }
+      },
+      "elapsedMs": 2707,
+      "reasoningSegments": 0,
+      "readings": [
+        {
+          "llm_call_id": "turn_0001:llm:1",
+          "ingestion_kind": "autobyteus_llm_phase",
+          "reports_model_call": true,
+          "reported_output_tokens": 193,
+          "reasoning_output_tokens": null,
+          "output_throughput": {
+            "method": "generation",
+            "output_tokens": 193,
+            "duration_ms": 1523
+          }
+        }
+      ],
+      "error": null
+    },
+    "at": "2026-10-17T04:21:13.940Z"
+  },
+  {
+    "case": "TPS-002",
+    "name": "TPS-002: DeepSeek, a one-word answer: below the minimum sample, so no TPS reaches the app",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "model": "deepseek-v4-flash",
+      "llmConfig": {
+        "extra_params": {
+          "thinking_type": "disabled"
+        }
+      },
+      "elapsedMs": 1202,
+      "reasoningSegments": 0,
+      "readings": [
+        {
+          "llm_call_id": "turn_0001:llm:1",
+          "ingestion_kind": "autobyteus_llm_phase",
+          "reports_model_call": true,
+          "reported_output_tokens": 2,
+          "reasoning_output_tokens": null,
+          "output_throughput": null
+        }
+      ],
+      "error": null
+    },
+    "at": "2026-10-17T04:21:15.220Z"
+  },
+  {
+    "case": "TPS-004",
+    "name": "TPS-004: OPENAI gpt-5.4-mini, a ~120-word answer: the method follows what the call reported (DEC-002)",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "model": "gpt-5.4-mini",
+      "llmConfig": null,
+      "elapsedMs": 2103,
+      "reasoningSegments": 0,
+      "readings": [
+        {
+          "llm_call_id": "turn_0001:llm:1",
+          "ingestion_kind": "autobyteus_llm_phase",
+          "reports_model_call": true,
+          "reported_output_tokens": 135,
+          "reasoning_output_tokens": 0,
+          "output_throughput": {
+            "method": "generation",
+            "output_tokens": 135,
+            "duration_ms": 726
+          }
+        }
+      ],
+      "error": null
+    },
+    "at": "2026-10-17T04:21:17.412Z"
+  },
+  {
+    "case": "TPS-005",
+    "name": "TPS-005: GEMINI gemini-3.8-flash, a ~120-word answer: the method follows what the call reported (DEC-002)",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "model": "gemini-3.8-flash",
+      "llmConfig": null,
+      "elapsedMs": 9314,
+      "reasoningSegments": 0,
+      "readings": [
+        {
+          "llm_call_id": "turn_0001:llm:1",
+          "ingestion_kind": "autobyteus_llm_phase",
+          "reports_model_call": true,
+          "reported_output_tokens": 143,
+          "reasoning_output_tokens": 972,
+          "output_throughput": {
+            "method": "end_to_end",
+            "output_tokens": 143,
+            "duration_ms": 9080
+          }
+        }
+      ],
+      "error": null
+    },
+    "at": "2026-10-17T04:21:26.825Z"
+  },
+  {
+    "case": "TPS-003",
+    "name": "TPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "model": "deepseek-v4-flash",
+      "llmConfig": null,
+      "elapsedMs": 2406,
+      "reasoningSegments": 1,
+      "readings": [
+        {
+          "llm_call_id": "turn_0001:llm:1",
+          "ingestion_kind": "autobyteus_llm_phase",
+          "reports_model_call": true,
+          "reported_output_tokens": 172,
+          "reasoning_output_tokens": 16,
+          "output_throughput": {
+            "method": "generation",
+            "output_tokens": 172,
+            "duration_ms": 1051
+          }
+        }
+      ],
+      "error": null
+    },
+    "at": "2026-10-17T04:21:29.322Z"
+  }
+]
