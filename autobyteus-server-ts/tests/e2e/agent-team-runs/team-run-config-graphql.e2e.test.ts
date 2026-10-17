@@ -45,14 +45,14 @@ const createAgentDefinition = async (serverUrl: string, name: string): Promise<s
   const result = await executeGraphql<{
     createAgentDefinition: { id: string };
   }>(serverUrl, `
-    mutation CreateHierarchyAgent($input: CreateAgentDefinitionInput!) {
+    mutation CreateTeamConfigAgent($input: CreateAgentDefinitionInput!) {
       createAgentDefinition(input: $input) { id }
     }
   `, {
     input: {
       name,
-      role: "API/E2E hierarchy fixture",
-      description: "Owned deterministic hierarchy fixture",
+      role: "API/E2E team configuration fixture",
+      description: "Owned deterministic team configuration fixture",
       instructions: "Do not perform work until explicitly messaged.",
       category: "api-e2e",
     },
@@ -68,13 +68,13 @@ const createTeamDefinition = async (serverUrl: string, input: {
   const result = await executeGraphql<{
     createAgentTeamDefinition: { id: string };
   }>(serverUrl, `
-    mutation CreateHierarchyTeam($input: CreateAgentTeamDefinitionInput!) {
+    mutation CreateTeamConfigTeam($input: CreateAgentTeamDefinitionInput!) {
       createAgentTeamDefinition(input: $input) { id }
     }
   `, {
     input: {
       ...input,
-      description: "Owned deterministic hierarchy fixture",
+      description: "Owned deterministic team configuration fixture",
       instructions: "Coordinate only after explicit user input.",
     },
   });
@@ -85,7 +85,7 @@ const firstAutoByteusModel = async (serverUrl: string): Promise<string> => {
   const result = await executeGraphql<{
     providerModelCatalogSnapshots: Array<{ llmModels: Array<{ modelIdentifier: string }> }>;
   }>(serverUrl, `
-    query HierarchyModels($runtimeKind: String) {
+    query TeamConfigModels($runtimeKind: String) {
       providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
         llmModels { modelIdentifier }
       }
@@ -99,10 +99,10 @@ const firstAutoByteusModel = async (serverUrl: string): Promise<string> => {
   return model;
 };
 
-const seedHierarchy = async (serverUrl: string, label: string) => {
+const seedTeam = async (serverUrl: string, label: string) => {
   const coordinatorId = await createAgentDefinition(serverUrl, `${label}-coordinator`);
   const observerId = await createAgentDefinition(serverUrl, `${label}-observer`);
-  const researchLeadId = await createAgentDefinition(serverUrl, `${label}-research-lead`);
+  const leadId = await createAgentDefinition(serverUrl, `${label}-lead`);
   const reviewerId = await createAgentDefinition(serverUrl, `${label}-reviewer`);
   // A team contains agents only (flat teams since v1.4.70; remove-nested-task-team).
   const rootTeamId = await createTeamDefinition(serverUrl, {
@@ -111,15 +111,15 @@ const seedHierarchy = async (serverUrl: string, label: string) => {
     nodes: [
       { memberName: "coordinator", ref: coordinatorId, refScope: "SHARED" },
       { memberName: "observer", ref: observerId, refScope: "SHARED" },
-      { memberName: "lead", ref: researchLeadId, refScope: "SHARED" },
+      { memberName: "lead", ref: leadId, refScope: "SHARED" },
       { memberName: "reviewer", ref: reviewerId, refScope: "SHARED" },
     ],
   });
-  return { rootTeamId, coordinatorId, observerId, researchLeadId, reviewerId };
+  return { rootTeamId, coordinatorId, observerId, leadId, reviewerId };
 };
 
 const createTeamRunMutation = `
-  mutation CreateHierarchicalTeamRun($input: CreateAgentTeamRunInput!) {
+  mutation CreateTeamRun($input: CreateAgentTeamRunInput!) {
     createAgentTeamRun(input: $input) { success message teamRunId }
   }
 `;
@@ -127,7 +127,7 @@ const createTeamRunMutation = `
 const resumeConfig = (serverUrl: string, teamRunId: string) => executeGraphql<{
   getTeamRunResumeConfig: { teamRunId: string; isActive: boolean; executionTree: Record<string, unknown> };
 }>(serverUrl, `
-  query HierarchicalTeamRunResume($teamRunId: String!) {
+  query TeamRunResume($teamRunId: String!) {
     getTeamRunResumeConfig(teamRunId: $teamRunId) { teamRunId isActive executionTree }
   }
 `, { teamRunId }).then(({ getTeamRunResumeConfig }) => getTeamRunResumeConfig);
@@ -195,13 +195,13 @@ afterEach(async () => {
 
 describe("TeamRun configuration GraphQL and V2 lifecycle", () => {
   it("persists the team and exact-Agent configurations and restores them after process restart", async () => {
-    const target = makeTarget("hierarchical-team-run-current");
+    const target = makeTarget("team-run-config-current");
     const first = await startServer(target);
-    const fixture = await seedHierarchy(first.serverUrl, `hierarchy-${Date.now()}`);
+    const fixture = await seedTeam(first.serverUrl, `team-config-${Date.now()}`);
     const model = await firstAutoByteusModel(first.serverUrl);
     const rootWorkspace = path.join(target.runtimeRoot, "workspaces", "root");
-    const researchWorkspace = path.join(target.runtimeRoot, "workspaces", "research");
-    for (const workspace of [rootWorkspace, researchWorkspace]) {
+    const agentWorkspace = path.join(target.runtimeRoot, "workspaces", "agents");
+    for (const workspace of [rootWorkspace, agentWorkspace]) {
       fs.mkdirSync(workspace, { recursive: true, mode: 0o700 });
     }
     const rootTeamConfiguration: CompleteLaunchConfiguration = {
@@ -212,12 +212,12 @@ describe("TeamRun configuration GraphQL and V2 lifecycle", () => {
       workspaceRootPath: rootWorkspace,
     };
     // Agents may differ from the team's default (their own model settings and workspace).
-    const researchConfiguration: CompleteLaunchConfiguration = {
+    const leadConfiguration: CompleteLaunchConfiguration = {
       runtimeKind: "autobyteus",
       llmModelIdentifier: model,
       llmConfig: { temperature: 0.2 },
       autoExecuteTools: true,
-      workspaceRootPath: researchWorkspace,
+      workspaceRootPath: agentWorkspace,
     };
     const coordinatorConfiguration = { ...rootTeamConfiguration };
     const observerConfiguration: CompleteLaunchConfiguration = {
@@ -227,13 +227,12 @@ describe("TeamRun configuration GraphQL and V2 lifecycle", () => {
       autoExecuteTools: true,
       workspaceRootPath: rootWorkspace,
     };
-    const leadConfiguration = { ...researchConfiguration };
     const reviewerConfiguration: CompleteLaunchConfiguration = {
       runtimeKind: "autobyteus",
       llmModelIdentifier: model,
       llmConfig: { temperature: 0.35 },
       autoExecuteTools: false,
-      workspaceRootPath: researchWorkspace,
+      workspaceRootPath: agentWorkspace,
     };
     const expectedConfigurationTree: ExactConfigurationNode = {
       address: "/",
@@ -251,7 +250,7 @@ describe("TeamRun configuration GraphQL and V2 lifecycle", () => {
         },
         {
           address: "/lead",
-          agentDefinitionId: fixture.researchLeadId,
+          agentDefinitionId: fixture.leadId,
           launchConfiguration: leadConfiguration,
         },
         {
@@ -286,7 +285,7 @@ describe("TeamRun configuration GraphQL and V2 lifecycle", () => {
           },
           {
             memberAddress: "/lead",
-            agentDefinitionId: fixture.researchLeadId,
+            agentDefinitionId: fixture.leadId,
             ...leadConfiguration,
           },
           {
@@ -318,7 +317,7 @@ describe("TeamRun configuration GraphQL and V2 lifecycle", () => {
     assertExactConfigurationTree((activeResume.executionTree as any).root_team, "graphql", expectedConfigurationTree);
 
     const terminated = await executeGraphql<{ terminateAgentTeamRun: { success: boolean } }>(first.serverUrl, `
-      mutation TerminateHierarchicalTeamRun($teamRunId: String!) {
+      mutation TerminateTeamRun($teamRunId: String!) {
         terminateAgentTeamRun(teamRunId: $teamRunId) { success }
       }
     `, { teamRunId });
@@ -332,7 +331,7 @@ describe("TeamRun configuration GraphQL and V2 lifecycle", () => {
     const restored = await executeGraphql<{
       restoreAgentTeamRun: { success: boolean; teamRunId: string | null };
     }>(second.serverUrl, `
-      mutation RestoreHierarchicalTeamRun($teamRunId: String!) {
+      mutation RestoreTeamRun($teamRunId: String!) {
         restoreAgentTeamRun(teamRunId: $teamRunId) { success teamRunId }
       }
     `, { teamRunId });
@@ -355,9 +354,9 @@ describe("TeamRun configuration GraphQL and V2 lifecycle", () => {
     runtimeKind,
     graphqlRejected,
   }) => {
-    const target = makeTarget(`hierarchical-team-run-invalid-${subject.toLowerCase()}-${label}`);
+    const target = makeTarget(`team-run-config-invalid-${subject.toLowerCase()}-${label}`);
     const server = await startServer(target);
-    const fixture = await seedHierarchy(server.serverUrl, `invalid-${label}-${Date.now()}`);
+    const fixture = await seedTeam(server.serverUrl, `invalid-${label}-${Date.now()}`);
     const model = await firstAutoByteusModel(server.serverUrl);
     const rejectedWorkspace = path.join(target.runtimeRoot, "must-not-exist", label);
     const input = {
@@ -376,7 +375,7 @@ describe("TeamRun configuration GraphQL and V2 lifecycle", () => {
       memberConfigs: [
         ["/coordinator", fixture.coordinatorId],
         ["/observer", fixture.observerId],
-        ["/lead", fixture.researchLeadId],
+        ["/lead", fixture.leadId],
         ["/reviewer", fixture.reviewerId],
       ].map(([memberAddress, agentDefinitionId], index) => ({
         memberAddress,
