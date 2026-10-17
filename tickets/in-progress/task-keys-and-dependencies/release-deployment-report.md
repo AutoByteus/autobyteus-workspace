@@ -13,9 +13,9 @@
 
 ## Handoff Summary
 
-- Handoff summary artifact: `tickets/done/task-keys-and-dependencies/handoff-summary.md`
+- Handoff summary artifact: `tickets/in-progress/task-keys-and-dependencies/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Delivery revision record: `tickets/done/task-keys-and-dependencies/delivery-revision-record.md`
+- Delivery revision record: `tickets/in-progress/task-keys-and-dependencies/delivery-revision-record.md`
 - Current delivery revision ID: `DR-001`
 
 ## Initial Delivery Integration Refresh
@@ -47,7 +47,7 @@
   - Classified as load-related, not a regression. Not a delivery blocker.
 - Post-integration verification result: `Passed`
 - Delivery edits started only after the integrated state was current: `Yes`
-- Handoff state current with latest tracked remote base: `Yes` (re-checked before the final merge, see Repository Finalization)
+- Handoff state current with latest tracked remote base: `No`. The base was current at `e579e82b7f` for verification, but `personal` then advanced to `a716a4632e`, and merging it conflicts (see Repository Finalization).
 
 ## Verification
 
@@ -75,7 +75,7 @@
 
 ## Docs Sync Result
 
-- Docs sync artifact: `tickets/done/task-keys-and-dependencies/docs-sync-report.md`
+- Docs sync artifact: `tickets/in-progress/task-keys-and-dependencies/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated:
   - in the change: server `docs/modules/projects.md`, `docs/modules/agent_team_execution.md`, `docs/design/collaboration_model.md`; web `docs/projects.md`;
@@ -83,9 +83,9 @@
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/task-keys-and-dependencies`: `Yes`
-- Archived ticket path: `tickets/done/task-keys-and-dependencies/`
-- Evidence path hygiene: three desktop data snapshots (`evidence/desktop/dsk-001-pre-upgrade-projects/`, `dsk-002-after-first-start-projects/`, `dsk-006-before-restart-projects/`) had UUID paths of up to 237 characters under `tickets/done/`. They are archived as same-named `.tar.gz` files with identical content (16/16/18 files, counts checked). The ledger reference is updated. `python3 scripts/check_repository_artifact_hygiene.py` passed.
+- Ticket moved to `tickets/done/task-keys-and-dependencies`: `No`. It was archived in `8d4356fb43`, then moved back to `tickets/in-progress/` because finalization is blocked (DR-001).
+- Archived ticket path: — (current path `tickets/in-progress/task-keys-and-dependencies/`)
+- Evidence path hygiene: three desktop data snapshots (`evidence/desktop/dsk-001-pre-upgrade-projects/`, `dsk-002-after-first-start-projects/`, `dsk-006-before-restart-projects/`) would have had UUID paths of up to 237 characters under `tickets/done/`. They are archived as same-named `.tar.gz` files with identical content (16/16/18 files, counts checked), and the ledger reference is updated. `python3 scripts/check_repository_artifact_hygiene.py` passed with the ticket under `tickets/done/`.
 
 ## Version / Tag / Release Commit
 
@@ -95,17 +95,18 @@
 
 - Bootstrap context source: code-review handoff (base `origin/personal@c600028072`) and `RELEASE.md` (target `origin/personal`, `--no-ff` from `finalize/<ticket>`)
 - Ticket branch: `codex/task-keys-and-dependencies`
-- Ticket branch commit result: `Completed` (final commit recorded in `delivery-revision-record.md` DR-001)
-- Ticket branch push result: `Not required` (per `RELEASE.md` flow)
+- Ticket branch commit result: `Completed` (local only): `d3686fd072` (checkpoint), `97fdd0f7e2` (merge of `e579e82b7f`), `8d4356fb43` (delivery records), and the follow-up commit holding the Blocked records.
+- Ticket branch push result: `Not required` (per the `RELEASE.md` flow; not pushed)
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification: recorded in DR-001
-- Delivery-owned edits protected before re-integration: recorded in DR-001
-- Re-integration before final merge result: recorded in DR-001
-- Target branch update result: `git fetch origin personal`; `git checkout -b finalize/task-keys-and-dependencies origin/personal`
-- Merge into target result: `git merge --no-ff codex/task-keys-and-dependencies` (SHA in DR-001)
-- Push target branch result: `git push origin HEAD:personal` after re-fetching (SHA in DR-001)
-- Repository finalization status: recorded in DR-001, which is written in a follow-up record commit on `personal`, as for earlier tickets.
+- Target advanced after verification: `Yes`, `e579e82b7f` → `a716a4632e` (12 commits, including project-tool-split and the `TESTING.md` Rule 9 change)
+- Delivery-owned edits protected before re-integration: `Completed` (committed in `8d4356fb43`)
+- Re-integration before final merge result: **`Blocked`**. Merging `a716a4632e` conflicts in `project-task-tool-contract.ts`, `docs/modules/projects.md` and `docs/modules/agent_tools_mcp_server.md`. The merge was aborted. Details in DR-001.
+- Target branch update result: not started
+- Merge into target result: not started
+- Push target branch result: not started
+- Repository finalization status: **`Blocked`**
+- Blocker: target-side conflict with project-tool-split in the agent-tool contract, plus two Rule-9 failure dispositions (DR-001). Classification `Local Fix`; recipient `/software_engineering_team/implementation_engineer`.
 
 ## Release / Publication / Deployment
 
@@ -118,11 +119,21 @@
 
 ## Post-Finalization Cleanup
 
-- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies`
-- Temporary base worktree `/tmp/tkd-deliv-base-wt` (timing comparison): removed, `git worktree prune` done.
-- Worktree removal, prune, and local branch cleanup (`codex/task-keys-and-dependencies`, `finalize/task-keys-and-dependencies`): run right after the record commit is pushed, because the worktree holds this record. A receipt copy of the archived ticket is exported from the pushed commit to `/Users/normy/autobyteus_org/autobyteus-worktrees/_delivery-receipts/task-keys-and-dependencies/tickets/done/task-keys-and-dependencies/`. Results are confirmed in the terminal message.
-- Remote branch cleanup result: `Not required` (the ticket branch was never pushed)
-- Isolated instances: API/E2E stopped both (iso-51714-eb1e, iso-52802-e5b4) and removed the owned data root. None were started by delivery.
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies`. It is kept for the fix.
+- Temporary base worktree `/tmp/tkd-deliv-base-wt` (timing comparison): removed, and `git worktree prune` was run.
+- Worktree cleanup result: `Not required yet` (blocked before finalization)
+- Local ticket branch cleanup result: `Not required yet`
+- Remote branch cleanup result: `Not required` (never pushed)
+- Isolated instances: API/E2E stopped both (iso-51714-eb1e, iso-52802-e5b4) and removed the owned data root. Delivery started none.
+
+## Escalation / Reroute
+
+- Classification: `Local Fix`
+- Recommended recipient: `/software_engineering_team/implementation_engineer`
+- Why final handoff could not complete:
+  - `origin/personal` advanced after verification with project-tool-split. Its tool-contract changes conflict with this ticket's.
+  - The new `TESTING.md` Rule 9 requires cause-based fixes for FU-API-002, which this ticket's migration partly causes, and for the `task-copy-idle-lifetime` failure.
+  - Resolving them changes the source under verification, so it goes back through implementation and the validation chain.
 
 ## Release Notes Summary
 
@@ -145,7 +156,7 @@
 
 ## Verification Checks
 
-- Repository: `python3 scripts/check_repository_artifact_hygiene.py` passed, and `python3 scripts/check_licensing.py` reports "Licensing is consistent." Both are rerun on the merged state before the push (DR-001).
+- Repository: `python3 scripts/check_repository_artifact_hygiene.py` passed, and `python3 scripts/check_licensing.py` reports "Licensing is consistent." (on `97fdd0f7e2` plus the delivery edits). Both must be rerun on the final merged state.
 
 ## Rollback Criteria
 
@@ -158,10 +169,11 @@
 
 ## Final Status
 
-- Verification complete (from the evidence): `Yes`
-- Repository finalization complete: see DR-001 (record commit)
-- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`)
-- Applicable safe cleanup complete or not required: confirmed in the terminal message (DR-001)
-- Unresolved blocker: `None`
-- Successful terminal package eligible for return: after finalization and cleanup (DR-001)
-- Terminal package sent to `/solution_designer`: recorded in DR-001
+- Verification complete (from the evidence): `Yes` for the `97fdd0f7e2` integrated state. It must be re-verified after the fix.
+- Repository finalization complete: `No` (Blocked)
+- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`, No release)
+- Applicable safe cleanup complete or not required: `No` (pending finalization)
+- Unresolved blocker: target-side conflict with project-tool-split, plus Rule-9 failure dispositions (DR-001)
+- Successful terminal package eligible for return: `No`
+- Terminal package sent to `/solution_designer`: `No`
+- Reroute: `Local Fix` → `/software_engineering_team/implementation_engineer`

@@ -74,4 +74,5 @@ The base commit `8a970f214c` (merged at delivery) now requires two things. First
 
 - Result: `Pass`
 - Next delivery action: verification from evidence, handoff summary, archive, finalization (no release by default)
-- Notes: generated `autobyteus-web/generated/graphql.ts` was hand-edited for this ticket's fields only; regeneration remains a follow-up (no docs impact).
+- Notes: the delivery doc edits in `agent_tools_mcp_server.md` and the server `projects.md` tool section conflict with project-tool-split (`a716a4632e`), which rewrote the same sections. When that merge is resolved (DR-001, Local Fix), the combined docs must keep both: the new `create_project` / `update_project` tools, and the Task tools with keys and `depends_on`. Delivery re-checks the docs in DR-002.
+- Generated `autobyteus-web/generated/graphql.ts` was hand-edited for this ticket's fields only; regeneration remains a follow-up (no docs impact).

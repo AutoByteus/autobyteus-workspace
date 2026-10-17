@@ -1,5 +1,11 @@
 # Handoff Summary — task-keys-and-dependencies
 
+> **Status (DR-001): Blocked — Local Fix, not finalized.**
+> - The change was verified on `origin/personal@e579e82b7f`.
+> - `personal` then advanced to `a716a4632e`. Its project-tool-split changes conflict with this ticket in the agent-tool contract.
+> - The new `TESTING.md` Rule 9 requires cause-based fixes for two failures.
+> - Nothing was pushed or released. See `delivery-revision-record.md`.
+
 ## What Shipped
 
 - **Readable Task keys.** Every Project Task has a permanent key `<prefix>-<number>` (`autobyteus-42`).
