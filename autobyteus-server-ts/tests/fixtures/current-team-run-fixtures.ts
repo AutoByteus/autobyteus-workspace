@@ -17,7 +17,7 @@ import type { RootTeamRun } from "../../src/agent-team-execution/domain/root-tea
 import { buildInitialTeamRunExecutionTree } from "../../src/agent-team-execution/services/team-run-execution-tree-builder.js";
 import { RuntimeKind } from "../../src/runtime-management/runtime-kind-enum.js";
 import { TeamRunExecutionTreeStore } from "../../src/run-history/store/team-run-execution-tree-store.js";
-import { TeamCommunicationV1Store } from "../../src/services/team-communication/team-communication-v1-store.js";
+import { TeamCommunicationStore } from "../../src/services/team-communication/team-communication-store.js";
 
 export const testAgentNode = (
   addressValue: string,
@@ -169,7 +169,7 @@ export const writeCurrentTeamRunPackage = async (
   tree: TeamRunExecutionTreeSnapshot,
 ): Promise<void> => {
   await new TeamRunExecutionTreeStore().write(teamDir, tree);
-  await new TeamCommunicationV1Store().write(teamDir, {
+  await new TeamCommunicationStore().write(teamDir, {
     schemaVersion: 1,
     rootTeamRunId: tree.rootTeam.teamRunId,
     messages: [],

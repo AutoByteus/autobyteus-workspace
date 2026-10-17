@@ -1,8 +1,8 @@
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
-import { TeamCommunicationV1Store } from "./team-communication-v1-store.js";
-import type { TeamCommunicationMessageV1 } from "./team-communication-v1-types.js";
+import { TeamCommunicationStore } from "./team-communication-store.js";
+import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import type {
   TeamCommunicationMessage,
   TeamCommunicationProjection,
@@ -20,17 +20,17 @@ const required = (value: string, field: string): string => {
 /** Read-only API projection over the current V1 message authority. */
 export class TeamCommunicationProjectionService {
   private readonly manager: AgentTeamRunManager;
-  private readonly store: TeamCommunicationV1Store;
+  private readonly store: TeamCommunicationStore;
   private readonly layout: AgentMemoryLayout;
 
   constructor(options: {
     teamRunManager?: AgentTeamRunManager;
-    communicationStore?: TeamCommunicationV1Store;
+    communicationStore?: TeamCommunicationStore;
     memoryDir?: string;
   } = {}) {
     const memoryDir = options.memoryDir ?? appConfigProvider.config.getMemoryDir();
     this.manager = options.teamRunManager ?? AgentTeamRunManager.getInstance();
-    this.store = options.communicationStore ?? new TeamCommunicationV1Store();
+    this.store = options.communicationStore ?? new TeamCommunicationStore();
     this.layout = new AgentMemoryLayout(memoryDir);
   }
 
@@ -64,7 +64,7 @@ export class TeamCommunicationProjectionService {
   }
 }
 
-const projectMessage = (message: TeamCommunicationMessageV1): TeamCommunicationMessage => ({
+const projectMessage = (message: CollaborationCommunicationMessage): TeamCommunicationMessage => ({
   messageId: message.messageId,
   senderAgentRunId: message.senderAgentRunId,
   receiverAgentRunId: message.receiverAgentRunId,

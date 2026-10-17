@@ -26,7 +26,7 @@ import type { CollaborationAgentPlatformBindingChange } from "../../agent-collab
 import { createCollaborationAgentStatusSnapshot, type CollaborationAgentExecutionEvent } from "../../agent-collaboration/execution/domain/collaboration-agent-execution-event.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "./agent-org-run-execution-tree.js";
 import type { AgentOrgRunEvent } from "./agent-org-run-event.js";
-import type { AgentOrgCommunicationMessagesFileV1 } from "../persistence/agent-org-communication-messages-v1.js";
+import type { AgentOrgCommunicationMessagesFile } from "../persistence/agent-org-communication-messages.js";
 import { AgentOrgExecutionIndex } from "../services/agent-org-execution-index.js";
 import { AgentOrgTaskExecutionAdapter, type ResolvedAgentOrgRecipient } from "../services/agent-org-task-execution-adapter.js";
 import { AgentOrgCommunicationAdapter } from "../services/agent-org-communication-adapter.js";
@@ -52,7 +52,7 @@ export type AgentOrgRunPackageSnapshot = Readonly<{
   tree: AgentOrgRunExecutionTreeSnapshot;
   /** Task executions of `tree` whose Task is DONE or CANCELLED (read at the same point as the tree). */
   closedTaskExecutions: readonly TaskExecutionReference[];
-  messages: AgentOrgCommunicationMessagesFileV1;
+  messages: AgentOrgCommunicationMessagesFile;
   statuses: readonly CollaborationAgentStatusSnapshot[];
   inputStates: readonly import("../../agent-collaboration/execution/domain/live-agent-input-snapshot.js").LiveAgentInputSnapshot[];
 }>;
@@ -61,7 +61,7 @@ export type AgentOrgRunPackageSnapshot = Readonly<{
 export class AgentOrgRun implements ActiveRootMessageBoundary {
   private lifecycle: "activating" | "active" | "terminating" | "terminated" | "fail_stop" = "activating";
   private tree: AgentOrgRunExecutionTreeSnapshot;
-  private messages: AgentOrgCommunicationMessagesFileV1;
+  private messages: AgentOrgCommunicationMessagesFile;
   private index: AgentOrgExecutionIndex;
   private readonly taskExecutions: RootTaskExecutionLifecycle<ResolvedAgentOrgRecipient>;
   private readonly communication: RootCommunicationEngine;
@@ -190,7 +190,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     this.lifecycle = "active";
   }
   getExecutionTreeSnapshot(): AgentOrgRunExecutionTreeSnapshot { return this.tree; }
-  getCommunicationSnapshot(): AgentOrgCommunicationMessagesFileV1 { return this.messages; }
+  getCommunicationSnapshot(): AgentOrgCommunicationMessagesFile { return this.messages; }
   getAgentStatusSnapshots(): readonly CollaborationAgentStatusSnapshot[] {
     return projectAgentOrgAgentStatusSnapshots({
       tree: this.tree,

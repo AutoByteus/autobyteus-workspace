@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
-import { TeamCommunicationV1Store } from "../../../../src/services/team-communication/team-communication-v1-store.js";
+import { TeamCommunicationStore } from "../../../../src/services/team-communication/team-communication-store.js";
 import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/team-run-execution-tree-store.js";
 import { TeamRunHistoryIndexStore } from "../../../../src/run-history/store/team-run-history-index-store.js";
 import { resetRootRunPackageReadinessIndex } from "../../../../src/run-history/services/root-run-package-readiness-index.js";
@@ -27,7 +27,7 @@ const fixture = async () => {
     children: [testAgentNode("/planner", { agentRunId: "planner-run" })] });
   await Promise.all([
     new TeamRunExecutionTreeStore().write(dir, tree),
-    new TeamCommunicationV1Store().write(dir, { schemaVersion: 1, rootTeamRunId: id, messages: [] }),
+    new TeamCommunicationStore().write(dir, { schemaVersion: 1, rootTeamRunId: id, messages: [] }),
   ]);
   return { root, id };
 };

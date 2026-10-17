@@ -2,7 +2,7 @@ import { RootTaskPersistenceFinalizationIndeterminateError } from "../../agent-c
 import type { RunPackageFileWriteResult } from "../../run-history/store/atomic-run-package-file-commit-writer.js";
 import type { StandaloneRootPackageStore } from "../persistence/standalone-root-package-store.js";
 import type {
-  StandaloneRootMessagesFileV1,
+  StandaloneRootMessagesFile,
   StandaloneRootTreeSnapshot,
 } from "../domain/standalone-root-tree.js";
 
@@ -29,7 +29,7 @@ export class StandaloneRootPersistenceCoordinator {
     collaborationDir: string;
     store: StandaloneRootPackageStore;
     packageExists: boolean;
-    getMessages(): StandaloneRootMessagesFileV1;
+    getMessages(): StandaloneRootMessagesFile;
     onPackageCreated(): Promise<void>;
     enterPersistenceFailStop(error: Error): void;
   }>) {
@@ -103,7 +103,7 @@ export class StandaloneRootPersistenceCoordinator {
   }
 
   commitCommunication(input: Readonly<{
-    nextMessages: StandaloneRootMessagesFileV1;
+    nextMessages: StandaloneRootMessagesFile;
     commitAfterDurability(): void;
     cancelBeforeDurability(): void;
   }>): Promise<Readonly<{ committed: true }> | Readonly<{ committed: false; code: string; message: string }>> {

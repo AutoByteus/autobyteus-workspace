@@ -1,10 +1,10 @@
-import { validateCollaborationCommunicationMessageArrayV1 } from "../../agent-collaboration/execution/communication/collaboration-communication-message-v1-schema.js";
-import type { AgentOrgCommunicationMessagesFileV1 } from "./agent-org-communication-messages-v1.js";
+import { validateCollaborationCommunicationMessageArray } from "../../agent-collaboration/execution/communication/collaboration-communication-message-schema.js";
+import type { AgentOrgCommunicationMessagesFile } from "./agent-org-communication-messages.js";
 
-export const validateAgentOrgCommunicationMessagesV1 = (
+export const validateAgentOrgCommunicationMessages = (
   value: unknown,
   expectedOrgRunId?: string,
-): AgentOrgCommunicationMessagesFileV1 => {
+): AgentOrgCommunicationMessagesFile => {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("AgentOrg communication messages must be an object.");
   const payload = value as Record<string, unknown>;
   const actual = Object.keys(payload).sort();
@@ -25,6 +25,6 @@ export const validateAgentOrgCommunicationMessagesV1 = (
     schemaVersion: 1,
     subjectKind: "agent_org",
     orgRunId: payload.orgRunId,
-    messages: validateCollaborationCommunicationMessageArrayV1(payload.messages),
+    messages: validateCollaborationCommunicationMessageArray(payload.messages),
   });
 };

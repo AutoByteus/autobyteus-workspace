@@ -11,7 +11,7 @@ import { projectTaskTeamExecution } from "../../../src/agent-collaboration/execu
 import { TeamRunExecutionTreeLocationService } from "../../../src/run-history/services/team-run-execution-tree-location-service.js";
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
-import { AgentOrgCommunicationMessagesV1Store } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js";
+import { AgentOrgCommunicationMessagesStore } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
 import { address, testAgentNode, testAgentTeamNode, testExecutionTree, writeCurrentTeamRunPackage } from "../../fixtures/current-team-run-fixtures.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 
@@ -195,7 +195,7 @@ describe("AgentMemoryLocationService current V1 tree", () => {
         testOrgTeamNode({ address: "/delivery", teamRunId: "org-delivery-team", coordinatorAddress: lead.address, members: [lead] }),
       ],
     }));
-    await new AgentOrgCommunicationMessagesV1Store().write(layout.getOrgDirPath("org-root"), {
+    await new AgentOrgCommunicationMessagesStore().write(layout.getOrgDirPath("org-root"), {
       schemaVersion: 1,
       subjectKind: "agent_org",
       orgRunId: "org-root",

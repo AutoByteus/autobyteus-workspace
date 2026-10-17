@@ -8,7 +8,7 @@ import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-
 import { AgentOrgExecutionTreeLocationService } from "../../../src/agent-org-execution/services/agent-org-execution-tree-location-service.js";
 import { assertAgentTeamAddress } from "../../../src/agent-collaboration/domain/agent-team-address.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../../src/agent-org-execution/domain/agent-org-run-execution-tree.js";
-import { AgentOrgCommunicationMessagesV1Store } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js";
+import { AgentOrgCommunicationMessagesStore } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
 import { resetCollaborationRunHistoryCatalogState } from "../../../src/run-history/services/collaboration-run-history-catalog-core.js";
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
@@ -76,7 +76,7 @@ describe("AgentOrgMemoryExplorerService", () => {
     const tree = orgTree(orgRunId, orgDefinitionId, withTasks);
     const packageDir = layout.getOrgDirPath(orgRunId);
     await new AgentOrgRunExecutionTreeStore().write(packageDir, tree);
-    await new AgentOrgCommunicationMessagesV1Store().write(packageDir, { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] });
+    await new AgentOrgCommunicationMessagesStore().write(packageDir, { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] });
   };
 
   const orgDir = (...parts: string[]) => path.join(memoryDir, "agent_orgs", ...parts);

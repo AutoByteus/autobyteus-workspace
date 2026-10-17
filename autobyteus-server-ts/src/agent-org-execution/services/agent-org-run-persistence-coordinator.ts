@@ -2,8 +2,8 @@ import { RootTaskPersistenceFinalizationIndeterminateError } from "../../agent-c
 import type { AgentOrgRunExecutionTreeStore } from "../../run-history/store/agent-org-run-execution-tree-store.js";
 import type { RunPackageFileWriteResult } from "../../run-history/store/atomic-run-package-file-commit-writer.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../domain/agent-org-run-execution-tree.js";
-import type { AgentOrgCommunicationMessagesFileV1 } from "../persistence/agent-org-communication-messages-v1.js";
-import type { AgentOrgCommunicationMessagesV1Store } from "../persistence/agent-org-communication-messages-v1-store.js";
+import type { AgentOrgCommunicationMessagesFile } from "../persistence/agent-org-communication-messages.js";
+import type { AgentOrgCommunicationMessagesStore } from "../persistence/agent-org-communication-messages-store.js";
 
 export class AgentOrgPersistenceFailStoppedError extends Error {
   constructor(readonly orgRunId: string) {
@@ -21,13 +21,13 @@ export class AgentOrgRunPersistenceCoordinator {
     orgRunId: string;
     orgMemoryDir: string;
     executionTreeStore: AgentOrgRunExecutionTreeStore;
-    communicationStore: AgentOrgCommunicationMessagesV1Store;
+    communicationStore: AgentOrgCommunicationMessagesStore;
     enterPersistenceFailStop(error: Error): void;
   }>) {}
 
   commitInitial(input: Readonly<{
     tree: AgentOrgRunExecutionTreeSnapshot;
-    messages: AgentOrgCommunicationMessagesFileV1;
+    messages: AgentOrgCommunicationMessagesFile;
   }>): Promise<void> {
     return this.withLock(async () => {
       // The tree is the package's primary current-family authority. Publish it
@@ -90,7 +90,7 @@ export class AgentOrgRunPersistenceCoordinator {
   }
 
   commitCommunication(input: Readonly<{
-    nextMessages: AgentOrgCommunicationMessagesFileV1;
+    nextMessages: AgentOrgCommunicationMessagesFile;
     commitAfterDurability(): void;
     cancelBeforeDurability(): void;
   }>): Promise<Readonly<{ committed: true }> | Readonly<{ committed: false; code: string; message: string }>> {

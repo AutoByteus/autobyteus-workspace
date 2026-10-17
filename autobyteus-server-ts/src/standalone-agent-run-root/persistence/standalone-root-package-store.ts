@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import fsPromises from "node:fs/promises";
 import type {
-  StandaloneRootMessagesFileV1,
+  StandaloneRootMessagesFile,
   StandaloneRootTreeFile,
 } from "../domain/standalone-root-tree.js";
 import {
@@ -14,7 +14,7 @@ import {
   getStandaloneRootTreePath,
 } from "./standalone-root-tree-path.js";
 import {
-  validateStandaloneRootMessagesV1,
+  validateStandaloneRootMessages,
   validateStandaloneRootTreePayload,
 } from "./standalone-root-tree-schema.js";
 
@@ -46,10 +46,10 @@ export class StandaloneRootPackageStore {
     }
   }
 
-  async readMessages(collaborationDir: string, hostRunId: string): Promise<StandaloneRootMessagesFileV1 | null> {
+  async readMessages(collaborationDir: string, hostRunId: string): Promise<StandaloneRootMessagesFile | null> {
     try {
       const value = JSON.parse(await fsPromises.readFile(getStandaloneRootMessagesPath(collaborationDir), "utf8")) as unknown;
-      return validateStandaloneRootMessagesV1(value, hostRunId);
+      return validateStandaloneRootMessages(value, hostRunId);
     } catch (error) {
       if (missing(error)) return null;
       throw error;
@@ -63,9 +63,9 @@ export class StandaloneRootPackageStore {
 
   writeMessages(
     collaborationDir: string,
-    messages: StandaloneRootMessagesFileV1,
+    messages: StandaloneRootMessagesFile,
   ): Promise<RunPackageFileWriteResult<"communication_messages">> {
-    const normalized = validateStandaloneRootMessagesV1(messages, messages.hostRunId);
+    const normalized = validateStandaloneRootMessages(messages, messages.hostRunId);
     return this.writer.write({
       file: "communication_messages",
       filePath: getStandaloneRootMessagesPath(collaborationDir),

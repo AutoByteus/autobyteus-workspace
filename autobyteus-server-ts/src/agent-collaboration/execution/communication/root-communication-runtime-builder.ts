@@ -4,7 +4,7 @@ import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import { rootExecutionIdentityKey } from "../domain/root-execution-identity.js";
 import type { RootCommunicationDeliveryInput } from "./root-communication-adapter.js";
 import { receivedMessageHeader } from "./received-message-header.js";
-import type { CollaborationCommunicationMessageV1 } from "./collaboration-communication-message-v1.js";
+import type { CollaborationCommunicationMessage } from "./collaboration-communication-message.js";
 
 const references = (values: readonly string[] | null | undefined): readonly string[] => Object.freeze([
   ...new Set((values ?? []).map((value) => value.trim()).filter(Boolean)),
@@ -14,7 +14,7 @@ const hash = (values: readonly string[]): string => createHash("sha256")
 
 export const buildRootCommunicationInputMessage = (input: {
   delivery: RootCommunicationDeliveryInput;
-  message: CollaborationCommunicationMessageV1;
+  message: CollaborationCommunicationMessage;
 }): AgentInputUserMessage => {
   const files = references(input.message.referenceFiles);
   const fileBlock = files.length ? `\n\nReference files:\n${files.map((file) => `- ${file}`).join("\n")}` : "";

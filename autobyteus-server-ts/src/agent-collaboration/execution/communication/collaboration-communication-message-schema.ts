@@ -1,5 +1,5 @@
 import path from "node:path";
-import type { CollaborationCommunicationMessageV1 } from "./collaboration-communication-message-v1.js";
+import type { CollaborationCommunicationMessage } from "./collaboration-communication-message.js";
 
 const record = (value: unknown, label: string): Record<string, unknown> => {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error(`${label} must be an object.`);
@@ -34,10 +34,10 @@ const references = (value: unknown, label: string): readonly string[] => {
   }));
 };
 
-export const validateCollaborationCommunicationMessageV1 = (
+export const validateCollaborationCommunicationMessage = (
   value: unknown,
   label = "message",
-): CollaborationCommunicationMessageV1 => {
+): CollaborationCommunicationMessage => {
   const message = record(value, label);
   exactKeys(message, [
     "messageId", "senderAgentRunId", "receiverAgentRunId", "content", "messageType",
@@ -54,14 +54,14 @@ export const validateCollaborationCommunicationMessageV1 = (
   });
 };
 
-export const validateCollaborationCommunicationMessageArrayV1 = (
+export const validateCollaborationCommunicationMessageArray = (
   value: unknown,
   label = "messages",
-): readonly CollaborationCommunicationMessageV1[] => {
+): readonly CollaborationCommunicationMessage[] => {
   if (!Array.isArray(value)) throw new Error(`${label} must be an array.`);
   const ids = new Set<string>();
   return Object.freeze(value.map((entry, index) => {
-    const message = validateCollaborationCommunicationMessageV1(entry, `${label}[${index}]`);
+    const message = validateCollaborationCommunicationMessage(entry, `${label}[${index}]`);
     if (ids.has(message.messageId)) throw new Error(`Duplicate message ID '${message.messageId}'.`);
     ids.add(message.messageId);
     return message;

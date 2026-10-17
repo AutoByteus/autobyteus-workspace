@@ -3,7 +3,7 @@ import { AgentOrgExecutionIndex } from "../../../agent-org-execution/services/ag
 import { validateAgentOrgStatePackage } from "../../../agent-org-execution/services/agent-org-state-package-validator.js";
 // SR-006 adaptation: task records are released evidence only, read through the frozen records v1 module.
 import { AgentOrgTaskDelegationRecordsV1Store } from "../../legacy/released-run-package-shapes/agent-org-task-delegation-records-v1-store.js";
-import { AgentOrgCommunicationMessagesV1Store } from "../../../agent-org-execution/persistence/agent-org-communication-messages-v1-store.js";
+import { AgentOrgCommunicationMessagesStore } from "../../../agent-org-execution/persistence/agent-org-communication-messages-store.js";
 import type { AppDataMigrationDefinition, AppDataMigrationExecutionResult, AppDataMigrationItemDetail } from "../../domain/app-data-migration-types.js";
 import { AGENT_ORG_FLAT_TEAM_FAMILIES_V1_MIGRATION_ID } from "../agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.js";
 import { RAW_TRACE_ACTIVE_FILE_NAME_MIGRATION_ID } from "../raw-trace-active-file-name-migration.js";
@@ -39,7 +39,7 @@ type MigrationDependencies = Readonly<{
   index: Pick<AgentOrgRunHistoryIndexStore, "readIndex" | "writeIndex">;
   trees: Pick<AgentOrgRunExecutionTreeStore, "read">;
   tasks: Pick<AgentOrgTaskDelegationRecordsV1Store, "read">;
-  messages: Pick<AgentOrgCommunicationMessagesV1Store, "read">;
+  messages: Pick<AgentOrgCommunicationMessagesStore, "read">;
   summaryWriter: AgentOrgRunHistorySummaryWriter;
   readCorpus(runDir: string): Promise<readonly Record<string, unknown>[]>;
 }>;
@@ -69,7 +69,7 @@ export class AgentOrgHistoryFirstMessageSummaryV1AppDataMigration implements App
       index,
       trees: dependencies.trees ?? new AgentOrgRunExecutionTreeStore(),
       tasks: dependencies.tasks ?? new AgentOrgTaskDelegationRecordsV1Store(),
-      messages: dependencies.messages ?? new AgentOrgCommunicationMessagesV1Store(),
+      messages: dependencies.messages ?? new AgentOrgCommunicationMessagesStore(),
       summaryWriter: dependencies.summaryWriter ?? new AgentOrgRunHistorySummaryWriter(index),
       readCorpus: dependencies.readCorpus ?? readStrictCurrentRawTraceCorpus,
     };

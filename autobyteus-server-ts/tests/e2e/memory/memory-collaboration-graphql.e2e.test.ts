@@ -9,7 +9,7 @@ import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { assertAgentTeamAddress } from "../../../src/agent-collaboration/domain/agent-team-address.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
-import { AgentOrgCommunicationMessagesV1Store } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js";
+import { AgentOrgCommunicationMessagesStore } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../../src/agent-org-execution/domain/agent-org-run-execution-tree.js";
 import type { TeamRunExecutionTreeSnapshot } from "../../../src/agent-team-execution/domain/team-run-execution-tree.js";
 import { resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
@@ -19,7 +19,7 @@ import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/ag
 import { AgentOrgRunHistoryIndexStore } from "../../../src/run-history/store/agent-org-run-history-index-store.js";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
 import { TeamRunHistoryIndexStore } from "../../../src/run-history/store/team-run-history-index-store.js";
-import { TeamCommunicationV1Store } from "../../../src/services/team-communication/team-communication-v1-store.js";
+import { TeamCommunicationStore } from "../../../src/services/team-communication/team-communication-store.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { address, testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 
@@ -43,7 +43,7 @@ const writeTeamRoot = async (memoryRoot: string, tree: TeamRunExecutionTreeSnaps
   const packageDir = new AgentMemoryLayout(memoryRoot).getTeamDirPath({ rootTeamRunId, ancestorTeamRunIds: [] });
   await new TeamRunExecutionTreeStore().write(packageDir, tree);
   if (options.sidecars === false) return packageDir;
-  await new TeamCommunicationV1Store().write(packageDir, { schemaVersion: 1, rootTeamRunId, messages: [] });
+  await new TeamCommunicationStore().write(packageDir, { schemaVersion: 1, rootTeamRunId, messages: [] });
   return packageDir;
 };
 
@@ -51,7 +51,7 @@ const writeOrgRoot = async (memoryRoot: string, tree: AgentOrgRunExecutionTreeSn
   const orgRunId = tree.rootOrg.orgRunId;
   const packageDir = new AgentMemoryLayout(memoryRoot).getOrgDirPath(orgRunId);
   await new AgentOrgRunExecutionTreeStore().write(packageDir, tree);
-  await new AgentOrgCommunicationMessagesV1Store().write(packageDir, { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] });
+  await new AgentOrgCommunicationMessagesStore().write(packageDir, { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] });
   return packageDir;
 };
 

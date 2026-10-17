@@ -6,7 +6,7 @@ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-u
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 import { TeamCommunicationService } from "../../services/team-communication/team-communication-service.js";
-import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-v1-types.js";
+import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-messages-file.js";
 import type { InterAgentMessageDeliveryIntent } from "./inter-agent-message-delivery.js";
 import {
   createTeamAgentStatusDetails,

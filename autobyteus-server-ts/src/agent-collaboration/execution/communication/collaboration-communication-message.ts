@@ -1,4 +1,4 @@
-export type CollaborationCommunicationMessageV1 = Readonly<{
+export type CollaborationCommunicationMessage = Readonly<{
   messageId: string;
   senderAgentRunId: string;
   receiverAgentRunId: string;

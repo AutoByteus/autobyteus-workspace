@@ -46,7 +46,7 @@ import { getTaskDelegationToolManifestEntry } from "../../../src/agent-tools/tas
 import { TaskDelegationToolService } from "../../../src/agent-tools/task-delegation/task-delegation-tool-service.js";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
 import { getTeamRunExecutionTreePath } from "../../../src/run-history/store/team-run-execution-tree-path.js";
-import { TeamCommunicationV1Store } from "../../../src/services/team-communication/team-communication-v1-store.js";
+import { TeamCommunicationStore } from "../../../src/services/team-communication/team-communication-store.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definition/domain/agent-team-definition.js";
@@ -291,7 +291,7 @@ const createHarness = async () => {
   const messages = Object.freeze({ schemaVersion: 1 as const, rootTeamRunId, messages: Object.freeze([]) });
   const rootDir = new AgentMemoryLayout(memoryDir).getTeamDirPath({ rootTeamRunId, ancestorTeamRunIds: [] });
   const treeStore = new TeamRunExecutionTreeStore();
-  const communicationStore = new TeamCommunicationV1Store();
+  const communicationStore = new TeamCommunicationStore();
   await Promise.all([treeStore.write(rootDir, tree), communicationStore.write(rootDir, messages)]);
   const backend = new TestTeamBackend(
     createRootExecutionPhysicalScope({ root: createTeamRootExecutionIdentity(rootTeamRunId), ancestorTeamRunIds: [] }),

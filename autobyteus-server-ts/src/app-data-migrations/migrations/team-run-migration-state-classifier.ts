@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { TaskDelegationRecordsV1Store } from "../legacy/released-run-package-shapes/team-task-delegation-records-v1-store.js";
-import { TeamCommunicationV1Store } from "../../services/team-communication/team-communication-v1-store.js";
+import { TeamCommunicationStore } from "../../services/team-communication/team-communication-store.js";
 import type { ValidatedTeamRunStatePackage } from "./team-run-execution-tree-v1/team-run-state-package-v1-validator.js";
 import { validateTeamRunStatePackage } from "./team-run-execution-tree-v1/team-run-state-package-v1-validator.js";
 import { TeamRunExecutionTreeV1Store } from "./team-run-execution-tree-v1/team-run-execution-tree-v1-store.js";
@@ -182,7 +182,7 @@ export class TeamRunMigrationStateClassifier {
         const [executionTree, taskRecords, communicationMessages] = await Promise.all([
           new TeamRunExecutionTreeV1Store().read(rootDir, rootTeamRunId),
           new TaskDelegationRecordsV1Store().read(rootDir, rootTeamRunId),
-          new TeamCommunicationV1Store().read(rootDir, rootTeamRunId),
+          new TeamCommunicationStore().read(rootDir, rootTeamRunId),
         ]);
         if (!executionTree || !taskRecords || !communicationMessages) {
           throw new Error("TeamRun V1 package reader returned an incomplete package.");

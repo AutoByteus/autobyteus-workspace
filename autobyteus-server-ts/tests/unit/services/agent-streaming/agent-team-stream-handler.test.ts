@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentSessionManager } from "../../../../src/services/agent-streaming/agent-session-manager.js";
 import { AgentTeamStreamHandler } from "../../../../src/services/agent-streaming/agent-team-stream-handler.js";
 import { validateTeamRunExecutionTreePayload } from "../../../../src/run-history/store/team-run-execution-tree-schema.js";
-import { validateTeamCommunicationMessagesV1Payload } from "../../../../src/services/team-communication/team-communication-v1-schema.js";
+import { validateTeamCommunicationMessagesPayload } from "../../../../src/services/team-communication/team-communication-messages-schema.js";
 import { TeamRunEventSourceType } from "../../../../src/agent-team-execution/domain/team-run-event.js";
 import { createTeamAgentExecutionBinding } from "../../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
 import { createTeamAgentStatusDetails } from "../../../../src/agent-team-execution/domain/team-agent-status.js";
@@ -20,7 +20,7 @@ const recordsDir = path.resolve(
 );
 const json = (dir: string, name: string) => JSON.parse(fs.readFileSync(path.join(dir, name), "utf8")) as unknown;
 const tree = validateTeamRunExecutionTreePayload(json(scenarioDir, "team_run_execution_tree.json"), "team-run-root");
-const messages = validateTeamCommunicationMessagesV1Payload(json(recordsDir, "team_communication_messages.json"), "team-run-root");
+const messages = validateTeamCommunicationMessagesPayload(json(recordsDir, "team_communication_messages.json"), "team-run-root");
 
 const sent = (connection: { send: ReturnType<typeof vi.fn> }) =>
   connection.send.mock.calls.map(([raw]) => JSON.parse(String(raw)) as { type: string; payload: Record<string, unknown> });

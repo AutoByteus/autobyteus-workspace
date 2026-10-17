@@ -6,9 +6,9 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AgentMemoryLayout } from '../../../../src/agent-memory/store/agent-memory-layout.js';
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from '../../../../src/run-history/services/root-run-package-readiness-index.js';
 import { TeamRunExecutionTreeStore } from '../../../../src/run-history/store/team-run-execution-tree-store.js';
-import { TeamCommunicationV1Store } from '../../../../src/services/team-communication/team-communication-v1-store.js';
+import { TeamCommunicationStore } from '../../../../src/services/team-communication/team-communication-store.js';
 import { AgentOrgRunExecutionTreeStore } from '../../../../src/run-history/store/agent-org-run-execution-tree-store.js';
-import { AgentOrgCommunicationMessagesV1Store } from '../../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js';
+import { AgentOrgCommunicationMessagesStore } from '../../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js';
 import { testAgentNode, testExecutionTree } from '../../../fixtures/current-team-run-fixtures.js';
 import { testAgentOrgExecutionTree, testOrgAgentNode } from '../../../fixtures/current-agent-org-run-fixtures.js';
 
@@ -35,7 +35,7 @@ const writeTeam = async (memoryDir: string, id: string): Promise<string> => {
     coordinatorAddress: '/coordinator',
     children: [testAgentNode('/coordinator', { agentRunId: `${id}-agent` })],
   }));
-  await new TeamCommunicationV1Store().write(packagePath, { schemaVersion: 1, rootTeamRunId: id, messages: [] });
+  await new TeamCommunicationStore().write(packagePath, { schemaVersion: 1, rootTeamRunId: id, messages: [] });
   return packagePath;
 };
 
@@ -46,7 +46,7 @@ const writeOrg = async (memoryDir: string, id: string): Promise<string> => {
     orgRunId: id,
     members: [testOrgAgentNode('/direct', `${id}-agent`)],
   }));
-  await new AgentOrgCommunicationMessagesV1Store().write(packagePath, { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: id, messages: [] });
+  await new AgentOrgCommunicationMessagesStore().write(packagePath, { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: id, messages: [] });
   return packagePath;
 };
 

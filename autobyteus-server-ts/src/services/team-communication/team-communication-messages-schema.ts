@@ -1,7 +1,7 @@
 import {
-  validateCollaborationCommunicationMessageArrayV1,
-} from "../../agent-collaboration/execution/communication/collaboration-communication-message-v1-schema.js";
-import type { TeamCommunicationMessagesFileV1 } from "./team-communication-v1-types.js";
+  validateCollaborationCommunicationMessageArray,
+} from "../../agent-collaboration/execution/communication/collaboration-communication-message-schema.js";
+import type { TeamCommunicationMessagesFile } from "./team-communication-messages-file.js";
 
 const record = (value: unknown): Record<string, unknown> => {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("Team communication messages must be an object.");
@@ -11,10 +11,10 @@ const required = (value: unknown, label: string): string => {
   if (typeof value !== "string" || !value || value !== value.trim()) throw new Error(`${label} must be a non-empty trimmed string.`);
   return value;
 };
-export const validateTeamCommunicationMessagesV1Payload = (
+export const validateTeamCommunicationMessagesPayload = (
   value: unknown,
   expectedRootTeamRunId?: string,
-): TeamCommunicationMessagesFileV1 => {
+): TeamCommunicationMessagesFile => {
   const payload = record(value);
   const actual = Object.keys(payload).sort();
   const expected = ["messages", "rootTeamRunId", "schemaVersion"];
@@ -29,6 +29,6 @@ export const validateTeamCommunicationMessagesV1Payload = (
   return Object.freeze({
     schemaVersion: 1,
     rootTeamRunId,
-    messages: validateCollaborationCommunicationMessageArrayV1(payload.messages),
+    messages: validateCollaborationCommunicationMessageArray(payload.messages),
   });
 };

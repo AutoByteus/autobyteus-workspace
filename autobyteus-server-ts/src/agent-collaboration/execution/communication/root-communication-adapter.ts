@@ -4,7 +4,7 @@ import type {
   CollaborationMemberExecutionIdentity,
   RootExecutionIdentity,
 } from "../domain/root-execution-identity.js";
-import type { CollaborationCommunicationMessageV1 } from "./collaboration-communication-message-v1.js";
+import type { CollaborationCommunicationMessage } from "./collaboration-communication-message.js";
 
 export type RootCommunicationDeliveryInput = Readonly<{
   senderIdentity: CollaborationMemberExecutionIdentity;
@@ -25,20 +25,20 @@ export type RootCommunicationAppendResult =
 /** Subject-private persistence and event port for RootCommunicationEngine. */
 export interface RootCommunicationAdapter {
   readonly root: RootExecutionIdentity;
-  readonly initialMessages: readonly CollaborationCommunicationMessageV1[];
+  readonly initialMessages: readonly CollaborationCommunicationMessage[];
   isOpen(): boolean;
   assertDeliveryAllowed(sender: CollaborationMemberExecutionIdentity, receiver: CollaborationMemberExecutionIdentity): void;
   isCurrentAgent(identity: CollaborationMemberExecutionIdentity): boolean;
   buildRecipientInput(input: Readonly<{
     delivery: RootCommunicationDeliveryInput;
-    message: CollaborationCommunicationMessageV1;
+    message: CollaborationCommunicationMessage;
   }>): AgentInputUserMessage;
   reserveRecipientInput(agentRunId: string, message: AgentInputUserMessage): Promise<AgentRunInputReservationResult>;
   commitAppend(input: Readonly<{
-    message: CollaborationCommunicationMessageV1;
+    message: CollaborationCommunicationMessage;
     inputMessage: AgentInputUserMessage;
     reservation: Extract<AgentRunInputReservationResult, { reserved: true }>["reservation"];
-    getCurrentMessages(): readonly CollaborationCommunicationMessageV1[];
-    commitMessages(messages: readonly CollaborationCommunicationMessageV1[]): void;
+    getCurrentMessages(): readonly CollaborationCommunicationMessage[];
+    commitMessages(messages: readonly CollaborationCommunicationMessage[]): void;
   }>): Promise<RootCommunicationAppendResult>;
 }

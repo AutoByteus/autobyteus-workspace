@@ -17,7 +17,7 @@ import { type AssignToExistingCopyInput, type SpawnTaskInput, type TaskDelegatio
 import { delegateToResolvedTarget } from "../../agent-collaboration/execution/task/task-delegation-target.js";
 import { buildTaskWorkMessageInput } from "../../agent-collaboration/execution/task/task-execution-input.js";
 import type { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
-import type { CollaborationCommunicationMessageV1 } from "../../agent-collaboration/execution/communication/collaboration-communication-message-v1.js";
+import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import type { ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { RootEventPublisher } from "../../agent-collaboration/execution/services/root-event-publisher.js";
 import type { RootAgentExecutionRegistry } from "../../agent-collaboration/execution/backends/root-agent-execution-registry.js";
@@ -167,7 +167,7 @@ export class StandaloneRootMessageDelivery {
       : this.options.teams.require(agent.host.hostRunId).reserveDirectAgentInput(agentRunId, message);
   }
 
-  presentCommittedCommunication(message: CollaborationCommunicationMessageV1, receiverInput: AgentInputUserMessage): void {
+  presentCommittedCommunication(message: CollaborationCommunicationMessage, receiverInput: AgentInputUserMessage): void {
     const index = this.options.getIndex();
     const receiver = index.requireAgent(message.receiverAgentRunId);
     if (receiver.executionKind === "host") {

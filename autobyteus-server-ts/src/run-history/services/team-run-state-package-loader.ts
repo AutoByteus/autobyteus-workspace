@@ -1,4 +1,4 @@
-import type { TeamCommunicationV1Store } from "../../services/team-communication/team-communication-v1-store.js";
+import type { TeamCommunicationStore } from "../../services/team-communication/team-communication-store.js";
 import type { TeamRunExecutionTreeStore } from "../store/team-run-execution-tree-store.js";
 import {
   validateTeamRunStatePackage,
@@ -16,7 +16,7 @@ export type TeamRunStatePackageLoadResult =
 export class TeamRunStatePackageLoader {
   constructor(private readonly options: {
     executionTreeStore: TeamRunExecutionTreeStore;
-    communicationStore: TeamCommunicationV1Store;
+    communicationStore: TeamCommunicationStore;
   }) {}
 
   async load(input: { teamMemoryDir: string; rootTeamRunId: string }): Promise<TeamRunStatePackageLoadResult> {

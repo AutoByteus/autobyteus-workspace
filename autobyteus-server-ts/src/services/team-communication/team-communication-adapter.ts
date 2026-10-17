@@ -1,6 +1,6 @@
 import type { RootCommunicationAdapter } from "../../agent-collaboration/execution/communication/root-communication-adapter.js";
 import { createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import type { CollaborationCommunicationMessageV1 } from "../../agent-collaboration/execution/communication/collaboration-communication-message-v1.js";
+import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import type { AgentRunInputReservationResult } from "../../agent-execution/input/agent-run-input-contract.js";
 import { buildDeliveryEndpointForParticipant } from "../../agent-team-execution/domain/inter-agent-message-delivery.js";
 import type { TeamRunEvent } from "../../agent-team-execution/domain/team-run-event.js";
@@ -12,7 +12,7 @@ import {
 } from "../../agent-team-execution/services/team-run-persistence-contract.js";
 import { buildInterAgentDeliveryInputMessage } from "../../agent-team-execution/services/inter-agent-message-runtime-builders.js";
 import { createTeamCommunicationMessageAppendPlan } from "./team-communication-message-append-plan.js";
-import type { TeamCommunicationMessagesSnapshot } from "./team-communication-v1-types.js";
+import type { TeamCommunicationMessagesSnapshot } from "./team-communication-messages-file.js";
 
 export type TeamCommunicationAdapterOptions = Readonly<{
   rootTeamRunId: string;
@@ -101,7 +101,7 @@ export class TeamCommunicationAdapter implements RootCommunicationAdapter {
     throw new Error(`Team message finalization is indeterminate at '${result.stage}'.`);
   }
 
-  private envelope(messages: readonly CollaborationCommunicationMessageV1[]): TeamCommunicationMessagesSnapshot {
+  private envelope(messages: readonly CollaborationCommunicationMessage[]): TeamCommunicationMessagesSnapshot {
     return Object.freeze({ schemaVersion: 1, rootTeamRunId: this.options.rootTeamRunId, messages });
   }
 }

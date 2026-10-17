@@ -11,7 +11,7 @@ import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-
 import { resetTeamRunHistoryCatalogState } from "../../../src/run-history/services/team-run-history-catalog-service.js";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
 import { TeamRunHistoryIndexStore } from "../../../src/run-history/store/team-run-history-index-store.js";
-import { TeamCommunicationV1Store } from "../../../src/services/team-communication/team-communication-v1-store.js";
+import { TeamCommunicationStore } from "../../../src/services/team-communication/team-communication-store.js";
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { addTaskExecutionToTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-mutator.js";
 import { projectTaskAgentExecution, projectTaskTeamExecution } from "../../../src/agent-collaboration/execution/task/task-execution-tree-projection.js";
@@ -76,7 +76,7 @@ describe("TeamMemoryExplorerService current V1 tree", () => {
       });
       const packageDir = layout.getTeamDirPath({ rootTeamRunId: runId, ancestorTeamRunIds: [] });
       await store.write(packageDir, tree);
-      await new TeamCommunicationV1Store().write(packageDir, {
+      await new TeamCommunicationStore().write(packageDir, {
         schemaVersion: 1, rootTeamRunId: runId, messages: [],
       });
     }
@@ -234,7 +234,7 @@ describe("TeamMemoryExplorerService member identity and invalid roots", () => {
     const brokenDir = layout.getTeamDirPath({ rootTeamRunId: "broken-root", ancestorTeamRunIds: [] });
     await fs.mkdir(brokenDir, { recursive: true });
     await fs.writeFile(path.join(brokenDir, "team_run_execution_tree.json"), "{ not json", "utf8");
-    await new TeamCommunicationV1Store().write(brokenDir, { schemaVersion: 1, rootTeamRunId: "broken-root", messages: [] });
+    await new TeamCommunicationStore().write(brokenDir, { schemaVersion: 1, rootTeamRunId: "broken-root", messages: [] });
 
     const page = await serviceWithoutHistory().listAgentTeamsWithMemory();
 
@@ -255,7 +255,7 @@ describe("TeamMemoryExplorerService member identity and invalid roots", () => {
     });
     const mismatchDir = layout.getTeamDirPath({ rootTeamRunId: "mismatch-root", ancestorTeamRunIds: [] });
     await new TeamRunExecutionTreeStore().write(mismatchDir, foreign);
-    await new TeamCommunicationV1Store().write(mismatchDir, { schemaVersion: 1, rootTeamRunId: "mismatch-root", messages: [] });
+    await new TeamCommunicationStore().write(mismatchDir, { schemaVersion: 1, rootTeamRunId: "mismatch-root", messages: [] });
     await touch(path.join(memoryDir, "agent_teams", "mismatch-root", "foreign-teacher-run", "semantic.jsonl"), Date.parse("2026-08-15T03:00:00.000Z"));
 
     const page = await serviceWithoutHistory().listAgentTeamsWithMemory();
@@ -322,7 +322,7 @@ describe("TeamMemoryExplorerService execution structure (REQ-012)", () => {
     });
     const packageDir = layout.getTeamDirPath({ rootTeamRunId: "structure-root", ancestorTeamRunIds: [] });
     await new TeamRunExecutionTreeStore().write(packageDir, tree);
-    await new TeamCommunicationV1Store().write(packageDir, { schemaVersion: 1, rootTeamRunId: "structure-root", messages: [] });
+    await new TeamCommunicationStore().write(packageDir, { schemaVersion: 1, rootTeamRunId: "structure-root", messages: [] });
     await touch(teamDir("structure-writer-run", "semantic.jsonl"), Date.parse("2026-08-15T01:00:00.000Z"));
     await touch(teamDir("task-writer-run", "semantic.jsonl"), Date.parse("2026-08-15T02:00:00.000Z"));
     await touch(teamDir("review-team-run", "reviewer-run", "semantic.jsonl"), Date.parse("2026-08-15T03:00:00.000Z"));

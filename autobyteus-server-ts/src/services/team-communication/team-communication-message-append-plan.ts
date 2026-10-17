@@ -2,11 +2,9 @@ import type { AgentRunInputReservation } from "../../agent-execution/input/agent
 import { TeamRunEventSourceType, type TeamRunEvent } from "../../agent-team-execution/domain/team-run-event.js";
 import type { PreparedTeamMessageAppend } from "../../agent-team-execution/services/team-run-persistence-contract.js";
 import { buildTeamMemberInputEventPayload } from "../../agent-team-execution/services/team-member-input-event-builder.js";
-import { validateTeamCommunicationMessagesV1Payload } from "./team-communication-v1-schema.js";
-import type {
-  TeamCommunicationMessageV1,
-  TeamCommunicationMessagesSnapshot,
-} from "./team-communication-v1-types.js";
+import { validateTeamCommunicationMessagesPayload } from "./team-communication-messages-schema.js";
+import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
+import type { TeamCommunicationMessagesSnapshot } from "./team-communication-messages-file.js";
 
 type AppendPlanState = "sealed" | "prepared" | "cancelled" | "committed" | "fail_stop_disposed";
 
@@ -17,7 +15,7 @@ type AppendPlanState = "sealed" | "prepared" | "cancelled" | "committed" | "fail
  */
 export const createTeamCommunicationMessageAppendPlan = (input: {
   rootTeamRunId: string;
-  message: TeamCommunicationMessageV1;
+  message: CollaborationCommunicationMessage;
   inputMessage: Parameters<typeof buildTeamMemberInputEventPayload>[0]["message"];
   reservation: AgentRunInputReservation;
   isAccepting(): boolean;
@@ -58,7 +56,7 @@ export const createTeamCommunicationMessageAppendPlan = (input: {
           message: "Message append conflicts with current root state.",
         };
       }
-      const nextMessages = validateTeamCommunicationMessagesV1Payload({
+      const nextMessages = validateTeamCommunicationMessagesPayload({
         ...current,
         messages: [...current.messages, input.message],
       }, input.rootTeamRunId);

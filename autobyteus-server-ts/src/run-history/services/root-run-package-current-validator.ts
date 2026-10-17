@@ -1,10 +1,10 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
-import { AgentOrgCommunicationMessagesV1Store } from "../../agent-org-execution/persistence/agent-org-communication-messages-v1-store.js";
-import { AGENT_ORG_COMMUNICATION_MESSAGES_V1_FILE_NAME } from "../../agent-org-execution/persistence/agent-org-communication-messages-v1.js";
+import { AgentOrgCommunicationMessagesStore } from "../../agent-org-execution/persistence/agent-org-communication-messages-store.js";
+import { AGENT_ORG_COMMUNICATION_MESSAGES_FILE_NAME } from "../../agent-org-execution/persistence/agent-org-communication-messages.js";
 import { validateAgentOrgStatePackage } from "../../agent-org-execution/services/agent-org-state-package-validator.js";
-import { TeamCommunicationV1Store, TEAM_COMMUNICATION_MESSAGES_V1_FILE_NAME } from "../../services/team-communication/team-communication-v1-store.js";
+import { TeamCommunicationStore, TEAM_COMMUNICATION_MESSAGES_FILE_NAME } from "../../services/team-communication/team-communication-store.js";
 import { AgentOrgRunExecutionTreeStore } from "../store/agent-org-run-execution-tree-store.js";
 import { AGENT_ORG_RUN_EXECUTION_TREE_FILE_NAME } from "../store/agent-org-run-execution-tree-path.js";
 import { TeamRunExecutionTreeStore } from "../store/team-run-execution-tree-store.js";
@@ -42,21 +42,21 @@ const exists = (filePath: string): Promise<boolean> =>
 // keeps its untouched records file on disk and is still admitted.
 const requiredTeamFiles = Object.freeze([
   TEAM_RUN_EXECUTION_TREE_FILE_NAME,
-  TEAM_COMMUNICATION_MESSAGES_V1_FILE_NAME,
+  TEAM_COMMUNICATION_MESSAGES_FILE_NAME,
 ]);
 const retiredTeamFiles = Object.freeze([
   "team_run_metadata.json",
   AGENT_ORG_RUN_EXECUTION_TREE_FILE_NAME,
-  AGENT_ORG_COMMUNICATION_MESSAGES_V1_FILE_NAME,
+  AGENT_ORG_COMMUNICATION_MESSAGES_FILE_NAME,
 ]);
 const requiredOrgFiles = Object.freeze([
   AGENT_ORG_RUN_EXECUTION_TREE_FILE_NAME,
-  AGENT_ORG_COMMUNICATION_MESSAGES_V1_FILE_NAME,
+  AGENT_ORG_COMMUNICATION_MESSAGES_FILE_NAME,
 ]);
 const retiredOrgFiles = Object.freeze([
   "team_run_metadata.json",
   TEAM_RUN_EXECUTION_TREE_FILE_NAME,
-  TEAM_COMMUNICATION_MESSAGES_V1_FILE_NAME,
+  TEAM_COMMUNICATION_MESSAGES_FILE_NAME,
 ]);
 
 
@@ -67,14 +67,14 @@ export class RootRunPackageCurrentValidator {
     private readonly memoryDir: string,
     private readonly stores: Readonly<{
       teamTree: TeamRunExecutionTreeStore;
-      teamMessages: TeamCommunicationV1Store;
+      teamMessages: TeamCommunicationStore;
       orgTree: AgentOrgRunExecutionTreeStore;
-      orgMessages: AgentOrgCommunicationMessagesV1Store;
+      orgMessages: AgentOrgCommunicationMessagesStore;
     }> = {
       teamTree: new TeamRunExecutionTreeStore(),
-      teamMessages: new TeamCommunicationV1Store(),
+      teamMessages: new TeamCommunicationStore(),
       orgTree: new AgentOrgRunExecutionTreeStore(),
-      orgMessages: new AgentOrgCommunicationMessagesV1Store(),
+      orgMessages: new AgentOrgCommunicationMessagesStore(),
     },
   ) {
     this.layout = new AgentMemoryLayout(memoryDir);

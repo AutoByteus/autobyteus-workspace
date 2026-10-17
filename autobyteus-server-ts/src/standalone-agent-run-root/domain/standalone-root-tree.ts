@@ -1,5 +1,5 @@
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
-import type { CollaborationCommunicationMessageV1 } from "../../agent-collaboration/execution/communication/collaboration-communication-message-v1.js";
+import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import type {
   IsoTimestamp,
   TaskExecution,
@@ -27,11 +27,11 @@ export type StandaloneRootTreeFile = Readonly<{
 export type StandaloneRootTreeSnapshot = StandaloneRootTreeFile;
 
 /** `memory/agents/<hostRunId>/collaboration/communication_messages.json`. */
-export type StandaloneRootMessagesFileV1 = Readonly<{
+export type StandaloneRootMessagesFile = Readonly<{
   schemaVersion: 1;
   subjectKind: "agent";
   hostRunId: string;
-  messages: readonly CollaborationCommunicationMessageV1[];
+  messages: readonly CollaborationCommunicationMessage[];
 }>;
 
 export const emptyStandaloneRootTree = (input: Readonly<{
@@ -44,5 +44,5 @@ export const emptyStandaloneRootTree = (input: Readonly<{
   taskExecutions: Object.freeze([]),
 });
 
-export const emptyStandaloneRootMessages = (hostRunId: string): StandaloneRootMessagesFileV1 =>
+export const emptyStandaloneRootMessages = (hostRunId: string): StandaloneRootMessagesFile =>
   Object.freeze({ schemaVersion: 1, subjectKind: "agent", hostRunId, messages: Object.freeze([]) });

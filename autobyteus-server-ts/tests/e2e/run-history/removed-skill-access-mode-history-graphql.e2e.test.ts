@@ -1,12 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { AgentOrgCommunicationMessagesV1Store } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js";
+import { AgentOrgCommunicationMessagesStore } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
 import { getAgentOrgRunExecutionTreePath } from "../../../src/run-history/store/agent-org-run-execution-tree-path.js";
 import { getTeamRunExecutionTreePath } from "../../../src/run-history/store/team-run-execution-tree-path.js";
-import { TeamCommunicationV1Store } from "../../../src/services/team-communication/team-communication-v1-store.js";
+import { TeamCommunicationStore } from "../../../src/services/team-communication/team-communication-store.js";
 import {
   testAgentOrgExecutionTree,
   testOrgAgentNode,
@@ -104,7 +104,7 @@ const seedStoredHistory = async (memoryDir: string, mode: (typeof STORED_MODES)[
   const teamDir = path.join(memoryDir, "agent_teams", teamRunId);
   const teamTreePath = getTeamRunExecutionTreePath(teamDir);
   writeJson(teamTreePath, team.tree);
-  await new TeamCommunicationV1Store().write(teamDir, { schemaVersion: 1, rootTeamRunId: teamRunId, messages: [] });
+  await new TeamCommunicationStore().write(teamDir, { schemaVersion: 1, rootTeamRunId: teamRunId, messages: [] });
 
   const org = withStoredMode(testAgentOrgExecutionTree({
     orgRunId,
@@ -121,7 +121,7 @@ const seedStoredHistory = async (memoryDir: string, mode: (typeof STORED_MODES)[
   const orgDir = path.join(memoryDir, "agent_orgs", orgRunId);
   const orgTreePath = getAgentOrgRunExecutionTreePath(orgDir);
   writeJson(orgTreePath, org.tree);
-  await new AgentOrgCommunicationMessagesV1Store().write(orgDir, {
+  await new AgentOrgCommunicationMessagesStore().write(orgDir, {
     schemaVersion: 1,
     subjectKind: "agent_org",
     orgRunId,

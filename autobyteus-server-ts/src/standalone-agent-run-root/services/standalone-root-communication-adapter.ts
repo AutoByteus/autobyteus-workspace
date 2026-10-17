@@ -1,9 +1,9 @@
 import type { RootCommunicationAdapter } from "../../agent-collaboration/execution/communication/root-communication-adapter.js";
 import { buildRootCommunicationInputMessage } from "../../agent-collaboration/execution/communication/root-communication-runtime-builder.js";
-import type { CollaborationCommunicationMessageV1 } from "../../agent-collaboration/execution/communication/collaboration-communication-message-v1.js";
+import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import type { AgentRunInputReservationResult } from "../../agent-execution/input/agent-run-input-contract.js";
-import { validateStandaloneRootMessagesV1 } from "../persistence/standalone-root-tree-schema.js";
-import type { StandaloneRootMessagesFileV1 } from "../domain/standalone-root-tree.js";
+import { validateStandaloneRootMessages } from "../persistence/standalone-root-tree-schema.js";
+import type { StandaloneRootMessagesFile } from "../domain/standalone-root-tree.js";
 import type { StandaloneRootPersistenceCoordinator } from "./standalone-root-persistence-coordinator.js";
 
 /** Agent-root sidecar/input/event adapter for RootCommunicationEngine (v1 messages, subjectKind `agent`). */
@@ -13,16 +13,16 @@ export class StandaloneRootCommunicationAdapter implements RootCommunicationAdap
 
   constructor(private readonly options: Readonly<{
     root: RootCommunicationAdapter["root"];
-    initial: StandaloneRootMessagesFileV1;
+    initial: StandaloneRootMessagesFile;
     persistence: StandaloneRootPersistenceCoordinator;
     isOpen(): boolean;
     isCurrentAgent: RootCommunicationAdapter["isCurrentAgent"];
   assertDeliveryAllowed: RootCommunicationAdapter["assertDeliveryAllowed"];
     reserveRecipientInput(agentRunId: string, message: ReturnType<RootCommunicationAdapter["buildRecipientInput"]>): Promise<AgentRunInputReservationResult>;
-    replaceMessages(messages: StandaloneRootMessagesFileV1): void;
-    publish(message: CollaborationCommunicationMessageV1): void;
+    replaceMessages(messages: StandaloneRootMessagesFile): void;
+    publish(message: CollaborationCommunicationMessage): void;
     presentCommittedMessage(
-      message: CollaborationCommunicationMessageV1,
+      message: CollaborationCommunicationMessage,
       receiverInput: ReturnType<RootCommunicationAdapter["buildRecipientInput"]>,
     ): void;
   }>) {
@@ -49,7 +49,7 @@ export class StandaloneRootCommunicationAdapter implements RootCommunicationAdap
       input.reservation.cancel();
       return Object.freeze({ committed: false as const, code: "AGENT_ROOT_MESSAGE_COMMIT_CONFLICT", message: "Message append conflicts with the current Agent root state." });
     }
-    const next = validateStandaloneRootMessagesV1({
+    const next = validateStandaloneRootMessages({
       schemaVersion: 1,
       subjectKind: "agent",
       hostRunId: this.root.rootRunId,

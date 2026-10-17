@@ -4,7 +4,7 @@ import path from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AgentOrgRunManager } from '../../../src/agent-org-execution/services/agent-org-run-manager.js';
 import { AgentOrgRunExecutionTreeStore } from '../../../src/run-history/store/agent-org-run-execution-tree-store.js';
-import { AgentOrgCommunicationMessagesV1Store } from '../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js';
+import { AgentOrgCommunicationMessagesStore } from '../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js';
 import { AgentOrgExecutionTreeLocationService } from '../../../src/agent-org-execution/services/agent-org-execution-tree-location-service.js';
 import { AgentOrgMemberRunViewProjectionService } from '../../../src/run-history/services/agent-org-member-run-view-projection-service.js';
 import { projectAgentOrgExecutionSnapshot } from '../../../src/services/agent-streaming/agent-org-execution-view-projector.js';
@@ -23,7 +23,7 @@ const fixture = async (taskExecutionResources?: InMemoryTaskExecutionResources) 
     delegatorAgentRunId: 'configured', startedAt: tree.createdAt }];
   const messages = { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org', messages: [] };
   await new AgentOrgRunExecutionTreeStore().write(dir, tree);
-  await new AgentOrgCommunicationMessagesV1Store().write(dir, messages as never);
+  await new AgentOrgCommunicationMessagesStore().write(dir, messages as never);
   const build = vi.fn();
   const manager = new AgentOrgRunManager({ memoryDir, scopeBuilder: { build } as never, taskExecutionResources });
   return { memoryDir, dir, tree, messages, manager, build };

@@ -5,19 +5,19 @@ import {
   type AtomicRunPackageFileCommitWriter,
   type RunPackageFileWriteResult,
 } from "../../run-history/store/atomic-run-package-file-commit-writer.js";
-import { validateTeamCommunicationMessagesV1Payload } from "./team-communication-v1-schema.js";
-import type { TeamCommunicationMessagesFileV1 } from "./team-communication-v1-types.js";
+import { validateTeamCommunicationMessagesPayload } from "./team-communication-messages-schema.js";
+import type { TeamCommunicationMessagesFile } from "./team-communication-messages-file.js";
 
-export const TEAM_COMMUNICATION_MESSAGES_V1_FILE_NAME = "team_communication_messages.json";
+export const TEAM_COMMUNICATION_MESSAGES_FILE_NAME = "team_communication_messages.json";
 
-export const getTeamCommunicationMessagesV1Path = (teamMemoryDir: string): string =>
-  path.join(path.resolve(teamMemoryDir), TEAM_COMMUNICATION_MESSAGES_V1_FILE_NAME);
+export const getTeamCommunicationMessagesPath = (teamMemoryDir: string): string =>
+  path.join(path.resolve(teamMemoryDir), TEAM_COMMUNICATION_MESSAGES_FILE_NAME);
 
 const isMissingFile = (error: unknown): boolean =>
   !!error && typeof error === "object" && "code" in error &&
   (error as { code?: unknown }).code === "ENOENT";
 
-export class TeamCommunicationV1Store {
+export class TeamCommunicationStore {
   constructor(
     private readonly writer: AtomicRunPackageFileCommitWriter = getAtomicRunPackageFileCommitWriter(),
   ) {}
@@ -25,12 +25,12 @@ export class TeamCommunicationV1Store {
   async read(
     teamMemoryDir: string,
     rootTeamRunId: string,
-  ): Promise<TeamCommunicationMessagesFileV1 | null> {
+  ): Promise<TeamCommunicationMessagesFile | null> {
     try {
       const payload = JSON.parse(
-        await fs.readFile(getTeamCommunicationMessagesV1Path(teamMemoryDir), "utf-8"),
+        await fs.readFile(getTeamCommunicationMessagesPath(teamMemoryDir), "utf-8"),
       ) as unknown;
-      return validateTeamCommunicationMessagesV1Payload(payload, rootTeamRunId);
+      return validateTeamCommunicationMessagesPayload(payload, rootTeamRunId);
     } catch (error) {
       if (isMissingFile(error)) return null;
       throw error;
@@ -39,15 +39,15 @@ export class TeamCommunicationV1Store {
 
   async write(
     teamMemoryDir: string,
-    messages: TeamCommunicationMessagesFileV1,
+    messages: TeamCommunicationMessagesFile,
   ): Promise<RunPackageFileWriteResult<"communication_messages">> {
-    const normalized = validateTeamCommunicationMessagesV1Payload(
+    const normalized = validateTeamCommunicationMessagesPayload(
       messages,
       messages.rootTeamRunId,
     );
     return this.writer.write({
       file: "communication_messages",
-      filePath: getTeamCommunicationMessagesV1Path(teamMemoryDir),
+      filePath: getTeamCommunicationMessagesPath(teamMemoryDir),
       payload: normalized,
     });
   }

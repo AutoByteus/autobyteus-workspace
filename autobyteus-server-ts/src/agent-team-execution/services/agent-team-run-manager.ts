@@ -2,7 +2,7 @@ import { isDeepStrictEqual } from "node:util";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-execution-tree-store.js";
 import { TeamRunStatePackageLoader } from "../../run-history/services/team-run-state-package-loader.js";
-import { TeamCommunicationV1Store } from "../../services/team-communication/team-communication-v1-store.js";
+import { TeamCommunicationStore } from "../../services/team-communication/team-communication-store.js";
 import { AgentTeamTerminationError } from "../errors.js";
 import { FlatTeamExecutionFactory } from "../local/flat-team-execution-factory.js";
 import { MemberExecutionContextBuilder } from "./member-team-context-builder.js";
@@ -12,7 +12,7 @@ import type { TeamRunEvent } from "../domain/team-run-event.js";
 import type { TeamRunLifecycleListener, TeamRunLifecycleSnapshot, TeamRunLifecycleUnsubscribe } from "../domain/team-run-lifecycle.js";
 import type { RootEventListener } from "./team-run-event-publisher.js";
 import { buildInitialTeamRunExecutionTree, buildTeamRunConfigFromExecutionTree } from "./team-run-execution-tree-builder.js";
-import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-v1-types.js";
+import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-messages-file.js";
 import { TeamRunPackageCatalog } from "../../run-history/services/team-run-package-catalog.js";
 import type { RunModelSelectionService, RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
 import {
@@ -49,7 +49,7 @@ export type AgentTeamRunManagerOptions = Readonly<{
   taskExecutionIdentity: TaskExecutionIdentityCapabilities;
   taskExecutionResources?: TaskExecutionResourcePort;
   executionTreeStore?: TeamRunExecutionTreeStore;
-  communicationStore?: TeamCommunicationV1Store;
+  communicationStore?: TeamCommunicationStore;
   activeRootDirectory?: ActiveCollaborationRootDirectory;
   modelSelectionValidator: RunModelSelectionValidator;
 }>;
@@ -61,7 +61,7 @@ export class AgentTeamRunManager {
   private readonly factory: FlatTeamExecutionFactory;
   private readonly memberExecutionContextBuilder: MemberExecutionContextBuilder;
   private readonly executionTreeStore: TeamRunExecutionTreeStore;
-  private readonly communicationStore: TeamCommunicationV1Store;
+  private readonly communicationStore: TeamCommunicationStore;
   private readonly packageCatalog: TeamRunPackageCatalog;
   private readonly taskExecutionIdentity: TaskExecutionIdentityCapabilities;
   private readonly taskExecutionResources?: TaskExecutionResourcePort;
@@ -115,7 +115,7 @@ export class AgentTeamRunManager {
     this.taskExecutionIdentity = options.taskExecutionIdentity;
     this.taskExecutionResources = options.taskExecutionResources;
     this.executionTreeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
-    this.communicationStore = options.communicationStore ?? new TeamCommunicationV1Store();
+    this.communicationStore = options.communicationStore ?? new TeamCommunicationStore();
     this.modelSelectionValidator = options.modelSelectionValidator;
     this.activeRootDirectory = options.activeRootDirectory ?? getActiveCollaborationRootDirectory();
   }

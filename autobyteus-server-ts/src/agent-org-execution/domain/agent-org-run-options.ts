@@ -1,6 +1,6 @@
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "./agent-org-run-execution-tree.js";
-import type { AgentOrgCommunicationMessagesFileV1 } from "../persistence/agent-org-communication-messages-v1.js";
+import type { AgentOrgCommunicationMessagesFile } from "../persistence/agent-org-communication-messages.js";
 import type { RootAgentExecutionRegistry } from "../../agent-collaboration/execution/backends/root-agent-execution-registry.js";
 import type { RootTeamExecutionDirectory } from "../../agent-collaboration/execution/backends/root-team-execution-directory.js";
 import type { FlatTeamExecutionCallbacks } from "../../agent-team-execution/local/flat-team-execution-callbacks.js";
@@ -17,7 +17,7 @@ import type { CollaboratorAdmission } from "../../agent-collaboration/collaborat
 export type AgentOrgRunOptions = Readonly<{
     root: RootExecutionIdentity;
     tree: AgentOrgRunExecutionTreeSnapshot;
-    messages: AgentOrgCommunicationMessagesFileV1;
+    messages: AgentOrgCommunicationMessagesFile;
     rootAgents: RootAgentExecutionRegistry;
     teams: RootTeamExecutionDirectory;
     callbacks: FlatTeamExecutionCallbacks;

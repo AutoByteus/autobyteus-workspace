@@ -14,7 +14,7 @@ import { RootTeamExecutionDirectory } from "../../../../src/agent-collaboration/
 import { RootAgentExecutionRegistry } from "../../../../src/agent-collaboration/execution/backends/root-agent-execution-registry.js";
 import { AgentOrgRunPersistenceCoordinator } from "../../../../src/agent-org-execution/services/agent-org-run-persistence-coordinator.js";
 import { AgentOrgRunExecutionTreeStore } from "../../../../src/run-history/store/agent-org-run-execution-tree-store.js";
-import { AgentOrgCommunicationMessagesV1Store } from "../../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js";
+import { AgentOrgCommunicationMessagesStore } from "../../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
 import { FlatTeamExecutionFactory } from "../../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import type { FlatTeamExecutionCallbacks } from "../../../../src/agent-team-execution/local/flat-team-execution-callbacks.js";
 import { RootEventPublisher } from "../../../../src/agent-collaboration/execution/services/root-event-publisher.js";
@@ -70,7 +70,7 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
   const messages = { schemaVersion: 1 as const, subjectKind: "agent_org" as const, orgRunId: root.rootRunId, messages: [] };
   const executionTreeStore = new AgentOrgRunExecutionTreeStore();
   const persistence = new AgentOrgRunPersistenceCoordinator({ orgRunId: root.rootRunId, orgMemoryDir,
-    executionTreeStore, communicationStore: new AgentOrgCommunicationMessagesV1Store(), enterPersistenceFailStop: vi.fn() });
+    executionTreeStore, communicationStore: new AgentOrgCommunicationMessagesStore(), enterPersistenceFailStop: vi.fn() });
   await persistence.commitInitial({ tree, messages });
   let run: AgentOrgRun | undefined;
   const resources = new InMemoryTaskExecutionResources();

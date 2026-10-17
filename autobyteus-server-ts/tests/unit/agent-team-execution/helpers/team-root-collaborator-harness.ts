@@ -16,7 +16,7 @@ import { materializeTeamRoot } from "../../../../src/agent-team-execution/servic
 import { buildTeamRunConfigFromExecutionTree } from "../../../../src/agent-team-execution/services/team-run-execution-tree-builder.js";
 import { createTaskExecutionIdentityCapabilities } from "../../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/team-run-execution-tree-store.js";
-import { TeamCommunicationV1Store } from "../../../../src/services/team-communication/team-communication-v1-store.js";
+import { TeamCommunicationStore } from "../../../../src/services/team-communication/team-communication-store.js";
 import { TokenUsageMigrationReadiness } from "../../../../src/token-usage/providers/token-usage-migration-readiness.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import { testAgentNode, testTeamRunConfig } from "../../../fixtures/current-team-run-fixtures.js";
@@ -63,7 +63,7 @@ export const harness = async (options: { runnable?: boolean; withTeammate?: bool
     } as never),
     taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async (id) => `${id}-run-${++allocation}` }),
     executionTreeStore: new TeamRunExecutionTreeStore(),
-    communicationStore: new TeamCommunicationV1Store(),
+    communicationStore: new TeamCommunicationStore(),
     collaboratorAdmission: admission(options.runnable ?? true),
     // Production always binds the Task side; every delegated copy belongs to a Task.
     taskExecutionResources: new InMemoryTaskExecutionResources(),

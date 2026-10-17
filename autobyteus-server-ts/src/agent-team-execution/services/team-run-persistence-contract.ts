@@ -1,6 +1,6 @@
 import { RootTaskPersistenceFinalizationIndeterminateError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
-import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-v1-types.js";
+import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-messages-file.js";
 import type {
   RunPackageDirectoryFinalizationStage,
 } from "../../run-history/store/atomic-run-package-file-commit-writer.js";

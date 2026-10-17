@@ -30,7 +30,7 @@ import { PublishedArtifactProjectionStore } from "../../services/published-artif
 import { PublishedArtifactPublicationService } from "../../services/published-artifacts/published-artifact-publication-service.js";
 import { PublishedArtifactSnapshotStore } from "../../services/published-artifacts/published-artifact-snapshot-store.js";
 import { RunFileChangeService } from "../../services/run-file-changes/run-file-change-service.js";
-import { TeamCommunicationV1Store } from "../../services/team-communication/team-communication-v1-store.js";
+import { TeamCommunicationStore } from "../../services/team-communication/team-communication-store.js";
 import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
 import { ApplicationExecutionShutdownCoordinator } from "./application-execution-shutdown-coordinator.js";
 import type { ApplicationExecutionScopeBuildInput } from "./application-execution-scope-contracts.js";
@@ -166,7 +166,7 @@ export const buildApplicationExecutionScopeKernel = (
       }),
       memberExecutionContextBuilder,
       executionTreeStore: new TeamRunExecutionTreeStore(),
-      communicationStore: new TeamCommunicationV1Store(),
+      communicationStore: new TeamCommunicationStore(),
     });
     const { agentRunService, teamRunService } = buildRunServices(input, {
       memoryLocationService,

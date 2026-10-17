@@ -30,7 +30,7 @@ import { StandaloneAgentRunRoot } from "../domain/standalone-agent-run-root.js";
 import type { StandaloneHostAgentHandle } from "../domain/standalone-host-agent-handle.js";
 import type { StandaloneRootEvent } from "../domain/standalone-root-event.js";
 import type {
-  StandaloneRootMessagesFileV1,
+  StandaloneRootMessagesFile,
   StandaloneRootTreeSnapshot,
 } from "../domain/standalone-root-tree.js";
 import { StandaloneRootPersistenceCoordinator } from "./standalone-root-persistence-coordinator.js";
@@ -54,7 +54,7 @@ export class StandaloneRootBuilder {
 
   async build(input: Readonly<{
     tree: StandaloneRootTreeSnapshot;
-    messages: StandaloneRootMessagesFileV1;
+    messages: StandaloneRootMessagesFile;
     packageExists: boolean;
     collaborationDir: string;
     host: StandaloneHostAgentHandle;
