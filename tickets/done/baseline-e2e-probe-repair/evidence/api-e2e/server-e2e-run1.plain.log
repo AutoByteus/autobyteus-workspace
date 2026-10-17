@@ -1,0 +1,974 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+ ✓ tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts (1 test) 15001ms
+ ✓ tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts (7 tests) 15050ms
+     ✓ persists the team and exact-Agent configurations and restores them after process restart  3587ms
+     ✓ rejects a 'missing' 'Team' runtime before workspace or run side effects  1857ms
+     ✓ rejects a 'blank' 'Team' runtime before workspace or run side effects  2133ms
+     ✓ rejects a 'unsupported' 'Team' runtime before workspace or run side effects  1813ms
+     ✓ rejects a 'missing' 'Agent' runtime before workspace or run side effects  1823ms
+     ✓ rejects a 'blank' 'Agent' runtime before workspace or run side effects  1976ms
+     ✓ rejects a 'unsupported' 'Agent' runtime before workspace or run side effects  1861ms
+(node:68654) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "team-v1-supported-startup-68654-1792252917184-8c126af73fc62.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts/db/team-v1-supported-startup-68654-1792252917184-8c126af73fc62.db"
+
+SQLite database team-v1-supported-startup-68654-1792252917184-8c126af73fc62.db created at file:///Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts/db/team-v1-supported-startup-68654-1792252917184-8c126af73fc62.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+stdout | tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Database migrations completed successfully.
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "team-v1-warning-startup-68654-1792252921318-f176906290ccb.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts/db/team-v1-warning-startup-68654-1792252921318-f176906290ccb.db"
+
+SQLite database team-v1-warning-startup-68654-1792252921318-f176906290ccb.db created at file:///Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts/db/team-v1-warning-startup-68654-1792252921318-f176906290ccb.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+stdout | tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > isolates mixed root and token warnings and fails closed on an unreadable history index without changing the released root
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Database migrations completed successfully.
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "token-consolidation-retry-startup-68654-1792252925195-727ac6b2b5bce.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts/db/token-consolidation-retry-startup-68654-1792252925195-727ac6b2b5bce.db"
+
+SQLite database token-consolidation-retry-startup-68654-1792252925195-727ac6b2b5bce.db created at file:///Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts/db/token-consolidation-retry-startup-68654-1792252925195-727ac6b2b5bce.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+stdout | tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Database migrations completed successfully.
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "token-consolidation-overlap-startup-68654-1792252929556-1285a4a4bae8.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts/db/token-consolidation-overlap-startup-68654-1792252929556-1285a4a4bae8.db"
+
+SQLite database token-consolidation-overlap-startup-68654-1792252929556-1285a4a4bae8.db created at file:///Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts/db/token-consolidation-overlap-startup-68654-1792252929556-1285a4a4bae8.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+stdout | tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > rejects a legacy/current run-ID overlap before source cleanup while preserving both stores
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Database migrations completed successfully.
+
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts (4 tests) 14453ms
+     ✓ migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch  4134ms
+     ✓ isolates mixed root and token warnings and fails closed on an unreadable history index without changing the released root  3877ms
+     ✓ keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry  4362ms
+     ✓ rejects a legacy/current run-ID overlap before source cleanup while preserving both stores  2080ms
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:69741) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-rWbsjH
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-rWbsjH/.env
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Agent Definition created successfully with ID: no-reader-1792252935399-32cec83d6849f
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-rWbsjH/media
+Resolved skill 'fresh_skill_1792252935399_32cec83d6849f' to path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-rWbsjH/skills/fresh_skill_1792252935399_32cec83d6849f
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentRuntimeState initialized for agent_id 'no-reader-run-1792252935399_32cec83d6849f'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'no-reader-run-1792252935399_32cec83d6849f': LLM instance 'DeterministicLLM' and 4 tools prepared and stored in state.
+AgentContext composed for agent_id 'no-reader-run-1792252935399_32cec83d6849f'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'no-reader-run-1792252935399_32cec83d6849f' with config: 'no-reader-1792252935399_32cec83d6849f'.
+AgentWorker initialized for agent_id 'no-reader-run-1792252935399_32cec83d6849f'.
+Registered AgentContext for agent_id 'no-reader-run-1792252935399_32cec83d6849f'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'no-reader-run-1792252935399_32cec83d6849f'. Context registered.
+Agent facade initialized for agent_id 'no-reader-run-1792252935399_32cec83d6849f'.
+Agent 'no-reader-run-1792252935399_32cec83d6849f' created and stored successfully.
+Agent 'no-reader-run-1792252935399_32cec83d6849f' requesting runtime to start.
+AgentRuntime for 'no-reader-run-1792252935399_32cec83d6849f': Starting worker.
+AgentWorker 'no-reader-run-1792252935399_32cec83d6849f': Starting...
+AgentWorker 'no-reader-run-1792252935399_32cec83d6849f' asyncRun(): Starting.
+Agent 'no-reader-run-1792252935399_32cec83d6849f': Runtime init completed (event store initialized).
+Agent 'no-reader-run-1792252935399_32cec83d6849f': Runtime init completed (status deriver initialized).
+Agent 'no-reader-run-1792252935399_32cec83d6849f': Runtime init completed (AgentEventInbox initialized).
+Agent 'no-reader-run-1792252935399_32cec83d6849f': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'no-reader-run-1792252935399_32cec83d6849f' to become idle (timeout: 30s)...
+AgentEventStream (ID: 466764c3-8c23-4d0b-aaa4-632b471af992) initialized for agent_id 'no-reader-run-1792252935399_32cec83d6849f'. Subscribed to notifier.
+Agent 'no-reader-run-1792252935399_32cec83d6849f': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentExternalEventNotifier (NotifierID: 3100daec-81bc-4e4e-bedd-33aea72ad81a, AgentID: no-reader-run-1792252935399_32cec83d6849f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Agent 'no-reader-run-1792252935399_32cec83d6849f': Bootstrapper starting direct lifecycle execution.
+Agent 'no-reader-run-1792252935399_32cec83d6849f': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'no-reader-run-1792252935399_32cec83d6849f': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Agent 'no-reader-run-1792252935399_32cec83d6849f': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'no-reader-run-1792252935399_32cec83d6849f': Executing SystemPromptProcessingStep.
+Agent 'no-reader-run-1792252935399_32cec83d6849f': Added 1 configured skill catalog entries with paths.
+Agent 'no-reader-run-1792252935399_32cec83d6849f': Final processed system prompt configured and captured. Trace ID: rt_1792252935439_3813e70f-a7bb-4f33-827e-e042a7023c94. Final length: 3501.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Agent 'no-reader-run-1792252935399_32cec83d6849f': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentExternalEventNotifier (NotifierID: 3100daec-81bc-4e4e-bedd-33aea72ad81a, AgentID: no-reader-run-1792252935399_32cec83d6849f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentWorker 'no-reader-run-1792252935399_32cec83d6849f' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Agent 'no-reader-run-1792252935399_32cec83d6849f' has become idle.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentEventStream (ID: 466764c3-8c23-4d0b-aaa4-632b471af992) for 'no-reader-run-1792252935399_32cec83d6849f': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Removing agent 'no-reader-run-1792252935399_32cec83d6849f'. Attempting graceful shutdown.
+Agent 'no-reader-run-1792252935399_32cec83d6849f' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentExternalEventNotifier (NotifierID: 3100daec-81bc-4e4e-bedd-33aea72ad81a, AgentID: no-reader-run-1792252935399_32cec83d6849f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentWorker 'no-reader-run-1792252935399_32cec83d6849f': Stop requested.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentExternalEventNotifier (NotifierID: 3100daec-81bc-4e4e-bedd-33aea72ad81a, AgentID: no-reader-run-1792252935399_32cec83d6849f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentExternalEventNotifier (NotifierID: 3100daec-81bc-4e4e-bedd-33aea72ad81a, AgentID: no-reader-run-1792252935399_32cec83d6849f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'no-reader-run-1792252935399_32cec83d6849f' asyncRun() loop has finished.
+AgentWorker 'no-reader-run-1792252935399_32cec83d6849f': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentWorker 'no-reader-run-1792252935399_32cec83d6849f': Shutdown resource cleanup completed successfully.
+AgentWorker 'no-reader-run-1792252935399_32cec83d6849f': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Unregistered AgentContext for agent_id 'no-reader-run-1792252935399_32cec83d6849f'.
+AgentRuntime for 'no-reader-run-1792252935399_32cec83d6849f': Context unregistered.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentRuntime for 'no-reader-run-1792252935399_32cec83d6849f' stop() method completed.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Agent Definition created successfully with ID: reader-1792252935399-32cec83d6849f
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-rWbsjH/media
+Resolved skill 'fresh_skill_1792252935399_32cec83d6849f' to path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-rWbsjH/skills/fresh_skill_1792252935399_32cec83d6849f
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentRuntimeState initialized for agent_id 'reader-run-1792252935399_32cec83d6849f'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'reader-run-1792252935399_32cec83d6849f': LLM instance 'DeterministicLLM' and 4 tools prepared and stored in state.
+AgentContext composed for agent_id 'reader-run-1792252935399_32cec83d6849f'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'reader-run-1792252935399_32cec83d6849f' with config: 'reader-1792252935399_32cec83d6849f'.
+AgentWorker initialized for agent_id 'reader-run-1792252935399_32cec83d6849f'.
+Registered AgentContext for agent_id 'reader-run-1792252935399_32cec83d6849f'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'reader-run-1792252935399_32cec83d6849f'. Context registered.
+Agent facade initialized for agent_id 'reader-run-1792252935399_32cec83d6849f'.
+Agent 'reader-run-1792252935399_32cec83d6849f' created and stored successfully.
+Agent 'reader-run-1792252935399_32cec83d6849f' requesting runtime to start.
+AgentRuntime for 'reader-run-1792252935399_32cec83d6849f': Starting worker.
+AgentWorker 'reader-run-1792252935399_32cec83d6849f': Starting...
+AgentWorker 'reader-run-1792252935399_32cec83d6849f' asyncRun(): Starting.
+Agent 'reader-run-1792252935399_32cec83d6849f': Runtime init completed (event store initialized).
+Agent 'reader-run-1792252935399_32cec83d6849f': Runtime init completed (status deriver initialized).
+Agent 'reader-run-1792252935399_32cec83d6849f': Runtime init completed (AgentEventInbox initialized).
+Agent 'reader-run-1792252935399_32cec83d6849f': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'reader-run-1792252935399_32cec83d6849f' to become idle (timeout: 30s)...
+AgentEventStream (ID: b99612e2-afbd-4550-85cf-fb76f8801540) initialized for agent_id 'reader-run-1792252935399_32cec83d6849f'. Subscribed to notifier.
+Agent 'reader-run-1792252935399_32cec83d6849f': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentExternalEventNotifier (NotifierID: 22d5ae3f-3e5a-47a0-b519-5092b750fe94, AgentID: reader-run-1792252935399_32cec83d6849f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Agent 'reader-run-1792252935399_32cec83d6849f': Bootstrapper starting direct lifecycle execution.
+Agent 'reader-run-1792252935399_32cec83d6849f': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'reader-run-1792252935399_32cec83d6849f': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Agent 'reader-run-1792252935399_32cec83d6849f': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'reader-run-1792252935399_32cec83d6849f': Executing SystemPromptProcessingStep.
+Agent 'reader-run-1792252935399_32cec83d6849f': Added 1 configured skill catalog entries with paths.
+Agent 'reader-run-1792252935399_32cec83d6849f': Final processed system prompt configured and captured. Trace ID: rt_1792252935472_9a11c912-e34c-41cc-b862-f65ff1551d64. Final length: 3498.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Agent 'reader-run-1792252935399_32cec83d6849f': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentExternalEventNotifier (NotifierID: 22d5ae3f-3e5a-47a0-b519-5092b750fe94, AgentID: reader-run-1792252935399_32cec83d6849f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentWorker 'reader-run-1792252935399_32cec83d6849f' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Agent 'reader-run-1792252935399_32cec83d6849f' has become idle.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentEventStream (ID: b99612e2-afbd-4550-85cf-fb76f8801540) for 'reader-run-1792252935399_32cec83d6849f': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Removing agent 'reader-run-1792252935399_32cec83d6849f'. Attempting graceful shutdown.
+Agent 'reader-run-1792252935399_32cec83d6849f' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentExternalEventNotifier (NotifierID: 22d5ae3f-3e5a-47a0-b519-5092b750fe94, AgentID: reader-run-1792252935399_32cec83d6849f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentWorker 'reader-run-1792252935399_32cec83d6849f': Stop requested.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentExternalEventNotifier (NotifierID: 22d5ae3f-3e5a-47a0-b519-5092b750fe94, AgentID: reader-run-1792252935399_32cec83d6849f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentExternalEventNotifier (NotifierID: 22d5ae3f-3e5a-47a0-b519-5092b750fe94, AgentID: reader-run-1792252935399_32cec83d6849f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'reader-run-1792252935399_32cec83d6849f' asyncRun() loop has finished.
+AgentWorker 'reader-run-1792252935399_32cec83d6849f': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentWorker 'reader-run-1792252935399_32cec83d6849f': Shutdown resource cleanup completed successfully.
+AgentWorker 'reader-run-1792252935399_32cec83d6849f': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Unregistered AgentContext for agent_id 'reader-run-1792252935399_32cec83d6849f'.
+AgentRuntime for 'reader-run-1792252935399_32cec83d6849f': Context unregistered.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+AgentRuntime for 'reader-run-1792252935399_32cec83d6849f' stop() method completed.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+Initialized server settings service with 19 predefined settings
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stderr | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+Tool 'close_tab' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'dom_snapshot' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'list_tabs' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'navigate_to' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'open_tab' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'run_script' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'screenshot' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'list_available_agents' defined in agent definition 'Daily Assistant' requires a run that can delegate to available agents. Skipping.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-rWbsjH/media
+Resolved skill 'daily_enabled_1792252935775_3bd1081fb6645' to path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-rWbsjH/skills/daily_enabled_1792252935775_3bd1081fb6645
+Resolved skill 'fresh_skill_1792252935399_32cec83d6849f' to path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-rWbsjH/skills/fresh_skill_1792252935399_32cec83d6849f
+Resolved skill 'retrospective-skill-improver' to path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-rWbsjH/agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+AgentRuntimeState initialized for agent_id 'daily-assistant-run-1792252935775_3bd1081fb6645'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'daily-assistant-run-1792252935775_3bd1081fb6645': LLM instance 'DeterministicLLM' and 14 tools prepared and stored in state.
+AgentContext composed for agent_id 'daily-assistant-run-1792252935775_3bd1081fb6645'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'daily-assistant-run-1792252935775_3bd1081fb6645' with config: 'Daily Assistant'.
+AgentWorker initialized for agent_id 'daily-assistant-run-1792252935775_3bd1081fb6645'.
+Registered AgentContext for agent_id 'daily-assistant-run-1792252935775_3bd1081fb6645'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'daily-assistant-run-1792252935775_3bd1081fb6645'. Context registered.
+Agent facade initialized for agent_id 'daily-assistant-run-1792252935775_3bd1081fb6645'.
+Agent 'daily-assistant-run-1792252935775_3bd1081fb6645' created and stored successfully.
+Agent 'daily-assistant-run-1792252935775_3bd1081fb6645' requesting runtime to start.
+AgentRuntime for 'daily-assistant-run-1792252935775_3bd1081fb6645': Starting worker.
+AgentWorker 'daily-assistant-run-1792252935775_3bd1081fb6645': Starting...
+AgentWorker 'daily-assistant-run-1792252935775_3bd1081fb6645' asyncRun(): Starting.
+Agent 'daily-assistant-run-1792252935775_3bd1081fb6645': Runtime init completed (event store initialized).
+Agent 'daily-assistant-run-1792252935775_3bd1081fb6645': Runtime init completed (status deriver initialized).
+Agent 'daily-assistant-run-1792252935775_3bd1081fb6645': Runtime init completed (AgentEventInbox initialized).
+Agent 'daily-assistant-run-1792252935775_3bd1081fb6645': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'daily-assistant-run-1792252935775_3bd1081fb6645' to become idle (timeout: 30s)...
+AgentEventStream (ID: 0c17be36-a57b-4bf3-9467-adcd74f49a81) initialized for agent_id 'daily-assistant-run-1792252935775_3bd1081fb6645'. Subscribed to notifier.
+Agent 'daily-assistant-run-1792252935775_3bd1081fb6645': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+AgentExternalEventNotifier (NotifierID: 027f0a4b-1c6b-4f90-b57d-028bb21c27a5, AgentID: daily-assistant-run-1792252935775_3bd1081fb6645) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+Agent 'daily-assistant-run-1792252935775_3bd1081fb6645': Bootstrapper starting direct lifecycle execution.
+Agent 'daily-assistant-run-1792252935775_3bd1081fb6645': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'daily-assistant-run-1792252935775_3bd1081fb6645': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+Agent 'daily-assistant-run-1792252935775_3bd1081fb6645': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'daily-assistant-run-1792252935775_3bd1081fb6645': Executing SystemPromptProcessingStep.
+Agent 'daily-assistant-run-1792252935775_3bd1081fb6645': Added 3 configured skill catalog entries with paths.
+Agent 'daily-assistant-run-1792252935775_3bd1081fb6645': Final processed system prompt configured and captured. Trace ID: rt_1792252935796_43f165e7-8458-4651-a3fb-73ba2b4815ba. Final length: 5726.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+Agent 'daily-assistant-run-1792252935775_3bd1081fb6645': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+AgentExternalEventNotifier (NotifierID: 027f0a4b-1c6b-4f90-b57d-028bb21c27a5, AgentID: daily-assistant-run-1792252935775_3bd1081fb6645) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+AgentWorker 'daily-assistant-run-1792252935775_3bd1081fb6645' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+Agent 'daily-assistant-run-1792252935775_3bd1081fb6645' has become idle.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+AgentEventStream (ID: 0c17be36-a57b-4bf3-9467-adcd74f49a81) for 'daily-assistant-run-1792252935775_3bd1081fb6645': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+Removing agent 'daily-assistant-run-1792252935775_3bd1081fb6645'. Attempting graceful shutdown.
+Agent 'daily-assistant-run-1792252935775_3bd1081fb6645' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+AgentExternalEventNotifier (NotifierID: 027f0a4b-1c6b-4f90-b57d-028bb21c27a5, AgentID: daily-assistant-run-1792252935775_3bd1081fb6645) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+AgentWorker 'daily-assistant-run-1792252935775_3bd1081fb6645': Stop requested.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+AgentExternalEventNotifier (NotifierID: 027f0a4b-1c6b-4f90-b57d-028bb21c27a5, AgentID: daily-assistant-run-1792252935775_3bd1081fb6645) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+AgentExternalEventNotifier (NotifierID: 027f0a4b-1c6b-4f90-b57d-028bb21c27a5, AgentID: daily-assistant-run-1792252935775_3bd1081fb6645) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'daily-assistant-run-1792252935775_3bd1081fb6645' asyncRun() loop has finished.
+AgentWorker 'daily-assistant-run-1792252935775_3bd1081fb6645': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+AgentWorker 'daily-assistant-run-1792252935775_3bd1081fb6645': Shutdown resource cleanup completed successfully.
+AgentWorker 'daily-assistant-run-1792252935775_3bd1081fb6645': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+Unregistered AgentContext for agent_id 'daily-assistant-run-1792252935775_3bd1081fb6645'.
+AgentRuntime for 'daily-assistant-run-1792252935775_3bd1081fb6645': Context unregistered.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+AgentRuntime for 'daily-assistant-run-1792252935775_3bd1081fb6645' stop() method completed.
+
+ ✓ tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts (2 tests) 557ms
+     ✓ keeps ordinary native tools and configured skill reads explicit in the same active run  376ms
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:69824) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-Q5lMxA
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-Q5lMxA/.env
+AgentRunManager initialized.
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates native reasoning through standalone and team GraphQL projections
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-Q5lMxA/memory/agents/native-reasoning-standalone/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates native reasoning through standalone and team GraphQL projections
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-Q5lMxA/memory/agent_teams/native-reasoning-team/native-reasoning-member/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-Q5lMxA/memory/agents/system-instruction-baseline/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-Q5lMxA/memory/agents/system-instruction-standalone/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-Q5lMxA/memory/agent_teams/system-instruction-team/system-instruction-member/raw_traces_manifest.json
+
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects the newest 100 events from a >=5 MB active file without reading or changing its standalone archive
+[recent-run-projection-metrics] {"fixtureBytes":5416102,"canonicalActiveEvents":620,"returnedConversationRows":100,"returnedActivityRows":0,"payloadBytes":868832,"totalMs":21.498}
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > traverses exactly 275 team-member active events and rejects its cursor for another subject
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-Q5lMxA/memory/agents/active-page-275-other-subject/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > serializes production media and shallow tool state without multi-megabyte result or log payload
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-Q5lMxA/memory/agents/active-page-closed-payload/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > serializes production media and shallow tool state without multi-megabyte result or log payload
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-Q5lMxA/memory/agents/active-page-closed-payload/raw_traces_manifest.json
+
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > serializes production media and shallow tool state without multi-megabyte result or log payload
+[active-trace-page-closed-payload-metrics] {"fixtureBytes":4861018,"returnedEvents":3,"returnedVisuals":7,"serializedEventBytes":2386,"totalMs":9.272}
+
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts (9 tests) 495ms
+stdout | tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:70138) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts > Standalone Error run status and termination GraphQL lifecycle > lists a manager-owned Error runtime as active, terminates it, and retains inactive history
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/standalone-error-termination-e2e-Lw7vZl
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/standalone-error-termination-e2e-Lw7vZl/.env
+AgentRunManager initialized.
+
+stderr | tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts > Standalone Error run status and termination GraphQL lifecycle > lists a manager-owned Error runtime as active, terminates it, and retains inactive history
+[AgentRunMemoryRecorder] skipping run 'standalone-error-run' because AgentRunConfig.memoryDir is missing.
+
+stdout | tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts > Standalone Error run status and termination GraphQL lifecycle > keeps a rejected Error runtime active and retryable without recording false termination
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/standalone-error-termination-e2e-9n97Zs
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/standalone-error-termination-e2e-9n97Zs/.env
+AgentRunManager initialized.
+
+stderr | tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts > Standalone Error run status and termination GraphQL lifecycle > keeps a rejected Error runtime active and retryable without recording false termination
+[AgentRunMemoryRecorder] skipping run 'standalone-error-run' because AgentRunConfig.memoryDir is missing.
+
+ ✓ tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts (2 tests) 184ms
+stdout | tests/e2e/agent/agent-command-correlated-status.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/agent/agent-command-correlated-status.e2e.test.ts > Agent command-correlated status overlay e2e > preserves offline -> initializing -> running when a stopped standalone run restores with an already-running snapshot
+Agent websocket attached for run agent-command-status-e2e
+Created agent session 118b40bb-172a-432f-9ad1-a6ab0d13d88c for run agent-command-status-e2e
+Agent WebSocket connected: session=118b40bb-172a-432f-9ad1-a6ab0d13d88c, run=agent-command-status-e2e
+
+stdout | tests/e2e/agent/agent-command-correlated-status.e2e.test.ts > Agent command-correlated status overlay e2e > preserves offline -> initializing -> running when a stopped standalone run restores with an already-running snapshot
+Agent websocket attached for run agent-command-status-e2e
+
+stdout | tests/e2e/agent/agent-command-correlated-status.e2e.test.ts > Agent command-correlated status overlay e2e > preserves offline -> initializing -> running when a stopped standalone run restores with an already-running snapshot
+Created agent session 5de46d59-9bf4-4837-bb7f-9af6a211d3a1 for run agent-command-status-e2e
+Agent WebSocket connected: session=5de46d59-9bf4-4837-bb7f-9af6a211d3a1, run=agent-command-status-e2e
+
+stdout | tests/e2e/agent/agent-command-correlated-status.e2e.test.ts > Agent command-correlated status overlay e2e > preserves offline -> initializing -> running when a stopped standalone run restores with an already-running snapshot
+Closed agent session 118b40bb-172a-432f-9ad1-a6ab0d13d88c
+Agent WebSocket disconnected: 118b40bb-172a-432f-9ad1-a6ab0d13d88c
+
+stdout | tests/e2e/agent/agent-command-correlated-status.e2e.test.ts
+Closed agent session 5de46d59-9bf4-4837-bb7f-9af6a211d3a1
+Agent WebSocket disconnected: 5de46d59-9bf4-4837-bb7f-9af6a211d3a1
+
+ ✓ tests/e2e/agent/agent-command-correlated-status.e2e.test.ts (1 test) 133ms
+
+ Test Files  7 passed (7)
+      Tests  26 passed (26)
+   Start at  18:01:23
+   Duration  57.27s (transform 4.65s, setup 77ms, import 10.21s, tests 45.87s, environment 0ms)
+
+exit=0

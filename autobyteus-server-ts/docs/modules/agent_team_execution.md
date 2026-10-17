@@ -418,6 +418,11 @@ legacy configured tool names are ignored.
 ```
 
 Alternatively, `{recipient_address, task_id}` selects saved Project Task work.
+`task_id` names a Project Task by its key (`autobyteus-42`, any letter case) or
+its stored long ID. The Task side resolves it once in `resolveAssignment`, which
+returns the stored `taskId` (the only identity used for linking, assignment and
+run resources) and the key (`taskReference`, used in agent-facing texts). A Task
+with no Project or an unknown reference fails with `TASK_NOT_FOUND`.
 The parser rejects mixed description/reference overrides and a caller
 `project_id`. Described delegation without an ID keeps the contract above. Only
 non-owned runs, such as the Manager, may pass a `task_id`. A Task-owned run
@@ -503,7 +508,8 @@ the tool layer serializes it.
 `delegate_task` can also give a saved Task to an **existing** copy by its own ID
 (`{target_team_run_id | target_agent_run_id, task_id}`): each root's
 `assignToExistingCopy` hands it to `RootTaskExecutionLifecycle.assignToExistingCopy`
-together with the root's exact delivery, so the copy is woken or restored with
+together with the root's exact delivery (the named Task is resolved first, so its
+refusals come before the copy's), so the copy is woken or restored with
 its conversation and receives the Task's work as a `task_assignment` message
 from the delegator. The address path is `delegateToNewCopy`. See
 [Follow-up Task to an existing copy](projects.md#follow-up-task-to-an-existing-copy).

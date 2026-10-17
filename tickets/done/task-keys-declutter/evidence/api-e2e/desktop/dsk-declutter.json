@@ -1,0 +1,173 @@
+{
+  "steps": [
+    {
+      "name": "setup: scripted AGY Manager delegates B by key and a Temp task",
+      "result": "Pass",
+      "observed": {
+        "runId": "declutter_manager_fd41_decfd26442164bae81cf83df46283045",
+        "worker": "declutter_worker_fd41_b6f3eddad5f44b3ca5866ae81f2fe28d",
+        "tempWorker": "declutter_worker_fd41_182dc6c8677844ccadae35f02f8d0f66"
+      }
+    },
+    {
+      "name": "DSK-D1 Projects page board 1440×900: no key line on any card; cards start with the summary; \"Blocked by <key>\" kept (AC-001)",
+      "result": "Pass",
+      "observed": [
+        {
+          "id": "project_task_63170bb2-0271-4f5d-8c94-9b3c75766319",
+          "keyLines": 0,
+          "firstText": "Write the release notes",
+          "badge": null,
+          "badgeKeyTitle": null
+        },
+        {
+          "id": "project_task_220215b3-fe75-4b24-8d27-8fa7dae8b948",
+          "keyLines": 0,
+          "firstText": "Build the API on the schema",
+          "badge": "Blocked by autobyteus-1",
+          "badgeKeyTitle": "autobyteus-1"
+        },
+        {
+          "id": "project_task_25e14da7-3b44-4ba5-b166-487b0340d11b",
+          "keyLines": 0,
+          "firstText": "Design the board schema",
+          "badge": null,
+          "badgeKeyTitle": null
+        }
+      ]
+    },
+    {
+      "name": "DSK-D4 Task page: key chip with copy, Depends on / Required by rows by key; picker options by key (AC-003)",
+      "result": "Pass",
+      "observed": {
+        "chip": "autobyteus-2",
+        "deps": [
+          "autobyteus-1 To Do Design the board schema"
+        ],
+        "hash": "#/projects/project_96d6e5b7-2709-4e4b-b97a-a57d0d96d607/tasks/autobyteus-2",
+        "options": [
+          "autobyteus-2",
+          "autobyteus-1"
+        ]
+      }
+    },
+    {
+      "name": "DSK-D3 Workspaces tree: Project Task copy and Temp copy show the summary only; title / name \"Show Task in Projects: <summary>\" (AC-002)",
+      "result": "Pass",
+      "observed": {
+        "copy": {
+          "text": "Build the API on the schema",
+          "keySpans": 0,
+          "title": "Show Task in Projects: Build the API on the schema",
+          "aria": "Show Task in Projects: Build the API on the schema"
+        },
+        "temp": {
+          "text": "Reply OK.",
+          "keySpans": 0,
+          "title": "Show Task in Projects: Reply OK.",
+          "aria": "Show Task in Projects: Reply OK."
+        }
+      }
+    },
+    {
+      "name": "DSK-D2 Right-panel tab board: no key lines, badge with key; tab Task view keeps the chip and dependency rows (AC-001, AC-003)",
+      "result": "Pass",
+      "observed": {
+        "cards": [
+          {
+            "id": "project_task_63170bb2-0271-4f5d-8c94-9b3c75766319",
+            "keyLines": 0,
+            "firstText": "Write the release notes",
+            "badge": null,
+            "badgeKeyTitle": null
+          },
+          {
+            "id": "project_task_220215b3-fe75-4b24-8d27-8fa7dae8b948",
+            "keyLines": 0,
+            "firstText": "Build the API on the schema",
+            "badge": "Blocked by autobyteus-1",
+            "badgeKeyTitle": "autobyteus-1"
+          },
+          {
+            "id": "project_task_25e14da7-3b44-4ba5-b166-487b0340d11b",
+            "keyLines": 0,
+            "firstText": "Design the board schema",
+            "badge": null,
+            "badgeKeyTitle": null
+          }
+        ],
+        "chip": "autobyteus-2",
+        "deps": [
+          "autobyteus-1 To Do Design the board schema"
+        ]
+      }
+    },
+    {
+      "name": "G1 live GraphQL on the instance: taskWorkerTasks answers without taskKey; selecting taskKey is a schema error (AC-004)",
+      "result": "Pass",
+      "observed": {
+        "answer": [
+          {
+            "workerKind": "agent",
+            "workerRunId": "declutter_worker_fd41_b6f3eddad5f44b3ca5866ae81f2fe28d",
+            "task": {
+              "taskId": "project_task_220215b3-fe75-4b24-8d27-8fa7dae8b948",
+              "projectId": "project_96d6e5b7-2709-4e4b-b97a-a57d0d96d607",
+              "description": "Build the API on the schema",
+              "status": "TODO"
+            }
+          },
+          {
+            "workerKind": "agent",
+            "workerRunId": "declutter_worker_fd41_182dc6c8677844ccadae35f02f8d0f66",
+            "task": {
+              "taskId": "ad_hoc_task_10bcec9a-f723-409f-974e-cf6ab60c6003",
+              "projectId": null,
+              "description": "Reply OK.\nA Temp task.",
+              "status": "TODO"
+            }
+          }
+        ],
+        "fields": [
+          "description",
+          "projectId",
+          "status",
+          "taskId"
+        ],
+        "rejected": "[{\"message\":\"Cannot query field \\\"taskKey\\\" on type \\\"TaskWorkerTaskView\\\". Did you mean \\\"taskId\\\"?\",\"locations\":[{\"line\":1,\"column\":73}]}]"
+      }
+    }
+  ],
+  "errors": [],
+  "screenshots": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/tickets/in-progress/task-keys-declutter/evidence/api-e2e/desktop/dsk-d1-board-page-1440x900.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/tickets/in-progress/task-keys-declutter/evidence/api-e2e/desktop/dsk-d4-task-page-1440x900.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/tickets/in-progress/task-keys-declutter/evidence/api-e2e/desktop/dsk-d4-picker-1440x900.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/tickets/in-progress/task-keys-declutter/evidence/api-e2e/desktop/dsk-d3-tree-1440x900.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/tickets/in-progress/task-keys-declutter/evidence/api-e2e/desktop/dsk-d3-located-1440x900.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/tickets/in-progress/task-keys-declutter/evidence/api-e2e/desktop/dsk-d2-tab-board-1440x900.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/tickets/in-progress/task-keys-declutter/evidence/api-e2e/desktop/dsk-d2-tab-task-view-1440x900.png"
+  ],
+  "tasks": {
+    "A": {
+      "taskId": "project_task_25e14da7-3b44-4ba5-b166-487b0340d11b",
+      "taskKey": "autobyteus-1",
+      "description": "Design the board schema"
+    },
+    "B": {
+      "taskId": "project_task_220215b3-fe75-4b24-8d27-8fa7dae8b948",
+      "taskKey": "autobyteus-2",
+      "description": "Build the API on the schema"
+    },
+    "C": {
+      "taskId": "project_task_63170bb2-0271-4f5d-8c94-9b3c75766319",
+      "taskKey": "autobyteus-3",
+      "description": "Write the release notes"
+    }
+  },
+  "terminate": {
+    "success": true,
+    "message": "Agent run terminated successfully."
+  },
+  "result": "Pass"
+}

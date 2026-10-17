@@ -1,0 +1,1057 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:40611) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "team-v1-supported-startup-40611-1792221687138-e1fd9d6612243.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts/db/team-v1-supported-startup-40611-1792221687138-e1fd9d6612243.db"
+
+SQLite database team-v1-supported-startup-40611-1792221687138-e1fd9d6612243.db created at file:///Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts/db/team-v1-supported-startup-40611-1792221687138-e1fd9d6612243.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.23                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+stdout | tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to current V2 through actual startup > migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Database migrations completed successfully.
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "team-v1-warning-startup-40611-1792221693225-d03629fe13f03.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts/db/team-v1-warning-startup-40611-1792221693225-d03629fe13f03.db"
+
+SQLite database team-v1-warning-startup-40611-1792221693225-d03629fe13f03.db created at file:///Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts/db/team-v1-warning-startup-40611-1792221693225-d03629fe13f03.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+stdout | tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to current V2 through actual startup > isolates mixed root, token, and history warnings while keeping health, history, new work, and relaunch available
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Database migrations completed successfully.
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "token-consolidation-retry-startup-40611-1792221698512-6f75d720b21f5.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts/db/token-consolidation-retry-startup-40611-1792221698512-6f75d720b21f5.db"
+
+SQLite database token-consolidation-retry-startup-40611-1792221698512-6f75d720b21f5.db created at file:///Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts/db/token-consolidation-retry-startup-40611-1792221698512-6f75d720b21f5.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+stdout | tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to current V2 through actual startup > keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Database migrations completed successfully.
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "token-consolidation-overlap-startup-40611-1792221708101-69a554a7f3d56.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts/db/token-consolidation-overlap-startup-40611-1792221708101-69a554a7f3d56.db"
+
+SQLite database token-consolidation-overlap-startup-40611-1792221708101-69a554a7f3d56.db created at file:///Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts/db/token-consolidation-overlap-startup-40611-1792221708101-69a554a7f3d56.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+stdout | tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to current V2 through actual startup > rejects a legacy/current run-ID overlap before source cleanup while preserving both stores
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Database migrations completed successfully.
+
+ ❯ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts (4 tests | 3 failed) 27797ms
+     × migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch 6090ms
+     × isolates mixed root, token, and history warnings while keeping health, history, new work, and relaunch available 5289ms
+     × keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry 9591ms
+     ✓ rejects a legacy/current run-ID overlap before source cleanup while preserving both stores  6827ms
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:42261) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-9rW9Ec
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-9rW9Ec/.env
+AgentRunManager initialized.
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates native reasoning through standalone and team GraphQL projections
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-9rW9Ec/memory/agents/native-reasoning-standalone/raw_traces_manifest.json
+
+ ❯ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts (9 tests | 9 failed) 579ms
+     × hydrates native reasoning through standalone and team GraphQL projections 66ms
+     × hydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals 58ms
+     × omits a rotated system instruction from active hydration without reading its archive 26ms
+     × projects the newest 100 events from a >=5 MB active file without reading or changing its standalone archive 139ms
+     × projects a team member from active traces only and preserves its archive bytes 59ms
+     × traverses exactly 275 standalone active events in fixed pages without opening archives 30ms
+     × traverses exactly 275 team-member active events and rejects its cursor for another subject 27ms
+     × keeps a cursor valid across append and expires it after an atomic active rewrite 26ms
+     × serializes production media and shallow tool state without multi-megabyte result or log payload 55ms
+ ❯ tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts (1 test | 1 failed) 19055ms
+     × syncs fake source memory from one real backend server process into another 7ms
+ ❯ tests/e2e/run-history/nested-team-history-restart.e2e.test.ts (2 tests | 2 failed) 3777ms
+     × moves released flat configured/task memory before public reads and remains canonical after process restart 1903ms
+     × keeps startup healthy on an invalid target and retries the remaining move through the public ANYTIME action 1874ms
+stdout | tests/e2e/agent/agent-command-correlated-status.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/agent/agent-command-correlated-status.e2e.test.ts > Agent command-correlated status overlay e2e > preserves offline -> initializing -> running when a stopped standalone run restores with an already-running snapshot
+Agent websocket attached for run agent-command-status-e2e
+Created agent session fc79235a-1f2d-4530-a0b8-efa3743e912a for run agent-command-status-e2e
+Agent WebSocket connected: session=fc79235a-1f2d-4530-a0b8-efa3743e912a, run=agent-command-status-e2e
+
+stdout | tests/e2e/agent/agent-command-correlated-status.e2e.test.ts
+Closed agent session fc79235a-1f2d-4530-a0b8-efa3743e912a
+Agent WebSocket disconnected: fc79235a-1f2d-4530-a0b8-efa3743e912a
+
+ ❯ tests/e2e/agent/agent-command-correlated-status.e2e.test.ts (1 test | 1 failed) 28ms
+     × preserves offline -> initializing -> running when a stopped standalone run restores with an already-running snapshot 28ms
+ ❯ tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts (7 tests | 7 failed) 14182ms
+     × persists root, nested-Team, and exact-Agent configurations and restores them after process restart 2000ms
+     × rejects a 'missing' 'Team' runtime before workspace or run side effects 2066ms
+     × rejects a 'blank' 'Team' runtime before workspace or run side effects 2211ms
+     × rejects a 'unsupported' 'Team' runtime before workspace or run side effects 2046ms
+     × rejects a 'missing' 'Agent' runtime before workspace or run side effects 2027ms
+     × rejects a 'blank' 'Agent' runtime before workspace or run side effects 1938ms
+     × rejects a 'unsupported' 'Agent' runtime before workspace or run side effects 1894ms
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:45345) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-FffqTK
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-FffqTK/.env
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+Agent Definition created successfully with ID: no-reader-1792221766807-6ad56708d050b
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-FffqTK/media
+Resolved skill 'fresh_skill_1792221766807_6ad56708d050b' to path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-FffqTK/skills/fresh_skill_1792221766807_6ad56708d050b
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+Initialized server settings service with 19 predefined settings
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stderr | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+Tool 'close_tab' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'dom_snapshot' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'list_tabs' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'navigate_to' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'open_tab' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'run_script' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'screenshot' defined in agent definition 'Daily Assistant' not found in registry. Skipping.
+Tool 'list_available_agents' defined in agent definition 'Daily Assistant' requires a run that can delegate to available agents. Skipping.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-FffqTK/media
+Resolved skill 'daily_enabled_1792221766850_9d7d0c3ea1bae' to path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-FffqTK/skills/daily_enabled_1792221766850_9d7d0c3ea1bae
+Resolved skill 'fresh_skill_1792221766807_6ad56708d050b' to path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-FffqTK/skills/fresh_skill_1792221766807_6ad56708d050b
+Resolved skill 'retrospective-skill-improver' to path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-FffqTK/agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver
+
+ ❯ tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts (2 tests | 2 failed) 205ms
+     × keeps ordinary native tools and configured skill reads explicit in the same active run 43ms
+     × catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md 22ms
+stdout | tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:45669) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts > Standalone Error run status and termination GraphQL lifecycle > lists a manager-owned Error runtime as active, terminates it, and retains inactive history
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/standalone-error-termination-e2e-zfOiuF
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/standalone-error-termination-e2e-zfOiuF/.env
+AgentRunManager initialized.
+
+stdout | tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts > Standalone Error run status and termination GraphQL lifecycle > keeps a rejected Error runtime active and retryable without recording false termination
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/standalone-error-termination-e2e-6Ki7po
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/standalone-error-termination-e2e-6Ki7po/.env
+
+ ❯ tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts (2 tests | 2 failed) 8ms
+     × lists a manager-owned Error runtime as active, terminates it, and retains inactive history 5ms
+     × keeps a rejected Error runtime active and retryable without recording false termination 2ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 27 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/agent/agent-command-correlated-status.e2e.test.ts > Agent command-correlated status overlay e2e > preserves offline -> initializing -> running when a stopped standalone run restores with an already-running snapshot
+AssertionError: expected { type: 'AGENT_STATUS', …(1) } to deeply equal { type: 'AGENT_STATUS', …(1) }
+
+- Expected
++ Received
+
+  {
+    "payload": {
+      "agent_id": "agent-command-status-e2e",
++     "recoverableBlock": null,
+      "status": "idle",
+    },
+    "type": "AGENT_STATUS",
+  }
+
+ ❯ tests/e2e/agent/agent-command-correlated-status.e2e.test.ts:424:62
+    422|         payload: { agent_id: runId },
+    423|       });
+    424|       expect(await waitForBufferedMessage(firstMessages, 1)).toEqual({
+       |                                                              ^
+    425|         type: "AGENT_STATUS",
+    426|         payload: { status: "idle", agent_id: runId },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/27]⎯
+
+ FAIL  tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts > Standalone Error run status and termination GraphQL lifecycle > lists a manager-owned Error runtime as active, terminates it, and retains inactive history
+TypeError: manager.prepareNewAgentRun is not a function
+ ❯ startHarness tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts:172:35
+    170|   const runtime = createErrorBackend(terminationAccepted);
+    171|   const manager = createManager(runtime.backend);
+    172|   const candidate = await manager.prepareNewAgentRun({ runId: RUN_ID, …
+       |                                   ^
+    173|   candidate.commitPublication();
+    174| 
+ ❯ tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts:291:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/27]⎯
+
+ FAIL  tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts > Standalone Error run status and termination GraphQL lifecycle > keeps a rejected Error runtime active and retryable without recording false termination
+Error: The process AgentRunManager is already initialized.
+ ❯ Function.initializeProcessInstance src/agent-execution/services/agent-run-manager.ts:90:13
+     88|   static initializeProcessInstance(options: AgentRunManagerOptions): A…
+     89|     if (AgentRunManager.instance) {
+     90|       throw new Error("The process AgentRunManager is already initiali…
+       |             ^
+     91|     }
+     92|     AgentRunManager.instance = new AgentRunManager(options);
+ ❯ createManager tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts:109:26
+ ❯ startHarness tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts:171:19
+ ❯ tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts:337:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/27]⎯
+
+ FAIL  tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to current V2 through actual startup > migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch
+Error: ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts/tests/.tmp/team-v1-supported-startup-40611-1792221687138-e1fd9d6612243/memory/agent_teams/team-v1-supported-root/team_run_execution_tree.json'
+ ❯ assertConvertedPackage tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:740:30
+    738| const assertConvertedPackage = (scenario: Awaited<ReturnType<typeof se…
+    739|   expect(fs.existsSync(scenario.supported.metadataPath)).toBe(false);
+    740|   const tree = JSON.parse(fs.readFileSync(path.join(scenario.supported…
+       |                              ^
+    741|   expect(tree).toMatchObject({
+    742|     schemaVersion: 2,
+ ❯ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:1139:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/27]⎯
+
+ FAIL  tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to current V2 through actual startup > isolates mixed root, token, and history warnings while keeping health, history, new work, and relaunch available
+AssertionError: expected [ { …(11) }, { …(11) }, …(22) ] to have a length of 19 but got 24
+
+- Expected
++ Received
+
+- 19
++ 24
+
+ ❯ assertLedgerTransition tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:849:21
+    847|   }
+    848|   const afterRows = readMigrationLedger(databasePath);
+    849|   expect(afterRows).toHaveLength(beforeRows.length + 4);
+       |                     ^
+    850|   const transitionedBeforeRows = beforeRows.map((row) => {
+    851|     if (typeof row.summary !== "string") return row;
+ ❯ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:1209:30
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/27]⎯
+
+ FAIL  tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to current V2 through actual startup > keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry
+AssertionError: expected { success: false, …(2) } to match object { success: true, …(1) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "success": true,
+-   "teamRunId": "team-v1-supported-root",
++   "success": false,
++   "teamRunId": null,
+  }
+
+ ❯ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:1312:42
+    1310|     expect(countTokenRows(target.database.databasePath)).toEqual({ leg…
+    1311|     const restored = await restoreTeamRun(second.serverUrl, scenario.r…
+    1312|     expect(restored.restoreAgentTeamRun).toMatchObject({
+       |                                          ^
+    1313|       success: true,
+    1314|       teamRunId: scenario.rootTeamRunId,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/27]⎯
+
+ FAIL  tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts > hierarchical TeamRun GraphQL and V2 lifecycle > persists root, nested-Team, and exact-Agent configurations and restores them after process restart
+Error: TEST_GRAPHQL_REQUEST_FAILED
+ ❯ stableError ../test-support/live-e2e/test-runtime-bootstrap.mjs:47:17
+     45| 
+     46| const stableError = (code) => {
+     47|   const error = new Error(code);
+       |                 ^
+     48|   error.code = code;
+     49|   return error;
+ ❯ executeGraphql ../test-support/live-e2e/test-runtime-bootstrap.mjs:328:11
+ ❯ createTeamDefinition tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:68:18
+ ❯ seedHierarchy tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:107:26
+ ❯ tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:236:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/27]⎯
+
+ FAIL  tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts > hierarchical TeamRun GraphQL and V2 lifecycle > rejects a 'missing' 'Team' runtime before workspace or run side effects
+ FAIL  tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts > hierarchical TeamRun GraphQL and V2 lifecycle > rejects a 'blank' 'Team' runtime before workspace or run side effects
+ FAIL  tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts > hierarchical TeamRun GraphQL and V2 lifecycle > rejects a 'unsupported' 'Team' runtime before workspace or run side effects
+ FAIL  tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts > hierarchical TeamRun GraphQL and V2 lifecycle > rejects a 'missing' 'Agent' runtime before workspace or run side effects
+ FAIL  tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts > hierarchical TeamRun GraphQL and V2 lifecycle > rejects a 'blank' 'Agent' runtime before workspace or run side effects
+ FAIL  tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts > hierarchical TeamRun GraphQL and V2 lifecycle > rejects a 'unsupported' 'Agent' runtime before workspace or run side effects
+Error: TEST_GRAPHQL_REQUEST_FAILED
+ ❯ stableError ../test-support/live-e2e/test-runtime-bootstrap.mjs:47:17
+     45| 
+     46| const stableError = (code) => {
+     47|   const error = new Error(code);
+       |                 ^
+     48|   error.code = code;
+     49|   return error;
+ ❯ executeGraphql ../test-support/live-e2e/test-runtime-bootstrap.mjs:328:11
+ ❯ createTeamDefinition tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:68:18
+ ❯ seedHierarchy tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:107:26
+ ❯ tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:419:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/27]⎯
+
+ FAIL  tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts > Memory Sync multi-process backend e2e > syncs fake source memory from one real backend server process into another
+Error: Team V2 cannot contain configured Team '/nested'.
+ ❯ src/agent-team-execution/services/team-run-execution-tree-builder.ts:50:42
+     48|     defaultLaunchConfiguration: launchConfiguration(input.config.rootT…
+     49|     members: input.config.rootTeam.children.map((member) => {
+     50|       if (member.kind !== "agent") throw new Error(`Team V2 cannot con…
+       |                                          ^
+     51|       return toAgent(member);
+     52|     }),
+ ❯ buildInitialTeamRunExecutionTree src/agent-team-execution/services/team-run-execution-tree-builder.ts:49:45
+ ❯ testExecutionTree tests/fixtures/current-team-run-fixtures.ts:160:37
+ ❯ writeCurrentNestedTeamPackage tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts:49:16
+ ❯ seedSourceMemory tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts:254:20
+ ❯ tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts:323:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/27]⎯
+
+ FAIL  tests/e2e/run-history/nested-team-history-restart.e2e.test.ts > nested TeamRun history startup/restart hydration > moves released flat configured/task memory before public reads and remains canonical after process restart
+Error: TEST_GRAPHQL_REQUEST_FAILED
+ ❯ stableError ../test-support/live-e2e/test-runtime-bootstrap.mjs:47:17
+     45| 
+     46| const stableError = (code) => {
+     47|   const error = new Error(code);
+       |                 ^
+     48|   error.code = code;
+     49|   return error;
+ ❯ executeGraphql ../test-support/live-e2e/test-runtime-bootstrap.mjs:328:11
+ ❯ tests/e2e/run-history/nested-team-history-restart.e2e.test.ts:299:30
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/27]⎯
+
+ FAIL  tests/e2e/run-history/nested-team-history-restart.e2e.test.ts > nested TeamRun history startup/restart hydration > keeps startup healthy on an invalid target and retries the remaining move through the public ANYTIME action
+Error: TEST_GRAPHQL_REQUEST_FAILED
+ ❯ stableError ../test-support/live-e2e/test-runtime-bootstrap.mjs:47:17
+     45| 
+     46| const stableError = (code) => {
+     47|   const error = new Error(code);
+       |                 ^
+     48|   error.code = code;
+     49|   return error;
+ ❯ executeGraphql ../test-support/live-e2e/test-runtime-bootstrap.mjs:328:11
+ ❯ tests/e2e/run-history/nested-team-history-restart.e2e.test.ts:456:30
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/27]⎯
+
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates native reasoning through standalone and team GraphQL projections
+GraphQLError: AgentRun 'native-reasoning-member' was not found in root TeamRun 'native-reasoning-team'.
+ ❯ TeamMemberRunViewProjectionService.requireLocation src/run-history/services/team-member-run-view-projection-service.ts:81:13
+     79|     const location = await this.locations.findAgent({ agentRunId: run …
+     80|     if (!location || location.rootTeamRunId !== root) {
+     81|       throw new Error(`AgentRun '${run}' was not found in root TeamRun…
+       |             ^
+     82|     }
+     83|     if (!location.configuredPlacement && !childSourceOf(location)) {
+ ❯ TeamMemberRunViewProjectionService.getProjection src/run-history/services/team-member-run-view-projection-service.ts:44:22
+ ❯ TeamRunHistoryResolver.getTeamMemberRunProjection src/api/graphql/types/team-run-history.ts:106:24
+ ❯ execGraphql tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts:306:20
+ ❯ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts:427:29
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/27]⎯
+
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals
+GraphQLError: Run package 'agent:system-instruction-baseline' is unavailable.
+ ❯ RootRunPackageReadinessIndex.assertAdmitted src/run-history/services/root-run-package-readiness-index.ts:38:45
+     36|   async assertAdmitted(family: RootRunPackageFamily, id: string): Prom…
+     37|     await this.awaitReady();
+     38|     if (!this.isAdmitted(family, id)) throw new Error(`Run package '${…
+       |                                             ^
+     39|   }
+     40|   listAdmitted(family: RootRunPackageFamily): readonly string[] {
+ ❯ AgentRunViewProjectionService.getActiveTracePage src/run-history/services/agent-run-view-projection-service.ts:67:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/27]⎯
+
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > omits a rotated system instruction from active hydration without reading its archive
+GraphQLError: Run package 'agent:system-instruction-rotated' is unavailable.
+ ❯ RootRunPackageReadinessIndex.assertAdmitted src/run-history/services/root-run-package-readiness-index.ts:38:45
+     36|   async assertAdmitted(family: RootRunPackageFamily, id: string): Prom…
+     37|     await this.awaitReady();
+     38|     if (!this.isAdmitted(family, id)) throw new Error(`Run package '${…
+       |                                             ^
+     39|   }
+     40|   listAdmitted(family: RootRunPackageFamily): readonly string[] {
+ ❯ AgentRunViewProjectionService.getProjection src/run-history/services/agent-run-view-projection-service.ts:58:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/27]⎯
+
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects the newest 100 events from a >=5 MB active file without reading or changing its standalone archive
+GraphQLError: Run package 'agent:recent-window-large-standalone' is unavailable.
+ ❯ RootRunPackageReadinessIndex.assertAdmitted src/run-history/services/root-run-package-readiness-index.ts:38:45
+     36|   async assertAdmitted(family: RootRunPackageFamily, id: string): Prom…
+     37|     await this.awaitReady();
+     38|     if (!this.isAdmitted(family, id)) throw new Error(`Run package '${…
+       |                                             ^
+     39|   }
+     40|   listAdmitted(family: RootRunPackageFamily): readonly string[] {
+ ❯ AgentRunViewProjectionService.getProjection src/run-history/services/agent-run-view-projection-service.ts:58:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/27]⎯
+
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects a team member from active traces only and preserves its archive bytes
+GraphQLError: AgentRun 'recent-window-member' was not found in root TeamRun 'recent-window-team'.
+ ❯ TeamMemberRunViewProjectionService.requireLocation src/run-history/services/team-member-run-view-projection-service.ts:81:13
+     79|     const location = await this.locations.findAgent({ agentRunId: run …
+     80|     if (!location || location.rootTeamRunId !== root) {
+     81|       throw new Error(`AgentRun '${run}' was not found in root TeamRun…
+       |             ^
+     82|     }
+     83|     if (!location.configuredPlacement && !childSourceOf(location)) {
+ ❯ TeamMemberRunViewProjectionService.getProjection src/run-history/services/team-member-run-view-projection-service.ts:44:22
+ ❯ TeamRunHistoryResolver.getTeamMemberRunProjection src/api/graphql/types/team-run-history.ts:106:24
+ ❯ execGraphql tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts:306:20
+ ❯ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts:640:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/27]⎯
+
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > traverses exactly 275 standalone active events in fixed pages without opening archives
+GraphQLError: Run package 'agent:active-page-275-standalone' is unavailable.
+ ❯ RootRunPackageReadinessIndex.assertAdmitted src/run-history/services/root-run-package-readiness-index.ts:38:45
+     36|   async assertAdmitted(family: RootRunPackageFamily, id: string): Prom…
+     37|     await this.awaitReady();
+     38|     if (!this.isAdmitted(family, id)) throw new Error(`Run package '${…
+       |                                             ^
+     39|   }
+     40|   listAdmitted(family: RootRunPackageFamily): readonly string[] {
+ ❯ AgentRunViewProjectionService.getProjection src/run-history/services/agent-run-view-projection-service.ts:58:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/27]⎯
+
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > traverses exactly 275 team-member active events and rejects its cursor for another subject
+GraphQLError: AgentRun 'active-page-275-member' was not found in root TeamRun 'active-page-275-team'.
+ ❯ TeamMemberRunViewProjectionService.requireLocation src/run-history/services/team-member-run-view-projection-service.ts:81:13
+     79|     const location = await this.locations.findAgent({ agentRunId: run …
+     80|     if (!location || location.rootTeamRunId !== root) {
+     81|       throw new Error(`AgentRun '${run}' was not found in root TeamRun…
+       |             ^
+     82|     }
+     83|     if (!location.configuredPlacement && !childSourceOf(location)) {
+ ❯ TeamMemberRunViewProjectionService.getProjection src/run-history/services/team-member-run-view-projection-service.ts:44:22
+ ❯ TeamRunHistoryResolver.getTeamMemberRunProjection src/api/graphql/types/team-run-history.ts:106:24
+ ❯ execGraphql tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts:306:20
+ ❯ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts:730:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/27]⎯
+
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > keeps a cursor valid across append and expires it after an atomic active rewrite
+GraphQLError: Run package 'agent:active-page-cursor-lifecycle' is unavailable.
+ ❯ RootRunPackageReadinessIndex.assertAdmitted src/run-history/services/root-run-package-readiness-index.ts:38:45
+     36|   async assertAdmitted(family: RootRunPackageFamily, id: string): Prom…
+     37|     await this.awaitReady();
+     38|     if (!this.isAdmitted(family, id)) throw new Error(`Run package '${…
+       |                                             ^
+     39|   }
+     40|   listAdmitted(family: RootRunPackageFamily): readonly string[] {
+ ❯ AgentRunViewProjectionService.getActiveTracePage src/run-history/services/agent-run-view-projection-service.ts:67:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/27]⎯
+
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > serializes production media and shallow tool state without multi-megabyte result or log payload
+GraphQLError: Run package 'agent:active-page-closed-payload' is unavailable.
+ ❯ RootRunPackageReadinessIndex.assertAdmitted src/run-history/services/root-run-package-readiness-index.ts:38:45
+     36|   async assertAdmitted(family: RootRunPackageFamily, id: string): Prom…
+     37|     await this.awaitReady();
+     38|     if (!this.isAdmitted(family, id)) throw new Error(`Run package '${…
+       |                                             ^
+     39|   }
+     40|   listAdmitted(family: RootRunPackageFamily): readonly string[] {
+ ❯ AgentRunViewProjectionService.getActiveTracePage src/run-history/services/agent-run-view-projection-service.ts:67:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/27]⎯
+
+ FAIL  tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+TypeError: ownLlm is not a function
+ ❯ AutoByteusAgentRunBackendFactory.buildAgentConfig src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts:425:5
+    423|     );
+    424| 
+    425|     ownLlm(llmInstance);
+       |     ^
+    426|     const effectiveRuntimeKind =
+    427|       runtimeKindFromString(options.runtimeKind, RuntimeKind.AUTOBYTEU…
+ ❯ AutoByteusAgentRunBackendFactory.createBackend src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts:175:19
+ ❯ createBackend tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts:173:21
+ ❯ tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts:234:29
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/27]⎯
+
+ FAIL  tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+TypeError: ownLlm is not a function
+ ❯ AutoByteusAgentRunBackendFactory.buildAgentConfig src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts:425:5
+    423|     );
+    424| 
+    425|     ownLlm(llmInstance);
+       |     ^
+    426|     const effectiveRuntimeKind =
+    427|       runtimeKindFromString(options.runtimeKind, RuntimeKind.AUTOBYTEU…
+ ❯ AutoByteusAgentRunBackendFactory.createBackend src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts:175:19
+ ❯ createBackend tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts:173:21
+ ❯ tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts:429:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/27]⎯
+
+
+ Test Files  8 failed (8)
+      Tests  27 failed | 1 passed (28)
+   Start at  09:21:17
+   Duration  91.48s (transform 12.09s, setup 105ms, import 23.09s, tests 65.63s, environment 1ms)
+

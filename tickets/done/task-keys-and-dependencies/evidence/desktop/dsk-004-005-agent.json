@@ -1,0 +1,104 @@
+{
+  "steps": [
+    {
+      "name": "DSK-005a setup: scripted AGY Manager run; delegate_task by key in upper case and a Temp task",
+      "result": "Pass",
+      "observed": {
+        "runId": "key_manager_de1f_33763097622d4a47b17a62d23afe4495",
+        "worker": "key_worker_de1f_863b4a685a1742a4b93dda474c5edc11",
+        "tempWorker": "key_worker_de1f_719edf1954604296a7eca3f222ad5421",
+        "workerTasks": [
+          {
+            "workerKind": "agent",
+            "workerRunId": "key_worker_de1f_863b4a685a1742a4b93dda474c5edc11",
+            "task": {
+              "taskId": "project_task_fd98a97b-225a-45d2-8526-7997e3a8b284",
+              "taskKey": "autobyteus-5",
+              "projectId": "project_f36d52dc-b80c-42d8-b108-86f31d1950fe",
+              "description": "Write the API reference",
+              "status": "TODO"
+            }
+          },
+          {
+            "workerKind": "agent",
+            "workerRunId": "key_worker_de1f_719edf1954604296a7eca3f222ad5421",
+            "task": {
+              "taskId": "ad_hoc_task_cae152d8-fa17-4784-b705-77c6718af239",
+              "taskKey": null,
+              "projectId": null,
+              "description": "Reply OK.\nA Temp task has no key.",
+              "status": "TODO"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "DSK-005b Workspaces tree: the delegated copy reads \"<key> <summary>\" (key medium); tooltip/name \"Show Task in Projects: <key> <summary>\"; the Temp copy has no key (VIS-012, AC-016, AC-007)",
+      "result": "Pass",
+      "observed": {
+        "copy": {
+          "text": "autobyteus-5Write the API reference",
+          "key": "autobyteus-5",
+          "keyWeight": "500",
+          "title": "Show Task in Projects: autobyteus-5 Write the API reference",
+          "aria": "Show Task in Projects: autobyteus-5 Write the API reference"
+        },
+        "temp": {
+          "text": "Reply OK.",
+          "key": null,
+          "keyWeight": null,
+          "title": "Show Task in Projects: Reply OK.",
+          "aria": "Show Task in Projects: Reply OK."
+        },
+        "rowLabel": "Temporary task agent, key worker de1f, level 1, running, Started by key manager de1f, /key_worker_de1f, Task: Write the API reference"
+      }
+    },
+    {
+      "name": "DSK-004a Right-panel Projects tab: keys and badges on the compact board (VIS-010)",
+      "result": "Fail",
+      "error": "Error: panel board: {\"1\":{\"key\":\"autobyteus-1\",\"badge\":null},\"3\":{\"key\":\"autobyteus-3\",\"badge\":null},\"5\":{\"key\":\"autobyteus-5\",\"badge\":null},\"6\":{\"key\":\"autobyteus-6\",\"badge\":null}}\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/scripts/dsk-agent.mjs:20:54)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/scripts/dsk-agent.mjs:88:5\n    at async step (file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/scripts/dsk-agent.mjs:21:114)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/scripts/dsk-agent.mjs:77:3"
+    },
+    {
+      "name": "DSK-004b Tab Task view: key chip beside the status, Dependencies card; a dependency row opens that Task in the tab; Open in Projects links the key URL (VIS-011)",
+      "result": "Pass",
+      "observed": {
+        "chip": "autobyteus-5",
+        "deps": [
+          "autobyteus-2 Done Design the Task board schema",
+          "autobyteus-3 In Progress Ship the board UI"
+        ],
+        "req": [
+          "autobyteus-7 To Do Publish the API reference"
+        ],
+        "openHref": "#/projects/project_f36d52dc-b80c-42d8-b108-86f31d1950fe/tasks/autobyteus-5",
+        "centerHash": "#/chat?id=key_manager_de1f_33763097622d4a47b17a62d23afe4495"
+      }
+    },
+    {
+      "name": "DSK-004c Live: the Manager sets autobyteus-3 DONE by key; autobyteus-5's badge clears in the tab without Refresh (AC-011, AC-012)",
+      "result": "Pass",
+      "observed": {
+        "listRequests": 0,
+        "t7badge": "Blocked by\nautobyteus-5"
+      }
+    },
+    {
+      "name": "DSK-005c Show Task in Projects from the tree summary locates autobyteus-5 in the tab (preserved locate)",
+      "result": "Pass",
+      "observed": true
+    }
+  ],
+  "errors": [],
+  "screenshots": [
+    "desktop/dsk-005b-tree-1440x900.png",
+    "desktop/dsk-004b-right-panel-task-1440x900.png",
+    "desktop/dsk-004c-right-panel-badge-cleared-1440x900.png",
+    "desktop/dsk-005c-located-1440x900.png"
+  ],
+  "terminate": {
+    "success": true,
+    "message": "Agent run terminated successfully."
+  },
+  "result": "Fail"
+}

@@ -328,12 +328,16 @@ category-wide native task exposure are not restored.
   `{project}` is **deprecated** and kept unchanged for the transition: without
   project_id it runs as `create_project`, with it as `update_project`. It will be
   removed in a later release.
-- `create_task` → `{task}`. `{project_id, description, context_files?}`:
-  required nonempty description, **omit status** and `task_id` (new TODO).
+- `create_task` → `{task}`. `{project_id, description, context_files?, depends_on?}`:
+  required nonempty description, **omit status** and `task_id` (new TODO with
+  the Project's next key).
 - `update_task` → `{task}`. `{task_id, description?, status?,
-  context_files?}` with **no project_id**: the unique Task ID patches text
-  and/or status of a Project Task or a Task with no Project (`projectId: null`
-  in the result). Unknown IDs fail, never upsert.
+  context_files?, depends_on?}` with **no project_id**: the Task ID (a Project
+  Task's key in any letter case or its long ID, or a Task with no Project's ID)
+  patches text, status and/or dependencies of a Project Task or a Task with no
+  Project (`projectId: null` in the result). Unknown IDs fail, never upsert.
+  `depends_on` lists same-Project Task references (`[]` clears, omitted keeps);
+  an invalid list fails with `TASK_DEPENDENCY_INVALID` and writes nothing.
   Null/blank IDs are invalid, not omitted; hidden input keys (including
   `project_id` with `task_id`) fail. Omitted fields/context are preserved
   through a locked current-record patch. Neither task tool is added
@@ -345,8 +349,9 @@ category-wide native task exposure are not restored.
   `task` also lists them as `attachedContextFiles: [{storedFilename,
   displayName}]`. See [Projects](projects.md#project-and-task-agent-tools).
 
-Task projections include projectId/taskId, description/status and saved
-contextFiles (metadata/HTTP locator plus validated server-local localPath when
+Task projections include projectId/taskId (a Project Task's key, see
+[Task keys](projects.md#task-keys-and-depends-on)), description/status,
+`dependsOn` keys for Project Tasks and saved contextFiles (metadata/HTTP locator plus validated server-local localPath when
 bytes are available), not timestamps. Missing bytes do not fabricate paths.
 No workspace discovery/registration, Task attachment removal, batch, delegation, automatic
 status/linkage/quality assessment or resource-stopping operation is provided.

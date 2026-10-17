@@ -1,0 +1,20 @@
+{
+  "initialChoice": "project:project_f36d52dc-b80c-42d8-b108-86f31d1950fe",
+  "samples": [
+    {
+      "ms": 26,
+      "rows": 6,
+      "badges": [
+        [
+          "autobyteus-7",
+          "Blocked by autobyteus-5"
+        ],
+        [
+          "autobyteus-6",
+          "Dependency cancelled: autobyteus-4"
+        ]
+      ]
+    }
+  ],
+  "errors": []
+}

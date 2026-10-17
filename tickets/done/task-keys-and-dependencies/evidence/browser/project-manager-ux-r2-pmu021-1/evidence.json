@@ -1,0 +1,307 @@
+{
+  "startedAt": "2026-10-17T15:14:47.121Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PMU-020": {
+      "result": "Pass",
+      "description": "Task summaries under delegated copy rows (Agent host: agent, task Team, Temp copies; Team host): one line for members and sub-work; spec values, hover; GraphQL answers; batched reads, no Task-list reads",
+      "durationMs": 9115,
+      "details": {
+        "listed": [
+          {
+            "kind": "task_agent",
+            "address": "/release_notes_writer_pmulocate_67d5",
+            "agentRunId": "release_notes_writer_pmulocate_67d5_72b452fd981a477ab5b655016a3e4d12",
+            "height": 46,
+            "summary": "Ship the copy Task summary in the tree",
+            "key": "locate-desktop-b59cfc-1",
+            "label": "Temporary task agent, release notes writer pmulocate 67d5, level 1, idle, Started by manager pmulocate 67d5, /release_notes_writer_pmulocate_67d5, Task: Ship the copy Task summary in the tree"
+          },
+          {
+            "kind": "task_team",
+            "address": "/docs_review_team_pmulocate_67d5",
+            "agentRunId": null,
+            "height": 46,
+            "summary": "Review the locate journey with the docs review team and report back on every edge case found during the whole session",
+            "key": "locate-desktop-b59cfc-2",
+            "label": "Temporary task team, docs review team pmulocate 67d5, level 1, idle, Started by manager pmulocate 67d5, /docs_review_team_pmulocate_67d5, Task: Review the locate journey with the docs review team and report back on every edge case found during the whole session"
+          },
+          {
+            "kind": "task_team_child",
+            "address": "/docs_review_team_pmulocate_67d5/reviewer",
+            "agentRunId": "release_notes_writer_pmulocate_67d5_b74368fe12324533b313810b785289fc",
+            "height": 28,
+            "summary": null,
+            "key": null,
+            "label": "Temporary task agent, reviewer, level 2, idle, /docs_review_team_pmulocate_67d5/reviewer"
+          },
+          {
+            "kind": "task_team_child",
+            "address": "/docs_review_team_pmulocate_67d5/editor",
+            "agentRunId": "fact_checker_pmulocate_67d5_4ec5cd898e23436597f04208c678bbb2",
+            "height": 28,
+            "summary": null,
+            "key": null,
+            "label": "Temporary task agent, editor, level 2, offline, /docs_review_team_pmulocate_67d5/editor"
+          },
+          {
+            "kind": "task_agent",
+            "address": "/link_verifier_083a",
+            "agentRunId": "link_verifier_083a_b4c6e4b8157c43c0b81a360874a32354",
+            "height": 28,
+            "summary": null,
+            "key": null,
+            "label": "Temporary task agent, link verifier 083a, level 1, idle, Started by release notes writer pmulocate 67d5, /link_verifier_083a"
+          },
+          {
+            "kind": "task_agent",
+            "address": "/fact_checker_pmulocate_67d5",
+            "agentRunId": "fact_checker_pmulocate_67d5_ca4c65baff2a49f99ce9d4a0e36fd3f1",
+            "height": 46,
+            "summary": "Check the FAQ links.",
+            "key": null,
+            "label": "Temporary task agent, fact checker pmulocate 67d5, level 1, idle, Started by manager pmulocate 67d5, /fact_checker_pmulocate_67d5, Task: Check the FAQ links."
+          }
+        ],
+        "style": {
+          "fontSize": "11px",
+          "lineHeight": "16px",
+          "fontWeight": "400",
+          "color": "rgb(128, 128, 128)",
+          "gapAbove": 2,
+          "textLeftMinusName": 0,
+          "title": "Show Task in Projects: locate-desktop-b59cfc-1 Ship the copy Task summary in the tree",
+          "ariaLabel": "Show Task in Projects: locate-desktop-b59cfc-1 Ship the copy Task summary in the tree",
+          "ariaCurrent": null,
+          "ariaSelected": null,
+          "tag": "BUTTON"
+        },
+        "team": {
+          "weight": "400",
+          "ellipsis": "ellipsis",
+          "truncated": true,
+          "elbowFromRowTop": 14,
+          "chevronCentre": 14,
+          "nameCentre": 14
+        },
+        "hover": {
+          "color": "rgb(67, 56, 202)",
+          "line": "underline",
+          "offset": "2px"
+        },
+        "answers": [
+          {
+            "workerKind": "agent",
+            "workerRunId": "release_notes_writer_pmulocate_67d5_72b452fd981a477ab5b655016a3e4d12",
+            "task": {
+              "taskId": "project_task_6b9f5b46-0016-491c-bc3d-aeb665696687",
+              "projectId": "project_7e2fe14a-6c7a-4a3c-934d-78f83bb8cd6b",
+              "description": "Ship the copy Task summary in the tree\nCALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/link_verifier_083a\",\"description\":\"Check the links.\"}}",
+              "status": "TODO"
+            }
+          },
+          {
+            "workerKind": "agent",
+            "workerRunId": "fact_checker_pmulocate_67d5_ca4c65baff2a49f99ce9d4a0e36fd3f1",
+            "task": {
+              "taskId": "ad_hoc_task_32f954aa-e7b4-42f2-9901-613552012884",
+              "projectId": null,
+              "description": "Check the FAQ links.\nReport broken ones.",
+              "status": "TODO"
+            }
+          },
+          {
+            "workerKind": "agent",
+            "workerRunId": "link_verifier_083a_b4c6e4b8157c43c0b81a360874a32354",
+            "task": null
+          },
+          {
+            "workerKind": "agent",
+            "workerRunId": "release_notes_writer_pmulocate_67d5_0fa1c3a781a34d2ab08c74d90f4a2df0",
+            "task": {
+              "taskId": "project_task_fc8b742f-ecf8-4145-b27f-395f5c4d3ac1",
+              "projectId": "project_26561a59-00e3-4f90-98ba-5771432082c4",
+              "description": "Draft the release notes for the beta",
+              "status": "TODO"
+            }
+          },
+          {
+            "workerKind": "team",
+            "workerRunId": "docs_review_team_pmulocate_67d5_9b564f2c026a45478696a4d3132a3317",
+            "task": {
+              "taskId": "project_task_2634de8d-fe17-44fc-b582-28e982acc3b5",
+              "projectId": "project_7e2fe14a-6c7a-4a3c-934d-78f83bb8cd6b",
+              "description": "Review the locate journey with the docs review team and report back on every edge case found during the whole session",
+              "status": "TODO"
+            }
+          }
+        ],
+        "reads": [
+          {
+            "agentRunIds": [
+              "release_notes_writer_pmulocate_67d5_72b452fd981a477ab5b655016a3e4d12",
+              "link_verifier_083a_b4c6e4b8157c43c0b81a360874a32354",
+              "fact_checker_pmulocate_67d5_ca4c65baff2a49f99ce9d4a0e36fd3f1"
+            ],
+            "teamRunIds": [
+              "docs_review_team_pmulocate_67d5_9b564f2c026a45478696a4d3132a3317"
+            ]
+          },
+          {
+            "agentRunIds": [
+              "release_notes_writer_pmulocate_67d5_72b452fd981a477ab5b655016a3e4d12",
+              "link_verifier_083a_b4c6e4b8157c43c0b81a360874a32354",
+              "fact_checker_pmulocate_67d5_ca4c65baff2a49f99ce9d4a0e36fd3f1"
+            ],
+            "teamRunIds": [
+              "docs_review_team_pmulocate_67d5_9b564f2c026a45478696a4d3132a3317"
+            ]
+          }
+        ],
+        "listScopes": [],
+        "teamHostSummary": "Draft the release notes for the beta",
+        "subWorkRunId": "link_verifier_083a_b4c6e4b8157c43c0b81a360874a32354"
+      }
+    },
+    "PMU-021": {
+      "result": "Pass",
+      "description": "Show Task in Projects, docked: picker switch (remembered after reload), centred / focused / 2.4 s highlight, center and selection unchanged, Temp tasks, Enter opens, back from an open Task, only the latest highlighted, search kept / cleared, keyboard Tab / Enter / Space; a row click (agent copy, Team copy) opens the copy and locates nothing",
+      "durationMs": 16535,
+      "details": {
+        "first": {
+          "path": "/chat?id=manager_pmulocate_67d5_01c309fb55e5465db79cc9a667431091",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_7e2fe14a-6c7a-4a3c-934d-78f83bb8cd6b",
+          "located": [
+            "project-task-row-project_task_6b9f5b46-0016-491c-bc3d-aeb665696687"
+          ],
+          "focused": "project-task-row-project_task_6b9f5b46-0016-491c-bc3d-aeb665696687"
+        },
+        "highlight": {
+          "centreOffset": 1051,
+          "inView": false,
+          "atEdge": false,
+          "background": "rgb(238, 242, 255)",
+          "boxShadow": "rgb(99, 102, 241) 2px 0px 0px 0px inset",
+          "animation": "task-live-f1a92bd3"
+        },
+        "firstGeometry": {
+          "centreOffset": 29,
+          "inView": true,
+          "atEdge": true,
+          "background": "rgb(238, 242, 255)",
+          "boxShadow": "rgb(99, 102, 241) 2px 0px 0px 0px inset",
+          "animation": "task-live-f1a92bd3"
+        },
+        "afterHighlight": {
+          "path": "/chat?id=manager_pmulocate_67d5_01c309fb55e5465db79cc9a667431091",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_7e2fe14a-6c7a-4a3c-934d-78f83bb8cd6b",
+          "located": [],
+          "focused": "project-task-row-project_task_6b9f5b46-0016-491c-bc3d-aeb665696687"
+        },
+        "temp": {
+          "path": "/chat?id=manager_pmulocate_67d5_01c309fb55e5465db79cc9a667431091",
+          "docked": true,
+          "drawer": false,
+          "picker": "temp",
+          "located": [
+            "project-task-row-ad_hoc_task_32f954aa-e7b4-42f2-9901-613552012884"
+          ],
+          "focused": "project-task-row-ad_hoc_task_32f954aa-e7b4-42f2-9901-613552012884"
+        },
+        "fromOpenTask": {
+          "path": "/chat?id=manager_pmulocate_67d5_01c309fb55e5465db79cc9a667431091",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_7e2fe14a-6c7a-4a3c-934d-78f83bb8cd6b",
+          "located": [
+            "project-task-row-project_task_2634de8d-fe17-44fc-b582-28e982acc3b5"
+          ],
+          "focused": "project-task-row-project_task_2634de8d-fe17-44fc-b582-28e982acc3b5"
+        },
+        "twice": {
+          "path": "/chat?id=manager_pmulocate_67d5_01c309fb55e5465db79cc9a667431091",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_7e2fe14a-6c7a-4a3c-934d-78f83bb8cd6b",
+          "located": [
+            "project-task-row-project_task_2634de8d-fe17-44fc-b582-28e982acc3b5"
+          ],
+          "focused": "project-task-row-project_task_2634de8d-fe17-44fc-b582-28e982acc3b5"
+        },
+        "searchKept": "ship the copy",
+        "searchCleared": "",
+        "keyboardFocus": {
+          "test": "workspace-task-worker-task-summary",
+          "ring": "rgb(255, 255, 255) 0px 0px 0px 0px, rgb(99, 102, 241) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+        },
+        "pickerAfterReload": "project:project_7e2fe14a-6c7a-4a3c-934d-78f83bb8cd6b",
+        "rowClick": {
+          "path": "/chat?id=manager_pmulocate_67d5_01c309fb55e5465db79cc9a667431091",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_7e2fe14a-6c7a-4a3c-934d-78f83bb8cd6b",
+          "located": [],
+          "focused": null
+        },
+        "selectedSummaryColour": "rgb(67, 56, 202)",
+        "teamRowClick": {
+          "path": "/chat?id=manager_pmulocate_67d5_01c309fb55e5465db79cc9a667431091",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_7e2fe14a-6c7a-4a3c-934d-78f83bb8cd6b",
+          "located": [],
+          "focused": null
+        },
+        "teamSummaryStillLocates": {
+          "path": "/chat?id=manager_pmulocate_67d5_01c309fb55e5465db79cc9a667431091",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_7e2fe14a-6c7a-4a3c-934d-78f83bb8cd6b",
+          "located": [
+            "project-task-row-project_task_2634de8d-fe17-44fc-b582-28e982acc3b5"
+          ],
+          "focused": "project-task-row-project_task_2634de8d-fe17-44fc-b582-28e982acc3b5"
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 54962,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 54934,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [],
+  "feed": {
+    "total": 68,
+    "byType": {
+      "connected": 1,
+      "project_upserted": 28,
+      "task_upserted": 29,
+      "task_worker_status": 10
+    }
+  },
+  "stack": {
+    "backendUrl": "http://127.0.0.1:62828",
+    "frontendUrl": "http://127.0.0.1:62829",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-b1DWvJ"
+  },
+  "browserVersion": "155.0.8059.84",
+  "warmup": {
+    "reloadsDuringWarmup": 0
+  },
+  "result": "Pass",
+  "finishedAt": "2026-10-17T15:15:41.517Z"
+}

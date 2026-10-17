@@ -1,4 +1,5 @@
 import { ProjectsPerFolderV1AppDataMigration } from "../../../src/app-data-migrations/migrations/projects-per-folder-v1/projects-per-folder-v1-app-data-migration.js";
+import { ProjectTaskKeysV1AppDataMigration } from "../../../src/app-data-migrations/migrations/project-task-keys-v1/project-task-keys-v1-app-data-migration.js";
 import "reflect-metadata";
 import fs from "node:fs";
 import os from "node:os";
@@ -536,7 +537,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
       ["createProjectTask", "deleteProjectTask", "updateProjectTask"],
     );
     const updateInputFields = Object.keys((schema.getType("UpdateProjectTaskInput") as { getFields(): Record<string, unknown> }).getFields());
-    expect(updateInputFields.sort()).toEqual(["contextChanges", "description", "projectId", "taskId"]);
+    expect(updateInputFields.sort()).toEqual(["contextChanges", "dependsOnTaskIds", "description", "projectId", "taskId"]);
     expect(schema.getType("Task")).toBeUndefined();
     expect(schema.getType("TaskStatus")).toBeUndefined();
   });
@@ -566,7 +567,58 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     expect(readWorkspacesJson()).toBe(workspacesBefore);
   });
 
-  it("API-009: a released v1.4.86 projects.json is gated until the startup migration moves it, then reads intact and the first Task write keeps every released field", async () => {
+  it("API-010: Task keys and depends on: keys in creation order, never reused, kept on rename; dependencies validated, replaced, cleared and dropped on delete", async () => {
+    const FIELDS = "taskId taskKey status dependsOnTaskIds updatedAt";
+    type KeyedTask = { taskId: string; taskKey: string; status: string; dependsOnTaskIds: string[]; updatedAt: string };
+    const create = async (projectId: string, description: string, dependsOnTaskIds?: string[]) => (await execOk<{ createProjectTask: KeyedTask }>(
+      `mutation($input: CreateProjectTaskInput!) { createProjectTask(input: $input) { ${FIELDS} } }`,
+      { input: { projectId, description, ...(dependsOnTaskIds ? { dependsOnTaskIds } : {}) } })).createProjectTask;
+    const UPDATE = `mutation($input: UpdateProjectTaskInput!) { updateProjectTask(input: $input) { ${FIELDS} } }`;
+    const update = async (projectId: string, taskId: string, dependsOnTaskIds?: string[]) =>
+      (await execOk<{ updateProjectTask: KeyedTask }>(UPDATE, { input: { projectId, taskId, description: "edited", ...(dependsOnTaskIds ? { dependsOnTaskIds } : {}) } })).updateProjectTask;
+    const keyed = async (projectId: string) => (await execOk<{ projectTasks: KeyedTask[] }>(
+      `query($projectId: String!) { projectTasks(projectId: $projectId) { ${FIELDS} } }`, { projectId })).projectTasks;
+
+    const project = await createProject("AutoByteus");
+    const a = await create(project.projectId, "A");
+    const b = await create(project.projectId, "B", [a.taskId]);
+    expect([a.taskKey, b.taskKey]).toEqual(["autobyteus-1", "autobyteus-2"]);
+    expect(b.dependsOnTaskIds).toEqual([a.taskId]);
+
+    // Rename keeps the prefix; a new Project taking the old name gets a suffixed prefix.
+    await execOk(`mutation($input:UpdateProjectInput!){updateProject(input:$input){projectId}}`, { input: { projectId: project.projectId, name: "AutoByteus Core" } });
+    const c = await create(project.projectId, "C");
+    expect(c.taskKey).toBe("autobyteus-3");
+    const sameName = await createProject("AutoByteus");
+    const foreign = await create(sameName.projectId, "Foreign");
+    expect(foreign.taskKey).toBe("autobyteus-2-1");
+
+    // Invalid dependencies are rejected with nothing written.
+    const before = snapshotProjectsDir();
+    // Itself, an unknown Task, another Project's Task, and a loop (B already depends on A).
+    for (const dependsOnTaskIds of [[a.taskId], ["project_task_missing"], [foreign.taskId], [b.taskId]]) {
+      await expectErrorCode(UPDATE, { input: { projectId: project.projectId, taskId: a.taskId, description: "x", dependsOnTaskIds } }, "TASK_DEPENDENCY_INVALID");
+    }
+    await expectErrorCode(`mutation($input: CreateProjectTaskInput!) { createProjectTask(input: $input) { taskId } }`,
+      { input: { projectId: project.projectId, description: "D", dependsOnTaskIds: [foreign.taskId] } }, "TASK_DEPENDENCY_INVALID");
+    expect(snapshotProjectsDir()).toEqual(before);
+
+    // Omitted keeps, a list replaces, [] clears.
+    expect((await update(project.projectId, b.taskId)).dependsOnTaskIds).toEqual([a.taskId]);
+    expect((await update(project.projectId, c.taskId, [b.taskId, a.taskId])).dependsOnTaskIds).toEqual([b.taskId, a.taskId]);
+    expect((await update(project.projectId, b.taskId, [])).dependsOnTaskIds).toEqual([]);
+
+    // Deleting a Task drops it from its dependents (their updatedAt kept) and its number is never reused.
+    const cBefore = (await keyed(project.projectId)).find((t) => t.taskId === c.taskId)!;
+    await execOk(`mutation($input: DeleteProjectTaskInput!) { deleteProjectTask(input: $input) }`, { input: { projectId: project.projectId, taskId: a.taskId } });
+    const cAfter = (await keyed(project.projectId)).find((t) => t.taskId === c.taskId)!;
+    expect(cAfter).toEqual({ ...cBefore, dependsOnTaskIds: [b.taskId] });
+    expect((await create(project.projectId, "E")).taskKey).toBe("autobyteus-4");
+    // Key allocation state never leaves the server.
+    expect(Object.keys((schema.getType("Project") as { getFields(): Record<string, unknown> }).getFields())).not.toContain("taskKeys");
+  });
+
+  it("API-009: a released v1.4.86 projects.json is gated until the startup migration moves it, then reads intact and the first Task write keeps every released value", async () => {
     const prototype = await registerWorkspace("autobyteus-web-prototype");
     const releasedRow = {
       projectId: "project_3f0c9a52-1b7e-4d1e-9d4f-0a6b2c1d7e11",
@@ -591,6 +643,8 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     expect(fs.readFileSync(filePath, "utf-8")).toBe(releasedContent);
 
     expect((await new ProjectsPerFolderV1AppDataMigration(appDataDir).execute()).status).toBe("SUCCEEDED");
+    // The next startup migration gives the released Project its Task key state.
+    expect((await new ProjectTaskKeysV1AppDataMigration(appDataDir).execute()).status).toBe("SUCCEEDED");
     expect(fs.readFileSync(path.join(appDataDir, "projects", "projects.pre-folders.json"), "utf-8")).toBe(releasedContent);
     expect(await listProjects()).toEqual([
       expect.objectContaining({
@@ -608,7 +662,11 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
 
     const task = await createTask(releasedRow.projectId, "First task on a released Project");
     const [persisted] = readProjectsJson() as Array<Record<string, unknown>>;
-    expect(persisted).toEqual({ ...releasedRow, tasks: [expect.objectContaining({ taskId: task.taskId, projectId: releasedRow.projectId, status: "TODO" })] });
+    // The first Task's key allocation is an exact current-shape save of project.json: every released value stays,
+    // the next number is recorded, and obsolete link extras (workspaceId, addedAt) drop as on any save.
+    expect(persisted).toEqual({ ...releasedRow, taskKeys: { prefix: "autobyteus", lastNumber: 1 },
+      workspaces: [{ workspaceRootPath: prototype.workspaceRootPath, description: "UI prototype workspace" }],
+      tasks: [expect.objectContaining({ taskId: task.taskId, projectId: releasedRow.projectId, taskKey: "autobyteus-1", status: "TODO" })] });
     const taskPath = path.join(appDataDir, "projects", releasedRow.projectId, "tasks", task.taskId, "task.json");
     const taskBytes = fs.readFileSync(taskPath, "utf8");
     await execOk(`mutation($input:UpdateProjectInput!){updateProject(input:$input){${PROJECT_FIELDS}}}`, {

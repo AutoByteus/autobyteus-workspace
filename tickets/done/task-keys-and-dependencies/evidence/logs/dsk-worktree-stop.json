@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "stop",
+  "result": {
+    "instanceId": "iso-52802-e5b4",
+    "wasRunning": true,
+    "forced": true,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tkd-desktop-root.XniFD0BeBY",
+    "dataRootRemoved": false,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-52802-e5b4.log"
+  }
+}

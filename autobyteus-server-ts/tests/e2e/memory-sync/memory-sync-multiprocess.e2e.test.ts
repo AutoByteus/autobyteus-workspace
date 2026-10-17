@@ -7,9 +7,20 @@ import { execFileSync, spawn, type ChildProcessWithoutNullStreams } from "node:c
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   testAgentNode,
-  testAgentTeamNode,
   testExecutionTree,
 } from "../../fixtures/current-team-run-fixtures.js";
+
+/**
+ * Memory Sync between two real built server processes: a source node's standalone run and current
+ * flat Team package are synced into a hub, and the hub reads them back through the explicit
+ * IMPORTED source.
+ *
+ * The former nested-Team layout cases (MP_001 flat-residue vs canonical conflict, MP_002 retained
+ * history relocated from the flat to the canonical child-Team directory) were dropped: they need a
+ * configured Team inside a Team, which current Team V2 rejects since the flat Agent Org model
+ * (flat-agent-organization-model REQ-002). A flat Team member's canonical directory is the flat
+ * one, so there is no layout to repair.
+ */
 
 const require = createRequire(import.meta.url);
 const serverRoot = path.resolve(import.meta.dirname, "../../..");
@@ -17,12 +28,9 @@ const appEntry = path.join(serverRoot, "dist", "app.js");
 const sourceNodeId = "multiprocess-source-node";
 const sourceRunId = "mp-source-run";
 const sourceTeamRunId = "mp-source-team-run";
-const retainedTeamRunId = "mp-retained-team-run";
-const retainedChildTeamRunId = "mp-retained-child-team-run";
-const retainedAgentRunId = "mp-retained-agent-run";
-const conflictTeamRunId = "mp-conflict-team-run";
-const conflictChildTeamRunId = "mp-conflict-child-team-run";
-const conflictAgentRunId = "mp-conflict-agent-run";
+const flatTeamRunId = "mp-flat-team-run";
+const flatTeamAgentRunId = "mp-flat-team-agent-run";
+const flatTeamDefinitionId = "mp-flat-team-definition";
 
 type ServerProcess = {
   name: string;
@@ -38,13 +46,12 @@ const writeText = (filePath: string, content: string) => {
   fs.writeFileSync(filePath, content, "utf-8");
 };
 
-const writeCurrentNestedTeamPackage = (input: {
+const writeCurrentTeamPackage = (input: {
   memoryDir: string;
   rootTeamRunId: string;
-  childTeamRunId: string;
   agentRunId: string;
   teamDefinitionId: string;
-}): { rootDir: string; flatDir: string; canonicalDir: string } => {
+}): { rootDir: string; memberDir: string } => {
   const rootDir = path.join(input.memoryDir, "agent_teams", input.rootTeamRunId);
   const tree = testExecutionTree({
     rootTeamRunId: input.rootTeamRunId,
@@ -53,30 +60,16 @@ const writeCurrentNestedTeamPackage = (input: {
     coordinatorAddress: "/lead",
     children: [
       testAgentNode("/lead"),
-      testAgentTeamNode({
-        address: "/nested",
-        coordinatorAddress: "/nested/member",
-        teamRunId: input.childTeamRunId,
-        children: [testAgentNode("/nested/member", { agentRunId: input.agentRunId })],
-      }),
+      testAgentNode("/member", { agentRunId: input.agentRunId }),
     ],
   });
   writeText(path.join(rootDir, "team_run_execution_tree.json"), `${JSON.stringify(tree, null, 2)}\n`);
-  writeText(path.join(rootDir, "task_delegation_records.json"), `${JSON.stringify({
-    schemaVersion: 1,
-    rootTeamRunId: input.rootTeamRunId,
-    records: [],
-  }, null, 2)}\n`);
   writeText(path.join(rootDir, "team_communication_messages.json"), `${JSON.stringify({
     schemaVersion: 1,
     rootTeamRunId: input.rootTeamRunId,
     messages: [],
   }, null, 2)}\n`);
-  return {
-    rootDir,
-    flatDir: path.join(rootDir, input.agentRunId),
-    canonicalDir: path.join(rootDir, input.childTeamRunId, input.agentRunId),
-  };
+  return { rootDir, memberDir: path.join(rootDir, input.agentRunId) };
 };
 
 const appendLog = (logs: string[], chunk: Buffer) => {
@@ -251,45 +244,18 @@ const seedSourceMemory = (sourceDataDir: string): void => {
 
   writeText(path.join(memoryDir, "imports", "already-imported", "agents", "echo.txt"), "must not echo");
 
-  const retained = writeCurrentNestedTeamPackage({
+  const team = writeCurrentTeamPackage({
     memoryDir,
-    rootTeamRunId: retainedTeamRunId,
-    childTeamRunId: retainedChildTeamRunId,
-    agentRunId: retainedAgentRunId,
-    teamDefinitionId: "mp-retained-team-definition",
+    rootTeamRunId: flatTeamRunId,
+    agentRunId: flatTeamAgentRunId,
+    teamDefinitionId: flatTeamDefinitionId,
   });
-  writeText(path.join(retained.flatDir, "raw_traces_active.jsonl"), `${JSON.stringify({
-    id: "mp-retained-flat-trace",
-    trace_type: "user",
-    source_event: "memory-sync-multiprocess-e2e",
-    content: "MP_002_PRE_UPGRADE_FLAT_HISTORY",
-    turn_id: "mp-retained-turn",
-    seq: 1,
-    ts: 1,
-  })}\n`);
-
-  const conflict = writeCurrentNestedTeamPackage({
-    memoryDir,
-    rootTeamRunId: conflictTeamRunId,
-    childTeamRunId: conflictChildTeamRunId,
-    agentRunId: conflictAgentRunId,
-    teamDefinitionId: "mp-conflict-team-definition",
-  });
-  writeText(path.join(conflict.flatDir, "raw_traces_active.jsonl"), `${JSON.stringify({
-    id: "mp-conflict-flat-trace",
-    trace_type: "user",
-    source_event: "memory-sync-multiprocess-e2e",
-    content: "MP_001_FLAT_CONFLICT_RESIDUE_MUST_NOT_BE_SEMANTIC",
-    turn_id: "mp-conflict-flat-turn",
-    seq: 1,
-    ts: 1,
-  })}\n`);
-  writeText(path.join(conflict.canonicalDir, "raw_traces_active.jsonl"), `${JSON.stringify({
-    id: "mp-conflict-canonical-trace",
+  writeText(path.join(team.memberDir, "raw_traces_active.jsonl"), `${JSON.stringify({
+    id: "mp-flat-team-trace",
     trace_type: "assistant",
     source_event: "memory-sync-multiprocess-e2e",
-    content: "MP_001_CANONICAL_IMPORTED_HISTORY",
-    turn_id: "mp-conflict-canonical-turn",
+    content: "MP_001_FLAT_TEAM_IMPORTED_HISTORY",
+    turn_id: "mp-flat-team-turn",
     seq: 1,
     ts: 2,
   })}\n`);
@@ -415,35 +381,21 @@ describe("Memory Sync multi-process backend e2e", () => {
     expect(fs.existsSync(path.join(importRoot, "agents", sourceRunId, "upload.partial"))).toBe(false);
     expect(fs.existsSync(path.join(importRoot, "agent_teams", sourceTeamRunId, "team_run_metadata.json"))).toBe(true);
     expect(fs.existsSync(path.join(importRoot, "imports", "already-imported", "agents", "echo.txt"))).toBe(false);
-    const importedConflictFlatTrace = path.join(
-      importRoot,
-      "agent_teams",
-      conflictTeamRunId,
-      conflictAgentRunId,
-      "raw_traces_active.jsonl",
-    );
-    const importedConflictCanonicalTrace = path.join(
-      importRoot,
-      "agent_teams",
-      conflictTeamRunId,
-      conflictChildTeamRunId,
-      conflictAgentRunId,
-      "raw_traces_active.jsonl",
-    );
-    expect(fs.readFileSync(importedConflictFlatTrace, "utf8"))
-      .toContain("MP_001_FLAT_CONFLICT_RESIDUE_MUST_NOT_BE_SEMANTIC");
-    expect(fs.readFileSync(importedConflictCanonicalTrace, "utf8"))
-      .toContain("MP_001_CANONICAL_IMPORTED_HISTORY");
+    expect(fs.readFileSync(
+      path.join(importRoot, "agent_teams", flatTeamRunId, flatTeamAgentRunId, "raw_traces_active.jsonl"),
+      "utf8",
+    )).toContain("MP_001_FLAT_TEAM_IMPORTED_HISTORY");
+    expect(fs.existsSync(path.join(importRoot, "agent_teams", flatTeamRunId, "team_run_execution_tree.json"))).toBe(true);
 
-    const importedConflictRuns = await graphql<{
+    const importedTeamRuns = await graphql<{
       listAgentTeamRunsWithMemory: {
         total: number;
         entries: Array<{ teamRunId: string; memberTargets: Array<{ agentRunId: string }> }>;
       };
     }>(hubServer, `
-      query ImportedConflictRuns($source: MemoryExplorerSourceInput!) {
+      query ImportedTeamRuns($source: MemoryExplorerSourceInput!, $teamDefinitionId: String!) {
         listAgentTeamRunsWithMemory(
-          teamDefinitionId: "mp-conflict-team-definition",
+          teamDefinitionId: $teamDefinitionId,
           source: $source,
           search: null,
           page: 1,
@@ -453,111 +405,31 @@ describe("Memory Sync multi-process backend e2e", () => {
           entries { teamRunId memberTargets { agentRunId } }
         }
       }
-    `, { source: { type: "IMPORTED", sourceNodeId } });
-    expect(importedConflictRuns.listAgentTeamRunsWithMemory).toEqual({
+    `, { source: { type: "IMPORTED", sourceNodeId }, teamDefinitionId: flatTeamDefinitionId });
+    expect(importedTeamRuns.listAgentTeamRunsWithMemory).toEqual({
       total: 1,
       entries: [{
-        teamRunId: conflictTeamRunId,
-        memberTargets: [{ agentRunId: conflictAgentRunId }],
+        teamRunId: flatTeamRunId,
+        memberTargets: [{ agentRunId: flatTeamAgentRunId }],
       }],
     });
 
-    const importedConflictView = await graphql<{
+    const importedTeamMemberView = await graphql<{
       getTeamMemberRunMemoryView: { rawTraces: Array<{ id: string | null; content: string | null }> };
     }>(hubServer, `
-      query ImportedConflictView($source: MemoryExplorerSourceInput!) {
+      query ImportedTeamMemberView($source: MemoryExplorerSourceInput!, $teamRunId: String!, $agentRunId: String!) {
         getTeamMemberRunMemoryView(
-          teamRunId: "mp-conflict-team-run",
-          agentRunId: "mp-conflict-agent-run",
+          teamRunId: $teamRunId,
+          agentRunId: $agentRunId,
           source: $source,
           includeRawTraces: true
         ) { rawTraces { id content } }
       }
-    `, { source: { type: "IMPORTED", sourceNodeId } });
-    expect(importedConflictView.getTeamMemberRunMemoryView.rawTraces).toEqual([
+    `, { source: { type: "IMPORTED", sourceNodeId }, teamRunId: flatTeamRunId, agentRunId: flatTeamAgentRunId });
+    expect(importedTeamMemberView.getTeamMemberRunMemoryView.rawTraces).toEqual([
       expect.objectContaining({
-        id: "mp-conflict-canonical-trace",
-        content: "MP_001_CANONICAL_IMPORTED_HISTORY",
-      }),
-    ]);
-    expect(JSON.stringify(importedConflictView)).not.toContain(
-      "MP_001_FLAT_CONFLICT_RESIDUE_MUST_NOT_BE_SEMANTIC",
-    );
-
-    const sourceRetainedFlatDir = path.join(
-      sourceServer.dataDir,
-      "memory",
-      "agent_teams",
-      retainedTeamRunId,
-      retainedAgentRunId,
-    );
-    const sourceRetainedCanonicalDir = path.join(
-      sourceServer.dataDir,
-      "memory",
-      "agent_teams",
-      retainedTeamRunId,
-      retainedChildTeamRunId,
-      retainedAgentRunId,
-    );
-    fs.mkdirSync(path.dirname(sourceRetainedCanonicalDir), { recursive: true });
-    fs.renameSync(sourceRetainedFlatDir, sourceRetainedCanonicalDir);
-
-    const secondSync = await graphql<{
-      startMemorySync: {
-        scannedFiles: number;
-        changedFiles: number;
-        committedBatches: number;
-        duplicateBatches: number;
-        deferredFiles: number;
-      };
-    }>(sourceServer, `
-      mutation StartPostRelocationSync {
-        startMemorySync { scannedFiles changedFiles committedBatches duplicateBatches deferredFiles }
-      }
-    `);
-    expect(secondSync.startMemorySync).toMatchObject({
-      committedBatches: 1,
-      duplicateBatches: 0,
-      deferredFiles: 0,
-    });
-    expect(secondSync.startMemorySync.changedFiles).toBeGreaterThanOrEqual(1);
-
-    const importedRetainedFlatTrace = path.join(
-      importRoot,
-      "agent_teams",
-      retainedTeamRunId,
-      retainedAgentRunId,
-      "raw_traces_active.jsonl",
-    );
-    const importedRetainedCanonicalTrace = path.join(
-      importRoot,
-      "agent_teams",
-      retainedTeamRunId,
-      retainedChildTeamRunId,
-      retainedAgentRunId,
-      "raw_traces_active.jsonl",
-    );
-    expect(fs.readFileSync(importedRetainedFlatTrace, "utf8"))
-      .toContain("MP_002_PRE_UPGRADE_FLAT_HISTORY");
-    expect(fs.readFileSync(importedRetainedCanonicalTrace, "utf8"))
-      .toContain("MP_002_PRE_UPGRADE_FLAT_HISTORY");
-
-    const importedRetainedView = await graphql<{
-      getTeamMemberRunMemoryView: { rawTraces: Array<{ id: string | null; content: string | null }> };
-    }>(hubServer, `
-      query ImportedRetainedView($source: MemoryExplorerSourceInput!) {
-        getTeamMemberRunMemoryView(
-          teamRunId: "mp-retained-team-run",
-          agentRunId: "mp-retained-agent-run",
-          source: $source,
-          includeRawTraces: true
-        ) { rawTraces { id content } }
-      }
-    `, { source: { type: "IMPORTED", sourceNodeId } });
-    expect(importedRetainedView.getTeamMemberRunMemoryView.rawTraces).toEqual([
-      expect.objectContaining({
-        id: "mp-retained-flat-trace",
-        content: "MP_002_PRE_UPGRADE_FLAT_HISTORY",
+        id: "mp-flat-team-trace",
+        content: "MP_001_FLAT_TEAM_IMPORTED_HISTORY",
       }),
     ]);
 

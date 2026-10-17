@@ -1,0 +1,3 @@
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+

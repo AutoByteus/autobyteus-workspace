@@ -1,0 +1,362 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:30734) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-XfjMWv
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-XfjMWv/.env
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-XfjMWv/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-XfjMWv/.env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-XfjMWv
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-XfjMWv/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-XfjMWv/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-XfjMWv/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-XfjMWv/memory
+============================================================
+Initialized server settings service with 19 predefined settings
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-XfjMWv/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-XfjMWv/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-XfjMWv/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstderr[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_or_update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstderr[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected list_projects adapter wins over a configured MCP name
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+
+[90mstderr[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected list_projects adapter wins over a configured MCP name
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+Configured MCP tool 'list_projects' was not exposed because it collides with a protected Agent Tools MCP adapter.
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected list_projects adapter wins over a configured MCP name
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+
+[90mstderr[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected list_projects adapter wins over a configured MCP name
+[22m[39mOverwriting existing tool definition for name: 'list_projects'
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected create_project adapter wins over a configured MCP name
+[22m[39mSuccessfully registered tool definition: 'create_project'
+
+[90mstderr[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected create_project adapter wins over a configured MCP name
+[22m[39mOverwriting existing tool definition for name: 'create_project'
+Configured MCP tool 'create_project' was not exposed because it collides with a protected Agent Tools MCP adapter.
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected create_project adapter wins over a configured MCP name
+[22m[39mSuccessfully registered tool definition: 'create_project'
+
+[90mstderr[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected create_project adapter wins over a configured MCP name
+[22m[39mOverwriting existing tool definition for name: 'create_project'
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected update_project adapter wins over a configured MCP name
+[22m[39mSuccessfully registered tool definition: 'update_project'
+
+[90mstderr[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected update_project adapter wins over a configured MCP name
+[22m[39mOverwriting existing tool definition for name: 'update_project'
+Configured MCP tool 'update_project' was not exposed because it collides with a protected Agent Tools MCP adapter.
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected update_project adapter wins over a configured MCP name
+[22m[39mSuccessfully registered tool definition: 'update_project'
+
+[90mstderr[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected update_project adapter wins over a configured MCP name
+[22m[39mOverwriting existing tool definition for name: 'update_project'
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected create_or_update_project adapter wins over a configured MCP name
+[22m[39mSuccessfully registered tool definition: 'create_or_update_project'
+
+[90mstderr[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected create_or_update_project adapter wins over a configured MCP name
+[22m[39mOverwriting existing tool definition for name: 'create_or_update_project'
+Configured MCP tool 'create_or_update_project' was not exposed because it collides with a protected Agent Tools MCP adapter.
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected create_or_update_project adapter wins over a configured MCP name
+[22m[39mSuccessfully registered tool definition: 'create_or_update_project'
+
+[90mstderr[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-MCP collision: selected protected create_or_update_project adapter wins over a configured MCP name
+[22m[39mOverwriting existing tool definition for name: 'create_or_update_project'
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-AGG: public registration is not mkdir; failed aggregate save preserves registry and prior records
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-XfjMWv/not-created-folder/../not-created-folder
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-XfjMWv/not-created-folder.
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-AGG: public registration is not mkdir; failed aggregate save preserves registry and prior records
+[22m[39mCreated and registered workspace ID: agent_ws_89478a05e5b556ca48d1f29e32bf98978eb16a804f93448616926d2c786db41e
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-AGG: public registration is not mkdir; failed aggregate save preserves registry and prior records
+[22m[39mGraphQL mutation to remove registered workspace
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mAPI-AGG: public registration is not mkdir; failed aggregate save preserves registry and prior records
+[22m[39mClosing FileSystemWorkspace agent_ws_89478a05e5b556ca48d1f29e32bf98978eb16a804f93448616926d2c786db41e
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mE-006: path links retain descriptions; lists replace, blanks and [] clear only associations
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-XfjMWv/tool-workspace-a
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-XfjMWv/tool-workspace-a.
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mE-006: path links retain descriptions; lists replace, blanks and [] clear only associations
+[22m[39mCreated and registered workspace ID: agent_ws_2d3f2962b7466d758677c73df51949fd5c50218fa5baeb9a1e02592bbff21c9a
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mE-006: path links retain descriptions; lists replace, blanks and [] clear only associations
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-XfjMWv/tool-workspace-b
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-XfjMWv/tool-workspace-b.
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mE-006: path links retain descriptions; lists replace, blanks and [] clear only associations
+[22m[39mCreated and registered workspace ID: agent_ws_69f478ccb51c93cf33482bc3f215e11e9c91c168a6ccdb60cfc3bf687f49e986
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mE-006: path links retain descriptions; lists replace, blanks and [] clear only associations
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-XfjMWv/tool-workspace-c
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-XfjMWv/tool-workspace-c.
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mE-006: path links retain descriptions; lists replace, blanks and [] clear only associations
+[22m[39mCreated and registered workspace ID: agent_ws_6068f62128f396eef9b62a8e2640ea3631188c775e76f1a8b35eee2b6e91c63d
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mE-006: path links retain descriptions; lists replace, blanks and [] clear only associations
+[22m[39mGraphQL mutation to remove registered workspace
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mE-006: path links retain descriptions; lists replace, blanks and [] clear only associations
+[22m[39mClosing FileSystemWorkspace agent_ws_6068f62128f396eef9b62a8e2640ea3631188c775e76f1a8b35eee2b6e91c63d
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mE-007: current Projects/Tasks/context/assignments/history/registry/folders survive metadata/list patches and reader reconstruction
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-XfjMWv/protected-source
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-http-e2e-XfjMWv/protected-source.
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mE-007: current Projects/Tasks/context/assignments/history/registry/folders survive metadata/list patches and reader reconstruction
+[22m[39mCreated and registered workspace ID: agent_ws_db6e258b1571d754d317e7ef9469425f36a9758d9d10f11bdf079ad5557a6aa2
+
+[90mstderr[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries[2m > [22m[2mCLS-API-001: CANCELLED patch/ack, DONE<->CANCELLED, reopen, list filter, tool schemas, errors, GraphQL enum, open count and stored shape (task-closed-status AC-004, 006, 007, 010, 012)
+[22m[39mTASK_AGENT_RESOURCE_CONFLICT {
+  execution: [32m'agent:fixture-worker'[39m,
+  openTasks: [
+    [32m'project_task_0b18876e-c0c3-4f05-a4ae-8fe847f470f7'[39m,
+    [32m'project_task_1966eb99-f7da-4173-96e2-e2a149c3cda2'[39m
+  ]
+}
+
+[90mstdout[2m | tests/e2e/projects/project-task-boundaries.e2e.test.ts[2m > [22m[2mProject Task production HTTP boundaries
+[22m[39mOwned HTTP fixture cleanup: Studio/MCP listeners closed, data directory removed.
+
+ [32m✓[39m tests/e2e/projects/project-task-boundaries.e2e.test.ts [2m([22m[2m14 tests[22m[2m)[22m[33m 4498[2mms[22m[39m
+     [33m[2m✓[22m[39m API-FILES: multipart bytes, saved ownership, typed deltas and Done survive reader reconstruction [33m 410[2mms[22m[39m
+     [33m[2m✓[22m[39m E-005: selected HTTP and native Project create/patch save defaults and reject invalid input atomically [33m 409[2mms[22m[39m
+     [33m[2m✓[22m[39m E-006: path links retain descriptions; lists replace, blanks and [] clear only associations [33m 574[2mms[22m[39m
+     [33m[2m✓[22m[39m CTX-E2E-002: invalid context_files fail with a path-naming error and change nothing, including no DONE closure (AC-004, 005, 008) [33m 574[2mms[22m[39m
+     [33m[2m✓[22m[39m TKD-API-001: keys as Task IDs, depends_on by key / any case / long ID, rejected dependencies write nothing, blocked Tasks start, a deleted Project's keys stay unknown (AC-020, 022, 024, 025, 027) [33m 1215[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m14 passed[39m[22m[90m (14)[39m
+[2m   Start at [22m 15:25:15
+[2m   Duration [22m 11.29s[2m (transform 4.72s, setup 23ms, import 6.35s, tests 4.50s, environment 0ms)[22m
+
+npm notice
+npm notice New major version of npm available! 10.9.8 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

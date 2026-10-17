@@ -49,6 +49,8 @@ type AttemptLogDetail = {
 const V1_PROMOTION_MIGRATION_ID = "20260814_team_run_execution_tree_v1";
 const TEAM_AGENT_MEMORY_LAYOUT_MIGRATION_ID = "20260823_repair_team_agent_memory_layout";
 const V2_MIGRATION_ID = "20260824_team_run_execution_tree_v2";
+// Converts an Org-like released Team (a Team member inside the root) into an AgentOrg V1 package.
+const FLAT_FAMILIES_MIGRATION_ID = "20260901_agent_org_flat_team_families_v1";
 const TOKEN_USAGE_CONSOLIDATION_MIGRATION_ID = "20260819_token_usage_run_records_v1";
 const HISTORICAL_AUDIT_SENTINEL_MIGRATION_ID = "20260730_token_usage_provider_name_snapshot_backfill";
 const REMOVED_CANONICAL_MIGRATION_ID = "20260801_team_canonical_identity";
@@ -402,11 +404,14 @@ const writeSupportedPredecessor = (runtimeRoot: string, rootTeamRunId: string) =
     ],
   });
   const memorySentinelPath = path.join(rootDir, `${rootTeamRunId}-lead-run`, "synthetic-memory.bin");
+  const orgDir = path.join(runtimeRoot, "memory", "agent_orgs", rootTeamRunId);
   fs.mkdirSync(path.dirname(memorySentinelPath), { recursive: true, mode: 0o700 });
   const memorySentinel = Buffer.from(`synthetic-memory-bytes:${rootTeamRunId}:\u0000\u0001`, "utf8");
   fs.writeFileSync(memorySentinelPath, memorySentinel, { mode: 0o600 });
   return {
     rootDir,
+    orgDir,
+    orgMemorySentinelPath: path.join(orgDir, `${rootTeamRunId}-lead-run`, "synthetic-memory.bin"),
     metadataPath,
     metadataBytes: fs.readFileSync(metadataPath),
     taskRecordsPath,
@@ -487,7 +492,7 @@ const readCurrentSyntheticTokenRows = (databasePath: string): Array<Record<strin
   const database = new DatabaseSync(databasePath, { readOnly: true });
   try {
     return database.prepare(`
-      SELECT run_id, root_team_run_id, usage_report_count,
+      SELECT run_id, root_team_run_id, root_attribution_status, usage_report_count,
              accounting_input_tokens, accounting_output_tokens, accounting_total_tokens
         FROM token_usage_run_records
        WHERE run_id LIKE 'team-v1-%'
@@ -572,6 +577,13 @@ const currentTreeStatus = async (serverUrl: string): Promise<MigrationStatus> =>
   const statuses = await migrationStatuses(serverUrl);
   const status = statuses.find(({ migrationId }) => migrationId === V2_MIGRATION_ID);
   if (!status) throw new Error("TEAM_RUN_V2_MIGRATION_STATUS_MISSING");
+  return status;
+};
+
+const flatFamiliesStatus = async (serverUrl: string): Promise<MigrationStatus> => {
+  const statuses = await migrationStatuses(serverUrl);
+  const status = statuses.find(({ migrationId }) => migrationId === FLAT_FAMILIES_MIGRATION_ID);
+  if (!status) throw new Error("AGENT_ORG_FLAT_TEAM_FAMILIES_STATUS_MISSING");
   return status;
 };
 
@@ -723,6 +735,22 @@ const restoreTeamRun = async (serverUrl: string, teamRunId: string) => executeGr
   }
 `, { teamRunId });
 
+const restoreOrgRun = async (serverUrl: string, orgRunId: string) => executeGraphql<{
+  restoreAgentOrgRun: { success: boolean; agentOrgRunId: string | null; message: string };
+}>(serverUrl, `
+  mutation RestoreMigratedAgentOrgRun($orgRunId: String!) {
+    restoreAgentOrgRun(agentOrgRunId: $orgRunId) { success agentOrgRunId message }
+  }
+`, { orgRunId });
+
+const terminateOrgRun = async (serverUrl: string, orgRunId: string) => executeGraphql<{
+  terminateAgentOrgRun: { success: boolean; agentOrgRunId: string | null };
+}>(serverUrl, `
+  mutation TerminateMigratedAgentOrgRun($orgRunId: String!) {
+    terminateAgentOrgRun(agentOrgRunId: $orgRunId) { success agentOrgRunId }
+  }
+`, { orgRunId });
+
 const countTokenRows = (databasePath: string): { legacy: number; current: number } => {
   const database = new DatabaseSync(databasePath, { readOnly: true });
   try {
@@ -735,7 +763,123 @@ const countTokenRows = (databasePath: string): { legacy: number; current: number
   }
 };
 
-const assertConvertedPackage = (scenario: Awaited<ReturnType<typeof seedScenario>>): void => {
+/** The end of the startup chain: the Org-like released root is an AgentOrg V1 package with all content. */
+const assertAgentOrgPackage = (scenario: Awaited<ReturnType<typeof seedScenario>>): void => {
+  const { rootTeamRunId, supported } = scenario;
+  expect(fs.existsSync(supported.metadataPath)).toBe(false);
+  // The Team family copy is retired once the Org package is admitted.
+  expect(fs.existsSync(supported.rootDir)).toBe(false);
+  const tree = JSON.parse(fs.readFileSync(path.join(supported.orgDir, "agent_org_run_execution_tree.json"), "utf8"));
+  expect(tree).toMatchObject({
+    schemaVersion: 1,
+    subjectKind: "agent_org",
+    createdAt: "2026-08-16T12:00:00.000Z",
+    archivedAt: null,
+    applicationBinding: GENERAL_PROCESS_APPLICATION_BINDING,
+    handoffs: [{
+      from: "/lead",
+      to: "/research/reviewer",
+      rules: ["Review the migration evidence."],
+    }],
+    rootOrg: {
+      address: "/",
+      orgRunId: rootTeamRunId,
+      orgDefinitionId: "synthetic-released-root-definition",
+      orgDefinitionName: "Synthetic Released Team",
+      defaultLaunchConfiguration: ROOT_COORDINATOR_CONFIGURATION,
+      members: [
+        expect.objectContaining({
+          address: "/lead",
+          agentDefinitionId: "autobyteus-memory-compactor",
+          agentRunId: `${rootTeamRunId}-lead-run`,
+          role: "Synthetic migration member",
+          description: "Synthetic released-shape member",
+          launchConfiguration: ROOT_COORDINATOR_CONFIGURATION,
+        }),
+        expect.objectContaining({
+          address: "/research",
+          teamDefinitionId: "synthetic-released-child-definition",
+          teamRunId: `${rootTeamRunId}-explicit-child-team-run`,
+          coordinatorAddress: "/research/reviewer",
+          role: "Research",
+          description: "Nested released-shape team",
+          defaultLaunchConfiguration: NESTED_COORDINATOR_CONFIGURATION,
+          members: [expect.objectContaining({
+            address: "/research/reviewer",
+            agentDefinitionId: "autobyteus-memory-compactor",
+            agentRunId: `${rootTeamRunId}-reviewer-run`,
+            launchConfiguration: NESTED_COORDINATOR_CONFIGURATION,
+          })],
+          taskExecutions: [expect.objectContaining({
+            address: "/research/reviewer",
+            agentRunId: supported.taskAgentRunId,
+            startedAt: "2026-08-16T12:03:00.000Z",
+            settledAt: "2026-08-16T12:05:00.000Z",
+          })],
+        }),
+      ],
+      taskExecutions: [],
+    },
+  });
+  const messages = JSON.parse(fs.readFileSync(path.join(supported.orgDir, "agent_org_communication_messages.json"), "utf8"));
+  expect(messages).toMatchObject({
+    schemaVersion: 1,
+    subjectKind: "agent_org",
+    orgRunId: rootTeamRunId,
+    messages: [
+      expect.objectContaining({
+        messageId: `${rootTeamRunId}-address-message`,
+        senderAgentRunId: `${rootTeamRunId}-lead-run`,
+        receiverAgentRunId: `${rootTeamRunId}-reviewer-run`,
+        content: "address projection",
+        referenceFiles: ["/synthetic/address-evidence.md"],
+      }),
+      expect.objectContaining({
+        messageId: `${rootTeamRunId}-run-id-message`,
+        senderAgentRunId: `${rootTeamRunId}-reviewer-run`,
+        receiverAgentRunId: `${rootTeamRunId}-lead-run`,
+        content: "run ID projection",
+        referenceFiles: ["/synthetic/run-id-evidence.md"],
+      }),
+    ],
+  });
+  const tasks = JSON.parse(fs.readFileSync(path.join(supported.orgDir, "agent_org_task_delegation_records.json"), "utf8"));
+  expect(tasks).toEqual({
+    schemaVersion: 1,
+    subjectKind: "agent_org",
+    orgRunId: rootTeamRunId,
+    records: [{
+      taskId: supported.taskId,
+      delegatorAgentRunId: `${rootTeamRunId}-lead-run`,
+      recipientAddress: "/research/reviewer",
+      taskExecution: { agentRunId: supported.taskAgentRunId },
+      description: "Review the preserved migration package.",
+      referenceFiles: ["/synthetic/migration-task.md"],
+      status: "accepted",
+      updates: [
+        {
+          submissionId: supported.submissionId,
+          message: "The preserved migration package is valid.",
+          referenceFiles: ["/synthetic/migration-result.md"],
+          createdAt: "2026-08-16T12:04:00.000Z",
+        },
+        {
+          reviewId: `${supported.taskId}_review_0001`,
+          reviewedSubmissionId: supported.submissionId,
+          decision: "accept",
+          comment: "Accepted migration evidence.",
+          referenceFiles: [],
+          createdAt: "2026-08-16T12:05:00.000Z",
+        },
+      ],
+      createdAt: "2026-08-16T12:02:00.000Z",
+    }],
+  });
+  expect(fs.readFileSync(supported.orgMemorySentinelPath)).toEqual(supported.memorySentinel);
+};
+
+/** The V2 Team package the chain leaves when the Org conversion fails closed (warning case). */
+const assertV2TeamPackage = (scenario: Awaited<ReturnType<typeof seedScenario>>): void => {
   expect(fs.existsSync(scenario.supported.metadataPath)).toBe(false);
   const tree = JSON.parse(fs.readFileSync(path.join(scenario.supported.rootDir, "team_run_execution_tree.json"), "utf8"));
   expect(tree).toMatchObject({
@@ -831,6 +975,7 @@ const assertConvertedPackage = (scenario: Awaited<ReturnType<typeof seedScenario
 const assertLedgerTransition = (
   databasePath: string,
   beforeRows: Array<Record<string, unknown>>,
+  statuses: MigrationStatus[],
 ): Array<Record<string, unknown>> => {
   const database = new DatabaseSync(databasePath, { readOnly: true });
   try {
@@ -846,7 +991,11 @@ const assertLedgerTransition = (
     database.close();
   }
   const afterRows = readMigrationLedger(databasePath);
-  expect(afterRows).toHaveLength(beforeRows.length + 4);
+  // One new ledger row per registered migration this startup ran (not only the four Team migrations below):
+  // every migration registered after the released cohort adds its own row, so the count follows the registry.
+  const beforeIds = new Set(beforeRows.map(({ migration_id }) => migration_id));
+  const ranNow = statuses.filter(({ migrationId, status }) => status !== "NOT_RUN" && !beforeIds.has(migrationId)).map(({ migrationId }) => migrationId);
+  expect(afterRows.slice(beforeRows.length).map(({ migration_id }) => migration_id).sort()).toEqual([...ranNow].sort());
   const transitionedBeforeRows = beforeRows.map((row) => {
     if (typeof row.summary !== "string") return row;
     const legacy = JSON.parse(row.summary) as ExecutionCounts;
@@ -885,83 +1034,107 @@ const assertLedgerTransition = (
 const exerciseHistoryAndNewWork = async (
   serverUrl: string,
   runtimeRoot: string,
-  historicalTeamRunId: string,
+  scenario: Awaited<ReturnType<typeof seedScenario>>,
 ): Promise<void> => {
-  const resume = await executeGraphql<{
-    getTeamRunResumeConfig: { teamRunId: string; isActive: boolean; executionTree: Record<string, unknown> };
+  const orgRunId = scenario.rootTeamRunId;
+  const rootLaunch = {
+    runtimeKind: "autobyteus",
+    llmModelIdentifier: "gpt-5.6-luna",
+    llmConfig: { temperature: 0.15 },
+    autoExecuteTools: false,
+    workspaceRootPath: "/tmp/autobyteus-team-v1-root-workspace",
+  };
+  const nestedLaunch = {
+    runtimeKind: "autobyteus",
+    llmModelIdentifier: "gpt-5.6-luna",
+    llmConfig: null,
+    autoExecuteTools: true,
+    workspaceRootPath: "/tmp/autobyteus-team-v1-nested-workspace",
+  };
+  const history = await executeGraphql<{
+    getAgentOrgRootHistory: Record<string, unknown> | null;
   }>(serverUrl, `
-    query TeamRunV1Resume($teamRunId: String!) {
-      getTeamRunResumeConfig(teamRunId: $teamRunId) { teamRunId isActive executionTree }
+    query MigratedAgentOrgHistory($orgRunId: String!) {
+      getAgentOrgRootHistory(orgRunId: $orgRunId) {
+        root_subject_kind root_run_id created_at archived_at is_active org
+      }
     }
-  `, { teamRunId: historicalTeamRunId });
-  expect(resume.getTeamRunResumeConfig).toMatchObject({
-    teamRunId: historicalTeamRunId,
-    isActive: false,
-    executionTree: {
-      root_team: {
+  `, { orgRunId });
+  expect(history.getAgentOrgRootHistory).toMatchObject({
+    root_subject_kind: "agent_org",
+    root_run_id: orgRunId,
+    created_at: "2026-08-16T12:00:00.000Z",
+    archived_at: null,
+    is_active: false,
+    org: {
+      rootOrg: {
         address: "/",
-        default_launch_configuration: {
-          runtime_kind: "autobyteus",
-          llm_model_identifier: "gpt-5.6-luna",
-          llm_config: { temperature: 0.15 },
-          auto_execute_tools: false,
-          workspace_root_path: "/tmp/autobyteus-team-v1-root-workspace",
-        },
-        members: expect.arrayContaining([
+        orgRunId,
+        defaultLaunchConfiguration: rootLaunch,
+        members: [
           expect.objectContaining({
             address: "/lead",
-            agent_definition_id: "autobyteus-memory-compactor",
-            launch_configuration: {
-              runtime_kind: "autobyteus",
-              llm_model_identifier: "gpt-5.6-luna",
-              llm_config: { temperature: 0.15 },
-              auto_execute_tools: false,
-              workspace_root_path: "/tmp/autobyteus-team-v1-root-workspace",
-            },
+            agentDefinitionId: "autobyteus-memory-compactor",
+            agentRunId: `${orgRunId}-lead-run`,
+            launchConfiguration: rootLaunch,
           }),
           expect.objectContaining({
             address: "/research",
-            coordinator_address: "/research/reviewer",
-            default_launch_configuration: {
-              runtime_kind: "autobyteus",
-              llm_model_identifier: "gpt-5.6-luna",
-              llm_config: null,
-              auto_execute_tools: true,
-              workspace_root_path: "/tmp/autobyteus-team-v1-nested-workspace",
-            },
+            teamRunId: `${orgRunId}-explicit-child-team-run`,
+            coordinatorAddress: "/research/reviewer",
+            defaultLaunchConfiguration: nestedLaunch,
             members: [expect.objectContaining({
               address: "/research/reviewer",
-              agent_definition_id: "autobyteus-memory-compactor",
-              launch_configuration: {
-                runtime_kind: "autobyteus",
-                llm_model_identifier: "gpt-5.6-luna",
-                llm_config: null,
-                auto_execute_tools: true,
-                workspace_root_path: "/tmp/autobyteus-team-v1-nested-workspace",
-              },
+              agentDefinitionId: "autobyteus-memory-compactor",
+              agentRunId: `${orgRunId}-reviewer-run`,
+              launchConfiguration: nestedLaunch,
+            })],
+            taskExecutions: [expect.objectContaining({
+              address: "/research/reviewer",
+              agentRunId: scenario.supported.taskAgentRunId,
             })],
           }),
-        ]),
+        ],
       },
     },
   });
 
-  const restored = await executeGraphql<{
-    restoreAgentTeamRun: { success: boolean; teamRunId: string | null; message: string };
+  const memberReads = await executeGraphql<{
+    getAgentOrgMemberRunProjection: { agentRunId: string; memberAddress: string };
+    getAgentOrgMemberTokenUsageSummary: {
+      runId: string;
+      rootTeamRunId: string | null;
+      grossInputTokens: number;
+      outputTokens: number;
+      totalTokens: number;
+    };
   }>(serverUrl, `
-    mutation RestoreTeamRunV1($teamRunId: String!) {
-      restoreAgentTeamRun(teamRunId: $teamRunId) { success teamRunId message }
+    query MigratedAgentOrgLead($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {
+      getAgentOrgMemberRunProjection(orgRunId: $orgRunId, memberAddress: $memberAddress, agentRunId: $agentRunId) {
+        agentRunId memberAddress
+      }
+      getAgentOrgMemberTokenUsageSummary(orgRunId: $orgRunId, memberAddress: $memberAddress, agentRunId: $agentRunId) {
+        runId rootTeamRunId grossInputTokens outputTokens totalTokens
+      }
     }
-  `, { teamRunId: historicalTeamRunId });
-  expect(restored.restoreAgentTeamRun).toMatchObject({ success: true, teamRunId: historicalTeamRunId });
-  const terminatedRestored = await executeGraphql<{
-    terminateAgentTeamRun: { success: boolean };
-  }>(serverUrl, `
-    mutation TerminateRestoredTeamRunV1($teamRunId: String!) {
-      terminateAgentTeamRun(teamRunId: $teamRunId) { success }
-    }
-  `, { teamRunId: historicalTeamRunId });
-  expect(terminatedRestored.terminateAgentTeamRun.success).toBe(true);
+  `, { orgRunId, memberAddress: "/lead", agentRunId: `${orgRunId}-lead-run` });
+  expect(memberReads.getAgentOrgMemberRunProjection).toEqual({
+    agentRunId: `${orgRunId}-lead-run`,
+    memberAddress: "/lead",
+  });
+  // An Org member's tokens keep their exact accounting and claim no Team root.
+  expect(memberReads.getAgentOrgMemberTokenUsageSummary).toEqual({
+    runId: `${orgRunId}-lead-run`,
+    rootTeamRunId: null,
+    grossInputTokens: 13,
+    outputTokens: 8,
+    totalTokens: 21,
+  });
+
+  const restored = await restoreOrgRun(serverUrl, orgRunId);
+  expect(restored.restoreAgentOrgRun).toMatchObject({ success: true, agentOrgRunId: orgRunId });
+  const terminatedRestored = await terminateOrgRun(serverUrl, orgRunId);
+  expect(terminatedRestored.terminateAgentOrgRun).toEqual({ success: true, agentOrgRunId: orgRunId });
 
   const createdAgent = await executeGraphql<{ createAgentDefinition: { id: string; name: string } }>(serverUrl, `
     mutation CreatePostMigrationAgent($input: CreateAgentDefinitionInput!) {
@@ -1028,7 +1201,6 @@ const exerciseHistoryAndNewWork = async (
       nodes: [{
         memberName: "worker",
         ref: createdAgent.createAgentDefinition.id,
-        refType: "AGENT",
         refScope: "SHARED",
       }],
     },
@@ -1069,7 +1241,7 @@ const exerciseHistoryAndNewWork = async (
   `, { teamRunId: createdTeamRun.createAgentTeamRun.teamRunId });
   expect(terminatedTeam.terminateAgentTeamRun.success).toBe(true);
 
-  const history = await executeGraphql<{
+  const workspaceHistory = await executeGraphql<{
     listWorkspaceRunHistory: Array<{
       teamDefinitions: Array<{ runs: Array<{ teamRunId: string }> }>;
       agentDefinitions: Array<{ runs: Array<{ runId: string }> }>;
@@ -1082,15 +1254,30 @@ const exerciseHistoryAndNewWork = async (
       }
     }
   `);
-  const teamRunIds = history.listWorkspaceRunHistory.flatMap((workspace) =>
+  const teamRunIds = workspaceHistory.listWorkspaceRunHistory.flatMap((workspace) =>
     workspace.teamDefinitions.flatMap((definition) => definition.runs.map((run) => run.teamRunId)));
-  const agentRunIds = history.listWorkspaceRunHistory.flatMap((workspace) =>
+  const agentRunIds = workspaceHistory.listWorkspaceRunHistory.flatMap((workspace) =>
     workspace.agentDefinitions.flatMap((definition) => definition.runs.map((run) => run.runId)));
-  expect(teamRunIds).toEqual(expect.arrayContaining([
-    historicalTeamRunId,
-    createdTeamRun.createAgentTeamRun.teamRunId,
-  ]));
+  expect(teamRunIds).toContain(createdTeamRun.createAgentTeamRun.teamRunId);
   expect(agentRunIds).toContain(createdRun.createAgentRun.runId);
+
+  // The migrated root is listed with the collaboration roots as an AgentOrg, not as a Team.
+  const roots = await executeGraphql<{
+    listCollaborationRootHistory: Array<{ root_subject_kind: string; root_run_id: string }>;
+  }>(serverUrl, `
+    query PostMigrationCollaborationRoots {
+      listCollaborationRootHistory {
+        ... on AgentOrgRootHistoryObject { root_subject_kind root_run_id }
+        ... on AgentTeamRootHistoryObject { root_subject_kind root_run_id }
+      }
+    }
+  `);
+  expect(roots.listCollaborationRootHistory).toEqual(expect.arrayContaining([
+    { root_subject_kind: "agent_org", root_run_id: orgRunId },
+  ]));
+  expect(roots.listCollaborationRootHistory).not.toContainEqual(
+    { root_subject_kind: "agent_team", root_run_id: orgRunId },
+  );
 };
 
 const startScenarioServer = async (target: ReturnType<typeof makeTarget>): Promise<RunningTestServer> => {
@@ -1115,7 +1302,19 @@ afterEach(async () => {
   }
 });
 
-describe("TeamRun released-shape production upgrade to current V2 through actual startup", () => {
+/**
+ * Released TeamRun V1 data started on the current build. The startup chain runs to its end:
+ * V1 -> V2 -> 20260901_agent_org_flat_team_families_v1, which turns the Org-like released root
+ * (a Team member inside the root) into an AgentOrg V1 package. The suite asserts that end state
+ * and reads it through the AgentOrg history, projection, token and restore APIs.
+ *
+ * The warning case also seeds a team_run_history_index.json whose JSON is not an index. No released
+ * build writes that (every released writer replaced the index atomically with an array of rows), so
+ * it is synthetic corruption outside the supported upgrade population. Its current contract is fail
+ * closed: the flat-families migration stops with RESTART_TO_RETRY before converting anything, the
+ * released root stays a byte-identical V2 Team package, and the index bytes are kept for correction.
+ */
+describe("TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup", () => {
   it("migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch", async () => {
     const productionBefore = productionProfileMetadata();
     const target = makeTarget("team-v1-supported-startup");
@@ -1134,15 +1333,22 @@ describe("TeamRun released-shape production upgrade to current V2 through actual
       attempts: 1,
       errorMessage: null,
     });
+    expect(await flatFamiliesStatus(first.serverUrl)).toMatchObject({
+      status: "SUCCEEDED",
+      attempts: 1,
+      errorMessage: null,
+    });
     expect(first.output()).toContain("Server listening on");
     expect(first.output()).not.toContain(EMBEDDED_SERVER_PLATFORM_FATAL_PROTOCOL);
-    assertConvertedPackage(scenario);
-    const ledgerAfterFirst = assertLedgerTransition(target.database.databasePath, ledgerBefore);
+    assertAgentOrgPackage(scenario);
+    const ledgerAfterFirst = assertLedgerTransition(target.database.databasePath, ledgerBefore, await migrationStatuses(first.serverUrl));
     expect(readSyntheticTokenRows(target.database.databasePath)).toEqual([]);
+    // Org members keep their accounting; the Team-root claim is cleared (an Org is not a Team root).
     expect(readCurrentSyntheticTokenRows(target.database.databasePath)).toEqual([
       expect.objectContaining({
         run_id: `${scenario.rootTeamRunId}-lead-run`,
-        root_team_run_id: scenario.rootTeamRunId,
+        root_team_run_id: null,
+        root_attribution_status: "unknown",
         usage_report_count: 1,
         accounting_input_tokens: 13,
         accounting_output_tokens: 8,
@@ -1150,7 +1356,7 @@ describe("TeamRun released-shape production upgrade to current V2 through actual
       }),
     ]);
     expect(tokensBefore).toHaveLength(1);
-    await exerciseHistoryAndNewWork(first.serverUrl, target.runtimeRoot, scenario.rootTeamRunId);
+    await exerciseHistoryAndNewWork(first.serverUrl, target.runtimeRoot, scenario);
 
     await first.stop();
     ownedServers.delete(first);
@@ -1158,14 +1364,15 @@ describe("TeamRun released-shape production upgrade to current V2 through actual
     await expectHealthy(second.serverUrl);
     expect(await promotionStatus(second.serverUrl)).toMatchObject({ status: "SUCCEEDED", attempts: 1 });
     expect(await currentTreeStatus(second.serverUrl)).toMatchObject({ status: "SUCCEEDED", attempts: 1 });
+    expect(await flatFamiliesStatus(second.serverUrl)).toMatchObject({ status: "SUCCEEDED", attempts: 1 });
     expect(readMigrationLedger(target.database.databasePath)).toEqual(ledgerAfterFirst);
     expect(readSyntheticTokenRows(target.database.databasePath)).toEqual([]);
     expect(readCurrentSyntheticTokenRows(target.database.databasePath)).toHaveLength(1);
-    assertConvertedPackage(scenario);
+    assertAgentOrgPackage(scenario);
     expect(productionProfileMetadata()).toEqual(productionBefore);
   }, 360_000);
 
-  it("isolates mixed root, token, and history warnings while keeping health, history, new work, and relaunch available", async () => {
+  it("isolates mixed root and token warnings and fails closed on an unreadable history index without changing the released root", async () => {
     const productionBefore = productionProfileMetadata();
     const target = makeTarget("team-v1-warning-startup");
     const scenario = await seedScenario(target, true);
@@ -1198,20 +1405,37 @@ describe("TeamRun released-shape production upgrade to current V2 through actual
       attempts: 1,
       errorMessage: null,
     });
+    // The Org conversion cannot read the history index and stops before it converts anything.
+    const refused = await flatFamiliesStatus(first.serverUrl);
+    expect(refused).toMatchObject({
+      status: "FAILED",
+      attempts: 1,
+      recoveryAction: "RESTART_TO_RETRY",
+      errorMessage: expect.stringContaining("require correction and restart"),
+    });
+    expect(readAttemptLog(refused.logPath!).details).toEqual([expect.objectContaining({
+      itemId: "FAILED_HISTORY",
+      status: "FAILED",
+      message: expect.stringContaining("Invalid team run history index format"),
+    })]);
     // The preserved V1 warning package is intentionally excluded by the V1
     // promotion, so the follow-on V2 migration itself remains clean.
     expect(first.output()).not.toContain("startup continues with strict current-package admission");
     expect(first.output()).toContain("Server listening on");
     expect(first.output()).not.toContain(EMBEDDED_SERVER_PLATFORM_FATAL_PROTOCOL);
-    assertConvertedPackage(scenario);
+    assertV2TeamPackage(scenario);
+    expect(fs.existsSync(scenario.supported.orgDir)).toBe(false);
+    const treePath = path.join(scenario.supported.rootDir, "team_run_execution_tree.json");
+    const treeBytes = fs.readFileSync(treePath);
     expect(fs.readFileSync(scenario.warningEvidence!.path)).toEqual(scenario.warningEvidence!.bytes);
     expect(fs.readFileSync(scenario.warningEvidence!.historyPath)).toEqual(scenario.warningEvidence!.historyBytes);
-    const ledgerAfterFirst = assertLedgerTransition(target.database.databasePath, ledgerBefore);
+    const ledgerAfterFirst = assertLedgerTransition(target.database.databasePath, ledgerBefore, await migrationStatuses(first.serverUrl));
     expect(readSyntheticTokenRows(target.database.databasePath)).toEqual([]);
     expect(readCurrentSyntheticTokenRows(target.database.databasePath)).toHaveLength(tokensBefore.length);
     expect(readCurrentSyntheticTokenRows(target.database.databasePath)).toEqual(expect.arrayContaining([
       expect.objectContaining({
         run_id: `${scenario.rootTeamRunId}-lead-run`,
+        root_team_run_id: scenario.rootTeamRunId,
         usage_report_count: 1,
         accounting_total_tokens: 21,
       }),
@@ -1221,7 +1445,13 @@ describe("TeamRun released-shape production upgrade to current V2 through actual
         accounting_total_tokens: 21,
       }),
     ]));
-    await exerciseHistoryAndNewWork(first.serverUrl, target.runtimeRoot, scenario.rootTeamRunId);
+    // The unconverted root is not served, and new current work is still admitted.
+    expect((await restoreTeamRun(first.serverUrl, scenario.rootTeamRunId)).restoreAgentTeamRun).toMatchObject({
+      success: false,
+      teamRunId: null,
+      message: expect.stringContaining("TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED"),
+    });
+    await terminateAgentRun(first.serverUrl, await createCurrentAgentRun(first.serverUrl, target.runtimeRoot, "warning-current-agent"));
 
     await first.stop();
     ownedServers.delete(first);
@@ -1229,10 +1459,23 @@ describe("TeamRun released-shape production upgrade to current V2 through actual
     await expectHealthy(second.serverUrl);
     expect(await promotionStatus(second.serverUrl)).toMatchObject({ status: "SUCCEEDED_WITH_WARNINGS", attempts: 1 });
     expect(await currentTreeStatus(second.serverUrl)).toMatchObject({ status: "SUCCEEDED", attempts: 1 });
-    expect(readMigrationLedger(target.database.databasePath)).toEqual(ledgerAfterFirst);
+    // Each start retries the conversion; it fails the same way and changes nothing.
+    expect(await flatFamiliesStatus(second.serverUrl)).toMatchObject({
+      status: "FAILED",
+      attempts: 2,
+      recoveryAction: "RESTART_TO_RETRY",
+    });
+    const ledgerAfterSecond = readMigrationLedger(target.database.databasePath);
+    const withoutRetriedRow = (rows: Array<Record<string, unknown>>) =>
+      rows.filter(({ migration_id }) => migration_id !== FLAT_FAMILIES_MIGRATION_ID);
+    expect(withoutRetriedRow(ledgerAfterSecond)).toEqual(withoutRetriedRow(ledgerAfterFirst));
+    expect(fs.readFileSync(treePath)).toEqual(treeBytes);
+    assertV2TeamPackage(scenario);
+    expect(fs.existsSync(scenario.supported.orgDir)).toBe(false);
     expect(readSyntheticTokenRows(target.database.databasePath)).toEqual([]);
     expect(readCurrentSyntheticTokenRows(target.database.databasePath)).toHaveLength(tokensBefore.length);
     expect(fs.readFileSync(scenario.warningEvidence!.path)).toEqual(scenario.warningEvidence!.bytes);
+    expect(fs.readFileSync(scenario.warningEvidence!.historyPath)).toEqual(scenario.warningEvidence!.historyBytes);
     expect(productionProfileMetadata()).toEqual(productionBefore);
   }, 360_000);
 
@@ -1260,6 +1503,12 @@ describe("TeamRun released-shape production upgrade to current V2 through actual
     expectSummaryMatchesAttemptLog(await tokenConsolidationStatus(first.serverUrl));
     await expectHistoricalAuditTransitioned(first.serverUrl, target.database.databasePath, scenario);
     await expectTokenHistoryUnavailable(first.serverUrl);
+    // The Org conversion needs the token consolidation and waits for the retry restart.
+    expect(await flatFamiliesStatus(first.serverUrl)).toMatchObject({
+      status: "NOT_RUN",
+      recoveryAction: "RESTART_TO_RETRY",
+      attempts: 0,
+    });
     const blockedRestore = await restoreTeamRun(first.serverUrl, scenario.rootTeamRunId);
     expect(blockedRestore.restoreAgentTeamRun).toMatchObject({
       success: false,
@@ -1308,17 +1557,19 @@ describe("TeamRun released-shape production upgrade to current V2 through actual
     expectSummaryMatchesAttemptLog(await tokenConsolidationStatus(second.serverUrl));
     await expectHistoricalAuditTransitioned(second.serverUrl, target.database.databasePath, scenario);
     expect(countTokenRows(target.database.databasePath)).toEqual({ legacy: 0, current: 3 });
-    const restored = await restoreTeamRun(second.serverUrl, scenario.rootTeamRunId);
-    expect(restored.restoreAgentTeamRun).toMatchObject({
-      success: true,
-      teamRunId: scenario.rootTeamRunId,
+    expect(await flatFamiliesStatus(second.serverUrl)).toMatchObject({
+      status: "SUCCEEDED",
+      recoveryAction: "NONE",
+      attempts: 1,
     });
-    const terminated = await executeGraphql<{ terminateAgentTeamRun: { success: boolean } }>(second.serverUrl, `
-      mutation TerminateMigrationLifecycleTeam($teamRunId: String!) {
-        terminateAgentTeamRun(teamRunId: $teamRunId) { success }
-      }
-    `, { teamRunId: scenario.rootTeamRunId });
-    expect(terminated.terminateAgentTeamRun.success).toBe(true);
+    assertAgentOrgPackage(scenario);
+    const restored = await restoreOrgRun(second.serverUrl, scenario.rootTeamRunId);
+    expect(restored.restoreAgentOrgRun).toMatchObject({
+      success: true,
+      agentOrgRunId: scenario.rootTeamRunId,
+    });
+    const terminated = await terminateOrgRun(second.serverUrl, scenario.rootTeamRunId);
+    expect(terminated.terminateAgentOrgRun.success).toBe(true);
   }, 360_000);
 
   it("rejects a legacy/current run-ID overlap before source cleanup while preserving both stores", async () => {

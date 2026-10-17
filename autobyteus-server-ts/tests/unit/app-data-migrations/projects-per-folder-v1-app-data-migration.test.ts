@@ -7,6 +7,7 @@ import { AppDataMigrationRegistry } from "../../../src/app-data-migrations/app-d
 import { ProjectStore } from "../../../src/projects/stores/project-store.js";
 import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
+import { ProjectTaskKeysV1AppDataMigration } from "../../../src/app-data-migrations/migrations/project-task-keys-v1/project-task-keys-v1-app-data-migration.js";
 
 const fixture = (name: string) => fs.readFile(new URL(`../../fixtures/projects-per-folder-v1/${name}`, import.meta.url), "utf8");
 const DRAFT = "3f2a9c1e-0b4d-4e6f-8a7b-9c0d1e2f3a4b";
@@ -28,6 +29,8 @@ describe("projects-per-folder-v1 migration (SR-024)", () => {
   };
   const writeFile = async (file: string, content: string) => { await fs.mkdir(path.dirname(file), { recursive: true }); await fs.writeFile(file, content); };
   const readJson = async (file: string) => JSON.parse(await fs.readFile(file, "utf8"));
+  /** The next startup migration (Task keys); the current store admits only keyed Projects and Tasks. */
+  const keyTasks = () => new ProjectTaskKeysV1AppDataMigration(appData).execute();
 
   it("is a registered required STARTUP_ONLY definition", () => {
     const definition = new AppDataMigrationRegistry().listDefinitions().find(d => d.id === PROJECTS_PER_FOLDER_V1_MIGRATION_ID);
@@ -45,11 +48,13 @@ describe("projects-per-folder-v1 migration (SR-024)", () => {
     for (const task of tasks) expect(await readJson(layout.taskFile(released.projectId, task.taskId))).toEqual({ ...task, projectId: released.projectId });
     expect(await fs.readFile(path.join(projects, "projects.pre-folders.json"), "utf8")).toBe(source);
     await expect(fs.access(path.join(projects, "projects.json"))).rejects.toThrow();
-    // The current store now admits exactly the released Projects and Tasks.
+    // Once keyed by the next startup migration, the current store admits exactly the released Projects and Tasks.
+    expect((await keyTasks()).status).toBe("SUCCEEDED");
     const store = new ProjectStore(layout);
-    expect(await store.listProjects()).toEqual([projectFields]);
+    expect(await store.listProjects()).toEqual([{ ...projectFields, taskKeys: { prefix: "website-relaunch", lastNumber: 2 } }]);
     expect((await store.listTasks(released.projectId)).sort((a, b) => a.taskId.localeCompare(b.taskId)))
-      .toEqual([...tasks].sort((a: { taskId: string }, b: { taskId: string }) => a.taskId.localeCompare(b.taskId)));
+      .toEqual(tasks.map((task: { taskId: string }, index: number) => ({ ...task, taskKey: `website-relaunch-${index + 1}`, dependsOnTaskIds: [] }))
+        .sort((a: { taskId: string }, b: { taskId: string }) => a.taskId.localeCompare(b.taskId)));
     // Already migrated: a no-op that touches nothing.
     expect(await migration.execute()).toMatchObject({ status: "SUCCEEDED", summary: { scannedCount: 0, migratedCount: 0 } });
   });
@@ -72,10 +77,11 @@ describe("projects-per-folder-v1 migration (SR-024)", () => {
     const migrated = await readJson(layout.projectFile("project_ctx"));
     const releasedLink = JSON.parse(source)[0].workspaces[0];
     expect(migrated.workspaces).toEqual([releasedLink]); // exact four-field historical output
+    await keyTasks();
     expect((await new ProjectStore(layout).readProject("project_ctx"))!.workspaces).toEqual([
       {workspaceRootPath: releasedLink.workspaceRootPath, description: releasedLink.description},
     ]);
-    expect(await readJson(layout.projectFile("project_ctx"))).toEqual(migrated);
+    expect(await readJson(layout.projectFile("project_ctx"))).toEqual({ ...migrated, taskKeys: expect.anything() });
     expect(await readJson(layout.taskFile("project_ctx", "project_task_done"))).toMatchObject({ status: "DONE", contextFiles: [] });
     expect(await readJson(layout.projectFile("project_plain"))).toMatchObject({ name: "No tasks key" });
     expect(await fs.readFile(path.join(layout.contextDir("project_ctx", "project_task_ctx"), "ctx_0ad25cc6cad1__requirements.txt"), "utf8")).toBe("requirements");
@@ -134,6 +140,7 @@ describe("projects-per-folder-v1 migration (SR-024)", () => {
     expect(second.summary.failedCount).toBe(0);
     await expect(fs.access(path.join(layout.draftDir("project_ctx", DRAFT), "manifest.json"))).resolves.toBeUndefined();
     expect(await fs.readdir(layout.contextDir("project_ctx", "project_task_ctx"))).toEqual(["ctx_0ad25cc6cad1__requirements.txt"]);
+    await keyTasks();
     expect((await new ProjectStore(layout).listProjects()).map(p => p.projectId).sort()).toEqual(["project_ctx", "project_plain"]);
   });
 

@@ -317,13 +317,17 @@ suite("Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/sco
       ["Invalid delegate_task input: description is required"]);
     await check("M-28", agentId, "delegate_task", { recipient_address: `/${segment(names.stranger)}`, task_id: "task_x" },
       ["You are a task agent, so you can't use task_id. Delegate with a description instead; that work is part of your Task."]);
-    await check("M-34", root.managerRunId, "delegate_task", { target_agent_run_id: "not_my_task_agent", task_id: "task_x" },
+    // task-keys-and-dependencies (design SR-003 REC-005): the named Task is resolved before the copy checks, so the
+    // wrong-run-ID refusals below need a real open Task; an unknown task_id would be refused first.
+    const keyProject = (await h.graphql(`mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}`, { input: { name: `CPW keys ${Date.now()}` } })).createProject.projectId as string;
+    const openTask = (await h.graphql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskKey}}`, { input: { projectId: keyProject, description: "Reply OK." } })).createProjectTask.taskKey as string;
+    await check("M-34", root.managerRunId, "delegate_task", { target_agent_run_id: "not_my_task_agent", task_id: openTask },
       ["not_my_task_agent is not one of your task agents. Use a run id that delegate_task returned to you, or delegate to a new task agent with recipient_address."]);
-    await check("M-35", root.managerRunId, "delegate_task", { target_agent_run_id: coordinatorId, task_id: "task_x" },
+    await check("M-35", root.managerRunId, "delegate_task", { target_agent_run_id: coordinatorId, task_id: openTask },
       [`${coordinatorId} is the coordinator of task agent team ${teamRunId}; use target_team_run_id "${teamRunId}".`]);
-    await check("M-36", root.managerRunId, "delegate_task", { target_agent_run_id: teamRunId, task_id: "task_x" },
+    await check("M-36", root.managerRunId, "delegate_task", { target_agent_run_id: teamRunId, task_id: openTask },
       [`${teamRunId} is a task agent team's run id; use target_team_run_id "${teamRunId}".`]);
-    await check("M-38", root.managerRunId, "delegate_task", { target_team_run_id: agentId, task_id: "task_x" },
+    await check("M-38", root.managerRunId, "delegate_task", { target_team_run_id: agentId, task_id: openTask },
       [`${agentId} is a task agent's run id; use target_agent_run_id "${agentId}".`]);
     expect(mismatches, mismatches.join("\n")).toEqual([]);
     root.close();
