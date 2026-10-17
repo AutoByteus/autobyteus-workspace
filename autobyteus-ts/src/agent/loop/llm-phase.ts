@@ -193,7 +193,8 @@ export class LlmPhase {
         { kind: 'llm_request_assembly' },
         () => call.assembler.prepareRequest(
           input.llmUserMessage,
-          { turnId: turn.turnId, requestId: call.callId, isTurnContinuation: turn.isContinuation, signal: turn.executionScope.signal },
+          { turnId: turn.turnId, requestId: call.callId, isTurnContinuation: turn.isContinuation,
+            inputRawTraceIds: turn.inputRawTraceIds, signal: turn.executionScope.signal },
           call.systemPrompt ?? undefined,
           call.toolSchemas,
         )

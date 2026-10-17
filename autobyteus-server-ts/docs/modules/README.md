@@ -43,6 +43,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Search | [search.md](./search.md) |
 | Secret Management | [secret_management.md](./secret_management.md) |
 | Skill Improvement | [skill_improvement.md](./skill_improvement.md) |
+| Skill Update Notices (tell active runs when a used skill changes) | [skill_update_notices.md](./skill_update_notices.md) |
 | Skills | [skills.md](./skills.md) |
 | Terminal | [terminal.md](./terminal.md) |
 | Token Usage | [token_usage.md](./token_usage.md) |

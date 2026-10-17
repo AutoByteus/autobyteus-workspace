@@ -23,6 +23,8 @@ export function beginAgentRunActivation(input: {
   deactivateMcp(): void;
   validateRun?(run: AgentRun): void;
   onTerminal?(): void;
+  /** After the run is published (never for an aborted activation). */
+  onPublished?(run: AgentRun): void;
 }): AgentRunActivationOperation {
   const runId = input.claim.runId;
   let stage: ReturnType<AgentRunActivationOperation["inspect"]> = "reserved";
@@ -59,6 +61,7 @@ export function beginAgentRunActivation(input: {
             const published = input.registry.publish(input.claim, exactRun);
             stage = "published";
             input.onTerminal?.();
+            input.onPublished?.(published);
             return published;
           },
           abort: async () => {

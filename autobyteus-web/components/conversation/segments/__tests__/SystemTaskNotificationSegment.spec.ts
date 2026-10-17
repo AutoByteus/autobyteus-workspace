@@ -2,15 +2,21 @@ import { describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
 import SystemTaskNotificationSegment from '../SystemTaskNotificationSegment.vue';
 
-const mountSegment = (content: string) => mount(SystemTaskNotificationSegment, {
+const mountSegment = (content: string, senderId = 'system') => mount(SystemTaskNotificationSegment, {
   props: {
     segment: {
       type: 'system_task_notification',
-      senderId: 'system',
+      senderId,
       content,
     },
   },
 });
+
+const SKILL_NOTICE = [
+  '[Platform notice — skill updated]',
+  'The following skills you use changed on disk since you last read them:',
+  '- code-review (/skills/code-review/SKILL.md): SKILL.md',
+].join('\n');
 
 describe('SystemTaskNotificationSegment', () => {
   it('renders multiline task notification content in normal markdown flow', () => {
@@ -60,5 +66,17 @@ describe('SystemTaskNotificationSegment', () => {
     const link = wrapper.get('a');
     expect(link.text()).toBe('source.md');
     expect(link.attributes('href')).toContain('/tmp/source.md');
+  });
+
+  it('labels the skill update notice "Skill updated", live or replayed from history', () => {
+    for (const wrapper of [
+      mountSegment(SKILL_NOTICE, 'system.skill_update_notifier'),
+      mountSegment(SKILL_NOTICE, 'system'),
+    ]) {
+      expect(wrapper.get('[data-testid="system-task-notification-label"]').text()).toBe('Skill updated');
+      expect(wrapper.get('[data-testid="system-task-notification-segment"]').attributes('aria-label')).toBe('Skill updated');
+      expect(wrapper.text()).toContain('code-review (/skills/code-review/SKILL.md): SKILL.md');
+    }
+    expect(mountSegment('Task finished successfully.').find('[data-testid="system-task-notification-label"]').exists()).toBe(false);
   });
 });

@@ -142,6 +142,9 @@ if (arg === "--version") {
       : content.includes("READ_SKILLS") ? `SKILLS:${JSON.stringify(readCapsuleSkills())}`
       : content.includes("READ_REFERENCE_FILES") ? `REFERENCES:${JSON.stringify(readReferenceFiles(content))}`
       : content.includes("READ_AGENT_PROMPT") ? `AGENT_PROMPT:${JSON.stringify(readAgentPrompt())}`
+      // `ECHO_INPUT` replies with the exact provider input of this turn (JSON string), so a test can see
+      // everything AGY received in one turn (for example a platform notice combined with the message).
+      : content.includes("ECHO_INPUT") ? `ECHO:${JSON.stringify(content)}`
       : delegation ? `DELEGATED:${JSON.stringify(await callAgentTool("delegate_task", JSON.parse(delegation[1])))}`
         : "OK";
     reply(turns * 10, text);
@@ -193,6 +196,18 @@ if (arg === "--version") {
       // HOLD opens a long tool step and leaves the turn running until the user stops it; any other
       // message is answered with REPLY:<content>, so a test can tell which message each turn served.
       const content = String(JSON.parse(line)?.message?.content ?? "");
+      // HOLD_MS:<n> keeps one tool step open for n ms, then ends the turn normally with REPLY:<content>.
+      const holdMs = /HOLD_MS:(\d+)/.exec(content);
+      if (holdMs) {
+        const step = { conversation_id, step_index: turns * 10, step_type: "tool", tool_name: "run_command" };
+        emit({ event: "step_update", step_update: { ...step, state: "ACTIVE", tool_info: { parameters: { CommandLine: "sleep" } } } });
+        setTimeout(() => {
+          emit({ event: "step_update", step_update: { ...step, state: "DONE", tool_info: { output: "done" } } });
+          reply(turns * 10 + 1, `REPLY:${content}`);
+          emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: `REPLY:${content}` } });
+        }, Number(holdMs[1]));
+        return;
+      }
       if (content.includes("HOLD")) {
         emit({ event: "step_update", step_update: { conversation_id, step_index: turns * 10, step_type: "tool",
           state: "ACTIVE", tool_name: "run_command", tool_info: { parameters: { CommandLine: "sleep 600" } } } });

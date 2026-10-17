@@ -444,6 +444,26 @@ Every other input records no sender. Replay uses it to show the delivery as
 "From <Sender>:" instead of a user message; traces recorded before this field
 keep the user presentation (see the server `run_history.md`).
 
+A **platform input preface** combines a platform notice with the next input in
+one dispatch. The server uses it for skill update notices. Such an input carries
+the generic metadata tag
+`platform_input_preface { content, sender_id, original_content }`
+(`agent/message/platform-input-preface-metadata.ts`; `readPlatformInputPreface`
+validates it). The core holds no feature knowledge about it.
+
+- **Traces.** `MemoryIngestInputProcessor` writes two traces through
+  `MemoryManager.appendRawTrace`: a `system_task_notification` raw trace with
+  the preface `content` and `sender_id`, then the `user` trace with
+  `original_content` (attachments unchanged). A notice-only input
+  (`original_content: null`) writes only the system trace.
+- **Turn linkage.** Both trace IDs are recorded on the `AgentTurn`
+  (`recordInputRawTraceIds`). `llm-phase` passes them to
+  `LLMRequestAssembler.prepareRequest` as explicit `rawTraceIds`. They are not
+  recomputed by content match, because the combined content would not match.
+- **Working context.** The working-context user entry keeps the **combined**
+  content, which is what the model actually saw.
+- **Untagged inputs** are handled exactly as before.
+
 Raw traces remain original activity evidence. Successful native compaction may
 move selected settled records from active storage to one completed archive
 without changing their identity/content.

@@ -1,0 +1,26 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/active-run-skill-update-notice/autobyteus-ts[39m
+
+ [31m❯[39m tests/integration/agent/read-media-file-continuation-flow.test.ts [2m([22m[2m1 test[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 10[2mms[22m[39m
+[31m     [31m×[31m carries small audio and video read by tools into the next LLM request[39m[32m 10[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent/read-media-file-continuation-flow.test.ts[2m > [22mread_media_file continuation flow (integration)[2m > [22mcarries small audio and video read by tools into the next LLM request
+[31m[1mAssertionError[22m: expected undefined to be defined[39m
+[36m [2m❯[22m tests/integration/agent/read-media-file-continuation-flow.test.ts:[2m92:30[22m[39m
+    [90m 90| [39m      (definition) [33m=>[39m definition[33m.[39mname [33m===[39m [32m'gemini-3.5-flash'[39m[33m,[39m
+    [90m 91| [39m    )[33m;[39m
+    [90m 92| [39m    [34mexpect[39m(geminiDefinition)[33m.[39m[34mtoBeDefined[39m()[33m;[39m
+    [90m   | [39m                             [31m^[39m
+    [90m 93| [39m
+    [90m 94| [39m    [35mconst[39m request [33m=[39m [35mawait[39m [35mnew[39m [33mLLMRequestAssembler[39m(
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m   Start at [22m 07:10:08
+[2m   Duration [22m 1.12s[2m (transform 521ms, setup 16ms, import 1.00s, tests 10ms, environment 0ms)[22m
+

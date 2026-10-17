@@ -1,0 +1,35 @@
+{
+  "sun001": {
+    "next": {
+      "teamUser": "[Platform notice — skill updated]\nThe following skills you use changed on disk since you last read them:\n- roots-probe (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-fFGzer/skills/roots-probe/SKILL.md): SKILL.md\n\nRe-read the updated SKILL.md (and any files it points to) before continuing work that relies on these skills.\n\nECHO_INPUT team user second",
+      "teamPlain": "ECHO_INPUT team plain second",
+      "org": "[Platform notice — skill updated]\nThe following skills you use changed on disk since you last read them:\n- roots-probe (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-fFGzer/skills/roots-probe/SKILL.md): SKILL.md\n\nRe-read the updated SKILL.md (and any files it points to) before continuing work that relies on these skills.\n\nECHO_INPUT org second",
+      "copy": "[Platform notice — skill updated]\nThe following skills you use changed on disk since you last read them:\n- roots-probe (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-fFGzer/skills/roots-probe/SKILL.md): SKILL.md\n\nRe-read the updated SKILL.md (and any files it points to) before continuing work that relies on these skills.\n\nYou received a message from sender name: sun_manager_9b8d79, sender address: /sun_manager_9b8d79, sender id: sun_manager_9b8d79_6f0980212fec466cb6bd889bc96d2fd8\nmessage:\nECHO_INPUT copy second"
+    }
+  },
+  "sun002": {
+    "offlineAfterMs": 60035,
+    "echoed": "[Platform notice — skill updated]\nThe following skills you use changed on disk since you last read them:\n- roots-probe (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-fFGzer/skills/roots-probe/SKILL.md): SKILL.md\n\nRe-read the updated SKILL.md (and any files it points to) before continuing work that relies on these skills.\n\nYou received a message from sender name: sun_manager_9b8d79, sender address: /sun_manager_9b8d79, sender id: sun_manager_9b8d79_e8edd3b5b93b449398a7424acf6463d2\nmessage:\nECHO_INPUT after restore"
+  },
+  "sun003": {
+    "firstRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-fFGzer/skill-sources/github/0b01330e-c1d4-4448-ba65-610efded0d02/generations/01885e22-8acf-4ece-8718-e2f433b6e69e/repository",
+    "secondRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-fFGzer/skill-sources/github/0b01330e-c1d4-4448-ba65-610efded0d02/generations/619f26d2-616a-49bd-80ec-aa95d3137742/repository",
+    "afterUpdate": "[Platform notice — skill updated]\nThe following skills you use changed on disk since you last read them:\n- gh-probe (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-fFGzer/skill-sources/github/0b01330e-c1d4-4448-ba65-610efded0d02/generations/619f26d2-616a-49bd-80ec-aa95d3137742/repository/SKILL.md): SKILL.md\n\nRe-read the updated SKILL.md (and any files it points to) before continuing work that relies on these skills.\n\nECHO_INPUT gh after update",
+    "afterEdit": "[Platform notice — skill updated]\nThe following skills you use changed on disk since you last read them:\n- gh-probe (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-fFGzer/skill-sources/github/0b01330e-c1d4-4448-ba65-610efded0d02/generations/619f26d2-616a-49bd-80ec-aa95d3137742/repository/SKILL.md): SKILL.md\n\nRe-read the updated SKILL.md (and any files it points to) before continuing work that relies on these skills.\n\nECHO_INPUT gh after local edit"
+  },
+  "githubRequests": [
+    "https://api.github.com/repos/apar-sun-e2e/skills",
+    "https://api.github.com/repos/apar-sun-e2e/skills/branches/main",
+    "https://codeload.github.com/apar-sun-e2e/skills/tar.gz/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "https://api.github.com/repos/apar-sun-e2e/skills",
+    "https://api.github.com/repos/apar-sun-e2e/skills/branches/main",
+    "https://api.github.com/repos/apar-sun-e2e/skills",
+    "https://api.github.com/repos/apar-sun-e2e/skills/branches/main",
+    "https://codeload.github.com/apar-sun-e2e/skills/tar.gz/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  ],
+  "cleanup": {
+    "dataRemoved": true,
+    "serverClosed": true,
+    "errors": []
+  }
+}

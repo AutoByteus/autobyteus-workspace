@@ -18,6 +18,11 @@ export type LlmRequestAssemblyIdentity = Readonly<{
   requestId: string;
   /** Not the turn's first LLM call (a tool-result or recovery continuation): no pre-request compaction. */
   isTurnContinuation?: boolean;
+  /**
+   * The raw traces of this turn's input, when memory recorded them explicitly (an input carrying
+   * a platform notice). Without it, the working-context entry is linked by matching content.
+   */
+  inputRawTraceIds?: readonly string[] | null;
   signal: AbortSignal;
 }>;
 
@@ -68,7 +73,9 @@ export class LLMRequestAssembler {
       if (additionalUserMessage) {
         this.memoryManager.appendWorkingContextUserMessage(
           this.buildUserMessage(additionalUserMessage),
-          { turnId: identity.turnId }
+          identity.inputRawTraceIds
+            ? { turnId: identity.turnId, rawTraceIds: [...identity.inputRawTraceIds] }
+            : { turnId: identity.turnId }
         );
       }
       this.memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm({
