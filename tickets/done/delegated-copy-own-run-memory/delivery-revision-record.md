@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | DR-001 | code_reviewer package after CRR-008 pass | N/A | Blocked: merged-state e2e failures (Local Fix) | delivery-integration-blocker.md, release-notes.md, evidence/delivery/ |
 | DR-002 | code_reviewer package after CRR-010 pass (merged state) | Blocked | Verified; finalized; no release | docs-sync-report.md, handoff-summary.md, release-deployment-report.md |
+| DR-003 | The user's beta request | No release | Beta v1.5.6-beta.1 published (4/4 release workflows; NFS refused by design) | release-deployment-report.md (DR-003), beta-v1.5.6-beta.1-release-notes.md |
 
 ## Revision Entries
 
@@ -28,3 +29,12 @@
 - Release: none.
 - Cleanup: the worktree, the local `codex/` and `finalize/` branches and the remote ticket branch are removed after this record is pushed.
 - Terminal return to `/solution_designer`: sent after this record is pushed.
+
+### DR-003 — Beta v1.5.6-beta.1
+
+- Trigger: the user asked for a new beta to install (2026-10-17).
+- Result: `v1.5.6-beta.1` published from `fe6c696e9e`.
+  - Desktop, Android, iOS (TestFlight) and Docker succeeded; 17 assets; Docker `:beta` = `:1.5.6-beta.1`.
+  - The NFS workflow refused publication by design.
+  - Curated notes with the one-way upgrade warning applied.
+- Details: release-deployment-report.md, DR-003.
