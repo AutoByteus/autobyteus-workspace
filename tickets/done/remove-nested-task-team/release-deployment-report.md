@@ -36,7 +36,7 @@ Finalization only. No release.
 
 ## Repository Finalization
 
-- Recorded in delivery-revision-record.md, DR-002.
+- Merge `--no-ff` commit `8a8d322144` pushed to `origin/personal` (unchanged at `a716a4632e` before). Status: Completed. Details are in delivery-revision-record.md, DR-002.
 
 ## Cleanup
 
