@@ -74,8 +74,8 @@ not paid inference. Agent-run testing is not the user's verification.
   proof of current source.
 - **Serialize builds and dev servers within one worktree.** Parallel builds or Nuxt dev
   servers in the same package overwrite each other's outputs.
-- **Green server baseline.** Server `test:unit`, `test:integration` and `typecheck` pass on
-  the base branch, so a failure there is caused by your change or is a new base failure
+- **Green server suites.** Server `test:unit`, `test:integration` and `typecheck` are kept
+  passing. Every failure there is a real failure: find its cause and fix or report it
   (Rule 9). Run `test:integration:prepare` once per worktree and after changing server or
   SDK source; `test:integration` names any missing build output and exits.
 - **Server test isolation.** For `tests/unit/` and `tests/integration/`,
@@ -162,9 +162,6 @@ not paid inference. Agent-run testing is not the user's verification.
   `autobyteus-team-stream-contracts`, `autobyteus-collaboration-stream-contracts`) track
   their `dist/`, which their consumers import. After changing their source, rebuild with
   `pnpm -C <package> build` and commit the `dist/` changes too.
-- **Known baseline exception.** Two content-cadence cases in
-  `tests/integration/agent/agent-status-websocket.integration.test.ts` fail because of a
-  reported product defect. Remove this note when it is fixed.
 
 ## Environment-specific setup: headless Linux and containers
 
