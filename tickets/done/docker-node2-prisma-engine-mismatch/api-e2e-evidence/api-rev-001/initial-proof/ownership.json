@@ -1,0 +1,8 @@
+{
+  "container": "api-o1-prisma-026a3138ea3f",
+  "id": "4b10b2cd6efab29b705dce16ef7825e7838a85c900d3a1c75e423e521f5eb64a",
+  "image": "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1",
+  "mounts": [],
+  "signedOutPrivateHome": true,
+  "userVolumes": false
+}

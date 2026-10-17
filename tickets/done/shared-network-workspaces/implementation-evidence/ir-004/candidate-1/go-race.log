@@ -1,0 +1,150 @@
+?   	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/cmd/autobyteus-nfs	[no test files]
+=== RUN   TestAppleActivationWaitsForBothServingPrograms
+=== RUN   TestAppleActivationWaitsForBothServingPrograms/restart
+=== RUN   TestAppleActivationWaitsForBothServingPrograms/update
+--- PASS: TestAppleActivationWaitsForBothServingPrograms (0.00s)
+    --- PASS: TestAppleActivationWaitsForBothServingPrograms/restart (0.00s)
+    --- PASS: TestAppleActivationWaitsForBothServingPrograms/update (0.00s)
+=== RUN   TestAppleColdRPCStartupRechecksNFSAndMountWithoutReactivation
+--- PASS: TestAppleColdRPCStartupRechecksNFSAndMountWithoutReactivation (0.00s)
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/checkexports
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/enable
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/restart
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/update
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/#00
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Authentication_error
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Program/version_mismatch
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Unknown_host
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/Permission_denied
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/unrecognized_option
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Unable_to_receive
+--- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/checkexports (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/enable (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/restart (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/update (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/#00 (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Authentication_error (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Program/version_mismatch (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Unknown_host (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/Permission_denied (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/unrecognized_option (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Unable_to_receive (0.00s)
+=== RUN   TestAppleStartupStopsObservingUnavailablePrograms
+=== RUN   TestAppleStartupStopsObservingUnavailablePrograms/RPC:_Program_not_registered
+=== RUN   TestAppleStartupStopsObservingUnavailablePrograms/RPC:_Remote_system_error_-_Connection_refused
+=== RUN   TestAppleStartupStopsObservingUnavailablePrograms/RPC:_Timed_out
+--- PASS: TestAppleStartupStopsObservingUnavailablePrograms (0.00s)
+    --- PASS: TestAppleStartupStopsObservingUnavailablePrograms/RPC:_Program_not_registered (0.00s)
+    --- PASS: TestAppleStartupStopsObservingUnavailablePrograms/RPC:_Remote_system_error_-_Connection_refused (0.00s)
+    --- PASS: TestAppleStartupStopsObservingUnavailablePrograms/RPC:_Timed_out (0.00s)
+=== RUN   TestAppleExportAndConflictingGlobalSettings
+--- PASS: TestAppleExportAndConflictingGlobalSettings (0.00s)
+=== RUN   TestGaneshaPolicyAndPersistentRecovery
+--- PASS: TestGaneshaPolicyAndPersistentRecovery (0.00s)
+=== RUN   TestPackageMaskCleanupRetainsUncertainReceipt
+--- PASS: TestPackageMaskCleanupRetainsUncertainReceipt (0.02s)
+=== RUN   TestGaneshaDetachPreservesRecoveryAndRejectsExternalConfig
+--- PASS: TestGaneshaDetachPreservesRecoveryAndRejectsExternalConfig (0.00s)
+PASS
+ok  	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/backend	1.418s
+=== RUN   TestExplicitNoTTYInputsAndNoShellEvaluation
+Detected private addresses: 192.168.2.158, 192.168.128.1
+Detected private addresses: 192.168.2.158, 192.168.128.1
+--- PASS: TestExplicitNoTTYInputsAndNoShellEvaluation (0.00s)
+=== RUN   TestReleaseManifestMustMatchAndQualifyActualArchitecture
+--- PASS: TestReleaseManifestMustMatchAndQualifyActualArchitecture (0.00s)
+PASS
+ok  	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/cli	1.454s
+=== RUN   TestConnectionBoundary
+--- PASS: TestConnectionBoundary (0.00s)
+=== RUN   TestTrustedAllowlist
+--- PASS: TestTrustedAllowlist (0.00s)
+=== RUN   TestPrivateAtomicStore
+--- PASS: TestPrivateAtomicStore (0.02s)
+=== RUN   TestSourceMarkerConfined
+--- PASS: TestSourceMarkerConfined (0.00s)
+=== RUN   TestSharedDescriptorFixture
+--- PASS: TestSharedDescriptorFixture (0.00s)
+PASS
+ok  	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/config	1.784s
+=== RUN   TestReplacementPreservesSelectedSettingsAndPrivateVolumes
+--- PASS: TestReplacementPreservesSelectedSettingsAndPrivateVolumes (0.00s)
+=== RUN   TestUnsupportedConfigurationRejectedBeforeStop
+--- PASS: TestUnsupportedConfigurationRejectedBeforeStop (0.00s)
+=== RUN   TestRecreationNeverRollsBackAfterStartMayAcceptWork
+--- PASS: TestRecreationNeverRollsBackAfterStartMayAcceptWork (0.00s)
+=== RUN   TestChangedNodeAfterConsentHasNoMutation
+--- PASS: TestChangedNodeAfterConsentHasNoMutation (0.00s)
+=== RUN   TestPreStartFailureRestoresExactOriginalAndDoesNotDeleteVolumes
+--- PASS: TestPreStartFailureRestoresExactOriginalAndDoesNotDeleteVolumes (0.00s)
+=== RUN   TestNestedMountCannotHideSharedBytesAfterPriorAttachment
+--- PASS: TestNestedMountCannotHideSharedBytesAfterPriorAttachment (0.00s)
+=== RUN   TestEngineOnlyUsesChosenSourceAndNarrowCapabilities
+--- PASS: TestEngineOnlyUsesChosenSourceAndNarrowCapabilities (0.00s)
+=== RUN   TestChangedDaemonRefusesRecreationBeforeAnyContainerOperation
+--- PASS: TestChangedDaemonRefusesRecreationBeforeAnyContainerOperation (0.00s)
+PASS
+ok  	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/docker	2.091s
+=== RUN   TestBootstrapDirectoryModes
+    directory_modes_test.go:41: test_directory_modes_with_go_fixture (scripts.tests.test_nfs_installer_fixture.NfsInstallerFixtureTest) ... ok
+        
+        ----------------------------------------------------------------------
+        Ran 1 test in 3.861s
+        
+        OK
+        === RUN   TestInstallerDirectoryModeChild
+        --- PASS: TestInstallerDirectoryModeChild (0.00s)
+        PASS
+        === RUN   TestInstallerDirectoryModeChild
+        === RUN   TestInstallerDirectoryModeChild/mac
+            directory_modes_test.go:115: private=0700 public/exec/parents=0755 descriptor=0644
+        === RUN   TestInstallerDirectoryModeChild/linux
+            directory_modes_test.go:115: private=0700 public/exec/parents=0755 descriptor=0644
+        --- PASS: TestInstallerDirectoryModeChild (0.51s)
+            --- PASS: TestInstallerDirectoryModeChild/mac (0.31s)
+            --- PASS: TestInstallerDirectoryModeChild/linux (0.19s)
+        PASS
+        
+        
+--- PASS: TestBootstrapDirectoryModes (4.25s)
+=== RUN   TestInstallerDirectoryModeChild
+    directory_modes_test.go:47: child-only fixture invoked by TestBootstrapDirectoryModes
+--- SKIP: TestInstallerDirectoryModeChild (0.00s)
+=== RUN   TestRootDirectoryDoesNotAdoptExistingPaths
+--- PASS: TestRootDirectoryDoesNotAdoptExistingPaths (0.00s)
+=== RUN   TestMountParsersKeepActualSource
+--- PASS: TestMountParsersKeepActualSource (0.00s)
+=== RUN   TestMountPolicy
+--- PASS: TestMountPolicy (0.00s)
+=== RUN   TestSourceGuardrails
+--- PASS: TestSourceGuardrails (0.00s)
+=== RUN   TestJobUsesOnlyFixedBinaryAndNoApplication
+--- PASS: TestJobUsesOnlyFixedBinaryAndNoApplication (0.00s)
+=== RUN   TestAdministrativeLock
+--- PASS: TestAdministrativeLock (0.00s)
+PASS
+ok  	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/platform	6.609s
+=== RUN   TestProbeSameIdentityAndNoProjectChanges
+--- PASS: TestProbeSameIdentityAndNoProjectChanges (0.02s)
+=== RUN   TestProbeCannotEscapeSource
+--- PASS: TestProbeCannotEscapeSource (0.00s)
+PASS
+ok  	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/service	3.034s
+=== RUN   TestDetachSelectedNodePublicationFailureAndRetry
+=== RUN   TestDetachSelectedNodePublicationFailureAndRetry/before-publication
+=== RUN   TestDetachSelectedNodePublicationFailureAndRetry/after-detach-before-unpublish
+=== RUN   TestDetachSelectedNodePublicationFailureAndRetry/different-daemon
+--- PASS: TestDetachSelectedNodePublicationFailureAndRetry (0.11s)
+    --- PASS: TestDetachSelectedNodePublicationFailureAndRetry/before-publication (0.06s)
+    --- PASS: TestDetachSelectedNodePublicationFailureAndRetry/after-detach-before-unpublish (0.02s)
+    --- PASS: TestDetachSelectedNodePublicationFailureAndRetry/different-daemon (0.02s)
+=== RUN   TestDeclineNeverChangesResources
+--- PASS: TestDeclineNeverChangesResources (0.00s)
+=== RUN   TestPendingReceiptDoesNotDuplicatePrivateContainerSnapshot
+--- PASS: TestPendingReceiptDoesNotDuplicatePrivateContainerSnapshot (0.00s)
+=== RUN   TestBackgroundReconnectDoesNotResumePendingNodeMutation
+--- PASS: TestBackgroundReconnectDoesNotResumePendingNodeMutation (0.01s)
+PASS
+ok  	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/setup	2.859s

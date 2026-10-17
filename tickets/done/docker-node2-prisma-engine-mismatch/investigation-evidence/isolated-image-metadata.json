@@ -1,0 +1,29 @@
+{
+  "observedAt": "2026-10-13T12:35:05.221358+00:00",
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--name",
+    "sd-prisma-image-inspect-3466c3eb",
+    "--label",
+    "autobyteus.task=3466c3eb",
+    "--network",
+    "none",
+    "--read-only",
+    "--entrypoint",
+    "node",
+    "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1",
+    "-e",
+    "const fs=require('fs'),path=require('path');const out={home:process.env.HOME,cache:[],globalPrismaPackages:[]};const dir='/root/.cache/prisma/master';try{out.cache=fs.readdirSync(dir).map(rev=>({rev,targets:fs.readdirSync(dir+'/'+rev)}))}catch(e){out.cacheError=e.code}function scan(d,depth){if(depth>8)return;let es;try{es=fs.readdirSync(d,{withFileTypes:true})}catch{return}for(const e of es){if(!e.isDirectory())continue;const p=path.join(d,e.name);if(e.name==='prisma'||e.name==='engines'||e.name==='engines-version'){try{const j=JSON.parse(fs.readFileSync(p+'/package.json'));if(/prisma/.test(j.name))out.globalPrismaPackages.push({path:p,name:j.name,version:j.version,dependencies:j.dependencies});}catch{}}if(e.name==='node_modules'||e.name.startsWith('@')||depth<3||e.name==='prisma')scan(p,depth+1)}}scan('/usr/local/lib/node_modules',0);console.log(JSON.stringify(out));"
+  ],
+  "exit": 0,
+  "result": {
+    "home": "/root",
+    "cache": [],
+    "globalPrismaPackages": [],
+    "cacheError": "ENOENT"
+  },
+  "stderr": "",
+  "cleanupAbsent": true
+}

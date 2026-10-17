@@ -1,0 +1,6 @@
+R09 Fail S5 AC-019: Agent Run → New chat with Codex, Thinking Low and Fast; the two are independent; the run llmConfig is {reasoning_effort: low, service_tier: fast}; a first-send `@Scout` is admitted — locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('[data-test="chat-model-list-codex_app_server"]').locator('button[role="menuitemradio"][data-test^="chat-model-option-"][data-test="chat-model-option-gpt-5.6-luna"]').first()
+
+R04 Blocked S1 AC-008 / SR-009: Agent "+" from the host run and from its delegated copy view → New chat for the agent on screen, prefilled — producer failed: R09
+Summary: 0 Pass, 1 Fail, 1 Blocked

@@ -1,0 +1,124 @@
+{
+  "startedAt": "2026-10-13T16:40:39.321437+00:00",
+  "sourceMerge": "4c77cec80d965e0f96658cb2d2881fa6d6a39d96",
+  "reason": "Concurrent token-meter-tps finalization advanced personal after this source merge was successfully pushed; preserve it, do not replay source finalization.",
+  "steps": [
+    {
+      "name": "post-finalization-fetch",
+      "argv": [
+        "git",
+        "fetch",
+        "origin",
+        "personal"
+      ],
+      "exitCode": 0,
+      "output": "From https://github.com/AutoByteus/autobyteus-workspace\n * branch                personal   -> FETCH_HEAD\n"
+    },
+    {
+      "name": "post-finalization-head",
+      "argv": [
+        "git",
+        "rev-parse",
+        "origin/personal"
+      ],
+      "exitCode": 0,
+      "output": "288f3a08fb220539dd782a39dbb523df07839f10\n"
+    },
+    {
+      "name": "post-finalization-preserved",
+      "argv": [
+        "git",
+        "merge-base",
+        "--is-ancestor",
+        "4c77cec80d965e0f96658cb2d2881fa6d6a39d96",
+        "288f3a08fb220539dd782a39dbb523df07839f10"
+      ],
+      "exitCode": 0,
+      "output": ""
+    },
+    {
+      "name": "post-finalization-critical-unchanged",
+      "argv": [
+        "git",
+        "diff",
+        "--exit-code",
+        "4c77cec80d965e0f96658cb2d2881fa6d6a39d96",
+        "288f3a08fb220539dd782a39dbb523df07839f10",
+        "--",
+        "tickets/done/sidebar-stop-red-default",
+        "autobyteus-web/components/workspace/history",
+        "autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs",
+        "autobyteus-web/composables/useWorkspaceHistoryMutations.ts",
+        "autobyteus-web/composables/useWorkspaceHistorySubjectActions.ts",
+        "autobyteus-web/stores/delegatedLaunchDraftStore.ts",
+        "pnpm-lock.yaml"
+      ],
+      "exitCode": 0,
+      "output": ""
+    },
+    {
+      "name": "post-finalization-ff",
+      "argv": [
+        "git",
+        "merge",
+        "--ff-only",
+        "origin/personal"
+      ],
+      "exitCode": 0,
+      "output": "Updating 4c77cec80..288f3a08f\nFast-forward\n autobyteus-server-ts/docs/modules/token_usage.md   |   8 +\n .../runtime/token-meter-tps-transport.e2e.test.ts  |  90 +++\n .../tests/fixtures/agy-tps-cli.mjs                 |  39 +\n autobyteus-web/README.md                           |   8 +\n .../workspace/usage/TokenUsageMeterPanel.vue       |   3 +\n .../workspace/usage/TokenUsageThroughputCard.vue   |  47 ++\n .../usage/__tests__/TokenUsageMeterPanel.spec.ts   |  47 +-\n .../__tests__/TokenUsageThroughputCard.spec.ts     |  54 ++\n .../__tests__/useTokenUsageWorkspaceScope.spec.ts  |  71 ++\n .../composables/useTokenUsageWorkspaceScope.ts     |  15 +-\n .../docs/agent_execution_architecture.md           |   7 +-\n autobyteus-web/docs/token_meter.md                 |  87 +++\n autobyteus-web/localization/messages/en/shell.ts   |  19 +\n .../localization/messages/zh-CN/shell.ts           |  19 +\n autobyteus-web/package.json                        |   3 +-\n .../stores/__tests__/tokenUsageMeterStore.spec.ts  | 194 +++++\n .../stores/__tests__/tokenUsageThroughput.spec.ts  | 166 +++++\n autobyteus-web/stores/tokenUsageMeterStore.ts      |  74 +-\n autobyteus-web/stores/tokenUsageTeamAggregate.ts   |  51 ++\n autobyteus-web/stores/tokenUsageThroughput.ts      | 119 +++\n .../tests/e2e/fixtures/token-meter-tps.page.vue    | 203 +++++\n autobyteus-web/tests/e2e/token-meter-tps-probe.mjs | 160 ++++\n autobyteus-web/types/tokenUsageMeter.ts            |  22 +\n .../api-e2e-coverage-investigation.md              |  87 +++\n .../api-e2e-execution-coverage-report.md           | 115 +++\n .../token-meter-tps/api-e2e-revision-record.md     |  22 +\n .../token-meter-tps/api-e2e-test-case-ledger.md    |  44 ++\n .../token-meter-tps/delivery-revision-record.md    |  34 +\n tickets/done/token-meter-tps/design-spec.md        | 216 ++++++\n tickets/done/token-meter-tps/docs-sync-report.md   |  61 ++\n .../evidence/api-001/attribution.log               |  49 ++\n .../token-meter-tps/evidence/api-001/browser-1.log |   1 +\n .../evidence/api-001/browser-1/collecting.png      | Bin 0 -> 39222 bytes\n .../evidence/api-001/browser-1/nuxt.log            |  83 +++\n .../evidence/api-001/browser-1/ready-en.png        | Bin 0 -> 119065 bytes\n .../evidence/api-001/browser-1/ready-zh-narrow.png | Bin 0 -> 101251 bytes\n .../evidence/api-001/browser-1/result.json         |  41 +\n .../api-001/browser-1/unavailable-zh-narrow.png    | Bin 0 -> 97829 bytes\n .../token-meter-tps/evidence/api-001/browser-2.log |   5 +\n .../evidence/api-001/browser-2/collecting.png      | Bin 0 -> 39222 bytes\n .../evidence/api-001/browser-2/nuxt.log            |  17 +\n .../evidence/api-001/browser-2/ready-en.png        | Bin 0 -> 119065 bytes\n .../evidence/api-001/browser-2/ready-zh-narrow.png | Bin 0 -> 101251 bytes\n .../evidence/api-001/browser-2/result.json         |  41 +\n .../api-001/browser-2/unavailable-zh-narrow.png    | Bin 0 -> 97829 bytes\n .../token-meter-tps/evidence/api-001/cleanup.json  |  90 +++\n .../token-meter-tps/evidence/api-001/desktop-1.log |   1 +\n .../evidence/api-001/desktop-build.log             | 803 ++++++++++++++++++++\n .../evidence/api-001/desktop-dependencies.log      |  89 +++\n .../evidence/api-001/desktop-owned-path.txt        |   1 +\n .../evidence/api-001/desktop-preflight.log         |   7 +\n .../evidence/api-001/desktop-probe.mjs             | 122 +++\n .../api-001/desktop-runs/attempt-1/before-send.png | Bin 0 -> 110199 bytes\n .../api-001/desktop-runs/attempt-1/instance.log    | 300 ++++++++\n .../desktop-runs/attempt-1/ready-desktop.png       | Bin 0 -> 171832 bytes\n .../attempt-1/reloaded-unavailable.png             | Bin 0 -> 144678 bytes\n .../api-001/desktop-runs/attempt-1/result.json     | 824 ++++++++++++++++++++\n .../api-001/desktop-runs/attempt-1/start.json      |  15 +\n .../evidence/api-001/desktop-xvfb.log              |  39 +\n .../evidence/api-001/final-provenance.sha256       |   3 +\n .../token-meter-tps/evidence/api-001/guards.log    |  19 +\n .../evidence/api-001/owned-setup-path.txt          |   1 +\n .../evidence/api-001/server-prebuild.log           |  23 +\n .../evidence/api-001/server-runtime.log            | 126 ++++\n .../evidence/api-001/transport-1-cleanup.json      |  11 +\n .../evidence/api-001/transport-1.log               | 276 +++++++\n .../evidence/api-001/transport-2-cleanup.json      |  16 +\n .../evidence/api-001/transport-2.log               | 257 +++++++\n .../evidence/api-001/transport-2/live-scripted.png | Bin 0 -> 88514 bytes\n .../evidence/api-001/transport-2/nuxt.log          |  17 +\n .../api-001/transport-2/persisted-summary.json     |   7 +\n .../evidence/api-001/transport-2/result.json       | 806 ++++++++++++++++++++\n .../evidence/api-001/transport-3-cleanup.json      |  16 +\n .../evidence/api-001/transport-3.log               | 261 +++++++\n .../evidence/api-001/transport-3/live-scripted.png | Bin 0 -> 88508 bytes\n .../evidence/api-001/transport-3/nuxt.log          |  83 +++\n .../api-001/transport-3/persisted-summary.json     |   7 +\n .../evidence/api-001/transport-3/result.json       | 828 +++++++++++++++++++++\n .../evidence/api-001/web-regression-final.log      | 276 +++++++\n .../evidence/api-001/web-regression.log            | 260 +++++++\n .../evidence/delivery/evidence-judgement.json      | 122 +++\n .../evidence/delivery/finalize-fetch.log           |   2 +\n .../token-meter-tps/evidence/delivery/guards.log   |  19 +\n .../token-meter-tps/evidence/delivery/hygiene.log  |   4 +\n .../evidence/delivery/licensing.log                |   2 +\n .../evidence/delivery/pre-final-fetch.log          |   3 +\n .../evidence/delivery/provenance.log               |   3 +\n .../evidence/delivery/reintegration-guards.log     |  19 +\n .../evidence/delivery/reintegration.log            | 276 +++++++\n .../evidence/delivery/ticket-push.log              |   9 +\n .../evidence/delivery/web-regression.log           | 276 +++++++\n .../evidence/delivery/web-reintegration.log        | 300 ++++++++\n .../evidence/delivery/whitespace-initial.log       |   1 +\n .../evidence/delivery/whitespace.log               |   0\n tickets/done/token-meter-tps/handoff-summary.md    |  85 +++\n .../ir-001/audit-localization-final.log            |   9 +\n .../ir-001/audit-localization.log                  |   9 +\n .../implementation-evidence/ir-001/build-final.log | 271 +++++++\n .../implementation-evidence/ir-001/build.log       |  26 +\n .../ir-001/guard-localization-final.log            |   5 +\n .../ir-001/guard-localization.log                  |   8 +\n .../ir-001/guard-web-final.log                     |   5 +\n .../implementation-evidence/ir-001/guard-web.log   |   5 +\n .../implementation-evidence/ir-001/install.log     | 119 +++\n .../ir-001/nuxt-prepare.log                        |   4 +\n .../ir-001/preview-rerun.log                       |   1 +\n .../implementation-evidence/ir-001/preview-run.log |  20 +\n .../implementation-evidence/ir-001/preview.mjs     | 104 +++\n .../ir-001/preview.page.vue                        | 182 +++++\n .../render-2026-10-13T15-58-16-921Z/collecting.png | Bin 0 -> 39222 bytes\n .../render-2026-10-13T15-58-16-921Z/nuxt.log       |  19 +\n .../render-2026-10-13T15-58-16-921Z/ready-en.png   | Bin 0 -> 119065 bytes\n .../ready-zh-narrow.png                            | Bin 0 -> 101251 bytes\n .../render-2026-10-13T15-58-16-921Z/result.json    |  43 ++\n .../unavailable-zh-narrow.png                      | Bin 0 -> 97829 bytes\n .../render-2026-10-13T15-59-08-103Z/collecting.png | Bin 0 -> 39222 bytes\n .../render-2026-10-13T15-59-08-103Z/nuxt.log       |  17 +\n .../render-2026-10-13T15-59-08-103Z/ready-en.png   | Bin 0 -> 119065 bytes\n .../ready-zh-narrow.png                            | Bin 0 -> 101251 bytes\n .../render-2026-10-13T15-59-08-103Z/result.json    |  40 +\n .../unavailable-zh-narrow.png                      | Bin 0 -> 97829 bytes\n .../implementation-evidence/ir-001/typecheck.log   |   2 +\n .../ir-001/unit-expanded.log                       | 167 +++++\n .../implementation-evidence/ir-001/unit-final.log  | 172 +++++\n .../implementation-evidence/ir-001/unit-first.log  | 151 ++++\n .../ir-001/unit-regression-final.log               | 260 +++++++\n .../ir-001/web-dependencies-build.log              |   9 +\n .../done/token-meter-tps/implementation-handoff.md | 104 +++\n .../implementation-revision-record.md              |  21 +\n .../done/token-meter-tps/investigation-notes.md    |  88 +++\n .../token-meter-tps/release-deployment-report.md   | 129 ++++\n tickets/done/token-meter-tps/release-notes.md      |  11 +\n tickets/done/token-meter-tps/requirements-doc.md   | 116 +++\n tickets/done/token-meter-tps/solution-handoff.md   |  45 ++\n .../token-meter-tps/solution-revision-record.md    |  32 +\n .../done/token-meter-tps/verification-record.md    |  85 +++\n 136 files changed, 11245 insertions(+), 61 deletions(-)\n create mode 100644 autobyteus-server-ts/tests/e2e/runtime/token-meter-tps-transport.e2e.test.ts\n create mode 100755 autobyteus-server-ts/tests/fixtures/agy-tps-cli.mjs\n create mode 100644 autobyteus-web/components/workspace/usage/TokenUsageThroughputCard.vue\n create mode 100644 autobyteus-web/components/workspace/usage/__tests__/TokenUsageThroughputCard.spec.ts\n create mode 100644 autobyteus-web/composables/__tests__/useTokenUsageWorkspaceScope.spec.ts\n create mode 100644 autobyteus-web/docs/token_meter.md\n create mode 100644 autobyteus-web/stores/__tests__/tokenUsageThroughput.spec.ts\n create mode 100644 autobyteus-web/stores/tokenUsageTeamAggregate.ts\n create mode 100644 autobyteus-web/stores/tokenUsageThroughput.ts\n create mode 100644 autobyteus-web/tests/e2e/fixtures/token-meter-tps.page.vue\n create mode 100644 autobyteus-web/tests/e2e/token-meter-tps-probe.mjs\n create mode 100644 tickets/done/token-meter-tps/api-e2e-coverage-investigation.md\n create mode 100644 tickets/done/token-meter-tps/api-e2e-execution-coverage-report.md\n create mode 100644 tickets/done/token-meter-tps/api-e2e-revision-record.md\n create mode 100644 tickets/done/token-meter-tps/api-e2e-test-case-ledger.md\n create mode 100644 tickets/done/token-meter-tps/delivery-revision-record.md\n create mode 100644 tickets/done/token-meter-tps/design-spec.md\n create mode 100644 tickets/done/token-meter-tps/docs-sync-report.md\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/attribution.log\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/browser-1.log\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/browser-1/collecting.png\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/browser-1/nuxt.log\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/browser-1/ready-en.png\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/browser-1/ready-zh-narrow.png\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/browser-1/result.json\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/browser-1/unavailable-zh-narrow.png\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/browser-2.log\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/browser-2/collecting.png\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/browser-2/nuxt.log\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/browser-2/ready-en.png\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/browser-2/ready-zh-narrow.png\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/browser-2/result.json\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/browser-2/unavailable-zh-narrow.png\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/cleanup.json\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/desktop-1.log\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/desktop-build.log\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/desktop-dependencies.log\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/desktop-owned-path.txt\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/desktop-preflight.log\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/desktop-probe.mjs\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/desktop-runs/attempt-1/before-send.png\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/desktop-runs/attempt-1/instance.log\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/desktop-runs/attempt-1/ready-desktop.png\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/desktop-runs/attempt-1/reloaded-unavailable.png\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/desktop-runs/attempt-1/result.json\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/desktop-runs/attempt-1/start.json\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/desktop-xvfb.log\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/final-provenance.sha256\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/guards.log\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/owned-setup-path.txt\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/server-prebuild.log\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/server-runtime.log\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/transport-1-cleanup.json\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/transport-1.log\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/transport-2-cleanup.json\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/transport-2.log\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/transport-2/live-scripted.png\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/transport-2/nuxt.log\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/transport-2/persisted-summary.json\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/transport-2/result.json\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/transport-3-cleanup.json\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/transport-3.log\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/transport-3/live-scripted.png\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/transport-3/nuxt.log\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/transport-3/persisted-summary.json\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/transport-3/result.json\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/web-regression-final.log\n create mode 100644 tickets/done/token-meter-tps/evidence/api-001/web-regression.log\n create mode 100644 tickets/done/token-meter-tps/evidence/delivery/evidence-judgement.json\n create mode 100644 tickets/done/token-meter-tps/evidence/delivery/finalize-fetch.log\n create mode 100644 tickets/done/token-meter-tps/evidence/delivery/guards.log\n create mode 100644 tickets/done/token-meter-tps/evidence/delivery/hygiene.log\n create mode 100644 tickets/done/token-meter-tps/evidence/delivery/licensing.log\n create mode 100644 tickets/done/token-meter-tps/evidence/delivery/pre-final-fetch.log\n create mode 100644 tickets/done/token-meter-tps/evidence/delivery/provenance.log\n create mode 100644 tickets/done/token-meter-tps/evidence/delivery/reintegration-guards.log\n create mode 100644 tickets/done/token-meter-tps/evidence/delivery/reintegration.log\n create mode 100644 tickets/done/token-meter-tps/evidence/delivery/ticket-push.log\n create mode 100644 tickets/done/token-meter-tps/evidence/delivery/web-regression.log\n create mode 100644 tickets/done/token-meter-tps/evidence/delivery/web-reintegration.log\n create mode 100644 tickets/done/token-meter-tps/evidence/delivery/whitespace-initial.log\n create mode 100644 tickets/done/token-meter-tps/evidence/delivery/whitespace.log\n create mode 100644 tickets/done/token-meter-tps/handoff-summary.md\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/audit-localization-final.log\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/audit-localization.log\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/build-final.log\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/build.log\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/guard-localization-final.log\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/guard-localization.log\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/guard-web-final.log\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/guard-web.log\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/install.log\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/nuxt-prepare.log\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/preview-rerun.log\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/preview-run.log\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/preview.mjs\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/preview.page.vue\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/render-2026-10-13T15-58-16-921Z/collecting.png\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/render-2026-10-13T15-58-16-921Z/nuxt.log\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/render-2026-10-13T15-58-16-921Z/ready-en.png\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/render-2026-10-13T15-58-16-921Z/ready-zh-narrow.png\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/render-2026-10-13T15-58-16-921Z/result.json\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/render-2026-10-13T15-58-16-921Z/unavailable-zh-narrow.png\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/render-2026-10-13T15-59-08-103Z/collecting.png\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/render-2026-10-13T15-59-08-103Z/nuxt.log\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/render-2026-10-13T15-59-08-103Z/ready-en.png\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/render-2026-10-13T15-59-08-103Z/ready-zh-narrow.png\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/render-2026-10-13T15-59-08-103Z/result.json\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/render-2026-10-13T15-59-08-103Z/unavailable-zh-narrow.png\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/typecheck.log\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/unit-expanded.log\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/unit-final.log\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/unit-first.log\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/unit-regression-final.log\n create mode 100644 tickets/done/token-meter-tps/implementation-evidence/ir-001/web-dependencies-build.log\n create mode 100644 tickets/done/token-meter-tps/implementation-handoff.md\n create mode 100644 tickets/done/token-meter-tps/implementation-revision-record.md\n create mode 100644 tickets/done/token-meter-tps/investigation-notes.md\n create mode 100644 tickets/done/token-meter-tps/release-deployment-report.md\n create mode 100644 tickets/done/token-meter-tps/release-notes.md\n create mode 100644 tickets/done/token-meter-tps/requirements-doc.md\n create mode 100644 tickets/done/token-meter-tps/solution-handoff.md\n create mode 100644 tickets/done/token-meter-tps/solution-revision-record.md\n create mode 100644 tickets/done/token-meter-tps/verification-record.md\n"
+    },
+    {
+      "name": "post-finalization-hygiene",
+      "argv": [
+        "python3",
+        "scripts/check_repository_artifact_hygiene.py"
+      ],
+      "exitCode": 0,
+      "output": "Repository artifact hygiene check passed.\nTracked files scanned: 63819\nPath-length threshold: 200\nLongest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js\n"
+    },
+    {
+      "name": "post-finalization-licensing",
+      "argv": [
+        "python3",
+        "scripts/check_licensing.py"
+      ],
+      "exitCode": 0,
+      "output": "Licensing is consistent.\nTracked files scanned: 6569\n"
+    },
+    {
+      "name": "post-finalization-whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "4c77cec80d965e0f96658cb2d2881fa6d6a39d96",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "output": ""
+    }
+  ],
+  "integratedHead": "288f3a08fb220539dd782a39dbb523df07839f10",
+  "impact": "Sidebar source/row/action/store, durable probe, own archived ticket and dependency lock unchanged. Token Meter production changes and docs only elsewhere; package.json adds test script, no dependency/version change. Shared architecture docs TPS paragraph preserved; direct Stop passage unchanged.",
+  "argv": [
+    "pnpm",
+    "-C",
+    "autobyteus-web",
+    "test:nuxt",
+    "components/workspace/history/__tests__/DelegatedStopButton.spec.ts",
+    "components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts",
+    "components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts",
+    "composables/__tests__/useWorkspaceHistoryMutations.spec.ts",
+    "composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts",
+    "stores/__tests__/delegatedLaunchDraftStore.spec.ts",
+    "--run",
+    "--maxWorkers=2"
+  ],
+  "home": "/tmp/sidebar-stop-red-delivery-post-home-1avtsnxq",
+  "unitExitCode": 0,
+  "homeRemoved": true,
+  "result": "Pass",
+  "focusedTests": "71/71, six suites",
+  "browserRerun": "Not required: all critical Stop source/probe/row/action/store/dependency bytes unchanged; scoped focused rerun proves integrated neighbors; no new browser journey claimed.",
+  "completedAt": "2026-10-13T16:41:59.005409+00:00"
+}

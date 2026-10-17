@@ -1,0 +1,171 @@
+
+> autobyteus@1.5.3-beta.3 test:nuxt /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/agentRunCollaborationDisclosure.spec.ts stores/__tests__/agentRunCollaborationStore.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web
+
+stderr | stores/__tests__/agentRunCollaborationStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentRunCollaborationDisclosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/agentRunCollaborationDisclosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentRunCollaborationStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/agentRunCollaborationStore.spec.ts (4 tests) 22ms
+ ❯ stores/__tests__/agentRunCollaborationDisclosure.spec.ts (4 tests | 4 failed) 45ms
+   × standalone delegated Team disclosure > a fresh stored manager lists seven collapsed Teams, with all 42 child contexts intact 19ms
+     → expected [ 'team:software-team-0', …(48) ] to deeply equal [ 'team:software-team-0', …(6) ]
+   × standalone delegated Team disclosure > exact host/Team choices survive stored refresh/reselection and new copies do not open 10ms
+     → expected false to be true // Object.is equality
+   × standalone delegated Team disclosure > a fresh frontend store after restart has no earlier manual choices 7ms
+     → expected [ 'team:software-team-0', …(48) ] to have a length of 7 but got 49
+   × standalone delegated Team disclosure > live snapshot, collaborator addition and reconnect preserve disclosure without losing event/selection behavior 8ms
+     → expected [ 'team:software-team-0', …(48) ] to have a length of 7 but got 49
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/agentRunCollaborationDisclosure.spec.ts > standalone delegated Team disclosure > a fresh stored manager lists seven collapsed Teams, with all 42 child contexts intact
+AssertionError: expected [ 'team:software-team-0', …(48) ] to deeply equal [ 'team:software-team-0', …(6) ]
+
+- Expected
++ Received
+
+  [
+    "team:software-team-0",
++   "agent:software-team-0-member-0",
++   "agent:software-team-0-member-1",
++   "agent:software-team-0-member-2",
++   "agent:software-team-0-member-3",
++   "agent:software-team-0-member-4",
++   "agent:software-team-0-member-5",
+    "team:software-team-1",
++   "agent:software-team-1-member-0",
++   "agent:software-team-1-member-1",
++   "agent:software-team-1-member-2",
++   "agent:software-team-1-member-3",
++   "agent:software-team-1-member-4",
++   "agent:software-team-1-member-5",
+    "team:software-team-2",
++   "agent:software-team-2-member-0",
++   "agent:software-team-2-member-1",
++   "agent:software-team-2-member-2",
++   "agent:software-team-2-member-3",
++   "agent:software-team-2-member-4",
++   "agent:software-team-2-member-5",
+    "team:software-team-3",
++   "agent:software-team-3-member-0",
++   "agent:software-team-3-member-1",
++   "agent:software-team-3-member-2",
++   "agent:software-team-3-member-3",
++   "agent:software-team-3-member-4",
++   "agent:software-team-3-member-5",
+    "team:software-team-4",
++   "agent:software-team-4-member-0",
++   "agent:software-team-4-member-1",
++   "agent:software-team-4-member-2",
++   "agent:software-team-4-member-3",
++   "agent:software-team-4-member-4",
++   "agent:software-team-4-member-5",
+    "team:software-team-5",
++   "agent:software-team-5-member-0",
++   "agent:software-team-5-member-1",
++   "agent:software-team-5-member-2",
++   "agent:software-team-5-member-3",
++   "agent:software-team-5-member-4",
++   "agent:software-team-5-member-5",
+    "team:software-team-6",
++   "agent:software-team-6-member-0",
++   "agent:software-team-6-member-1",
++   "agent:software-team-6-member-2",
++   "agent:software-team-6-member-3",
++   "agent:software-team-6-member-4",
++   "agent:software-team-6-member-5",
+  ]
+
+ ❯ stores/__tests__/agentRunCollaborationDisclosure.spec.ts:48:28
+     46|     const store = useAgentRunCollaborationStore()
+     47|     store.syncHost('host-run', false); await store.inspect('host-run')
+     48|     expect(rowKeys(store)).toEqual(Array.from({ length: 7 }, (_, index…
+       |                            ^
+     49|     expect(store.contextFor('host-run')!.listAgentContextEntries()).to…
+     50|     expect(Socket.instances).toHaveLength(0)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  stores/__tests__/agentRunCollaborationDisclosure.spec.ts > standalone delegated Team disclosure > exact host/Team choices survive stored refresh/reselection and new copies do not open
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ stores/__tests__/agentRunCollaborationDisclosure.spec.ts:69:61
+     67|     hydration.read.mockResolvedValue(multiTeamView(8))
+     68|     store.syncHost('host-run', false); await store.inspect('host-run')
+     69|     expect(store.isTaskTeamExpanded('host-run', teamId(3))).toBe(true)
+       |                                                             ^
+     70|     expect(store.isTaskTeamExpanded('host-run', teamId(2))).toBe(false)
+     71|     expect(store.isTaskTeamExpanded('host-run', teamId(7))).toBe(false)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  stores/__tests__/agentRunCollaborationDisclosure.spec.ts > standalone delegated Team disclosure > a fresh frontend store after restart has no earlier manual choices
+AssertionError: expected [ 'team:software-team-0', …(48) ] to have a length of 7 but got 49
+
+- Expected
++ Received
+
+- 7
++ 49
+
+ ❯ stores/__tests__/agentRunCollaborationDisclosure.spec.ts:85:32
+     83|     setActivePinia(createPinia())
+     84|     const restarted = useAgentRunCollaborationStore(); await restarted…
+     85|     expect(rowKeys(restarted)).toHaveLength(7)
+       |                                ^
+     86|   })
+     87| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  stores/__tests__/agentRunCollaborationDisclosure.spec.ts > standalone delegated Team disclosure > live snapshot, collaborator addition and reconnect preserve disclosure without losing event/selection behavior
+AssertionError: expected [ 'team:software-team-0', …(48) ] to have a length of 7 but got 49
+
+- Expected
++ Received
+
+- 7
++ 49
+
+ ❯ stores/__tests__/agentRunCollaborationDisclosure.spec.ts:92:28
+     90|     const socket = Socket.instances[0]!
+     91|     await snapshot(socket)
+     92|     expect(rowKeys(store)).toHaveLength(7)
+       |                            ^
+     93|     store.toggleTaskTeam('host-run', teamId(2)); store.selectChild('ho…
+     94|     const newTeam = agentRootView().execution_tree.collaborators[1]!
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  4 failed | 4 passed (8)
+   Start at  06:11:04
+   Duration  20.38s (transform 8.73s, setup 33.20s, collect 465ms, tests 66ms, environment 3.81s, prepare 1.82s)
+
+ ELIFECYCLE  Command failed with exit code 1.

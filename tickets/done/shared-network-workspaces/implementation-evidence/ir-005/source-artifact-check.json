@@ -1,0 +1,27 @@
+{
+  "scope": "Actual built arm64 corresponding source, not a fixture",
+  "archive": {
+    "file": "autobyteus-nfs-ganesha-source-4.3-8ubuntu1+autobyteus1-arm64.tar.gz",
+    "sha256": "eed35ab4b732ac05d2afc3531e70cdc27031fb414fdb52a0daf093f33daaec0a",
+    "size": 1930105
+  },
+  "members": [
+    "COPYRIGHT",
+    "nfs-ganesha_4.3-8ubuntu1+autobyteus1.debian.tar.xz",
+    "nfs-ganesha_4.3-8ubuntu1+autobyteus1.dsc",
+    "nfs-ganesha_4.3.orig.tar.gz",
+    "recipe/README.md",
+    "recipe/build.py",
+    "recipe/get-dir-delegation.patch",
+    "recipe/manifest.py",
+    "recipe/source-lock.json",
+    "recipe/source.py"
+  ],
+  "originalTarMatchesPinnedUbuntu": true,
+  "modifiedDscVersionMatches": true,
+  "distroPatchesRetained": true,
+  "backportBytesMatchCurrentProductionPatch": true,
+  "completeCurrentRecipeIncluded": true,
+  "fixedChangelogTimestamp": true,
+  "separateNoticesMatchHashedSourceArchive": true
+}

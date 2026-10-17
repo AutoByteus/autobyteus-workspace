@@ -1,0 +1,43 @@
+diff --git a/autobyteus-server-ts/tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts b/autobyteus-server-ts/tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts
+index 6207188627..227620fca2 100644
+--- a/autobyteus-server-ts/tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts
+@@ -364,10 +364,27 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
+   const callTool = async (connection: Connection, tool: string, args: Record_, label: string, accepted = true): Promise<WsMessage> => {
+     const from = await sendTurn(connection, `Call the ${tool} tool exactly once now with these exact JSON arguments: ${JSON.stringify(args)}. `
+       + "Do not call any other AutoByteus tool. Then reply with one short sentence quoting the tool result.");
+-    const done = await waitFor(connection.messages, from, (message) => isToolDone(message, tool) && (accepted ? !rejected(message) : true), `${label} ${tool} result`);
+-    await waitIdle(connection, from, label);
++    // The completion of the call that was asked for: the agent may also make calls of its own (for example answering a report it
++    // just received), so a completion counts only when its arguments carry the requested values.
++    const wanted = Object.values(args).filter((value): value is string => typeof value === "string").map((value) => JSON.stringify(value).slice(1, -1));
++    const asked = (message: WsMessage) => { const text = toolArgumentsText(message); return text === "{}" || wanted.every((value) => text.includes(value)); };
++    const done = await waitFor(connection.messages, from, (message) => isToolDone(message, tool) && asked(message) && (accepted ? !rejected(message) : true), `${label} ${tool} result`);
++    await waitIdle(connection, connection.messages.indexOf(done) + 1, label);
+     return done;
+   };
++  /** Waits until the run is idle and has sent nothing for `quietMs`: it has finished reacting to what it was last told. */
++  const waitQuiet = async (connection: Connection, label: string, quietMs = 6_000): Promise<void> => {
++    const deadline = Date.now() + STEP_TIMEOUT_MS;
++    let seen = -1, since = Date.now();
++    while (Date.now() < deadline) {
++      const length = connection.messages.length;
++      const status = [...connection.messages].reverse().find((message) => message.type === "AGENT_STATUS")?.payload.status;
++      if (length !== seen) { seen = length; since = Date.now(); }
++      else if ((status === "idle" || status === undefined) && Date.now() - since >= quietMs) return;
++      await wait(500);
++    }
++    throw new Error(`Timed out waiting for ${label} to go quiet`);
++  };
+   const toolCallResults = (conversation: ConversationEntry[], tool: string): string[] =>
+     conversation.filter((item) => item.kind === "tool_call" && String((item as Record_).toolName ?? "").endsWith(tool))
+       .map((item) => JSON.stringify((item as Record_).toolResult ?? (item as Record_).toolError ?? null));
+@@ -551,6 +568,8 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
+         const messages = (await collaborationView(pmRunId))?.communication_messages.messages ?? [];
+         return messages.some((message) => message.senderAgentRunId === helperRunId && message.receiverAgentRunId === pmRunId && message.content.includes(token));
+       });
++      // The delegator may react to the report on its own; the next scripted step starts only after it has gone quiet.
++      await waitQuiet(pm, "the delegator after the copy's report");
+ 
+       // AC-006: the copy is messaged by its run ID.
+       const again = await callTool(pm, "send_message_to", { target_agent_run_id: helperRunId, content: "Reply in one short sentence, without tools." }, "message by run ID");

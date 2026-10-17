@@ -1,0 +1,38 @@
+{
+  "utc": "2026-10-13T17:51:18.106413+00:00",
+  "tag": "v1.5.3-beta.5",
+  "releaseCommit": "abfd379059a7bc1c392a6a2137d27e32427cda26",
+  "allFourPipelines": "success",
+  "runIds": [
+    38436397243,
+    38436397037,
+    38436396855,
+    38436397159
+  ],
+  "releaseUrl": "https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.5.3-beta.5",
+  "prerelease": true,
+  "assetCount": 17,
+  "expectedAssetSetExact": true,
+  "assetsAllNonemptyUploaded": true,
+  "updaterVersionsAndMacArchitectures": true,
+  "apkChecksumMatchesGitHubDigest": true,
+  "latestStableUnchanged": {
+    "tag": "v1.5.2",
+    "id": 410563836
+  },
+  "imageDigest": "sha256:a8c1d37d142a8bcd1ff28287fcc742d1d4c9e99b91f05be3adb3a9cff7b25bbc",
+  "betaDigestEqual": true,
+  "platforms": [
+    [
+      "linux",
+      "amd64"
+    ],
+    [
+      "linux",
+      "arm64"
+    ]
+  ],
+  "dockerLatestMatchesStableVersion": true,
+  "iOS": "Workflow upload completed; App Store review/public approval not requested",
+  "userNodes": "No changes or probes"
+}

@@ -1,0 +1,6 @@
+# Reviewer diagnostic attempts
+
+1. `attempt-1/` is original execution/script/cleanup. It installed the exact packages without the product installer's temporary default-unit mask; default distribution Ganesha became active, and the intended diagnostic export was not the serving instance. Manual mount returned ENOENT. This was a reviewer harness divergence, **not a new product failure or evidence for API-F002**. No directory/packet/A-B-A probe executed. Exact VM/cache removed, cleanup true.
+2. `run-linux-dir-diagnostic.py` now masks the distribution unit in the fresh owned guest before installing packages, matching the product installer's no-competing-daemon boundary. Everything remains diagnostic/manual setup rather than public CLI proof. No product patch. Original attempt retained unchanged under attempt-1; the new attempt has its own new clone/root and output.
+
+Attempt2 finished: normal Y gave2 EREMOTEIO/1 success; diagnostic N gave3 successes; restored Y gave2 EREMOTEIO/1 success. Source ext4 control3 successes. Capture was empty apart from its header, so no wire proof exists; decode receipt records0. This limitation is retained, not silently replaced with upstream packets. Both clones, processes and private caches are absent.

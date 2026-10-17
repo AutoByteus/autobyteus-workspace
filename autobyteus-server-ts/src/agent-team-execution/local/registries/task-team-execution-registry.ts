@@ -3,6 +3,7 @@ import type { AgentOperationResult } from "../../../agent-execution/domain/agent
 import type { PrepareTaskTeamInput, RestoreTaskTeamInput } from "../../domain/task-team-execution.js";
 import { createTaskExecutionPreparation, type TaskExecutionPreparationOperation, type PreparedTaskExecution } from "../../domain/prepared-task-execution.js";
 import type { TeamRun } from "../../domain/team-run.js";
+import { stopTaskTeamRunForUser } from "../../domain/task-team-user-stop.js";
 import type { TeamRunContext } from "../../domain/team-run-context.js";
 import type { TeamRunAgentTeamNode } from "../../domain/team-run-config.js";
 import type { TaskTeamExecutionFactory } from "../task-team-execution-factory.js";
@@ -192,6 +193,29 @@ export class TaskTeamExecutionRegistry {
       });
       if (!result.accepted) {
         throw new TaskExecutionTeardownIndeterminateError(teamRunId, result.message ?? `Task TeamRun '${teamRunId}' shutdown was rejected.`);
+      }
+      this.active.delete(teamRunId);
+      return true;
+    } finally {
+      this.shuttingDown.delete(teamRunId);
+    }
+  }
+
+  /**
+   * User Stop (DS-002): fences and interrupts every agent of the task Team (and the copies it
+   * hosts), then finishes its termination whether or not it is quiet. The TeamRun is dropped like
+   * after idle shutdown, so the next message restores it from the records.
+   */
+  async shutDownForUser(teamRunId: string): Promise<boolean> {
+    const run = this.active.get(teamRunId);
+    if (!run?.isActive() || this.shuttingDown.has(teamRunId)) return false;
+    this.shuttingDown.add(teamRunId);
+    try {
+      const result = await stopTaskTeamRunForUser(run).catch((cause: unknown) => {
+        throw new TaskExecutionTeardownIndeterminateError(teamRunId, `Task TeamRun '${teamRunId}' stop did not finish.`, { cause });
+      });
+      if (!result.accepted) {
+        throw new TaskExecutionTeardownIndeterminateError(teamRunId, result.message ?? `Task TeamRun '${teamRunId}' stop was rejected.`);
       }
       this.active.delete(teamRunId);
       return true;

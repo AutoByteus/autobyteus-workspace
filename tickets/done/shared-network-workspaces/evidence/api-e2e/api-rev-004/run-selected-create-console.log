@@ -1,0 +1,8 @@
+Started fresh nonempty ext4 source before first public setup
+fresh nonempty ext4 source before first public setup: Pass
+Started one fresh public selected Docker create
+one fresh public selected Docker create: Pass
+Started exact chosen image config private state ports aliases and unselected preservation
+exact chosen image config private state ports aliases and unselected preservation: Fail
+ManagedDocker client Fail/incomplete AssertionError()
+{"result": "Fail", "fatal": "AssertionError()"}

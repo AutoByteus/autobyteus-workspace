@@ -1,0 +1,9 @@
+prepare verified toolchain and copied current CLI
+clone fresh owned VM ab-nfs-sr020-34a15a0e
+fetch authenticated exact Ubuntu source and build dependencies in guest
+build two-field upstream backport as local prototype Debian packages
+preinstall prototype packages without distribution daemon; public create remains fresh
+current public create with candidate packages and default directory delegations
+exact nonroot confined directory replay plus ordinary files
+public reconnect twice retains identity
+{"result": "Prototype Pass, not product qualification", "cleanup": true}

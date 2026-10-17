@@ -1,0 +1,10 @@
+{
+  "result": "Complete",
+  "scratchRemoved": "/tmp/nfs-ir009-zbuj4d3x",
+  "mutationCopiesRemoved": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir009-unit-mutations",
+  "retainedNewCandidate": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir009-local-candidate",
+  "liveResourcesStarted": [],
+  "engineRebuilt": false,
+  "priorCandidatesPreserved": true,
+  "oldDistTreesPreserved": true
+}

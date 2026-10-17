@@ -1,0 +1,9 @@
+PASS pinned UNFS3 starts nonroot and directly reads chosen Mac host source without Linux file handles
+PASS two independent Linux daemon mounts share same Mac-bound storage identity at agreed path
+PASS native Mac kernel client mounts same Mac-bound UNFS3 folder at identical path
+PASS ordinary Mac host-folder write is exact in both Linux NFS clients within five seconds
+PASS Linux mounted append reaches original Mac source and peer without copying
+PASS cross-client rename relative symlink executable exclusive-create and existing-source preservation
+PASS native Mac mounted append reaches original Mac source and both Linux mounted clients
+PROBE FAILURE AssertionError('?? exclusive\n?? exec.sh\n?? link\n?? renamed\n?? roundtrip.txt\n2dec84099dcd3dc8c87bf473aa95b49597d51af6')
+{"run": "ab-sf-fr041-18457f7a", "passes": 7, "fatal": "AssertionError('?? exclusive\\n?? exec.sh\\n?? link\\n?? renamed\\n?? roundtrip.txt\\n2dec84099dcd3dc8c87bf473aa95b49597d51af6')"}

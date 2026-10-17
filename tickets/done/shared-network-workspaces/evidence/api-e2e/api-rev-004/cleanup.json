@@ -1,0 +1,194 @@
+{
+  "result": "Complete",
+  "commands": [
+    {
+      "argv": [
+        "/bin/ps",
+        "-p",
+        "70473",
+        "-o",
+        "command="
+      ],
+      "rc": 0,
+      "stdout": "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart run ab-nfs-api004-linux-9591ce1a --no-graphics --no-audio --no-clipboard --no-usb-accessories\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "stop",
+        "ab-nfs-api004-linux-9591ce1a",
+        "--timeout",
+        "15"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "delete",
+        "ab-nfs-api004-linux-9591ce1a"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "image",
+        "inspect",
+        "ab-nfs-api004-server:current",
+        "--format",
+        "{{.Id}}"
+      ],
+      "rc": 0,
+      "stdout": "sha256:c4338af68b8608226655056dc7c52d76250eba7c317f25ef43b9ca8458414dfb\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "image",
+        "rm",
+        "ab-nfs-api004-server:current"
+      ],
+      "rc": 0,
+      "stdout": "Untagged: ab-nfs-api004-server:current\nDeleted: sha256:c4338af68b8608226655056dc7c52d76250eba7c317f25ef43b9ca8458414dfb\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/usr/local/bin/docker",
+        "image",
+        "inspect",
+        "ab-nfs-api004-server:current"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such image: ab-nfs-api004-server:current\n"
+    }
+  ],
+  "scratch": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api004-ih_oeijo",
+  "mac": {
+    "ownedVM": "ab-nfs-api004-mac-5427b9a1",
+    "pid": 1506,
+    "commands": [
+      {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "stop",
+          "ab-nfs-api004-mac-5427b9a1"
+        ],
+        "rc": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "delete",
+          "ab-nfs-api004-mac-5427b9a1"
+        ],
+        "rc": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "list"
+        ],
+        "rc": 0,
+        "stdout": "Source Name                                                                                                        Disk  Size  Accessed       State  \nOCI    ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377 50\u00a0GB 33\u00a0GB vor 11 Minuten stopped\n",
+        "stderr": ""
+      }
+    ],
+    "result": "Complete",
+    "publicCacheRetained": true
+  },
+  "desktopStopped": true,
+  "tunnelAbsent": true,
+  "vm": {
+    "name": "ab-nfs-api004-linux-9591ce1a",
+    "pid": 70473,
+    "processAbsent": true,
+    "cloneAbsent": true
+  },
+  "ownedHostImageTagAbsent": true,
+  "retainedCandidates": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir007-local-candidate/autobyteus-nfs-linux-arm64",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir007-local-candidate/autobyteus-nfs-darwin-arm64",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir007-local-candidate/release.json",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir007-local-candidate/README.txt",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/README.txt",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/autobyteus-nfs-linux-arm64",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/COPYRIGHT",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/SHA256SUMS",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/autobyteus-nfs-ganesha-source-4.3-8ubuntu1+autobyteus1-arm64.tar.gz",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/engine-build-arm64.txt",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/engine-manifest.json",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/nfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/nfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/engine-manifest.json",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/release.json",
+      "unchanged": true
+    }
+  ],
+  "publicMacCacheRetained": true,
+  "preexistingGeneratedDirs": {
+    "applications/brief-studio/dist": true,
+    "autobyteus-application-backend-sdk/dist": true,
+    "autobyteus-application-devkit/dist": true,
+    "autobyteus-application-frontend-sdk/dist": true,
+    "autobyteus-application-sdk-contracts/dist": true
+  },
+  "scratchAbsent": true,
+  "retained": "Public Mac image/tool cache, exact11 IR005 plus4 IR007 retained candidate files, preexisting generated outputs and ordinary Docker build cache/shared layers (no global prune). Current worktree ignored build outputs not staged.",
+  "guestDisposal": "Own selected/unselected containers, registry, installed engine, named/private volumes, ssh authorization, mounts/services and synthetic source fixtures removed with owned VM after public detach proof. No user data/network/node changed."
+}

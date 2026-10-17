@@ -1,0 +1,8 @@
+base-deepseek-j1       n=5 taskForm=[('old labels', 5)] reported=5 firstSend=[('address', 5)] wrongOrBoth=[]
+base-deepseek-j3       n=5 taskForm=[('old labels', 5)] reported=5 firstSend=[('address', 4), ('run id', 1)] wrongOrBoth=[]
+base-sonnet-j1         n=5 taskForm=[('old labels', 5)] reported=5 firstSend=[('address', 4), ('run id', 1)] wrongOrBoth=[]
+base-sonnet-j3         n=5 taskForm=[('old labels', 5)] reported=5 firstSend=[('address', 4), ('run id', 1)] wrongOrBoth=[]
+branch-deepseek-j1     n=5 taskForm=[('address+run id', 5)] reported=5 firstSend=[('address', 5)] wrongOrBoth=[]
+branch-deepseek-j3     n=5 taskForm=[('address+run id', 5)] reported=5 firstSend=[('address', 4), ('run id', 1)] wrongOrBoth=[]
+branch-sonnet-j1       n=5 taskForm=[('address+run id', 5)] reported=5 firstSend=[('address', 4), ('run id', 1)] wrongOrBoth=[]
+branch-sonnet-j3       n=5 taskForm=[('address+run id', 5)] reported=5 firstSend=[('address', 5)] wrongOrBoth=[]

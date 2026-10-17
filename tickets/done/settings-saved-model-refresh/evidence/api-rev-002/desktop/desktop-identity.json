@@ -1,0 +1,22 @@
+{
+  "head": "4dd213be087bda11d3f4e0bc87f9d44af1278e85",
+  "status": "M ../tickets/in-progress/settings-saved-model-refresh/api-e2e-coverage-investigation.md\n M ../tickets/in-progress/settings-saved-model-refresh/api-e2e-test-case-ledger.md\n?? ../autobyteus-application-backend-sdk/dist/\n?? ../autobyteus-application-sdk-contracts/dist/\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/",
+  "instance": {
+    "instanceId": "iso-63101-feda",
+    "pid": 83962,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:63102",
+    "graphqlUrl": "http://127.0.0.1:63102/graphql",
+    "controlEndpoint": "http://127.0.0.1:63101",
+    "controlPort": 63101,
+    "serverPort": 63102,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-O0vIuv",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-O0vIuv/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-63101-feda.log"
+  },
+  "skipBuild": false,
+  "asar": "/Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar",
+  "asarSha256": "15ff98c7a607f6e33d814c9a63489d2c6c8d33bfb256de92a815c5f6ec53fab0"
+}

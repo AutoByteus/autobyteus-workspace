@@ -1,0 +1,24 @@
+Started replace owned directory at same path with copied marker/content
+replace owned directory at same path with copied marker/content: Pass
+Started public reconnect rejects actual new directory despite copied marker
+public reconnect rejects actual new directory despite copied marker: Pass
+Started restore exact original directory
+restore exact original directory: Pass
+Started restored original public reconnect
+restored original public reconnect: Pass
+Started restored original mounted nonroot RW
+restored original mounted nonroot RW: Pass
+Started replace path with symlink to exact original
+replace path with symlink to exact original: Pass
+Started public reconnect rejects symlink source
+public reconnect rejects symlink source: Pass
+Started restore source after symlink control
+restore source after symlink control: Pass
+Started symlink restore reconnect
+symlink restore reconnect: Pass
+Started remove source access permission without ownership change
+remove source access permission without ownership change: Pass
+Started public reconnect rejects nonroot write denial
+public reconnect rejects nonroot write denial: Fail
+controls failure AssertionError({'argv': ['/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart', 'exec', 'ab-nfs-api006-mac-a0000f39', '/usr/bin/sudo', '-n', '-u', 'admin', '/usr/bin/env', '-i', 'HOME=/Users/admin', 'PATH=/usr/bin:/bin:/usr/sbin:/sbin', 'LANG=C', '/bin/sh', '-c', '/Users/admin/ab-nfs-api006-mac-a0000f39-binary reconnect --yes --json'], 'rc': 0, 'seconds': 0.301, 'stdout': '{\n  "storageId": "4ff085b0-3304-4023-a5c2-9834e38aec72",\n  "mountRoot": "/Volumes/autobyteus-shared",\n  "hostReady": true,\n  "nodes": {},\n  "limitation": "Hard NFS checks may stall; no outage deadline or local substitute"\n}\n', 'stderr': 'Checking saved source and reconnecting; hard NFS may wait for storage.\nChecking actual host and selected-node readiness; this may wait for storage.\n'})
+{"result": "Fail", "fatal": "AssertionError({'argv': ['/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart', 'exec', 'ab-nfs-api006-mac-a0000f39', '/usr/bin/sudo', '-n', '-u', 'admin', '/usr/bin/env', '-i', 'HOME=/Users/admin', 'PATH=/usr/bin:/bin:/usr/sbin:/sbin', 'LANG=C', '/bin/sh', '-c', '/Users/admin/ab-nfs-api006-mac-a0000f39-binary reconnect --yes --json'], 'rc': 0, 'seconds': 0.301, 'stdout': '{\\n  \"storageId\": \"4ff085b0-3304-4023-a5c2-9834e38aec72\",\\n  \"mountRoot\": \"/Volumes/autobyteus-shared\",\\n  \"hostReady\": true,\\n  \"nodes\": {},\\n  \"limitation\": \"Hard NFS checks may stall; no outage deadline or local substitute\"\\n}\\n', 'stderr': 'Checking saved source and reconnecting; hard NFS may wait for storage.\\nChecking actual host and selected-node readiness; this may wait for storage.\\n'})"}

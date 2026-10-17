@@ -1,0 +1,10 @@
+{
+  "result": "Pass",
+  "scope": "Preservation/syntax only; no functional pass",
+  "protectedReferences": 1616,
+  "incomingReferences": 1618,
+  "candidates": 23,
+  "oldDistFiles": 286,
+  "sourceAndDurableTestsUnchanged": true,
+  "completedAPIRevisionUnchanged": true
+}

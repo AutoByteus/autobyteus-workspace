@@ -1,6 +1,6 @@
 import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type {
-  ExistingTaskExecutionAssignInput, NewTaskExecutionLinkInput, TaskExecutionOwner, TaskExecutionRole,
+  ExistingTaskExecutionAssignInput, NewTaskExecutionLinkInput, TaskExecutionOwner,
 } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { taskExecutionReferenceKey, type TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { ProjectError } from "../domain/project-errors.js";
@@ -88,7 +88,7 @@ export class TaskExecutionResourceService {
     await this.link(location, link);
   }
   /** Joins the creator's current Task; the creator's openness is decided under that Task file's lock. */
-  async linkInherited(link: Extract<NewTaskExecutionLinkInput, { role: "delegated" | "broughtIn" }>): Promise<string> {
+  async linkInherited(link: Extract<NewTaskExecutionLinkInput, { role: "delegated" }>): Promise<string> {
     await this.load();
     const taskId = this.currentOf(link.creator)?.taskId;
     if (!taskId) throw new ProjectError("TASK_AGENT_RESOURCE_CLOSED", "The creating agent run is not open Task work.");
@@ -242,10 +242,6 @@ export class TaskExecutionResourceService {
   isOpen(execution: TaskExecutionReference): boolean {
     this.assertLoaded();
     return this.currentOf(execution)?.entry.closedAt === null;
-  }
-  openTaskExecutions(taskId: string, role: TaskExecutionRole): TaskExecutionReference[] {
-    this.assertLoaded();
-    return (this.files.get(taskId)?.file.executionResources ?? []).filter(e => e.role === role && e.closedAt === null).map(e => e.execution);
   }
   assertTaskReadable(taskId: string): void {
     const message = this.damaged.get(taskId);

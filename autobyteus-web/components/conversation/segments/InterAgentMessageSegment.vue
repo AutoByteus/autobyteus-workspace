@@ -77,7 +77,6 @@
 import { computed, ref } from 'vue';
 import type { InterAgentMessageSegment } from '~/types/segments';
 import MarkdownRenderer from '~/components/conversation/segments/renderer/MarkdownRenderer.vue';
-import { memberTitleName } from '~/utils/collaboration/memberDisplayName';
 import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 
 const props = withDefaults(defineProps<{
@@ -115,6 +114,13 @@ const toReadableSenderName = (value: string): string => {
   if (maybeNumericSuffix && /^\d+$/.test(maybeNumericSuffix)) {
     return toTitleCase(parts[0] || leaf);
   }
+  // A run ID is `<name>_<hex>` (or `<name>_<hex>_<hex>`): the readable form drops the hex tail.
+  const isHexTail = (part: string): boolean => /^[a-f0-9]{4,}$/.test(part) && /\d/.test(part);
+  if (parts.length >= 2 && isHexTail(parts[parts.length - 1]!)) {
+    const nameParts = [...parts];
+    while (nameParts.length > 1 && isHexTail(nameParts[nameParts.length - 1]!)) nameParts.pop();
+    return toTitleCase(nameParts.join('_'));
+  }
   if (/^[a-z][a-z0-9]*$/.test(leaf)) {
     return `${leaf.charAt(0).toUpperCase()}${leaf.slice(1)}`;
   }
@@ -125,9 +131,7 @@ const toReadableSenderName = (value: string): string => {
 };
 
 const displaySender = computed(() => {
-  // RD-004 deliveries carry the sender's address or name: one shared formatter (F-03).
-  const sender = props.segment.senderAddress?.trim() || props.segment.senderName?.trim();
-  if (sender) return memberTitleName(sender);
+  // The label comes only from the sender's run ID: the app's lookup by run ID, else a readable form of the run ID.
   const explicitName = props.senderDisplayName?.trim();
   if (explicitName) {
     return toReadableSenderName(explicitName);

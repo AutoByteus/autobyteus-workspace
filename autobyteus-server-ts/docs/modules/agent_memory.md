@@ -24,6 +24,8 @@ for the scoped primary-key rule used to join new saved and live presentation.
 
 ## Storage Layout
 
+The target run storage shape (every run, including a delegated run, in its own folder) is defined in the [Collaboration Model](../design/collaboration_model.md#3-run-storage-shape); the layout below is the current one.
+
 Memory files live under the configured memory root:
 
 - Standalone runs: `memory/agents/<runId>/...`

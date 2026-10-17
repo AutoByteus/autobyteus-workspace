@@ -1,0 +1,26 @@
+{
+  "command": [
+    "pnpm",
+    "-C",
+    "autobyteus-server-ts",
+    "exec",
+    "vitest",
+    "run",
+    "tests/unit/startup/migrations-prisma-engine-env.test.ts",
+    "tests/unit/startup/migrations-command.test.ts",
+    "--no-watch"
+  ],
+  "sourceCommit": "fec5a7b41aae7caf2246621348e843c3da509412",
+  "exitCode": 0,
+  "rawOutputSha256": "0d5a8800e43c2659045106ab1a1e7028ad8767b7ad909f9e46ea0caf9a3a25d5",
+  "normalizedLogSha256": "d3977d7e7d7fc0211ba89a7958a5bdbab6e5820baa1570d41f378c35a9a26bc6",
+  "normalization": "Only own log trailing whitespace/EOF; no result lines dropped",
+  "preexistingFixtureDatabase": false,
+  "isolatedHomeTmp": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/prisma-crr001-9t7i6qtc",
+  "scope": "Changed-owner unit checks only; no Docker/user-node/provider action, no E2E claim",
+  "removedOwnedDatabaseFiles": [
+    "autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db",
+    "autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-journal"
+  ],
+  "privateHomeTmpRemoved": true
+}

@@ -1,0 +1,7 @@
+{
+  "origin": "permission-change observation unresolved at cache boundary",
+  "observation": "externally chmod-ing the previously opened backing identity file to000 did not cause client denial after2s; child still read matching UUID successfully",
+  "notProven": "exact server/client cache/delegation cause or instantaneous revocation semantics",
+  "nextRound": "test initially unreadable fresh inode separately; retain previous observation as revocation/cache limit, not retroactively passed",
+  "productAdmissionPass": false
+}

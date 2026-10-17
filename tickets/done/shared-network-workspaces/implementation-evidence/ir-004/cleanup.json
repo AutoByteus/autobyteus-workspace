@@ -1,0 +1,63 @@
+{
+  "timeUTC": "2026-10-13T20:10:40.069859+00:00",
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k",
+  "toolchainAndBinaryScratchRemoved": true,
+  "removedBinaryHashes": {
+    "ports-nfs": "e8c88d75a1ce43fcffd78f831dbfde38e8f4c11af06274251b600ea7bd5535c1",
+    "transport-nfs": "22f651321834f5b08452149636463a8880b13dc436133055fcb389e2f60ef561",
+    "fixed-nfs": "6cb351bbcdd324b727ccc74967cfdb3bb923ae03d8e3ba133c008c1371efa89d",
+    "final-nfs": "bc37b1dae01cb4c7060b6710a85dfa4b29f100bc5900583bf26467cf662fa0ca",
+    "baseline-nfs": "813c0853261d4a13e6a9346d3f678066836c7c82ef8e5328b2448c495cd58abe",
+    "nfs-linux-arm64": "b68c8b599f59b8b2f6c2b3b8066b421be01f04719f1ce5805ade57814c21d5a0",
+    "nfs-darwin-amd64": "785cd7c57854bee0f2db62c499a58a2a11a40d867bdef06155793387aa6ba198",
+    "nfs-darwin-arm64": "e8c88d75a1ce43fcffd78f831dbfde38e8f4c11af06274251b600ea7bd5535c1",
+    "nfs-linux-amd64": "ad27c3105fa73144861419861049e568f761e8a0c0e1afe6bb2e5b45519789f5"
+  },
+  "ownedClones": [
+    {
+      "vm": "ab-nfs-ir004-2b38faee",
+      "cloneAbsent": true,
+      "processExited": true
+    },
+    {
+      "vm": "ab-nfs-ir004-81e6464a",
+      "cloneAbsent": true,
+      "processExited": true
+    },
+    {
+      "vm": "ab-nfs-ir004-0e6d1d39",
+      "cloneAbsent": true,
+      "processExited": true
+    },
+    {
+      "vm": "ab-nfs-ir004-52b2643e",
+      "cloneAbsent": true,
+      "processExited": true
+    },
+    {
+      "vm": "ab-nfs-ir004-90fab912",
+      "cloneAbsent": true,
+      "processExited": true
+    },
+    {
+      "vm": "ab-nfs-ir004-b4ae4a95",
+      "cloneAbsent": true,
+      "processExited": true
+    },
+    {
+      "vm": "ab-nfs-ir004-f5c5581c",
+      "cloneAbsent": true,
+      "processExited": true
+    },
+    {
+      "vm": "ab-nfs-ir004-d751336f",
+      "cloneAbsent": true,
+      "processExited": true
+    }
+  ],
+  "finalTartList": "Source Name                                                                                                        Disk  Size  Accessed      State  \nOCI    ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377 50\u00a0GB 33\u00a0GB vor 2 Minuten stopped\n",
+  "cachedPublicImageRetained": true,
+  "testPycacheRemoved": true,
+  "hostMountsNodesCredentialsProvidersTouched": false,
+  "previousGeneratedDistUntouched": true
+}

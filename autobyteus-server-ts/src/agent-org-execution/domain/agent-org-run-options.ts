@@ -13,8 +13,6 @@ import type { RootedAgentMemoryLocator } from "../../agent-collaboration/executi
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { TaskExecutionIdleTimers } from "../../agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
 import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
-import type { CollaboratorEntry } from "../../run-history/domain/run-execution-tree-shared-records.js";
-import type { PreparedCollaboratorHandles } from "../../agent-collaboration/execution/backends/collaborator-handle-preparation.js";
 
 export type AgentOrgRunOptions = Readonly<{
     root: RootExecutionIdentity;
@@ -31,7 +29,5 @@ export type AgentOrgRunOptions = Readonly<{
     activityInspector?: AgentConversationActivityInspector;
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
     collaboratorAdmission?: CollaboratorAdmission;
-    /** Prepares hosted handles for new collaborator entries (published after the tree write). */
-    prepareCollaboratorHandles(entries: readonly CollaboratorEntry[]): Promise<PreparedCollaboratorHandles>;
     onTerminated?(): void;
   }>;

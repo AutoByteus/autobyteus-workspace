@@ -144,7 +144,7 @@ export const finalizeLocalSubmissionAttachments = (
 };
 
 /**
- * A failed send. A held send rejected because a collaborator could not be added shows the
+ * A failed send. A held send rejected because a mentioned unit could not be involved shows the
  * notice and keeps the draft as typed (nothing was posted); returns `'kept_draft'` then.
  * Any other failure shows the message with an error, as before.
  */

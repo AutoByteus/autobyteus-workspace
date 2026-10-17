@@ -8,7 +8,7 @@ import { isFeatureAvailableInRuntime } from '~/utils/mobileFeatureGates'
 /**
  * Which tree rows can be a Task worker: a task Agent row (its agent run) or a task Team row (its team
  * run). Team members and stable rows never are; the server answers null for sub-work copies and
- * `@` collaborators, which are no Task's root.
+ * `@`-involved units, which are no Task's root.
  */
 export const taskWorkerRefOf = (row: RunHistoryTeamExecutionRow): TaskWorkerRef | null => {
   if (row.kind !== 'transient_execution') return null

@@ -1,0 +1,26 @@
+diff --git a/autobyteus-web/electron/updater/__tests__/appUpdateErrorClassifier.spec.ts b/autobyteus-web/electron/updater/__tests__/appUpdateErrorClassifier.spec.ts
+index ed2be42ee8..ead87bc2e7 100644
+--- a/autobyteus-web/electron/updater/__tests__/appUpdateErrorClassifier.spec.ts
++++ b/autobyteus-web/electron/updater/__tests__/appUpdateErrorClassifier.spec.ts
+@@ -55,0 +56,11 @@ describe('classifyAppUpdateError', () => {
++  it('does not classify a stack-frame path as a network failure', () => {
++    const error = new Error('disk write failed');
++    error.stack = 'Error: disk write failed\n    at /project/shared-network-workspaces/appUpdateErrorClassifier.ts:1:1';
++    const result = classifyAppUpdateError(error, {
++      operation: 'download',
++      fallbackMessage: 'Failed to download update.',
++    });
++    expect(result.kind).toBe('download');
++    expect(result.diagnostic).toBe([error.message, error.stack].join('\n'));
++  });
++
+diff --git a/autobyteus-web/electron/updater/appUpdateErrorClassifier.ts b/autobyteus-web/electron/updater/appUpdateErrorClassifier.ts
+index ed3e61f0d6..2deeb5ffb8 100644
+--- a/autobyteus-web/electron/updater/appUpdateErrorClassifier.ts
++++ b/autobyteus-web/electron/updater/appUpdateErrorClassifier.ts
+@@ -104 +104,4 @@ export function classifyAppUpdateError(
+-  const searchable = [code, diagnostic, context.fallbackMessage].filter(Boolean).join('\n');
++  // Stack frame paths can contain words such as network/error without describing
++  // the failure. Keep the full diagnostic for logs, not category inference.
++  const errorText = error instanceof Error ? error.message : diagnostic;
++  const searchable = [code, errorText, context.fallbackMessage].filter(Boolean).join('\n');

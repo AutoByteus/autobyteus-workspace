@@ -1,0 +1,12 @@
+{
+  "timestampUTC": "2026-10-14T03:59:53.751667+00:00",
+  "inputHead": "e1081e95db56c8f4b4a028404ab0365b70ad8308",
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr004-mehi2re8",
+  "commands": [],
+  "result": "Fail",
+  "error": "KeyboardInterrupt()",
+  "cleanup": {
+    "ownedRootAbsent": true,
+    "noVMServiceMountDockerProviderOperations": true
+  }
+}

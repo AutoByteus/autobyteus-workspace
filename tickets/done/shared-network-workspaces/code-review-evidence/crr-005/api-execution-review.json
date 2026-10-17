@@ -1,0 +1,148 @@
+{
+  "source": "API002 retained execution, independently inspected, not reviewer rerun",
+  "priorResolved": {
+    "productionHash": "497efd6abb0c2cfa4c740a87f005c529cbf026a6fa218b3acd345826f4a923da",
+    "binary": {
+      "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api002-5861wgnv/autobyteus-nfs",
+      "sha256": "19e93a1a1b44913564dc81fdaea3a7d55e22702120d6c2494007c80e1319a9e0",
+      "sourceHead": "82dd5d9d53e2e4f5e022ff3f6f0e196ebd3602d8",
+      "metadata": "unchanged development-unqualified",
+      "sourceFix": "174e480bd0cfaee29f22fd46b1922afbb274e56b"
+    },
+    "priorFailure": "API-F001 / CR002",
+    "resolution": "Resolved in two independent fresh current-source Mac VM runs; no manual reconnect",
+    "cases": [
+      {
+        "id": "V02-repro",
+        "vm": "ab-nfs-api002-37446d5f",
+        "createSeconds": 11.571,
+        "cleanup": {
+          "cloneAbsent": true,
+          "cacheRetained": true
+        }
+      },
+      {
+        "id": "V01",
+        "vm": "ab-nfs-api002-04979de5",
+        "createSeconds": 22.772,
+        "cleanup": {
+          "cloneAbsent": true,
+          "cacheRetained": true
+        }
+      }
+    ]
+  },
+  "linuxPublicCreate": [
+    {
+      "file": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/linux-native-result.json",
+      "result": "Fail",
+      "source": "/home/admin/ab-nfs-api002-linux-25fc064c-source",
+      "sourceIdentityBefore": "64769:577877:1000:109:755",
+      "binary": {
+        "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api002-5861wgnv/autobyteus-nfs-linux",
+        "sha256": "9aae4944c680e3be1331f760f2c07794695a2dbea6327858ca87007b77111fd3"
+      },
+      "createRows": [
+        {
+          "argv": [
+            "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+            "exec",
+            "ab-nfs-api002-linux-25fc064c",
+            "/usr/bin/env",
+            "-i",
+            "HOME=/home/admin",
+            "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+            "LANG=C",
+            "/bin/sh",
+            "-c",
+            "umask 077; exec /home/admin/ab-nfs-api002-linux-25fc064c-binary create --source /home/admin/ab-nfs-api002-linux-25fc064c-source --backend ganesha-native --endpoint 192.168.64.4 --allow 192.168.64.4 --nodes none --yes --json"
+          ],
+          "rc": 1,
+          "seconds": 17.258,
+          "stdout": "",
+          "stderr": "Detected private addresses: 192.168.64.4\nNo reachable local Docker daemon; no Docker nodes will be attached.\nAutoByteus NFS plan:\n - Ganesha NFSv4.1 TCP2049 only; persistent private recovery state\n - Export chosen source in place: /home/admin/ab-nfs-api002-linux-25fc064c-source\n - Map ALL clients to nonroot 1000:109; no recursive ownership change\n - Trust private hosts/subnets: 192.168.64.4\n - Attach 192.168.64.4:/autobyteus/a294c758-b1f7-40c9-84e5-6b9124671ae1 at /Volumes/autobyteus-shared\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\n - Install exact Ubuntu NFS package versions from this release, if needed\nAutoByteus NFS incomplete: nonroot storage check incomplete: exit status 1: AutoByteus NFS incomplete: openat .autobyteus-nfs/storage.json: remote I/O error\n\nAutoByteus NFS incomplete: exit status 1\n"
+        }
+      ]
+    },
+    {
+      "file": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/linux-native-repro-result.json",
+      "result": "Fail",
+      "source": "/home/admin/ab-nfs-api002-linux-5336c36d-source",
+      "sourceIdentityBefore": "64769:577887:1000:109:755",
+      "binary": {
+        "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api002-5861wgnv/autobyteus-nfs-linux",
+        "sha256": "9aae4944c680e3be1331f760f2c07794695a2dbea6327858ca87007b77111fd3"
+      },
+      "createRows": [
+        {
+          "argv": [
+            "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+            "exec",
+            "ab-nfs-api002-linux-5336c36d",
+            "/usr/bin/env",
+            "-i",
+            "HOME=/home/admin",
+            "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+            "LANG=C",
+            "/bin/sh",
+            "-c",
+            "umask 077; exec /home/admin/ab-nfs-api002-linux-5336c36d-binary create --source /home/admin/ab-nfs-api002-linux-5336c36d-source --backend ganesha-native --endpoint 192.168.64.5 --allow 192.168.64.5 --nodes none --yes --json"
+          ],
+          "rc": 1,
+          "seconds": 16.252,
+          "stdout": "",
+          "stderr": "Detected private addresses: 192.168.64.5\nNo reachable local Docker daemon; no Docker nodes will be attached.\nAutoByteus NFS plan:\n - Ganesha NFSv4.1 TCP2049 only; persistent private recovery state\n - Export chosen source in place: /home/admin/ab-nfs-api002-linux-5336c36d-source\n - Map ALL clients to nonroot 1000:109; no recursive ownership change\n - Trust private hosts/subnets: 192.168.64.5\n - Attach 192.168.64.5:/autobyteus/7f00baa9-8f2c-4163-aebf-59f03f3b7087 at /Volumes/autobyteus-shared\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\n - Install exact Ubuntu NFS package versions from this release, if needed\nAutoByteus NFS incomplete: nonroot storage check incomplete: exit status 1: AutoByteus NFS incomplete: openat .autobyteus-nfs/storage.json: remote I/O error\n\nAutoByteus NFS incomplete: exit status 1\n"
+        }
+      ]
+    }
+  ],
+  "correctedTrace": [
+    {
+      "name": "ordinary-mounted-read-and-source-identity",
+      "rc": 0,
+      "command": "set -e; id; stat -c \"%d:%i:%u:%g:%a\" /home/admin/ab-nfs-api002-linux-5336c36d-source; sha256sum /home/admin/ab-nfs-api002-linux-5336c36d-source/project/preexisting.txt /Volumes/autobyteus-shared/project/preexisting.txt; cat /home/admin/ab-nfs-api002-linux-5336c36d-source/.autobyteus-nfs/storage.json; cat /Volumes/autobyteus-shared/.autobyteus-nfs/storage.json; sudo -n stat -c \"%u %g %a %n\" /var/lib/autobyteus-nfs /var/lib/autobyteus-nfs/attachment.json; sha256sum /usr/libexec/autobyteus-nfs/autobyteus-nfs",
+      "relevantSyscalls": []
+    },
+    {
+      "name": "strace-internal-probe-source",
+      "rc": 0,
+      "command": "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/var/empty PATH=/usr/bin:/bin LANG=C /usr/bin/strace -f -s 200 -e trace=openat,openat2,newfstatat,statx,readlinkat,close /usr/libexec/autobyteus-nfs/autobyteus-nfs internal-probe /home/admin/ab-nfs-api002-linux-5336c36d-source 7f00baa9-8f2c-4163-aebf-59f03f3b7087",
+      "relevantSyscalls": [
+        "[pid  2479] openat(4, \".autobyteus-nfs\", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_DIRECTORY) = 5",
+        "[pid  2479] newfstatat(5, \"storage.json\", {st_mode=S_IFREG|0644, st_size=53, ...}, AT_SYMLINK_NOFOLLOW) = 0",
+        "[pid  2479] openat(4, \".autobyteus-nfs\", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_DIRECTORY) = 5",
+        "[pid  2479] openat(5, \"storage.json\", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 6",
+        "[pid  2479] openat(3, \".autobyteus-nfs\", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_DIRECTORY) = 4",
+        "[pid  2479] openat(3, \".autobyteus-nfs\", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_DIRECTORY) = 4",
+        "[pid  2479] openat(3, \".autobyteus-nfs\", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_DIRECTORY) = 4",
+        "[pid  2482] openat(3, \".autobyteus-nfs\", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_DIRECTORY) = 4",
+        "[pid  2482] openat(3, \".autobyteus-nfs\", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_DIRECTORY) = 4"
+      ]
+    },
+    {
+      "name": "strace-internal-probe-mount",
+      "rc": 1,
+      "command": "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/var/empty PATH=/usr/bin:/bin LANG=C /usr/bin/strace -f -s 200 -e trace=openat,openat2,newfstatat,statx,readlinkat,close /usr/libexec/autobyteus-nfs/autobyteus-nfs internal-probe /Volumes/autobyteus-shared 7f00baa9-8f2c-4163-aebf-59f03f3b7087",
+      "relevantSyscalls": [
+        "[pid  2489] openat(4, \".autobyteus-nfs\", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_DIRECTORY) = 5",
+        "[pid  2489] newfstatat(5, \"storage.json\", {st_mode=S_IFREG|0644, st_size=53, ...}, AT_SYMLINK_NOFOLLOW) = 0",
+        "[pid  2489] openat(4, \".autobyteus-nfs\", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_DIRECTORY) = -1 EREMOTEIO (Remote I/O error)",
+        "AutoByteus NFS incomplete: openat .autobyteus-nfs/storage.json: remote I/O error"
+      ]
+    },
+    {
+      "name": "public-reconnect-fresh-repro",
+      "rc": 1,
+      "command": "/home/admin/ab-nfs-api002-linux-5336c36d-binary reconnect --yes --json",
+      "relevantSyscalls": [
+        "AutoByteus NFS incomplete: nonroot storage check incomplete: exit status 1: AutoByteus NFS incomplete: openat .autobyteus-nfs/storage.json: remote I/O error"
+      ]
+    }
+  ],
+  "limits": [
+    "Original wrong executable path trace did not execute product probe; retained, not used for cause.",
+    "Ordinary cat reads pass; do not generalize EREMOTEIO to all filesystem reads.",
+    "API002 copied-tree build changed only release.json with exact reference pins; no publication/qualification.",
+    "Mac peer NAT route failure is separate environment limitation; not Apple cold-start recurrence."
+  ]
+}

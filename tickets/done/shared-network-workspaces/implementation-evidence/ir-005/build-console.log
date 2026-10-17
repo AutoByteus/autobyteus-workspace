@@ -1,0 +1,5 @@
+clone isolated Ubuntu builder
+install build prerequisites, never candidate engine
+execute current production source recipe
+retrieve exact package/source artifacts
+Package build Pass; not installer/runtime qualification

@@ -64,7 +64,6 @@ describe("runtime-agent-tool-exposure", () => {
 
   it("does not expose removed legacy task tools, including submit/review task results, as task delegation tools", () => {
     const exposure = buildRuntimeAgentToolExposure([
-      "create_task",
       "create_tasks",
       "get_my_tasks",
       "get_task_plan_status",
@@ -125,28 +124,26 @@ describe("runtime-agent-tool-exposure", () => {
       "get_handoff_rules",
       "send_message_to",
       "delegate_task",
-      "create_or_update_task",
     ]);
     expect(exposure.requestedToolNames).toEqual([
       "run_bash",
       "send_message_to",
       "get_handoff_rules",
       "delegate_task",
-      "create_or_update_task",
     ]);
     expect(exposure.enabledTaskDelegationToolNames).toEqual(["delegate_task"]);
-    // REQ-007: wherever delegate_task is, the Task it creates can be marked DONE (every runtime reads this list).
-    expect(exposure.enabledProjectTaskToolNames).toEqual(["create_or_update_task"]);
+    // REQ-004: no task tool is automatic, even where delegate_task is.
+    expect(exposure.enabledProjectTaskToolNames).toEqual([]);
     expect(exposure.sendMessageToEnabled).toBe(true);
     expect(exposure.getHandoffRulesEnabled).toBe(true);
   });
 
-  it("gives a member that belongs to no Team send_message_to, delegate_task and create_or_update_task but not get_handoff_rules", () => {
-    const host = new MemberExecutionContext({ ...memberExecutionContext, teamScoped: false });
-    expect(automaticCollaborationToolNames(host)).toEqual(["send_message_to", "delegate_task", "create_or_update_task"]);
+  it("gives a member that belongs to no Team send_message_to, delegate_task, no task tool and not get_handoff_rules", () => {
+    const host = new MemberExecutionContext({ ...memberExecutionContext, teamScoped: false, collaborationRole: "standalone_agent" });
+    expect(automaticCollaborationToolNames(host)).toEqual(["send_message_to", "delegate_task"]);
     const exposure = resolveRuntimeAgentToolExposure({ toolNames: ["delegate_task", "run_bash"] }, host);
-    expect(exposure.requestedToolNames).toEqual(["delegate_task", "run_bash", "send_message_to", "create_or_update_task"]);
-    expect(exposure.enabledProjectTaskToolNames).toEqual(["create_or_update_task"]);
+    expect(exposure.requestedToolNames).toEqual(["delegate_task", "run_bash", "send_message_to"]);
+    expect(exposure.enabledProjectTaskToolNames).toEqual([]);
     expect(exposure.getHandoffRulesEnabled).toBe(false);
     expect(exposure.sendMessageToEnabled).toBe(true);
     expect(automaticCollaborationToolNames(null)).toEqual([]);

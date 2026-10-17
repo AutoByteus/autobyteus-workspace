@@ -1,0 +1,8 @@
+[
+  {
+    "path": "evidence/delivery/unit.log",
+    "beforeSha256": "458c82fe02d61b0882eaa08efc282e606d5309b76ed866347456c3301991eddd",
+    "afterSha256": "8f0e55c350aedc86123f07c875e69ace715daa6df64158fb270c439e0c1f06dd",
+    "change": "Trailing whitespace/blank EOF only; diagnostic content retained"
+  }
+]

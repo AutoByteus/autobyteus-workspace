@@ -1,0 +1,10 @@
+go-version expected exit 0
+go-race expected exit 0
+go-vet expected exit 0
+python-packaging expected exit 0
+source-hash expected exit 0
+publish-refusal expected exit 1
+mutation-omit-export-expiry expected exit 1
+mutation-missing-ready expected exit 1
+mutation-skip-detach expected exit 1
+Completed

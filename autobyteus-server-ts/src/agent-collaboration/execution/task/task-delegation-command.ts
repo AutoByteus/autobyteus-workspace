@@ -13,7 +13,7 @@ export type AssignToExistingCopyInput = Readonly<{ copy: TaskExecutionReference;
 
 /**
  * What dispatch reads from a root's placement: the launch notes of a fresh catalog admission (DS-003).
- * Structural, so task execution never depends on collaborator admission.
+ * Structural, so task execution never depends on catalog admission.
  */
 export type TaskCopyPlacementLaunchNotes = Readonly<{ launchNotes?: readonly string[] }>;
 
@@ -53,7 +53,11 @@ export type TaskDelegationErrorCode =
   | "TASK_EXECUTION_CONTEXT_UNAVAILABLE"
   | "TASK_EXECUTION_RESTORE_FAILED"
   | "TASK_REACTIVATION_STOP_PENDING"
+  | "TASK_EXECUTION_STOPPING"
   | "TASK_COPY_NOT_ASSIGNABLE";
+
+/** Refusal text when the root no longer accepts messages or delegations (wording §7.3). */
+export const ROOT_NOT_ACTIVE_MESSAGE = "This work is stopping or has stopped, so the message or delegation was not sent.";
 
 export class TaskDelegationError extends Error {
   constructor(readonly code: TaskDelegationErrorCode, message: string, options?: { cause?: unknown }) {

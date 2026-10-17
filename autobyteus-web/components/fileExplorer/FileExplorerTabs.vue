@@ -4,10 +4,8 @@
     <div
       id="contentViewer"
       class="bg-white rounded-lg shadow-md flex flex-col h-full fixed inset-0 z-[120] min-h-screen"
-      ref="contentRef"
     >
       <div class="flex-1 flex flex-col min-h-0">
-        <!-- If no file is active -->
         <!-- If no file is active -->
         <div v-if="!activeFile" class="flex-1 flex flex-col items-center justify-center text-gray-400 p-8">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-16 h-16 mb-4 text-gray-300">
@@ -19,25 +17,29 @@
 
         <!-- Main content -->
         <div v-else class="flex-1 flex flex-col min-h-0">
-          <div v-if="activeFileData?.isLoading" class="flex-1 text-center py-4 flex items-center justify-center" role="status" aria-live="polite">
+          <div v-if="activeFileData?.isLoading && !hasEditorDraft" class="flex-1 text-center py-4 flex items-center justify-center" role="status" aria-live="polite">
             <p class="text-gray-600">{{ $t('tools.components.fileExplorer.FileExplorerTabs.loading_file_content') }}</p>
           </div>
-          <div v-else-if="activeFileData?.error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative m-4" role="alert">
+          <div v-else-if="activeFileData?.error && !hasEditorDraft" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative m-4" role="alert">
             <strong class="font-bold">{{ $t('tools.components.fileExplorer.FileExplorerTabs.error') }}</strong>
             <span class="block sm:inline">{{ activeFileErrorMessage }}</span>
           </div>
           <div v-else-if="activeFileData" class="flex-1 bg-gray-50 rounded-lg overflow-hidden relative min-h-0">
             <FileViewer
               v-if="activeFileData"
-              :file="activeFileData"
+              :file="displayFileData!"
+              :key="JSON.stringify([currentWorkspaceId, activeFile])"
               :mode="activeFileDisplayMode"
-              :loading="activeFileData.isLoading"
-              :error="activeFileErrorMessage"
+              :loading="activeFileData.isLoading && !hasEditorDraft"
+              :error="hasEditorDraft ? null : activeFileErrorMessage"
               :read-only="activeFileIsReadOnly"
-              @update:model-value="fileContent = $event"
+              @update:model-value="updateEditorDraft"
               @save="handleSave"
               class="h-full w-full flex-1 min-h-0 overflow-auto"
             />
+            <div v-if="hasEditorDraft && activeFileErrorMessage" role="alert" class="absolute top-2 left-2 right-2 text-red-600 bg-white px-2 py-1 rounded shadow">
+              {{ activeFileErrorMessage }}
+            </div>
             <template v-if="activeFileData.type === 'Text' && activeFile && activeFileDisplayMode === 'edit' && !activeFileIsReadOnly">
               <div v-if="saveContentError" class="absolute bottom-2 left-2 text-red-600 bg-white px-2 py-1 rounded shadow">
                 {{ saveContentError }}
@@ -69,7 +71,6 @@
     v-else
     id="contentViewer"
     class="bg-white rounded-lg shadow-md flex flex-col h-full"
-    ref="contentRef"
   >
     <!-- File Tabs & Controls Header -->
     <div class="flex items-center border-b border-gray-200 bg-white overflow-x-auto sticky top-0 z-10 px-0 h-[46px]">
@@ -79,7 +80,6 @@
             v-for="file in openFiles"
             :key="file"
             @click="setActiveFile(file)"
-            @contextmenu.prevent="showContextMenu($event, file)"
             :data-event-monitor-active-file-tab="file === activeFile ? 'true' : undefined"
             tabindex="0"
             @keyup.enter="setActiveFile(file)"
@@ -163,25 +163,29 @@
       </div>
 
       <div v-else class="flex-1 flex flex-col min-h-0">
-        <div v-if="activeFileData?.isLoading" class="flex-1 text-center py-4 flex items-center justify-center" role="status" aria-live="polite">
+        <div v-if="activeFileData?.isLoading && !hasEditorDraft" class="flex-1 text-center py-4 flex items-center justify-center" role="status" aria-live="polite">
           <p class="text-gray-600">Loading file content...</p>
         </div>
-        <div v-else-if="activeFileData?.error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative m-4" role="alert">
+        <div v-else-if="activeFileData?.error && !hasEditorDraft" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative m-4" role="alert">
           <strong class="font-bold">{{ $t('tools.components.fileExplorer.FileExplorerTabs.error') }}</strong>
           <span class="block sm:inline">{{ activeFileErrorMessage }}</span>
         </div>
         <div v-else-if="activeFileData" class="flex-1 bg-gray-50 rounded-lg overflow-hidden relative min-h-0">
           <FileViewer
             v-if="activeFileData"
-            :file="activeFileData"
+            :file="displayFileData!"
+            :key="JSON.stringify([currentWorkspaceId, activeFile])"
             :mode="activeFileDisplayMode"
-            :loading="activeFileData.isLoading"
-            :error="activeFileErrorMessage"
+            :loading="activeFileData.isLoading && !hasEditorDraft"
+            :error="hasEditorDraft ? null : activeFileErrorMessage"
             :read-only="activeFileIsReadOnly"
-            @update:model-value="fileContent = $event"
+            @update:model-value="updateEditorDraft"
             @save="handleSave"
             class="h-full w-full flex-1 min-h-0 overflow-auto"
           />
+          <div v-if="hasEditorDraft && activeFileErrorMessage" role="alert" class="absolute top-2 left-2 right-2 text-red-600 bg-white px-2 py-1 rounded shadow">
+            {{ activeFileErrorMessage }}
+          </div>
           <template v-if="activeFileData.type === 'Text' && activeFile && activeFileDisplayMode === 'edit' && !activeFileIsReadOnly">
             <div v-if="saveContentError" class="absolute bottom-2 left-2 text-red-600 bg-white px-2 py-1 rounded shadow">
               {{ saveContentError }}
@@ -209,7 +213,6 @@ import { storeToRefs } from 'pinia'
 import { useFileExplorerStore } from '~/stores/fileExplorer'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { useFileContentDisplayModeStore } from '~/stores/fileContentDisplayMode'
-import { getLanguage } from '~/utils/highlighting/languageDetector'
 import { Icon } from '@iconify/vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { localFilePreviewErrorCode } from '~/utils/fileExplorer/localFileError'
@@ -230,9 +233,6 @@ const props = withDefaults(defineProps<{
   active: true,
 })
 
-const contentRef = ref<HTMLElement | null>(null)
-// File Content Viewer is currently Global / Desktop level, so it binds to the Active Workspace.
-// In the future, if we want multiple viewers for split screens, this component would need a workspaceId prop.
 const currentWorkspaceId = computed(() => props.workspaceId || workspaceStore.activeWorkspace?.workspaceId)
 
 const openFiles = computed(() => currentWorkspaceId.value ? fileExplorerStore.getOpenFiles(currentWorkspaceId.value) : [])
@@ -251,7 +251,6 @@ const activeFileErrorMessage = computed(() => {
   return code ? t(localFileErrorMessageKey[code]) : error
 })
 
-const fileContent = ref<string | null>(null)
 const showSaveSuccess = ref(false)
 let saveSuccessTimeout: ReturnType<typeof setTimeout> | null = null
 
@@ -270,8 +269,6 @@ const getFileName = (filePath: string) => {
 const setActiveFile = (filePath: string) => currentWorkspaceId.value && fileExplorerStore.setActiveFile(filePath, currentWorkspaceId.value)
 const closeFile = (filePath: string) => currentWorkspaceId.value && fileExplorerStore.closeFile(filePath, currentWorkspaceId.value)
 const closeAllFiles = () => currentWorkspaceId.value && fileExplorerStore.closeAllFiles(currentWorkspaceId.value)
-const closeOtherFiles = (filePath: string) => currentWorkspaceId.value && fileExplorerStore.closeOtherFiles(filePath, currentWorkspaceId.value)
-const getFileLanguage = (filePath: string) => getLanguage(filePath)
 const setMode = (mode: 'edit' | 'preview') => {
   if (!props.active) return
   if (!activeFile.value || !currentWorkspaceId.value) return
@@ -289,47 +286,17 @@ const activeFileDisplayMode = computed(() => activeFileIsReadOnly.value ? 'previ
 const isActiveZenMode = computed(() => props.active && isZenMode.value)
 const toggleZenMode = () => fileContentDisplayModeStore.toggleZenMode()
 
-// Context menu state
-const contextMenu = ref({
-  visible: false,
-  x: 0,
-  y: 0,
-  targetFile: null as string | null
+// Drafts live with the workspace's open file, not this mount or the committed snapshot.
+const hasEditorDraft = computed(() => activeFileDisplayMode.value === 'edit'
+  && activeFileData.value?.type === 'Text' && !!activeFileData.value.editorDraft)
+const displayFileData = computed(() => {
+  const file = activeFileData.value
+  return file && hasEditorDraft.value ? { ...file, content: file.editorDraft!.content } : file
 })
-
-const showContextMenu = (event: MouseEvent, file: string) => {
-  if (!props.active) return
-
-  contextMenu.value = {
-    visible: true,
-    x: event.clientX,
-    y: event.clientY,
-    targetFile: file
+const updateEditorDraft = (content: string) => {
+  if (currentWorkspaceId.value && activeFile.value) {
+    fileExplorerStore.updateEditorDraft(currentWorkspaceId.value, activeFile.value, content)
   }
-}
-
-const hideContextMenu = () => {
-  contextMenu.value.visible = false
-  contextMenu.value.targetFile = null
-}
-
-const handleContextClose = () => {
-  if (contextMenu.value.targetFile) {
-    closeFile(contextMenu.value.targetFile)
-  }
-  hideContextMenu()
-}
-
-const handleContextCloseOthers = () => {
-  if (contextMenu.value.targetFile) {
-    closeOtherFiles(contextMenu.value.targetFile)
-  }
-  hideContextMenu()
-}
-
-const handleContextCloseAll = () => {
-  closeAllFiles()
-  hideContextMenu()
 }
 
 // Check if Monaco editor is focused
@@ -340,16 +307,6 @@ const isEditorFocused = () => {
   return activeEl.tagName === 'TEXTAREA' ||
          activeEl.closest('.monaco-editor') !== null
 }
-
-
-
-watch(activeFileData, (newVal) => {
-  if (newVal?.type === 'Text') {
-    fileContent.value = newVal.content;
-  } else {
-    fileContent.value = null;
-  }
-}, { immediate: true, deep: true });
 
 const handleKeydown = async (event: KeyboardEvent) => {
   if (!props.active) return
@@ -375,12 +332,10 @@ const handleKeydown = async (event: KeyboardEvent) => {
 
 const attachGlobalListeners = () => {
   window.addEventListener('keydown', handleKeydown)
-  document.addEventListener('click', hideContextMenu)
 }
 
 const detachGlobalListeners = () => {
   window.removeEventListener('keydown', handleKeydown)
-  document.removeEventListener('click', hideContextMenu)
 }
 
 let globalListenersAttached = false
@@ -399,9 +354,6 @@ const syncGlobalListeners = (isActive: boolean) => {
 
 watch(() => props.active, (isActive) => {
   syncGlobalListeners(isActive)
-  if (!isActive) {
-    hideContextMenu()
-  }
 }, { immediate: true })
 
 onBeforeUnmount(() => {
@@ -413,7 +365,8 @@ onBeforeUnmount(() => {
 
 const handleSave = async () => {
   if (!props.active) return
-  if (!activeFile.value || fileContent.value === null || isSavingContent.value) return;
+  if (!activeFile.value || displayFileData.value?.content == null || isSavingContent.value
+    || activeFileIsReadOnly.value || activeFileDisplayMode.value !== 'edit') return;
 
   try {
     const workspaceId = currentWorkspaceId.value
@@ -422,7 +375,7 @@ const handleSave = async () => {
     await fileExplorerStore.saveFileContentFromEditor(
       workspaceId,
       activeFile.value,
-      fileContent.value
+      displayFileData.value.content
     )
 
     showSaveSuccess.value = true

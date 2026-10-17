@@ -5,6 +5,7 @@ import { createExistingAgentOrgWorkspaceDraft, updateExistingAgentOrgWorkspaceDr
   planExistingAgentOrgWorkspacePatches, existingAgentOrgWorkspacesDirty, existingAgentOrgWorkspacesValid } from '~/services/runConfigEditing/existingAgentOrgWorkspaceDraft'
 import type { ExistingRunConfigDraft } from '~/types/agent/ExistingRunConfigDraft'
 import { loadExistingRunModelOptions } from '~/services/runConfigEditing/existingRunModelOptionsClient'
+import { readAgentRunCollaboration } from '~/services/agentCollaboration/agentRunCollaborationHydration'
 import { defineStore } from 'pinia'
 import { teamRunExecutionTreeDtoSchema } from '@autobyteus/team-stream-contracts'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
@@ -13,6 +14,7 @@ import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
 import { parseAgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution'
 import type { RunResumeConfigPayload, TeamRunResumeConfigPayload } from '~/stores/runHistoryTypes'
 import type {
+  ExistingAgentDelegatedSnapshot,
   ExistingRunModelSelection,
   ExistingRunModelOptionsState,
   ExistingRunModelConfigFieldError,
@@ -79,6 +81,7 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
     reconciling: false,
     reconciliationRequired: false,
     canonicalLoadRequestId: 0,
+    canonicalBindingRevision: -1,
     loadTarget: null as CanonicalLoadTarget | null,
     cachedLifecycleLock: null as CachedLifecycleLock | null,
     feedback: null as { kind: 'success' | 'error'; message: string } | null,
@@ -165,7 +168,9 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
       this.optionsRequestId += 1
       this.modelOptionsByAddress = {}
       const requestId = ++this.canonicalLoadRequestId
-      this.draft = null
+      const binding = useWindowNodeContextStore().bindingRevision
+      if (!sameTarget(this.loadTarget, target) || this.canonicalBindingRevision !== binding) this.draft = null
+      this.canonicalBindingRevision = binding
       this.schemaStateByAddress = {}
       this.saving = false
       this.loadingCanonical = true
@@ -184,51 +189,75 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
       if (target.kind === 'team' && current.kind === 'team') return current.teamRunId === target.teamRunId
       return target.kind === 'agent_org' && current.kind === 'agent_org' && current.orgRunId === target.orgRunId
     },
-    async loadAgentCanonical(runId: string): Promise<void> {
+    async readAgentCanonical(runId: string): Promise<{ payload: RunResumeConfigPayload; delegatedSnapshot: ExistingAgentDelegatedSnapshot | null }> {
+      const request = this.canonicalLoadRequestId, binding = useWindowNodeContextStore().bindingRevision
+      const payload = await useRunHistoryStore().refreshAgentResumeConfig(runId)
+      if (request !== this.canonicalLoadRequestId || binding !== useWindowNodeContextStore().bindingRevision) throw new Error('Settings target changed.')
+      const view = payload.isActive ? null : await readAgentRunCollaboration(runId)
+      const delegatedSnapshot = view ? {
+        execution_tree: view.execution_tree, closed_task_executions: view.closed_task_executions,
+      } : null
+      return { payload, delegatedSnapshot }
+    },
+    async loadAgentCanonical(runId: string): Promise<boolean> {
       const target = { kind: 'agent' as const, runId }
-      const requestId = this.beginCanonicalLoad(target)
+      const requestId = this.beginCanonicalLoad(target), binding = useWindowNodeContextStore().bindingRevision
+      const current = () => this.isCurrentLoad(requestId, target) && binding === useWindowNodeContextStore().bindingRevision
       try {
-        const payload = await useRunHistoryStore().refreshAgentResumeConfig(runId)
-        if (this.isCurrentLoad(requestId, target)) this.syncAgentCanonical(payload)
+        const { payload, delegatedSnapshot } = await this.readAgentCanonical(runId)
+        if (!current()) return false
+        this.syncAgentCanonical(payload, delegatedSnapshot)
+        return true
       } catch (error) {
-        if (!this.isCurrentLoad(requestId, target)) return
+        if (!current()) return false
         this.feedback = { kind: 'error', message: error instanceof Error ? error.message : String(error) }
         this.reconciliationRequired = true
+        return false
       } finally {
-        if (this.isCurrentLoad(requestId, target)) this.loadingCanonical = false
+        if (current()) this.loadingCanonical = false
       }
     },
-    async loadTeamCanonical(teamRunId: string): Promise<void> {
+    async loadTeamCanonical(teamRunId: string): Promise<boolean> {
       const target = { kind: 'team' as const, teamRunId }
-      const requestId = this.beginCanonicalLoad(target)
+      const requestId = this.beginCanonicalLoad(target), binding = useWindowNodeContextStore().bindingRevision
+      const current = () => this.isCurrentLoad(requestId, target) && binding === useWindowNodeContextStore().bindingRevision
       try {
         const payload = await useRunHistoryStore().refreshTeamResumeConfig(teamRunId)
-        if (this.isCurrentLoad(requestId, target)) this.syncTeamCanonical(payload)
+        if (!current()) return false
+        this.syncTeamCanonical(payload)
+        return true
       } catch (error) {
-        if (!this.isCurrentLoad(requestId, target)) return
+        if (!current()) return false
         this.feedback = { kind: 'error', message: error instanceof Error ? error.message : String(error) }
         this.reconciliationRequired = true
+        return false
       } finally {
-        if (this.isCurrentLoad(requestId, target)) this.loadingCanonical = false
+        if (current()) this.loadingCanonical = false
       }
     },
-    async loadAgentOrgCanonical(orgRunId: string): Promise<void> {
+    async loadAgentOrgCanonical(orgRunId: string): Promise<boolean> {
       const target = { kind: 'agent_org' as const, orgRunId }
       const requestId = this.beginCanonicalLoad(target), binding = useWindowNodeContextStore().bindingRevision
       const current = () => this.isCurrentLoad(requestId, target) && binding === useWindowNodeContextStore().bindingRevision
       try {
         const payload = await useAgentOrgContextsStore().readRunConfig(orgRunId)
-        if (current()) this.syncAgentOrgCanonical(payload)
+        if (!current()) return false
+        this.syncAgentOrgCanonical(payload)
+        return true
       } catch (error) {
-        if (!current()) return
+        if (!current()) return false
         this.feedback = { kind: 'error', message: error instanceof Error ? error.message : String(error) }
         this.reconciliationRequired = true
+        return false
       } finally {
         if (current()) this.loadingCanonical = false
       }
     },
-    syncAgentCanonical(payload: RunResumeConfigPayload): void {
+    syncAgentCanonical(payload: RunResumeConfigPayload, snapshot?: ExistingAgentDelegatedSnapshot | null): void {
       const sameSubject = this.draft?.kind === 'agent' && this.draft.runId === payload.runId
+      // Root-only mutations preserve this exact run's stopped snapshot, never another run's.
+      const delegatedSnapshot = snapshot === undefined
+        ? (sameSubject && this.draft?.kind === 'agent' ? this.draft.delegatedSnapshot : null) : snapshot
       this.draft = {
         kind: 'agent',
         runId: payload.runId,
@@ -236,6 +265,7 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
         editability: { ...payload.modelConfigEditability },
         metadata: cloneExistingRunJsonValue(payload.metadataConfig),
         draftSelection: metadataSelection(payload.metadataConfig),
+        delegatedSnapshot: payload.isActive ? null : cloneExistingRunJsonValue(delegatedSnapshot),
       }
       this.schemaStateByAddress = { '/': loadingSchemaState() }
       this.fieldErrors = []
@@ -387,10 +417,12 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
       }
     },
     async saveAgent(draft: Extract<ExistingRunConfigDraft, { kind: 'agent' }>): Promise<boolean> {
+      const request = this.canonicalLoadRequestId, binding = useWindowNodeContextStore().bindingRevision
       const result = await updateStoppedAgentModelConfig({
         agentRunId: draft.runId,
         ...cloneExistingRunSelection(draft.draftSelection),
       })
+      if (request !== this.canonicalLoadRequestId || binding !== useWindowNodeContextStore().bindingRevision) return false
       if (this.draft?.kind !== 'agent' || this.draft.runId !== draft.runId) return false
       const history = useRunHistoryStore()
       if (result.success) {
@@ -414,10 +446,12 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
       return false
     },
     async saveTeam(draft: Extract<ExistingRunConfigDraft, { kind: 'team' }>): Promise<boolean> {
+      const request = this.canonicalLoadRequestId, binding = useWindowNodeContextStore().bindingRevision
       const result = await updateStoppedTeamModelConfigs({
         teamRunId: draft.teamRunId,
         patches: planExistingTeamModelConfigPatches(draft.planner),
       })
+      if (request !== this.canonicalLoadRequestId || binding !== useWindowNodeContextStore().bindingRevision) return false
       if (this.draft?.kind !== 'team' || this.draft.teamRunId !== draft.teamRunId) return false
       const history = useRunHistoryStore()
       if (result.success) {

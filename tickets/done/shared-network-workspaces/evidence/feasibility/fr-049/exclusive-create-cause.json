@@ -1,0 +1,224 @@
+{
+  "scope": "causal metadata/source correlation, not a patched or accepted backend",
+  "engineCommit": "ec1660ba33c80d5c67131e163e68834c1a10e243",
+  "sourceCreateUrl": "https://raw.githubusercontent.com/unfs3/unfs3/ec1660ba33c80d5c67131e163e68834c1a10e243/nfs.c",
+  "sourceHashUrl": "https://raw.githubusercontent.com/unfs3/unfs3/ec1660ba33c80d5c67131e163e68834c1a10e243/Config/exports.y",
+  "trials": [
+    {
+      "trial": 0,
+      "outcomes": [
+        "WON",
+        "WON"
+      ],
+      "sourceContent": "ab-sf-fr049-f3e78b84-client-b",
+      "exclusive": false,
+      "actualVerifiers": [
+        "17b9e925000037fb"
+      ],
+      "nulTerminatedHashInputs": [
+        "17b9e925"
+      ],
+      "distinctBinarySameCStringPrefix": false
+    },
+    {
+      "trial": 1,
+      "outcomes": [
+        "WON",
+        "WON"
+      ],
+      "sourceContent": "ab-sf-fr049-f3e78b84-client-a",
+      "exclusive": false,
+      "actualVerifiers": [
+        "17b9e9c500003847",
+        "17b9e9c500003848"
+      ],
+      "nulTerminatedHashInputs": [
+        "17b9e9c5",
+        "17b9e9c5"
+      ],
+      "distinctBinarySameCStringPrefix": true
+    },
+    {
+      "trial": 2,
+      "outcomes": [
+        "WON",
+        "EXISTS"
+      ],
+      "sourceContent": "ab-sf-fr049-f3e78b84-client-a",
+      "exclusive": true,
+      "actualVerifiers": [
+        "17b9ea7300003890",
+        "17b9ea740000388f"
+      ],
+      "nulTerminatedHashInputs": [
+        "17b9ea73",
+        "17b9ea74"
+      ],
+      "distinctBinarySameCStringPrefix": false
+    },
+    {
+      "trial": 3,
+      "outcomes": [
+        "WON",
+        "EXISTS"
+      ],
+      "sourceContent": "ab-sf-fr049-f3e78b84-client-a",
+      "exclusive": true,
+      "actualVerifiers": [
+        "17b9eb1e000038d5",
+        "17b9eb20000038e1"
+      ],
+      "nulTerminatedHashInputs": [
+        "17b9eb1e",
+        "17b9eb20"
+      ],
+      "distinctBinarySameCStringPrefix": false
+    },
+    {
+      "trial": 4,
+      "outcomes": [
+        "EXISTS",
+        "WON"
+      ],
+      "sourceContent": "ab-sf-fr049-f3e78b84-client-b",
+      "exclusive": true,
+      "actualVerifiers": [
+        "17b9ebc800003923",
+        "17b9ebca0000391f"
+      ],
+      "nulTerminatedHashInputs": [
+        "17b9ebc8",
+        "17b9ebca"
+      ],
+      "distinctBinarySameCStringPrefix": false
+    },
+    {
+      "trial": 5,
+      "outcomes": [
+        "WON",
+        "WON"
+      ],
+      "sourceContent": "ab-sf-fr049-f3e78b84-client-b",
+      "exclusive": false,
+      "actualVerifiers": [
+        "17b9ec800000396c",
+        "17b9ec800000396a"
+      ],
+      "nulTerminatedHashInputs": [
+        "17b9ec80",
+        "17b9ec80"
+      ],
+      "distinctBinarySameCStringPrefix": true
+    },
+    {
+      "trial": 6,
+      "outcomes": [
+        "WON",
+        "EXISTS"
+      ],
+      "sourceContent": "ab-sf-fr049-f3e78b84-client-a",
+      "exclusive": true,
+      "actualVerifiers": [
+        "17b9ed28000039b1",
+        "17b9ed2b000039b3"
+      ],
+      "nulTerminatedHashInputs": [
+        "17b9ed28",
+        "17b9ed2b"
+      ],
+      "distinctBinarySameCStringPrefix": false
+    },
+    {
+      "trial": 7,
+      "outcomes": [
+        "WON",
+        "WON"
+      ],
+      "sourceContent": "ab-sf-fr049-f3e78b84-client-a",
+      "exclusive": false,
+      "actualVerifiers": [
+        "17b9edcd000039fb",
+        "17b9edcd000039fc"
+      ],
+      "nulTerminatedHashInputs": [
+        "17b9edcd",
+        "17b9edcd"
+      ],
+      "distinctBinarySameCStringPrefix": true
+    },
+    {
+      "trial": 8,
+      "outcomes": [
+        "WON",
+        "EXISTS"
+      ],
+      "sourceContent": "ab-sf-fr049-f3e78b84-client-a",
+      "exclusive": true,
+      "actualVerifiers": [
+        "17b9ee6600003a44",
+        "17b9ee6700003a41"
+      ],
+      "nulTerminatedHashInputs": [
+        "17b9ee66",
+        "17b9ee67"
+      ],
+      "distinctBinarySameCStringPrefix": false
+    },
+    {
+      "trial": 9,
+      "outcomes": [
+        "WON",
+        "WON"
+      ],
+      "sourceContent": "ab-sf-fr049-f3e78b84-client-a",
+      "exclusive": false,
+      "actualVerifiers": [
+        "17b9ef0900003a86",
+        "17b9ef0900003a88"
+      ],
+      "nulTerminatedHashInputs": [
+        "17b9ef09",
+        "17b9ef09"
+      ],
+      "distinctBinarySameCStringPrefix": true
+    },
+    {
+      "trial": 10,
+      "outcomes": [
+        "WON",
+        "WON"
+      ],
+      "sourceContent": "ab-sf-fr049-f3e78b84-client-a",
+      "exclusive": false,
+      "actualVerifiers": [
+        "17b9efaf00003ad4",
+        "17b9efaf00003ad3"
+      ],
+      "nulTerminatedHashInputs": [
+        "17b9efaf",
+        "17b9efaf"
+      ],
+      "distinctBinarySameCStringPrefix": true
+    },
+    {
+      "trial": 11,
+      "outcomes": [
+        "EXISTS",
+        "WON"
+      ],
+      "sourceContent": "ab-sf-fr049-f3e78b84-client-b",
+      "exclusive": true,
+      "actualVerifiers": [
+        "17b9f05800003b1d",
+        "17b9f05b00003b18"
+      ],
+      "nulTerminatedHashInputs": [
+        "17b9f058",
+        "17b9f05b"
+      ],
+      "distinctBinarySameCStringPrefix": false
+    }
+  ],
+  "violations": 6,
+  "allViolationsHaveDistinctBinarySameCStringPrefix": false
+}

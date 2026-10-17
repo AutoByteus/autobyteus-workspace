@@ -1,0 +1,198 @@
+{
+  "scratch": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api001-pk2d0kur",
+  "environmentKeys": [
+    "PATH",
+    "HOME",
+    "TMPDIR",
+    "LANG",
+    "LC_ALL",
+    "CI",
+    "GOTOOLCHAIN",
+    "PYTHONDONTWRITEBYTECODE"
+  ],
+  "results": [
+    {
+      "case": "N01",
+      "name": "python-bootstrap-launcher",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "scripts/tests/test_nfs_packaging_and_launcher.py",
+        "scripts/tests/test_nfs_installer_fixture.py",
+        "scripts/tests/test_public_docker_launcher_shared_workspace.py",
+        "-v"
+      ],
+      "rc": 0,
+      "pid": 91113
+    },
+    {
+      "case": "N01",
+      "name": "go-race",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+      "command": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api001-pk2d0kur/go/bin/go",
+        "test",
+        "-race",
+        "-count=1",
+        "-v",
+        "./..."
+      ],
+      "rc": 0,
+      "pid": 3340
+    },
+    {
+      "case": "N01",
+      "name": "go-vet",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+      "command": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api001-pk2d0kur/go/bin/go",
+        "vet",
+        "./..."
+      ],
+      "rc": 0,
+      "pid": 3967
+    },
+    {
+      "case": "N01",
+      "name": "go-build-native",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+      "command": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api001-pk2d0kur/go/bin/go",
+        "build",
+        "-trimpath",
+        "-o",
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api001-pk2d0kur/autobyteus-nfs",
+        "./cmd/autobyteus-nfs"
+      ],
+      "rc": 0,
+      "pid": 4497
+    },
+    {
+      "case": "N01",
+      "name": "native-version",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+      "command": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api001-pk2d0kur/autobyteus-nfs",
+        "version"
+      ],
+      "rc": 0,
+      "pid": 5410
+    },
+    {
+      "case": "N02",
+      "name": "server-targeted",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/unit/workspaces/shared-workspace-binding.test.ts",
+        "tests/unit/agent-execution/backends/shared",
+        "tests/unit/agent-execution/agent-run-manager.test.ts",
+        "tests/unit/agent-execution/backends/claude/session/claude-session-cleanup.test.ts",
+        "tests/unit/runtime-management/codex/client/codex-app-server-client-manager.test.ts",
+        "tests/unit/runtime-management/shared/scoped-project-git-environment.test.ts",
+        "tests/unit/skills/github/private-profile-source-lifecycle.test.ts",
+        "tests/unit/agent-execution/backends/antigravity/agy-configured-skill-linker.test.ts",
+        "tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts",
+        "tests/unit/api/rest/workspaces.test.ts",
+        "tests/unit/api/rest/run-file-changes.test.ts",
+        "--no-watch",
+        "--maxWorkers=2"
+      ],
+      "rc": 0,
+      "pid": 5411
+    },
+    {
+      "case": "N03",
+      "name": "integration-prepare",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "test:integration:prepare"
+      ],
+      "rc": 0,
+      "pid": 5448
+    },
+    {
+      "case": "N03",
+      "name": "public-contracts",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts",
+        "tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts",
+        "tests/integration/api/run-file-changes-api.integration.test.ts",
+        "--no-watch",
+        "--maxWorkers=2"
+      ],
+      "rc": 1,
+      "pid": 7121
+    },
+    {
+      "case": "N03",
+      "name": "agy-scripted-linked-skills",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts",
+        "--no-watch"
+      ],
+      "rc": 0,
+      "pid": 7777
+    },
+    {
+      "case": "N04",
+      "name": "guide-unit",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "test:nuxt",
+        "components/settings/__tests__/NodeManager.spec.ts",
+        "components/settings/__tests__/NfsGuideCard.spec.ts",
+        "utils/__tests__/nfsLauncherCommands.spec.ts",
+        "--run",
+        "--maxWorkers=2"
+      ],
+      "rc": 0,
+      "pid": 9300
+    },
+    {
+      "case": "N04",
+      "name": "terminal-unit",
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/unit/tools/terminal",
+        "--no-watch",
+        "--maxWorkers=2"
+      ],
+      "rc": 0,
+      "pid": 9356
+    }
+  ]
+}

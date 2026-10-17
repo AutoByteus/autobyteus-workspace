@@ -1,0 +1,126 @@
+
+> @autobyteus/agent-presentation-contracts@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/output-tps-precision/autobyteus-agent-presentation-contracts
+> pnpm build && node --test tests/*.test.mjs
+
+
+> @autobyteus/agent-presentation-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/output-tps-precision/autobyteus-agent-presentation-contracts
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: normalized tagged primary identity never bridges secondary tokens
+ok 1 - normalized tagged primary identity never bridges secondary tokens
+  ---
+  duration_ms: 1.016542
+  type: 'test'
+  ...
+# Subtest: accepts a strict root-neutral message and rejects root identity
+ok 2 - accepts a strict root-neutral message and rejects root identity
+  ---
+  duration_ms: 11.353958
+  type: 'test'
+  ...
+# Subtest: accepts a background-task snapshot with a required nullable command and rejects the removed to-do message
+ok 3 - accepts a background-task snapshot with a required nullable command and rejects the removed to-do message
+  ---
+  duration_ms: 6.552625
+  type: 'test'
+  ...
+# Subtest: compaction carries direct diagnostics separately from provider-native identity
+ok 4 - compaction carries direct diagnostics separately from provider-native identity
+  ---
+  duration_ms: 4.258625
+  type: 'test'
+  ...
+# Subtest: live token event carries the model-call fact, compaction threshold and summary revision
+ok 5 - live token event carries the model-call fact, compaction threshold and summary revision
+  ---
+  duration_ms: 7.582917
+  type: 'test'
+  ...
+# Subtest: live token event carries one model call's TPS or null
+ok 6 - live token event carries one model call's TPS or null
+  ---
+  duration_ms: 7.178333
+  type: 'test'
+  ...
+# Subtest: composes the note after the user's text, steering to delegate_task, and parses it back
+ok 7 - composes the note after the user's text, steering to delegate_task, and parses it back
+  ---
+  duration_ms: 1.319834
+  type: 'test'
+  ...
+# Subtest: an entry already in the run is marked, and the guidance then also offers send_message_to (AC-003)
+ok 8 - an entry already in the run is marked, and the guidance then also offers send_message_to (AC-003)
+  ---
+  duration_ms: 0.242667
+  type: 'test'
+  ...
+# Subtest: a run-agent-only note tells the focused agent to use send_message_to and offers no delegate_task (REQ-004)
+ok 9 - a run-agent-only note tells the focused agent to use send_message_to and offers no delegate_task (REQ-004)
+  ---
+  duration_ms: 0.184417
+  type: 'test'
+  ...
+# Subtest: a mixed note keeps the delegate and in-run guidance, then the run-agent sentence
+ok 10 - a mixed note keeps the delegate and in-run guidance, then the run-agent sentence
+  ---
+  duration_ms: 0.110875
+  type: 'test'
+  ...
+# Subtest: a note whose guidance does not match its entries is not parsed
+ok 11 - a note whose guidance does not match its entries is not parsed
+  ---
+  duration_ms: 0.192125
+  type: 'test'
+  ...
+# Subtest: notes composed by the previous release still parse (in-run and not-in-run)
+ok 12 - notes composed by the previous release still parse (in-run and not-in-run)
+  ---
+  duration_ms: 0.104084
+  type: 'test'
+  ...
+# Subtest: a note with no in-run mention is byte-identical to the previous release (AC-004)
+ok 13 - a note with no in-run mention is byte-identical to the previous release (AC-004)
+  ---
+  duration_ms: 0.174167
+  type: 'test'
+  ...
+# Subtest: a note saved with the collaborator-messaging guidance still parses
+ok 14 - a note saved with the collaborator-messaging guidance still parses
+  ---
+  duration_ms: 1.269375
+  type: 'test'
+  ...
+# Subtest: a note saved before the REQ-009 guidance still parses
+ok 15 - a note saved before the REQ-009 guidance still parses
+  ---
+  duration_ms: 0.342083
+  type: 'test'
+  ...
+# Subtest: a mention-only message is the note alone
+ok 16 - a mention-only message is the note alone
+  ---
+  duration_ms: 0.441458
+  type: 'test'
+  ...
+# Subtest: no collaborators leaves the text unchanged; foreign text is not parsed
+ok 17 - no collaborators leaves the text unchanged; foreign text is not parsed
+  ---
+  duration_ms: 0.215042
+  type: 'test'
+  ...
+# Subtest: mentions are at most 8 and unique by kind and definition
+ok 18 - mentions are at most 8 and unique by kind and definition
+  ---
+  duration_ms: 1.178083
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 136.376208

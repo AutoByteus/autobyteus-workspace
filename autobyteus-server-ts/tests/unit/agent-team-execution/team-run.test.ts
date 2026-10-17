@@ -30,6 +30,8 @@ const createBackend = (): TeamRunBackend => ({
   restoreTaskTeam: vi.fn(),
   hasLiveDirectTaskExecution: vi.fn(() => true),
   tryShutDownDirectTaskExecutionIfQuiet: vi.fn(async () => true),
+  shutDownDirectTaskExecutionForUser: vi.fn(async () => true),
+  getRetainedAgentControl: vi.fn(() => null),
   prepareTermination: vi.fn(),
   freezeForRootTermination: vi.fn(),
   terminate: vi.fn(async () => ({ accepted: true })),

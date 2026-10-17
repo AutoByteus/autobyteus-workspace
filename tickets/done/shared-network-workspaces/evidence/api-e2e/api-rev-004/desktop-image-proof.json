@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "F39CBF24AEE7CEC3D3F97A2834E38841",
+    "--script",
+    "() => {const i=[...document.images].find(i=>i.naturalWidth===64);if(!i||i.naturalHeight!==32)throw Error(\"mounted image decode absent\");return {complete:i.complete,width:i.naturalWidth,height:i.naturalHeight,src:i.src}}"
+  ],
+  "rc": 5,
+  "stdout": "{\"schema_version\":\"1\",\"ok\":false,\"command\":\"run-script\",\"error\":{\"code\":\"SCRIPT_FAILED\",\"message\":\"The JavaScript evaluation failed.\",\"retryable\":false,\"details\":{\"tab_id\":\"F39CBF24AEE7CEC3D3F97A2834E38841\"}}}\n",
+  "stderr": ""
+}

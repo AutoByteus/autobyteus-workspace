@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "FD474C3349B05032A029E599008E6BDE",
+    "--script",
+    "()=>{const b=[...document.querySelectorAll(\"button\")].filter(x=>x.textContent.trim()===\"Copy\");const t=document.body.innerText;if(b.length!==2||!b.every(x=>x.disabled)||!t.includes(\"No compatible, verified release\")||!t.includes(\"NFS traffic is unencrypted\")||!t.includes(\"Docker agent clients are supported\"))throw Error(\"Guide contract mismatch\");return {copyDisabled:b.map(x=>x.disabled),unqualifiedDisclosure:true,privateNetworkWarning:true,MacDockerClientSupported:true}}"
+  ],
+  "rc": 0,
+  "stdout": "{\"schema_version\":\"1\",\"ok\":true,\"command\":\"run-script\",\"result\":{\"tab_id\":\"FD474C3349B05032A029E599008E6BDE\",\"url\":\"file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/nodes\",\"output_mode\":\"inline\",\"result\":{\"copyDisabled\":[true,true],\"unqualifiedDisclosure\":true,\"privateNetworkWarning\":true,\"MacDockerClientSupported\":true}}}\n",
+  "stderr": ""
+}

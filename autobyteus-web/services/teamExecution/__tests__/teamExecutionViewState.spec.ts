@@ -28,7 +28,6 @@ const tree = (): TeamRunExecutionTreeDto => ({
   application_binding: null,
   handoffs: [{ from: '/Teacher', to: '/StudentStudyGroup', rules: ['Delegate study work.'] }],
   root_team: {
-    collaborators: [],
     address: '/',
     team_definition_id: 'classroom-definition',
     team_definition_name: 'Classroom',
@@ -401,17 +400,17 @@ describe('TeamExecutionViewState', () => {
 
 
 describe('selected source workspace root', () => {
-  it('resolves configured, collaborator and catalog roots by exact AgentRun placement', () => {
+  it('resolves configured and catalog roots by exact AgentRun placement', () => {
     const executionTree = tree();
     const root = executionTree.root_team as any;
     root.default_launch_configuration = { ...launch, workspace_root_path: '/parent' };
     root.members[0].launch_configuration = { ...launch, workspace_root_path: '/configured' };
-    root.collaborators = [{ kind: 'agent', address: '/Guest', agent_definition_id: 'guest', agent_run_id: 'guest-run',
-      platform_agent_run_id: null, launch_configuration: { ...launch, workspace_root_path: '/guest' },
-      added_at: createdAt, added_via_agent_run_id: 'teacher-run' }];
-    root.task_executions = [{ kind: 'task_agent', address: '/Copy', agent_run_id: 'copy-run', platform_agent_run_id: null,
+    root.task_executions = [{ kind: 'task_agent', address: '/Guest', agent_run_id: 'guest-run', platform_agent_run_id: null,
       delegator_agent_run_id: 'teacher-run', started_at: createdAt,
-      source: { agent_definition_id: 'copy', launch_configuration: { ...launch, workspace_root_path: '/copy' } } }];
+      source: { kind: 'agent', agent_definition_id: 'guest', launch_configuration: { ...launch, workspace_root_path: '/guest' } } },
+    { kind: 'task_agent', address: '/Copy', agent_run_id: 'copy-run', platform_agent_run_id: null,
+      delegator_agent_run_id: 'teacher-run', started_at: createdAt,
+      source: { kind: 'agent', agent_definition_id: 'copy', launch_configuration: { ...launch, workspace_root_path: '/copy' } } }];
     const { state } = createStateFixture({ executionTree });
     expect(state.getAgentWorkspaceRootPath('teacher-run')).toBe('/configured');
     expect(state.getAgentWorkspaceRootPath('guest-run')).toBe('/guest');

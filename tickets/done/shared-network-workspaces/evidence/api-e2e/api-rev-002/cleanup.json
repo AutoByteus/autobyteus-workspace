@@ -1,0 +1,142 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "/bin/ps",
+        "-p",
+        "76087",
+        "-o",
+        "pid=,command="
+      ],
+      "rc": 0,
+      "stdout": "76087 /private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart run ab-nfs-api002-linux-25fc064c --no-graphics --no-audio --no-clipboard --no-usb-accessories\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "stop",
+        "ab-nfs-api002-linux-25fc064c",
+        "--timeout",
+        "15"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "delete",
+        "ab-nfs-api002-linux-25fc064c"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/bin/ps",
+        "-p",
+        "80009",
+        "-o",
+        "pid=,command="
+      ],
+      "rc": 0,
+      "stdout": "80009 /private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart run ab-nfs-api002-linux-5336c36d --no-graphics --no-audio --no-clipboard --no-usb-accessories\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "stop",
+        "ab-nfs-api002-linux-5336c36d",
+        "--timeout",
+        "15"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "delete",
+        "ab-nfs-api002-linux-5336c36d"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "list",
+        "--format",
+        "json"
+      ],
+      "rc": 0,
+      "stdout": "[\n  {\n    \"Accessed\" : \"2026-10-14T04:28:51Z\",\n    \"Name\" : \"ghcr.io\\/cirruslabs\\/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e\",\n    \"Running\" : false,\n    \"Size\" : 5,\n    \"Disk\" : 20,\n    \"State\" : \"stopped\",\n    \"Source\" : \"OCI\"\n  }\n]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "list",
+        "--format",
+        "json"
+      ],
+      "rc": 0,
+      "stdout": "[\n  {\n    \"Name\" : \"ghcr.io\\/cirruslabs\\/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377\",\n    \"State\" : \"stopped\",\n    \"Accessed\" : \"2026-10-14T04:17:47Z\",\n    \"Source\" : \"OCI\",\n    \"Running\" : false,\n    \"Size\" : 33,\n    \"Disk\" : 50\n  }\n]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/bin/ps",
+        "-Ao",
+        "pid=,command="
+      ],
+      "rc": 0,
+      "stdout": "Filtered for own VM prefix only: []\n",
+      "stderr": ""
+    }
+  ],
+  "linux": [
+    {
+      "vm": "ab-nfs-api002-linux-25fc064c",
+      "pid": 76087,
+      "processAbsent": true,
+      "cloneAbsent": true
+    },
+    {
+      "vm": "ab-nfs-api002-linux-5336c36d",
+      "pid": 80009,
+      "processAbsent": true,
+      "cloneAbsent": true
+    }
+  ],
+  "mac": [
+    {
+      "vm": "ab-nfs-api002-37446d5f",
+      "absent": true
+    },
+    {
+      "vm": "ab-nfs-api002-04979de5",
+      "absent": true
+    },
+    {
+      "vm": "ab-nfs-api002-ebe8a71b-server",
+      "absent": true
+    },
+    {
+      "vm": "ab-nfs-api002-ebe8a71b-client",
+      "absent": true
+    }
+  ],
+  "scratch": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api002-5861wgnv",
+  "publicMacCacheRetained": true,
+  "ownedVMProcessesRemaining": [],
+  "scratchAbsent": true,
+  "result": "Complete",
+  "time": "2026-10-14T04:33:18Z"
+}

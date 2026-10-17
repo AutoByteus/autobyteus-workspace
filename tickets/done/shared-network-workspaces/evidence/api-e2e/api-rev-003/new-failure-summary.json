@@ -1,0 +1,187 @@
+{
+  "id": "API-F003",
+  "result": "Fail",
+  "case": "V03 selected managedDocker client normal whole-host reboot",
+  "acceptanceCriteria": [
+    "AC-007",
+    "AC-014",
+    "AC-018",
+    "AC-019"
+  ],
+  "relatedPreservation": [
+    "AC-009",
+    "AC-017"
+  ],
+  "scenarios": [
+    "SCN-009",
+    "SCN-013"
+  ],
+  "preliminaryClassification": "Unclear \u2014 likely implementation/dependency lifecycle integration; independent origin review required",
+  "recommendedFocus": "Implementation lifecycle/Docker integration; reviewer determines design-impact/owner",
+  "notAnOutageGate": true,
+  "expected": "Previously running selected unless-stopped node and same storage usable after ordinary reboot without manual Docker/mount commands",
+  "first": {
+    "source": "managed-lifecycle-result.json + managed-reboot-diagnostic.json",
+    "nodeID": "689c89e631dd82ef0f57b454332f3a57d45806e898dc5c3e00f1c3240e7c0a38",
+    "state": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 255,
+      "Error": "error while mounting volume '/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data': failed to mount local volume: mount :/autobyteus/71887d49-17ec-4e6f-a734-03ebd3abaafd:/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data, data: addr=192.168.64.7,hard,tcp,vers=4.1,actimeo=1,timeo=50,retrans=2,nosharecache: connection refused",
+      "StartedAt": "2026-10-14T07:39:24.006217727Z",
+      "FinishedAt": "2026-10-14T07:40:09.33546196Z"
+    },
+    "restartPolicy": {
+      "Name": "unless-stopped",
+      "MaximumRetryCount": 0
+    },
+    "status": {
+      "storageId": "71887d49-17ec-4e6f-a734-03ebd3abaafd",
+      "mountRoot": "/Volumes/autobyteus-shared",
+      "hostReady": true,
+      "nodes": {
+        "autobyteus-server-0": "attached, stopped (not ready)"
+      },
+      "limitation": "Hard NFS checks may stall; no outage deadline or local substitute"
+    },
+    "sourceAndMount": {
+      "sourceIdentity": [
+        64769,
+        787680,
+        1000,
+        109,
+        493
+      ],
+      "sourceHash": "f3b155a47b0ef3a4832a4aee3d3a4f613736ed5de21f618dcea5f41b092b60da",
+      "sourceMarker": {
+        "storageId": "71887d49-17ec-4e6f-a734-03ebd3abaafd"
+      },
+      "mountedHash": "f3b155a47b0ef3a4832a4aee3d3a4f613736ed5de21f618dcea5f41b092b60da",
+      "mountedMarker": {
+        "storageId": "71887d49-17ec-4e6f-a734-03ebd3abaafd"
+      },
+      "directoryDelegations": "Y",
+      "uid": 1000,
+      "gid": 109,
+      "groups": []
+    }
+  },
+  "publicReconnectAfterFirst": {
+    "storageId": "71887d49-17ec-4e6f-a734-03ebd3abaafd",
+    "mountRoot": "/Volumes/autobyteus-shared",
+    "hostReady": true,
+    "nodes": {
+      "autobyteus-server-0": "attached, stopped (not ready)"
+    },
+    "limitation": "Hard NFS checks may stall; no outage deadline or local substitute"
+  },
+  "diagnosticManualStart": {
+    "scope": "After preserving failure, restore only to enable ordinary second reboot; not qualified automatic recovery",
+    "sameNodeAndConfig": true,
+    "actualAPI": {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api003-linux-b7497a85",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "curl --max-time 3 -fsS http://127.0.0.1:8001/rest/health"
+      ],
+      "rc": 0,
+      "seconds": 0.879,
+      "stdout": "{\"status\":\"ok\",\"message\":\"Server is running\"}",
+      "stderr": ""
+    },
+    "ready": {
+      "storageId": "71887d49-17ec-4e6f-a734-03ebd3abaafd",
+      "mountRoot": "/Volumes/autobyteus-shared",
+      "hostReady": true,
+      "nodes": {
+        "autobyteus-server-0": "ready; container=689c89e631dd82ef0f57b454332f3a57d45806e898dc5c3e00f1c3240e7c0a38; networks=map[api003-clients:172.18.0.2 bridge:172.17.0.2]"
+      },
+      "limitation": "Hard NFS checks may stall; no outage deadline or local substitute"
+    }
+  },
+  "second": {
+    "source": "managed-reboot-repro-result.json",
+    "result": "Reproduced",
+    "beforeBoot": "a9d015f0-147e-4827-9825-4c68cb8143ba",
+    "afterBoot": "9132285f-1f71-4078-a84c-b5f986712316",
+    "observations": 15,
+    "lastObservationSeconds": 148.599,
+    "state": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 255,
+      "Error": "error while mounting volume '/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data': failed to mount local volume: mount :/autobyteus/71887d49-17ec-4e6f-a734-03ebd3abaafd:/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data, data: addr=192.168.64.7,hard,tcp,vers=4.1,actimeo=1,timeo=50,retrans=2,nosharecache: connection refused",
+      "StartedAt": "2026-10-14T07:46:10.535901764Z",
+      "FinishedAt": "2026-10-14T07:46:56.914818293Z"
+    },
+    "status": {
+      "storageId": "71887d49-17ec-4e6f-a734-03ebd3abaafd",
+      "mountRoot": "/Volumes/autobyteus-shared",
+      "hostReady": true,
+      "nodes": {
+        "autobyteus-server-0": "attached, stopped (not ready)"
+      },
+      "limitation": "Hard NFS checks may stall; no outage deadline or local substitute"
+    },
+    "api": {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api003-linux-b7497a85",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "curl --max-time 3 -fsS http://127.0.0.1:8001/rest/health"
+      ],
+      "rc": 7,
+      "seconds": 0.085,
+      "stdout": "",
+      "stderr": "curl: (7) Failed to connect to 127.0.0.1 port 8001 after 0 ms: Couldn't connect to server\n"
+    },
+    "sourceAndMount": {
+      "sourceIdentity": [
+        64769,
+        787680,
+        1000,
+        109,
+        493
+      ],
+      "sourceHash": "f3b155a47b0ef3a4832a4aee3d3a4f613736ed5de21f618dcea5f41b092b60da",
+      "sourceMarker": {
+        "storageId": "71887d49-17ec-4e6f-a734-03ebd3abaafd"
+      },
+      "mountedHash": "f3b155a47b0ef3a4832a4aee3d3a4f613736ed5de21f618dcea5f41b092b60da",
+      "mountedMarker": {
+        "storageId": "71887d49-17ec-4e6f-a734-03ebd3abaafd"
+      },
+      "directoryDelegations": "Y",
+      "uid": 1000,
+      "gid": 109,
+      "groups": []
+    }
+  },
+  "proven": "Both boot attempts show Docker selected NFS volume mount connection refused; node remains stopped after storage/native mount readiness; no OOM. Manual start restores identical node. No production change.",
+  "unproven": "Repair design, failure-origin ownership, native-backend client reboot, independent peer/physical/all versions not inferred."
+}

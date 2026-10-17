@@ -1,0 +1,42 @@
+{
+  "ownedVM": "ab-nfs-api005-mac-59bba374",
+  "pid": 55641,
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "stop",
+        "ab-nfs-api005-mac-59bba374",
+        "--timeout",
+        "15"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "delete",
+        "ab-nfs-api005-mac-59bba374"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "list"
+      ],
+      "rc": 0,
+      "stdout": "Source Name                                                                                                        Disk  Size  Accessed       State  \nOCI    ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377 50\u00a0GB 33\u00a0GB vor 10 Minuten stopped\n",
+      "stderr": ""
+    }
+  ],
+  "result": "Complete",
+  "publicDetach": "Pass",
+  "processAbsent": true,
+  "cloneAbsent": true,
+  "publicCacheRetained": true
+}

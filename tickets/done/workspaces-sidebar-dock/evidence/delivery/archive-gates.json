@@ -1,0 +1,11 @@
+{
+  "staging": "explicit ticket old/new and workspace_layout.md paths only",
+  "trackedStagedPathCount": 551,
+  "scopeCheck": "Pass",
+  "generatedBuildOutputStaged": false,
+  "licensing": "Pass",
+  "artifactHygiene": "Pass (staged index included)",
+  "cachedDiffCheck": "Pass after own log EOF-only correction; initial failure retained",
+  "cumulativeTargetDiffCheck": "Pass",
+  "archiveBeforeFinalCommit": true
+}

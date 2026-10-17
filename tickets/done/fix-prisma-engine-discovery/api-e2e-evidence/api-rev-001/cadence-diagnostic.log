@@ -1,0 +1,195 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/integration/agent/api-cadence-diagnostic.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/api-cadence-diagnostic.integration.test.ts > Agent status WebSocket contract integration > coalesces a representative fine-grained canonical stream into one default-window content frame
+Agent websocket attached for run run-default-window-rate
+Created agent session d5844f96-743a-4a3d-b5ca-d45a47265732 for run run-default-window-rate
+Agent WebSocket connected: session=d5844f96-743a-4a3d-b5ca-d45a47265732, run=run-default-window-rate
+
+stdout | tests/integration/agent/api-cadence-diagnostic.integration.test.ts > Agent status WebSocket contract integration > coalesces a representative fine-grained canonical stream into one default-window content frame
+CADENCE_DIAGNOSTIC {"time":1791908485912,"type":"CONNECTED"}
+CADENCE_DIAGNOSTIC {"time":1791908485913,"type":"AGENT_STATUS"}
+CADENCE_DIAGNOSTIC {"time":1791908485913,"type":"AGENT_INPUT_STATE"}
+
+stdout | tests/integration/agent/api-cadence-diagnostic.integration.test.ts > Agent status WebSocket contract integration > coalesces a representative fine-grained canonical stream into one default-window content frame
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery/autobyteus-server-ts
+
+stdout | tests/integration/agent/api-cadence-diagnostic.integration.test.ts > Agent status WebSocket contract integration > coalesces a representative fine-grained canonical stream into one default-window content frame
+CADENCE_DIAGNOSTIC {"time":1791908485919,"type":"SEGMENT_START"}
+CADENCE_DIAGNOSTIC {"time":1791908485919,"type":"SEGMENT_CONTENT","delta":"00|01|02|03|04|05|06|07|08|09|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|"}
+CADENCE_DIAGNOSTIC {"time":1791908485919,"type":"AGENT_INPUT_STATE"}
+
+stdout | tests/integration/agent/api-cadence-diagnostic.integration.test.ts > Agent status WebSocket contract integration > uses a changed interval only for the active socket's next newly opened window
+Closed agent session d5844f96-743a-4a3d-b5ca-d45a47265732
+Agent WebSocket disconnected: d5844f96-743a-4a3d-b5ca-d45a47265732
+
+stdout | tests/integration/agent/api-cadence-diagnostic.integration.test.ts > Agent status WebSocket contract integration > uses a changed interval only for the active socket's next newly opened window
+Agent websocket attached for run run-live-interval-change
+Created agent session 1e4ac7dd-43ad-40a7-b815-dfc3667866d9 for run run-live-interval-change
+Agent WebSocket connected: session=1e4ac7dd-43ad-40a7-b815-dfc3667866d9, run=run-live-interval-change
+
+stdout | tests/integration/agent/api-cadence-diagnostic.integration.test.ts > Agent status WebSocket contract integration > uses a changed interval only for the active socket's next newly opened window
+CADENCE_DIAGNOSTIC {"time":1791908486283,"type":"CONNECTED"}
+CADENCE_DIAGNOSTIC {"time":1791908486283,"type":"AGENT_STATUS"}
+CADENCE_DIAGNOSTIC {"time":1791908486283,"type":"AGENT_INPUT_STATE"}
+
+stdout | tests/integration/agent/api-cadence-diagnostic.integration.test.ts > Agent status WebSocket contract integration > uses a changed interval only for the active socket's next newly opened window
+CADENCE_DIAGNOSTIC {"time":1791908486284,"type":"SEGMENT_START"}
+CADENCE_DIAGNOSTIC {"time":1791908486284,"type":"SEGMENT_CONTENT","delta":"first"}
+CADENCE_DIAGNOSTIC {"time":1791908486284,"type":"AGENT_INPUT_STATE"}
+
+stdout | tests/integration/agent/api-cadence-diagnostic.integration.test.ts
+Closed agent session 1e4ac7dd-43ad-40a7-b815-dfc3667866d9
+Agent WebSocket disconnected: 1e4ac7dd-43ad-40a7-b815-dfc3667866d9
+
+ ❯ tests/integration/agent/api-cadence-diagnostic.integration.test.ts (7 tests | 2 failed | 5 skipped) 754ms
+     ↓ projects only autobyteus status transitions to a real standalone socket while preserving canonical companions
+     ↓ projects only codex_app_server status transitions to a real standalone socket while preserving canonical companions
+     ↓ projects only claude_agent_sdk status transitions to a real standalone socket while preserving canonical companions
+     × coalesces a representative fine-grained canonical stream into one default-window content frame 392ms
+     × uses a changed interval only for the active socket's next newly opened window 361ms
+     ↓ preserves B while rejecting a retired turn's late segment content across reconnect
+     ↓ keeps diagnostic errors running, terminalizes the current turn to error, then publishes offline on termination
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent/api-cadence-diagnostic.integration.test.ts > Agent status WebSocket contract integration > coalesces a representative fine-grained canonical stream into one default-window content frame
+AssertionError: expected [ { type: 'SEGMENT_CONTENT', …(1) } ] to have a length of +0 but got 1
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/integration/agent/api-cadence-diagnostic.integration.test.ts:358:91
+    356|
+    357|       await wait(350);
+    358|       expect(connection.messages.filter((message) => message.type === …
+       |                                                                                           ^
+    359|       await wait(300);
+    360|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/integration/agent/api-cadence-diagnostic.integration.test.ts > Agent status WebSocket contract integration > uses a changed interval only for the active socket's next newly opened window
+AssertionError: expected [ { type: 'SEGMENT_CONTENT', …(1) } ] to have a length of +0 but got 1
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/integration/agent/api-cadence-diagnostic.integration.test.ts:410:10
+    408|       await wait(350);
+    409|       expect(connection.messages.filter((message) => message.type === …
+    410|         .toHaveLength(0);
+       |          ^
+    411|       await wait(300);
+    412|       expect(connection.messages.filter((message) => message.type === …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 5 skipped (7)
+   Start at  18:21:18
+   Duration  8.11s (transform 4.61s, setup 37ms, import 6.81s, tests 754ms, environment 0ms)

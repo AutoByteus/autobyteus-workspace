@@ -1,0 +1,583 @@
+{
+  "run": "ab-sf-fr040-9d5e9ba0",
+  "scope": "UNFS3 Linux Docker server directly serves selected Mac host scratch bind; two UID10001 Docker NFSv3 clients; one physical Mac only; no agents/NLM/final product proof",
+  "engineCommit": "ec1660ba33c80d5c67131e163e68834c1a10e243",
+  "source": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr040-owned-t86xse5e/source",
+  "mount": "/Volumes/autobyteus-shared",
+  "commands": [
+    {
+      "argv": [
+        "docker",
+        "network",
+        "inspect",
+        "bridge",
+        "--format",
+        "{{(index .IPAM.Config 0).Gateway}}"
+      ],
+      "rc": 0,
+      "stdout": "172.17.0.1\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "ab-sf-fr040-unfs:probe",
+        "--format",
+        "{{.Id}}"
+      ],
+      "rc": 0,
+      "stdout": "sha256:951795d5b29890feada3af4e2773690404a85a37065bd89eb0729327a13f2b60\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr040-9d5e9ba0-server",
+        "--label",
+        "org.autobyteus.probe=fr-040",
+        "--user",
+        "10001:10001",
+        "-p",
+        "127.0.0.1::2049",
+        "--mount",
+        "type=bind,src=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr040-owned-t86xse5e/source,dst=/export",
+        "--mount",
+        "type=bind,src=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr040-owned-t86xse5e/config,dst=/config,readonly",
+        "sha256:951795d5b29890feada3af4e2773690404a85a37065bd89eb0729327a13f2b60",
+        "-d",
+        "-s",
+        "-p",
+        "-t",
+        "-n",
+        "2049",
+        "-m",
+        "2049",
+        "-e",
+        "/config/exports"
+      ],
+      "rc": 0,
+      "stdout": "fdddee12a6a0da0ff9eec4e8c639760db3f67359a46bc629f60b23de15a7c8d1\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "inspect",
+        "ab-sf-fr040-9d5e9ba0-server",
+        "--format",
+        "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}"
+      ],
+      "rc": 0,
+      "stdout": "172.17.0.6\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "port",
+        "ab-sf-fr040-9d5e9ba0-server",
+        "2049/tcp"
+      ],
+      "rc": 0,
+      "stdout": "127.0.0.1:49352\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr040-9d5e9ba0-server",
+        "node",
+        "-e",
+        "const f=require('fs');console.log(JSON.stringify({uid:process.getuid(),source:f.readFileSync('/export/project/preexisting.txt','utf8'),owner:f.statSync('/export').uid}))"
+      ],
+      "rc": 0,
+      "stdout": "{\"uid\":10001,\"source\":\"KEEP_MAC_BIND_SOURCE\",\"owner\":10001}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.probe=fr-040",
+        "--driver",
+        "local",
+        "--opt",
+        "type=nfs",
+        "--opt",
+        "device=:/export",
+        "--opt",
+        "o=addr=172.17.0.6,vers=3,proto=tcp,mountproto=tcp,mountvers=3,port=2049,mountport=2049,nolock,hard,timeo=50,retrans=2,actimeo=1,nosharecache",
+        "ab-sf-fr040-9d5e9ba0-nfs-a"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr040-9d5e9ba0-nfs-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr040-9d5e9ba0-client-a",
+        "--label",
+        "org.autobyteus.probe=fr-040",
+        "--user",
+        "10001:10001",
+        "--entrypoint",
+        "tail",
+        "--mount",
+        "type=volume,src=ab-sf-fr040-9d5e9ba0-nfs-a,dst=/Volumes/autobyteus-shared,volume-nocopy",
+        "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1",
+        "-f",
+        "/dev/null"
+      ],
+      "rc": 0,
+      "stdout": "04aa8f86aa53fbc9fe619ab8e45af6d1765c3b8f6c34c93498aa183719f40e0b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr040-9d5e9ba0-client-a",
+        "node",
+        "-e",
+        "console.log(JSON.stringify(JSON.parse(require('fs').readFileSync(\"/Volumes/autobyteus-shared/storage.json\",'utf8'))))"
+      ],
+      "rc": 0,
+      "stdout": "{\"storageId\":\"e2192e42f7294fe8bc3f31d2b3981f67\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.probe=fr-040",
+        "--driver",
+        "local",
+        "--opt",
+        "type=nfs",
+        "--opt",
+        "device=:/export",
+        "--opt",
+        "o=addr=172.17.0.6,vers=3,proto=tcp,mountproto=tcp,mountvers=3,port=2049,mountport=2049,nolock,hard,timeo=50,retrans=2,actimeo=1,nosharecache",
+        "ab-sf-fr040-9d5e9ba0-nfs-b"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr040-9d5e9ba0-nfs-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr040-9d5e9ba0-client-b",
+        "--label",
+        "org.autobyteus.probe=fr-040",
+        "--user",
+        "10001:10001",
+        "--entrypoint",
+        "tail",
+        "--mount",
+        "type=volume,src=ab-sf-fr040-9d5e9ba0-nfs-b,dst=/Volumes/autobyteus-shared,volume-nocopy",
+        "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1",
+        "-f",
+        "/dev/null"
+      ],
+      "rc": 0,
+      "stdout": "0532c6a1f98f3a9e4ba6dfe84aedde4999d7abb8aa6fa14ccf5f61aae49e0171\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr040-9d5e9ba0-client-b",
+        "node",
+        "-e",
+        "console.log(JSON.stringify(JSON.parse(require('fs').readFileSync(\"/Volumes/autobyteus-shared/storage.json\",'utf8'))))"
+      ],
+      "rc": 0,
+      "stdout": "{\"storageId\":\"e2192e42f7294fe8bc3f31d2b3981f67\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr040-9d5e9ba0-client-a",
+        "node",
+        "-e",
+        "console.log(JSON.stringify(require('fs').readFileSync(\"/Volumes/autobyteus-shared/project/roundtrip.txt\",'utf8')))"
+      ],
+      "rc": 0,
+      "stdout": "\"HOST_SOURCE_ad0268a97f834727ae84657ac88e8578\\n\"\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr040-9d5e9ba0-client-b",
+        "node",
+        "-e",
+        "console.log(JSON.stringify(require('fs').readFileSync(\"/Volumes/autobyteus-shared/project/roundtrip.txt\",'utf8')))"
+      ],
+      "rc": 0,
+      "stdout": "\"HOST_SOURCE_ad0268a97f834727ae84657ac88e8578\\n\"\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr040-9d5e9ba0-client-b",
+        "node",
+        "-e",
+        "const f=require('fs');let q=f.openSync(\"/Volumes/autobyteus-shared/project/roundtrip.txt\",'a');f.writeSync(q,\"CLIENT_B_5a24b820b8ba45d3af14a241dffe6d42\\n\");f.fsyncSync(q);f.closeSync(q)"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr040-9d5e9ba0-client-a",
+        "node",
+        "-e",
+        "console.log(JSON.stringify(require('fs').readFileSync(\"/Volumes/autobyteus-shared/project/roundtrip.txt\",'utf8')))"
+      ],
+      "rc": 0,
+      "stdout": "\"HOST_SOURCE_ad0268a97f834727ae84657ac88e8578\\nCLIENT_B_5a24b820b8ba45d3af14a241dffe6d42\\n\"\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr040-9d5e9ba0-client-b",
+        "node",
+        "-e",
+        "console.log(JSON.stringify(require('fs').readFileSync(\"/Volumes/autobyteus-shared/project/roundtrip.txt\",'utf8')))"
+      ],
+      "rc": 0,
+      "stdout": "\"HOST_SOURCE_ad0268a97f834727ae84657ac88e8578\\nCLIENT_B_5a24b820b8ba45d3af14a241dffe6d42\\n\"\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr040-9d5e9ba0-client-a",
+        "node",
+        "-e",
+        "const f=require('fs'),p=\"/Volumes/autobyteus-shared/project\";f.mkdirSync(p+'/dir');f.writeFileSync(p+'/dir/temp','RENAMED');f.renameSync(p+'/dir/temp',p+'/renamed');f.symlinkSync('roundtrip.txt',p+'/link');f.writeFileSync(p+'/exclusive','KEEP',{flag:'wx'});f.writeFileSync(p+'/exec.sh','#!/bin/sh\\necho UNFS_BIND_OK\\n');f.chmodSync(p+'/exec.sh',0o755)"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr040-9d5e9ba0-client-b",
+        "node",
+        "-e",
+        "const f=require('fs'),p=\"/Volumes/autobyteus-shared/project\";let denied=false;try{f.openSync(p+'/exclusive','wx')}catch(e){denied=e.code==='EEXIST'};console.log(JSON.stringify({renamed:f.readFileSync(p+'/renamed','utf8'),link:f.readFileSync(p+'/link','utf8'),exec:require('child_process').execFileSync(p+'/exec.sh',{encoding:'utf8'}),denied,preserved:f.readFileSync(p+'/preexisting.txt','utf8')}))"
+      ],
+      "rc": 0,
+      "stdout": "{\"renamed\":\"RENAMED\",\"link\":\"HOST_SOURCE_ad0268a97f834727ae84657ac88e8578\\nCLIENT_B_5a24b820b8ba45d3af14a241dffe6d42\\n\",\"exec\":\"UNFS_BIND_OK\\n\",\"denied\":true,\"preserved\":\"KEEP_MAC_BIND_SOURCE\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr040-9d5e9ba0-client-b"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr040-9d5e9ba0-client-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr040-9d5e9ba0-client-a"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr040-9d5e9ba0-client-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr040-9d5e9ba0-nfs-b"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr040-9d5e9ba0-nfs-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr040-9d5e9ba0-nfs-a"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr040-9d5e9ba0-nfs-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "logs",
+        "ab-sf-fr040-9d5e9ba0-server"
+      ],
+      "rc": 0,
+      "stdout": "UNFS3 unfsd 0.11.0 (C) 2003-2025, various authors\n/export: ip ::ffff:172.17.0.1/128 options 22\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr040-9d5e9ba0-server"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr040-9d5e9ba0-server\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr040-9d5e9ba0-server"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr040-9d5e9ba0-server\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr040-9d5e9ba0-client-a"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr040-9d5e9ba0-client-a\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr040-9d5e9ba0-client-b"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr040-9d5e9ba0-client-b\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr040-9d5e9ba0-nfs-a"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr040-9d5e9ba0-nfs-a: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr040-9d5e9ba0-nfs-b"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr040-9d5e9ba0-nfs-b: no such volume\n"
+    }
+  ],
+  "cases": [
+    {
+      "name": "pinned UNFS3 starts nonroot and directly reads chosen Mac host source without Linux file handles",
+      "status": "PASS",
+      "result": {
+        "node": "ab-sf-fr040-9d5e9ba0-server",
+        "ip": "172.17.0.6",
+        "uid": 10001,
+        "privateLoopbackPublication": "127.0.0.1:49352",
+        "source": "KEEP_MAC_BIND_SOURCE",
+        "containerSource": "/export",
+        "clientAllowlist": [
+          "172.17.0.1"
+        ],
+        "notEncrypted": true,
+        "owner": 10001
+      },
+      "seconds": 0.1
+    },
+    {
+      "name": "two independent Linux daemon mounts share same Mac-bound storage identity at agreed path",
+      "status": "PASS",
+      "result": {
+        "nodes": [
+          "ab-sf-fr040-9d5e9ba0-client-a",
+          "ab-sf-fr040-9d5e9ba0-client-b"
+        ],
+        "sameStorageId": "e2192e42f7294fe8bc3f31d2b3981f67",
+        "mount": "/Volumes/autobyteus-shared",
+        "project": "/Volumes/autobyteus-shared/project",
+        "nolockExplicit": true
+      },
+      "seconds": 0.808
+    },
+    {
+      "name": "ordinary Mac host-folder write is exact in both Linux NFS clients within five seconds",
+      "status": "PASS",
+      "result": {
+        "allExact": true,
+        "seconds": 0.208,
+        "nodes": [
+          "ab-sf-fr040-9d5e9ba0-client-a",
+          "ab-sf-fr040-9d5e9ba0-client-b"
+        ],
+        "hostSource": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr040-owned-t86xse5e/source/project/roundtrip.txt"
+      },
+      "seconds": 0.209
+    },
+    {
+      "name": "Linux mounted append reaches original Mac source and peer without copying",
+      "status": "PASS",
+      "result": {
+        "allExact": true,
+        "seconds": 0.238,
+        "nodes": [
+          "ab-sf-fr040-9d5e9ba0-client-a",
+          "ab-sf-fr040-9d5e9ba0-client-b"
+        ],
+        "hostSource": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr040-owned-t86xse5e/source/project/roundtrip.txt"
+      },
+      "seconds": 0.336
+    },
+    {
+      "name": "cross-client rename relative symlink executable exclusive-create and existing-source preservation",
+      "status": "PASS",
+      "result": {
+        "renamed": "RENAMED",
+        "link": "HOST_SOURCE_ad0268a97f834727ae84657ac88e8578\nCLIENT_B_5a24b820b8ba45d3af14a241dffe6d42\n",
+        "exec": "UNFS_BIND_OK\n",
+        "denied": true,
+        "preserved": "KEEP_MAC_BIND_SOURCE"
+      },
+      "seconds": 0.244
+    }
+  ],
+  "cleanup": [
+    {
+      "container": "ab-sf-fr040-9d5e9ba0-client-b",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr040-9d5e9ba0-client-a",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr040-9d5e9ba0-nfs-b",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr040-9d5e9ba0-nfs-a",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr040-9d5e9ba0-server",
+      "rc": 0
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr040-9d5e9ba0-server",
+      "absent": true
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr040-9d5e9ba0-client-a",
+      "absent": true
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr040-9d5e9ba0-client-b",
+      "absent": true
+    },
+    {
+      "kind": "volume",
+      "name": "ab-sf-fr040-9d5e9ba0-nfs-a",
+      "absent": true
+    },
+    {
+      "kind": "volume",
+      "name": "ab-sf-fr040-9d5e9ba0-nfs-b",
+      "absent": true
+    },
+    {
+      "ownedHostScratchRemoved": true
+    }
+  ],
+  "engineImage": "sha256:951795d5b29890feada3af4e2773690404a85a37065bd89eb0729327a13f2b60",
+  "server": {
+    "node": "ab-sf-fr040-9d5e9ba0-server",
+    "ip": "172.17.0.6",
+    "uid": 10001,
+    "privateLoopbackPublication": "127.0.0.1:49352",
+    "source": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr040-owned-t86xse5e/source",
+    "containerSource": "/export",
+    "clientAllowlist": [
+      "172.17.0.1"
+    ],
+    "notEncrypted": true
+  },
+  "clientNodes": [
+    "ab-sf-fr040-9d5e9ba0-client-a",
+    "ab-sf-fr040-9d5e9ba0-client-b"
+  ],
+  "uncovered": [
+    "native Mac mounted client of this engine",
+    "native Linux/Mac service binary",
+    "no network lock manager/cross-client fcntl",
+    "outage/restart/permission matrix and actual agents",
+    "finished one-command service/TLS/authorization/platform distribution",
+    "physical LAN/current-source/GUI/delivery"
+  ],
+  "serverLog": "UNFS3 unfsd 0.11.0 (C) 2003-2025, various authors\n/export: ip ::ffff:172.17.0.1/128 options 22\n"
+}

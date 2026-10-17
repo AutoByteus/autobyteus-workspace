@@ -3,6 +3,7 @@ import type { AgentOperationResult } from "../../../agent-execution/domain/agent
 import type { TaskExecutionPreparationOperation } from "../../../agent-team-execution/domain/prepared-task-execution.js";
 import type { CollaborationMemberExecutionIdentity, RootExecutionIdentity } from "../domain/root-execution-identity.js";
 import type { TaskExecutionReference } from "./task-execution-reference.js";
+import type { AgentTeamAddress } from "../../domain/agent-team-address.js";
 import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 
 export type TaskExecutionActivationCommitResult = Readonly<{ committed: true }> | Readonly<{ committed: false; message: string }>;
@@ -96,8 +97,6 @@ export interface RootTaskExecutionAdapter<TPlacement> {
    * agent of a copy not yet committed, the registered copies whose planned members include it.
    */
   ownershipChainFor(agentRunId: string): readonly TaskExecutionReference[];
-  /** The committed copy at `address` among the given references, with its ingress. */
-  taskExecutionAt(address: string, among: readonly TaskExecutionReference[]): TaskExecutionTarget | null;
   /** The copy with exactly this reference in this root's current tree (any depth), with its ingress; `null` otherwise. */
   taskExecutionTargetOf(reference: TaskExecutionReference): TaskExecutionTarget | null;
   cancelOwnedExecution(reference: TaskExecutionReference): void;
@@ -108,6 +107,8 @@ export interface RootTaskExecutionAdapter<TPlacement> {
    * authority and retained registration of exactly this copy, so restore builds a fresh one.
    */
   discardReleasedExecution(reference: TaskExecutionReference): void;
+  /** The agent's own address when, run-wide, it reaches exactly that agent (design T-5, for the task message); null otherwise. */
+  reachingAddressOf(agent: CollaborationMemberExecutionIdentity): AgentTeamAddress | null;
   /** The task execution whose ingress (the Agent itself, or a Team's coordinator) is this agent run; `null` otherwise. */
   taskExecutionWithIngress(agentRunId: string): TaskExecutionReference | null;
   /** The reference is a task execution node of this root's current tree (at any depth). */
@@ -129,4 +130,9 @@ export interface RootTaskExecutionAdapter<TPlacement> {
   assertRestorableChain(agentRunId: string): void;
   restoreChain(agentRunId: string, assertOpen: () => void): Promise<void>;
   tryShutDownIfQuiet(reference: TaskExecutionReference): Promise<boolean>;
+  /**
+   * User Stop (DS-002) of one live copy, quiet or not: interrupts and releases it into the same
+   * restorable state as idle shutdown (indexed, offline, Task open). False when it is not live.
+   */
+  shutDownForUser(reference: TaskExecutionReference): Promise<boolean>;
 }

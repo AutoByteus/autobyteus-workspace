@@ -146,7 +146,7 @@ const gql = async (query, variables = {}) => {
 };
 const workspace = () => path.join(stack.dataRoot, 'workspace');
 const config = () => ({ workspaceRootPath: workspace(), llmModelIdentifier: 'gemini-3.8-flash-low', llmConfig: null, autoExecuteTools: true, runtimeKind: 'antigravity_cli' });
-const MANAGER_TOOLS = ['list_projects', 'list_project_tasks', 'create_or_update_project', 'create_or_update_task'];
+const MANAGER_TOOLS = ['list_projects', 'list_project_tasks', 'create_or_update_project', 'create_task', 'update_task'];
 const createDefinitions = async (label) => {
   const s = `${label} ${randomUUID().slice(0, 4)}`;
   const agent = async (name, toolNames) => (await gql('mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}',
@@ -159,8 +159,8 @@ const createDefinitions = async (label) => {
   const team = async (name, coordinatorMemberName, nodes) => (await gql('mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}',
     { input: { name, description: name, instructions: 'Deliver.', coordinatorMemberName, nodes } })).createAgentTeamDefinition.id;
   ids.squad = await team(names.squad, 'reviewer', [{ memberName: 'reviewer', ref: ids.worker, refScope: 'SHARED' }, { memberName: 'editor', ref: ids.helper, refScope: 'SHARED' }]);
-  ids.team = await team(names.team, 'manager', [{ memberName: 'manager', ref: ids.manager, refScope: 'SHARED' },
-    { memberName: 'worker', ref: ids.worker, refScope: 'SHARED' }, { memberName: 'helper', ref: ids.helper, refScope: 'SHARED' }]);
+  // A Team root delegates only outside its own Team (collaboration-model-contract): its worker and helper are catalog Agents, not members.
+  ids.team = await team(names.team, 'manager', [{ memberName: 'manager', ref: ids.manager, refScope: 'SHARED' }]);
   ids.org = (await gql('mutation($input:CreateAgentOrgDefinitionInput!){createAgentOrgDefinition(input:$input){id}}',
     { input: { name: names.org, description: 'Org root', instructions: 'Deliver.', handoffs: [], members: [
       { memberName: 'manager', ref: ids.manager, refType: 'AGENT', refScope: 'SHARED' },
@@ -186,7 +186,7 @@ const createRoot = async (kind, ids) => {
   }
   if (kind === 'team') {
     const r = (await gql('mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}',
-      { input: { teamDefinitionId: ids.team, teamConfigs: [{ teamAddress: '/', ...config() }], memberConfigs: ['manager', 'worker', 'helper']
+      { input: { teamDefinitionId: ids.team, teamConfigs: [{ teamAddress: '/', ...config() }], memberConfigs: ['manager']
         .map((m) => ({ memberAddress: `/${m}`, agentDefinitionId: ids[m], ...config() })) } })).createAgentTeamRun;
     assert(r.success, r.message);
     const tree = (await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: r.teamRunId })).getTeamRunResumeConfig.executionTree;
@@ -304,7 +304,7 @@ const listAndBoardLive = async () => {
     await page.getByTestId(`project-card-${s.projectId}`).click();
     await row(page, s.taskA).waitFor({ timeout: 30000 });
     assert(await rootLine(page, s.taskA).count() === 0, 'an unassigned Task shows no root line');
-    s.input.send(callTool('create_or_update_task', { project_id: s.projectId, description: 'Agent-created follow-up' }));
+    s.input.send(callTool('create_task', { project_id: s.projectId, description: 'Agent-created follow-up' }));
     const arrived = await until('agent-created Task arrives', async () => {
       const rows = await page.locator('[data-live="arrived"]').evaluateAll((es) => es.map((e) => e.getAttribute('data-testid')));
       return rows.length ? rows : null;
@@ -331,13 +331,13 @@ const agentRootOnBoard = async () => {
     assert(['idle', 'running'].includes(live.state) && live.openable === 'true' && live.tag === 'BUTTON', 'live started root is an openable button', live);
     await shot(page, 'pmu-002-board-agent-root');
     // The manager moves the Task: the row moves live, highlighted.
-    s.input.send(callTool('create_or_update_task', { task_id: s.taskA, status: 'IN_PROGRESS' }));
+    s.input.send(callTool('update_task', { task_id: s.taskA, status: 'IN_PROGRESS' }));
     await until('row moved to In progress, highlighted', async () => (await columnOf(page, s.taskA)) === 'project-task-column-IN_PROGRESS'
       && (await row(page, s.taskA).getAttribute('data-live')) === 'moved', 30000, 50);
     await shot(page, 'pmu-002-board-moved-highlight');
     // Opening the root: the worker's conversation in its hosting Agent run, selected in the left panel.
     await rootLine(page, s.taskA).click();
-    await until('worker conversation opened', async () => inWorkspace(page) && /Task delegator address/.test(await centerText(page)), 30000);
+    await until('worker conversation opened', async () => inWorkspace(page) && /You have a new task from/.test(await centerText(page)), 30000);
     const assigned = await rootOf(s.projectId, s.taskA);
     const workerRow = page.locator(`[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${assigned.ingressAgentRunId}"]`);
     await until('worker row selected', async () => (await workerRow.getAttribute('aria-selected')) === 'true', 15000);
@@ -345,7 +345,7 @@ const agentRootOnBoard = async () => {
     // DONE: Offline, muted, no chevron.
     await page.goBack({ waitUntil: 'networkidle' });
     await row(page, s.taskA).waitFor({ timeout: 30000 });
-    s.input.send(callTool('create_or_update_task', { task_id: s.taskA, status: 'DONE' }));
+    s.input.send(callTool('update_task', { task_id: s.taskA, status: 'DONE' }));
     const done = await until('DONE root is Offline, not openable', async () => {
       const r = await rootState(page, s.taskA);
       return (await columnOf(page, s.taskA)) === 'project-task-column-DONE' && r?.state === 'offline' && r.openable === 'false' ? r : null;
@@ -375,7 +375,7 @@ const teamAndOtherHosts = async () => {
     assert(details.teamRoot.name === displayName(`/${segment(s.names.squad)}`), 'team root shows its address name', details.teamRoot);
     await rootLine(page, s.taskB).click();
     const teamRoot = await rootOf(s.projectId, s.taskB);
-    await until('coordinator conversation opened', async () => /Task delegator address/.test(await centerText(page)), 30000);
+    await until('coordinator conversation opened', async () => /You have a new task from/.test(await centerText(page)), 30000);
     const teamRow = page.locator('[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]');
     await until('task Team expanded', async () => (await teamRow.getAttribute('aria-expanded')) === 'true', 15000);
     const coordinatorRow = page.locator(`[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${teamRoot.ingressAgentRunId}"]`);
@@ -387,14 +387,14 @@ const teamAndOtherHosts = async () => {
       const root = await createRoot(kind, s.ids);
       const input = await managerInput(root);
       const taskId = await createTask(s.projectId, `Hosted by an Agent ${kind === 'team' ? 'Team' : 'Org'} run`);
-      input.send(callTool('delegate_task', { recipient_address: '/worker', task_id: taskId }));
+      input.send(callTool('delegate_task', { recipient_address: kind === 'team' ? `/${segment(s.names.worker)}` : '/worker', task_id: taskId }));
       await until(`${kind}-hosted root started`, async () => (await rootOf(s.projectId, taskId))?.start === 'started', 60000);
       const hosted = await rootOf(s.projectId, taskId);
       await goto(page, `/projects/${s.projectId}`);
       await row(page, taskId).waitFor({ timeout: 30000 });
       const line = await until(`${kind}-hosted root openable`, async () => { const r = await rootState(page, taskId); return r?.openable === 'true' ? r : null; }, 30000);
       await rootLine(page, taskId).click();
-      await until(`${kind}-hosted worker conversation`, async () => inWorkspace(page) && /Task delegator address/.test(await centerText(page)), 30000);
+      await until(`${kind}-hosted worker conversation`, async () => inWorkspace(page) && /You have a new task from/.test(await centerText(page)), 30000);
       await shot(page, `pmu-003-opened-${kind}-hosted-root`);
       details[`${kind}Hosted`] = { line, hostRoot: hosted.hostRoot, url: page.url() };
       shared[`${kind}Hosted`] = { root, taskId, projectId: s.projectId };
@@ -456,7 +456,7 @@ const tempTasksJourney = async () => {
     await page.getByTestId('temp-task-back').click();
     await page.getByTestId('temp-task-board').waitFor();
     // The agent closes it: it moves to Done live.
-    input.send(callTool('create_or_update_task', { task_id: temp.taskId, status: 'DONE' }));
+    input.send(callTool('update_task', { task_id: temp.taskId, status: 'DONE' }));
     await until('temp task moved to Done, highlighted', async () => (await columnOf(page, temp.taskId)) === 'temp-task-lane-done', 30000, 50);
     const moved = await row(page, temp.taskId).getAttribute('data-live');
     await shot(page, 'pmu-005-temp-board-done');
@@ -493,7 +493,7 @@ const leftPanelTaskRowFromOtherPage = async () => {
     }
     await shot(page, 'pmu-006-on-projects-run-still-selected');
     await workerRow.click();
-    await until('worker conversation opened from another page', async () => inWorkspace(page) && /Task delegator address/.test(await centerText(page)), 30000);
+    await until('worker conversation opened from another page', async () => inWorkspace(page) && /You have a new task from/.test(await centerText(page)), 30000);
     await shot(page, 'pmu-006-f006-opened');
     assertNoBrowserErrors(errors);
     return { taskId: temp.taskId, url: page.url(), errors };
@@ -681,11 +681,11 @@ const tempReactivationAndChatDeletion = async () => {
     await until('row in Open, root openable', async () => (await columnOf(page, temp.taskId)) === 'temp-task-lane-open'
       && (await rootState(page, temp.taskId))?.openable === 'true', 60000);
     // DONE → Done lane, Offline, not openable.
-    input.send(callTool('create_or_update_task', { task_id: temp.taskId, status: 'DONE' }));
+    input.send(callTool('update_task', { task_id: temp.taskId, status: 'DONE' }));
     details.done = await until('Done, Offline', async () => { const r = await rootState(page, temp.taskId);
       return (await columnOf(page, temp.taskId)) === 'temp-task-lane-done' && r?.state === 'offline' && r.openable === 'false' ? r : null; }, 30000);
     // AC-023: the agent reopens → Open lane with the moved highlight; the root stays Offline and not openable.
-    input.send(callTool('create_or_update_task', { task_id: temp.taskId, status: 'TODO' }));
+    input.send(callTool('update_task', { task_id: temp.taskId, status: 'TODO' }));
     await until('reopened row moved back to Open', async () => (await columnOf(page, temp.taskId)) === 'temp-task-lane-open'
       && (await row(page, temp.taskId).getAttribute('data-live')) === 'moved', 30000, 50);
     await sleep(1500);
@@ -736,49 +736,14 @@ const tempReactivationAndChatDeletion = async () => {
   } finally { input.close(); }
 };
 
-/** AC-007 rendered from a real start failure: a Team member configured with a model its runtime does not offer. */
-const couldntStartRendered = async () => {
-  const { ids, names } = await createDefinitions('PmuFail');
-  const r = (await gql('mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}',
-    { input: { teamDefinitionId: ids.team, teamConfigs: [{ teamAddress: '/', ...config() }], memberConfigs: ['manager', 'worker', 'helper']
-      .map((m) => ({ memberAddress: `/${m}`, agentDefinitionId: ids[m], ...config(), ...(m === 'worker' ? { llmModelIdentifier: 'pmu-no-such-model' } : {}) })) } })).createAgentTeamRun;
-  assert(r.success, r.message);
-  const tree = (await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: r.teamRunId })).getTeamRunResumeConfig.executionTree;
-  const root = { kind: 'team', rootId: r.teamRunId, managerRunId: tree.root_team.members.find((m) => m.address === '/manager').agent_run_id };
-  const input = await managerInput(root);
-  const projectId = await createProject(`Start Failure ${randomUUID().slice(0, 6)}`);
-  const taskId = await createTask(projectId, 'Translate the notes.');
-  const { page, errors } = await newPage();
-  try {
-    await goto(page, `/projects/${projectId}`);
-    await row(page, taskId).waitFor({ timeout: 30000 });
-    input.send(callTool('delegate_task', { recipient_address: '/worker', task_id: taskId }));
-    const failed = await until('Couldn\'t start arrives live', async () => { const s = await rootState(page, taskId); return s?.state === 'failed' ? s : null; }, 60000);
-    assert(failed.openable === 'false' && failed.tag === 'DIV', 'not openable', failed);
-    const statusText = await row(page, taskId).getByTestId('project-task-root-status').innerText();
-    const tooltip = await rootLine(page, taskId).getAttribute('title');
-    const color = await row(page, taskId).getByTestId('project-task-root-status').evaluate((e) => getComputedStyle(e).color);
-    assert(/Couldn.t start/.test(statusText) && /AGY_MODEL_UNAVAILABLE/.test(tooltip ?? ''), 'red Couldn\'t start with the reason as tooltip', { statusText, tooltip, color });
-    assert((await columnOf(page, taskId)) === 'project-task-column-TODO', 'the Task stays in its column');
-    await shot(page, 'pmu-010-board-couldnt-start');
-    await row(page, taskId).getByTestId('project-task-row-link').click();
-    const reason = await page.getByTestId('project-task-root-error').innerText({ timeout: 30000 });
-    assert(/AGY_MODEL_UNAVAILABLE/.test(reason), 'reason under the row on the Task page', { reason });
-    assert(await page.getByTestId('task-page-root-help').count() === 0, 'no help line for a failed root');
-    await shot(page, 'pmu-010-task-page-couldnt-start');
-    // Re-delegation replaces it (live on the open Task page).
-    input.send(callTool('delegate_task', { recipient_address: '/helper', task_id: taskId }));
-    const replaced = await until('re-delegated root replaces it', async () => {
-      const line = page.getByTestId('task-page-assigned').locator('[data-testid^="project-task-root-"][data-openable]');
-      const state = (await line.getAttribute('data-testid').catch(() => ''))?.replace('project-task-root-', '');
-      return ['idle', 'running'].includes(state) && (await line.getAttribute('data-openable')) === 'true' ? state : null;
-    }, 60000);
-    assert(await page.getByTestId('project-task-root-error').count() === 0, 'no stale reason after re-delegation');
-    await shot(page, 'pmu-010-task-page-redelegated');
-    assertNoBrowserErrors(errors);
-    return { failed, statusText, tooltip, color, reason, replaced };
-  } finally { input.close(); }
-};
+/**
+ * AC-007 (Couldn't start rendered from a real start failure) lost its only trigger in collaboration-model-contract: it needed a Team
+ * member configured with a model its runtime does not offer and then delegated by its own manager, and a Team member can no longer
+ * be delegated to; an Org refuses an unavailable model at run creation, and a catalog copy falls back to the root's model or is
+ * refused before it starts. The rendering is covered by ProjectTaskWorkers.spec.ts, taskRootPresentation.spec.ts and
+ * projectLiveChanges.spec.ts; the server side by the task-execution unit tests.
+ */
+const couldntStartRendered = async () => ({ skipped: 'No deterministic real start failure remains for a delegated copy (collaboration-model-contract); rendering is unit-covered' });
 
 /** Two windows on the same node follow the same write live (feed fan-out). */
 const twoWindows = async () => {
@@ -816,7 +781,7 @@ const orgRootUnhydrated = async () => {
     const line = page.getByTestId('task-page-assigned').locator('[data-testid^="project-task-root-"][data-openable="true"]');
     await line.waitFor({ timeout: 30000 });
     await line.click();
-    await until('org worker conversation opened', async () => inWorkspace(page) && /Task delegator address/.test(await centerText(page)), 30000);
+    await until('org worker conversation opened', async () => inWorkspace(page) && /You have a new task from/.test(await centerText(page)), 30000);
     const workerRow = page.locator(`[data-test="agent-org-task-agent-row-${hosted.ingressAgentRunId}"]`);
     const selected = await until('org worker row selected', () => isSelected(workerRow), 15000).catch(() => false);
     await shot(page, 'pmu-012-org-root-opened-cold');
@@ -1026,7 +991,7 @@ const projectsTab = async () => {
   await shot(page, 'pmu-015-tab-board');
   // The manager adds a Task while its chat stays in the center.
   const chatUrl = page.url();
-  input.send(callTool('create_or_update_task', { project_id: projectId, description: 'Agent-added from the chat' }));
+  input.send(callTool('create_task', { project_id: projectId, description: 'Agent-added from the chat' }));
   const added = await until('Task arrives in the tab live', async () => (await projectTasks(projectId)).find((t) => t.taskId !== existing)?.taskId, 30000);
   await panelRow(added).waitFor({ timeout: 15000 });
   assert(page.url() === chatUrl, 'the chat stays in the center');
@@ -1035,7 +1000,7 @@ const projectsTab = async () => {
   const workerLine = panelRow(existing).locator('[data-testid^="project-task-root-"][data-openable="true"]');
   await workerLine.waitFor({ timeout: 60000 });
   await workerLine.click();
-  await until('worker conversation in the center', async () => /Task delegator address/.test(await centerText(page)), 30000);
+  await until('worker conversation in the center', async () => /You have a new task from/.test(await centerText(page)), 30000);
   assert(await tabButton().getAttribute('aria-selected') === 'true' && await panel.isVisible(), 'the Projects tab stays selected');
   await shot(page, 'pmu-015-worker-open-tab-kept');
   // Card → detail in the tab → back, with search kept.
@@ -1082,7 +1047,7 @@ const projectsTabOtherRootsAndNarrow = async () => {
       const taskId = await createTask(projectId, `Work hosted by the ${kind} run`);
       const root = await createRoot(kind, ids);
       const input = await managerInput(root); inputs.push(input);
-      input.send(callTool('delegate_task', { recipient_address: '/worker', task_id: taskId }));
+      input.send(callTool('delegate_task', { recipient_address: kind === 'team' ? `/${segment(names.worker)}` : '/worker', task_id: taskId }));
       await until(`${kind}: worker started`, async () => (await rootOf(projectId, taskId))?.start === 'started', 60000);
       // Open the root's conversation the way a user does: from the left panel.
       await goto(page, '/workspace');
@@ -1102,7 +1067,7 @@ const projectsTabOtherRootsAndNarrow = async () => {
       const line = panel.locator(`[data-testid="project-task-row-${taskId}"] [data-testid^="project-task-root-"][data-openable="true"]`);
       await line.waitFor({ timeout: 60000 });
       await line.click();
-      await until(`${kind}: worker conversation in the center`, async () => /Task delegator address/.test(await centerText(page)), 30000);
+      await until(`${kind}: worker conversation in the center`, async () => /You have a new task from/.test(await centerText(page)), 30000);
       const kept = await tabList.first().getAttribute('aria-selected') === 'true' && await panel.isVisible();
       assert(kept, `${kind}: the Projects tab stays selected after opening the worker`);
       await shot(page, `pmu-016-${kind}-worker-open-tab-kept`);
@@ -1180,7 +1145,7 @@ const cancelledTasksJourney = async () => {
   try {
     input.send(callTool('delegate_task', { recipient_address: workerAddress, task_id: dropped }));
     await until('worker started on the Task to drop', async () => (await rootOf(projectId, dropped))?.start === 'started', 60000);
-    input.send(callTool('create_or_update_task', { task_id: finished, status: 'DONE' }));
+    input.send(callTool('update_task', { task_id: finished, status: 'DONE' }));
     await until('finished Task DONE', async () => (await statusOf(finished)) === 'DONE', 30000);
     await goto(page, '/projects');
     const card = page.getByTestId(`project-card-${projectId}`);
@@ -1192,7 +1157,7 @@ const cancelledTasksJourney = async () => {
     assert(await cancelledToggleState(page, 'project-tasks-cancelled-toggle') === null, 'no Cancelled toggle while nothing is Cancelled');
 
     // The agent drops the Task: it leaves the open lanes live, the toggle appears beside Refresh, the lane stays hidden.
-    input.send(callTool('create_or_update_task', { task_id: dropped, status: 'CANCELLED' }));
+    input.send(callTool('update_task', { task_id: dropped, status: 'CANCELLED' }));
     details.toggleHidden = await until('row hidden and toggle "Cancelled (1)" appears live', async () => {
       const toggle = await cancelledToggleState(page, 'project-tasks-cancelled-toggle');
       return (await row(page, dropped).count()) === 0 && toggle?.text === 'Cancelled (1)' ? toggle : null;
@@ -1273,7 +1238,7 @@ const cancelledTasksJourney = async () => {
     // The agent reopens it: back in To Do live with the moved highlight; the toggle disappears; the worker stays Offline.
     await page.getByTestId(`project-card-${projectId}`).click();
     await row(page, finished).waitFor({ timeout: 30000 });
-    input.send(callTool('create_or_update_task', { task_id: dropped, status: 'TODO' }));
+    input.send(callTool('update_task', { task_id: dropped, status: 'TODO' }));
     details.reopened = await until('reopened row back in To Do, highlighted, toggle gone', async () => (await columnOf(page, dropped)) === 'project-task-column-TODO'
       && (await row(page, dropped).getAttribute('data-live')) === 'moved' && (await cancelledToggleState(page, 'project-tasks-cancelled-toggle')) === null
       ? await rootState(page, dropped) : null, 30000, 50);
@@ -1288,7 +1253,7 @@ const cancelledTasksJourney = async () => {
     const linkCount = () => page.getByTestId('temp-tasks-link-count').innerText({ timeout: 1000 }).catch(() => '');
     const openBefore = await openTemps();
     await until('header counts the open Temp task', async () => (await linkCount()) === `${openBefore} open`, 15000);
-    input.send(callTool('create_or_update_task', { task_id: temp.taskId, status: 'CANCELLED' }));
+    input.send(callTool('update_task', { task_id: temp.taskId, status: 'CANCELLED' }));
     await until('Temp task CANCELLED on the server', async () => (await tempTasks()).find((t) => t.taskId === temp.taskId)?.status === 'CANCELLED', 30000);
     const openAfter = await openTemps();
     await until('header count drops live (Cancelled is not open)', async () => (await linkCount()) === (openAfter ? `${openAfter} open` : ''), 15000);
@@ -1320,7 +1285,7 @@ const cancelledTasksJourney = async () => {
     await panel.getByTestId('projects-panel-picker-select').selectOption(`project:${projectId}`);
     await panel.locator(`[data-testid="project-task-row-${dropped}"]`).waitFor({ timeout: 30000 });
     assert(await cancelledToggleState(panel, 'project-tasks-cancelled-toggle') === null, 'panel: no toggle while nothing is Cancelled');
-    input.send(callTool('create_or_update_task', { task_id: kept, status: 'CANCELLED' }));
+    input.send(callTool('update_task', { task_id: kept, status: 'CANCELLED' }));
     details.panelToggle = await until('panel: row hidden and toggle appears live', async () => {
       const toggle = await cancelledToggleState(panel, 'project-tasks-cancelled-toggle');
       return (await panel.locator(`[data-testid="project-task-row-${kept}"]`).count()) === 0 && toggle?.text === 'Cancelled (1)' ? toggle : null;
@@ -1446,7 +1411,7 @@ const collapsedStripWorkspaces = async () => {
       const line = panel.locator(`[data-testid="project-task-row-${taskId}"] [data-testid^="project-task-root-"][data-openable="true"]`);
       await line.waitFor({ timeout: 60000 });
       await line.click();
-      await until(`${host.kind}: worker conversation in the center`, async () => /Task delegator address/.test(await centerText(page)), 30000);
+      await until(`${host.kind}: worker conversation in the center`, async () => /You have a new task from/.test(await centerText(page)), 30000);
       // AC-001/AC-011: Workspaces is lit, Chat is not.
       const before = await until(`${host.kind}: Workspaces lit for the open worker`, async () => { const n = await shellNavState(page); return n.workspacesLit ? n : null; }, 15000);
       assert(before.stripChatLit === false, `${host.kind}: Chat is not lit on an open run`, before);
@@ -1473,7 +1438,7 @@ const collapsedStripWorkspaces = async () => {
       assert(page.url() === url, `${host.kind}: Workspaces changed the route`, { url, now: page.url() });
       // AC-008: the same worker is still shown and nothing else was selected or opened.
       assert(JSON.stringify(selectionAfter) === JSON.stringify(selectionBefore), `${host.kind}: Workspaces changed the selection`, { selectionBefore, selectionAfter });
-      assert(/Task delegator address/.test(await centerText(page)), `${host.kind}: the center no longer shows the worker`);
+      assert(/You have a new task from/.test(await centerText(page)), `${host.kind}: the center no longer shows the worker`);
       assert(await tabList.first().getAttribute('aria-selected') === 'true', `${host.kind}: the Projects tab stays selected`);
       assert(after.panelChatLit === false, `${host.kind}: the docked Chat row is not lit on a run`, after);
       assert(settled?.visible && settled.focused && settled.agentRunId === worker.ingressAgentRunId && settled.selectedRows === 1,
@@ -1604,7 +1569,7 @@ const collapsedStripOtherEntries = async () => {
     const line = projectsPanel.locator(`[data-testid="project-task-row-${taskId}"] [data-testid^="project-task-root-"][data-openable="true"]`);
     await line.waitFor({ timeout: 60000 });
     await line.click();
-    await until(`${label}: worker conversation in the center`, async () => /Task delegator address/.test(await centerText(page)), 30000);
+    await until(`${label}: worker conversation in the center`, async () => /You have a new task from/.test(await centerText(page)), 30000);
   };
   try {
     // A. A non-coordinator member inside a nested task Team (AC-002, D-5). The right Team tab shows only messages in this

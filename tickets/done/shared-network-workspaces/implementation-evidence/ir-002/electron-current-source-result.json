@@ -1,0 +1,36 @@
+{
+  "sourceCommit": "f34fc81aa2",
+  "candidateRemoved": true,
+  "steps": [
+    {
+      "name": "electron-unit-current-source",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "test:electron",
+        "--run",
+        "--maxWorkers=2"
+      ],
+      "exitCode": 1,
+      "seconds": 6.094,
+      "temporaryHome": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-final-electron-6kmvz817",
+      "temporaryHomeRemoved": true,
+      "pid": 15041
+    },
+    {
+      "name": "electron-typecheck-current-source",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "transpile-electron"
+      ],
+      "exitCode": 0,
+      "seconds": 2.131,
+      "temporaryHome": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-final-electron-3c_ar00t",
+      "temporaryHomeRemoved": true,
+      "pid": 15200
+    }
+  ]
+}

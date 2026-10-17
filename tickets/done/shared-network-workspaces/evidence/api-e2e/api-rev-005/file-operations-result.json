@@ -1,0 +1,455 @@
+{
+  "vm": "ab-nfs-api005-linux-618f79bb",
+  "source": "/home/admin/ab-nfs-api005-linux-618f79bb-native-source",
+  "mountRoot": "/Volumes/autobyteus-shared",
+  "binary": {
+    "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api005-s1d2nqng/autobyteus-nfs-linux-arm64",
+    "sha256": "32772499817bccc6dc8c8bd01b15a457457848e17321af6053544adf53803a64",
+    "size": 11046973
+  },
+  "metadata": {
+    "version": "v1.5.3-beta.2",
+    "sourceHash": "a6ef7dee582e9b4ba0edd7449bac4d292acfb944073502f0fb63bd8356653342",
+    "ubuntuPackages": {
+      "nfs-common": "1:2.6.4-3ubuntu5.1"
+    },
+    "engineImage": "",
+    "qualifiedTargets": [],
+    "engine": {
+      "source": {
+        "version": "4.3-8ubuntu1",
+        "files": [
+          {
+            "file": "nfs-ganesha_4.3-8ubuntu1.dsc",
+            "sha256": "ffa76c26b12d23b67dcda184d7ec7ae55a42d1d14bf84bb7c0cf0134156ba3ca",
+            "size": 3576
+          },
+          {
+            "file": "nfs-ganesha_4.3.orig.tar.gz",
+            "sha256": "d4efd020edf4dfe65abfd0f0f66eb4390613360f99dce4354467ab297e0e1c0f",
+            "size": 1895017
+          },
+          {
+            "file": "nfs-ganesha_4.3-8ubuntu1.debian.tar.xz",
+            "sha256": "ef35d130e1b37149b156d201b70e6c2804bebbfbee1713c5bd6d938dd433fe03",
+            "size": 19224
+          }
+        ],
+        "patchCommit": "98eb77c4fd94effa6882b214698a77752ec79f6e",
+        "patchSha256": "ba682b5c64e7f800c927f4c90b2a7bfb4b8d2a323ddc48c3d591db3d75799031",
+        "sourceDateEpoch": 1791936000,
+        "recipeSha256": "34e28c622f598487af74a545115fa8dffe94e8f1aa5d85c091515aa187d66e4f",
+        "buildBase": "ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e"
+      },
+      "architectures": {
+        "arm64": {
+          "packages": [
+            {
+              "file": "nfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb",
+              "sha256": "0b5c78911cfc1b299e9894e1f841e74176fbb2cb45b158008e4530713549ebc8",
+              "size": 613976,
+              "name": "nfs-ganesha",
+              "version": "4.3-8ubuntu1+autobyteus1",
+              "architecture": "arm64"
+            },
+            {
+              "file": "nfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb",
+              "sha256": "3bf06769646d93ea85f0277fe0726eb42d0d29a70c0108505706954e5e8d2ac6",
+              "size": 48626,
+              "name": "nfs-ganesha-vfs",
+              "version": "4.3-8ubuntu1+autobyteus1",
+              "architecture": "arm64"
+            }
+          ],
+          "correspondingSource": {
+            "file": "autobyteus-nfs-ganesha-source-4.3-8ubuntu1+autobyteus1-arm64.tar.gz",
+            "sha256": "eed35ab4b732ac05d2afc3531e70cdc27031fb414fdb52a0daf093f33daaec0a",
+            "size": 1930105
+          },
+          "buildInventory": {
+            "file": "engine-build-arm64.txt",
+            "sha256": "56fad63c43f85091d84df347564dfd962a9afaafe519539849860b1807695761",
+            "size": 57836
+          }
+        }
+      }
+    }
+  },
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api005-linux-618f79bb",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c 'python3 -c '\"'\"'import pathlib,os; p=pathlib.Path('\"'\"'\"'\"'\"'\"'\"'\"'/Volumes/autobyteus-shared/operations-api005'\"'\"'\"'\"'\"'\"'\"'\"');p.mkdir();f=(p/'\"'\"'\"'\"'\"'\"'\"'\"'one.sh'\"'\"'\"'\"'\"'\"'\"'\"').open('\"'\"'\"'\"'\"'\"'\"'\"'xb'\"'\"'\"'\"'\"'\"'\"'\"');f.write(b'\"'\"'\"'\"'\"'\"'\"'\"'#!/bin/sh\\nprintf API005_EXEC'\"'\"'\"'\"'\"'\"'\"'\"');f.flush();os.fsync(f.fileno());f.close();(p/'\"'\"'\"'\"'\"'\"'\"'\"'one.sh'\"'\"'\"'\"'\"'\"'\"'\"').chmod(0o755);(p/'\"'\"'\"'\"'\"'\"'\"'\"'linked'\"'\"'\"'\"'\"'\"'\"'\"').symlink_to('\"'\"'\"'\"'\"'\"'\"'\"'one.sh'\"'\"'\"'\"'\"'\"'\"'\"')'\"'\"''"
+      ],
+      "rc": 0,
+      "seconds": 0.284,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api005-linux-618f79bb",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n docker exec autobyteus-server-0 python3 -c 'import pathlib,subprocess; p=pathlib.Path('\"'\"'/Volumes/autobyteus-shared/operations-api005'\"'\"');assert (p/'\"'\"'linked'\"'\"').read_bytes()==(p/'\"'\"'one.sh'\"'\"').read_bytes();assert subprocess.check_output([str(p/'\"'\"'linked'\"'\"')])==b'\"'\"'API005_EXEC'\"'\"';\ntry:(p/'\"'\"'one.sh'\"'\"').open('\"'\"'xb'\"'\"');raise AssertionError('\"'\"'exclusive create replaced existing'\"'\"')\nexcept FileExistsError:pass\nprint('\"'\"'exact relative bytes/execute/exclusive-create Pass'\"'\"')'"
+      ],
+      "rc": 0,
+      "seconds": 0.153,
+      "stdout": "exact relative bytes/execute/exclusive-create Pass\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api005-linux-618f79bb",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n docker exec autobyteus-server-0 python3 -c 'import pathlib,os; p=pathlib.Path('\"'\"'/Volumes/autobyteus-shared/operations-api005'\"'\"');f=(p/'\"'\"'one.sh'\"'\"').open('\"'\"'wb'\"'\"');f.write(b'\"'\"'API005_CONTAINER_WRITE'\"'\"');f.flush();os.fsync(f.fileno());f.close();print('\"'\"'synced/closed'\"'\"')'"
+      ],
+      "rc": 0,
+      "seconds": 0.125,
+      "stdout": "synced/closed\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api005-linux-618f79bb",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c 'python3 -c '\"'\"'import pathlib,time,json; p=pathlib.Path('\"'\"'\"'\"'\"'\"'\"'\"'/Volumes/autobyteus-shared/operations-api005'\"'\"'\"'\"'\"'\"'\"'\"');t=time.monotonic();rows=[]\nwhile time.monotonic()-t<5:\n b=(p/'\"'\"'\"'\"'\"'\"'\"'\"'one.sh'\"'\"'\"'\"'\"'\"'\"'\"').read_bytes();rows.append({'\"'\"'\"'\"'\"'\"'\"'\"'seconds'\"'\"'\"'\"'\"'\"'\"'\"':time.monotonic()-t,'\"'\"'\"'\"'\"'\"'\"'\"'exact'\"'\"'\"'\"'\"'\"'\"'\"':b==b'\"'\"'\"'\"'\"'\"'\"'\"'API005_CONTAINER_WRITE'\"'\"'\"'\"'\"'\"'\"'\"'})\n if b==b'\"'\"'\"'\"'\"'\"'\"'\"'API005_CONTAINER_WRITE'\"'\"'\"'\"'\"'\"'\"'\"':break\n time.sleep(.1)\nassert b==b'\"'\"'\"'\"'\"'\"'\"'\"'API005_CONTAINER_WRITE'\"'\"'\"'\"'\"'\"'\"'\"';(p/'\"'\"'\"'\"'\"'\"'\"'\"'one.sh'\"'\"'\"'\"'\"'\"'\"'\"').rename(p/'\"'\"'\"'\"'\"'\"'\"'\"'renamed'\"'\"'\"'\"'\"'\"'\"'\"');(p/'\"'\"'\"'\"'\"'\"'\"'\"'linked'\"'\"'\"'\"'\"'\"'\"'\"').unlink();print(json.dumps(rows))'\"'\"''"
+      ],
+      "rc": 0,
+      "seconds": 0.106,
+      "stdout": "[{\"seconds\": 0.0014190769999800068, \"exact\": true}]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api005-linux-618f79bb",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n docker exec autobyteus-server-0 python3 -c 'import pathlib; p=pathlib.Path('\"'\"'/Volumes/autobyteus-shared/operations-api005'\"'\"');assert (p/'\"'\"'renamed'\"'\"').read_bytes()==b'\"'\"'API005_CONTAINER_WRITE'\"'\"';assert not (p/'\"'\"'one.sh'\"'\"').exists();(p/'\"'\"'renamed'\"'\"').unlink();print('\"'\"'rename/read/delete Pass'\"'\"')'"
+      ],
+      "rc": 0,
+      "seconds": 0.094,
+      "stdout": "rename/read/delete Pass\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api005-linux-618f79bb",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c 'python3 -c '\"'\"'import pathlib,os; p=pathlib.Path('\"'\"'\"'\"'\"'\"'\"'\"'/Volumes/autobyteus-shared/operations-api005/native.txt'\"'\"'\"'\"'\"'\"'\"'\"'); f=p.open('\"'\"'\"'\"'\"'\"'\"'\"'xb'\"'\"'\"'\"'\"'\"'\"'\"');f.write(b'\"'\"'\"'\"'\"'\"'\"'\"'NATIVE_DIFFERENT_FILE'\"'\"'\"'\"'\"'\"'\"'\"');f.flush();os.fsync(f.fileno());f.close();print('\"'\"'\"'\"'\"'\"'\"'\"'synced/closed'\"'\"'\"'\"'\"'\"'\"'\"')'\"'\"''"
+      ],
+      "rc": 0,
+      "seconds": 0.062,
+      "stdout": "synced/closed\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api005-linux-618f79bb",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n docker exec autobyteus-server-0 python3 -c 'import pathlib,os; p=pathlib.Path('\"'\"'/Volumes/autobyteus-shared/operations-api005/container.txt'\"'\"'); f=p.open('\"'\"'xb'\"'\"');f.write(b'\"'\"'CONTAINER_DIFFERENT_FILE'\"'\"');f.flush();os.fsync(f.fileno());f.close();print('\"'\"'synced/closed'\"'\"')'"
+      ],
+      "rc": 0,
+      "seconds": 0.08,
+      "stdout": "synced/closed\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api005-linux-618f79bb",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c 'python3 -c '\"'\"'import pathlib; p=pathlib.Path('\"'\"'\"'\"'\"'\"'\"'\"'/Volumes/autobyteus-shared/operations-api005'\"'\"'\"'\"'\"'\"'\"'\"');assert (p/'\"'\"'\"'\"'\"'\"'\"'\"'native.txt'\"'\"'\"'\"'\"'\"'\"'\"').read_bytes()==b'\"'\"'\"'\"'\"'\"'\"'\"'NATIVE_DIFFERENT_FILE'\"'\"'\"'\"'\"'\"'\"'\"';assert (p/'\"'\"'\"'\"'\"'\"'\"'\"'container.txt'\"'\"'\"'\"'\"'\"'\"'\"').read_bytes()==b'\"'\"'\"'\"'\"'\"'\"'\"'CONTAINER_DIFFERENT_FILE'\"'\"'\"'\"'\"'\"'\"'\"';print('\"'\"'\"'\"'\"'\"'\"'\"'different files cross-readable'\"'\"'\"'\"'\"'\"'\"'\"')'\"'\"''"
+      ],
+      "rc": 0,
+      "seconds": 0.049,
+      "stdout": "different files cross-readable\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api005-linux-618f79bb",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n docker exec autobyteus-server-0 python3 -c 'import pathlib; p=pathlib.Path('\"'\"'/Volumes/autobyteus-shared/operations-api005'\"'\"');assert (p/'\"'\"'native.txt'\"'\"').read_bytes()==b'\"'\"'NATIVE_DIFFERENT_FILE'\"'\"';assert (p/'\"'\"'container.txt'\"'\"').read_bytes()==b'\"'\"'CONTAINER_DIFFERENT_FILE'\"'\"';print('\"'\"'different files cross-readable'\"'\"')'"
+      ],
+      "rc": 0,
+      "seconds": 0.101,
+      "stdout": "different files cross-readable\n",
+      "stderr": ""
+    }
+  ],
+  "cases": [
+    {
+      "name": "native mkdir create synced executable and relative symlink",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api005-linux-618f79bb",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/home/admin",
+          "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c 'python3 -c '\"'\"'import pathlib,os; p=pathlib.Path('\"'\"'\"'\"'\"'\"'\"'\"'/Volumes/autobyteus-shared/operations-api005'\"'\"'\"'\"'\"'\"'\"'\"');p.mkdir();f=(p/'\"'\"'\"'\"'\"'\"'\"'\"'one.sh'\"'\"'\"'\"'\"'\"'\"'\"').open('\"'\"'\"'\"'\"'\"'\"'\"'xb'\"'\"'\"'\"'\"'\"'\"'\"');f.write(b'\"'\"'\"'\"'\"'\"'\"'\"'#!/bin/sh\\nprintf API005_EXEC'\"'\"'\"'\"'\"'\"'\"'\"');f.flush();os.fsync(f.fileno());f.close();(p/'\"'\"'\"'\"'\"'\"'\"'\"'one.sh'\"'\"'\"'\"'\"'\"'\"'\"').chmod(0o755);(p/'\"'\"'\"'\"'\"'\"'\"'\"'linked'\"'\"'\"'\"'\"'\"'\"'\"').symlink_to('\"'\"'\"'\"'\"'\"'\"'\"'one.sh'\"'\"'\"'\"'\"'\"'\"'\"')'\"'\"''"
+        ],
+        "rc": 0,
+        "seconds": 0.284,
+        "stdout": "",
+        "stderr": ""
+      },
+      "status": "Pass",
+      "seconds": 0.284
+    },
+    {
+      "name": "container fresh read relative symlink execute and exclusive-create refusal",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api005-linux-618f79bb",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/home/admin",
+          "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "sudo -n docker exec autobyteus-server-0 python3 -c 'import pathlib,subprocess; p=pathlib.Path('\"'\"'/Volumes/autobyteus-shared/operations-api005'\"'\"');assert (p/'\"'\"'linked'\"'\"').read_bytes()==(p/'\"'\"'one.sh'\"'\"').read_bytes();assert subprocess.check_output([str(p/'\"'\"'linked'\"'\"')])==b'\"'\"'API005_EXEC'\"'\"';\ntry:(p/'\"'\"'one.sh'\"'\"').open('\"'\"'xb'\"'\"');raise AssertionError('\"'\"'exclusive create replaced existing'\"'\"')\nexcept FileExistsError:pass\nprint('\"'\"'exact relative bytes/execute/exclusive-create Pass'\"'\"')'"
+        ],
+        "rc": 0,
+        "seconds": 0.153,
+        "stdout": "exact relative bytes/execute/exclusive-create Pass\n",
+        "stderr": ""
+      },
+      "status": "Pass",
+      "seconds": 0.153
+    },
+    {
+      "name": "container modify fsync close then native read rename delete",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api005-linux-618f79bb",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/home/admin",
+          "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "sudo -n docker exec autobyteus-server-0 python3 -c 'import pathlib,os; p=pathlib.Path('\"'\"'/Volumes/autobyteus-shared/operations-api005'\"'\"');f=(p/'\"'\"'one.sh'\"'\"').open('\"'\"'wb'\"'\"');f.write(b'\"'\"'API005_CONTAINER_WRITE'\"'\"');f.flush();os.fsync(f.fileno());f.close();print('\"'\"'synced/closed'\"'\"')'"
+        ],
+        "rc": 0,
+        "seconds": 0.125,
+        "stdout": "synced/closed\n",
+        "stderr": ""
+      },
+      "status": "Pass",
+      "seconds": 0.126
+    },
+    {
+      "name": "container observes rename and removes file",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api005-linux-618f79bb",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/home/admin",
+          "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "sudo -n docker exec autobyteus-server-0 python3 -c 'import pathlib; p=pathlib.Path('\"'\"'/Volumes/autobyteus-shared/operations-api005'\"'\"');assert (p/'\"'\"'renamed'\"'\"').read_bytes()==b'\"'\"'API005_CONTAINER_WRITE'\"'\"';assert not (p/'\"'\"'one.sh'\"'\"').exists();(p/'\"'\"'renamed'\"'\"').unlink();print('\"'\"'rename/read/delete Pass'\"'\"')'"
+        ],
+        "rc": 0,
+        "seconds": 0.094,
+        "stdout": "rename/read/delete Pass\n",
+        "stderr": ""
+      },
+      "status": "Pass",
+      "seconds": 0.095
+    },
+    {
+      "name": "both Linux clients see independent committed outputs",
+      "evidence": {
+        "native": {
+          "argv": [
+            "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+            "exec",
+            "ab-nfs-api005-linux-618f79bb",
+            "/usr/bin/env",
+            "-i",
+            "HOME=/home/admin",
+            "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+            "LANG=C",
+            "/bin/sh",
+            "-c",
+            "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c 'python3 -c '\"'\"'import pathlib; p=pathlib.Path('\"'\"'\"'\"'\"'\"'\"'\"'/Volumes/autobyteus-shared/operations-api005'\"'\"'\"'\"'\"'\"'\"'\"');assert (p/'\"'\"'\"'\"'\"'\"'\"'\"'native.txt'\"'\"'\"'\"'\"'\"'\"'\"').read_bytes()==b'\"'\"'\"'\"'\"'\"'\"'\"'NATIVE_DIFFERENT_FILE'\"'\"'\"'\"'\"'\"'\"'\"';assert (p/'\"'\"'\"'\"'\"'\"'\"'\"'container.txt'\"'\"'\"'\"'\"'\"'\"'\"').read_bytes()==b'\"'\"'\"'\"'\"'\"'\"'\"'CONTAINER_DIFFERENT_FILE'\"'\"'\"'\"'\"'\"'\"'\"';print('\"'\"'\"'\"'\"'\"'\"'\"'different files cross-readable'\"'\"'\"'\"'\"'\"'\"'\"')'\"'\"''"
+          ],
+          "rc": 0,
+          "seconds": 0.049,
+          "stdout": "different files cross-readable\n",
+          "stderr": ""
+        },
+        "container": {
+          "argv": [
+            "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+            "exec",
+            "ab-nfs-api005-linux-618f79bb",
+            "/usr/bin/env",
+            "-i",
+            "HOME=/home/admin",
+            "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+            "LANG=C",
+            "/bin/sh",
+            "-c",
+            "sudo -n docker exec autobyteus-server-0 python3 -c 'import pathlib; p=pathlib.Path('\"'\"'/Volumes/autobyteus-shared/operations-api005'\"'\"');assert (p/'\"'\"'native.txt'\"'\"').read_bytes()==b'\"'\"'NATIVE_DIFFERENT_FILE'\"'\"';assert (p/'\"'\"'container.txt'\"'\"').read_bytes()==b'\"'\"'CONTAINER_DIFFERENT_FILE'\"'\"';print('\"'\"'different files cross-readable'\"'\"')'"
+          ],
+          "rc": 0,
+          "seconds": 0.101,
+          "stdout": "different files cross-readable\n",
+          "stderr": ""
+        }
+      },
+      "status": "Pass",
+      "seconds": 0.151
+    }
+  ],
+  "result": "Pass",
+  "project": "/Volumes/autobyteus-shared/operations-api005",
+  "reciprocalObservation": {
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-api005-linux-618f79bb",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/home/admin",
+      "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c 'python3 -c '\"'\"'import pathlib,time,json; p=pathlib.Path('\"'\"'\"'\"'\"'\"'\"'\"'/Volumes/autobyteus-shared/operations-api005'\"'\"'\"'\"'\"'\"'\"'\"');t=time.monotonic();rows=[]\nwhile time.monotonic()-t<5:\n b=(p/'\"'\"'\"'\"'\"'\"'\"'\"'one.sh'\"'\"'\"'\"'\"'\"'\"'\"').read_bytes();rows.append({'\"'\"'\"'\"'\"'\"'\"'\"'seconds'\"'\"'\"'\"'\"'\"'\"'\"':time.monotonic()-t,'\"'\"'\"'\"'\"'\"'\"'\"'exact'\"'\"'\"'\"'\"'\"'\"'\"':b==b'\"'\"'\"'\"'\"'\"'\"'\"'API005_CONTAINER_WRITE'\"'\"'\"'\"'\"'\"'\"'\"'})\n if b==b'\"'\"'\"'\"'\"'\"'\"'\"'API005_CONTAINER_WRITE'\"'\"'\"'\"'\"'\"'\"'\"':break\n time.sleep(.1)\nassert b==b'\"'\"'\"'\"'\"'\"'\"'\"'API005_CONTAINER_WRITE'\"'\"'\"'\"'\"'\"'\"'\"';(p/'\"'\"'\"'\"'\"'\"'\"'\"'one.sh'\"'\"'\"'\"'\"'\"'\"'\"').rename(p/'\"'\"'\"'\"'\"'\"'\"'\"'renamed'\"'\"'\"'\"'\"'\"'\"'\"');(p/'\"'\"'\"'\"'\"'\"'\"'\"'linked'\"'\"'\"'\"'\"'\"'\"'\"').unlink();print(json.dumps(rows))'\"'\"''"
+    ],
+    "rc": 0,
+    "seconds": 0.106,
+    "stdout": "[{\"seconds\": 0.0014190769999800068, \"exact\": true}]\n",
+    "stderr": ""
+  },
+  "concurrentWriters": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api005-linux-618f79bb",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c 'python3 -c '\"'\"'import pathlib,os; p=pathlib.Path('\"'\"'\"'\"'\"'\"'\"'\"'/Volumes/autobyteus-shared/operations-api005/native.txt'\"'\"'\"'\"'\"'\"'\"'\"'); f=p.open('\"'\"'\"'\"'\"'\"'\"'\"'xb'\"'\"'\"'\"'\"'\"'\"'\"');f.write(b'\"'\"'\"'\"'\"'\"'\"'\"'NATIVE_DIFFERENT_FILE'\"'\"'\"'\"'\"'\"'\"'\"');f.flush();os.fsync(f.fileno());f.close();print('\"'\"'\"'\"'\"'\"'\"'\"'synced/closed'\"'\"'\"'\"'\"'\"'\"'\"')'\"'\"''"
+      ],
+      "rc": 0,
+      "seconds": 0.062,
+      "stdout": "synced/closed\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api005-linux-618f79bb",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n docker exec autobyteus-server-0 python3 -c 'import pathlib,os; p=pathlib.Path('\"'\"'/Volumes/autobyteus-shared/operations-api005/container.txt'\"'\"'); f=p.open('\"'\"'xb'\"'\"');f.write(b'\"'\"'CONTAINER_DIFFERENT_FILE'\"'\"');f.flush();os.fsync(f.fileno());f.close();print('\"'\"'synced/closed'\"'\"')'"
+      ],
+      "rc": 0,
+      "seconds": 0.08,
+      "stdout": "synced/closed\n",
+      "stderr": ""
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-import { projectAgentCollaborationTree, projectCollaborationTaskExecution, projectCollaborationCollaborator } from "./collaboration-execution-tree-dto-projection.js";
+import { projectAgentCollaborationTree, projectCollaborationTaskExecution, projectCollaborationSelectionsChanged } from "./collaboration-execution-tree-dto-projection.js";
 import {
   RootExecutionEventDtoSchema,
   RootExecutionViewDtoSchema,
@@ -71,8 +71,8 @@ export const projectAgentCollaborationEvent = (
     case "communication":
       event = { kind: "communication" as const, message: source.message };
       break;
-    case "collaborator_added":
-      event = { kind: "collaborator_added" as const, collaborator: projectCollaborationCollaborator(source.collaborator) };
+    case "delegated_launch_selections_changed":
+      event = projectCollaborationSelectionsChanged(source.selections);
       break;
     case "task_executions_closed":
       event = { kind: "task_executions_closed" as const, task_executions: source.taskExecutions };

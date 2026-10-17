@@ -1,0 +1,17 @@
+[
+  {
+    "name": "go-race",
+    "argv": [
+      "/tmp/nfs-ir008-09yknj95/go/bin/go",
+      "test",
+      "-race",
+      "-count=1",
+      "-v",
+      "./..."
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+    "rc": 1,
+    "expected": 0,
+    "seconds": 32.249
+  }
+]

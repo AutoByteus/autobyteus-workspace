@@ -1,0 +1,346 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:61408
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:61408
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/db/probe.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:35454) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 19 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+{"level":30,"time":1792139186270,"pid":35454,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:61420"}
+{"level":30,"time":1792139186293,"pid":35454,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:61408"}
+[2026-10-16T08:26:26.293Z] [INFO] [server.runtime] Server listening on 127.0.0.1:61408
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 35 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Agent Definition created successfully with ID: research-assistant
+Agent Definition created successfully with ID: code-reviewer
+Agent Definition created successfully with ID: researcher
+Agent Definition created successfully with ID: writer
+Agent Definition created successfully with ID: analyst
+Agent Definition created successfully with ID: note-taker
+Agent Definition created successfully with ID: temp-helper
+Agent Definition created successfully with ID: product-prototyper
+Agent Definition created successfully with ID: prototype-bootstrapper
+Agent Team Definition created successfully with ID: product-team
+Agent Team Definition created successfully with ID: review-team
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run research_assistant_f1b9dfc5d6c64552bbd9650fbb42d635
+Created agent session 4c9b6720-f96a-443a-b8a4-1acfeb32db23 for run research_assistant_f1b9dfc5d6c64552bbd9650fbb42d635
+Agent WebSocket connected: session=4c9b6720-f96a-443a-b8a4-1acfeb32db23, run=research_assistant_f1b9dfc5d6c64552bbd9650fbb42d635
+Resolved configured temp workspace root to TempWorkspace.
+(node:35454) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: update_task, mcp__autobyteus_agent_tools__update_task, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792139204620,"pid":35454,"hostname":"MacBookPro","reqId":"req-1","method":"POST","url":"/mcp/agent-tools/agtrun_b7ax_f1BxavOWu_LKP0j_CfqhFLLfDigYWvqOxSXwTQ","statusCode":400,"elapsedMs":1.0875409841537476,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/memory/agents/research_assistant_f1b9dfc5d6c64552bbd9650fbb42d635/collaboration/code_reviewer_8c53a954f0c444918c7d7446a2b518e0/raw_traces_active.jsonl
+(node:35454) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: update_task, mcp__autobyteus_agent_tools__update_task, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792139209913,"pid":35454,"hostname":"MacBookPro","reqId":"req-d","method":"POST","url":"/mcp/agent-tools/agtrun_bsG5s11XTfAJTjW8-eLmp1Obo1Nb9pgIJLfszij7JE0","statusCode":400,"elapsedMs":0.26716697216033936,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+(node:35454) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: update_task, mcp__autobyteus_agent_tools__update_task, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792139219651,"pid":35454,"hostname":"MacBookPro","reqId":"req-13","method":"POST","url":"/mcp/agent-tools/agtrun_TqMrqJJqnXOTSKjblNkp4-fDlZiQWehqLzZdQpmNCNg","statusCode":400,"elapsedMs":0.26745808124542236,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/memory/agents/research_assistant_f1b9dfc5d6c64552bbd9650fbb42d635/collaboration/product_team_7ea963fa4bc541f59e635e6edbbbb72c/prototype_bootstrapper_9bbd665bc29c4128916cf85f75700257/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/memory/agents/research_assistant_f1b9dfc5d6c64552bbd9650fbb42d635/collaboration/product_team_7ea963fa4bc541f59e635e6edbbbb72c/product_prototyper_a61f76643c2b4415a66d683159ae0e43/raw_traces_active.jsonl
+(node:35454) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: update_task, mcp__autobyteus_agent_tools__update_task, get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792139230428,"pid":35454,"hostname":"MacBookPro","reqId":"req-26","method":"POST","url":"/mcp/agent-tools/agtrun_apOz1ASz47YO2wVQ0I29jsW8j_GL0PNtjMNUDXdOZBc","statusCode":400,"elapsedMs":0.32341694831848145,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+(node:35454) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: update_task, mcp__autobyteus_agent_tools__update_task, get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792139235064,"pid":35454,"hostname":"MacBookPro","reqId":"req-2x","method":"POST","url":"/mcp/agent-tools/agtrun_EZDaaZ6qFCN073bu7aFR6tZXrghzASETY50AxI4y8fQ","statusCode":400,"elapsedMs":0.24362492561340332,"msg":"http request completed"}
+Closed agent session 4c9b6720-f96a-443a-b8a4-1acfeb32db23
+Agent WebSocket disconnected: 4c9b6720-f96a-443a-b8a4-1acfeb32db23
+Agent websocket attached for run research_assistant_f1b9dfc5d6c64552bbd9650fbb42d635
+Created agent session fab8ed9d-1fa0-418f-96f8-6ecead76d7cf for run research_assistant_f1b9dfc5d6c64552bbd9650fbb42d635
+Agent WebSocket connected: session=fab8ed9d-1fa0-418f-96f8-6ecead76d7cf, run=research_assistant_f1b9dfc5d6c64552bbd9650fbb42d635
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/memory/agent_teams/review_team_4e6ce37da7694e109049e05eb087aab5/researcher_c75784aa641749a3a1c0fb10ab6c3aab/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/memory/agent_teams/review_team_4e6ce37da7694e109049e05eb087aab5/writer_453477a268be4da6a5f13767df26e6ae/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_4e6ce37da7694e109049e05eb087aab5
+Created agent session d1d1f031-3b43-42b5-a371-c7fd69fa64a5 for run review_team_4e6ce37da7694e109049e05eb087aab5
+Agent Team WebSocket connected: session=d1d1f031-3b43-42b5-a371-c7fd69fa64a5, run=review_team_4e6ce37da7694e109049e05eb087aab5
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/memory/agent_teams/review_team_4e6ce37da7694e109049e05eb087aab5/researcher_c75784aa641749a3a1c0fb10ab6c3aab/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/memory/agent_teams/review_team_4e6ce37da7694e109049e05eb087aab5/researcher_c75784aa641749a3a1c0fb10ab6c3aab/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+(node:35454) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: update_task, mcp__autobyteus_agent_tools__update_task, get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792139246069,"pid":35454,"hostname":"MacBookPro","reqId":"req-4g","method":"POST","url":"/mcp/agent-tools/agtrun_1kSZWgSjjQp2vGFznTQfaUtH7a6TpZyOHJbLsFWSUgk","statusCode":400,"elapsedMs":0.2917499542236328,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+(node:35454) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: update_task, mcp__autobyteus_agent_tools__update_task, get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792139251457,"pid":35454,"hostname":"MacBookPro","reqId":"req-5e","method":"POST","url":"/mcp/agent-tools/agtrun_p1XJDtEC5O1swJXeFP_gQdupFfG5KeuKpKeeQKixiCA","statusCode":400,"elapsedMs":0.25254201889038086,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+(node:35454) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: update_task, mcp__autobyteus_agent_tools__update_task, get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792139257112,"pid":35454,"hostname":"MacBookPro","reqId":"req-6k","method":"POST","url":"/mcp/agent-tools/agtrun_N0221D-g15hba3-ozcwqwiVflmbN3GrM03PoJZZ5VEs","statusCode":400,"elapsedMs":0.17508304119110107,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+Closed agent session d1d1f031-3b43-42b5-a371-c7fd69fa64a5
+Closed agent session fab8ed9d-1fa0-418f-96f8-6ecead76d7cf
+Agent WebSocket disconnected: fab8ed9d-1fa0-418f-96f8-6ecead76d7cf
+Agent websocket attached for run research_assistant_f1b9dfc5d6c64552bbd9650fbb42d635
+Created agent session e7522331-4b45-4a6a-8d47-33ffe553bc01 for run research_assistant_f1b9dfc5d6c64552bbd9650fbb42d635
+Agent WebSocket connected: session=e7522331-4b45-4a6a-8d47-33ffe553bc01, run=research_assistant_f1b9dfc5d6c64552bbd9650fbb42d635
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/memory/agent_teams/review_team_4e6ce37da7694e109049e05eb087aab5/writer_453477a268be4da6a5f13767df26e6ae/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_4e6ce37da7694e109049e05eb087aab5
+Created agent session 5340d161-97ec-4be1-b166-9e347b56eee8 for run review_team_4e6ce37da7694e109049e05eb087aab5
+Agent Team WebSocket connected: session=5340d161-97ec-4be1-b166-9e347b56eee8, run=review_team_4e6ce37da7694e109049e05eb087aab5
+Created terminal session 60c8f5b5-07ba-4b06-8c58-2f0d75fedcfc using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 60c8f5b5-07ba-4b06-8c58-2f0d75fedcfc
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/memory/agent_orgs/launch_org_58396232d3ee472e8b090247de65dd3f/analyst_99a8e6eaf6f4449eade91b4e7db8a9be/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/memory/agent_orgs/launch_org_58396232d3ee472e8b090247de65dd3f/review_team_41fc9d8c64c54736a3eb02845c70da8d/researcher_3ab23ae90a95489b91243370537048a7/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/memory/agent_orgs/launch_org_58396232d3ee472e8b090247de65dd3f/review_team_41fc9d8c64c54736a3eb02845c70da8d/writer_f6d7ffa94dca4c07aed3e09b52647a2c/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/memory/agent_orgs/launch_org_58396232d3ee472e8b090247de65dd3f/analyst_99a8e6eaf6f4449eade91b4e7db8a9be/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/memory/agent_orgs/launch_org_58396232d3ee472e8b090247de65dd3f/review_team_41fc9d8c64c54736a3eb02845c70da8d/researcher_3ab23ae90a95489b91243370537048a7/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/memory/agent_orgs/launch_org_58396232d3ee472e8b090247de65dd3f/review_team_41fc9d8c64c54736a3eb02845c70da8d/writer_f6d7ffa94dca4c07aed3e09b52647a2c/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/memory/agent_orgs/launch_org_58396232d3ee472e8b090247de65dd3f/analyst_99a8e6eaf6f4449eade91b4e7db8a9be/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/memory/agent_orgs/launch_org_58396232d3ee472e8b090247de65dd3f/review_team_41fc9d8c64c54736a3eb02845c70da8d/researcher_3ab23ae90a95489b91243370537048a7/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/memory/agent_orgs/launch_org_58396232d3ee472e8b090247de65dd3f/review_team_41fc9d8c64c54736a3eb02845c70da8d/writer_f6d7ffa94dca4c07aed3e09b52647a2c/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/memory/agent_orgs/launch_org_58396232d3ee472e8b090247de65dd3f/analyst_99a8e6eaf6f4449eade91b4e7db8a9be/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/memory/agent_orgs/launch_org_58396232d3ee472e8b090247de65dd3f/review_team_41fc9d8c64c54736a3eb02845c70da8d/researcher_3ab23ae90a95489b91243370537048a7/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/memory/agent_orgs/launch_org_58396232d3ee472e8b090247de65dd3f/review_team_41fc9d8c64c54736a3eb02845c70da8d/writer_f6d7ffa94dca4c07aed3e09b52647a2c/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+(node:35454) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: update_task, mcp__autobyteus_agent_tools__update_task, get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792139577495,"pid":35454,"hostname":"MacBookPro","reqId":"req-1wr","method":"POST","url":"/mcp/agent-tools/agtrun_-vu1G3Ic3eSrWJXmsG40l5mcv7IJuvoGZ9qP2Q7jgwQ","statusCode":400,"elapsedMs":0.24849998950958252,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+(node:35454) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: update_task, mcp__autobyteus_agent_tools__update_task, get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/memory/agent_orgs/launch_org_58396232d3ee472e8b090247de65dd3f/review_team_41fc9d8c64c54736a3eb02845c70da8d/researcher_3ab23ae90a95489b91243370537048a7/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/memory/agent_orgs/launch_org_58396232d3ee472e8b090247de65dd3f/review_team_41fc9d8c64c54736a3eb02845c70da8d/writer_f6d7ffa94dca4c07aed3e09b52647a2c/raw_traces_active.jsonl
+{"level":40,"time":1792139580725,"pid":35454,"hostname":"MacBookPro","reqId":"req-1xn","method":"POST","url":"/mcp/agent-tools/agtrun_z3YpeHNSzWUgXL32X2tEQ2nEsFbX7gpFB87-MxfW5vU","statusCode":400,"elapsedMs":0.21379196643829346,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/memory/agent_orgs/launch_org_58396232d3ee472e8b090247de65dd3f/review_team_41fc9d8c64c54736a3eb02845c70da8d/researcher_3ab23ae90a95489b91243370537048a7/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/memory/agent_orgs/launch_org_58396232d3ee472e8b090247de65dd3f/review_team_41fc9d8c64c54736a3eb02845c70da8d/writer_f6d7ffa94dca4c07aed3e09b52647a2c/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/memory/agent_orgs/launch_org_58396232d3ee472e8b090247de65dd3f/product_team_b3dbba88db9644f5a88f19ae2d731f9e/product_prototyper_2757a90a6fc94b1fa01f9cdfb8eaf72b/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-P5GnR1/server-data/memory/agent_orgs/launch_org_58396232d3ee472e8b090247de65dd3f/product_team_b3dbba88db9644f5a88f19ae2d731f9e/prototype_bootstrapper_0cf2e187b52b47938c2d24632a80cadd/raw_traces_active.jsonl
+(node:35454) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: update_task, mcp__autobyteus_agent_tools__update_task, get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792139581363,"pid":35454,"hostname":"MacBookPro","reqId":"req-1xx","method":"POST","url":"/mcp/agent-tools/agtrun_wA-kGJyhn1LEwAXZDxpvkccd-x_KmmH4K7GwgE6yIXU","statusCode":400,"elapsedMs":0.14937496185302734,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+(node:35454) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: update_task, mcp__autobyteus_agent_tools__update_task, get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1792139601374,"pid":35454,"hostname":"MacBookPro","reqId":"req-23l","method":"POST","url":"/mcp/agent-tools/agtrun_4ZyQyAiiW8jiq9O71hjUR_O-fxLGcgf8teK7Bo9cGaQ","statusCode":400,"elapsedMs":0.18891596794128418,"msg":"http request completed"}
+Closed agent session e7522331-4b45-4a6a-8d47-33ffe553bc01
+Agent WebSocket disconnected: e7522331-4b45-4a6a-8d47-33ffe553bc01
+Closed agent session 5340d161-97ec-4be1-b166-9e347b56eee8
+Closed PTY session 60c8f5b5-07ba-4b06-8c58-2f0d75fedcfc
+Terminal WebSocket disconnected: 60c8f5b5-07ba-4b06-8c58-2f0d75fedcfc
+[2026-10-16T08:33:27.670Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Claude process for run 'product_prototyper_c22556b9b1204d77aa92db121dc9b248' exited: Error: Claude Code process exited with code 143
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11535)
+    at ClaudeSdkChildReceipt.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ClaudeSdkChildReceipt.emit (node:events:531:35)
+    at ClaudeSdkChildReceipt.deliverSdkExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:258:18)
+    at ChildProcess.onExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:227:18)
+    at ChildProcess.emit (node:events:531:35)
+    at ChildProcess._handle.onexit (node:internal/child_process:293:12)
+    at Process.callbackTrampoline (node:internal/async_hooks:130:17)
+Claude process for run 'prototype_bootstrapper_8fa374d1d8d749238a218d67e303bcb0' exited: Error: Claude Code process exited with code 143
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11535)
+    at ClaudeSdkChildReceipt.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ClaudeSdkChildReceipt.emit (node:events:531:35)
+    at ClaudeSdkChildReceipt.deliverSdkExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:258:18)
+    at ChildProcess.onExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:227:18)
+    at ChildProcess.emit (node:events:531:35)
+    at ChildProcess._handle.onexit (node:internal/child_process:293:12)
+    at Process.callbackTrampoline (node:internal/async_hooks:130:17)
+Claude process for run 'prototype_bootstrapper_9bbd665bc29c4128916cf85f75700257' exited: Error: Claude Code process exited with code 143
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11535)
+    at ClaudeSdkChildReceipt.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ClaudeSdkChildReceipt.emit (node:events:531:35)
+    at ClaudeSdkChildReceipt.deliverSdkExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:258:18)
+    at ChildProcess.onExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:227:18)
+    at ChildProcess.emit (node:events:531:35)
+    at ChildProcess._handle.onexit (node:internal/child_process:293:12)
+    at Process.callbackTrampoline (node:internal/async_hooks:130:17)
+Claude process for run 'researcher_c75784aa641749a3a1c0fb10ab6c3aab' exited: Error: Claude Code process exited with code 143
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11535)
+    at ClaudeSdkChildReceipt.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ClaudeSdkChildReceipt.emit (node:events:531:35)
+    at ClaudeSdkChildReceipt.deliverSdkExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:258:18)
+    at Socket.onStderrClose (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:239:18)
+    at Socket.emit (node:events:531:35)
+    at Pipe.<anonymous> (node:net:347:12)
+    at Pipe.callbackTrampoline (node:internal/async_hooks:130:17)
+Claude process for run 'product_prototyper_a61f76643c2b4415a66d683159ae0e43' exited: Error: Claude Code process exited with code 143
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11535)
+    at ClaudeSdkChildReceipt.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ClaudeSdkChildReceipt.emit (node:events:531:35)
+    at ClaudeSdkChildReceipt.deliverSdkExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:258:18)
+    at ChildProcess.onExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:227:18)
+    at ChildProcess.emit (node:events:531:35)
+    at ChildProcess._handle.onexit (node:internal/child_process:293:12)
+    at Process.callbackTrampoline (node:internal/async_hooks:130:17)
+Claude process for run 'research_assistant_f1b9dfc5d6c64552bbd9650fbb42d635' exited: Error: Claude Code process exited with code 143
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11535)
+    at ClaudeSdkChildReceipt.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ClaudeSdkChildReceipt.emit (node:events:531:35)
+    at ClaudeSdkChildReceipt.deliverSdkExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:258:18)
+    at ChildProcess.onExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:227:18)
+    at ChildProcess.emit (node:events:531:35)
+    at ChildProcess._handle.onexit (node:internal/child_process:293:12)
+    at Process.callbackTrampoline (node:internal/async_hooks:130:17)
+Claude process for run 'code_reviewer_8c53a954f0c444918c7d7446a2b518e0' exited: Error: Claude Code process exited with code 143
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11535)
+    at ClaudeSdkChildReceipt.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ClaudeSdkChildReceipt.emit (node:events:531:35)
+    at ClaudeSdkChildReceipt.deliverSdkExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:258:18)
+    at ChildProcess.onExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:227:18)
+    at ChildProcess.emit (node:events:531:35)
+    at ChildProcess._handle.onexit (node:internal/child_process:293:12)
+    at Process.callbackTrampoline (node:internal/async_hooks:130:17)
+Claude process for run 'analyst_99a8e6eaf6f4449eade91b4e7db8a9be' exited: Error: Claude Code process exited with code 143
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11535)
+    at ClaudeSdkChildReceipt.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ClaudeSdkChildReceipt.emit (node:events:531:35)
+    at ClaudeSdkChildReceipt.deliverSdkExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:258:18)
+    at ChildProcess.onExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:227:18)
+    at ChildProcess.emit (node:events:531:35)
+    at ChildProcess._handle.onexit (node:internal/child_process:293:12)
+    at Process.callbackTrampoline (node:internal/async_hooks:130:17)
+Claude interrupt for run 'product_prototyper_2757a90a6fc94b1fa01f9cdfb8eaf72b' failed: Error: Claude Code process exited with code 143
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11535)
+    at ClaudeSdkChildReceipt.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ClaudeSdkChildReceipt.emit (node:events:531:35)
+    at ClaudeSdkChildReceipt.deliverSdkExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:258:18)
+    at ChildProcess.onExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:227:18)
+    at ChildProcess.emit (node:events:531:35)
+    at ChildProcess._handle.onexit (node:internal/child_process:293:12)
+    at Process.callbackTrampoline (node:internal/async_hooks:130:17)
+Claude process for run 'product_prototyper_2757a90a6fc94b1fa01f9cdfb8eaf72b' exited: Error: Claude Code process exited with code 143
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11535)
+    at ClaudeSdkChildReceipt.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ClaudeSdkChildReceipt.emit (node:events:531:35)
+    at ClaudeSdkChildReceipt.deliverSdkExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:258:18)
+    at ChildProcess.onExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:227:18)
+    at ChildProcess.emit (node:events:531:35)
+    at ChildProcess._handle.onexit (node:internal/child_process:293:12)
+    at Process.callbackTrampoline (node:internal/async_hooks:130:17)
+Claude interrupt for run 'prototype_bootstrapper_0cf2e187b52b47938c2d24632a80cadd' failed: Error: Claude Code process exited with code 143
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11535)
+    at ClaudeSdkChildReceipt.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ClaudeSdkChildReceipt.emit (node:events:531:35)
+    at ClaudeSdkChildReceipt.deliverSdkExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:258:18)
+    at ChildProcess.onExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:227:18)
+    at ChildProcess.emit (node:events:531:35)
+    at ChildProcess._handle.onexit (node:internal/child_process:293:12)
+    at Process.callbackTrampoline (node:internal/async_hooks:130:17)
+Claude process for run 'prototype_bootstrapper_0cf2e187b52b47938c2d24632a80cadd' exited: Error: Claude Code process exited with code 143
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11535)
+    at ClaudeSdkChildReceipt.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ClaudeSdkChildReceipt.emit (node:events:531:35)
+    at ClaudeSdkChildReceipt.deliverSdkExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:258:18)
+    at ChildProcess.onExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:227:18)
+    at ChildProcess.emit (node:events:531:35)
+    at ChildProcess._handle.onexit (node:internal/child_process:293:12)
+    at Process.callbackTrampoline (node:internal/async_hooks:130:17)
+Claude process for run 'note_taker_023c0ce348934e7d855b304b18dfcce3' exited: Error: Claude Code process exited with code 143
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11535)
+    at ClaudeSdkChildReceipt.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.132.1_zod@4.3.6__@modelconte_6165679d57716176d4fcf34953bee2c3/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ClaudeSdkChildReceipt.emit (node:events:531:35)
+    at ClaudeSdkChildReceipt.deliverSdkExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:258:18)
+    at Socket.onStderrClose (file:///Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:239:18)
+    at Socket.emit (node:events:531:35)
+    at Pipe.<anonymous> (node:net:347:12)
+    at Pipe.callbackTrampoline (node:internal/async_hooks:130:17)
+[2026-10-16T08:33:28.669Z] [INFO] [server.runtime] Server closed cleanly.

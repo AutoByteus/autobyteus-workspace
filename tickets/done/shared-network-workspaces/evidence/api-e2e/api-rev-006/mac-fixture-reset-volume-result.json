@@ -1,0 +1,135 @@
+{
+  "vm": "ab-nfs-api006-mac-a0000f39",
+  "source": "/Users/admin/ab-nfs-api006-mac-a0000f39-source",
+  "binary": {
+    "guestPath": "/Users/admin/ab-nfs-api006-mac-a0000f39-binary",
+    "sha256": "c79e5ac05367d6657bc0be74f2e8f5b9eb504af8ade265e1afdf0334218d0cf1"
+  },
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-mac-a0000f39",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "set -e; sudo -n test ! -e '/Library/Application Support/AutoByteusNFS/attachment.json'; sudo -n test ! -e '/Library/Application Support/AutoByteusNFS/hosted-filesystem.json'; sudo -n test ! -e '/Library/Application Support/AutoByteusNFS/pending-setup.json'; test ! -e /Library/LaunchDaemons/com.autobyteus.nfs.plist; ! /sbin/mount | grep ' on /Volumes/autobyteus-shared (nfs'"
+      ],
+      "rc": 0,
+      "seconds": 0.123,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-mac-a0000f39",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n cat /etc/exports"
+      ],
+      "rc": 0,
+      "seconds": 0.127,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-mac-a0000f39",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n /sbin/nfsd disable; sudo -n /sbin/nfsd stop"
+      ],
+      "rc": 0,
+      "seconds": 0.105,
+      "stdout": "The nfsd service is not running.\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-mac-a0000f39",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "! sudo -n /usr/sbin/lsof -nP -iTCP:2049 -sTCP:LISTEN"
+      ],
+      "rc": 0,
+      "seconds": 0.09,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "cases": [
+    {
+      "name": "stop solely-owned guest OS nfsd after verified public detach and no exports",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api006-mac-a0000f39",
+          "/usr/bin/sudo",
+          "-n",
+          "-u",
+          "admin",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/Users/admin",
+          "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "sudo -n /sbin/nfsd disable; sudo -n /sbin/nfsd stop"
+        ],
+        "rc": 0,
+        "seconds": 0.105,
+        "stdout": "The nfsd service is not running.\n",
+        "stderr": ""
+      },
+      "status": "Pass",
+      "seconds": 0.106
+    }
+  ],
+  "result": "Ready",
+  "exportsBefore": "",
+  "reason": "Reset solely-owned guest OS prerequisite between independent create cases; no user host operation, not automatic repair/product reconnect proof"
+}

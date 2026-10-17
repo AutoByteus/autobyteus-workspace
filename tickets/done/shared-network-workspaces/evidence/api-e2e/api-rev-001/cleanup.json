@@ -1,0 +1,24 @@
+{
+  "timestampUTC": "2026-10-13T19:33:57Z",
+  "ownedRunnersRemaining": [],
+  "ownedVMsAbsent": [
+    "ab-nfs-api001-d7fbf3f4",
+    "ab-nfs-api001-7a371989-server",
+    "ab-nfs-api001-7a371989-client",
+    "ab-nfs-api001-repro-c179ed61"
+  ],
+  "tartList": "Source Name                                                                                                        Disk  Size  Accessed      State  \nOCI    ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377 50\u00a0GB 33\u00a0GB vor 4 Minuten stopped\n",
+  "publicCacheRetained": true,
+  "scratch": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api001-pk2d0kur",
+  "scratchExisted": true,
+  "sourceNoProductionChanges": true,
+  "cleanupScope": "Only exact API001 scratch and owned clones; no host exports/mounts/user processes/nodes/credentials changed. Clone cleanup is in each mac-*-result.json.",
+  "scratchAbsent": true,
+  "generatedDistPreserved": [
+    "applications/brief-studio/dist",
+    "autobyteus-application-backend-sdk/dist",
+    "autobyteus-application-devkit/dist",
+    "autobyteus-application-frontend-sdk/dist",
+    "autobyteus-application-sdk-contracts/dist"
+  ]
+}

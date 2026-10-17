@@ -1,0 +1,42 @@
+
+> autobyteus@1.5.3-beta.2 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/settings/__tests__/NodeManager.spec.ts components/settings/__tests__/NfsGuideCard.spec.ts utils/__tests__/nfsLauncherCommands.spec.ts --run --maxWorkers=2
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+[1m[46m RUN [49m[22m [36mv3.2.4 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web[39m
+
+[90mstderr[2m | components/settings/__tests__/NodeManager.spec.ts
+[22m[39mWarning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+[90mstderr[2m | components/settings/__tests__/NfsGuideCard.spec.ts
+[22m[39mWarning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+[90mstdout[2m | components/settings/__tests__/NodeManager.spec.ts
+[22m[39mserverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+[90mstdout[2m | components/settings/__tests__/NfsGuideCard.spec.ts
+[22m[39mserverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ [32m✓[39m components/settings/__tests__/NfsGuideCard.spec.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 19[2mms[22m[39m
+ [32m✓[39m components/settings/__tests__/NodeManager.spec.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 49[2mms[22m[39m
+[90mstderr[2m | utils/__tests__/nfsLauncherCommands.spec.ts
+[22m[39mWarning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+[90mstdout[2m | utils/__tests__/nfsLauncherCommands.spec.ts
+[22m[39mserverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ [32m✓[39m utils/__tests__/nfsLauncherCommands.spec.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m3 passed[39m[22m[90m (3)[39m
+[2m      Tests [22m [1m[32m21 passed[39m[22m[90m (21)[39m
+[2m   Start at [22m 15:47:03
+[2m   Duration [22m 10.68s[2m (transform 4.29s, setup 17.99s, collect 205ms, tests 70ms, environment 829ms, prepare 457ms)[22m
+

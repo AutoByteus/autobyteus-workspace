@@ -1,0 +1,12 @@
+PASS two fresh real application-image nodes serve independent GraphQL endpoints
+PASS daemon mounts one export into both application nodes; private state and credentials isolated
+PASS each application registers the ordinary mounted project through its public workspace API
+PASS native Codex login streamed into fresh private homes, source unchanged
+PASS each independent native process discovers its private skill while retaining common project cwd
+PASS A private native skill reads supporting asset and writes ordinary shared project file
+PASS B native read sees A data and appends own private skill asset without prompt copying
+PASS A native fresh reopen sees B modification
+PASS A native process close/private-bundle removal leaves common project unchanged
+PASS active B private native skill survives A cleanup and reads previously unread asset
+PASS native Codex thread resume loads current private source after old bundle deletion
+{"run": "ab-sf-fr020-313c4685", "passes": 11, "fatal": null, "cleanup_ok": true}

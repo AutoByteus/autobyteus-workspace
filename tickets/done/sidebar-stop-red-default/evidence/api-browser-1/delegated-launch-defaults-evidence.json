@@ -1,0 +1,927 @@
+{
+  "startedAt": "2026-10-13T16:20:36.425Z",
+  "cases": {
+    "DCP-001": {
+      "title": "delegated-copy-model-change AC-001/002/004/011, DEC-010: a running copy is locked with a stop icon; Stop from the sidebar; its model changed in Settings and saved; the next message resumes it on that model",
+      "result": "Pass",
+      "ms": 30178,
+      "details": {
+        "runId": "manager_3c5d_bc405eebacfa4a73aa537ada66afac30",
+        "copyCall": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n \"delegated\": true,\\n \"target_kind\": \"agent\",\\n \"target_agent_run_id\": \"writer_088c_bae63df046134af497b977337b66784b\",\\n \"task_id\": \"ad_hoc_task_ae781447-40c5-4598-8994-a4a090f8ad13\"\\n}\"}],\"structuredContent\":{\"delegated\":true,\"target_kind\":\"agent\",\"target_agent_run_id\":\"writer_088c_bae63df046134af497b977337b66784b\",\"task_id\":\"ad_hoc_task_ae781447-40c5-4598-8994-a4a090f8ad13\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.",
+        "copyRunId": "writer_088c_bae63df046134af497b977337b66784b",
+        "firstModels": [
+          "dlc-alt-model"
+        ],
+        "paint": {
+          "reference": {
+            "rest": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "hover": {
+              "color": "rgb(220, 38, 38)",
+              "background": "rgb(254, 242, 242)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "leave": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "unselected": {
+            "rest": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "hover": {
+              "color": "rgb(220, 38, 38)",
+              "background": "rgb(254, 242, 242)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "leave": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "afterRowClick": {
+            "rest": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "hover": {
+              "color": "rgb(220, 38, 38)",
+              "background": "rgb(254, 242, 242)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "leave": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "selectedState": "true",
+          "viewport": {
+            "width": 1512,
+            "height": 952
+          }
+        },
+        "runningLocked": true,
+        "runningHint": "Stop this copy to change its model.",
+        "stop": {
+          "operation": "StopDelegatedExecution",
+          "variables": {
+            "input": {
+              "rootKind": "AGENT",
+              "rootRunId": "manager_3c5d_bc405eebacfa4a73aa537ada66afac30",
+              "agentRunId": "writer_088c_bae63df046134af497b977337b66784b"
+            }
+          },
+          "key": "Enter",
+          "requests": [
+            {
+              "input": {
+                "rootKind": "AGENT",
+                "rootRunId": "manager_3c5d_bc405eebacfa4a73aa537ada66afac30",
+                "agentRunId": "writer_088c_bae63df046134af497b977337b66784b"
+              }
+            }
+          ],
+          "dialogs": [],
+          "rowBefore": {
+            "selected": "false",
+            "current": null,
+            "expanded": null,
+            "url": "http://127.0.0.1:36623/chat?id=manager_3c5d_bc405eebacfa4a73aa537ada66afac30"
+          },
+          "focus": {
+            "active": true,
+            "visible": true,
+            "ring": "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(239, 68, 68, 0.4) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "outline": "solid",
+            "outlineWidth": "2px",
+            "label": "Stop writer 088c",
+            "title": "Stop writer 088c",
+            "type": "button"
+          },
+          "pending": {
+            "disabled": true,
+            "label": "Stopping writer 088c…",
+            "opacity": "0.6",
+            "cursor": "default",
+            "animation": "pulse",
+            "paint": {
+              "color": "rgb(153, 153, 153)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "disabledHover": {
+            "color": "rgb(153, 153, 153)",
+            "background": "rgba(0, 0, 0, 0)",
+            "transition": "0.15s",
+            "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke",
+            "hovered": true
+          },
+          "reducedMotion": "none",
+          "rowPending": {
+            "selected": "false",
+            "current": null,
+            "expanded": null,
+            "url": "http://127.0.0.1:36623/chat?id=manager_3c5d_bc405eebacfa4a73aa537ada66afac30"
+          },
+          "response": {
+            "data": {
+              "stopDelegatedExecution": {
+                "success": true,
+                "outcome": "STOPPED",
+                "message": "Stopped. A new message resumes it with its conversation.",
+                "notStoppedUnattributed": 0,
+                "__typename": "StopDelegatedExecutionResult"
+              }
+            }
+          },
+          "taskBefore": {
+            "taskId": "ad_hoc_task_ae781447-40c5-4598-8994-a4a090f8ad13",
+            "status": "TODO",
+            "root": {
+              "ingressAgentRunId": "writer_088c_bae63df046134af497b977337b66784b",
+              "teamRunId": null,
+              "closed": false,
+              "status": "idle"
+            }
+          },
+          "taskAfter": {
+            "taskId": "ad_hoc_task_ae781447-40c5-4598-8994-a4a090f8ad13",
+            "status": "TODO",
+            "root": {
+              "ingressAgentRunId": "writer_088c_bae63df046134af497b977337b66784b",
+              "teamRunId": null,
+              "closed": false,
+              "status": "offline"
+            }
+          },
+          "input": {
+            "rootKind": "AGENT",
+            "rootRunId": "manager_3c5d_bc405eebacfa4a73aa537ada66afac30",
+            "agentRunId": "writer_088c_bae63df046134af497b977337b66784b"
+          },
+          "parentAfterCopyStop": {
+            "runId": "manager_3c5d_bc405eebacfa4a73aa537ada66afac30",
+            "isActive": true,
+            "terminatedAt": null
+          }
+        },
+        "rootStillRunning": "active",
+        "savedSummary": "Gemini test · Antigravity · Auto-approve",
+        "savedSource": null,
+        "stored": {
+          "address": "/writer_088c",
+          "agentRunId": "writer_088c_bae63df046134af497b977337b66784b",
+          "platformAgentRunId": "1dd14da0-2e2b-4c78-aef9-0f5708892fcf",
+          "delegatorAgentRunId": "manager_3c5d_bc405eebacfa4a73aa537ada66afac30",
+          "startedAt": "2026-10-13T16:21:57.698Z",
+          "source": {
+            "kind": "agent",
+            "agentDefinitionId": "writer-088c",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "dlc-alt-model",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/tmp/delegated-launch-defaults-VvqU2j/server-data/temp_workspace"
+            },
+            "launchSource": {
+              "origin": "agent_default",
+              "fallbacks": []
+            }
+          },
+          "userLaunchSelection": {
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "selectedAt": "2026-10-13T16:22:11.419Z"
+          }
+        },
+        "resumeCall": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"writer_088c_bae63df046134af497b977337b66784b\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"writer_088c_bae63df046134af497b977337b66784b\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n1 Messages\nMessage\nOct 13, 04:22 PM\n\nto writer 088c\n\nOne more paragraph.\n\nMessage\nwriter 088c\nOct 13, 04:22 PM\n\nOne more paragraph.\nMessage\nwriter 088c\nOct 13, 04:22 PM\n\nOne more paragraph.",
+        "resumedModels": [
+          "gemini-3.8-flash-low"
+        ],
+        "rootStop": {
+          "operation": "TerminateAgentRun",
+          "variables": {
+            "agentRunId": "manager_3c5d_bc405eebacfa4a73aa537ada66afac30"
+          },
+          "key": "Space",
+          "requests": [
+            {
+              "agentRunId": "manager_3c5d_bc405eebacfa4a73aa537ada66afac30"
+            }
+          ],
+          "dialogs": [],
+          "rowBefore": {
+            "selected": null,
+            "current": "true",
+            "expanded": null,
+            "url": "http://127.0.0.1:36623/chat?id=manager_3c5d_bc405eebacfa4a73aa537ada66afac30"
+          },
+          "focus": {
+            "active": true,
+            "visible": true,
+            "ring": "none",
+            "outline": "auto",
+            "outlineWidth": "1px",
+            "label": "Terminate run",
+            "title": "Terminate run",
+            "type": "button"
+          },
+          "pending": {
+            "disabled": true,
+            "label": "Terminate run",
+            "opacity": "0.5",
+            "cursor": "not-allowed",
+            "animation": "none",
+            "paint": {
+              "color": "rgb(153, 153, 153)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "disabledHover": {
+            "color": "rgb(153, 153, 153)",
+            "background": "rgba(0, 0, 0, 0)",
+            "transition": "0.15s",
+            "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke",
+            "hovered": true
+          },
+          "rowPending": {
+            "selected": null,
+            "current": "true",
+            "expanded": null,
+            "url": "http://127.0.0.1:36623/chat?id=manager_3c5d_bc405eebacfa4a73aa537ada66afac30"
+          },
+          "response": {
+            "data": {
+              "terminateAgentRun": {
+                "__typename": "TerminateAgentRunResult",
+                "success": true,
+                "message": "Agent run terminated successfully."
+              }
+            }
+          },
+          "historyBefore": {
+            "runId": "manager_3c5d_bc405eebacfa4a73aa537ada66afac30",
+            "isActive": true,
+            "terminatedAt": null
+          },
+          "historyAfter": {
+            "runId": "manager_3c5d_bc405eebacfa4a73aa537ada66afac30",
+            "isActive": false,
+            "terminatedAt": "2026-10-13T16:22:17.860Z"
+          },
+          "urlAfter": "http://127.0.0.1:36623/chat?id=manager_3c5d_bc405eebacfa4a73aa537ada66afac30"
+        }
+      }
+    },
+    "DCP-002": {
+      "title": "delegated-copy-model-change AC-002/003, IR-002 (Team root, UI): a Team copy stopped from its sidebar row; its Team model changed and saved; the copy lead's \"+\" shows the choice without a reload; the next message resumes the lead on it",
+      "result": "Pass",
+      "ms": 52876,
+      "details": {
+        "teamRunId": "home_team_e866_b43b7cc95e244419be8d866e46935a2e",
+        "copyTeamRunId": "pair_team_fab0_bab89e0a48b44d9d83aa88b2a20814d8",
+        "copyMembers": {
+          "lead": "lead_06fe_3e46834c17e04b87ba058ca41319cef7",
+          "engineer": "engineer_0589_0f86c7068ee040f989d937007d489311",
+          "unoffered": "unoffered_a76e_d8ee646b75a14d68a4bed1d4e10c2979"
+        },
+        "paint": {
+          "reference": {
+            "rest": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "hover": {
+              "color": "rgb(220, 38, 38)",
+              "background": "rgb(254, 242, 242)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "leave": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "unselected": {
+            "rest": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "hover": {
+              "color": "rgb(220, 38, 38)",
+              "background": "rgb(254, 242, 242)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "leave": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "afterRowClick": {
+            "rest": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "hover": {
+              "color": "rgb(220, 38, 38)",
+              "background": "rgb(254, 242, 242)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "leave": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "selectedState": "false",
+          "viewport": {
+            "width": 1512,
+            "height": 952
+          }
+        },
+        "runningLocked": true,
+        "runningHint": "Stop this copy to change its model.",
+        "stop": {
+          "operation": "StopDelegatedExecution",
+          "variables": {
+            "input": {
+              "rootKind": "AGENT_TEAM",
+              "rootRunId": "home_team_e866_b43b7cc95e244419be8d866e46935a2e",
+              "teamRunId": "pair_team_fab0_bab89e0a48b44d9d83aa88b2a20814d8"
+            }
+          },
+          "key": "Space",
+          "requests": [
+            {
+              "input": {
+                "rootKind": "AGENT_TEAM",
+                "rootRunId": "home_team_e866_b43b7cc95e244419be8d866e46935a2e",
+                "teamRunId": "pair_team_fab0_bab89e0a48b44d9d83aa88b2a20814d8"
+              }
+            }
+          ],
+          "dialogs": [],
+          "rowBefore": {
+            "selected": "false",
+            "current": null,
+            "expanded": "false",
+            "url": "http://127.0.0.1:36623/workspace"
+          },
+          "focus": {
+            "active": true,
+            "visible": true,
+            "ring": "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(239, 68, 68, 0.4) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "outline": "solid",
+            "outlineWidth": "2px",
+            "label": "Stop pair team fab0",
+            "title": "Stop pair team fab0",
+            "type": "button"
+          },
+          "pending": {
+            "disabled": true,
+            "label": "Stopping pair team fab0…",
+            "opacity": "0.6",
+            "cursor": "default",
+            "animation": "pulse",
+            "paint": {
+              "color": "rgb(153, 153, 153)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "disabledHover": {
+            "color": "rgb(153, 153, 153)",
+            "background": "rgba(0, 0, 0, 0)",
+            "transition": "0.15s",
+            "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke",
+            "hovered": true
+          },
+          "reducedMotion": "none",
+          "rowPending": {
+            "selected": "false",
+            "current": null,
+            "expanded": "false",
+            "url": "http://127.0.0.1:36623/workspace"
+          },
+          "response": {
+            "data": {
+              "stopDelegatedExecution": {
+                "success": true,
+                "outcome": "STOPPED",
+                "message": "Stopped. A new message resumes it with its conversation.",
+                "notStoppedUnattributed": 0,
+                "__typename": "StopDelegatedExecutionResult"
+              }
+            }
+          },
+          "taskBefore": {
+            "taskId": "ad_hoc_task_cb3fc745-55c5-4813-8015-daee89b57b56",
+            "status": "TODO",
+            "root": {
+              "ingressAgentRunId": "lead_06fe_3e46834c17e04b87ba058ca41319cef7",
+              "teamRunId": "pair_team_fab0_bab89e0a48b44d9d83aa88b2a20814d8",
+              "closed": false,
+              "status": "idle"
+            }
+          },
+          "taskAfter": {
+            "taskId": "ad_hoc_task_cb3fc745-55c5-4813-8015-daee89b57b56",
+            "status": "TODO",
+            "root": {
+              "ingressAgentRunId": "lead_06fe_3e46834c17e04b87ba058ca41319cef7",
+              "teamRunId": "pair_team_fab0_bab89e0a48b44d9d83aa88b2a20814d8",
+              "closed": false,
+              "status": "offline"
+            }
+          },
+          "input": {
+            "rootKind": "AGENT_TEAM",
+            "rootRunId": "home_team_e866_b43b7cc95e244419be8d866e46935a2e",
+            "teamRunId": "pair_team_fab0_bab89e0a48b44d9d83aa88b2a20814d8"
+          },
+          "parentAfterCopyStop": {
+            "teamRunId": "home_team_e866_b43b7cc95e244419be8d866e46935a2e",
+            "isActive": true,
+            "terminatedAt": null
+          }
+        },
+        "savedTeamSummary": "Gemini test · Antigravity · Auto-approve",
+        "plusModel": "Gemini test Antigravity",
+        "resume": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"lead_06fe_3e46834c17e04b87ba058ca41319cef7\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"lead_06fe_3e46834c17e04b87ba058ca41319cef7\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n1 Messages\nMessage\nOct 13, 04:23 PM\n\nto lead\n\nPlease continue.\n\nMessage\nlead\nOct 13, 04:23 PM\n\nPlease continue.\nMessage\nlead\nOct 13, 04:23 PM\n\nPlease continue.",
+        "resumedModels": [
+          "gemini-3.8-flash-low"
+        ],
+        "rootStop": {
+          "operation": "TerminateAgentTeamRun",
+          "variables": {
+            "teamRunId": "home_team_e866_b43b7cc95e244419be8d866e46935a2e"
+          },
+          "key": "Enter",
+          "requests": [
+            {
+              "teamRunId": "home_team_e866_b43b7cc95e244419be8d866e46935a2e"
+            }
+          ],
+          "dialogs": [],
+          "rowBefore": {
+            "selected": null,
+            "current": null,
+            "expanded": "true",
+            "url": "http://127.0.0.1:36623/workspace"
+          },
+          "focus": {
+            "active": true,
+            "visible": true,
+            "ring": "none",
+            "outline": "auto",
+            "outlineWidth": "1px",
+            "label": "Terminate team",
+            "title": "Terminate team",
+            "type": "button"
+          },
+          "pending": {
+            "disabled": true,
+            "label": "Terminate team",
+            "opacity": "0.5",
+            "cursor": "not-allowed",
+            "animation": "none",
+            "paint": {
+              "color": "rgb(153, 153, 153)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "disabledHover": {
+            "color": "rgb(153, 153, 153)",
+            "background": "rgba(0, 0, 0, 0)",
+            "transition": "0.15s",
+            "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke",
+            "hovered": true
+          },
+          "rowPending": {
+            "selected": null,
+            "current": null,
+            "expanded": "true",
+            "url": "http://127.0.0.1:36623/workspace"
+          },
+          "response": {
+            "data": {
+              "terminateAgentTeamRun": {
+                "__typename": "TerminateAgentTeamRunResult",
+                "success": true,
+                "message": "Agent team run terminated successfully."
+              }
+            }
+          },
+          "historyBefore": {
+            "teamRunId": "home_team_e866_b43b7cc95e244419be8d866e46935a2e",
+            "isActive": true,
+            "terminatedAt": null
+          },
+          "historyAfter": {
+            "teamRunId": "home_team_e866_b43b7cc95e244419be8d866e46935a2e",
+            "isActive": false,
+            "terminatedAt": "2026-10-13T16:23:10.708Z"
+          },
+          "urlAfter": "http://127.0.0.1:36623/workspace"
+        }
+      }
+    },
+    "DCP-003": {
+      "title": "delegated-copy-model-change AC-001/002 (Org root, UI): a copy stopped from its Settings row (its Org sidebar stop icon goes away); its model changed and saved; the next message resumes it on that model",
+      "result": "Pass",
+      "ms": 33080,
+      "details": {
+        "orgRunId": "hostorg_org_e769_d7b351b331ff423dbacd356af4eec62a",
+        "copyCall": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n \"delegated\": true,\\n \"target_kind\": \"agent\",\\n \"target_agent_run_id\": \"writer_088c_6c86e034b5194905adc4c705d5304f81\",\\n \"task_id\": \"ad_hoc_task_9d96f485-f5b7-4e74-ae4b-89d1ad1bb566\"\\n}\"}],\"structuredContent\":{\"delegated\":true,\"target_kind\":\"agent\",\"target_agent_run_id\":\"writer_088c_6c86e034b5194905adc4c705d5304f81\",\"task_id\":\"ad_hoc_task_9d96f485-f5b7-4e74-ae4b-89d1ad1bb566\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.",
+        "copyRunId": "writer_088c_6c86e034b5194905adc4c705d5304f81",
+        "paint": {
+          "reference": {
+            "rest": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0s",
+              "transitionProperty": "all"
+            },
+            "hover": {
+              "color": "rgb(220, 38, 38)",
+              "background": "rgb(254, 242, 242)",
+              "transition": "0s",
+              "transitionProperty": "all"
+            },
+            "leave": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0s",
+              "transitionProperty": "all"
+            }
+          },
+          "unselected": {
+            "rest": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "hover": {
+              "color": "rgb(220, 38, 38)",
+              "background": "rgb(254, 242, 242)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "leave": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "afterRowClick": {
+            "rest": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "hover": {
+              "color": "rgb(220, 38, 38)",
+              "background": "rgb(254, 242, 242)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "leave": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "selectedState": "true",
+          "viewport": {
+            "width": 1512,
+            "height": 952
+          }
+        },
+        "settingsTaskBefore": {
+          "taskId": "ad_hoc_task_9d96f485-f5b7-4e74-ae4b-89d1ad1bb566",
+          "status": "TODO",
+          "root": {
+            "ingressAgentRunId": "writer_088c_6c86e034b5194905adc4c705d5304f81",
+            "teamRunId": null,
+            "closed": false,
+            "status": "idle"
+          }
+        },
+        "settingsTaskAfter": {
+          "taskId": "ad_hoc_task_9d96f485-f5b7-4e74-ae4b-89d1ad1bb566",
+          "status": "TODO",
+          "root": {
+            "ingressAgentRunId": "writer_088c_6c86e034b5194905adc4c705d5304f81",
+            "teamRunId": null,
+            "closed": false,
+            "status": "offline"
+          }
+        },
+        "savedSummary": "Gemini test · Antigravity · Auto-approve",
+        "resume": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"writer_088c_6c86e034b5194905adc4c705d5304f81\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"writer_088c_6c86e034b5194905adc4c705d5304f81\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n1 Messages\nMessage\nOct 13, 04:23 PM\n\nto writer 088c\n\nOne more paragraph.\n\nMessage\nwriter 088c\nOct 13, 04:23 PM\n\nOne more paragraph.\nMessage\nwriter 088c\nOct 13, 04:23 PM\n\nOne more paragraph.",
+        "resumedModels": [
+          "gemini-3.8-flash-low"
+        ],
+        "stop": {
+          "operation": "StopDelegatedExecution",
+          "variables": {
+            "input": {
+              "rootKind": "AGENT_ORG",
+              "rootRunId": "hostorg_org_e769_d7b351b331ff423dbacd356af4eec62a",
+              "agentRunId": "writer_088c_6c86e034b5194905adc4c705d5304f81"
+            }
+          },
+          "key": "Enter",
+          "requests": [
+            {
+              "input": {
+                "rootKind": "AGENT_ORG",
+                "rootRunId": "hostorg_org_e769_d7b351b331ff423dbacd356af4eec62a",
+                "agentRunId": "writer_088c_6c86e034b5194905adc4c705d5304f81"
+              }
+            }
+          ],
+          "dialogs": [],
+          "rowBefore": {
+            "selected": "false",
+            "current": null,
+            "expanded": null,
+            "url": "http://127.0.0.1:36623/workspace?rootSubjectKind=agent_org&definitionId=hostorg-org-e769&orgRunId=hostorg_org_e769_d7b351b331ff423dbacd356af4eec62a&mode=active&memberAddress=/manager"
+          },
+          "focus": {
+            "active": true,
+            "visible": true,
+            "ring": "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(239, 68, 68, 0.4) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "outline": "solid",
+            "outlineWidth": "2px",
+            "label": "Stop writer 088c",
+            "title": "Stop writer 088c",
+            "type": "button"
+          },
+          "pending": {
+            "disabled": true,
+            "label": "Stopping writer 088c…",
+            "opacity": "0.6",
+            "cursor": "default",
+            "animation": "pulse",
+            "paint": {
+              "color": "rgb(153, 153, 153)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "disabledHover": {
+            "color": "rgb(153, 153, 153)",
+            "background": "rgba(0, 0, 0, 0)",
+            "transition": "0.15s",
+            "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke",
+            "hovered": true
+          },
+          "reducedMotion": "none",
+          "rowPending": {
+            "selected": "false",
+            "current": null,
+            "expanded": null,
+            "url": "http://127.0.0.1:36623/workspace?rootSubjectKind=agent_org&definitionId=hostorg-org-e769&orgRunId=hostorg_org_e769_d7b351b331ff423dbacd356af4eec62a&mode=active&memberAddress=/manager"
+          },
+          "response": {
+            "data": {
+              "stopDelegatedExecution": {
+                "success": true,
+                "outcome": "STOPPED",
+                "message": "Stopped. A new message resumes it with its conversation.",
+                "notStoppedUnattributed": 0,
+                "__typename": "StopDelegatedExecutionResult"
+              }
+            }
+          },
+          "taskBefore": {
+            "taskId": "ad_hoc_task_9d96f485-f5b7-4e74-ae4b-89d1ad1bb566",
+            "status": "TODO",
+            "root": {
+              "ingressAgentRunId": "writer_088c_6c86e034b5194905adc4c705d5304f81",
+              "teamRunId": null,
+              "closed": false,
+              "status": "idle"
+            }
+          },
+          "taskAfter": {
+            "taskId": "ad_hoc_task_9d96f485-f5b7-4e74-ae4b-89d1ad1bb566",
+            "status": "TODO",
+            "root": {
+              "ingressAgentRunId": "writer_088c_6c86e034b5194905adc4c705d5304f81",
+              "teamRunId": null,
+              "closed": false,
+              "status": "offline"
+            }
+          },
+          "input": {
+            "rootKind": "AGENT_ORG",
+            "rootRunId": "hostorg_org_e769_d7b351b331ff423dbacd356af4eec62a",
+            "agentRunId": "writer_088c_6c86e034b5194905adc4c705d5304f81"
+          },
+          "parentAfterCopyStop": {
+            "root_run_id": "hostorg_org_e769_d7b351b331ff423dbacd356af4eec62a",
+            "is_active": true
+          }
+        },
+        "sidebarResume": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"writer_088c_6c86e034b5194905adc4c705d5304f81\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"writer_088c_6c86e034b5194905adc4c705d5304f81\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n2 Messages\nMessage\nOct 13, 04:23 PM\n\nto writer 088c\n\nContinue after sidebar Stop.\n\nMessage\nOct 13, 04:23 PM\n\nto writer 088c\n\nOne more paragraph.\n\nMessage\nwriter 088c\nOct 13, 04:23 PM\n\nOne more paragraph.\nMessage\nwriter 088c\nOct 13, 04:23 PM\n\nOne more paragraph.",
+        "sidebarResumedModels": [
+          "gemini-3.8-flash-low"
+        ],
+        "rootStop": {
+          "operation": "TerminateAgentOrgRun",
+          "variables": {
+            "agentOrgRunId": "hostorg_org_e769_d7b351b331ff423dbacd356af4eec62a"
+          },
+          "key": "Space",
+          "requests": [
+            {
+              "agentOrgRunId": "hostorg_org_e769_d7b351b331ff423dbacd356af4eec62a"
+            }
+          ],
+          "dialogs": [],
+          "rowBefore": {
+            "selected": "false",
+            "current": null,
+            "expanded": "true",
+            "url": "http://127.0.0.1:36623/workspace?rootSubjectKind=agent_org&definitionId=hostorg-org-e769&orgRunId=hostorg_org_e769_d7b351b331ff423dbacd356af4eec62a&mode=active&memberAddress=/manager"
+          },
+          "focus": {
+            "active": true,
+            "visible": true,
+            "ring": "none",
+            "outline": "auto",
+            "outlineWidth": "1px",
+            "label": "Stop Agent Org",
+            "title": "Stop Agent Org",
+            "type": "button"
+          },
+          "pending": {
+            "disabled": true,
+            "label": "Stop Agent Org",
+            "opacity": "0.5",
+            "cursor": "not-allowed",
+            "animation": "none",
+            "paint": {
+              "color": "rgb(153, 153, 153)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0s",
+              "transitionProperty": "all"
+            }
+          },
+          "disabledHover": {
+            "color": "rgb(153, 153, 153)",
+            "background": "rgba(0, 0, 0, 0)",
+            "transition": "0s",
+            "transitionProperty": "all",
+            "hovered": true
+          },
+          "rowPending": {
+            "selected": "false",
+            "current": null,
+            "expanded": "true",
+            "url": "http://127.0.0.1:36623/workspace?rootSubjectKind=agent_org&definitionId=hostorg-org-e769&orgRunId=hostorg_org_e769_d7b351b331ff423dbacd356af4eec62a&mode=active&memberAddress=/manager"
+          },
+          "response": {
+            "data": {
+              "terminateAgentOrgRun": {
+                "success": true,
+                "message": "Agent organization run terminated successfully.",
+                "agentOrgRunId": "hostorg_org_e769_d7b351b331ff423dbacd356af4eec62a",
+                "__typename": "AgentOrgRunMutationResult"
+              }
+            }
+          },
+          "historyBefore": {
+            "root_run_id": "hostorg_org_e769_d7b351b331ff423dbacd356af4eec62a",
+            "is_active": true
+          },
+          "historyAfter": {
+            "root_run_id": "hostorg_org_e769_d7b351b331ff423dbacd356af4eec62a",
+            "is_active": false
+          },
+          "urlAfter": "http://127.0.0.1:36623/workspace?rootSubjectKind=agent_org&definitionId=hostorg-org-e769&orgRunId=hostorg_org_e769_d7b351b331ff423dbacd356af4eec62a&mode=history&memberAddress=/manager"
+        }
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 34130
+    },
+    {
+      "label": "frontend",
+      "pid": 34372
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 34372,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 34130,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/tmp/delegated-launch-defaults-VvqU2j"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/tmp/delegated-launch-defaults-VvqU2j",
+  "backendUrl": "http://127.0.0.1:33931",
+  "frontUrl": "http://127.0.0.1:36623",
+  "definitions": {
+    "ids": {
+      "manager": "manager-3c5d",
+      "lead": "lead-06fe",
+      "worker": "worker-7431",
+      "plain": "plain-d200",
+      "engineer": "engineer-0589",
+      "reviewer": "reviewer-92df",
+      "writer": "writer-088c",
+      "offline": "offline-d13d",
+      "unoffered": "unoffered-a76e",
+      "badsettings": "badsettings-ecbf",
+      "incomplete": "incomplete-2cfb",
+      "build": "build-team-ceed",
+      "pair": "pair-team-fab0",
+      "squad": "squad-team-67ea",
+      "home": "home-team-e866",
+      "launchOrg": "launchorg-org-d381",
+      "hostOrg": "hostorg-org-e769"
+    },
+    "names": {
+      "manager": "Manager 3c5d",
+      "lead": "Lead 06fe",
+      "worker": "Worker 7431",
+      "plain": "Plain d200",
+      "engineer": "Engineer 0589",
+      "reviewer": "Reviewer 92df",
+      "writer": "Writer 088c",
+      "offline": "Offline d13d",
+      "unoffered": "Unoffered a76e",
+      "badsettings": "Badsettings ecbf",
+      "incomplete": "Incomplete 2cfb",
+      "build": "Build Team ceed",
+      "pair": "Pair Team fab0",
+      "squad": "Squad Team 67ea",
+      "home": "Home Team e866",
+      "launchOrg": "LaunchOrg Org d381",
+      "hostOrg": "HostOrg Org e769"
+    }
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 3,
+    "fail": 0
+  },
+  "completedAt": "2026-10-13T16:23:44.510Z"
+}

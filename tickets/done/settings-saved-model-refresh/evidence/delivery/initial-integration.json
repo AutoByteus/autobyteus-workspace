@@ -1,0 +1,16 @@
+{
+  "timestamp": "2026-10-13T16:21:10.924745+00:00",
+  "candidate": "d25b1e74edefe6ce7f310cedb30b67a818d1978e",
+  "bootstrap_base": "1a2379c57088e8976aeb0f43e1e607e1acc103c6",
+  "fetched_target": "0c37f58d88220be3683a15da6e0956d6ab13c4db",
+  "commands": [
+    "git fetch origin personal",
+    "git merge --no-edit origin/personal",
+    "git diff --cc -- autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs",
+    "git merge --abort"
+  ],
+  "result": "Blocked: content conflict in shared test harness; merge aborted to retain validated candidate",
+  "conflict_path": "autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs",
+  "post_integration_tests": "Not run: integration not completed",
+  "push_merge_release_cleanup": "Not performed"
+}

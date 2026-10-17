@@ -1,3 +1,4 @@
+import { stopTaskTeamRunForUser } from "../../../agent-team-execution/domain/task-team-user-stop.js";
 import { acceptTaskSeed } from "../task/task-execution-seed-admission.js";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import type { RootExecutionPhysicalScope } from "../domain/root-execution-identity.js";
@@ -289,6 +290,31 @@ export class RootTeamExecutionDirectory {
       });
       if (!result.accepted) {
         throw new TaskExecutionTeardownIndeterminateError(teamRunId, result.message ?? `Task TeamRun '${teamRunId}' shutdown was rejected.`);
+      }
+      this.releasedTeams.set(teamRunId, run);
+      this.active.delete(teamRunId);
+      this.taskTeamRunIds.delete(teamRunId);
+      return true;
+    } finally {
+      this.shuttingDown.delete(teamRunId);
+    }
+  }
+
+  /**
+   * User Stop (DS-002) of one live root-hosted task Team, quiet or not: fences and interrupts every
+   * agent in it, finishes its termination and keeps the same released state as idle shutdown, so
+   * the next message restores it from its records.
+   */
+  async shutDownRootTaskTeamForUser(teamRunId: string): Promise<boolean> {
+    const run = this.active.get(teamRunId);
+    if (!run?.isActive() || !this.taskTeamRunIds.has(teamRunId) || this.shuttingDown.has(teamRunId)) return false;
+    this.shuttingDown.add(teamRunId);
+    try {
+      const result = await stopTaskTeamRunForUser(run).catch((cause: unknown) => {
+        throw new TaskExecutionTeardownIndeterminateError(teamRunId, `Task TeamRun '${teamRunId}' stop did not finish.`, { cause });
+      });
+      if (!result.accepted) {
+        throw new TaskExecutionTeardownIndeterminateError(teamRunId, result.message ?? `Task TeamRun '${teamRunId}' stop was rejected.`);
       }
       this.releasedTeams.set(teamRunId, run);
       this.active.delete(teamRunId);

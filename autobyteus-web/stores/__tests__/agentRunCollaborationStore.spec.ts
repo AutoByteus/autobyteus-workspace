@@ -40,11 +40,15 @@ import { useAgentRunCollaborationStore } from '../agentRunCollaborationStore'
 describe('agentRunCollaborationStore', () => {
   beforeEach(() => { setActivePinia(createPinia()); stream.instances.length = 0 })
 
-  it('reads a stopped run without connecting, opens a new task Team once and lists its rows', async () => {
+  it('reads a stopped run without connecting, keeps a new task Team collapsed and preserves explicit disclosure', async () => {
     const store = useAgentRunCollaborationStore()
     store.syncHost('host-run', false)
     await store.inspect('host-run')
     expect(stream.instances).toHaveLength(0)
+    expect(store.isTaskTeamExpanded('host-run', 'team-run')).toBe(false)
+    expect(store.taskRows('host-run').map((entry) => entry.row.displayName)).toEqual(['computer use agent', 'product team'])
+    store.toggleTaskTeam('host-run', 'team-run')
+    await store.inspect('host-run')
     expect(store.isTaskTeamExpanded('host-run', 'team-run')).toBe(true)
     expect(store.taskRows('host-run').map((entry) => entry.row.displayName)).toEqual(['computer use agent', 'product team', 'prototyper', 'bootstrapper'])
     store.toggleTaskTeam('host-run', 'team-run')

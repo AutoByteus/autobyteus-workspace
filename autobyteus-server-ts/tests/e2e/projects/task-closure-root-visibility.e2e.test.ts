@@ -27,7 +27,7 @@ type Frame = { type: string; payload: Record<string, any> };
 type Kind = "agent" | "team" | "org";
 type Ref = { agentRunId: string } | { teamRunId: string };
 type TaskNode = Record<string, any> & { startedAt: string };
-const PROJECT_TOOLS = ["list_projects", "list_project_tasks", "create_or_update_project", "create_or_update_task"];
+const PROJECT_TOOLS = ["list_projects", "list_project_tasks", "create_or_update_project", "create_task", "update_task"];
 const segment = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
 const refOf = (node: Record<string, any>): Ref => node.teamRunId ? { teamRunId: node.teamRunId } : { agentRunId: node.agentRunId };
 const keyOf = (ref: Record<string, any>) => ref.teamRunId ?? ref.team_run_id ? `team:${ref.teamRunId ?? ref.team_run_id}` : `agent:${ref.agentRunId ?? ref.agent_run_id}`;
@@ -130,8 +130,7 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
     )).createAgentTeamDefinition.id;
     ids.team = (await graphql(`mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}`,
       { input: { name: `TRC Team ${suffix}`, description: "Team root", instructions: "Follow requests.", coordinatorMemberName: "manager",
-        nodes: [{ memberName: "manager", ref: ids.manager, refScope: "SHARED" }, { memberName: "worker", ref: ids.worker, refScope: "SHARED" },
-          { memberName: "helper", ref: ids.helper, refScope: "SHARED" }] } },
+        nodes: [{ memberName: "manager", ref: ids.manager, refScope: "SHARED" }] } },
     )).createAgentTeamDefinition.id;
     ids.org = (await graphql(`mutation($input:CreateAgentOrgDefinitionInput!){createAgentOrgDefinition(input:$input){id}}`,
       { input: { name: `TRC Org ${suffix}`, description: "Org root", instructions: "Follow requests.",
@@ -162,14 +161,15 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
   /** One root kind: a Manager in that root drives Task-linked work, closes a Task, reopens it, and stops. */
   const rootScenario = async (kind: Kind) => {
     const { projectId, task } = await createProjectWithTasks(kind);
-    // Task A's worker sub-delegates to the helper; that copy brings in a catalog assistant with
-    // send_message_to. Both join Task A by inheritance (roles delegated and broughtIn).
-    const workerAddress = kind === "agent" ? `/${segment(names.worker)}` : "/worker";
-    const helperAddress = kind === "agent" ? `/${segment(names.helper)}` : "/helper";
+    // Task A's worker sub-delegates to the helper; that copy sub-delegates to a catalog assistant with
+    // delegate_task. Both join Task A by inheritance (role delegated).
+    // A Team-root member is not delegable by its own Team (collaboration-model-contract): the Team root delegates by catalog address, as the Agent root does; an Org keeps its sibling units.
+    const workerAddress = kind !== "org" ? `/${segment(names.worker)}` : "/worker";
+    const helperAddress = kind !== "org" ? `/${segment(names.helper)}` : "/helper";
     const assistantAddress = `/${segment(names.assistant)}`;
     const teamAddress = kind === "org" ? "/squad" : `/${segment(names.squad)}`;
     const taskA = await task(callTool("delegate_task", { recipient_address: helperAddress,
-      description: callTool("send_message_to", { recipient_address: assistantAddress, content: "Reply OK." }) }));
+      description: callTool("delegate_task", { recipient_address: assistantAddress, description: "Reply OK." }) }));
     const taskB = await task("Review the docs site.");
 
     // Root run with the Manager.
@@ -182,9 +182,7 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
     } else if (kind === "team") {
       const created = (await graphql(`mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}`,
         { input: { teamDefinitionId: ids.team, teamConfigs: [{ teamAddress: "/", ...config() }], memberConfigs: [
-          { memberAddress: "/manager", agentDefinitionId: ids.manager, ...config() },
-          { memberAddress: "/worker", agentDefinitionId: ids.worker, ...config() },
-          { memberAddress: "/helper", agentDefinitionId: ids.helper, ...config() }] } })).createAgentTeamRun;
+          { memberAddress: "/manager", agentDefinitionId: ids.manager, ...config() }] } })).createAgentTeamRun;
       expect(created.success, created.message).toBe(true);
       rootId = created.teamRunId;
       const tree = (await graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: rootId })).getTeamRunResumeConfig.executionTree;
@@ -251,9 +249,9 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
       return nodes;
     };
 
-    // 1. Task A (Agent + sub-delegation + brought-in helper), Task B (Team where the root offers one), non-Task work.
+    // 1. Task A (Agent + sub-delegation + a second sub-delegation), Task B (Team where the root offers one), non-Task work.
     send(callTool("delegate_task", { recipient_address: workerAddress, task_id: taskA }));
-    const aNodes = await waitForNodes("Task A assigned, delegated and broughtIn runs", (nodes) => nodes.length >= 3);
+    const aNodes = await waitForNodes("Task A assigned and sub-delegated runs", (nodes) => nodes.length >= 3);
     const aAssigned = aNodes.find((node) => node.delegatorAgentRunId === managerRunId)!;
     expect(aAssigned).toBeTruthy();
     const taskARefs = aNodes.map(refOf);
@@ -268,6 +266,9 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
     expect(plain).toHaveLength(1);
     // The Manager also talks to Task A's worker; that exchange must survive closure (AC-008).
     send(callTool("send_message_to", { target_agent_run_id: aAssigned.agentRunId, content: "Status of Task A?" }));
+    // ... and to the copy Task A's worker sub-delegated to (messaging a copy by its run ID).
+    const subCopy = aNodes.find((node) => node !== aAssigned && node.agentRunId)!;
+    send(callTool("send_message_to", { target_agent_run_id: subCopy.agentRunId, content: "Status of the sub-work?" }));
     const touchesTaskA = (message: Record<string, any>) => taskARefs.some((ref) => JSON.stringify(message).includes((ref as any).agentRunId));
     let before = snapshotOf(view.frames);
     await until(async () => {
@@ -282,7 +283,7 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
 
     // 2. DONE through the Manager's real tool call: the root publishes the closed refs (Task A only) before stopping.
     const doneFrom = view.frames.length;
-    send(callTool("create_or_update_task", { task_id: taskA, status: "DONE" }));
+    send(callTool("update_task", { task_id: taskA, status: "DONE" }));
     const closedFrame = (frame: Frame) => kind === "team" ? frame.type === "TASK_EXECUTIONS_CLOSED"
       : frame.type === "ROOT_EXECUTION_EVENT" && frame.payload.event?.kind === "task_executions_closed";
     await until(() => view.frames.slice(doneFrom).some(closedFrame), "live task_executions_closed", 60_000);
@@ -310,7 +311,7 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
     expect(memoryHits.length, "closed run's conversation/run history files are kept on disk").toBeGreaterThan(0);
 
     // 4. Reopen and delegate again (AC-006): the new run is open; the old Task A runs stay closed.
-    send(callTool("create_or_update_task", { task_id: taskA, status: "IN_PROGRESS" }));
+    send(callTool("update_task", { task_id: taskA, status: "IN_PROGRESS" }));
     await until(async () => (await statusOf(projectId, taskA)) === "IN_PROGRESS", "Task A reopened");
     send(callTool("delegate_task", { recipient_address: workerAddress, task_id: taskA }));
     const reopened = await waitForNodes("redelegated Task A run", (nodes) => nodes.filter((n) => n.delegatorAgentRunId === managerRunId).length >= 4);
@@ -323,7 +324,7 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
 
     // 4b. Repeated DONE on the reopened Task: the live event carries the new run; the closed set is the union.
     const redoneFrom = view.frames.length;
-    send(callTool("create_or_update_task", { task_id: taskA, status: "DONE" }));
+    send(callTool("update_task", { task_id: taskA, status: "DONE" }));
     await until(() => view.frames.slice(redoneFrom).some(closedFrame), "live closure for the repeated DONE", 60_000);
     const redone = view.frames.slice(redoneFrom).find(closedFrame)!;
     const redonePayload = kind === "team" ? redone.payload.task_executions : redone.payload.event.task_executions;
@@ -363,7 +364,7 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
     active.push({ kind: "agent", rootId: other.runId });
     const otherInput = await connect("agent", other.runId, (frames) => frames.some((f) => f.type === "CONNECTED"));
     sendE2eSendMessageCommand(otherInput.socket, { agent_run_id: other.runId,
-      content: callTool("create_or_update_task", { task_id: taskB, status: "DONE" }) });
+      content: callTool("update_task", { task_id: taskB, status: "DONE" }) });
     await until(async () => (await statusOf(projectId, taskB)) === "DONE", "Task B DONE by another Manager", 60_000);
     otherInput.socket.close();
     await terminate("agent", other.runId);

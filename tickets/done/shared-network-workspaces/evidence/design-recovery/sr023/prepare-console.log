@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr023/prepare-prototype.py", line 17, in <module>
+    with tarfile.open(dest) as t:t.extractall(scratch,filter='data')
+TypeError: extractall() got an unexpected keyword argument 'filter'

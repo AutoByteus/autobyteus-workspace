@@ -1,0 +1,68 @@
+{
+  "startedAt": "2026-10-15T07:27:26.735Z",
+  "runtime": "antigravity_cli",
+  "cases": {
+    "L01": {
+      "title": "Host crash keeps the root and its delegated child; the child still answers; the host wakes on a send; after another crash Delete ends the root first and removes the run",
+      "result": "Fail",
+      "ms": 310814,
+      "error": "Timed out waiting for focused agent idle",
+      "details": null
+    },
+    "L02": {
+      "title": "Host crash without delegated copies: Archive succeeds and the lingering root is ended",
+      "result": "Fail",
+      "ms": 306020,
+      "error": "Timed out waiting for focused agent idle",
+      "details": null
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 30818
+    },
+    {
+      "label": "frontend",
+      "pid": 31153
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 31153,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 30818,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-tjeBCh"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-tjeBCh",
+  "backendUrl": "http://127.0.0.1:64117",
+  "frontUrl": "http://127.0.0.1:64118",
+  "definitions": {
+    "research": "research-assistant",
+    "reviewer": "code-reviewer",
+    "researcher": "researcher",
+    "writer": "writer",
+    "analyst": "analyst",
+    "noteTaker": "note-taker",
+    "tempHelper": "temp-helper",
+    "prototyper": "product-prototyper",
+    "bootstrapper": "prototype-bootstrapper",
+    "productTeam": "product-team",
+    "reviewTeam": "review-team",
+    "org": "launch-org"
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 0,
+    "fail": 2,
+    "notApplicable": 0
+  },
+  "completedAt": "2026-10-15T07:37:55.046Z"
+}

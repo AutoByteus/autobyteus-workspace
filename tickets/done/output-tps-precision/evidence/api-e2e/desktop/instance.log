@@ -1,0 +1,661 @@
+[2026-10-14T08:23:55.578Z] [INFO] [electron] Application started
+[2026-10-14T08:23:55.660Z] [INFO] [electron] Creating server manager for platform: darwin
+[2026-10-14T08:23:55.661Z] [WARN] [electron.server.app-data] App data directory is missing .env. Reinitializing first-run data.
+[2026-10-14T08:23:55.661Z] [INFO] [electron.server.app-data] Created missing data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/db
+[2026-10-14T08:23:55.661Z] [INFO] [electron.server.app-data] Created missing data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/logs
+[2026-10-14T08:23:55.661Z] [INFO] [electron.server.app-data] Created missing data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/download
+
+DevTools listening on ws://127.0.0.1:63601/devtools/browser/ea99ebcc-25f9-4a97-be60-befebca0fa6f
+[2026-10-14T08:23:55.723Z] [INFO] [electron] Browser bridge started on http://127.0.0.1:63630
+[2026-10-14T08:23:55.733Z] [INFO] [electron] ServerStatusManager: Starting internal server
+[2026-10-14T08:23:55.733Z] [INFO] [electron] ServerStatusManager: Emitting status change: starting
+[2026-10-14T08:23:55.733Z] [INFO] [electron.server.base-server-manager] Server installation directory: /Users/normy/autobyteus_org/autobyteus-worktrees/output-tps-precision/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-10-14T08:23:55.734Z] [INFO] [electron.server.base-server-manager] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data
+[2026-10-14T08:23:55.734Z] [INFO] [electron.server.app-data] Performing first-run initialization...
+[2026-10-14T08:23:55.734Z] [INFO] [electron.server.app-data] Generated runtime .env at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/.env
+[2026-10-14T08:23:55.734Z] [INFO] [electron.server.app-data] First-run initialization completed successfully
+[2026-10-14T08:23:55.735Z] [INFO] [electron.server.base-server-manager] Port 63602 is free.
+[2026-10-14T08:23:55.735Z] [INFO] [electron] Server entrypoint: /Users/normy/autobyteus_org/autobyteus-worktrees/output-tps-precision/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/.local"
+Run `unset npm_config_prefix` to unset it.
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/.local"
+Run `unset npm_config_prefix` to unset it.
+[2026-10-14T08:23:56.725Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-10-14T08:23:56.725Z] [INFO] [electron] Login shell PATH: /Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/autobyteus_org/autobyteus-worktrees/output-tps-precision/node_modules/.bin:/Users/normy/.cache/node/corepack/v1/pnpm/10.28.2/dist/node-gyp-bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin
+[2026-10-14T08:23:56.725Z] [INFO] [electron] Using PATH from login shell
+[2026-10-14T08:23:56.725Z] [INFO] [electron] Starting server with port: 63602
+[2026-10-14T08:23:56.725Z] [INFO] [electron] Setting AUTOBYTEUS_SERVER_HOST to: http://127.0.0.1:63602
+[2026-10-14T08:23:56.725Z] [INFO] [electron] Working directory: /Users/normy/autobyteus_org/autobyteus-worktrees/output-tps-precision/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-10-14T08:23:56.725Z] [INFO] [electron] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data
+[2026-10-14T08:23:56.725Z] [INFO] [electron] Executing: /Users/normy/autobyteus_org/autobyteus-worktrees/output-tps-precision/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/output-tps-precision/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 63602 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data
+[2026-10-14T08:23:56.726Z] [INFO] [electron] Server process spawned with PID: 13933
+[2026-10-14T08:23:56.823Z] [INFO] [electron.embedded-server.stdout] Platform detection: Windows=false
+[2026-10-14T08:23:56.823Z] [INFO] [electron.embedded-server.stdout] App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/output-tps-precision/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-10-14T08:23:56.823Z] [INFO] [electron.embedded-server.stdout] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data
+[2026-10-14T08:23:56.823Z] [INFO] [electron.embedded-server.stdout] Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/.env
+[2026-10-14T08:23:56.823Z] [INFO] [electron.embedded-server.stdout] Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/.env
+[2026-10-14T08:23:56.823Z] [INFO] [electron.embedded-server.stdout] [dotenv@17.3.1] injecting env (2) from ../../../../../../../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[2026-10-14T08:23:56.823Z] [INFO] [electron.embedded-server.stdout] Environment variables loaded successfully
+[2026-10-14T08:23:56.824Z] [INFO] [electron.embedded-server.stdout] Server public base URL configured to: http://127.0.0.1:63602
+[2026-10-14T08:23:56.824Z] [INFO] [electron.embedded-server.stdout] === Starting logging configuration ===
+[2026-10-14T08:23:56.824Z] [INFO] [electron.embedded-server.stdout] Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/output-tps-precision/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/logging_config.ini
+[2026-10-14T08:23:56.824Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-10-14T08:23:56.824Z] [INFO] [electron.embedded-server.stdout] SERVER PUBLIC URL: http://127.0.0.1:63602
+[2026-10-14T08:23:56.824Z] [INFO] [electron.embedded-server.stdout] APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/output-tps-precision/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-10-14T08:23:56.824Z] [INFO] [electron.embedded-server.stdout] APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data
+[2026-10-14T08:23:56.824Z] [INFO] [electron.embedded-server.stdout] DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/db
+[2026-10-14T08:23:56.824Z] [INFO] [electron.embedded-server.stdout] LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/logs
+[2026-10-14T08:23:56.824Z] [INFO] [electron.embedded-server.stdout] DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/download
+[2026-10-14T08:23:56.824Z] [INFO] [electron.embedded-server.stdout] MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/memory
+[2026-10-14T08:23:56.824Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-10-14T08:23:57.470Z] [INFO] [electron.embedded-server.stdout] AgentFactory (Singleton) initialized.
+[2026-10-14T08:23:57.658Z] [INFO] [electron.embedded-server.stdout] Running Prisma migrations...
+[2026-10-14T08:23:57.659Z] [INFO] [electron.embedded-server.stdout] Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/output-tps-precision/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+[2026-10-14T08:23:57.891Z] [INFO] [electron.embedded-server.stdout] Prisma schema loaded from prisma/schema.prisma
+[2026-10-14T08:23:57.894Z] [INFO] [electron.embedded-server.stdout] Datasource "db": SQLite database "production.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/db/production.db"
+[2026-10-14T08:23:57.922Z] [INFO] [electron.embedded-server.stdout] SQLite database production.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/db/production.db
+[2026-10-14T08:23:57.932Z] [INFO] [electron.embedded-server.stdout] 27 migrations found in prisma/migrations
+[2026-10-14T08:23:57.935Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260203074245_init`
+[2026-10-14T08:23:57.939Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260208094000_add_external_channel_tables`
+[2026-10-14T08:23:57.942Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+[2026-10-14T08:23:57.943Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260209213000_remove_agent_conversation_tables`
+[2026-10-14T08:23:57.944Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260210101500_add_agent_avatar`
+[2026-10-14T08:23:57.945Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260210192000_add_agent_team_avatar`
+[2026-10-14T08:23:57.946Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260211214500_add_sync_columns_and_tombstones`
+[2026-10-14T08:23:57.950Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260212070000_remove_workflow_definition`
+[2026-10-14T08:23:57.951Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260309103000_add_channel_binding_launch_preset`
+[2026-10-14T08:23:57.954Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260310153000_add_channel_binding_team_definition_id`
+[2026-10-14T08:23:57.954Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260331102000_remove_channel_bindings_table`
+[2026-10-14T08:23:57.955Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+[2026-10-14T08:23:57.959Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260517090000_add_app_data_migration_records`
+[2026-10-14T08:23:57.959Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260624090000_add_token_usage_ledger_events`
+[2026-10-14T08:23:57.961Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260625193000_token_usage_component_pricing_explainability`
+[2026-10-14T08:23:57.966Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260629120000_add_token_usage_display_fields`
+[2026-10-14T08:23:57.968Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260702093000_token_usage_execution_address`
+[2026-10-14T08:23:57.969Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260726090000_add_secret_vault`
+[2026-10-14T08:23:57.971Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260730090000_add_token_usage_provider_name`
+[2026-10-14T08:23:57.972Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260801090000_token_usage_member_display_name`
+[2026-10-14T08:23:57.973Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260814090000_team_run_execution_tree_v1`
+[2026-10-14T08:23:57.974Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260819090000_add_token_usage_run_records`
+[2026-10-14T08:23:57.975Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260820090000_redesign_app_data_migration_summary`
+[2026-10-14T08:23:57.977Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260822090000_add_token_usage_analytics`
+[2026-10-14T08:23:57.979Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260923130000_add_claude_sdk_usage_state`
+[2026-10-14T08:23:57.980Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260924120000_remove_external_channel_tables`
+[2026-10-14T08:23:57.982Z] [INFO] [electron.embedded-server.stdout] Applying migration `20261009120000_token_meter_context_readings`
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout] The following migration(s) have been applied:
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout] migrations/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]   └─ 20260203074245_init/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]   └─ 20260208094000_add_external_channel_tables/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]   └─ 20260209174500_add_channel_message_receipt_turn_id/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]   └─ 20260209213000_remove_agent_conversation_tables/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]   └─ 20260210101500_add_agent_avatar/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]   └─ 20260210192000_add_agent_team_avatar/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]   └─ 20260211214500_add_sync_columns_and_tombstones/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]   └─ 20260212070000_remove_workflow_definition/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]   └─ 20260309103000_add_channel_binding_launch_preset/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]   └─ 20260310153000_add_channel_binding_team_definition_id/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]   └─ 20260331102000_remove_channel_bindings_table/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]   └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]   └─ 20260517090000_add_app_data_migration_records/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]   └─ 20260624090000_add_token_usage_ledger_events/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]   └─ 20260625193000_token_usage_component_pricing_explainability/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]   └─ 20260629120000_add_token_usage_display_fields/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]   └─ 20260702093000_token_usage_execution_address/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]   └─ 20260726090000_add_secret_vault/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]   └─ 20260730090000_add_token_usage_provider_name/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]   └─ 20260801090000_token_usage_member_display_name/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]   └─ 20260814090000_team_run_execution_tree_v1/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]   └─ 20260819090000_add_token_usage_run_records/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]   └─ 20260820090000_redesign_app_data_migration_summary/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]   └─ 20260822090000_add_token_usage_analytics/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]   └─ 20260923130000_add_claude_sdk_usage_state/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]   └─ 20260924120000_remove_external_channel_tables/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]   └─ 20261009120000_token_meter_context_readings/
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-14T08:23:57.983Z] [INFO] [electron.embedded-server.stdout] All migrations have been successfully applied.
+[2026-10-14T08:23:57.997Z] [INFO] [electron.embedded-server.stdout] Database migrations completed successfully.
+[2026-10-14T08:23:58.006Z] [INFO] [electron.embedded-server.stdout] prisma:info Starting a sqlite pool with 21 connections.
+[2026-10-14T08:23:58.127Z] [INFO] [electron.embedded-server.stdout] Initialized server settings service with 19 predefined settings
+[2026-10-14T08:23:58.140Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-10-14T08:23:58.141Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-10-14T08:23:58.197Z] [INFO] [electron.embedded-server.stdout] Loading workspace packages to trigger registration...
+[2026-10-14T08:23:58.197Z] [INFO] [electron.embedded-server.stdout] Successfully loaded workspace packages.
+[2026-10-14T08:23:58.198Z] [INFO] [electron.embedded-server.stdout] Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/temp_workspace
+[2026-10-14T08:23:58.198Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/temp_workspace.
+[2026-10-14T08:23:58.198Z] [INFO] [electron.embedded-server.stdout] Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/temp_workspace with fixed ID 'temp_ws_default'
+[2026-10-14T08:23:58.198Z] [INFO] [electron.embedded-server.stdout] Temp workspace created and cached with ID: temp_ws_default
+[2026-10-14T08:23:58.198Z] [INFO] [electron.embedded-server.stdout] Registering agent customization processors...
+[2026-10-14T08:23:58.198Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[2026-10-14T08:23:58.198Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[2026-10-14T08:23:58.199Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[2026-10-14T08:23:58.199Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'UserInputContextBuildingProcessor'.
+[2026-10-14T08:23:58.199Z] [INFO] [electron.embedded-server.stdout] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[2026-10-14T08:23:58.199Z] [INFO] [electron.embedded-server.stdout] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[2026-10-14T08:23:58.199Z] [INFO] [electron.embedded-server.stdout] Agent customization processor registration complete.
+[2026-10-14T08:23:58.199Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_file'
+[2026-10-14T08:23:58.199Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'write_file'
+[2026-10-14T08:23:58.199Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_file'
+[2026-10-14T08:23:58.199Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_bash'
+[2026-10-14T08:23:58.199Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'start_background_process'
+[2026-10-14T08:23:58.199Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_background_processes'
+[2026-10-14T08:23:58.199Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_process_output'
+[2026-10-14T08:23:58.199Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'stop_background_process'
+[2026-10-14T08:23:58.199Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-10-14T08:23:58.199Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_media_file'
+[2026-10-14T08:23:58.200Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'download_media'
+[2026-10-14T08:23:58.200Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_url'
+[2026-10-14T08:23:58.200Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Core Tools
+[2026-10-14T08:23:58.206Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'delegate_task'
+[2026-10-14T08:23:58.207Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_available_agents'
+[2026-10-14T08:23:58.207Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_image'
+[2026-10-14T08:23:58.207Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_image'
+[2026-10-14T08:23:58.207Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_speech'
+[2026-10-14T08:23:58.207Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_video'
+[2026-10-14T08:23:58.207Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Task Delegation Tools
+[2026-10-14T08:23:58.207Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Discovery Tools
+[2026-10-14T08:23:58.207Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Media Tools
+[2026-10-14T08:23:58.207Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'open_tab'
+[2026-10-14T08:23:58.207Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'navigate_to'
+[2026-10-14T08:23:58.207Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'close_tab'
+[2026-10-14T08:23:58.207Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_tabs'
+[2026-10-14T08:23:58.207Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_page'
+[2026-10-14T08:23:58.207Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'screenshot'
+[2026-10-14T08:23:58.207Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'dom_snapshot'
+[2026-10-14T08:23:58.207Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_script'
+[2026-10-14T08:23:58.207Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'set_device_emulation'
+[2026-10-14T08:23:58.207Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Browser Tools
+[2026-10-14T08:23:58.207Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'publish_artifacts'
+[2026-10-14T08:23:58.208Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Published Artifact Tools
+[2026-10-14T08:23:58.208Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_projects'
+[2026-10-14T08:23:58.208Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_project_tasks'
+[2026-10-14T08:23:58.208Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_or_update_project'
+[2026-10-14T08:23:58.208Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_or_update_task'
+[2026-10-14T08:23:58.208Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Project Task Tools
+[2026-10-14T08:23:58.208Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'send_message_to'
+[2026-10-14T08:23:58.208Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_handoff_rules'
+[2026-10-14T08:23:58.208Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Communication Tools
+[2026-10-14T08:23:58.209Z] [ERROR] [electron.embedded-server.stderr] Overwriting existing tool definition for name: 'search_web'
+[2026-10-14T08:23:58.209Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-10-14T08:23:58.209Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Search Tools
+[2026-10-14T08:23:58.215Z] [INFO] [electron.embedded-server.stdout] Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+[2026-10-14T08:23:58.215Z] [INFO] [electron.embedded-server.stdout] Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+[2026-10-14T08:23:58.220Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1791966238220,"pid":13933,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:63649"}
+[2026-10-14T08:23:58.239Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1791966238239,"pid":13933,"hostname":"MacBookPro","msg":"Server listening at http://0.0.0.0:63602"}
+[2026-10-14T08:23:58.239Z] [INFO] [electron.embedded-server.stdout] [2026-10-14T08:23:58.239Z] [INFO] [server.runtime] Server listening on 0.0.0.0:63602
+[2026-10-14T08:23:58.239Z] [INFO] [electron.embedded-server.stdout] Scheduling Studio-only non-critical startup tasks...
+[2026-10-14T08:23:58.241Z] [INFO] [electron.embedded-server.stdout] Background cache pre-loading process has started.
+[2026-10-14T08:23:58.241Z] [INFO] [electron.embedded-server.stdout] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[2026-10-14T08:23:58.241Z] [INFO] [electron.embedded-server.stdout] Populating MCP server config cache for the first time...
+[2026-10-14T08:23:58.241Z] [INFO] [electron.embedded-server.stdout] Running MCP tool registration background task...
+[2026-10-14T08:23:58.241Z] [INFO] [electron.embedded-server.stdout] Loading and registering all MCP server configurations from file...
+[2026-10-14T08:23:58.241Z] [INFO] [electron.embedded-server.stdout] Background task 'Memory Sync Worker' completed successfully.
+[2026-10-14T08:23:58.241Z] [INFO] [electron.embedded-server.stdout] MCP server config cache populated with 0 items.
+[2026-10-14T08:23:58.242Z] [INFO] [electron.embedded-server.stdout] Found 0 total MCP server configs.
+[2026-10-14T08:23:58.242Z] [INFO] [electron.embedded-server.stdout] Synchronized cached configurations with the core MCP config service.
+[2026-10-14T08:23:58.242Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 0 MCP server configs into cache.
+[2026-10-14T08:23:58.242Z] [INFO] [electron.embedded-server.stdout] Finished loading and registering all MCP server configurations.
+[2026-10-14T08:23:58.242Z] [INFO] [electron.embedded-server.stdout] Background task 'MCP Tool Registration' completed successfully.
+[2026-10-14T08:23:58.242Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 35 LLM models into cache.
+[2026-10-14T08:23:58.242Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 7 image models into cache.
+[2026-10-14T08:23:58.242Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 3 audio models into cache.
+[2026-10-14T08:23:58.242Z] [INFO] [electron.embedded-server.stdout] Background application cache pre-loading completed.
+[2026-10-14T08:23:58.242Z] [INFO] [electron.embedded-server.stdout] Background task 'Cache Pre-loading' completed successfully.
+[2026-10-14T08:23:58.487Z] [INFO] [electron.server.base-server-manager] Server health check successful, server is ready
+[2026-10-14T08:23:58.487Z] [INFO] [electron] ServerStatusManager: Server is ready
+[2026-10-14T08:23:58.487Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:23:58.592Z] [INFO] [electron] Creating node-bound window for nodeId=embedded-local; url=file:///Users/normy/autobyteus_org/autobyteus-worktrees/output-tps-precision/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html
+(electron) 'console-message' arguments are deprecated and will be removed. Please use Event<WebContentsConsoleMessageEventParams> object instead.
+[2026-10-14T08:23:58.919Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:23:58.921Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:24:01.407Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:24:01.412Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:24:04.004Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:24:04.005Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:24:09.003Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:24:09.004Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:24:14.003Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:24:14.005Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:24:19.003Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:24:19.005Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:24:24.004Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:24:24.005Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:24:29.004Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:24:29.005Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:24:34.006Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:24:34.010Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:24:39.004Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:24:39.005Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:24:44.005Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:24:44.010Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:24:49.004Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:24:49.007Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:24:54.004Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:24:54.005Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:24:59.003Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:24:59.004Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:25:04.006Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:25:04.010Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:25:09.005Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:25:09.009Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:25:14.005Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:25:14.010Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:25:19.004Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:25:19.012Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:25:19.585Z] [INFO] [electron.embedded-server.stdout] Agent Definition created successfully with ID: tps-writer
+[2026-10-14T08:25:19.604Z] [INFO] [electron.embedded-server.stdout] Agent Definition created successfully with ID: tps-coordinator
+[2026-10-14T08:25:19.625Z] [INFO] [electron.embedded-server.stdout] Agent Definition created successfully with ID: tps-worker
+[2026-10-14T08:25:19.630Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1791966319630,"pid":13933,"hostname":"MacBookPro","reqId":"req-2b","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/output-tps-precision/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:517:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/output-tps-precision/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/output-tps-precision/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/output-tps-precision/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/output-tps-precision/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)","extensions":{}},"msg":"Graphql validation error"}
+[2026-10-14T08:25:24.004Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:25:24.006Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:25:28.378Z] [INFO] [electron.embedded-server.stdout] Agent Team Definition created successfully with ID: tps-desktop-team
+[2026-10-14T08:25:28.381Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /tmp/tps-desktop-ws
+[2026-10-14T08:25:28.382Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/tps-desktop-ws.
+[2026-10-14T08:25:28.382Z] [INFO] [electron.embedded-server.stdout] Created and registered workspace ID: agent_ws_b69c9e4de5f57d8d60490f4112248662f05c91337035f076e2486556a97e8f0d
+[2026-10-14T08:25:28.408Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /tmp/tps-desktop-ws
+[2026-10-14T08:25:28.408Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/tps-desktop-ws.
+[2026-10-14T08:25:28.408Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_b69c9e4de5f57d8d60490f4112248662f05c91337035f076e2486556a97e8f0d
+[2026-10-14T08:25:28.505Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /tmp/tps-desktop-ws
+[2026-10-14T08:25:28.505Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/tps-desktop-ws.
+[2026-10-14T08:25:28.505Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_b69c9e4de5f57d8d60490f4112248662f05c91337035f076e2486556a97e8f0d
+[2026-10-14T08:25:28.530Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /tmp/tps-desktop-ws
+[2026-10-14T08:25:28.530Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/tps-desktop-ws.
+[2026-10-14T08:25:28.530Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_b69c9e4de5f57d8d60490f4112248662f05c91337035f076e2486556a97e8f0d
+[2026-10-14T08:25:28.578Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /tmp/tps-desktop-ws
+[2026-10-14T08:25:28.578Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/tps-desktop-ws.
+[2026-10-14T08:25:28.578Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_b69c9e4de5f57d8d60490f4112248662f05c91337035f076e2486556a97e8f0d
+[2026-10-14T08:25:28.804Z] [ERROR] [electron.embedded-server.stderr] [CodexClientThreadRouter] app-server message was not routed {
+[2026-10-14T08:25:28.804Z] [ERROR] [electron.embedded-server.stderr]   kind: 'notification',
+[2026-10-14T08:25:28.804Z] [ERROR] [electron.embedded-server.stderr]   method: 'account/updated',
+[2026-10-14T08:25:28.804Z] [ERROR] [electron.embedded-server.stderr]   requestId: undefined,
+[2026-10-14T08:25:28.804Z] [ERROR] [electron.embedded-server.stderr]   threadCount: 2,
+[2026-10-14T08:25:28.804Z] [ERROR] [electron.embedded-server.stderr]   paramKeys: [ 'authMode', 'planType' ]
+[2026-10-14T08:25:28.804Z] [ERROR] [electron.embedded-server.stderr] }
+[2026-10-14T08:25:29.004Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:25:29.005Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:25:29.021Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:25:29.022Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:25:29.024Z] [INFO] [electron.embedded-server.stdout] GraphQL mutation to create workspace metadata
+[2026-10-14T08:25:29.024Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /tmp/tps-desktop-ws
+[2026-10-14T08:25:29.024Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/tps-desktop-ws.
+[2026-10-14T08:25:29.024Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_b69c9e4de5f57d8d60490f4112248662f05c91337035f076e2486556a97e8f0d
+[2026-10-14T08:25:29.029Z] [INFO] [electron.embedded-server.stdout] Agent websocket attached for run tps_writer_0dccd87da6954f379ee2d0f4e7283f46
+[2026-10-14T08:25:29.029Z] [INFO] [electron.embedded-server.stdout] Created agent session ee5a7ff2-49e1-43b2-82a7-148d07d6e382 for run tps_writer_0dccd87da6954f379ee2d0f4e7283f46
+[2026-10-14T08:25:29.029Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket connected: session=ee5a7ff2-49e1-43b2-82a7-148d07d6e382, run=tps_writer_0dccd87da6954f379ee2d0f4e7283f46
+[2026-10-14T08:25:29.040Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/memory/agent_teams/tps_desktop_team_59070180912f47158c7d60197672fdbc/tps_coordinator_0ffc914e69254b9c95b49a02e08e506a/raw_traces_active.jsonl
+[2026-10-14T08:25:29.041Z] [INFO] [electron.embedded-server.stdout] Agent websocket attached for run tps_writer_36f352d214ca48ad97496b7094a6191d
+[2026-10-14T08:25:29.041Z] [INFO] [electron.embedded-server.stdout] Created agent session 8ad31751-04f8-4d14-a666-52a074137412 for run tps_writer_36f352d214ca48ad97496b7094a6191d
+[2026-10-14T08:25:29.041Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket connected: session=8ad31751-04f8-4d14-a666-52a074137412, run=tps_writer_36f352d214ca48ad97496b7094a6191d
+[2026-10-14T08:25:29.041Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/memory/agent_teams/tps_desktop_team_59070180912f47158c7d60197672fdbc/tps_worker_ea3414c2787541bc824ac37f902da6d5/raw_traces_active.jsonl
+[2026-10-14T08:25:29.054Z] [INFO] [electron.embedded-server.stdout] Agent team websocket attached for team run tps_desktop_team_59070180912f47158c7d60197672fdbc
+[2026-10-14T08:25:29.054Z] [INFO] [electron.embedded-server.stdout] Created agent session 40741854-cabb-442f-85ce-76bc62aedf58 for run tps_desktop_team_59070180912f47158c7d60197672fdbc
+[2026-10-14T08:25:29.056Z] [INFO] [electron.embedded-server.stdout] Agent Team WebSocket connected: session=40741854-cabb-442f-85ce-76bc62aedf58, run=tps_desktop_team_59070180912f47158c7d60197672fdbc
+[2026-10-14T08:25:29.059Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/memory/agent_teams/tps_desktop_team_59070180912f47158c7d60197672fdbc/tps_coordinator_0ffc914e69254b9c95b49a02e08e506a/raw_traces_active.jsonl
+[2026-10-14T08:25:29.061Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/memory/agent_teams/tps_desktop_team_59070180912f47158c7d60197672fdbc/tps_coordinator_0ffc914e69254b9c95b49a02e08e506a/raw_traces_active.jsonl
+[2026-10-14T08:25:33.820Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:25:33.821Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:25:34.004Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:25:34.005Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:25:39.008Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:25:39.011Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:25:44.005Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:25:44.011Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:25:49.003Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:25:49.004Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:25:54.006Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:25:54.010Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:25:59.003Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:25:59.012Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:26:04.004Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:26:04.006Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:26:09.004Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:26:09.008Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:26:14.004Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:26:14.005Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:26:19.005Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:26:19.009Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:26:24.005Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:26:24.009Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:26:29.004Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:26:29.009Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:26:34.004Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:26:34.010Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:26:39.003Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:26:39.006Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:26:44.005Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:26:44.007Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:26:49.004Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:26:49.006Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:26:54.005Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:26:54.010Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:26:59.005Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:26:59.012Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:26:59.489Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:26:59.494Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:27:04.003Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:27:04.005Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:27:09.004Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:27:09.006Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:27:14.007Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:27:14.011Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:27:19.005Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:27:19.010Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:27:20.115Z] [INFO] [electron.embedded-server.stdout] Closed agent session 40741854-cabb-442f-85ce-76bc62aedf58
+[2026-10-14T08:27:20.115Z] [INFO] [electron.embedded-server.stdout] Closed agent session 8ad31751-04f8-4d14-a666-52a074137412
+[2026-10-14T08:27:20.115Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket disconnected: 8ad31751-04f8-4d14-a666-52a074137412
+[2026-10-14T08:27:20.115Z] [INFO] [electron.embedded-server.stdout] Closed agent session ee5a7ff2-49e1-43b2-82a7-148d07d6e382
+[2026-10-14T08:27:20.115Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket disconnected: ee5a7ff2-49e1-43b2-82a7-148d07d6e382
+[2026-10-14T08:27:20.273Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:27:20.274Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:27:20.294Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:27:20.295Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:27:20.302Z] [INFO] [electron.embedded-server.stdout] Agent websocket attached for run tps_writer_36f352d214ca48ad97496b7094a6191d
+[2026-10-14T08:27:20.302Z] [INFO] [electron.embedded-server.stdout] Created agent session 0d1f725e-a912-4c9b-942e-cacae27e089b for run tps_writer_36f352d214ca48ad97496b7094a6191d
+[2026-10-14T08:27:20.302Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket connected: session=0d1f725e-a912-4c9b-942e-cacae27e089b, run=tps_writer_36f352d214ca48ad97496b7094a6191d
+[2026-10-14T08:27:20.314Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:27:20.315Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:27:20.326Z] [INFO] [electron.embedded-server.stdout] Agent websocket attached for run tps_writer_0dccd87da6954f379ee2d0f4e7283f46
+[2026-10-14T08:27:20.326Z] [INFO] [electron.embedded-server.stdout] Created agent session b62f4f75-992b-4607-9de7-039b29088ec5 for run tps_writer_0dccd87da6954f379ee2d0f4e7283f46
+[2026-10-14T08:27:20.326Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket connected: session=b62f4f75-992b-4607-9de7-039b29088ec5, run=tps_writer_0dccd87da6954f379ee2d0f4e7283f46
+[2026-10-14T08:27:20.334Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/memory/agent_teams/tps_desktop_team_59070180912f47158c7d60197672fdbc/tps_coordinator_0ffc914e69254b9c95b49a02e08e506a/raw_traces_active.jsonl
+[2026-10-14T08:27:20.341Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/memory/agent_teams/tps_desktop_team_59070180912f47158c7d60197672fdbc/tps_worker_ea3414c2787541bc824ac37f902da6d5/raw_traces_active.jsonl
+[2026-10-14T08:27:20.347Z] [INFO] [electron.embedded-server.stdout] Agent team websocket attached for team run tps_desktop_team_59070180912f47158c7d60197672fdbc
+[2026-10-14T08:27:20.347Z] [INFO] [electron.embedded-server.stdout] Created agent session 58b30d5b-06a1-49f1-9478-174d2f6d611a for run tps_desktop_team_59070180912f47158c7d60197672fdbc
+[2026-10-14T08:27:20.347Z] [INFO] [electron.embedded-server.stdout] Agent Team WebSocket connected: session=58b30d5b-06a1-49f1-9478-174d2f6d611a, run=tps_desktop_team_59070180912f47158c7d60197672fdbc
+[2026-10-14T08:27:20.351Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/memory/agent_teams/tps_desktop_team_59070180912f47158c7d60197672fdbc/tps_coordinator_0ffc914e69254b9c95b49a02e08e506a/raw_traces_active.jsonl
+[2026-10-14T08:27:20.356Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/memory/agent_teams/tps_desktop_team_59070180912f47158c7d60197672fdbc/tps_coordinator_0ffc914e69254b9c95b49a02e08e506a/raw_traces_active.jsonl
+[2026-10-14T08:27:22.283Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:27:22.284Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:27:24.151Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:27:24.154Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:27:25.349Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:27:25.353Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:27:30.350Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:27:30.356Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:27:33.840Z] [INFO] [electron.embedded-server.stdout] Closed agent session b62f4f75-992b-4607-9de7-039b29088ec5
+[2026-10-14T08:27:33.841Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket disconnected: b62f4f75-992b-4607-9de7-039b29088ec5
+[2026-10-14T08:27:33.841Z] [INFO] [electron.embedded-server.stdout] Closed agent session 0d1f725e-a912-4c9b-942e-cacae27e089b
+[2026-10-14T08:27:33.841Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket disconnected: 0d1f725e-a912-4c9b-942e-cacae27e089b
+[2026-10-14T08:27:33.841Z] [INFO] [electron.embedded-server.stdout] Closed agent session 58b30d5b-06a1-49f1-9478-174d2f6d611a
+[2026-10-14T08:27:33.975Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:27:33.976Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:27:33.990Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:27:33.991Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:27:33.996Z] [INFO] [electron.embedded-server.stdout] Agent websocket attached for run tps_writer_0dccd87da6954f379ee2d0f4e7283f46
+[2026-10-14T08:27:33.997Z] [INFO] [electron.embedded-server.stdout] Created agent session bcf2b1a3-d3b6-4dd7-b267-49406ab90a5e for run tps_writer_0dccd87da6954f379ee2d0f4e7283f46
+[2026-10-14T08:27:33.997Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket connected: session=bcf2b1a3-d3b6-4dd7-b267-49406ab90a5e, run=tps_writer_0dccd87da6954f379ee2d0f4e7283f46
+[2026-10-14T08:27:34.005Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:27:34.006Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:27:34.023Z] [INFO] [electron.embedded-server.stdout] Agent websocket attached for run tps_writer_36f352d214ca48ad97496b7094a6191d
+[2026-10-14T08:27:34.023Z] [INFO] [electron.embedded-server.stdout] Created agent session 3c39912e-abd2-4d4e-a778-b3caac5a095a for run tps_writer_36f352d214ca48ad97496b7094a6191d
+[2026-10-14T08:27:34.023Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket connected: session=3c39912e-abd2-4d4e-a778-b3caac5a095a, run=tps_writer_36f352d214ca48ad97496b7094a6191d
+[2026-10-14T08:27:34.033Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/memory/agent_teams/tps_desktop_team_59070180912f47158c7d60197672fdbc/tps_coordinator_0ffc914e69254b9c95b49a02e08e506a/raw_traces_active.jsonl
+[2026-10-14T08:27:34.037Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/memory/agent_teams/tps_desktop_team_59070180912f47158c7d60197672fdbc/tps_worker_ea3414c2787541bc824ac37f902da6d5/raw_traces_active.jsonl
+[2026-10-14T08:27:34.041Z] [INFO] [electron.embedded-server.stdout] Agent team websocket attached for team run tps_desktop_team_59070180912f47158c7d60197672fdbc
+[2026-10-14T08:27:34.041Z] [INFO] [electron.embedded-server.stdout] Created agent session 9d5f5e1f-962f-49c9-8b75-673f28bdb505 for run tps_desktop_team_59070180912f47158c7d60197672fdbc
+[2026-10-14T08:27:34.042Z] [INFO] [electron.embedded-server.stdout] Agent Team WebSocket connected: session=9d5f5e1f-962f-49c9-8b75-673f28bdb505, run=tps_desktop_team_59070180912f47158c7d60197672fdbc
+[2026-10-14T08:27:34.044Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/memory/agent_teams/tps_desktop_team_59070180912f47158c7d60197672fdbc/tps_coordinator_0ffc914e69254b9c95b49a02e08e506a/raw_traces_active.jsonl
+[2026-10-14T08:27:34.049Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/memory/agent_teams/tps_desktop_team_59070180912f47158c7d60197672fdbc/tps_coordinator_0ffc914e69254b9c95b49a02e08e506a/raw_traces_active.jsonl
+[2026-10-14T08:27:35.982Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:27:35.987Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:27:39.042Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:27:39.044Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:27:39.057Z] [INFO] [electron.embedded-server.stdout] Closed agent session bcf2b1a3-d3b6-4dd7-b267-49406ab90a5e
+[2026-10-14T08:27:39.057Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket disconnected: bcf2b1a3-d3b6-4dd7-b267-49406ab90a5e
+[2026-10-14T08:27:44.044Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:27:44.048Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:27:49.042Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:27:49.043Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:27:54.044Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:27:54.048Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:27:59.043Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:27:59.049Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:27:59.711Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:27:59.712Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:28:04.042Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:28:04.043Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:28:09.042Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:28:09.047Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:28:14.044Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:28:14.048Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:28:19.046Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:28:19.049Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:28:24.043Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:28:24.046Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:28:28.221Z] [INFO] [electron.embedded-server.stdout] Closed agent session 9d5f5e1f-962f-49c9-8b75-673f28bdb505
+[2026-10-14T08:28:28.222Z] [INFO] [electron.embedded-server.stdout] Closed agent session 3c39912e-abd2-4d4e-a778-b3caac5a095a
+[2026-10-14T08:28:28.222Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket disconnected: 3c39912e-abd2-4d4e-a778-b3caac5a095a
+[2026-10-14T08:28:28.358Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:28:28.359Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:28:28.393Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:28:28.394Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:28:28.403Z] [INFO] [electron.embedded-server.stdout] Agent websocket attached for run tps_writer_36f352d214ca48ad97496b7094a6191d
+[2026-10-14T08:28:28.403Z] [INFO] [electron.embedded-server.stdout] Created agent session 91ce674e-4295-4474-b6e2-6f145e7fb419 for run tps_writer_36f352d214ca48ad97496b7094a6191d
+[2026-10-14T08:28:28.403Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket connected: session=91ce674e-4295-4474-b6e2-6f145e7fb419, run=tps_writer_36f352d214ca48ad97496b7094a6191d
+[2026-10-14T08:28:28.408Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/memory/agent_teams/tps_desktop_team_59070180912f47158c7d60197672fdbc/tps_coordinator_0ffc914e69254b9c95b49a02e08e506a/raw_traces_active.jsonl
+[2026-10-14T08:28:28.408Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/memory/agent_teams/tps_desktop_team_59070180912f47158c7d60197672fdbc/tps_worker_ea3414c2787541bc824ac37f902da6d5/raw_traces_active.jsonl
+[2026-10-14T08:28:28.414Z] [INFO] [electron.embedded-server.stdout] Agent team websocket attached for team run tps_desktop_team_59070180912f47158c7d60197672fdbc
+[2026-10-14T08:28:28.414Z] [INFO] [electron.embedded-server.stdout] Created agent session c55b5a85-2a3b-4164-ae91-38a5dd24153d for run tps_desktop_team_59070180912f47158c7d60197672fdbc
+[2026-10-14T08:28:28.414Z] [INFO] [electron.embedded-server.stdout] Agent Team WebSocket connected: session=c55b5a85-2a3b-4164-ae91-38a5dd24153d, run=tps_desktop_team_59070180912f47158c7d60197672fdbc
+[2026-10-14T08:28:28.417Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/memory/agent_teams/tps_desktop_team_59070180912f47158c7d60197672fdbc/tps_coordinator_0ffc914e69254b9c95b49a02e08e506a/raw_traces_active.jsonl
+[2026-10-14T08:28:28.419Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/memory/agent_teams/tps_desktop_team_59070180912f47158c7d60197672fdbc/tps_coordinator_0ffc914e69254b9c95b49a02e08e506a/raw_traces_active.jsonl
+[2026-10-14T08:28:28.484Z] [INFO] [electron.embedded-server.stdout] Created terminal session 9924b593-8d66-4302-a163-10802230cdad using backend IsolatedPtySession for target /Users/normy
+[2026-10-14T08:28:28.485Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket connected: 9924b593-8d66-4302-a163-10802230cdad
+[2026-10-14T08:28:28.485Z] [INFO] [electron.embedded-server.stdout] Terminal websocket attached for cwd /Users/normy
+[2026-10-14T08:28:30.381Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:28:30.383Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:28:33.413Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:28:33.416Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:28:38.413Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:28:38.417Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:28:43.414Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:28:43.416Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:28:48.413Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:28:48.416Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:28:53.415Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:28:53.417Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:28:58.414Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:28:58.418Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:29:03.414Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:29:03.416Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:29:08.413Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:29:08.415Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:29:13.416Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:29:13.420Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:29:18.417Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:29:18.423Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:29:23.413Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:29:23.414Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:29:28.414Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:29:28.417Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:29:33.414Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:29:33.418Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:29:38.413Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:29:38.416Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:29:39.543Z] [INFO] [electron.embedded-server.stdout] Closed agent session c55b5a85-2a3b-4164-ae91-38a5dd24153d
+[2026-10-14T08:29:39.545Z] [INFO] [electron.embedded-server.stdout] Closed agent session 91ce674e-4295-4474-b6e2-6f145e7fb419
+[2026-10-14T08:29:39.545Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket disconnected: 91ce674e-4295-4474-b6e2-6f145e7fb419
+[2026-10-14T08:29:39.581Z] [INFO] [electron.embedded-server.stdout] Closed PTY session 9924b593-8d66-4302-a163-10802230cdad
+[2026-10-14T08:29:39.582Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket disconnected: 9924b593-8d66-4302-a163-10802230cdad
+[2026-10-14T08:29:39.697Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:29:39.698Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:29:39.764Z] [INFO] [electron.embedded-server.stdout] Agent websocket attached for run tps_writer_36f352d214ca48ad97496b7094a6191d
+[2026-10-14T08:29:39.764Z] [INFO] [electron.embedded-server.stdout] Created agent session 7025e4f0-c258-444e-acaa-9201a60fb20e for run tps_writer_36f352d214ca48ad97496b7094a6191d
+[2026-10-14T08:29:39.765Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket connected: session=7025e4f0-c258-444e-acaa-9201a60fb20e, run=tps_writer_36f352d214ca48ad97496b7094a6191d
+[2026-10-14T08:29:39.771Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/memory/agent_teams/tps_desktop_team_59070180912f47158c7d60197672fdbc/tps_coordinator_0ffc914e69254b9c95b49a02e08e506a/raw_traces_active.jsonl
+[2026-10-14T08:29:39.771Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/memory/agent_teams/tps_desktop_team_59070180912f47158c7d60197672fdbc/tps_worker_ea3414c2787541bc824ac37f902da6d5/raw_traces_active.jsonl
+[2026-10-14T08:29:39.775Z] [INFO] [electron.embedded-server.stdout] Agent team websocket attached for team run tps_desktop_team_59070180912f47158c7d60197672fdbc
+[2026-10-14T08:29:39.776Z] [INFO] [electron.embedded-server.stdout] Created agent session 6ed57ad3-7f8c-406f-86c9-4773885f24b0 for run tps_desktop_team_59070180912f47158c7d60197672fdbc
+[2026-10-14T08:29:39.776Z] [INFO] [electron.embedded-server.stdout] Agent Team WebSocket connected: session=6ed57ad3-7f8c-406f-86c9-4773885f24b0, run=tps_desktop_team_59070180912f47158c7d60197672fdbc
+[2026-10-14T08:29:39.778Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/memory/agent_teams/tps_desktop_team_59070180912f47158c7d60197672fdbc/tps_coordinator_0ffc914e69254b9c95b49a02e08e506a/raw_traces_active.jsonl
+[2026-10-14T08:29:39.781Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2Xqhfs/server-data/memory/agent_teams/tps_desktop_team_59070180912f47158c7d60197672fdbc/tps_coordinator_0ffc914e69254b9c95b49a02e08e506a/raw_traces_active.jsonl
+[2026-10-14T08:29:39.849Z] [INFO] [electron.embedded-server.stdout] Created terminal session 03f2843d-b8d1-49fe-bb77-16e2eac223cd using backend IsolatedPtySession for target /Users/normy
+[2026-10-14T08:29:39.849Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket connected: 03f2843d-b8d1-49fe-bb77-16e2eac223cd
+[2026-10-14T08:29:39.849Z] [INFO] [electron.embedded-server.stdout] Terminal websocket attached for cwd /Users/normy
+[2026-10-14T08:29:41.708Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:29:41.712Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:29:44.015Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:29:44.016Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:29:44.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:29:44.780Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:29:48.218Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:29:48.219Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:29:48.226Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /tmp/tps-desktop-ws
+[2026-10-14T08:29:48.226Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/tps-desktop-ws.
+[2026-10-14T08:29:48.226Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_b69c9e4de5f57d8d60490f4112248662f05c91337035f076e2486556a97e8f0d
+[2026-10-14T08:29:49.778Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:29:49.781Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:29:52.773Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /tmp/tps-desktop-ws
+[2026-10-14T08:29:52.773Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/tps-desktop-ws.
+[2026-10-14T08:29:52.773Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_b69c9e4de5f57d8d60490f4112248662f05c91337035f076e2486556a97e8f0d
+[2026-10-14T08:29:52.810Z] [ERROR] [electron.embedded-server.stderr] [CodexClientThreadRouter] app-server message was not routed {
+[2026-10-14T08:29:52.810Z] [ERROR] [electron.embedded-server.stderr]   kind: 'notification',
+[2026-10-14T08:29:52.810Z] [ERROR] [electron.embedded-server.stderr]   method: 'thread/started',
+[2026-10-14T08:29:52.810Z] [ERROR] [electron.embedded-server.stderr]   requestId: undefined,
+[2026-10-14T08:29:52.810Z] [ERROR] [electron.embedded-server.stderr]   threadCount: 3,
+[2026-10-14T08:29:52.810Z] [ERROR] [electron.embedded-server.stderr]   paramKeys: [ 'thread' ]
+[2026-10-14T08:29:52.810Z] [ERROR] [electron.embedded-server.stderr] }
+[2026-10-14T08:29:54.778Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:29:54.783Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:29:55.697Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /tmp/tps-desktop-ws
+[2026-10-14T08:29:55.697Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/tps-desktop-ws.
+[2026-10-14T08:29:55.697Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_b69c9e4de5f57d8d60490f4112248662f05c91337035f076e2486556a97e8f0d
+[2026-10-14T08:29:55.752Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:29:55.754Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:29:55.781Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:29:55.782Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:29:59.778Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:29:59.781Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:30:04.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:30:04.779Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:30:09.776Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:30:09.779Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:30:14.776Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:30:14.778Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:30:19.780Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:30:19.783Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:30:24.778Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:30:24.783Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:30:29.778Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:30:29.783Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:30:34.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:30:34.781Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:30:39.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:30:39.779Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:30:44.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:30:44.781Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:30:49.778Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:30:49.780Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:30:54.775Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:30:54.776Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:30:59.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:30:59.780Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:31:04.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:31:04.781Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:31:09.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:31:09.782Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:31:14.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:31:14.781Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:31:19.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:31:19.781Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:31:24.860Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:31:24.861Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:31:29.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:31:29.780Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:31:34.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:31:34.779Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:31:39.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:31:39.779Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:31:44.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:31:44.779Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:31:49.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:31:49.783Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:31:54.778Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:31:54.783Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:31:59.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:31:59.780Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:32:04.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:32:04.779Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:32:09.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:32:09.782Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:32:14.776Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:32:14.778Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:32:19.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:32:19.780Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:32:24.778Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:32:24.782Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:32:29.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:32:29.785Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:32:34.776Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:32:34.777Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:32:39.776Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:32:39.778Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:32:44.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:32:44.781Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:32:49.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:32:49.780Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:32:54.779Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:32:54.783Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:32:59.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:32:59.783Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:33:04.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:33:04.780Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:33:09.778Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:33:09.782Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:33:14.778Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:33:14.782Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:33:19.778Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:33:19.783Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:33:24.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:33:24.782Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:33:29.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:33:29.782Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:33:34.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:33:34.780Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:33:39.776Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:33:39.778Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:33:44.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:33:44.781Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:33:49.781Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:33:49.784Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:33:54.776Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:33:54.777Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:33:59.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:33:59.781Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:34:04.778Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:34:04.787Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:34:09.778Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:34:09.784Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:34:14.777Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:34:14.780Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:34:19.776Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:34:19.780Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:34:24.778Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:34:24.782Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-14T08:34:29.778Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-14T08:34:29.782Z] [INFO] [electron] ServerStatusManager: Emitting status change: running

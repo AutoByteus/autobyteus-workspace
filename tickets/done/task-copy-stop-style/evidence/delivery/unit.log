@@ -1,0 +1,49 @@
+
+> autobyteus@1.5.3-beta.4 test:nuxt /home/autobyteus/workspace/.codex/worktrees/task-copy-stop-style/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/history/__tests__/DelegatedStopButton.spec.ts stores/__tests__/delegatedLaunchDraftStore.spec.ts components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts components/workspace/history/__tests__/WorkspaceTransientExecutionRow.spec.ts --run --maxWorkers=2
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/task-copy-stop-style/autobyteus-web
+
+stderr | components/workspace/history/__tests__/DelegatedStopButton.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/DelegatedStopButton.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/history/__tests__/DelegatedStopButton.spec.ts (11 tests) 64ms
+ ✓ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts (14 tests) 243ms
+stderr | components/workspace/history/__tests__/WorkspaceTransientExecutionRow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/delegatedLaunchDraftStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/WorkspaceTransientExecutionRow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/history/__tests__/WorkspaceTransientExecutionRow.spec.ts (6 tests) 39ms
+stdout | stores/__tests__/delegatedLaunchDraftStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/delegatedLaunchDraftStore.spec.ts (5 tests) 16ms
+
+ Test Files  4 passed (4)
+      Tests  36 passed (36)
+   Start at  15:27:04
+   Duration  15.91s (transform 6.26s, setup 24.28s, collect 1.52s, tests 362ms, environment 2.98s, prepare 1.25s)

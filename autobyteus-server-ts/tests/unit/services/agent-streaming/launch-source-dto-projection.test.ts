@@ -1,63 +1,60 @@
 import { describe, expect, it } from "vitest";
-import { collaboratorEntryDtoSchema as teamCollaboratorDtoSchema, teamMemberLaunchConfiguration } from "@autobyteus/team-stream-contracts";
-import {
-  collaborationMemberLaunchConfiguration,
-  collaboratorEntryDtoSchema,
-  taskExecutionDtoSchema,
-} from "@autobyteus/collaboration-stream-contracts";
-import { projectCollaboratorEntry } from "../../../../src/services/agent-streaming/team-execution-view-projector.js";
-import {
-  projectCollaborationCollaborator,
-  projectCollaborationTaskExecution,
-} from "../../../../src/services/agent-streaming/collaboration-execution-tree-dto-projection.js";
+import { taskTeamExecutionDtoSchema, teamMemberLaunchConfiguration } from "@autobyteus/team-stream-contracts";
+import { collaborationMemberLaunchConfiguration, taskExecutionDtoSchema } from "@autobyteus/collaboration-stream-contracts";
+import { projectExecutionTree } from "../../../../src/services/agent-streaming/team-execution-view-projector.js";
+import { projectCollaborationTaskExecution } from "../../../../src/services/agent-streaming/collaboration-execution-tree-dto-projection.js";
 import { toDelegateTaskResult } from "../../../../src/agent-tools/task-delegation/task-delegation-tool-serialization.js";
 import { DelegateTaskResultSchema } from "../../../../src/agent-team-execution/task-delegation/task-delegation-result-contract.js";
-import type { CollaboratorTeamEntry, TaskExecution } from "../../../../src/run-history/domain/run-execution-tree-shared-records.js";
+import type { TaskTeamExecution } from "../../../../src/run-history/domain/run-execution-tree-shared-records.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 
 /** REQ-007: run views carry each recorded member launch and source; REQ-008: delegate_task carries launch_notes. */
 const claude = { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", llmConfig: null, autoExecuteTools: false, workspaceRootPath: "/w" };
 const codex = { ...claude, runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "sol-6.1" };
 const fallback = { layer: "agent_default" as const, runtimeKind: "grok_build", llmModelIdentifier: "grok-4", reason: "runtime_unavailable" as const, detail: "no grok" };
-const entry: CollaboratorTeamEntry = {
-  kind: "agent_team", address: "/se" as never, teamDefinitionId: "se", teamRunId: "se-run", coordinatorAddress: "/se/lead" as never,
-  handoffs: [], taskExecutions: [], addedAt: "2026-10-12T00:00:00.000Z", addedViaAgentRunId: "pm",
-  defaultLaunchConfiguration: claude, defaultLaunchSource: { origin: "inherited", fallbacks: [] },
+const copy: TaskTeamExecution = {
+  address: "/se" as never, teamRunId: "se-copy", startedAt: "2026-10-12T00:00:00.000Z", taskExecutions: [], delegatorAgentRunId: "pm",
   members: [
-    { address: "/se/lead" as never, agentDefinitionId: "lead", agentRunId: "lead-run", platformAgentRunId: null, launchSource: { origin: "inherited", fallbacks: [fallback] } },
-    { address: "/se/ie" as never, agentDefinitionId: "ie", agentRunId: "ie-run", platformAgentRunId: null, launchConfiguration: codex, launchSource: { origin: "agent_default", fallbacks: [] } },
+    { address: "/se/lead" as never, agentRunId: "lead-run", platformAgentRunId: null },
+    { address: "/se/ie" as never, agentRunId: "ie-run", platformAgentRunId: null },
   ],
+  source: {
+    kind: "agent_team", teamDefinitionId: "se", coordinatorAddress: "/se/lead" as never, handoffs: [],
+    defaultLaunchConfiguration: claude, defaultLaunchSource: { origin: "inherited", fallbacks: [] },
+    members: [
+      { address: "/se/lead" as never, agentDefinitionId: "lead", launchSource: { origin: "inherited", fallbacks: [fallback] } },
+      { address: "/se/ie" as never, agentDefinitionId: "ie", launchConfiguration: codex, launchSource: { origin: "agent_default", fallbacks: [] } },
+    ],
+  },
 };
 
 describe("launch values and sources in run views", () => {
+  const tree = (task: TaskTeamExecution) => projectExecutionTree({
+    createdAt: copy.startedAt, archivedAt: null, applicationBinding: null, handoffs: [],
+    rootTeam: { address: "/", teamDefinitionId: "t", teamDefinitionName: "T", teamRunId: "root", coordinatorAddress: "/pm" as never,
+      defaultLaunchConfiguration: claude, taskExecutions: [task],
+      members: [{ address: "/pm" as never, agentDefinitionId: "pm", role: null, description: null, agentRunId: "pm", platformAgentRunId: null, launchConfiguration: claude }] },
+  } as never);
+
   it("the Team view (snake_case) carries member launch values and sources only when recorded", () => {
-    const dto = teamCollaboratorDtoSchema.parse(projectCollaboratorEntry(entry));
-    if (dto.kind !== "agent_team") throw new Error("team expected");
-    expect(dto.default_launch_source).toEqual({ origin: "inherited", fallbacks: [] });
-    expect(dto.members[0]).toEqual({ address: "/se/lead", agent_definition_id: "lead", agent_run_id: "lead-run", platform_agent_run_id: null,
+    const dto = taskTeamExecutionDtoSchema.parse(tree(copy).root_team.task_executions[0]);
+    const source = dto.source!;
+    expect(source.default_launch_source).toEqual({ origin: "inherited", fallbacks: [] });
+    expect(source.members[0]).toEqual({ address: "/se/lead", agent_definition_id: "lead",
       launch_source: { origin: "inherited", fallbacks: [{ layer: "agent_default", runtime_kind: "grok_build", llm_model_identifier: "grok-4", reason: "runtime_unavailable", detail: "no grok" }] } });
-    expect(dto.members.map((member) => teamMemberLaunchConfiguration(dto, member).llm_model_identifier)).toEqual(["opus", "sol-6.1"]);
-    const before = { ...entry, defaultLaunchSource: undefined, members: entry.members.map(({ launchConfiguration: _l, launchSource: _s, ...member }) => member) };
-    const old = projectCollaboratorEntry(before as CollaboratorTeamEntry);
-    expect(JSON.stringify(old)).not.toMatch(/launch_source|"launch_configuration"/);
+    expect(source.members.map((member) => teamMemberLaunchConfiguration(source, member).llm_model_identifier)).toEqual(["opus", "sol-6.1"]);
+    const { defaultLaunchSource: _d, ...bareSource } = copy.source as Extract<typeof copy.source, { kind: "agent_team" }>;
+    const older = { ...copy, source: { ...bareSource, members: bareSource.members.map(({ launchConfiguration: _l, launchSource: _s, ...member }) => member) } } as TaskTeamExecution;
+    expect(JSON.stringify(tree(older).root_team.task_executions[0])).not.toMatch(/launch_source|"launch_configuration":\{"runtime_kind":"codex/);
   });
 
-  it("the Org and Agent views (camelCase) carry the same, for collaborators and catalog copies", () => {
-    const dto = collaboratorEntryDtoSchema.parse(projectCollaborationCollaborator(entry));
-    if (dto.kind !== "agent_team") throw new Error("team expected");
-    expect(dto.members.map((member) => collaborationMemberLaunchConfiguration(dto, member).llmModelIdentifier)).toEqual(["opus", "sol-6.1"]);
-    expect(dto.members[0]!.launchSource?.fallbacks[0]).toEqual(fallback);
-    const copy = {
-      address: "/se", teamRunId: "copy", startedAt: "2026-10-12T00:00:00.000Z", taskExecutions: [],
-      members: [{ address: "/se/lead", agentRunId: "c-lead", platformAgentRunId: null }],
-      source: { kind: "agent_team", teamDefinitionId: "se", coordinatorAddress: "/se/lead", handoffs: [],
-        members: entry.members.map(({ agentRunId: _a, platformAgentRunId: _p, ...member }) => member),
-        defaultLaunchConfiguration: claude, defaultLaunchSource: entry.defaultLaunchSource },
-    } as unknown as TaskExecution;
+  it("the Org and Agent views (camelCase) carry the same for catalog copies", () => {
     const projected = taskExecutionDtoSchema.parse(projectCollaborationTaskExecution(copy));
-    expect("source" in projected && projected.source?.kind === "agent_team" && projected.source.members[1]).toMatchObject({
-      launchConfiguration: { runtimeKind: "codex_app_server" }, launchSource: { origin: "agent_default" },
-    });
+    if (!("source" in projected) || projected.source?.kind !== "agent_team") throw new Error("team copy expected");
+    const source = projected.source;
+    expect(source.members.map((member) => collaborationMemberLaunchConfiguration(source, member).llmModelIdentifier)).toEqual(["opus", "sol-6.1"]);
+    expect(source.members[0]!.launchSource?.fallbacks[0]).toEqual(fallback);
+    expect(source.members[1]).toMatchObject({ launchConfiguration: { runtimeKind: "codex_app_server" }, launchSource: { origin: "agent_default" } });
   });
 });
 

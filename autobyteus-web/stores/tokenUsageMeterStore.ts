@@ -17,11 +17,12 @@ import type {
   TokenUsageUpdatedPayload,
 } from '~/types/tokenUsageMeter';
 import {
-  emptyUnitPrices,
   forceMixedUnitPrices,
   mergeUnitPrices,
   unitPricesOrEmpty,
 } from '~/stores/tokenUsageUnitPriceSummary';
+import { emptyTeamAggregate } from '~/stores/tokenUsageTeamAggregate';
+import { createTokenUsageThroughput } from '~/stores/tokenUsageThroughput';
 import { createTokenUsageCompactionMarks } from '~/stores/tokenUsageCompactionMarks';
 
 export interface TeamTokenUsageMemberIdentity {
@@ -42,55 +43,6 @@ type TeamTokenUsageAggregateEntry = {
   liveGeneration: number;
   fetchGeneration: number | null;
 };
-
-const emptyTeamAggregate = (teamRunId: string): TokenUsageRunSummary => ({
-  runId: teamRunId,
-  rootTeamRunId: teamRunId,
-  agentDefinitionId: null,
-  workspaceId: null,
-  grossInputTokens: 0,
-  standardInputTokens: 0,
-  cacheMissInputTokens: 0,
-  cacheReadInputTokens: 0,
-  cacheCreationInputTokens: 0,
-  cacheCreation5mInputTokens: 0,
-  cacheCreation1hInputTokens: 0,
-  outputTokens: 0,
-  reasoningOutputTokens: 0,
-  billableOutputTokens: 0,
-  totalTokens: 0,
-  cacheReadInputTokenRate: null,
-  standardInputTokenRate: null,
-  cacheCreationInputTokenRate: null,
-  cacheState: 'unknown',
-  estimatedApiInputCost: null,
-  estimatedApiStandardInputCost: null,
-  estimatedApiCacheReadInputCost: null,
-  estimatedApiCacheCreationInputCost: null,
-  estimatedApiCacheCreation5mInputCost: null,
-  estimatedApiCacheCreation1hInputCost: null,
-  estimatedApiOutputCost: null,
-  estimatedApiReasoningOutputCost: null,
-  estimatedApiTotalCost: null,
-  currency: null,
-  apiCostStatus: 'price_missing',
-  missingPriceDimensions: [],
-  pricingPolicyKey: null,
-  selectedPricingTierId: null,
-  unitPrices: emptyUnitPrices(),
-  latestPromptTokens: null,
-  effectiveContextWindowTokens: null,
-  contextWindowUsagePercent: null,
-  contextCompactionThresholdTokens: null,
-  latestModelProvider: null,
-  latestModelIdentifier: null,
-  latestSelectedRawModelId: null,
-  hasCacheWriteRateAssumption: false,
-  latestRuntimeKind: null,
-  usageReportCount: 0,
-  revision: 0,
-  updatedAt: null,
-});
 
 const normalizedId = (value: string | null | undefined): string => value?.trim() || '';
 const memberCacheKey = (identity: TeamTokenUsageMemberIdentity): string =>
@@ -229,10 +181,12 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
   const teamAggregateEntries = reactive<Record<string, TeamTokenUsageAggregateEntry>>({});
   const seenUsageKeys = new Set<string>();
   const teamAggregateRequests = new Map<string, Promise<TokenUsageRunSummary | null>>();
-  /** Standalone run roll-ups (host plus collaborators and copies), apart from the host's exact live summary. */
+  /** Standalone run roll-ups (host plus delegated copies), apart from the host's exact live summary. */
   const standaloneRunSummaries = reactive<Record<string, TokenUsageRunSummary>>({});
   const standaloneRunRequests = new Map<string, Promise<TokenUsageRunSummary | null>>();
   const { clearOnLiveModelCall, ...compactionMarks } = createTokenUsageCompactionMarks();
+
+  const throughput = createTokenUsageThroughput();
 
   function getRunSummary(runId: string | null | undefined): TokenUsageRunSummary | null {
     const id = normalizedId(runId);
@@ -312,9 +266,12 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
 
   function applyTokenUsageUpdated(payload: TokenUsageUpdatedPayload): boolean {
     const runId = normalizedId(payload.run_id);
-    if (!runId || !payload.run_summary_after_event) return false;
+    if (!runId) return false;
     const seenKey = payload.usage_event_id || payload.idempotency_key;
     if (seenKey && seenUsageKeys.has(seenKey)) return false;
+    // TPS is decided per call on the server, independent of accounting and persistence.
+    throughput.record(runId, payload);
+    if (!payload.run_summary_after_event) return false;
     const summary = mapTokenUsageRunSummaryDto(payload.run_summary_after_event, { runId });
     if (seenKey) seenUsageKeys.add(seenKey);
     clearOnLiveModelCall(runId, payload.reports_model_call);
@@ -328,9 +285,11 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
   ): boolean {
     const teamRunId = normalizedId(rootTeamRunId);
     const runId = normalizedId(agentRunId);
-    if (!teamRunId || !runId || details.agent_run_id !== runId || !details.run_summary_after_event) return false;
+    if (!teamRunId || !runId || details.agent_run_id !== runId) return false;
     const seenKey = details.usage_event_id || details.idempotency_key;
     if (seenUsageKeys.has(seenKey)) return false;
+    throughput.record(runId, details);
+    if (!details.run_summary_after_event) return false;
     const summary = mapTokenUsageRunSummaryDto(details.run_summary_after_event, {
       runId,
       rootTeamRunId: teamRunId,
@@ -512,6 +471,7 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
 
   return {
     ...compactionMarks,
+    getRunTps: throughput.getRunTps,
     hasAnyUsage,
     getRunSummary,
     getStandaloneRunSummary,

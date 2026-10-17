@@ -1,0 +1,33 @@
+{
+  "goTopPass": 56,
+  "goSkips": [
+    "--- SKIP: TestInstallerDirectoryModeChild (0.00s)"
+  ],
+  "goPackagesPass": [
+    "ok  \tgithub.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/backend\t1.632s",
+    "ok  \tgithub.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/cli\t1.542s",
+    "ok  \tgithub.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/config\t2.990s",
+    "ok  \tgithub.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/docker\t23.598s",
+    "ok  \tgithub.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/platform\t7.484s",
+    "ok  \tgithub.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/service\t2.256s",
+    "ok  \tgithub.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/setup\t4.773s"
+  ],
+  "pythonSummary": "Ran 53 tests in 46.086s\n\nOK (skipped=3)\n",
+  "pythonSkips": [
+    "test_directory_modes_with_go_fixture (scripts.tests.test_nfs_installer_fixture.NfsInstallerFixtureTest) ... skipped 'invoked by Go platform bootstrap regression'",
+    "test_powershell_launcher_parses_when_pwsh_is_available (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... skipped 'pwsh is not installed'",
+    "test_preferred_port_collision_falls_back_for_that_service (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... skipped 'port 8001 is not available for collision test setup'"
+  ],
+  "indentCountsAreNotHierarchy": {
+    "4": 140,
+    "8": 2,
+    "12": 2
+  },
+  "goSubtestPass": 140,
+  "goSubtestsByNameDepth": {
+    "1": 84,
+    "2": 42,
+    "3": 14
+  },
+  "nestedChildTranscriptNotAdditionalSuiteTests": true
+}

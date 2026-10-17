@@ -42,19 +42,37 @@ export interface RunMemberNode {
   customizedOptionKeys: readonly string[]
   /** No model chosen anywhere up the tree. */
   modelRequired: boolean
-  /** Notes on this row: an own default a fresh start could not use, or a collaborator's/copy's recorded fallbacks. */
+  /** Notes on this row: an own default a fresh start could not use, or a copy's recorded fallbacks. */
   launchNotes: readonly RunMemberNote[]
-  /** A collaborator or delegated copy (read-only Settings rows): how it joined the run. */
-  badge?: 'delegated_copy' | 'collaborator'
-  /** A collaborator or delegated copy: where its launch came from. */
+  /** A delegated copy (read-only Settings rows): how it joined the run. */
+  badge?: 'delegated_copy'
+  /** A delegated copy: where its launch came from (absent once the user chose its model). */
   sourceKey?: RunMemberLaunchSource
+  /** A delegated copy row: what the user can stop and change on it (SR-007). */
+  delegated?: RunMemberDelegatedFacts
+  /** This row's own locks; when set they replace its section's. */
+  locked?: RunSettingFlags
   children: readonly RunMemberNode[]
 }
 
-/** Where a collaborator's or delegated copy's launch came from (`configured`: a copy of an in-run placement). */
+/**
+ * The user's control of a delegated copy row: where its model choice is recorded
+ * (`agent:<run ID>` or `team:<run ID>`), the model it runs with before this edit, what its stop
+ * icon stops (only the copy itself, never one member of a Team), and whether its
+ * copy is running (its model is locked until it is stopped).
+ */
+export type RunMemberDelegatedFacts = Readonly<{
+  target: `agent:${string}` | `team:${string}`
+  original: Readonly<{ llmModelIdentifier: string; llmConfig: Record<string, unknown> | null }>
+  stop: Readonly<{ agentRunId: string }> | Readonly<{ teamRunId: string }> | null
+  running: boolean
+  stopping: boolean
+}>
+
+/** Where a delegated copy's launch came from (`configured`: a copy of an in-run placement). */
 export type RunMemberLaunchSource = 'agent_default' | 'team_default' | 'inherited' | 'configured' | 'not_recorded'
 
-/** A recorded configured layer a collaborator or copy skipped, with the server's reason. */
+/** A recorded configured layer a copy skipped, with the server's reason. */
 export type RunMemberLaunchFallback = Readonly<{
   layer: 'agent_default' | 'team_default'
   runtimeKind: string | null
@@ -66,7 +84,7 @@ export type RunMemberNote =
   | (Readonly<{ kind: 'unusable_default' }> & MemberLaunchNote)
   | (Readonly<{ kind: 'fallback' }> & RunMemberLaunchFallback)
 
-/** Notes on a row and every row below it (a collapsed collaborator or copy Team shows their count). */
+/** Notes on a row and every row below it (a collapsed copy Team shows their count). */
 export const countRunMemberNotes = (node: RunMemberNode): number =>
   node.launchNotes.length + node.children.reduce((total, child) => total + countRunMemberNotes(child), 0)
 
@@ -129,10 +147,11 @@ const customization = (
   }
 }
 
-/** A collaborator's or copy's read-only row facts (DS-007): badge, launch source and recorded fallbacks. */
+/** A copy's read-only row facts (DS-007): badge, launch source and recorded fallbacks. */
 export type RunMemberLaunchFacts = Readonly<{
   badge?: RunMemberNode['badge']
-  sourceKey: RunMemberLaunchSource
+  /** Absent: the user chose this row's model, so no origin is shown (SR-007). */
+  sourceKey?: RunMemberLaunchSource
   notes: readonly RunMemberNote[]
 }>
 
@@ -147,6 +166,8 @@ export const memberNode = (input: Readonly<{
   children?: readonly RunMemberNode[]
   marks?: RunMemberSeedMarks
   launch?: RunMemberLaunchFacts
+  delegated?: RunMemberDelegatedFacts
+  locked?: RunSettingFlags
 }>, deps: RunMemberTreeDeps): RunMemberNode => Object.freeze({
   key: input.key,
   kind: input.kind,
@@ -160,7 +181,9 @@ export const memberNode = (input: Readonly<{
   modelRequired: !input.launch && !input.values.llmModelIdentifier.trim(),
   launchNotes: Object.freeze(input.launch?.notes ?? seededNotes(input.marks, input.key)),
   ...(input.launch?.badge ? { badge: input.launch.badge } : {}),
-  ...(input.launch ? { sourceKey: input.launch.sourceKey } : {}),
+  ...(input.launch?.sourceKey ? { sourceKey: input.launch.sourceKey } : {}),
+  ...(input.delegated ? { delegated: input.delegated } : {}),
+  ...(input.locked ? { locked: input.locked } : {}),
   children: Object.freeze([...(input.children ?? [])]),
 })
 

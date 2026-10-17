@@ -1,0 +1,10 @@
+PASS two fresh real application-image nodes serve independent GraphQL endpoints
+PASS daemon mounts one export into both application nodes; private state and credentials isolated
+PASS each application registers the ordinary mounted project through its public workspace API
+PASS native macOS guest mounts the same Linux export and reads its independent storage identity
+PASS normal unprivileged macOS file write is read through both registered Linux workspace APIs
+PASS Linux application file modification is freshly read through native macOS mount and peer API
+PASS native macOS same-filesystem replacement publishes ordinary project bytes to both Linux nodes
+PASS Mac-created relative symlink and executable mode are usable by Linux ordinary CLI
+PASS Mac exclusive creation rejects file already created by independent Linux client
+{"run": "ab-sf-fr022-88813f88", "passes": 9, "fatal": null, "cleanup_ok": true}

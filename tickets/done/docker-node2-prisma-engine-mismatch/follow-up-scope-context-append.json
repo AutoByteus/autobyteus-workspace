@@ -1,0 +1,35 @@
+{
+  "tool": "create_or_update_task",
+  "operation": "append finalized R3 scope context only",
+  "task": {
+    "projectId": "project_a1377344-25db-482a-97cc-ecfdb0fb495a",
+    "taskId": "project_task_6b8c9612-c94b-4d62-8053-00ef94bd94df",
+    "status": "TODO",
+    "attachedContextFiles": [
+      {
+        "storedFilename": "ctx_82f14106b803__requirements-doc.md",
+        "displayName": "requirements-doc.md"
+      },
+      {
+        "storedFilename": "ctx_075f31275f53__design-spec.md",
+        "displayName": "design-spec.md"
+      },
+      {
+        "storedFilename": "ctx_656d1532b735__scope-resolution-handoff.md",
+        "displayName": "scope-resolution-handoff.md"
+      },
+      {
+        "storedFilename": "ctx_2974b8d56874__follow-up-registration.json",
+        "displayName": "follow-up-registration.json"
+      },
+      {
+        "storedFilename": "ctx_a8e554bbe965__follow-up-context.md",
+        "displayName": "follow-up-context.md"
+      }
+    ]
+  },
+  "delegated": false,
+  "statusPatched": false,
+  "totalSavedContextCount": 14,
+  "note": "Nine initial factual contexts + five current R3/D1.1 authority/context copies. Separate TODO; no new-task implementation approval or live dispatch."
+}

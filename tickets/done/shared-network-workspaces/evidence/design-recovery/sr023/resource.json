@@ -1,0 +1,66 @@
+{
+  "clone": "ab-nfs-sr023-8fd5ad2f",
+  "image": "ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377",
+  "scratch": "/private/tmp/nfs-sr023-gc5go40z",
+  "env": {
+    "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+    "HOME": "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/driver-home",
+    "TART_HOME": "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tart-state",
+    "TART_NO_AUTO_PRUNE": "1"
+  },
+  "tart": "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "list"
+      ],
+      "rc": 0,
+      "stdout": "Source Name                                                                                                        Disk  Size  Accessed       State  \nOCI    ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377 50\u00a0GB 33\u00a0GB vor 39 Minuten stopped\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "clone",
+        "ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377",
+        "ab-nfs-sr023-8fd5ad2f"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "set",
+        "ab-nfs-sr023-8fd5ad2f",
+        "--cpu",
+        "2",
+        "--memory",
+        "4096"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-sr023-8fd5ad2f",
+        "/bin/sh",
+        "-c",
+        "id; /usr/bin/sw_vers; /usr/bin/uname -a; /usr/sbin/sysctl -n kern.boottime; /usr/sbin/diskutil info -plist /System/Volumes/Data"
+      ],
+      "rc": 0,
+      "stdout": "uid=501(admin) gid=20(staff) groups=20(staff),12(everyone),61(localaccounts),79(_appserverusr),80(admin),81(_appserveradm),264(_webdeveloper),701(com.apple.sharepoint.group.1),33(_appstore),98(_lpadmin),100(_lpoperator),204(_developer),250(_analyticsusers),395(com.apple.access_ftp),398(com.apple.access_screensharing),399(com.apple.access_ssh),400(com.apple.access_remote_ae)\nProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\nDarwin Manageds-Virtual-Machine.local 25.6.0 Darwin Kernel Version 25.6.0: Fri Jul 31 19:16:43 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_VMAPPLE arm64\n{ sec = 1792061692, usec = 286392 } Thu Oct 15 10:54:52 2026\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n<plist version=\"1.0\">\n<dict>\n\t<key>APFSContainerFree</key>\n\t<integer>13017239552</integer>\n\t<key>APFSContainerReference</key>\n\t<string>disk2</string>\n\t<key>APFSContainerSize</key>\n\t<integer>44107001856</integer>\n\t<key>APFSPhysicalStores</key>\n\t<array>\n\t\t<dict>\n\t\t\t<key>APFSPhysicalStore</key>\n\t\t\t<string>disk0s2</string>\n\t\t</dict>\n\t</array>\n\t<key>APFSSnapshot</key>\n\t<false/>\n\t<key>APFSVolumeGroupID</key>\n\t<string>A19FE379-BE62-4297-9A39-3934CC88214B</string>\n\t<key>Bootable</key>\n\t<true/>\n\t<key>BooterDeviceIdentifier</key>\n\t<string>disk2s2</string>\n\t<key>BusProtocol</key>\n\t<string></string>\n\t<key>CanBeMadeBootable</key>\n\t<false/>\n\t<key>CanBeMadeBootableRequiresDestroy</key>\n\t<false/>\n\t<key>CapacityInUse</key>\n\t<integer>9848905728</integer>\n\t<key>Content</key>\n\t<string>41504653-0000-11AA-AA11-00306543ECAC</string>\n\t<key>DeviceBlockSize</key>\n\t<integer>4096</integer>\n\t<key>DeviceIdentifier</key>\n\t<string>disk2s5</string>\n\t<key>DeviceNode</key>\n\t<string>/dev/disk2s5</string>\n\t<key>DeviceTreePath</key>\n\t<string>IODeviceTree:/arm-io/pcie@30000000/pci106b,1a00@6/AppleVirtIOStorageDevice</string>\n\t<key>DiskUUID</key>\n\t<string>A19FE379-BE62-4297-9A39-3934CC88214B</string>\n\t<key>Ejectable</key>\n\t<false/>\n\t<key>EjectableMediaAutomaticUnderSoftwareControl</key>\n\t<false/>\n\t<key>EjectableOnly</key>\n\t<false/>\n\t<key>Encryption</key>\n\t<false/>\n\t<key>EncryptionThisVolumeProper</key>\n\t<false/>\n\t<key>FileVault</key>\n\t<false/>\n\t<key>FilesystemName</key>\n\t<string>APFS</string>\n\t<key>FilesystemType</key>\n\t<string>apfs</string>\n\t<key>FilesystemUserVisibleName</key>\n\t<string>APFS</string>\n\t<key>FreeSpace</key>\n\t<integer>0</integer>\n\t<key>GlobalPermissionsEnabled</key>\n\t<true/>\n\t<key>IOKitSize</key>\n\t<integer>44107001856</integer>\n\t<key>IORegistryEntryName</key>\n\t<string>Data</string>\n\t<key>Internal</key>\n\t<true/>\n\t<key>Locked</key>\n\t<false/>\n\t<key>MediaName</key>\n\t<string></string>\n\t<key>MediaType</key>\n\t<string></string>\n\t<key>MountPoint</key>\n\t<string>/System/Volumes/Data</string>\n\t<key>OSInternalMedia</key>\n\t<false/>\n\t<key>ParentWholeDisk</key>\n\t<string>disk2</string>\n\t<key>PartitionMapPartition</key>\n\t<false/>\n\t<key>RAIDMaster</key>\n\t<false/>\n\t<key>RAIDSlice</key>\n\t<false/>\n\t<key>RecoveryDeviceIdentifier</key>\n\t<string>disk2s3</string>\n\t<key>Removable</key>\n\t<false/>\n\t<key>RemovableMedia</key>\n\t<false/>\n\t<key>RemovableMediaOrExternalDevice</key>\n\t<false/>\n\t<key>SMARTDeviceSpecificKeysMayVaryNotGuaranteed</key>\n\t<dict/>\n\t<key>SMARTStatus</key>\n\t<string>Not Supported</string>\n\t<key>Sealed</key>\n\t<string>No</string>\n\t<key>Size</key>\n\t<integer>44107001856</integer>\n\t<key>SolidState</key>\n\t<true/>\n\t<key>SupportsGlobalPermissionsDisable</key>\n\t<true/>\n\t<key>SystemImage</key>\n\t<false/>\n\t<key>TotalSize</key>\n\t<integer>44107001856</integer>\n\t<key>VolumeAllocationBlockSize</key>\n\t<integer>4096</integer>\n\t<key>VolumeName</key>\n\t<string>Data</string>\n\t<key>VolumeSize</key>\n\t<integer>0</integer>\n\t<key>VolumeUUID</key>\n\t<string>A19FE379-BE62-4297-9A39-3934CC88214B</string>\n\t<key>WholeDisk</key>\n\t<false/>\n\t<key>Writable</key>\n\t<true/>\n\t<key>WritableMedia</key>\n\t<true/>\n\t<key>WritableVolume</key>\n\t<true/>\n</dict>\n</plist>\n",
+      "stderr": ""
+    }
+  ],
+  "result": "Ready",
+  "noHostShares": true,
+  "noCredentials": true,
+  "vmPid": 70817,
+  "prepareAttempt1Error": "TypeError(\"extractall() got an unexpected keyword argument 'filter'\")"
+}

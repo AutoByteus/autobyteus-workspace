@@ -1,0 +1,18 @@
+Started L21 LD replace source pathname with actual new directory and copied marker
+L21 LD replace source pathname with actual new directory and copied marker: Pass
+Started L21 LD public reconnect refuses copied-marker replacement without rebinding
+L21 LD public reconnect refuses copied-marker replacement without rebinding: Pass
+Started L21 LD restore exact original source without copying data
+L21 LD restore exact original source without copying data: Pass
+Started L21 LD restored original public reconnect and actual fresh status
+L21 LD restored original public reconnect and actual fresh status: Pass
+Started L25 LD no-drain public detach refusal leaves both running unchanged
+L25 LD no-drain public detach refusal leaves both running unchanged: Pass
+Started L25 LD actual controlled drain stops both nodes
+L25 LD actual controlled drain stops both nodes: Pass
+Started L25 LD busy mount refused without forced/lazy unmount
+L25 LD busy mount refused without forced/lazy unmount: Pass
+Started L25 LD after real drain public detach completes
+L25 LD after real drain public detach completes: Pass
+Started L25 LD both node local config private volumes source marker retained and owned attachment absent
+L25 LD both node local config private volumes source marker retained and owned attachment absent: Pass

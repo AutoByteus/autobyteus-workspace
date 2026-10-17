@@ -302,6 +302,13 @@ update it in the same change.
   users out of startup or new work; prefer tolerant readers over migrations; no
   schema version fields; never reuse a field name with a new meaning; old shapes
   live only inside registered migrations.
+- **Agent collaboration and orchestration:** the
+  [Collaboration Model](autobyteus-server-ts/docs/design/collaboration_model.md)
+  is the canonical contract for runs, membership versus delegation,
+  `send_message_to` versus `delegate_task`, Task ownership of delegated runs,
+  coordination, and where each run's memory and messages are stored. Changes to
+  Teams, Orgs, standalone collaboration, Tasks, messaging or run storage follow
+  it or update it in the same change.
 - **Server startup and configuration-dependent services:**
   [Startup Initialization and Lazy Service Access](autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md).
 - **Mandatory agent processors:**

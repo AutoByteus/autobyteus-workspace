@@ -1,0 +1,12 @@
+Starting start-linux.py
+start-linux.py: Ready
+Starting prepare-docker.py
+prepare-docker.py: Ready
+Starting prepare-managed-client-image.py
+prepare-managed-client-image.py: Ready
+Starting prepare-managed-nodes.py
+prepare-managed-nodes.py: Ready
+Starting run-selected-create.py
+run-selected-create.py: Pass
+Starting run-visibility.py
+run-visibility.py: Pass

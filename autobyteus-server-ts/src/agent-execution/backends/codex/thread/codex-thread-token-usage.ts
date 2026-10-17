@@ -3,6 +3,7 @@ import {
   cumulativeSnapshotProviderDeltaTokensKey,
   type CumulativeSnapshotTokenRecord,
 } from "../../../../token-usage/projections/cumulative-snapshot-reconciliation-metadata.js";
+import type { ModelCallThroughput } from "../../../domain/model-call-throughput.js";
 
 export type CodexReadyTokenUsageUpdate = {
   turnId: string;
@@ -23,6 +24,7 @@ export type CodexReadyTokenUsageUpdate = {
   effective_context_window_tokens: number | null;
   context_window_usage_percent: number | null;
   context_compaction_threshold_tokens: null;
+  output_throughput: ModelCallThroughput | null;
   model_provider: string | null;
   provider_name: string | null;
   model_identifier: string | null;
@@ -106,6 +108,8 @@ export const resolveCodexThreadTokenUsage = (input: {
   turnId: string;
   threadId: string;
   model: string | null;
+  /** The pending reading of the model call this update reports, given its own `last.outputTokens`. */
+  takeModelCallThroughput: (lastOutputTokens: number | null) => ModelCallThroughput | null;
 }): CodexReadyTokenUsageUpdate | null => {
   const tokenUsage = asObject(input.params.tokenUsage);
   const last = asObject(tokenUsage?.last);
@@ -195,6 +199,9 @@ export const resolveCodexThreadTokenUsage = (input: {
     effective_context_window_tokens: effectiveContextWindowTokens,
     context_window_usage_percent: contextWindowUsagePercent,
     context_compaction_threshold_tokens: null,
+    output_throughput: reportsModelCall
+      ? input.takeModelCallThroughput(providerDeltaTokens?.reported_output_tokens ?? null)
+      : null,
     model_provider: "OPENAI",
     provider_name: null,
     model_identifier: input.model,

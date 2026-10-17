@@ -1,0 +1,18 @@
+{
+  "reportParent": "eef8296fd8d8181a85ead907dc80e9752441d4c0",
+  "allPreviousCoreGatesRetained": true,
+  "reportOnlyPaths": [
+    "docs-sync-report.md",
+    "release-deployment-report.md",
+    "delivery-revision-record.md",
+    "handoff-summary.md",
+    "delivery-evidence/dr-001/repository-finalization.json",
+    "delivery-evidence/dr-001/final-report-gates.json"
+  ],
+  "sourceDelta": "None",
+  "licenseDecision": "Merged licensing gatePass retained; no license/source/manifest changes in supplement",
+  "whitespace": "Pass",
+  "canonicalHygiene": "Repository artifact hygiene check passed.\nTracked files scanned: 63988\nPath-length threshold: 200\nLongest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js",
+  "indexIsolation": "Private GIT_INDEX_FILE; main index/checkout untouched",
+  "cleanup": "Actual completed before this report commit; exact original refusal and resolution preserved"
+}

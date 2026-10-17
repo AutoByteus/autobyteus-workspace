@@ -1,0 +1,7 @@
+{
+  "round": "fr-044",
+  "nativeVm": "ab-sf-fr043-macos",
+  "reusesOnlyOwnStoppedPublicDependencyBuildVm": true,
+  "nativeEngineBuildReceipt": "../fr-043/native-build-result.json",
+  "scope": "actual native Mac nonroot UNFS server; Docker clients only; no host service/mount"
+}

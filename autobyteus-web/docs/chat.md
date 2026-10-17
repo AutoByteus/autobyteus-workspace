@@ -62,8 +62,8 @@ goes through `useRunStart`, and every start opens a fresh draft (see
 
 Copied and carried settings stay as they are; their runtimes' availability and
 catalogs load before Send is offered. The Agent **+** copies the agent on screen:
-the view passes its displayed `AgentRunConfig`, so the run's own agent and an
-`@` collaborator child copy alike, with no lookup by run id.
+the view passes its displayed `AgentRunConfig`, so the run's own agent and a
+delegated child copy alike, with no lookup by run id.
 
 ### Draft rows
 
@@ -146,8 +146,8 @@ server, which rejects run input with empty text.
   skills become removable chips on `AgentContext.requestedSkillNames` and are
   prefixed to the message by `utils/skills/skillRequestInstruction.ts`; sent
   user messages parse that prefix back into chips.
-- `@` is mention-only, as in a live run (below): it inserts a collaborator
-  mention ("Delegate to an agent or team") and never changes the target.
+- `@` is mention-only, as in a live run (below): it inserts a mention
+  ("Delegate to an agent or team") and never changes the target.
   Candidates come from `utils/collaborators/draftMentionEligibility.ts`, which
   mirrors the server's `CollaboratorCandidatePolicy` for the would-be run:
   shared, non-built-in Agents, then shared Agent Teams, never Orgs, minus only the
@@ -332,7 +332,7 @@ handle, the strip and the drawer, and a 57px header line. The center pane is
   the history summary, truncated to 42 characters via `useStandaloneRunTitle`),
   `AgentStatusDisplay`, ⚙ and ＋.
   - ＋ calls `useRunStart().copyAgentFromConfig(displayed config)`: New chat
-    for the agent on screen (the run's own agent or an `@` collaborator child),
+    for the agent on screen (the run's own agent or a delegated child),
     prefilled with its workspace (temp when it has none), runtime, model, model
     config and approval.
 - **Box.** The product `AgentUserInputForm`, with mic and send/stop inside the
@@ -367,15 +367,14 @@ target mode.
 
 - **Options** come only from the server: `collaboratorMentionCandidates`
   (`services/collaborators/collaboratorCandidatesService.ts`), refreshed each
-  time the menu opens and invalidated when a collaborator is added. Shared
+  time the menu opens. Shared
   Agents (no Daily Assistant or built-ins), then shared Agent Teams, including
-  ones already in the run (configured members, collaborators); only the run's own
+  ones already in the run (configured members); only the run's own
   definition is left out, and Agent Orgs are never offered. In a standalone Agent
   run the options depend on the focused agent. The host's composer never offers
   the host. A task child's composer (a member of a delegated Team or Agent copy)
   offers the host, the run's own agent, plus the host's own options. Candidates
-  are cached per focused agent, and adding a collaborator clears every key of
-  that root. The footer reads
+  are cached per focused agent. The footer reads
   "{agent} gets your message and delegates the work", naming the focused agent.
   For a mention already in the run, the note marks it "already in this run" and
   tells the agent it can message that instance with `send_message_to` or delegate
@@ -422,10 +421,12 @@ target mode.
 - **Sending.** The Agent, Team, Org and Agent-collaboration stores send
   `mentions` (`{kind, definition_id}[]`) with SEND_MESSAGE. The server adds
   **nothing** to the run on send: it resolves each mention's address and appends
-  a `[Mentioned collaborators]` note to the stored message that tells the
-  focused agent to `delegate_task` to that address. When the agent delegates, a
+  a `[Mentioned agents]` note to the stored message (one line per mention, decided
+  for the focused agent: delegate a task to it, talk with it, or "in your team" /
+  "that is you"). Messages saved with the earlier `[Mentioned collaborators]`
+  note still display the same. When the agent delegates, a
   delegated (task) row appears; it disappears once the agent marks that
-  delegation's Task DONE (or CANCELLED) with `create_or_update_task` (for example when the user
+  delegation's Task DONE (or CANCELLED) with `update_task` (for example when the user
   asks it to), live and after reopen. It returns (live, via
   `task_executions_reopened`) when the agent sets that Task back to TODO or
   IN_PROGRESS and then messages the copy's run ID, which reactivates it. Notes saved by earlier releases still
@@ -448,18 +449,19 @@ target mode.
   the next send. Success has no notice. The notice now only appears for a
   definition that is not eligible in the run; whether the agent can run it is
   checked when it delegates, and the agent gets the reason.
-- **Collaborator rows.** Collaborators now come only from an agent's first
-  `send_message_to` to a catalog address, and from stored runs that earlier
-  releases filled on `@`. Each collaborator is one hosted instance, shown with
-  the product's task rows from the run's `collaborators` (Offline until its first
-  message), before any extra copies: Team runs
-  (`teamExecutionTreeSelectors.withCollaboratorExecutions`), Org runs and
-  standalone runs (`collaboratorExecutionNodes`). A collaborator Team opens once
-  when it appears (F-02). `collaborator_added` adds the contexts in place.
-- **Collaborator Artifacts.**
-  - When a standalone run's collaborators are hydrated, after a reload or on a
-    historical run, each collaborator's recorded Agent Artifacts
-    (`getRunFileChanges(collaboratorRunId)`) are fetched with its projection.
+- **Delegated-run rows.** An agent reaches a listed catalog Agent or Team only with
+  `delegate_task` (server: `list_available_agents`, see the server
+  `agent_communication.md`); `send_message_to` never creates a run. Every such copy is an
+  ordinary task row from the run's `taskExecutions` (Offline until its first message), whose
+  task DTO carries `source`, read by `services/collaborators/agentSourceSelectors.ts`. Runs that
+  earlier releases recorded as collaborators were converted at startup into the same kind of
+  row, so the web has no separate collaborator rows, `collaborator_added` event or collaborator
+  list. A new copy arrives as `task_execution_started` (Team: `TASK_EXECUTION_STARTED`), which
+  asks for a fresh view.
+- **Delegated-run Artifacts.**
+  - When a standalone run's delegated runs are hydrated, after a reload or on a
+    historical run, each run's recorded Agent Artifacts
+    (`getRunFileChanges(agentRunId)`) are fetched with its projection.
   - They are committed with its Activity when the collaboration context is
     published. This goes through
     `services/agentCollaboration/agentRunCollaborationHydration.ts` (`commit`)
@@ -467,19 +469,11 @@ target mode.
   - Newer live `FILE_CHANGE` rows are kept.
   - An artifact fetch failure fails the collaboration hydration, as a
     projection failure does.
-- **Agent-initiated collaborators and catalog copies.** An agent can bring a listed
-  catalog Agent or Team in with its first `send_message_to`, or start catalog copies
-  with `delegate_task` (server: `list_available_agents`, see the server
-  `agent_communication.md`). These look the same as collaborators of stored runs:
-  - collaborator rows arrive through the same `collaborator_added`;
-  - catalog copies are ordinary task rows whose task DTO carries `source`, read by
-    `services/collaborators/agentSourceSelectors.ts`;
-  - messages show as Team/Org tab rows and "From <Sender>:".
 - **Names (F-03).** Rows, the Team/Org tab and "From <Sender>:" use one formatter,
   `utils/collaboration/memberDisplayName.ts` (`product prototyper`, and
   `Product Prototyper` in sentences). In a standalone run's Team tab the run's own
   agent reads in the title-case form (`Research Assistant`, as in "From Research
-  Assistant:", VIS-013); collaborators keep the row form.
+  Assistant:", VIS-013); delegated runs keep the row form.
 - **Agent-to-agent messages (RD-004).** A `send_message_to` delivery shows its
   sender with `InterAgentMessageSegment` ("From <Sender>:") inside the receiving
   agent's message block, live (`memberInputMessageHandler` for
@@ -487,9 +481,13 @@ target mode.
   on the Event Monitor's "earlier events" page (`EventMonitorInterAgentVisual`,
   rendered by `eventMonitorActiveTraceBrowsePresentation.ts` and
   `EventMonitorBrowseAssistantRow`). Older stored deliveries without a recorded
-  sender stay user-style. `utils/collaboration/interAgentDelivery.ts` parses the
-  delivery header with or without its `sender address` part, so stored history
-  keeps rendering.
+  sender stay user-style. `utils/collaboration/interAgentDelivery.ts` separates
+  the delivery header from the body and reads the sender run ID from it, for the current
+  header (`from the agent with [sender address "<address>" and ]sender run id "<id>"`)
+  and the released earlier one (`sender name`, optional `sender address`, `sender id`),
+  so stored history keeps rendering. The
+  "From <Sender>:" label never comes from the header text: it comes from the sender's run ID
+  (the app's lookup by run ID, else a readable form of the run ID).
 - **Standalone runs** gain children: rows under the run row
   (`AgentRunTaskRows`), a child's own conversation (titled by its name, with the
   ⚙ and ＋ header controls and the mention-aware input described above), the run row

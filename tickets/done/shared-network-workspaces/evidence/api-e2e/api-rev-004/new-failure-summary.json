@@ -1,0 +1,75 @@
+{
+  "finding": "API-F004",
+  "result": "Fail",
+  "preliminaryClassification": "Unclear \u2014 likely implementation/engine cache integration; independent reviewer determines origin and owner",
+  "acceptanceCriteria": [
+    "AC-003",
+    "REQ-004",
+    "QR-001",
+    "SCN-002"
+  ],
+  "relatedSurface": "AC-010 healthy preview freshness; delayed tree/content refresh observed, not independent second defect",
+  "expected": "Fresh opens by participating clients obtain <=1MiB synced/closed committed bytes within5seconds on healthy storage.",
+  "observed": "Initial135byte PNG remains old at20HTTPopens through5.010s. Two unique1024byte repeats: nativeNFS fresh opens AND managedDocker realHTTP return old bytes until61.149s/60.975s. Exact new source hash, changed mtimeNs and unchanged source file inode verified.",
+  "trialSummary": [
+    {
+      "trial": 1,
+      "file": "visibility-d3f108eedd3f48ebb44f9b86c3155066.bin",
+      "size": 1024,
+      "initialSHA": "785b0751fc2c53dc14a4ce3d800e69ef9ce1009eb327ccf458afe09c242c26c9",
+      "expectedSHA": "3af6dbef8362452d2b45ad97deb9e43180fb90aac309860e26e123860cce62a7",
+      "sourceSHAAfter": "3af6dbef8362452d2b45ad97deb9e43180fb90aac309860e26e123860cce62a7",
+      "sourceFileInodeUnchanged": true,
+      "sourceMtimeNsBefore": 1792052354148877476,
+      "sourceMtimeNsAfter": 1792052354188377912,
+      "freshAtSeconds": {
+        "native": 61.149,
+        "http": 61.149
+      },
+      "result": "Fail"
+    },
+    {
+      "trial": 2,
+      "file": "visibility-930e44580b2c41aeaf35874512eec797.bin",
+      "size": 1024,
+      "initialSHA": "785b0751fc2c53dc14a4ce3d800e69ef9ce1009eb327ccf458afe09c242c26c9",
+      "expectedSHA": "3af6dbef8362452d2b45ad97deb9e43180fb90aac309860e26e123860cce62a7",
+      "sourceSHAAfter": "3af6dbef8362452d2b45ad97deb9e43180fb90aac309860e26e123860cce62a7",
+      "sourceFileInodeUnchanged": true,
+      "sourceMtimeNsBefore": 1792052415349779814,
+      "sourceMtimeNsAfter": 1792052415378968604,
+      "freshAtSeconds": {
+        "native": 60.975,
+        "http": 60.975
+      },
+      "result": "Fail"
+    }
+  ],
+  "nativeBinarySHA256": "0036ccef0bbb2a2510064f2e882b692687a2288eb25563d89f9c4ac9150c860c",
+  "sourceHash": "51f81cd187caf269ecffa83fecc35a4f665b70942716d7858fa7d964d3b335ed",
+  "engine": "exact retained IR005 arm64 main/VFS pair, 4.3-8ubuntu1+autobyteus1, no engine rebuild",
+  "source": "/home/admin/ab-nfs-api004-linux-9591ce1a-native-source",
+  "sourceIdentity": "64769:2359328:1000:109:755",
+  "storage": {
+    "storageId": "982e2025-961c-4b25-ab83-24ff06debcfa",
+    "endpoint": "192.168.64.4",
+    "export": "/autobyteus/982e2025-961c-4b25-ab83-24ff06debcfa",
+    "protocol": "4.1",
+    "mountRoot": "/Volumes/autobyteus-shared"
+  },
+  "selectedNodeId": "c40d2221e0c821ea1a2c44cc9eba5c0fdf3a67179adeca98046ba7687a62a487",
+  "serverImageId": "sha256:c4338af68b8608226655056dc7c52d76250eba7c317f25ef43b9ca8458414dfb",
+  "environment": "Ubuntu24.04.5/ext4/kernel7.0.0-38/aarch64/defaultdirectorydelegationsY; real guest nativeGanesha and managedDockerclient; healthy ownVM, no independent physical claim",
+  "cacheSettings": "Both client mounts actimeo1, TCP hard4.1; Docker volume nosharecache; actual native mount/config and Docker inspect in visibility-repro-result.json. Generated export has no Attr_Expiration_Time. Matching retained source defines EXPORT_DEFAULT_CACHE_EXPIRY60; causal clue only, not a tested repair.",
+  "negativeBoundaries": "No outage, existing fd held across write, failed sync/close, HTTP/browser cache dependency, kernel parameter edit, config workaround or manual recovery. Native direct reopen independently reproduces, so renderer/HTTP alone cannot explain it.",
+  "evidence": [
+    "run-preview-external-change.py",
+    "preview-external-change-result.json",
+    "reproduce-visibility.py",
+    "visibility-repro-result.json",
+    "visibility-source-clues.json",
+    "evidence-identity-corrections.json"
+  ],
+  "priorFinding": "API-F003 scoped resolved by prior-failure-resolution.json, not reopened",
+  "next": "Focused failure-origin review. Rerun fresh source-writer/native and Docker reader visibility first after accepted correction; retain complete remaining supported matrix."
+}

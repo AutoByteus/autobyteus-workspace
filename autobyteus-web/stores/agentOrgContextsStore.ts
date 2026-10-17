@@ -96,7 +96,6 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
       publish: (candidate, commit) => publish(id, candidate, commit),
       reportError: (message) => report(id, message),
       onInactive: () => markHistorical(id),
-      onExecutionTreeChanged: () => { void useRunHistoryStore().refreshAgentOrgHistoryItem(id) },
       onAcceptedExternalUserMessage: () => { void useRunHistoryStore().refreshAgentOrgHistoryItem(id) },
     })
     services.set(id, service)

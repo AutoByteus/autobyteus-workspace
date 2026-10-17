@@ -1,0 +1,13 @@
+{
+  "inputHead": "ec3bf6b270ef8d038f309b0fad1f599566d1b233",
+  "sourceCommit": "d318bd9db935affdf16d141ef4e88a6c0e4939b5",
+  "implementationBase": "50d9c9d0c883e1ad8d3a1808b9e980a7df4f132b",
+  "incomingReferences": 739,
+  "unchangedPriorPackagePaths": 1350,
+  "sourceSizes": {
+    "maxChangedProductionNonempty": 267,
+    "noOver500": true,
+    "noOver220Delta": true,
+    "testsExcluded": true
+  }
+}

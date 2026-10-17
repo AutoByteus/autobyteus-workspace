@@ -4,6 +4,8 @@ This directory contains focused architecture/design decisions for `autobyteus-se
 
 ## Documents
 
+- `collaboration_model.md` — canonical model for runs, membership vs delegation, messaging, Task ownership and run storage
+- `data_migration_guideline.md` — canonical policy for persisted app-data migrations
 - `startup_initialization_and_lazy_services.md`
 - `agent_websocket_streaming_protocol.md`
 - `mandatory-processor-defaults.md`

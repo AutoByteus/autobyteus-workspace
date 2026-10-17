@@ -1,0 +1,65 @@
+
+> autobyteus@1.5.3-beta.4 test:nuxt /home/autobyteus/workspace/.codex/worktrees/sidebar-stop-red-default/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/history/__tests__/DelegatedStopButton.spec.ts components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts composables/__tests__/useWorkspaceHistoryMutations.spec.ts composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts stores/__tests__/delegatedLaunchDraftStore.spec.ts --run --maxWorkers=2
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/sidebar-stop-red-default/autobyteus-web
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts (17 tests) 311ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts (6 tests) 828ms
+stderr | components/workspace/history/__tests__/DelegatedStopButton.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/delegatedLaunchDraftStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/DelegatedStopButton.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/delegatedLaunchDraftStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/delegatedLaunchDraftStore.spec.ts (5 tests) 15ms
+ ✓ components/workspace/history/__tests__/DelegatedStopButton.spec.ts (31 tests) 161ms
+stderr | composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistoryMutations.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts (8 tests) 10ms
+stdout | composables/__tests__/useWorkspaceHistoryMutations.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useWorkspaceHistoryMutations.spec.ts (4 tests) 8ms
+
+ Test Files  6 passed (6)
+      Tests  71 passed (71)
+   Start at  16:40:56
+   Duration  55.57s (transform 16.15s, setup 82.01s, collect 2.92s, tests 1.33s, environment 11.20s, prepare 9.19s)

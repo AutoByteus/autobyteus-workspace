@@ -1,0 +1,38 @@
+{
+  "commands": [
+    {
+      "name": "retained-native-version",
+      "argv": [
+        "autobyteus-nfs/out/ir009-local-candidate/autobyteus-nfs-darwin-arm64",
+        "version"
+      ],
+      "rc": 0,
+      "expected": 0
+    },
+    {
+      "name": "retained-native-unqualified-refusal",
+      "argv": [
+        "autobyteus-nfs/out/ir009-local-candidate/autobyteus-nfs-darwin-arm64",
+        "verify-release",
+        "autobyteus-nfs/out/ir009-local-candidate/release.json"
+      ],
+      "rc": 1,
+      "expected": 1
+    },
+    {
+      "name": "same-engine-source-hash",
+      "argv": [
+        "/usr/bin/python3",
+        "autobyteus-nfs/packaging/release.py",
+        "--source-hash",
+        "--engine-manifest",
+        "autobyteus-nfs/out/ir005-local-candidate/engine-candidate/engine-manifest.json"
+      ],
+      "rc": 0,
+      "expected": 0
+    }
+  ],
+  "exactMetadataEmbeddedInBothCandidates": true,
+  "qualifiedTargets": [],
+  "note": "verify-release reached unqualified refusal after metadata equality, not installation or product qualification"
+}

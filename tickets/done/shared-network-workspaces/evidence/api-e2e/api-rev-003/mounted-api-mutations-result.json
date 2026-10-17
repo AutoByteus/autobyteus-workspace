@@ -1,0 +1,368 @@
+{
+  "vm": "ab-nfs-api003-linux-b7497a85",
+  "source": "/home/admin/ab-nfs-api003-linux-b7497a85-docker-source",
+  "mountRoot": "/Volumes/autobyteus-shared",
+  "binary": {
+    "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api003-cc7rp5vo/autobyteus-nfs-docker-linux-arm64",
+    "sha256": "532b98169d7434cd76d9e279397fc6a03a00f9dabb1fcf951dfdad75471169ff",
+    "size": 11033749
+  },
+  "metadata": {
+    "version": "v1.5.3-beta.2",
+    "sourceHash": "5563645d23aaac13aaa26948490d68dfc12fef31775bb66156185f9052ab0acc",
+    "ubuntuPackages": {
+      "nfs-common": "1:2.6.4-3ubuntu5.1"
+    },
+    "engineImage": "127.0.0.1:5000/ab-nfs-api003@sha256:22f64bbfec2bbdd1ba49516e35b43436826b006fb1274435631586252a5875b6",
+    "qualifiedTargets": [],
+    "engine": {
+      "source": {
+        "version": "4.3-8ubuntu1",
+        "files": [
+          {
+            "file": "nfs-ganesha_4.3-8ubuntu1.dsc",
+            "sha256": "ffa76c26b12d23b67dcda184d7ec7ae55a42d1d14bf84bb7c0cf0134156ba3ca",
+            "size": 3576
+          },
+          {
+            "file": "nfs-ganesha_4.3.orig.tar.gz",
+            "sha256": "d4efd020edf4dfe65abfd0f0f66eb4390613360f99dce4354467ab297e0e1c0f",
+            "size": 1895017
+          },
+          {
+            "file": "nfs-ganesha_4.3-8ubuntu1.debian.tar.xz",
+            "sha256": "ef35d130e1b37149b156d201b70e6c2804bebbfbee1713c5bd6d938dd433fe03",
+            "size": 19224
+          }
+        ],
+        "patchCommit": "98eb77c4fd94effa6882b214698a77752ec79f6e",
+        "patchSha256": "ba682b5c64e7f800c927f4c90b2a7bfb4b8d2a323ddc48c3d591db3d75799031",
+        "sourceDateEpoch": 1791936000,
+        "recipeSha256": "34e28c622f598487af74a545115fa8dffe94e8f1aa5d85c091515aa187d66e4f",
+        "buildBase": "ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e"
+      },
+      "architectures": {
+        "arm64": {
+          "packages": [
+            {
+              "file": "nfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb",
+              "sha256": "0b5c78911cfc1b299e9894e1f841e74176fbb2cb45b158008e4530713549ebc8",
+              "size": 613976,
+              "name": "nfs-ganesha",
+              "version": "4.3-8ubuntu1+autobyteus1",
+              "architecture": "arm64"
+            },
+            {
+              "file": "nfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb",
+              "sha256": "3bf06769646d93ea85f0277fe0726eb42d0d29a70c0108505706954e5e8d2ac6",
+              "size": 48626,
+              "name": "nfs-ganesha-vfs",
+              "version": "4.3-8ubuntu1+autobyteus1",
+              "architecture": "arm64"
+            }
+          ],
+          "correspondingSource": {
+            "file": "autobyteus-nfs-ganesha-source-4.3-8ubuntu1+autobyteus1-arm64.tar.gz",
+            "sha256": "eed35ab4b732ac05d2afc3531e70cdc27031fb414fdb52a0daf093f33daaec0a",
+            "size": 1930105
+          },
+          "buildInventory": {
+            "file": "engine-build-arm64.txt",
+            "sha256": "56fad63c43f85091d84df347564dfd962a9afaafe519539849860b1807695761",
+            "size": 57836
+          }
+        }
+      }
+    }
+  },
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api003-linux-b7497a85",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c 'cat /home/admin/ab-nfs-api003-linux-b7497a85-docker-source/api-scenario/api-created.txt; stat -c \"%u:%g\" /home/admin/ab-nfs-api003-linux-b7497a85-docker-source/api-scenario/api-created.txt'"
+      ],
+      "rc": 0,
+      "seconds": 0.279,
+      "stdout": "API003_PUBLIC_WRITE1000:109\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api003-linux-b7497a85",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c 'test ! -e /home/admin/ab-nfs-api003-linux-b7497a85-docker-source/api-scenario/api-created.txt; test ! -e /home/admin/ab-nfs-api003-linux-b7497a85-docker-source/api-scenario/api-renamed.txt'"
+      ],
+      "rc": 0,
+      "seconds": 0.056,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api003-linux-b7497a85",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c 'python3 -c '\"'\"'from pathlib import Path; p=Path('\"'\"'\"'\"'\"'\"'\"'\"'/home/admin/ab-nfs-api003-linux-b7497a85-docker-source/api-scenario'\"'\"'\"'\"'\"'\"'\"'\"'); (p/'\"'\"'\"'\"'\"'\"'\"'\"'replacement.txt'\"'\"'\"'\"'\"'\"'\"'\"').write_text('\"'\"'\"'\"'\"'\"'\"'\"'API003_EXTERNAL_REPLACE'\"'\"'\"'\"'\"'\"'\"'\"'); (p/'\"'\"'\"'\"'\"'\"'\"'\"'replacement.txt'\"'\"'\"'\"'\"'\"'\"'\"').replace(p/'\"'\"'\"'\"'\"'\"'\"'\"'preexisting.txt'\"'\"'\"'\"'\"'\"'\"'\"')'\"'\"''"
+      ],
+      "rc": 0,
+      "seconds": 0.059,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api003-linux-b7497a85",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c 'rm /home/admin/ab-nfs-api003-linux-b7497a85-docker-source/api-scenario/preexisting.txt'"
+      ],
+      "rc": 0,
+      "seconds": 0.058,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "cases": [
+    {
+      "name": "ordinary public API create/write/rename/read/delete reaches original source and all-squash owner",
+      "evidence": {
+        "create": {
+          "data": {
+            "createFileOrFolder": "{\"changes\":[{\"type\":\"add\",\"node\":{\"name\":\"api-created.txt\",\"path\":\"api-created.txt\",\"is_file\":true,\"id\":\"bad3f388-45e3-5be9-be6a-a3de82847a20\",\"children\":[]},\"parent_id\":\"021c569e-9bdb-5705-b86b-8143e0340710\"}]}"
+          }
+        },
+        "write": {
+          "data": {
+            "writeFileContent": "{\"changes\":[{\"type\":\"modify\",\"node_id\":\"bad3f388-45e3-5be9-be6a-a3de82847a20\",\"parent_id\":\"021c569e-9bdb-5705-b86b-8143e0340710\"}]}"
+          }
+        },
+        "sourceOwner": {
+          "argv": [
+            "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+            "exec",
+            "ab-nfs-api003-linux-b7497a85",
+            "/usr/bin/env",
+            "-i",
+            "HOME=/home/admin",
+            "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+            "LANG=C",
+            "/bin/sh",
+            "-c",
+            "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c 'cat /home/admin/ab-nfs-api003-linux-b7497a85-docker-source/api-scenario/api-created.txt; stat -c \"%u:%g\" /home/admin/ab-nfs-api003-linux-b7497a85-docker-source/api-scenario/api-created.txt'"
+          ],
+          "rc": 0,
+          "seconds": 0.279,
+          "stdout": "API003_PUBLIC_WRITE1000:109\n",
+          "stderr": ""
+        },
+        "rename": {
+          "data": {
+            "renameFileOrFolder": "{\"changes\":[{\"type\":\"rename\",\"node\":{\"id\":\"bad3f388-45e3-5be9-be6a-a3de82847a20\",\"name\":\"api-renamed.txt\",\"path\":\"api-renamed.txt\",\"is_file\":true,\"children\":[],\"children_loaded\":false},\"parent_id\":\"021c569e-9bdb-5705-b86b-8143e0340710\"}]}"
+          }
+        },
+        "read": {
+          "data": {
+            "fileContent": "API003_PUBLIC_WRITE"
+          }
+        },
+        "delete": {
+          "data": {
+            "deleteFileOrFolder": "{\"changes\":[{\"type\":\"delete\",\"node_id\":\"bad3f388-45e3-5be9-be6a-a3de82847a20\",\"parent_id\":\"021c569e-9bdb-5705-b86b-8143e0340710\"}]}"
+          }
+        }
+      },
+      "status": "Pass",
+      "seconds": 0.393
+    },
+    {
+      "name": "healthy mounted static route reopens externally replaced and deleted file",
+      "evidence": {
+        "externalOriginalSourceAtomicReplacement": "Pass",
+        "laterDeletion404": "Pass",
+        "htmlAndImageKeptForDesktop": true
+      },
+      "status": "Pass",
+      "seconds": 0.386
+    }
+  ],
+  "result": "Pass",
+  "workspaceId": "agent_ws_49a8721c7fadf351e28d59eec0601bb05deb303d6c8eb6c880dc1f83c32ce54b",
+  "http": [
+    {
+      "path": "/graphql",
+      "request": {
+        "query": "mutation($id:String!){createFileOrFolder(workspaceId:$id,path:\"api-created.txt\",isFile:true)}",
+        "variables": {
+          "id": "agent_ws_49a8721c7fadf351e28d59eec0601bb05deb303d6c8eb6c880dc1f83c32ce54b"
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\"data\":{\"createFileOrFolder\":\"{\\\"changes\\\":[{\\\"type\\\":\\\"add\\\",\\\"node\\\":{\\\"name\\\":\\\"api-created.txt\\\",\\\"path\\\":\\\"api-created.txt\\\",\\\"is_file\\\":true,\\\"id\\\":\\\"bad3f388-45e3-5be9-be6a-a3de82847a20\\\",\\\"children\\\":[]},\\\"parent_id\\\":\\\"021c569e-9bdb-5705-b86b-8143e0340710\\\"}]}\"}}",
+        "headers": {
+          "vary": "Origin",
+          "content-type": "application/json; charset=utf-8",
+          "content-length": "273",
+          "Date": "Wed, 14 Oct 2026 07:29:44 GMT",
+          "Connection": "close"
+        }
+      }
+    },
+    {
+      "path": "/graphql",
+      "request": {
+        "query": "mutation($id:String!){writeFileContent(workspaceId:$id,filePath:\"api-created.txt\",content:\"API003_PUBLIC_WRITE\")}",
+        "variables": {
+          "id": "agent_ws_49a8721c7fadf351e28d59eec0601bb05deb303d6c8eb6c880dc1f83c32ce54b"
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\"data\":{\"writeFileContent\":\"{\\\"changes\\\":[{\\\"type\\\":\\\"modify\\\",\\\"node_id\\\":\\\"bad3f388-45e3-5be9-be6a-a3de82847a20\\\",\\\"parent_id\\\":\\\"021c569e-9bdb-5705-b86b-8143e0340710\\\"}]}\"}}",
+        "headers": {
+          "vary": "Origin",
+          "content-type": "application/json; charset=utf-8",
+          "content-length": "177",
+          "Date": "Wed, 14 Oct 2026 07:29:44 GMT",
+          "Connection": "close"
+        }
+      }
+    },
+    {
+      "path": "/graphql",
+      "request": {
+        "query": "mutation($id:String!){renameFileOrFolder(workspaceId:$id,targetPath:\"api-created.txt\",newName:\"api-renamed.txt\")}",
+        "variables": {
+          "id": "agent_ws_49a8721c7fadf351e28d59eec0601bb05deb303d6c8eb6c880dc1f83c32ce54b"
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\"data\":{\"renameFileOrFolder\":\"{\\\"changes\\\":[{\\\"type\\\":\\\"rename\\\",\\\"node\\\":{\\\"id\\\":\\\"bad3f388-45e3-5be9-be6a-a3de82847a20\\\",\\\"name\\\":\\\"api-renamed.txt\\\",\\\"path\\\":\\\"api-renamed.txt\\\",\\\"is_file\\\":true,\\\"children\\\":[],\\\"children_loaded\\\":false},\\\"parent_id\\\":\\\"021c569e-9bdb-5705-b86b-8143e0340710\\\"}]}\"}}",
+        "headers": {
+          "vary": "Origin",
+          "content-type": "application/json; charset=utf-8",
+          "content-length": "302",
+          "Date": "Wed, 14 Oct 2026 07:29:44 GMT",
+          "Connection": "close"
+        }
+      }
+    },
+    {
+      "path": "/graphql",
+      "request": {
+        "query": "query($id:String!){fileContent(workspaceId:$id,filePath:\"api-renamed.txt\")}",
+        "variables": {
+          "id": "agent_ws_49a8721c7fadf351e28d59eec0601bb05deb303d6c8eb6c880dc1f83c32ce54b"
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\"data\":{\"fileContent\":\"API003_PUBLIC_WRITE\"}}",
+        "headers": {
+          "vary": "Origin",
+          "content-type": "application/json; charset=utf-8",
+          "content-length": "46",
+          "Date": "Wed, 14 Oct 2026 07:29:44 GMT",
+          "Connection": "close"
+        }
+      }
+    },
+    {
+      "path": "/graphql",
+      "request": {
+        "query": "mutation($id:String!){deleteFileOrFolder(workspaceId:$id,path:\"api-renamed.txt\")}",
+        "variables": {
+          "id": "agent_ws_49a8721c7fadf351e28d59eec0601bb05deb303d6c8eb6c880dc1f83c32ce54b"
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\"data\":{\"deleteFileOrFolder\":\"{\\\"changes\\\":[{\\\"type\\\":\\\"delete\\\",\\\"node_id\\\":\\\"bad3f388-45e3-5be9-be6a-a3de82847a20\\\",\\\"parent_id\\\":\\\"021c569e-9bdb-5705-b86b-8143e0340710\\\"}]}\"}}",
+        "headers": {
+          "vary": "Origin",
+          "content-type": "application/json; charset=utf-8",
+          "content-length": "179",
+          "Date": "Wed, 14 Oct 2026 07:29:44 GMT",
+          "Connection": "close"
+        }
+      }
+    },
+    {
+      "path": "/rest/workspaces/agent_ws_49a8721c7fadf351e28d59eec0601bb05deb303d6c8eb6c880dc1f83c32ce54b/static/preexisting.txt",
+      "request": null,
+      "response": {
+        "status": 200,
+        "body": "API003_EXTERNAL_REPLACE",
+        "headers": {
+          "vary": "Origin",
+          "content-type": "text/plain",
+          "Date": "Wed, 14 Oct 2026 07:29:44 GMT",
+          "Connection": "close",
+          "Transfer-Encoding": "chunked"
+        }
+      }
+    },
+    {
+      "path": "/rest/workspaces/agent_ws_49a8721c7fadf351e28d59eec0601bb05deb303d6c8eb6c880dc1f83c32ce54b/static/preexisting.txt",
+      "request": null,
+      "response": {
+        "status": 500,
+        "body": "{\"statusCode\":500,\"code\":\"ENOENT\",\"error\":\"Internal Server Error\",\"message\":\"ENOENT: no such file or directory, open '/Volumes/autobyteus-shared/api-scenario/preexisting.txt'\"}",
+        "headers": {
+          "vary": "Origin",
+          "content-type": "application/json; charset=utf-8",
+          "content-length": "176",
+          "Date": "Wed, 14 Oct 2026 07:29:44 GMT",
+          "Connection": "close"
+        }
+      }
+    },
+    {
+      "path": "/rest/workspaces/agent_ws_49a8721c7fadf351e28d59eec0601bb05deb303d6c8eb6c880dc1f83c32ce54b/static/preexisting.txt",
+      "request": null,
+      "response": {
+        "status": 404,
+        "body": "{\"detail\":\"File not found in workspace\"}",
+        "headers": {
+          "vary": "Origin",
+          "content-type": "application/json; charset=utf-8",
+          "content-length": "40",
+          "Date": "Wed, 14 Oct 2026 07:29:44 GMT",
+          "Connection": "close"
+        }
+      }
+    }
+  ]
+}

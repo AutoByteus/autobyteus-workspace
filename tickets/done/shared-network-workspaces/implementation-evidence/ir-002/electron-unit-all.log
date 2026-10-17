@@ -1,0 +1,113 @@
+COMMAND ["pnpm", "-C", "autobyteus-web", "test:electron", "--run", "--maxWorkers=2"]
+CLEAN_ENV keys=CI,COREPACK_ENABLE_DOWNLOAD_PROMPT,HOME,LANG,LC_ALL,PATH,TMPDIR
+
+> autobyteus@1.5.3-beta.2 test:electron /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web
+> vitest --config ./electron/vitest.config.ts --run --maxWorkers=2
+
+
+[1m[46m RUN [49m[22m [36mv3.2.4 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/electron[39m
+
+ [32m✓[39m updater/__tests__/appUpdater.spec.ts [2m([22m[2m24 tests[22m[2m)[22m[32m 32[2mms[22m[39m
+ [32m✓[39m browser/__tests__/browser-tab-manager.spec.ts [2m([22m[2m14 tests[22m[2m)[22m[32m 80[2mms[22m[39m
+ [32m✓[39m browser/__tests__/browser-shell-controller.spec.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m server/__tests__/StartupDelayLifecycle.spec.ts [2m([22m[2m14 tests[22m[2m)[22m[32m 105[2mms[22m[39m
+ [32m✓[39m local-file-protocol/__tests__/local-file-response.spec.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 79[2mms[22m[39m
+ [32m✓[39m server/services/__tests__/AppDataService.spec.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m server/__tests__/BaseServerManager.spec.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 65[2mms[22m[39m
+ [32m✓[39m local-file-protocol/__tests__/local-file-protocol.spec.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m server/__tests__/serverRuntimeEnv.spec.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m server/__tests__/platformServerEnvironment.spec.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m server/__tests__/ServerStatusManager.spec.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [2m[90m↓[39m[22m extensions/__tests__/managedExtensionService.realRelease.spec.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+ [32m✓[39m extensions/__tests__/managedExtensionService.spec.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 1387[2mms[22m[39m
+   [33m[2m✓[22m[39m ManagedExtensionService[2m > [22minstalls disabled by default, enables explicitly, and transcribes via the worker [33m 594[2mms[22m[39m
+   [33m[2m✓[22m[39m ManagedExtensionService[2m > [22mpreserves enabled state and language mode across reinstall [33m 532[2mms[22m[39m
+ [32m✓[39m __tests__/nodeRegistryStore.spec.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m server/services/__tests__/HealthChecker.spec.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 84[2mms[22m[39m
+ [32m✓[39m server/__tests__/serverOutputLogging.spec.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 134[2mms[22m[39m
+ [32m✓[39m browser/__tests__/browser-view-factory.spec.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m launch-profile/__tests__/electronLaunchProfile.spec.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m browser/__tests__/browser-runtime.spec.ts [2m([22m[2m1 test[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m __tests__/logger.spec.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 103[2mms[22m[39m
+ [32m✓[39m shell/__tests__/workspace-shell-window-registry.spec.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m __tests__/rendererConsoleDiagnostics.spec.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m shell/__tests__/workspace-shell-window.spec.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m launch-profile/__tests__/e2eDataRootSafety.spec.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m updater/__tests__/appUpdateChannelStore.spec.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m __tests__/preload.spec.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+ [32m✓[39m updater/__tests__/disabledAppUpdater.spec.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [31m❯[39m updater/__tests__/appUpdateErrorClassifier.spec.ts [2m([22m[2m4 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[32m 8[2mms[22m[39m
+   [32m✓[39m classifyAppUpdateError[2m > [22mclassifies transient network diagnostics without using raw text as the safe message[32m 3[2mms[22m[39m
+[31m   [31m×[31m classifyAppUpdateError[2m > [22mclassifies missing channel metadata as release-preparing[39m[32m 3[2mms[22m[39m
+[31m     → expected 'network' to be 'release-preparing' // Object.is equality[39m
+[31m   [31m×[31m classifyAppUpdateError[2m > [22mclassifies package metadata problems separately from release preparation[39m[32m 1[2mms[22m[39m
+[31m     → expected 'network' to be 'metadata' // Object.is equality[39m
+[31m   [31m×[31m classifyAppUpdateError[2m > [22muses operation fallback for download and install errors[39m[32m 0[2mms[22m[39m
+[31m     → expected 'network' to be 'download' // Object.is equality[39m
+ [32m✓[39m browser/__tests__/browser-session-profile.spec.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m browser/__tests__/browser-tab-page-operations.spec.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m browser/__tests__/browser-screenshot-artifact-writer.spec.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m __tests__/localFileValidation.spec.ts [2m([22m[2m1 test[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m extensions/__tests__/voiceInputRuntimeService.spec.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m extensions/__tests__/extensionCatalog.spec.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m server/__tests__/prismaSqliteUrl.spec.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m launch-profile/__tests__/e2eLaunchPreflight.spec.ts [2m([22m[2m1 test[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m __tests__/appDataPaths.spec.ts [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 3 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m updater/__tests__/appUpdateErrorClassifier.spec.ts[2m > [22mclassifyAppUpdateError[2m > [22mclassifies missing channel metadata as release-preparing
+[31m[1mAssertionError[22m: expected 'network' to be 'release-preparing' // Object.is equality[39m
+
+Expected: [32m"release-preparing"[39m
+Received: [31m"network"[39m
+
+[36m [2m❯[22m updater/__tests__/appUpdateErrorClassifier.spec.ts:[2m26:25[22m[39m
+    [90m 24| [39m    )[33m;[39m
+    [90m 25| [39m
+    [90m 26| [39m    [34mexpect[39m(result[33m.[39mkind)[33m.[39m[34mtoBe[39m([32m'release-preparing'[39m)[33m;[39m
+    [90m   | [39m                        [31m^[39m
+    [90m 27| [39m    [34mexpect[39m(result[33m.[39mmessage)[33m.[39m[34mtoContain[39m([32m'still being prepared'[39m)[33m;[39m
+    [90m 28| [39m    [34mexpect[39m(result[33m.[39mmessage)[33m.[39mnot[33m.[39m[34mtoContain[39m([32m'latest-mac.yml'[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m updater/__tests__/appUpdateErrorClassifier.spec.ts[2m > [22mclassifyAppUpdateError[2m > [22mclassifies package metadata problems separately from release preparation
+[31m[1mAssertionError[22m: expected 'network' to be 'metadata' // Object.is equality[39m
+
+Expected: [32m"[7mm[27met[7madata[27m"[39m
+Received: [31m"[7mn[27met[7mwork[27m"[39m
+
+[36m [2m❯[22m updater/__tests__/appUpdateErrorClassifier.spec.ts:[2m40:25[22m[39m
+    [90m 38| [39m    )[33m;[39m
+    [90m 39| [39m
+    [90m 40| [39m    [34mexpect[39m(result[33m.[39mkind)[33m.[39m[34mtoBe[39m([32m'metadata'[39m)[33m;[39m
+    [90m   | [39m                        [31m^[39m
+    [90m 41| [39m    expect(result.message).toContain('Update information is incomplete…
+    [90m 42| [39m    [34mexpect[39m(result[33m.[39mmessage)[33m.[39mnot[33m.[39m[34mtoContain[39m([32m'ZIP file not provided'[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m updater/__tests__/appUpdateErrorClassifier.spec.ts[2m > [22mclassifyAppUpdateError[2m > [22muses operation fallback for download and install errors
+[31m[1mAssertionError[22m: expected 'network' to be 'download' // Object.is equality[39m
+
+Expected: [32m"download"[39m
+Received: [31m"network"[39m
+
+[36m [2m❯[22m updater/__tests__/appUpdateErrorClassifier.spec.ts:[2m49:14[22m[39m
+    [90m 47| [39m      operation[33m:[39m [32m'download'[39m[33m,[39m
+    [90m 48| [39m      fallbackMessage[33m:[39m [32m'Failed to download update.'[39m[33m,[39m
+    [90m 49| [39m    })[33m.[39mkind)[33m.[39m[34mtoBe[39m([32m'download'[39m)[33m;[39m
+    [90m   | [39m             [31m^[39m
+    [90m 50| [39m
+    [90m 51| [39m    [34mexpect[39m([34mclassifyAppUpdateError[39m([35mnew[39m [33mError[39m([32m'quit failed'[39m)[33m,[39m {
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m35 passed[39m[22m[2m | [22m[33m1 skipped[39m[90m (37)[39m
+[2m      Tests [22m [1m[31m3 failed[39m[22m[2m | [22m[1m[32m188 passed[39m[22m[2m | [22m[33m1 skipped[39m[90m (192)[39m
+[2m   Start at [22m 20:27:27
+[2m   Duration [22m 5.04s[2m (transform 494ms, setup 0ms, collect 1.09s, tests 2.25s, environment 4ms, prepare 1.82s)[22m
+
+ ELIFECYCLE  Command failed with exit code 1.

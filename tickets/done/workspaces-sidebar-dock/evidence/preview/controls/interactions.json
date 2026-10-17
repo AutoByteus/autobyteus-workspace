@@ -1,0 +1,1714 @@
+[
+  {
+    "label": "1440-teamMembers-textarea-hit",
+    "hitTests": [
+      {
+        "selector": "[data-test=\"workspace-center-pane\"] textarea",
+        "rect": {
+          "x": 340,
+          "y": 660,
+          "width": 171,
+          "height": 116
+        },
+        "hit": true
+      },
+      {
+        "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+        "rect": {
+          "x": 712.1875,
+          "y": 8,
+          "width": 82.296875,
+          "height": 48
+        },
+        "hit": true
+      }
+    ]
+  },
+  {
+    "label": "1440-teamMembers-textarea-hit-composer-focus",
+    "focused": true
+  },
+  {
+    "label": "1440-teamMembers-textarea-hit-tab-click",
+    "state": {
+      "shell": {
+        "viewportWidth": 1440,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 320,
+          "preferredWidth": 320,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 910,
+          "preferredWidth": 910,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 1183,
+      "measuredRight": 910,
+      "intent": "user-sized",
+      "leftWidth": 320,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "teamMembers"
+    }
+  },
+  {
+    "label": "1440-teamMembers-draft-preserved",
+    "text": "Layout preview draft - do not send",
+    "url": "http://127.0.0.1:39839/implementation-shell-preview",
+    "state": {
+      "shell": {
+        "viewportWidth": 1440,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 320,
+          "preferredWidth": 320,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 910,
+          "preferredWidth": 910,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 1183,
+      "measuredRight": 910,
+      "intent": "user-sized",
+      "leftWidth": 320,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "teamMembers"
+    }
+  },
+  {
+    "label": "1440-teamMembers-controls-open",
+    "viewport": {
+      "width": 1440,
+      "height": 800,
+      "dpr": 1
+    },
+    "state": {
+      "shell": {
+        "viewportWidth": 1440,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 320,
+          "preferredWidth": 320,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 910,
+          "preferredWidth": 910,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 1183,
+      "measuredRight": 910,
+      "intent": "user-sized",
+      "leftWidth": 320,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "teamMembers"
+    },
+    "left": {
+      "x": 0,
+      "y": 0,
+      "width": 320,
+      "height": 800,
+      "right": 320
+    },
+    "drawer": null,
+    "backdrop": null,
+    "center": {
+      "x": 323,
+      "y": 0,
+      "width": 205,
+      "height": 800,
+      "right": 528
+    },
+    "right": {
+      "x": 530,
+      "y": 0,
+      "width": 910,
+      "height": 800,
+      "right": 1440
+    }
+  },
+  {
+    "label": "1440-progress-textarea-hit",
+    "hitTests": [
+      {
+        "selector": "[data-test=\"workspace-center-pane\"] textarea",
+        "rect": {
+          "x": 340,
+          "y": 684,
+          "width": 171,
+          "height": 92
+        },
+        "hit": true
+      },
+      {
+        "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+        "rect": {
+          "x": 902.109375,
+          "y": 8,
+          "width": 99.84375,
+          "height": 48
+        },
+        "hit": true
+      }
+    ]
+  },
+  {
+    "label": "1440-progress-textarea-hit-composer-focus",
+    "focused": true
+  },
+  {
+    "label": "1440-progress-textarea-hit-tab-click",
+    "state": {
+      "shell": {
+        "viewportWidth": 1440,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 320,
+          "preferredWidth": 320,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 910,
+          "preferredWidth": 910,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 1183,
+      "measuredRight": 910,
+      "intent": "user-sized",
+      "leftWidth": 320,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "progress"
+    }
+  },
+  {
+    "label": "1440-progress-draft-preserved",
+    "text": "Layout preview draft - do not send",
+    "url": "http://127.0.0.1:39839/implementation-shell-preview",
+    "state": {
+      "shell": {
+        "viewportWidth": 1440,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 320,
+          "preferredWidth": 320,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 910,
+          "preferredWidth": 910,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 1183,
+      "measuredRight": 910,
+      "intent": "user-sized",
+      "leftWidth": 320,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "progress"
+    }
+  },
+  {
+    "label": "1440-progress-controls-open",
+    "viewport": {
+      "width": 1440,
+      "height": 800,
+      "dpr": 1
+    },
+    "state": {
+      "shell": {
+        "viewportWidth": 1440,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 320,
+          "preferredWidth": 320,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 910,
+          "preferredWidth": 910,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 1183,
+      "measuredRight": 910,
+      "intent": "user-sized",
+      "leftWidth": 320,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "progress"
+    },
+    "left": {
+      "x": 0,
+      "y": 0,
+      "width": 320,
+      "height": 800,
+      "right": 320
+    },
+    "drawer": null,
+    "backdrop": null,
+    "center": {
+      "x": 323,
+      "y": 0,
+      "width": 205,
+      "height": 800,
+      "right": 528
+    },
+    "right": {
+      "x": 530,
+      "y": 0,
+      "width": 910,
+      "height": 800,
+      "right": 1440
+    }
+  },
+  {
+    "label": "1280-teamMembers-textarea-hit",
+    "hitTests": [
+      {
+        "selector": "[data-test=\"workspace-center-pane\"] textarea",
+        "rect": {
+          "x": 340,
+          "y": 684,
+          "width": 171,
+          "height": 92
+        },
+        "hit": true
+      },
+      {
+        "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+        "rect": {
+          "x": 712.1875,
+          "y": 8,
+          "width": 82.296875,
+          "height": 48
+        },
+        "hit": true
+      }
+    ]
+  },
+  {
+    "label": "1280-teamMembers-textarea-hit-composer-focus",
+    "focused": true
+  },
+  {
+    "label": "1280-teamMembers-textarea-hit-tab-click",
+    "state": {
+      "shell": {
+        "viewportWidth": 1280,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 320,
+          "preferredWidth": 320,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 750,
+          "preferredWidth": 750,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 1023,
+      "measuredRight": 750,
+      "intent": "user-sized",
+      "leftWidth": 320,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "teamMembers"
+    }
+  },
+  {
+    "label": "1280-teamMembers-draft-preserved",
+    "text": "Layout preview draft - do not send",
+    "url": "http://127.0.0.1:39839/implementation-shell-preview",
+    "state": {
+      "shell": {
+        "viewportWidth": 1280,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 320,
+          "preferredWidth": 320,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 750,
+          "preferredWidth": 750,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 1023,
+      "measuredRight": 750,
+      "intent": "user-sized",
+      "leftWidth": 320,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "teamMembers"
+    }
+  },
+  {
+    "label": "1280-teamMembers-controls-open",
+    "viewport": {
+      "width": 1280,
+      "height": 800,
+      "dpr": 1
+    },
+    "state": {
+      "shell": {
+        "viewportWidth": 1280,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 320,
+          "preferredWidth": 320,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 750,
+          "preferredWidth": 750,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 1023,
+      "measuredRight": 750,
+      "intent": "user-sized",
+      "leftWidth": 320,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "teamMembers"
+    },
+    "left": {
+      "x": 0,
+      "y": 0,
+      "width": 320,
+      "height": 800,
+      "right": 320
+    },
+    "drawer": null,
+    "backdrop": null,
+    "center": {
+      "x": 323,
+      "y": 0,
+      "width": 205,
+      "height": 800,
+      "right": 528
+    },
+    "right": {
+      "x": 530,
+      "y": 0,
+      "width": 750,
+      "height": 800,
+      "right": 1280
+    }
+  },
+  {
+    "label": "1280-progress-textarea-hit",
+    "hitTests": [
+      {
+        "selector": "[data-test=\"workspace-center-pane\"] textarea",
+        "rect": {
+          "x": 340,
+          "y": 684,
+          "width": 171,
+          "height": 92
+        },
+        "hit": true
+      },
+      {
+        "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+        "rect": {
+          "x": 902.109375,
+          "y": 8,
+          "width": 99.84375,
+          "height": 48
+        },
+        "hit": true
+      }
+    ]
+  },
+  {
+    "label": "1280-progress-textarea-hit-composer-focus",
+    "focused": true
+  },
+  {
+    "label": "1280-progress-textarea-hit-tab-click",
+    "state": {
+      "shell": {
+        "viewportWidth": 1280,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 320,
+          "preferredWidth": 320,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 750,
+          "preferredWidth": 750,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 1023,
+      "measuredRight": 750,
+      "intent": "user-sized",
+      "leftWidth": 320,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "progress"
+    }
+  },
+  {
+    "label": "1280-progress-draft-preserved",
+    "text": "Layout preview draft - do not send",
+    "url": "http://127.0.0.1:39839/implementation-shell-preview",
+    "state": {
+      "shell": {
+        "viewportWidth": 1280,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 320,
+          "preferredWidth": 320,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 750,
+          "preferredWidth": 750,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 1023,
+      "measuredRight": 750,
+      "intent": "user-sized",
+      "leftWidth": 320,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "progress"
+    }
+  },
+  {
+    "label": "1280-progress-controls-open",
+    "viewport": {
+      "width": 1280,
+      "height": 800,
+      "dpr": 1
+    },
+    "state": {
+      "shell": {
+        "viewportWidth": 1280,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 320,
+          "preferredWidth": 320,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 750,
+          "preferredWidth": 750,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 1023,
+      "measuredRight": 750,
+      "intent": "user-sized",
+      "leftWidth": 320,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "progress"
+    },
+    "left": {
+      "x": 0,
+      "y": 0,
+      "width": 320,
+      "height": 800,
+      "right": 320
+    },
+    "drawer": null,
+    "backdrop": null,
+    "center": {
+      "x": 323,
+      "y": 0,
+      "width": 205,
+      "height": 800,
+      "right": 528
+    },
+    "right": {
+      "x": 530,
+      "y": 0,
+      "width": 750,
+      "height": 800,
+      "right": 1280
+    }
+  },
+  {
+    "label": "1000-teamMembers-textarea-hit",
+    "hitTests": [
+      {
+        "selector": "[data-test=\"workspace-center-pane\"] textarea",
+        "rect": {
+          "x": 340,
+          "y": 684,
+          "width": 171,
+          "height": 92
+        },
+        "hit": true
+      },
+      {
+        "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+        "rect": {
+          "x": 712.1875,
+          "y": 8,
+          "width": 82.296875,
+          "height": 48
+        },
+        "hit": true
+      }
+    ]
+  },
+  {
+    "label": "1000-teamMembers-textarea-hit-composer-focus",
+    "focused": true
+  },
+  {
+    "label": "1000-teamMembers-textarea-hit-tab-click",
+    "state": {
+      "shell": {
+        "viewportWidth": 1000,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 320,
+          "preferredWidth": 320,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 470,
+          "preferredWidth": 470,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 743,
+      "measuredRight": 470,
+      "intent": "user-sized",
+      "leftWidth": 320,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "teamMembers"
+    }
+  },
+  {
+    "label": "1000-teamMembers-draft-preserved",
+    "text": "Layout preview draft - do not send",
+    "url": "http://127.0.0.1:39839/implementation-shell-preview",
+    "state": {
+      "shell": {
+        "viewportWidth": 1000,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 320,
+          "preferredWidth": 320,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 470,
+          "preferredWidth": 470,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 743,
+      "measuredRight": 470,
+      "intent": "user-sized",
+      "leftWidth": 320,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "teamMembers"
+    }
+  },
+  {
+    "label": "1000-teamMembers-controls-open",
+    "viewport": {
+      "width": 1000,
+      "height": 800,
+      "dpr": 1
+    },
+    "state": {
+      "shell": {
+        "viewportWidth": 1000,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 320,
+          "preferredWidth": 320,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 470,
+          "preferredWidth": 470,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 743,
+      "measuredRight": 470,
+      "intent": "user-sized",
+      "leftWidth": 320,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "teamMembers"
+    },
+    "left": {
+      "x": 0,
+      "y": 0,
+      "width": 320,
+      "height": 800,
+      "right": 320
+    },
+    "drawer": null,
+    "backdrop": null,
+    "center": {
+      "x": 323,
+      "y": 0,
+      "width": 205,
+      "height": 800,
+      "right": 528
+    },
+    "right": {
+      "x": 530,
+      "y": 0,
+      "width": 470,
+      "height": 800,
+      "right": 1000
+    }
+  },
+  {
+    "label": "1000-progress-textarea-hit",
+    "hitTests": [
+      {
+        "selector": "[data-test=\"workspace-center-pane\"] textarea",
+        "rect": {
+          "x": 340,
+          "y": 684,
+          "width": 171,
+          "height": 92
+        },
+        "hit": true
+      },
+      {
+        "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+        "rect": {
+          "x": 810.109375,
+          "y": 8,
+          "width": 99.84375,
+          "height": 48
+        },
+        "hit": true
+      }
+    ]
+  },
+  {
+    "label": "1000-progress-textarea-hit-composer-focus",
+    "focused": true
+  },
+  {
+    "label": "1000-progress-textarea-hit-tab-click",
+    "state": {
+      "shell": {
+        "viewportWidth": 1000,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 320,
+          "preferredWidth": 320,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 470,
+          "preferredWidth": 470,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 743,
+      "measuredRight": 470,
+      "intent": "user-sized",
+      "leftWidth": 320,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "progress"
+    }
+  },
+  {
+    "label": "1000-progress-draft-preserved",
+    "text": "Layout preview draft - do not send",
+    "url": "http://127.0.0.1:39839/implementation-shell-preview",
+    "state": {
+      "shell": {
+        "viewportWidth": 1000,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 320,
+          "preferredWidth": 320,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 470,
+          "preferredWidth": 470,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 743,
+      "measuredRight": 470,
+      "intent": "user-sized",
+      "leftWidth": 320,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "progress"
+    }
+  },
+  {
+    "label": "1000-progress-controls-open",
+    "viewport": {
+      "width": 1000,
+      "height": 800,
+      "dpr": 1
+    },
+    "state": {
+      "shell": {
+        "viewportWidth": 1000,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 320,
+          "preferredWidth": 320,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 470,
+          "preferredWidth": 470,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 743,
+      "measuredRight": 470,
+      "intent": "user-sized",
+      "leftWidth": 320,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "progress"
+    },
+    "left": {
+      "x": 0,
+      "y": 0,
+      "width": 320,
+      "height": 800,
+      "right": 320
+    },
+    "drawer": null,
+    "backdrop": null,
+    "center": {
+      "x": 323,
+      "y": 0,
+      "width": 205,
+      "height": 800,
+      "right": 528
+    },
+    "right": {
+      "x": 530,
+      "y": 0,
+      "width": 470,
+      "height": 800,
+      "right": 1000
+    }
+  },
+  {
+    "label": "non-default-left-resized",
+    "viewport": {
+      "width": 1600,
+      "height": 800,
+      "dpr": 1
+    },
+    "state": {
+      "shell": {
+        "viewportWidth": 1600,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 520,
+          "preferredWidth": 520,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 450,
+          "preferredWidth": 450,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "automatic",
+          "centerProtectionMode": "automatic",
+          "effectiveCenterMinWidth": 480
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 450,
+      "measuredRight": 450,
+      "intent": "automatic",
+      "leftWidth": 520,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "teamMembers"
+    },
+    "left": {
+      "x": 0,
+      "y": 0,
+      "width": 520,
+      "height": 800,
+      "right": 520
+    },
+    "drawer": null,
+    "backdrop": null,
+    "center": {
+      "x": 523,
+      "y": 0,
+      "width": 625,
+      "height": 800,
+      "right": 1148
+    },
+    "right": {
+      "x": 1150,
+      "y": 0,
+      "width": 450,
+      "height": 800,
+      "right": 1600
+    }
+  },
+  {
+    "label": "non-default-1131-open",
+    "viewport": {
+      "width": 1131,
+      "height": 800,
+      "dpr": 1
+    },
+    "state": {
+      "shell": {
+        "viewportWidth": 1131,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 520,
+          "preferredWidth": 520,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 401,
+          "preferredWidth": 401,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 1343,
+      "measuredRight": 401,
+      "intent": "user-sized",
+      "leftWidth": 520,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "teamMembers"
+    },
+    "left": {
+      "x": 0,
+      "y": 0,
+      "width": 520,
+      "height": 800,
+      "right": 520
+    },
+    "drawer": null,
+    "backdrop": null,
+    "center": {
+      "x": 523,
+      "y": 0,
+      "width": 205,
+      "height": 800,
+      "right": 728
+    },
+    "right": {
+      "x": 730,
+      "y": 0,
+      "width": 401,
+      "height": 800,
+      "right": 1131
+    }
+  },
+  {
+    "label": "non-default-1131-hit",
+    "hitTests": [
+      {
+        "selector": "[data-test=\"workspace-center-pane\"] textarea",
+        "rect": {
+          "x": 540,
+          "y": 684,
+          "width": 171,
+          "height": 92
+        },
+        "hit": true
+      },
+      {
+        "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+        "rect": {
+          "x": 912.1875,
+          "y": 8,
+          "width": 82.296875,
+          "height": 48
+        },
+        "hit": true
+      }
+    ]
+  },
+  {
+    "label": "non-default-1131-hit-composer-focus",
+    "focused": true
+  },
+  {
+    "label": "non-default-1131-hit-tab-click",
+    "state": {
+      "shell": {
+        "viewportWidth": 1131,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 520,
+          "preferredWidth": 520,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 401,
+          "preferredWidth": 401,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 1343,
+      "measuredRight": 401,
+      "intent": "user-sized",
+      "leftWidth": 520,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "teamMembers"
+    }
+  },
+  {
+    "label": "non-default-1130-open",
+    "viewport": {
+      "width": 1130,
+      "height": 800,
+      "dpr": 1
+    },
+    "state": {
+      "shell": {
+        "viewportWidth": 1130,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 520,
+          "preferredWidth": 520,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 400,
+          "preferredWidth": 400,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 1343,
+      "measuredRight": 400,
+      "intent": "user-sized",
+      "leftWidth": 520,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "teamMembers"
+    },
+    "left": {
+      "x": 0,
+      "y": 0,
+      "width": 520,
+      "height": 800,
+      "right": 520
+    },
+    "drawer": null,
+    "backdrop": null,
+    "center": {
+      "x": 523,
+      "y": 0,
+      "width": 205,
+      "height": 800,
+      "right": 728
+    },
+    "right": {
+      "x": 730,
+      "y": 0,
+      "width": 400,
+      "height": 800,
+      "right": 1130
+    }
+  },
+  {
+    "label": "non-default-1130-hit",
+    "hitTests": [
+      {
+        "selector": "[data-test=\"workspace-center-pane\"] textarea",
+        "rect": {
+          "x": 540,
+          "y": 684,
+          "width": 171,
+          "height": 92
+        },
+        "hit": true
+      },
+      {
+        "selector": "[data-test=\"workspace-right-panel\"] [role=\"tab\"][aria-selected=\"true\"]",
+        "rect": {
+          "x": 912.1875,
+          "y": 8,
+          "width": 82.296875,
+          "height": 48
+        },
+        "hit": true
+      }
+    ]
+  },
+  {
+    "label": "non-default-1130-hit-composer-focus",
+    "focused": true
+  },
+  {
+    "label": "non-default-1130-hit-tab-click",
+    "state": {
+      "shell": {
+        "viewportWidth": 1130,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 520,
+          "preferredWidth": 520,
+          "stripBehavior": null,
+          "stripActivation": null
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 400,
+          "preferredWidth": 400,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": false,
+        "showRightStrip": false
+      },
+      "rawRight": 1343,
+      "measuredRight": 400,
+      "intent": "user-sized",
+      "leftWidth": 520,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "teamMembers"
+    }
+  },
+  {
+    "label": "non-default-1129-open",
+    "viewport": {
+      "width": 1129,
+      "height": 800,
+      "dpr": 1
+    },
+    "state": {
+      "shell": {
+        "viewportWidth": 1129,
+        "viewportHeight": 800,
+        "mode": "wide",
+        "isNarrow": false,
+        "isShortHeight": false,
+        "showGenericSurfaceControls": false,
+        "leftPanel": {
+          "preference": "hidden-by-user",
+          "presentation": "strip",
+          "presentationSource": "user",
+          "consumedWidth": 50,
+          "preferredWidth": 520,
+          "stripBehavior": "consuming",
+          "stripActivation": "open-drawer"
+        },
+        "rightPanel": {
+          "preference": "visible",
+          "presentation": "docked",
+          "presentationSource": "user",
+          "consumedWidth": 875,
+          "preferredWidth": 875,
+          "stripBehavior": null,
+          "stripActivation": null,
+          "resizeIntent": "user-sized",
+          "centerProtectionMode": "user-override",
+          "effectiveCenterMinWidth": 200
+        },
+        "showLeftStrip": true,
+        "showRightStrip": false
+      },
+      "rawRight": 1343,
+      "measuredRight": 922,
+      "intent": "user-sized",
+      "leftWidth": 520,
+      "selection": {
+        "kind": "team_run",
+        "rootTeamRunId": "layout-preview-team"
+      },
+      "focus": "layout-preview-agent",
+      "tab": "teamMembers"
+    },
+    "left": null,
+    "drawer": {
+      "x": 0,
+      "y": 0,
+      "width": 520,
+      "height": 800,
+      "right": 520
+    },
+    "backdrop": {
+      "x": 0,
+      "y": 0,
+      "width": 1129,
+      "height": 800,
+      "right": 1129
+    },
+    "center": {
+      "x": 0,
+      "y": 0,
+      "width": 252,
+      "height": 800,
+      "right": 252
+    },
+    "right": {
+      "x": 254,
+      "y": 0,
+      "width": 875,
+      "height": 800,
+      "right": 1129
+    }
+  },
+  {
+    "label": "workspace-row-markup",
+    "rows": [
+      {
+        "text": "EEngineer9wAgent · Engineer · /Engineer",
+        "attrs": [
+          [
+            "data-v-6491131e",
+            ""
+          ],
+          [
+            "data-v-0a39d3e0",
+            ""
+          ],
+          [
+            "class",
+            "workspace-team-execution-row relative flex min-h-7 w-full cursor-pointer items-center rounded-md text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 is-selected text-indigo-900"
+          ],
+          [
+            "data-test",
+            "workspace-team-member-layout-preview-team-/Engineer"
+          ],
+          [
+            "data-row-kind",
+            "stable_member"
+          ],
+          [
+            "data-node-kind",
+            "agent"
+          ],
+          [
+            "data-tree-depth",
+            "0"
+          ],
+          [
+            "data-team-run-id",
+            "layout-preview-team"
+          ],
+          [
+            "data-member-address",
+            "/Engineer"
+          ],
+          [
+            "aria-current",
+            "true"
+          ],
+          [
+            "aria-selected",
+            "true"
+          ],
+          [
+            "aria-level",
+            "1"
+          ],
+          [
+            "aria-label",
+            "Agent, Engineer, level 1, offline, /Engineer"
+          ],
+          [
+            "title",
+            "Agent · Engineer · /Engineer"
+          ],
+          [
+            "role",
+            "treeitem"
+          ],
+          [
+            "tabindex",
+            "0"
+          ],
+          [
+            "style",
+            "padding-left: calc(0.875rem);"
+          ]
+        ]
+      }
+    ]
+  }
+]

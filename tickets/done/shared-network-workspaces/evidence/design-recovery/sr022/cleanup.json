@@ -1,0 +1,42 @@
+{
+  "vm": "ab-nfs-sr022-4d97877e",
+  "scratch": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-sr022-ls5vlmt7",
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "stop",
+        "ab-nfs-sr022-4d97877e"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "delete",
+        "ab-nfs-sr022-4d97877e"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "list",
+        "--format",
+        "json"
+      ],
+      "rc": 0,
+      "stdout": "[\n  {\n    \"Source\" : \"OCI\",\n    \"Size\" : 5,\n    \"Accessed\" : \"2026-10-15T09:06:10Z\",\n    \"Disk\" : 20,\n    \"State\" : \"stopped\",\n    \"Name\" : \"ghcr.io\\/cirruslabs\\/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e\",\n    \"Running\" : false\n  }\n]\n",
+      "stderr": ""
+    }
+  ],
+  "result": "Complete",
+  "stopRC": 0,
+  "vmPidAbsent": true,
+  "privateScratchAbsent": true,
+  "limits": "Owned disposable VM only; no user VM/source/node/mount/provider or retained IR005/IR007/public-Mac-cache change. Public guest drained detach outcome is in prototype-result, not inferred from VM disposal."
+}

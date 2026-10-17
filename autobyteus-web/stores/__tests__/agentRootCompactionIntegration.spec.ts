@@ -31,8 +31,9 @@ const deferred = <T = any>() => {
 }
 const nativeView = () => {
   const view = agentRootView()
-  for (const entry of view.execution_tree.collaborators) {
-    const launch = entry.kind === 'agent' ? entry.launchConfiguration : entry.defaultLaunchConfiguration
+  for (const entry of view.execution_tree.taskExecutions) {
+    const launch = entry.source?.kind === 'agent' ? entry.source.launchConfiguration : entry.source?.defaultLaunchConfiguration
+    if (!launch) continue
     launch.runtimeKind = 'autobyteus'
     launch.workspaceRootPath = null
   }
@@ -172,7 +173,7 @@ it.each(['view', 'member'])('captures ALL revisions before deferred %s fetch; co
     expect(e.context.state).toBe(e.state); expect(e.context.config).toBe(e.config)
     expect(activities.getActivityContentRevision(e.agentRunId)).toBe(revs[i])
   })
-  expect(store.selectedChild('host-run')).toBe('pp-run'); expect(store.isTaskTeamExpanded('host-run', 'team-run')).toBe(false)
+  expect(store.selectedChild('host-run')).toBe('pp-run'); expect(store.isTaskTeamExpanded('host-run', 'team-run')).toBe(true)
 })
 
 it.each(['null', 'view', 'error'])('stale %s inspection after attach cannot remove newer service or context', async result => {

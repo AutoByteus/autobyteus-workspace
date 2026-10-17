@@ -1,0 +1,11 @@
+# github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/platform
+internal/platform/filesystem_darwin.go:17:68: undefined: syscall.MNT_LOCAL
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/cmd/autobyteus-nfs [build failed]
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/backend [build failed]
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/cli [build failed]
+ok  	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/config	0.361s
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/docker [build failed]
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/platform [build failed]
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/service [build failed]
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/setup [build failed]
+FAIL

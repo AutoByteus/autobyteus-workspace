@@ -1,0 +1,87 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-ts[39m
+
+ [32m✓[39m tests/unit/tools/terminal/output-buffer.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/node-pty-bootstrap.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 19[2mms[22m[39m
+[90mstdout[2m | tests/unit/tools/terminal/terminal-session-manager.test.ts[2m > [22m[2mTerminalSessionManager[2m > [22m[2mensureStarted creates session
+[22m[39mTerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+ [32m✓[39m tests/unit/tools/terminal/types.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/prompt-detector.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/wsl-tmux-session.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 207[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/session-factory.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/wsl-utils.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/command-execution/non-interactive-shell-resolver.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/direct-shell-session.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/command-execution/shell-command-executor.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 149[2mms[22m[39m
+[90mstdout[2m | tests/unit/tools/terminal/terminal-session-manager.test.ts[2m > [22m[2mTerminalSessionManager[2m > [22m[2mensureStarted is idempotent
+[22m[39mTerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+ [32m✓[39m tests/unit/tools/terminal/ansi-utils.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/command-execution/process-group-observer.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 994[2mms[22m[39m
+     [33m[2m✓[22m[39m finds and stops live descendants in a detached shell process group [33m 488[2mms[22m[39m
+[90mstdout[2m | tests/unit/tools/terminal/terminal-session-manager.test.ts[2m > [22m[2mTerminalSessionManager[2m > [22m[2mexecuteCommand returns TerminalResult
+[22m[39mTerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+ [32m✓[39m tests/unit/tools/terminal/isolated-pty-session.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 1270[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/pty-session.test.ts [2m([22m[2m12 tests[22m[2m)[22m[33m 1299[2mms[22m[39m
+     [33m[2m✓[22m[39m starting twice throws [33m 324[2mms[22m[39m
+     [33m[2m✓[22m[39m close is idempotent [33m 310[2mms[22m[39m
+     [33m[2m✓[22m[39m returns queued data on read [33m 304[2mms[22m[39m
+ [31m❯[39m tests/unit/tools/terminal/run-bash.test.ts [2m([22m[2m15 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 1284[2mms[22m[39m
+     [32m✓[39m executes foreground commands through the non-PTY shell executor[32m 207[2mms[22m[39m
+     [32m✓[39m writes large heredoc content without PTY corruption[32m 168[2mms[22m[39m
+     [32m✓[39m uses the workspace root when cwd is omitted[32m 153[2mms[22m[39m
+     [32m✓[39m uses the system temporary directory when cwd and workspace are omitted[32m 149[2mms[22m[39m
+     [32m✓[39m executes in an explicit absolute cwd outside the workspace[32m 148[2mms[22m[39m
+     [32m✓[39m accepts an explicit absolute cwd without a configured workspace[32m 147[2mms[22m[39m
+     [32m✓[39m reports the physical target for an external symlink cwd[32m 149[2mms[22m[39m
+     [32m✓[39m rejects a provided relative cwd before foreground execution starts[32m 2[2mms[22m[39m
+     [32m✓[39m maps missing and non-directory cwd values to working-directory validation errors[32m 2[2mms[22m[39m
+     [32m✓[39m rejects relative cwd paths when no workspace is configured[32m 0[2mms[22m[39m
+     [32m✓[39m rejects a provided relative cwd before background spawning starts[32m 0[2mms[22m[39m
+     [32m✓[39m rejects a provided relative cwd without a workspace before background spawning starts[32m 0[2mms[22m[39m
+     [32m✓[39m rejects an existing inaccessible absolute cwd before foreground execution starts[32m 1[2mms[22m[39m
+     [32m✓[39m rejects an existing inaccessible absolute cwd before background spawning starts[32m 1[2mms[22m[39m
+[31m     [31m×[31m passes per-execution values to the child without changing process.env[39m[32m 156[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/background-process-manager.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 1680[2mms[22m[39m
+     [33m[2m✓[22m[39m starts, tracks, reads, and stops background commands by WSL Linux PID [33m 316[2mms[22m[39m
+     [33m[2m✓[22m[39m startCommand returns PID metadata and captures output [33m 890[2mms[22m[39m
+     [33m[2m✓[22m[39m stopProcess removes a managed process [33m 320[2mms[22m[39m
+[90mstdout[2m | tests/unit/tools/terminal/terminal-session-manager.test.ts[2m > [22m[2mTerminalSessionManager[2m > [22m[2mclose cleans up session
+[22m[39mTerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+[90mstdout[2m | tests/unit/tools/terminal/terminal-session-manager.test.ts[2m > [22m[2mTerminalSessionManager[2m > [22m[2mfalls back to provided session factory when primary startup fails
+[22m[39mTerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+ [32m✓[39m tests/unit/tools/terminal/terminal-session-manager.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 3604[2mms[22m[39m
+     [33m[2m✓[22m[39m ensureStarted creates session [33m 515[2mms[22m[39m
+     [33m[2m✓[22m[39m ensureStarted is idempotent [33m 510[2mms[22m[39m
+     [33m[2m✓[22m[39m executeCommand returns TerminalResult [33m 1022[2mms[22m[39m
+     [33m[2m✓[22m[39m close cleans up session [33m 516[2mms[22m[39m
+     [33m[2m✓[22m[39m falls back to provided session factory when primary startup fails [33m 1030[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/unit/tools/terminal/run-bash.test.ts[2m > [22mhost-supplied terminal child environment[2m > [22mpasses per-execution values to the child without changing process.env
+[31m[1mAssertionError[22m: expected '{"workspaceRootPath":"/var/folders/7w…' not to contain 'private-project'[39m
+
+Expected: [32m"private-project"[39m
+Received: [31m"{"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-core-check-s5z5mq5p/run-bash-test-TgN42k","customData":{},"_backgroundProcessManager":{"maxOutputBytes":1000000,"resolver":{"options":{"env":{"PATH":"./node_modules/.bin:/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/node_modules/.bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/.codex/packages/standalone/releases/0.162.1-aarch64-apple-darwin/codex-path:/Users/normy/.codex/tmp/arg0/codex-arg0ivjx4r:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin","AUTOBYTEUS_TEST_CHILD_ONLY":"private-project"}}},"observer":{},"processes":{}}}"[39m
+
+[36m [2m❯[22m tests/unit/tools/terminal/run-bash.test.ts:[2m224:41[22m[39m
+    [90m222| [39m    [34mexpect[39m(result[33m.[39mstdout)[33m.[39m[34mtoBe[39m([32m'private-project'[39m)[33m;[39m
+    [90m223| [39m    [34mexpect[39m(process[33m.[39menv[33m.[39m[33mAUTOBYTEUS_TEST_CHILD_ONLY[39m)[33m.[39m[34mtoBe[39m(before)[33m;[39m
+    [90m224| [39m    [34mexpect[39m([33mJSON[39m[33m.[39m[34mstringify[39m(context))[33m.[39mnot[33m.[39m[34mtoContain[39m([32m'private-project'[39m)[33m;[39m
+    [90m   | [39m                                        [31m^[39m
+    [90m225| [39m  })[33m;[39m
+    [90m226| [39m})[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m16 passed[39m[22m[90m (17)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m108 passed[39m[22m[90m (109)[39m
+[2m   Start at [22m 19:38:07
+[2m   Duration [22m 3.96s[2m (transform 1.05s, setup 187ms, import 1.23s, tests 10.54s, environment 2ms)[22m

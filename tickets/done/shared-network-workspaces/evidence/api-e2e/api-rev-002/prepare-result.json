@@ -1,0 +1,63 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "curl",
+        "--fail",
+        "--location",
+        "--connect-timeout",
+        "10",
+        "--max-time",
+        "90",
+        "--output",
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api002-5861wgnv/go.tar.gz",
+        "https://go.dev/dl/go1.27.2.darwin-arm64.tar.gz"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+      "rc": 0,
+      "seconds": 7.147,
+      "stdout": "",
+      "stderr": "  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n                                 Dload  Upload   Total   Spent    Left  Speed\n\n  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0\n100    76  100    76    0     0    165      0 --:--:-- --:--:-- --:--:--   165\n\n  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0\n 10 65.0M   10 6879k    0     0  4294k      0  0:00:15  0:00:01  0:00:14 7429k\n 26 65.0M   26 17.4M    0     0  6853k      0  0:00:09  0:00:02  0:00:07 9258k\n 43 65.0M   43 28.1M    0     0  8004k      0  0:00:08  0:00:03  0:00:05 9852k\n 61 65.0M   61 39.9M    0     0  8885k      0  0:00:07  0:00:04  0:00:03 10.1M\n 78 65.0M   78 50.7M    0     0  9277k      0  0:00:07  0:00:05  0:00:02 10.3M\n 91 65.0M   91 59.7M    0     0  9257k      0  0:00:07  0:00:06  0:00:01 10.5M\n100 65.0M  100 65.0M    0     0  9342k      0  0:00:07  0:00:07 --:--:-- 10.5M\n"
+    },
+    {
+      "argv": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api002-5861wgnv/go/bin/go",
+        "version"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+      "rc": 0,
+      "seconds": 1.117,
+      "stdout": "go version go1.27.2 darwin/arm64\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api002-5861wgnv/go/bin/go",
+        "build",
+        "-trimpath",
+        "-o",
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api002-5861wgnv/autobyteus-nfs",
+        "./cmd/autobyteus-nfs"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+      "rc": 0,
+      "seconds": 6.912,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api002-5861wgnv/autobyteus-nfs",
+        "version"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+      "rc": 0,
+      "seconds": 0.545,
+      "stdout": "development-unqualified\n",
+      "stderr": ""
+    }
+  ],
+  "scratch": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api002-5861wgnv",
+  "result": "Pass",
+  "toolchainSHA256": "76812b213b1b2302c978d28fa52fa92d541704b9e7d9d5db8002c50e4018c4c5"
+}

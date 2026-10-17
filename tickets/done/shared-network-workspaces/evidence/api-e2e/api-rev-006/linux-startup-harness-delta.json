@@ -1,0 +1,6 @@
+{
+  "raw": "linux-native-result.json",
+  "automaticProof": "boot id changed, same actual source/mount UUID and nonroot mounted RW before reconnect",
+  "separateRefusal": "administrative lock held by startup internal-probe; expected exclusion, harness wrongly required immediate operation availability",
+  "resume": "later one explicit public reconnect, no service/mount/identity edit"
+}

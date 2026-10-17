@@ -1,0 +1,120 @@
+{
+  "scope": "Static preservation checks, not rendered/API/E2E proof",
+  "candidateBeforeDelivery": "d25b1e74edefe6ce7f310cedb30b67a818d1978e",
+  "integratedTarget": "0c37f58d88220be3683a15da6e0956d6ab13c4db",
+  "probeSha256": "2ef40048bd86c6b4daf9e724f9691943ae274cb29f4ebbea081b8357aef9c3b4",
+  "checks": [
+    {
+      "check": "Incoming stopPaint/sidebarPaint/taskOfCopy/keyboardStopCopy block preserved byte-for-byte",
+      "result": "Pass"
+    },
+    {
+      "check": "Incoming DCP-001 complete case preserved byte-for-byte",
+      "result": "Pass"
+    },
+    {
+      "check": "DCP-002 includes both incoming style/keyboard lifecycle checks and existing root-manager selection correction",
+      "result": "Pass"
+    },
+    {
+      "check": "autobyteus-web/tests/e2e/settings-saved-model-refresh-cases.mjs identical to API-REV-001 candidate",
+      "result": "Pass"
+    },
+    {
+      "check": "autobyteus-web/tests/e2e/fixtures/settings-refresh-desktop.mjs identical to API-REV-001 candidate",
+      "result": "Pass"
+    },
+    {
+      "check": "autobyteus-web/package.json identical to API-REV-001 candidate",
+      "result": "Pass"
+    },
+    {
+      "check": "autobyteus-web/components/workspace/history/DelegatedStopButton.vue identical to integrated target",
+      "result": "Pass"
+    },
+    {
+      "check": "autobyteus-web/components/workspace/history/__tests__/DelegatedStopButton.spec.ts identical to integrated target",
+      "result": "Pass"
+    },
+    {
+      "check": "autobyteus-web/components/run-settings/ExistingRunSettings.vue original implementation unchanged",
+      "result": "Pass"
+    },
+    {
+      "check": "autobyteus-web/components/workspace/config/ExistingRunConfigEditor.vue original implementation unchanged",
+      "result": "Pass"
+    },
+    {
+      "check": "autobyteus-web/components/workspace/config/__tests__/ExistingRunConfigEditor.delegatedSave.spec.ts original implementation unchanged",
+      "result": "Pass"
+    },
+    {
+      "check": "autobyteus-web/components/workspace/config/__tests__/ExistingRunConfigEditor.savedSnapshot.spec.ts original implementation unchanged",
+      "result": "Pass"
+    },
+    {
+      "check": "autobyteus-web/localization/messages/en/runSettings.ts original implementation unchanged",
+      "result": "Pass"
+    },
+    {
+      "check": "autobyteus-web/localization/messages/zh-CN/runSettings.ts original implementation unchanged",
+      "result": "Pass"
+    },
+    {
+      "check": "autobyteus-web/stores/__tests__/delegatedLaunchDraftStore.spec.ts original implementation unchanged",
+      "result": "Pass"
+    },
+    {
+      "check": "autobyteus-web/stores/__tests__/existingRunConfigStore.spec.ts original implementation unchanged",
+      "result": "Pass"
+    },
+    {
+      "check": "autobyteus-web/stores/delegatedLaunchDraftStore.ts original implementation unchanged",
+      "result": "Pass"
+    },
+    {
+      "check": "autobyteus-web/stores/existingRunConfigEditActions.ts original implementation unchanged",
+      "result": "Pass"
+    },
+    {
+      "check": "autobyteus-web/stores/existingRunConfigResultActions.ts original implementation unchanged",
+      "result": "Pass"
+    },
+    {
+      "check": "autobyteus-web/stores/existingRunConfigStore.ts original implementation unchanged",
+      "result": "Pass"
+    },
+    {
+      "check": "autobyteus-web/types/agent/ExistingRunModelConfigDraft.ts original implementation unchanged",
+      "result": "Pass"
+    },
+    {
+      "check": "Preserved prior Settings/desktop section: defineCase('DCP-003'",
+      "result": "Pass"
+    },
+    {
+      "check": "Preserved prior Settings/desktop section: // Focused stopped-parent regression",
+      "result": "Pass"
+    },
+    {
+      "check": "Preserved prior Settings/desktop section: } finally {\n  if (desktop)",
+      "result": "Pass"
+    },
+    {
+      "check": "One optional ledger parser",
+      "result": "Pass"
+    },
+    {
+      "check": "One Started checkpoint",
+      "result": "Pass"
+    },
+    {
+      "check": "One Completed checkpoint",
+      "result": "Pass"
+    },
+    {
+      "check": "No conflict markers",
+      "result": "Pass"
+    }
+  ]
+}

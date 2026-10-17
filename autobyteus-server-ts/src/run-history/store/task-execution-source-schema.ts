@@ -19,7 +19,7 @@ import { parseOptionalLaunchFields } from "./launch-configuration-source-schema.
 
 /**
  * `source` of a catalog task copy is optional: its absence truthfully means the copy's source
- * is the configured placement or collaborator at its address (every record written before
+ * is the configured placement at its address (every record written before
  * catalog copies existed). Present values are validated and projected exactly.
  */
 export const parseTaskAgentExecutionSource = (

@@ -1,15 +1,13 @@
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
-import type { CollaboratorEntry } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { AgentTeamAddress } from "../domain/agent-team-address.js";
 import type { RootSubjectKind } from "../execution/domain/root-execution-identity.js";
 import { catalogDefinitionKey, type CatalogDefinitionRef } from "./catalog-address-map.js";
 
 /**
  * Where a definition is in the run, in address precedence order (AR-002): the run's own agent
- * (a standalone Agent run's host), a configured Agent placement or an Org mounted Team, then a
- * collaborator entry, then a collaborator-Team member.
+ * (a standalone Agent run's host), then a configured Agent placement or an Org mounted Team.
  */
-export type InRunPlacementRank = "run_agent" | "configured" | "collaborator" | "collaborator_member";
+export type InRunPlacementRank = "run_agent" | "configured";
 export type InRunPlacement = Readonly<{ address: AgentTeamAddress; rank: InRunPlacementRank }>;
 export type InRunPlacementsByDefinition = ReadonlyMap<string, readonly InRunPlacement[]>;
 
@@ -31,24 +29,20 @@ export interface CollaboratorRootPort {
   ownDefinition(): CatalogDefinitionRef | null;
   /**
    * Every in-run placement by `catalogDefinitionKey`: the run's own agent, configured Agents and
-   * Org mounted Teams, collaborator entries and collaborator-Team members. Task copies are not
-   * placements.
+   * Org mounted Teams. Delegated copies are not placements.
    */
   inRunPlacementsByDefinition(): InRunPlacementsByDefinition;
-  /** One instance per entry; its runs are recorded in the entry. */
-  collaborators(): readonly CollaboratorEntry[];
-  /** Addresses already used by the run (configured, host, collaborators). */
+  /** Addresses already used by the run (configured placements and the host). */
   addressesInUse(): ReadonlySet<string>;
 }
 
 /**
- * Builds a root's in-run placements from its run agent (standalone Agent roots only), its
- * configured placements and its collaborator entries (shared by every root port).
+ * Builds a root's in-run placements from its run agent (standalone Agent roots only) and its
+ * configured placements (shared by every root port).
  */
 export const buildInRunPlacements = (input: Readonly<{
   runAgent?: Readonly<{ ref: CatalogDefinitionRef; address: AgentTeamAddress }>;
   configured: Iterable<Readonly<{ ref: CatalogDefinitionRef; address: AgentTeamAddress }>>;
-  collaborators: readonly CollaboratorEntry[];
 }>): InRunPlacementsByDefinition => {
   const placements = new Map<string, InRunPlacement[]>();
   const add = (ref: CatalogDefinitionRef, address: AgentTeamAddress, rank: InRunPlacementRank) => {
@@ -59,15 +53,5 @@ export const buildInRunPlacements = (input: Readonly<{
   };
   if (input.runAgent) add(input.runAgent.ref, input.runAgent.address, "run_agent");
   for (const { ref, address } of input.configured) add(ref, address, "configured");
-  for (const entry of input.collaborators) {
-    if (entry.kind === "agent") {
-      add({ kind: "agent", definitionId: entry.agentDefinitionId }, entry.address, "collaborator");
-      continue;
-    }
-    add({ kind: "agent_team", definitionId: entry.teamDefinitionId }, entry.address, "collaborator");
-    for (const member of entry.members) {
-      add({ kind: "agent", definitionId: member.agentDefinitionId }, member.address, "collaborator_member");
-    }
-  }
   return placements;
 };

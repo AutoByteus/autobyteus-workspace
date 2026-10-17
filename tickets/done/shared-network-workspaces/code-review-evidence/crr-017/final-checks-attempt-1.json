@@ -1,0 +1,23 @@
+{
+  "review": "CRR-017",
+  "checks": {
+    "historyPrefixPreserved": true,
+    "separateSuccessfulTestReportUnchanged": true,
+    "inputChangesOnlyOwnCanonicalSourceReport": false,
+    "oneNewHistoryEntry": true,
+    "structural24Pass": true,
+    "score10CategoriesCarried": true,
+    "currentHeadUnchanged": true,
+    "noMergeInProgress": true,
+    "whitespacePass": true,
+    "trackedDeltaOnlyReviewerDocs": true
+  },
+  "result": "Fail",
+  "reviewerRuntimeExecution": "None; no runtime resource created or cleaned",
+  "inputChanges": [
+    "tickets/in-progress/shared-network-workspaces/code-review-report.md",
+    "tickets/in-progress/shared-network-workspaces/code-review-revision-record.md"
+  ],
+  "canonicalReportSha256": "1755fa3ece180b8f060badb87d49ae2625d9c283624080caab56406c643c63d5",
+  "noProductionOrDurableTestEdits": true
+}

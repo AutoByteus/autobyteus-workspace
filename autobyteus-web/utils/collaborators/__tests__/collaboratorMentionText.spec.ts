@@ -48,10 +48,28 @@ describe('collaborator mention text', () => {
     const content = composeCollaboratorMentionNote('ask @Agent Package Creator', [
       { name: 'Agent Package Creator', kind: 'agent', address: '/agent_package_creator', presence: 'in_run' },
     ])
-    expect(content).toContain('/agent_package_creator, already in this run')
+    expect(content).toContain('- Agent Package Creator (agent) at /agent_package_creator: talk with it using send_message_to, or delegate a task to it')
     expect(presentSentUserMessage(content)).toEqual({
       skillNames: [], text: 'ask @Agent Package Creator', mentionNames: ['Agent Package Creator'],
     })
+  })
+
+  it('reads every per-viewer note form as chips without the note (AC-006)', () => {
+    const content = composeCollaboratorMentionNote('ask @Lead @Designer @Host', [
+      { name: 'Lead', kind: 'agent', address: '/lead', presence: 'own_team' },
+      { name: 'Designer', kind: 'agent', address: '/designer', presence: 'self' },
+      { name: 'Host', kind: 'agent', address: '/host', presence: 'run_agent' },
+    ])
+    expect(content).toContain('- Lead (agent) at /lead, in your team: ')
+    expect(presentSentUserMessage(content)).toEqual({
+      skillNames: [], text: 'ask @Lead @Designer @Host', mentionNames: ['Lead', 'Designer', 'Host'],
+    })
+  })
+
+  it('still reads a saved message that carries the earlier [Mentioned collaborators] note', () => {
+    const saved = 'ask @Product Team\n\n[Mentioned collaborators]\n- Product Team (Agent Team) at /product_team\nDelegate the work with delegate_task to its address; it returns a run ID to follow up with.'
+    expect(presentSentUserMessage(saved)).toEqual({ skillNames: [], text: 'ask @Product Team', mentionNames: ['Product Team'] })
+    expect(resolveFirstUserMessageSummary({ messages: [{ type: 'user', text: saved } as never] })).toBe('ask @Product Team')
   })
 
   it('run summaries drop the note; a mention-only message reads as its mentions', () => {

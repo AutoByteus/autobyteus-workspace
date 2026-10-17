@@ -1,0 +1,151 @@
+{
+  "scope": "SR017 read-only exact task-owned resource and artifact audit, not product validation",
+  "resources": [
+    {
+      "kind": "container",
+      "name": "ab-sf-fr054-00b67a81-server",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr054-00b67a81-server"
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr054-00b67a81-client-a",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr054-00b67a81-client-a"
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr054-00b67a81-client-b",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr054-00b67a81-client-b"
+    },
+    {
+      "kind": "volume",
+      "name": "ab-sf-fr054-00b67a81-nfs-a",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr054-00b67a81-nfs-a: no such volume"
+    },
+    {
+      "kind": "volume",
+      "name": "ab-sf-fr054-00b67a81-nfs-b",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr054-00b67a81-nfs-b: no such volume"
+    },
+    {
+      "source": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr054-owned-6wfeynqy/source",
+      "absent": true
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr055-a6d40941-server",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr055-a6d40941-server"
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr055-a6d40941-client-a",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr055-a6d40941-client-a"
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr055-a6d40941-client-b",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr055-a6d40941-client-b"
+    },
+    {
+      "kind": "volume",
+      "name": "ab-sf-fr055-a6d40941-nfs-a",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr055-a6d40941-nfs-a: no such volume"
+    },
+    {
+      "kind": "volume",
+      "name": "ab-sf-fr055-a6d40941-nfs-b",
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr055-a6d40941-nfs-b: no such volume"
+    },
+    {
+      "source": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr055-owned-e082dhch/source",
+      "absent": true
+    },
+    {
+      "ownedVmClone": "/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tart-state/vms/ab-sf-fr055-macos",
+      "absent": true
+    },
+    {
+      "ownedPrivateScratch": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr056-discovery-8c1_mqkq",
+      "absent": true
+    },
+    {
+      "ownedPrivateScratch": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr057-57cnok48",
+      "absent": true
+    }
+  ],
+  "syntax": [
+    {
+      "path": "fr-054/probe-result.json",
+      "json": "PASS"
+    },
+    {
+      "path": "fr-054/run-probe.py",
+      "pythonAst": "PASS"
+    },
+    {
+      "path": "fr-055/fix-verifier.py",
+      "pythonAst": "PASS"
+    },
+    {
+      "path": "fr-055/probe-result.json",
+      "json": "PASS"
+    },
+    {
+      "path": "fr-055/run-probe.py",
+      "pythonAst": "PASS"
+    },
+    {
+      "path": "fr-055/trace-handles.py",
+      "pythonAst": "PASS"
+    },
+    {
+      "path": "fr-055/vm-client.py",
+      "pythonAst": "PASS"
+    },
+    {
+      "path": "fr-056/cli-help-result.json",
+      "json": "PASS"
+    },
+    {
+      "path": "fr-056/probe-result.json",
+      "json": "PASS"
+    },
+    {
+      "path": "fr-056/run-probe.py",
+      "pythonAst": "PASS"
+    },
+    {
+      "path": "fr-057/probe-result.json",
+      "json": "PASS"
+    },
+    {
+      "path": "fr-057/run-probe.py",
+      "pythonAst": "PASS"
+    }
+  ],
+  "secretPatterns": {
+    "scope": "new FR054\u2013057 text files only; bounded token-value patterns, not universal proof",
+    "hits": []
+  },
+  "allExactResourceAbsences": true,
+  "newPatternHitCount": 0
+}

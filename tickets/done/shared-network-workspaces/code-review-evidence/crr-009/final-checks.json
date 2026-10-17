@@ -1,0 +1,31 @@
+{
+  "round": "CRR-009",
+  "sourceUnchanged": true,
+  "otherAuthoritiesUnchanged": true,
+  "priorCRR001Through008PrefixUnchanged": true,
+  "structuralChecks": 24,
+  "scoreCategories": 10,
+  "go": {
+    "packagesPass": 7,
+    "topEnumerated": 52,
+    "topPass": 51,
+    "topStandaloneChildSkip": 1,
+    "directSubcasesPass": 100,
+    "realChildInvocationsPass": 2
+  },
+  "python": {
+    "enumerated": 18,
+    "pass": 17,
+    "standaloneChildSkip": 1
+  },
+  "rawLogWhitespace": [
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-009/go-race.log",
+      "trailingWhitespaceLines": 4,
+      "disposition": "raw test stdout retained unchanged"
+    }
+  ],
+  "authoredArtifactWhitespaceSyntaxAndJSON": "Pass",
+  "cleanupComplete": true,
+  "nonReviewEdits": false
+}

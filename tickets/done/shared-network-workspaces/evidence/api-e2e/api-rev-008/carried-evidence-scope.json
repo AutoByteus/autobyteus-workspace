@@ -1,0 +1,100 @@
+{
+  "basis": "API007 runtime source f70912934b; API008 delta a3f65 is three frontend files only; old raw failed attempts not promoted wholesale",
+  "cases": [
+    {
+      "cases": "L01/L03\u2013L07",
+      "scope": "source/setup/selection/config",
+      "evidence": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/selected-create-result.json",
+      "rawTopLevelResult": "Pass",
+      "sha256": "df3a0632ca025e156f5bd2a2292556fc91eada14ec275b4c5b0a63f3ea28a5f6",
+      "disposition": "Valid scoped carry; see report exclusions and API007 attempt corrections"
+    },
+    {
+      "cases": "L05/L06",
+      "scope": "LD selected/private/source setup",
+      "evidence": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/docker-selected-create-v2-result.json",
+      "rawTopLevelResult": "Pass",
+      "sha256": "308028290fce5bdd9865ca8cc08ca6456527ab9274b467637c2c31bb788aac2b",
+      "disposition": "Valid scoped carry; see report exclusions and API007 attempt corrections"
+    },
+    {
+      "cases": "L07\u2013L16",
+      "scope": "LN filesystem bytes/visibility/concurrency/Git/locks/permissions",
+      "evidence": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LN-files-result.json",
+      "rawTopLevelResult": "Pass",
+      "sha256": "676cf1d8190ad8fbc1a6fb580a8041a37be6a7691d29b8905d88e2f7a9b90b6b",
+      "disposition": "Valid scoped carry; see report exclusions and API007 attempt corrections"
+    },
+    {
+      "cases": "L07\u2013L16",
+      "scope": "LD filesystem same scope",
+      "evidence": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LD-files-v2-result.json",
+      "rawTopLevelResult": "Pass",
+      "sha256": "368ce8b8bbf82abbbd068baa2772b72b75658995fc8442b2fe5c26f76c55a78b",
+      "disposition": "Valid scoped carry; see report exclusions and API007 attempt corrections"
+    },
+    {
+      "cases": "L17\u2013L20",
+      "scope": "LN ordinary boot/Stop/restart/current reference",
+      "evidence": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LN-lifecycle-resume-result.json",
+      "rawTopLevelResult": "Pass",
+      "sha256": "df302def989807fdcb71f2ce75c4a24803b0c1754b568aabf5ea42e2df5ae0f0",
+      "disposition": "Valid scoped carry; see report exclusions and API007 attempt corrections"
+    },
+    {
+      "cases": "L17\u2013L19",
+      "scope": "LD valid partial repeat/boot/Stop before already-current upgrade oracle failure",
+      "evidence": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LD-lifecycle-v2-result.json",
+      "rawTopLevelResult": "Fail",
+      "sha256": "dd18cb5265257e162aeba1eea1ec4164e89ee38bf00e4ee2a2236127aa8d4327",
+      "disposition": "Valid scoped carry; see report exclusions and API007 attempt corrections"
+    },
+    {
+      "cases": "L20",
+      "scope": "LD actual public upgrade/new reference boot",
+      "evidence": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LD-lifecycle-upgrade-result.json",
+      "rawTopLevelResult": "Pass",
+      "sha256": "04fb530792604bcc8b901df9d47abf08a32a3f06ec26dd3e14508647437f9da2",
+      "disposition": "Valid scoped carry; see report exclusions and API007 attempt corrections"
+    },
+    {
+      "cases": "L21/L25",
+      "scope": "LN actual source replacement in preceding result and safe detach continuation",
+      "evidence": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LN-source-detach-resume-result.json",
+      "rawTopLevelResult": "Pass",
+      "sha256": "859ef30918c984101cbbc0c93c70cf3d20bc4f7ec63508e78e555aa67e82c0de",
+      "disposition": "Valid scoped carry; see report exclusions and API007 attempt corrections"
+    },
+    {
+      "cases": "L21/L25",
+      "scope": "LD actual source replacement/safe detach",
+      "evidence": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LD-source-detach-result.json",
+      "rawTopLevelResult": "Pass",
+      "sha256": "bd79d8a07e3c05afa01a3b7f426e9269f74c1a34157966f1008a8c01bb0ba333",
+      "disposition": "Valid scoped carry; see report exclusions and API007 attempt corrections"
+    },
+    {
+      "cases": "L22",
+      "scope": "LN both real API/WS terminal",
+      "evidence": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LN-mounted-api-result.json",
+      "rawTopLevelResult": "Pass",
+      "sha256": "732163c853b8bd928e5306bd98fd8953015659b6e2766fe8afb7be6443b7fc6f",
+      "disposition": "Valid scoped carry; see report exclusions and API007 attempt corrections"
+    },
+    {
+      "cases": "L22",
+      "scope": "LD both real API/WS terminal",
+      "evidence": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LD-mounted-api-result.json",
+      "rawTopLevelResult": "Pass",
+      "sha256": "13a4c072a709b97c0897929d5a2930543540a912d07f4740f1f92a1a0b92a49d",
+      "disposition": "Valid scoped carry; see report exclusions and API007 attempt corrections"
+    }
+  ],
+  "sourceDiff": "",
+  "limits": "One kernel/daemon; no Mac/independent-client/external-join qualification. API007 L23 Fail expressly NOT carried as success. Pending Save follow-up separately unresolved.",
+  "additionalLinks": [
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LN-lifecycle-result.json",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LN-source-detach-result.json",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/policy-veto-carried-scope.json"
+  ]
+}

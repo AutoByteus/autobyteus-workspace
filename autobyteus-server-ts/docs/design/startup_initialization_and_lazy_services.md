@@ -88,6 +88,29 @@ The server must execute these steps in order:
 - Shutdown drains the default token persistence processor, closes/zeroizes the
   secret runtime, and only then shuts down the shared repository client.
 
+## Prisma Native Engine Selection
+
+`src/startup/migrations.ts` owns the engine inputs shared by server startup,
+standalone application hosts and explicit-target secret import. A complete
+`PRISMA_QUERY_ENGINE_LIBRARY` / `PRISMA_SCHEMA_ENGINE_BINARY` operator override
+keeps precedence. Otherwise, discovery follows the real local Prisma CLI
+entrypoint's dependency graph to its own `@prisma/engines` package and reads the
+expected native revision from that package's `@prisma/engines-version` metadata.
+
+Prefer a complete supported native pair in that associated package. If it is
+absent, only the cache subtree for the **same expected revision** is eligible.
+Do not enumerate unrelated pnpm engine packages or select cached revisions by
+modification time: matching OS/architecture alone does not establish Prisma RPC
+compatibility. This also supports a workspace-root pnpm store without hardcoded
+package versions or store paths.
+
+When CLI identity or a complete matching pair cannot be resolved, inject no
+automatic pair and leave ordinary Prisma CLI resolution and errors intact.
+Discovery is read-only; it neither downloads nor clears engines. The caller's
+canonical database URL, schema deployment, baseline handling, error propagation
+and startup ordering remain authoritative. This is not a database repair or a
+migration bypass.
+
 ## Design Decision
 
 Use lazy service access patterns to avoid import-time construction:
@@ -103,6 +126,7 @@ Use lazy service access patterns to avoid import-time construction:
 - `src/config/app-config.ts`
 - `src/config/app-config-provider.ts`
 - `src/startup/background-runner.ts`
+- `src/startup/migrations.ts`
 - `src/app-data-migrations/app-data-migration-runner.ts`
 - `src/app-data-migrations/app-data-migration-registry.ts`
 - `src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-history-index-reconciler.ts`

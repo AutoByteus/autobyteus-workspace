@@ -1,0 +1,1 @@
+Private mount namespace only: unshare --mount --propagation private --fork; fresh tmpfs /dev/shm size=512M,nosuid,nodev,noexec,mode=1777. Parent /dev/shm stays 64MiB. Exact unchanged worktree executable and diagnostic B-001..006/P-001; no sandbox/network/probe assertion relaxation.

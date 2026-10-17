@@ -1,0 +1,33 @@
+{
+  "inputHead": "63d41de1f5e9d9e1370232d370bbc47673be6218",
+  "sourceCommit": "a3f65bfe6e7859a3167cb41013b80bc223385cfb",
+  "reviewResult": "Pass",
+  "inScopeScore": "100/100",
+  "userDirectedFollowup": "project_task_a4f90984-add2-4300-983d-de54ded3032b",
+  "followupStatus": "TODO, not dispatched; confirmed by Project Task Manager",
+  "adjacentSuite": "22 files / 148 tests Pass",
+  "followupDiagnostic": "1 Fail / 1 Pass; failure retained and unresolved outside increment by user direction",
+  "inputCount": 82,
+  "intentionallyUpdatedInputs": [
+    "tickets/in-progress/shared-network-workspaces/code-review-report.md",
+    "tickets/in-progress/shared-network-workspaces/code-review-revision-record.md"
+  ],
+  "unexpectedInputChanges": [],
+  "priorHistoryPrefixPreserved": true,
+  "historyPrefixBytes": 79113,
+  "oldDistCount": 286,
+  "oldDistUnchanged": true,
+  "scratchRemoved": true,
+  "temporarySpecRemoved": true,
+  "reviewerProductionDurableTestDiff": "",
+  "missingReportReferences": [],
+  "structuralCheckCount": 24,
+  "rawLogWhitespaceExceptions": [
+    {
+      "path": "code-review-evidence/crr-015/adjacent-regression.log",
+      "line": 362,
+      "kind": "blank at EOF"
+    }
+  ],
+  "exceptionReason": "Keep unmodified raw tool evidence; all non-log reviewer artifacts must pass whitespace check."
+}

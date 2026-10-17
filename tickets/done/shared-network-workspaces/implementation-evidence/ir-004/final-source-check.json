@@ -1,0 +1,20 @@
+{
+  "checkedAtUTC": "2026-10-14T03:53:55.466872+00:00",
+  "scope": "Final artifact/source consistency check only; not a new runtime validation run",
+  "sourceCommit": "174e480bd0cfaee29f22fd46b1922afbb274e56b",
+  "reviewBasis": "4ed9a12720e04daa2fad0c5d3b8d20b5ceb62c79",
+  "fiveDeltaHashesMatch": true,
+  "unchanged906PathsMatchCurrentAndInput": true,
+  "historicalRevisionPrefixByteIdentical": true,
+  "finalProductionHashMatchesGuestMetadata": true,
+  "all12LocalCommandResultsMatchExpected": true,
+  "twoCurrentFreshVMReportsPass": true,
+  "nativeCrossbuildMatchesGuestBinary": true,
+  "all8ClonesAndProcessesCleaned": true,
+  "ownedScratchAbsent": true,
+  "jsonFilesParsedBeforeThisRecord": 26,
+  "pythonScriptsParse": 3,
+  "highConfidenceCredentialPatternsFound": [],
+  "productionUnchangedSinceFixCommit": true,
+  "limits": "No new TS/UI/full matrix rerun or API signoff; source/API Fail authorities remain until their owners update."
+}

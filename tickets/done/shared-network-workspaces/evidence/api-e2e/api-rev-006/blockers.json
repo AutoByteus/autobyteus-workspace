@@ -1,0 +1,51 @@
+{
+  "result": "Blocked \u2014 external validation dependencies; no new established product failure",
+  "confidence": 67.85714285714286,
+  "broaderValidation": "Blocked",
+  "requiredDependencies": [
+    {
+      "id": "DEP-PHYSICAL",
+      "need": "Authorized disposable physical Mac and Linux computers, one Docker participant, permitted private-LAN access/administration to task-owned setup; no user live mounts or nodes",
+      "AC": [
+        "001",
+        "003",
+        "004",
+        "005",
+        "008",
+        "015",
+        "018"
+      ],
+      "attempts": [
+        "actual isolated Mac/Linux VM public native create/boot/reconnect/data controls; cannot emulate independent physical machines",
+        "peer-network-confirm-result.json + linux-new-source-detach-result.json: Mac guest TCP22 timeout/2049 no-route while Linux own2049 listener/selfconnect and managedjob healthy"
+      ]
+    },
+    {
+      "id": "DEP-RUNTIME",
+      "need": "Approved isolated Codex and Claude authenticated test profiles/credential import source and inference/provider budget; approved enabled-runtime scope for Grok/AGY; no tokens in chat",
+      "AC": [
+        "002",
+        "006",
+        "010"
+      ],
+      "attempts": [
+        "historical real/native feasibility and scripted transport remain original scope; empty test HOME current round intentionally contains no credentials",
+        "operator filesystem probes and scripted transports cannot prove native tool roundtrip/unread linked asset/peer close restore/Standalone Team Org/completed agent artifacts"
+      ]
+    }
+  ],
+  "notTestedNotDependencyClaim": [
+    "Remaining current Mac managed clients, complete UI healthy-preview matrix, amd64 engine and hosted signing/public bootstrap not executed this round; remain open, not all individually declared impossible",
+    "Current Linux managed-client/Docker storage matrix not rerun in IR009; API005 unchanged-engine/backend scope carried",
+    "User verification/docs/finalization/release belong downstream and are not performed"
+  ],
+  "noWaiver": true,
+  "questions": "Two exact dependency questions asked asynchronously in this round; no answer/authorization received at packaging time",
+  "scopeRetention": [
+    "Only Mac Docker STORAGE deferred, not clients",
+    "D001/DEC015 deferred not fixed",
+    "IMP-D001 independent SourceUpdateRemove/current links/AGYlocal unchanged",
+    "FUP001 PM custody; no duplicated baseline-follow-up",
+    "No merge/push/tag/release/deployment/TaskDone/user verification"
+  ]
+}

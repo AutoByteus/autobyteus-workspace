@@ -1,0 +1,94 @@
+{
+  "clone": "ab-nfs-api006-mac-a0000f39",
+  "image": "ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377",
+  "tartHome": "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tart-state",
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "clone",
+        "ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377",
+        "ab-nfs-api006-mac-a0000f39"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "set",
+        "ab-nfs-api006-mac-a0000f39",
+        "--cpu",
+        "2",
+        "--memory",
+        "4096"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-mac-a0000f39",
+        "/usr/bin/sw_vers"
+      ],
+      "rc": 2,
+      "stdout": "",
+      "stderr": "VM \"ab-nfs-api006-mac-a0000f39\" is not running\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-mac-a0000f39",
+        "/usr/bin/sw_vers"
+      ],
+      "rc": 0,
+      "stdout": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-mac-a0000f39",
+        "/usr/sbin/ipconfig",
+        "getifaddr",
+        "en0"
+      ],
+      "rc": 0,
+      "stdout": "192.168.64.2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "-i",
+        "ab-nfs-api006-mac-a0000f39",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "umask 077; cat > /Users/admin/ab-nfs-api006-mac-a0000f39-binary; chmod 755 /Users/admin/ab-nfs-api006-mac-a0000f39-binary"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "result": "Ready",
+  "noHostShares": true,
+  "noUserCredentials": true,
+  "vmPid": 9045,
+  "ip": "192.168.64.2",
+  "binary": {
+    "guestPath": "/Users/admin/ab-nfs-api006-mac-a0000f39-binary",
+    "sha256": "c79e5ac05367d6657bc0be74f2e8f5b9eb504af8ade265e1afdf0334218d0cf1"
+  }
+}

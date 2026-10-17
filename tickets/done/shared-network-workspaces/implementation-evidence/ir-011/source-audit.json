@@ -1,0 +1,35 @@
+{
+  "commit": "a4afd758a9766274b08f675c04952b19913fff0c",
+  "parents": [
+    "4f44d11562700d9518f42ae9be946d65163d23fc",
+    "5096011674c7db6ec0e92e522ea37f32f8f4ea40"
+  ],
+  "branch": "codex/shared-network-workspaces",
+  "authorDelta": "6 additions/2 deletions test lifecycle; rest imported from fresh personal base",
+  "casesPreservedByteForByte": [
+    "reopens HTML and relative media over HTTP after external replacement and deletion",
+    "serves encoded image paths through a real FileSystemWorkspace",
+    "serves SVG bytes with the image/svg+xml content boundary through a real FileSystemWorkspace",
+    "rejects a same-prefix sibling traversal through FileSystemWorkspace",
+    "rejects an absolute candidate through FileSystemWorkspace",
+    "rejects an absolute candidate through the static workspace route"
+  ],
+  "publicCleanupAssertions": [
+    "getWorkspaceById is undefined",
+    "getRegisteredWorkspaceRootPath is null"
+  ],
+  "sourcePathsUnchanged": [
+    "autobyteus-nfs",
+    "autobyteus-web/components/fileExplorer/FileExplorerTabs.vue",
+    "autobyteus-web/stores/fileExplorerContentActions.ts",
+    "autobyteus-web/stores/fileExplorerState.ts",
+    "autobyteus-server-ts/tests/e2e/helpers/studio-runtime-test-server.ts"
+  ],
+  "protectedArtifactsUnchanged": 309,
+  "initialInputsChangedOnlyAsIntended": [
+    "autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts"
+  ],
+  "archiveSourceFilesCompared": 7330,
+  "scratchSourceDifferences": [],
+  "scope": "DR001 repository integration only; API008 command-only verdict unchanged, no UI or NFS campaign"
+}

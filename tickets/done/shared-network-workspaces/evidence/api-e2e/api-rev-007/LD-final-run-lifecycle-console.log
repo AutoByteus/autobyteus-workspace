@@ -1,0 +1,14 @@
+Started L17 LD repeated actual status and explicit reconnect preserve source UUID
+L17 LD repeated actual status and explicit reconnect preserve source UUID: Fail
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/run-lifecycle.py", line 74, in <module>
+    case('L17 '+MODE+' repeated actual status and explicit reconnect preserve source UUID',lambda:[nongroups(B+' status --yes --json',timeout=30),reconnect(),reconnect(),preserved(before),roundtrip()])
+  File "<string>", line 23, in case
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/run-lifecycle.py", line 74, in <lambda>
+    case('L17 '+MODE+' repeated actual status and explicit reconnect preserve source UUID',lambda:[nongroups(B+' status --yes --json',timeout=30),reconnect(),reconnect(),preserved(before),roundtrip()])
+  File "<string>", line 20, in nongroups
+  File "<string>", line 19, in g
+  File "<string>", line 17, in cmd
+RuntimeError: AutoByteus NFS incomplete: another administrative operation is checking/incomplete; restore storage and wait: resource temporarily unavailable
+AutoByteus NFS incomplete: exit status 1
+

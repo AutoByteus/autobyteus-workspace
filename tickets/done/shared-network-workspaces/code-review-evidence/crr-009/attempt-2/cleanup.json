@@ -1,0 +1,7 @@
+{
+  "scratch": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr009-g0kutm2q",
+  "removed": true,
+  "realDaemonVMRootMountProviderResources": false,
+  "sourceOrDurableTestEdits": false,
+  "scope": "Reviewer-owned scratch/toolchain/home/caches/mutation copies only; preexisting dist and retained candidates untouched"
+}

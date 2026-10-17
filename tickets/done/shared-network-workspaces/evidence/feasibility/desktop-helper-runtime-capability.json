@@ -1,0 +1,18 @@
+{
+  "scope": "installed existing desktop Electron Node-mode read-only helper capability, not new CLI/product source or mounting proof",
+  "argv": [
+    "/Applications/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "--input-type=module",
+    "--eval",
+    "import os from 'node:os';import fs from 'node:fs';console.log(JSON.stringify({platform:process.platform,arch:process.arch,node:process.version,uid:os.userInfo().uid,nativeMountTool:fs.existsSync('/sbin/mount_nfs'),noServerModuleImported:true,noAppDataReadOrWrite:true}))"
+  ],
+  "environmentKeys": [
+    "HOME",
+    "PATH",
+    "ELECTRON_RUN_AS_NODE"
+  ],
+  "exit": 0,
+  "stdout": "{\"platform\":\"darwin\",\"arch\":\"arm64\",\"node\":\"v24.16.0\",\"uid\":501,\"nativeMountTool\":true,\"noServerModuleImported\":true,\"noAppDataReadOrWrite\":true}\n",
+  "stderr": "",
+  "normalOSApprovalNotBypassed": true
+}

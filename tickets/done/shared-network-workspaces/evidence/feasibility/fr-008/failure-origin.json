@@ -1,0 +1,10 @@
+{
+  "round": "fr-008",
+  "codex_write_passed": true,
+  "claude_read_status": "FAILED BEFORE FILE TOOL",
+  "cause": [
+    "Failed to authenticate: OAuth session expired and could not be refreshed"
+  ],
+  "credentials_not_logged": true,
+  "all_owned_resources_removed": true
+}

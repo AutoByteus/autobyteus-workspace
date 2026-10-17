@@ -84,8 +84,6 @@ const toInterAgentSegment = (
   return {
     type: 'inter_agent_message',
     senderAgentRunId: visual.senderAgentRunId,
-    senderAddress: visual.senderAddress ?? null,
-    senderName: delivery.senderName,
     recipientRoleName: '',
     messageType: 'agent_message',
     content: delivery.body,

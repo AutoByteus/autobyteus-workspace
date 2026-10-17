@@ -1,0 +1,331 @@
+{
+  "head": "f70912934b2a660a92574b777edc7e465a6d34df",
+  "branch": "codex/shared-network-workspaces",
+  "statusBefore": "?? applications/brief-studio/dist/\n?? autobyteus-application-backend-sdk/dist/\n?? autobyteus-application-devkit/dist/\n?? autobyteus-application-frontend-sdk/dist/\n?? autobyteus-application-sdk-contracts/dist/\n?? tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-014/",
+  "base": "f13bdd0eb79aacc63dffa5995b9c86f359001468",
+  "baseIsAncestor": true,
+  "initialAttempt": "Runner root was one parent short; FileNotFoundError before any test, scratch or audit write. Corrected to parents[5]. Not a product result.",
+  "basis": "Bounded failure-origin; equality proves pre-existing implementation, not a separate baseline runtime execution. No full cumulative evidence audit.",
+  "inputs": [
+    {
+      "path": "autobyteus-web/components/fileExplorer/FileExplorerTabs.vue",
+      "bytes": 19454,
+      "sha256": "4cb5108ba8f34fd7097b2d81c10a234392cb9dfad35c9a1a3b722259aa349fa9"
+    },
+    {
+      "path": "autobyteus-web/components/fileExplorer/FileViewer.vue",
+      "bytes": 3758,
+      "sha256": "4edc9b25e105e1220bb775c168d73053ee9066367f8bc383b6ecbb59598a48e3"
+    },
+    {
+      "path": "autobyteus-web/components/fileExplorer/MonacoEditor.vue",
+      "bytes": 7907,
+      "sha256": "9564e441ad219955b2c478361ed5835195add5e70010ae7a0c03a8a41fa44781"
+    },
+    {
+      "path": "autobyteus-web/stores/fileExplorer.ts",
+      "bytes": 4653,
+      "sha256": "500624e734b9dc97ebc790185a10a8e0ddbdc93072b99067586d278a1d2fa9e3"
+    },
+    {
+      "path": "autobyteus-web/stores/fileExplorerState.ts",
+      "bytes": 2785,
+      "sha256": "358a696293269a9db057ccd8476506b5f9ddd35ff98cfb8e780cc6cbe02ec4ae"
+    },
+    {
+      "path": "autobyteus-web/stores/fileExplorerContentActions.ts",
+      "bytes": 13620,
+      "sha256": "ef611389d31707ce232598479ce5b04054d791659ec421b7001d5c125d5f2738"
+    },
+    {
+      "path": "autobyteus-web/stores/fileExplorerTreeActions.ts",
+      "bytes": 6726,
+      "sha256": "a65e17303b18c8f82d7bf1b0cc63e9d95d12d0218cb53068720321cb21cda902"
+    },
+    {
+      "path": "autobyteus-web/stores/workspace.ts",
+      "bytes": 18735,
+      "sha256": "828bbec600cbf89dab5c247ce007f8c9ff828b83cda6ebc22f818c2c1f707e87"
+    },
+    {
+      "path": "autobyteus-web/stores/workspaceFileExplorerLiveActions.ts",
+      "bytes": 6902,
+      "sha256": "364410defcefcdf7600f4ed5fc30bb334c21b8e559bf6cf94a055011abaf6370"
+    },
+    {
+      "path": "autobyteus-web/services/fileExplorerStreaming/FileExplorerStreamingService.ts",
+      "bytes": 8479,
+      "sha256": "2212db3168145c7127c2393952bf805bb6a47caa48148260fa7488d554996f3a"
+    },
+    {
+      "path": "autobyteus-web/utils/fileExplorer/fileUtils.ts",
+      "bytes": 7431,
+      "sha256": "9c483d3c4591d6a1615b02846586e1da89e8d2a48051173e01f5c29cc2050a83"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/requirements-doc.md",
+      "bytes": 84801,
+      "sha256": "eeaac5c0b92fbfac2f83a1942549177365f53ada73c6328a0a75142a537023a1"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/approval-record-sr025.md",
+      "bytes": 3582,
+      "sha256": "a72250c99f6ba132e750c2e2e54c6740518ae872f482dcbee6843f9ad9106e63"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/investigation-notes.md",
+      "bytes": 156253,
+      "sha256": "55a35e1c29fe8cc14a98725d8abd9952cf56b499de94e26cd00dc4a643ccfa70"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/solution-revision-record.md",
+      "bytes": 95858,
+      "sha256": "45194d94eaccf679d928d1d2b2886d7713f8dcdbb06052d9957d66525adb1792"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/design-spec.md",
+      "bytes": 122834,
+      "sha256": "1b3974b7a0ebff69b9d5e5c6cb200669e5a47d27168ca843ffae0d51c96f52f1"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/solution-design-handoff.md",
+      "bytes": 8379,
+      "sha256": "1ea2674bb95e05b76825de17edf8a5c6395eeb4f3a7027ffc4bdeb317848bad1"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/design-review-report.md",
+      "bytes": 29494,
+      "sha256": "ddb94b7c1b0434191b1afae6942ac9244943a351e2b89da424c5f7709ce10642"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/architecture-review-revision-record.md",
+      "bytes": 49669,
+      "sha256": "e43eb2ddca143be3810e97a4d8807331d8c88d156af18d0525343d0a7a525251"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-handoff.md",
+      "bytes": 14360,
+      "sha256": "633c33f4ba83f2fe3cc36c192cfa00a400a7bf7881bc906504a8fe4663add1bc"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/implementation-revision-record.md",
+      "bytes": 37934,
+      "sha256": "567a7de50af180b29be8e1cf137531a75d560c9c2f3408e8e405fe65de700348"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/code-review-report.md",
+      "bytes": 25832,
+      "sha256": "a8decf0b778200ed9013a31f4648ed00c9eb827a00a447902ec93a7b23e0d79d"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/code-review-revision-record.md",
+      "bytes": 74542,
+      "sha256": "97d26e0766b27fa38298b5dcfa25d0b145c80173bbc025bb9d9436452dad47cb"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/api-e2e-coverage-investigation.md",
+      "bytes": 84940,
+      "sha256": "c69db7a488d02898ef1e48f26683487463711969953997a09dd645f4da458c09"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/api-e2e-execution-coverage-report.md",
+      "bytes": 20155,
+      "sha256": "eee506008766801a245c08f8dc1e8388eb22b0a0d33c69a62d0fb5ddcae7fbfd"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/api-e2e-test-case-ledger.md",
+      "bytes": 172441,
+      "sha256": "f39a0b48872e1aa31221a0f342eba6c6d17b6b8f572fd797803cefe1636501b5"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/api-e2e-revision-record.md",
+      "bytes": 26902,
+      "sha256": "b2505975d1619d28b58831fa5d0e47914dd00ff5982e93272ebd72a40f9d454e"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/ui-unsaved-peer-reproduction.json",
+      "bytes": 7925,
+      "sha256": "319b20ec4a81fe9ab4a811bb67cef5ed2cf47746d4ec747bd07bc2c1ea25acf0"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/ui-unsaved-save-control.json",
+      "bytes": 4199,
+      "sha256": "417b0718afc931fc7dad092821e7d999bf185917e55aa749d8dca018b4692acf"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/unsaved-source-trace.md",
+      "bytes": 1781,
+      "sha256": "46cd5e71ee7c6e55f8b6cdbeefa27862cdec296471a6aa3cf20937255faf462a"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/unsaved-regression-result.json",
+      "bytes": 301,
+      "sha256": "1ad170360b044dafa3f95659809e1e242b3fcb97217a02e256a58ba4149c6a84"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/unsaved-regression.log",
+      "bytes": 4378,
+      "sha256": "a518be40d401f9556eee0c182f7913b5b1f7a501ef9f7b299ff2d1b545b17cbf"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LN-files-result.json",
+      "bytes": 195333,
+      "sha256": "676cf1d8190ad8fbc1a6fb580a8041a37be6a7691d29b8905d88e2f7a9b90b6b"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LD-files-v2-result.json",
+      "bytes": 197385,
+      "sha256": "368ce8b8bbf82abbbd068baa2772b72b75658995fc8442b2fe5c26f76c55a78b"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LN-mounted-api-result.json",
+      "bytes": 30922,
+      "sha256": "732163c853b8bd928e5306bd98fd8953015659b6e2766fe8afb7be6443b7fc6f"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LD-mounted-api-result.json",
+      "bytes": 31153,
+      "sha256": "13a4c072a709b97c0897929d5a2930543540a912d07f4740f1f92a1a0b92a49d"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LN-lifecycle-resume-result.json",
+      "bytes": 808949,
+      "sha256": "df302def989807fdcb71f2ce75c4a24803b0c1754b568aabf5ea42e2df5ae0f0"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LD-lifecycle-v2-result.json",
+      "bytes": 939326,
+      "sha256": "dd18cb5265257e162aeba1eea1ec4164e89ee38bf00e4ee2a2236127aa8d4327"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LD-lifecycle-upgrade-result.json",
+      "bytes": 430951,
+      "sha256": "04fb530792604bcc8b901df9d47abf08a32a3f06ec26dd3e14508647437f9da2"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LN-source-detach-resume-result.json",
+      "bytes": 181663,
+      "sha256": "859ef30918c984101cbbc0c93c70cf3d20bc4f7ec63508e78e555aa67e82c0de"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/LD-source-detach-result.json",
+      "bytes": 199599,
+      "sha256": "bd79d8a07e3c05afa01a3b7f426e9269f74c1a34157966f1008a8c01bb0ba333"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/cleanup.json",
+      "bytes": 14208,
+      "sha256": "b53be4acd8d0b1cf6db9ca624775375ee1ed0068e1ec08972c5c729ed2823658"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/final-audit.json",
+      "bytes": 13463,
+      "sha256": "a943bd86b4dfbb23761e723a7ea9da53fac280075853c30da1a55e7f449a9591"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 640,
+      "sha256": "a53621fd9a2a4da3c1456fb15432524ace2716a53c94caa130c1ad88be1bac93"
+    },
+    {
+      "path": "DESIGN.md",
+      "bytes": 18830,
+      "sha256": "cca1f0f067ede06295b9a3774aacd3e333202f859494e7368b15595fb3bfd7df"
+    },
+    {
+      "path": "TESTING.md",
+      "bytes": 15082,
+      "sha256": "f0bbb0f46c3964f01328c3450f5e37586a6e496d25c2eee21bc6a68b8cb1358c"
+    },
+    {
+      "path": "autobyteus-web/AGENTS.md",
+      "bytes": 6092,
+      "sha256": "30fd30e0f304a1d5ce30fb4115537ef5890cca3b42ec1d03d0abd50edd7b52e3"
+    },
+    {
+      "path": "autobyteus-web/vitest.config.mts",
+      "bytes": 889,
+      "sha256": "46e65a4b5b6b9223ddc9ed6d228dcfbe22d3ecab156dbce6ef419f2b2cc5913a"
+    },
+    {
+      "path": "autobyteus-web/components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts",
+      "bytes": 2457,
+      "sha256": "d840d8e2706cee756bae4f77a40b740ef37cf032edf68a2c9d957dc1020c5e98"
+    },
+    {
+      "path": "autobyteus-web/components/fileExplorer/__tests__/FileExplorerTabs.spec.ts",
+      "bytes": 2149,
+      "sha256": "c103ecee5615aef829b49b24a4118530396f1ab0259a4485489d73783c45d84a"
+    }
+  ],
+  "baselineProductionPath": [
+    {
+      "path": "autobyteus-web/components/fileExplorer/FileExplorerTabs.vue",
+      "baseSha256": "4cb5108ba8f34fd7097b2d81c10a234392cb9dfad35c9a1a3b722259aa349fa9",
+      "currentSha256": "4cb5108ba8f34fd7097b2d81c10a234392cb9dfad35c9a1a3b722259aa349fa9",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/components/fileExplorer/FileViewer.vue",
+      "baseSha256": "4edc9b25e105e1220bb775c168d73053ee9066367f8bc383b6ecbb59598a48e3",
+      "currentSha256": "4edc9b25e105e1220bb775c168d73053ee9066367f8bc383b6ecbb59598a48e3",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/components/fileExplorer/MonacoEditor.vue",
+      "baseSha256": "9564e441ad219955b2c478361ed5835195add5e70010ae7a0c03a8a41fa44781",
+      "currentSha256": "9564e441ad219955b2c478361ed5835195add5e70010ae7a0c03a8a41fa44781",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/stores/fileExplorer.ts",
+      "baseSha256": "500624e734b9dc97ebc790185a10a8e0ddbdc93072b99067586d278a1d2fa9e3",
+      "currentSha256": "500624e734b9dc97ebc790185a10a8e0ddbdc93072b99067586d278a1d2fa9e3",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/stores/fileExplorerState.ts",
+      "baseSha256": "358a696293269a9db057ccd8476506b5f9ddd35ff98cfb8e780cc6cbe02ec4ae",
+      "currentSha256": "358a696293269a9db057ccd8476506b5f9ddd35ff98cfb8e780cc6cbe02ec4ae",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/stores/fileExplorerContentActions.ts",
+      "baseSha256": "ef611389d31707ce232598479ce5b04054d791659ec421b7001d5c125d5f2738",
+      "currentSha256": "ef611389d31707ce232598479ce5b04054d791659ec421b7001d5c125d5f2738",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/stores/fileExplorerTreeActions.ts",
+      "baseSha256": "a65e17303b18c8f82d7bf1b0cc63e9d95d12d0218cb53068720321cb21cda902",
+      "currentSha256": "a65e17303b18c8f82d7bf1b0cc63e9d95d12d0218cb53068720321cb21cda902",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/stores/workspace.ts",
+      "baseSha256": "828bbec600cbf89dab5c247ce007f8c9ff828b83cda6ebc22f818c2c1f707e87",
+      "currentSha256": "828bbec600cbf89dab5c247ce007f8c9ff828b83cda6ebc22f818c2c1f707e87",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/stores/workspaceFileExplorerLiveActions.ts",
+      "baseSha256": "364410defcefcdf7600f4ed5fc30bb334c21b8e559bf6cf94a055011abaf6370",
+      "currentSha256": "364410defcefcdf7600f4ed5fc30bb334c21b8e559bf6cf94a055011abaf6370",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/services/fileExplorerStreaming/FileExplorerStreamingService.ts",
+      "baseSha256": "2212db3168145c7127c2393952bf805bb6a47caa48148260fa7488d554996f3a",
+      "currentSha256": "2212db3168145c7127c2393952bf805bb6a47caa48148260fa7488d554996f3a",
+      "identical": true
+    },
+    {
+      "path": "autobyteus-web/utils/fileExplorer/fileUtils.ts",
+      "baseSha256": "9c483d3c4591d6a1615b02846586e1da89e8d2a48051173e01f5c29cc2050a83",
+      "currentSha256": "9c483d3c4591d6a1615b02846586e1da89e8d2a48051173e01f5c29cc2050a83",
+      "identical": true
+    }
+  ],
+  "priorHistoryBytes": 74542,
+  "priorHistorySha256": "97d26e0766b27fa38298b5dcfa25d0b145c80173bbc025bb9d9436452dad47cb"
+}

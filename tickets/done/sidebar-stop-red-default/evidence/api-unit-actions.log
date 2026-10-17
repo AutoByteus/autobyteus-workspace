@@ -1,0 +1,49 @@
+
+> autobyteus@1.5.3-beta.4 test:nuxt /home/autobyteus/workspace/.codex/worktrees/sidebar-stop-red-default/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts composables/__tests__/useWorkspaceHistoryMutations.spec.ts composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts stores/__tests__/delegatedLaunchDraftStore.spec.ts --run --maxWorkers=2
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/sidebar-stop-red-default/autobyteus-web
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/delegatedLaunchDraftStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/delegatedLaunchDraftStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/delegatedLaunchDraftStore.spec.ts (5 tests) 15ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts (6 tests) 891ms
+stderr | composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistoryMutations.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts (8 tests) 8ms
+stdout | composables/__tests__/useWorkspaceHistoryMutations.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useWorkspaceHistoryMutations.spec.ts (4 tests) 7ms
+
+ Test Files  4 passed (4)
+      Tests  23 passed (23)
+   Start at  16:18:16
+   Duration  18.66s (transform 6.37s, setup 26.51s, collect 775ms, tests 921ms, environment 4.71s, prepare 2.85s)

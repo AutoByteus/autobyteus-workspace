@@ -1,0 +1,256 @@
+[
+  {
+    "name": "go-race",
+    "argv": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/go/bin/go",
+      "test",
+      "-race",
+      "-count=1",
+      "-v",
+      "./..."
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+    "expected": 0,
+    "rc": 0,
+    "seconds": 7.871,
+    "environment": {
+      "PATH": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/go/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k",
+      "GOTOOLCHAIN": "local"
+    }
+  },
+  {
+    "name": "go-vet",
+    "argv": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/go/bin/go",
+      "vet",
+      "./..."
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+    "expected": 0,
+    "rc": 0,
+    "seconds": 0.366,
+    "environment": {
+      "PATH": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/go/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k",
+      "GOTOOLCHAIN": "local"
+    }
+  },
+  {
+    "name": "python-packaging",
+    "argv": [
+      "/usr/bin/python3",
+      "-m",
+      "unittest",
+      "scripts/tests/test_nfs_installer_fixture.py",
+      "scripts/tests/test_nfs_packaging_and_launcher.py",
+      "-v"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "expected": 0,
+    "rc": 0,
+    "seconds": 3.096,
+    "environment": {
+      "PATH": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/go/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k",
+      "GOTOOLCHAIN": "local"
+    }
+  },
+  {
+    "name": "build-darwin-arm64",
+    "argv": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/go/bin/go",
+      "build",
+      "-trimpath",
+      "-o",
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/nfs-darwin-arm64",
+      "./cmd/autobyteus-nfs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+    "expected": 0,
+    "rc": 0,
+    "seconds": 0.796,
+    "environment": {
+      "PATH": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/go/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k",
+      "GOTOOLCHAIN": "local",
+      "CGO_ENABLED": "0",
+      "GOOS": "darwin",
+      "GOARCH": "arm64"
+    }
+  },
+  {
+    "name": "build-darwin-amd64",
+    "argv": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/go/bin/go",
+      "build",
+      "-trimpath",
+      "-o",
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/nfs-darwin-amd64",
+      "./cmd/autobyteus-nfs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+    "expected": 0,
+    "rc": 0,
+    "seconds": 1.233,
+    "environment": {
+      "PATH": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/go/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k",
+      "GOTOOLCHAIN": "local",
+      "CGO_ENABLED": "0",
+      "GOOS": "darwin",
+      "GOARCH": "amd64"
+    }
+  },
+  {
+    "name": "build-linux-arm64",
+    "argv": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/go/bin/go",
+      "build",
+      "-trimpath",
+      "-o",
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/nfs-linux-arm64",
+      "./cmd/autobyteus-nfs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+    "expected": 0,
+    "rc": 0,
+    "seconds": 1.244,
+    "environment": {
+      "PATH": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/go/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k",
+      "GOTOOLCHAIN": "local",
+      "CGO_ENABLED": "0",
+      "GOOS": "linux",
+      "GOARCH": "arm64"
+    }
+  },
+  {
+    "name": "build-linux-amd64",
+    "argv": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/go/bin/go",
+      "build",
+      "-trimpath",
+      "-o",
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/nfs-linux-amd64",
+      "./cmd/autobyteus-nfs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+    "expected": 0,
+    "rc": 0,
+    "seconds": 1.266,
+    "environment": {
+      "PATH": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/go/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k",
+      "GOTOOLCHAIN": "local",
+      "CGO_ENABLED": "0",
+      "GOOS": "linux",
+      "GOARCH": "amd64"
+    }
+  },
+  {
+    "name": "native-version",
+    "argv": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/nfs-darwin-arm64",
+      "version"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "expected": 0,
+    "rc": 0,
+    "seconds": 0.433,
+    "environment": {
+      "PATH": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/go/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k",
+      "GOTOOLCHAIN": "local"
+    }
+  },
+  {
+    "name": "unqualified-publish",
+    "argv": [
+      "/usr/bin/python3",
+      "autobyteus-nfs/packaging/release.py",
+      "--check-publish"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "expected": 1,
+    "rc": 1,
+    "seconds": 0.178,
+    "environment": {
+      "PATH": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/go/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k",
+      "GOTOOLCHAIN": "local"
+    }
+  },
+  {
+    "name": "mutation-activation-only",
+    "argv": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/go/bin/go",
+      "test",
+      "-count=1",
+      "-run",
+      "^TestAppleActivationWaitsForBothServingPrograms$",
+      "./internal/backend"
+    ],
+    "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/mutation-activation-only",
+    "expected": 1,
+    "rc": 1,
+    "seconds": 0.776,
+    "environment": {
+      "PATH": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/go/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k",
+      "GOTOOLCHAIN": "local"
+    }
+  },
+  {
+    "name": "mutation-one-observation",
+    "argv": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/go/bin/go",
+      "test",
+      "-count=1",
+      "-run",
+      "^TestAppleColdRPCStartupRechecksNFSAndMountWithoutReactivation$",
+      "./internal/backend"
+    ],
+    "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/mutation-one-observation",
+    "expected": 1,
+    "rc": 1,
+    "seconds": 0.692,
+    "environment": {
+      "PATH": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/go/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k",
+      "GOTOOLCHAIN": "local"
+    }
+  },
+  {
+    "name": "mutation-blanket-retry",
+    "argv": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/go/bin/go",
+      "test",
+      "-count=1",
+      "-run",
+      "^TestAppleStartupDoesNotMaskInvalidSetupOrExecution$",
+      "./internal/backend"
+    ],
+    "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/mutation-blanket-retry",
+    "expected": 1,
+    "rc": 1,
+    "seconds": 0.694,
+    "environment": {
+      "PATH": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/go/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/home",
+      "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k",
+      "GOTOOLCHAIN": "local"
+    }
+  }
+]

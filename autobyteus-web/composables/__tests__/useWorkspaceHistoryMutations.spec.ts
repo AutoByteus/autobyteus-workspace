@@ -92,3 +92,34 @@ describe('useWorkspaceHistoryMutations AgentOrg history policy', () => {
     expect(params.addToast).toHaveBeenCalledWith('Failed to archive Agent Org history.', 'error');
   });
 });
+
+// sidebar-stop-red-default BEH-003: Stop continues through its subject boundary, not Delete confirmation.
+describe('root Stop boundaries', () => {
+  it('keeps Agent pending per ID, excludes a duplicate and calls no Team termination', async () => {
+    const { params, mutations } = buildHarness();
+    let finish!: (value: boolean) => void;
+    params.terminateRun.mockReturnValue(new Promise(resolve => { finish = resolve; }));
+    const pending = mutations.onTerminateRun('agent-root');
+    expect(mutations.terminatingRunIds.value['agent-root']).toBe(true);
+    await mutations.onTerminateRun('agent-root');
+    expect(params.terminateRun).toHaveBeenCalledExactlyOnceWith('agent-root');
+    expect(params.terminateTeamRun).not.toHaveBeenCalled();
+    expect(mutations.showDeleteConfirmation.value).toBe(false);
+    finish(true);
+    await pending;
+    expect(mutations.terminatingRunIds.value['agent-root']).toBeUndefined();
+    expect(params.addToast).not.toHaveBeenCalled();
+  });
+
+  it('respects the Team store pending gate without substituting Agent termination', async () => {
+    const { params, mutations } = buildHarness();
+    params.stopPendingTeamIds.value = { 'team-root': true };
+    await mutations.onTerminateTeam('team-root');
+    expect(params.terminateTeamRun).not.toHaveBeenCalled();
+    params.stopPendingTeamIds.value = {};
+    await mutations.onTerminateTeam('team-root');
+    expect(params.terminateTeamRun).toHaveBeenCalledExactlyOnceWith('team-root');
+    expect(params.terminateRun).not.toHaveBeenCalled();
+    expect(mutations.showDeleteConfirmation.value).toBe(false);
+  });
+});

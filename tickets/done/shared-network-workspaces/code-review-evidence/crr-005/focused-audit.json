@@ -1,0 +1,160 @@
+{
+  "timeUTC": "2026-10-14T04:46:06Z",
+  "head": "57480943efcf6a4bd060953b48bafde7da616319",
+  "apiInput": "82dd5d9d53e2e4f5e022ff3f6f0e196ebd3602d8",
+  "focusedPaths": {
+    "autobyteus-nfs/internal/config/source-marker.go": {
+      "currentSHA256": "1ca541549adb980079a6624f2eb80675a4f9cb574fe1c367c9f6bfbecce1a071",
+      "inputSHA256": "1ca541549adb980079a6624f2eb80675a4f9cb574fe1c367c9f6bfbecce1a071",
+      "unchanged": true
+    },
+    "autobyteus-nfs/internal/service/probe.go": {
+      "currentSHA256": "edfca738b36c3cd11bf8be20d8ca28461890a5c51b12dd38bda391221fe6fe7c",
+      "inputSHA256": "edfca738b36c3cd11bf8be20d8ca28461890a5c51b12dd38bda391221fe6fe7c",
+      "unchanged": true
+    },
+    "autobyteus-nfs/internal/setup/apply.go": {
+      "currentSHA256": "43d15c534647735f5b2fcdcf7b0d6161a2e222faac846e512079233693bb0b53",
+      "inputSHA256": "43d15c534647735f5b2fcdcf7b0d6161a2e222faac846e512079233693bb0b53",
+      "unchanged": true
+    },
+    "autobyteus-nfs/internal/setup/lifecycle.go": {
+      "currentSHA256": "cebe724c9f4df8f0bd9fa95ddb1db4384a4723dd382950985319aaadf9b587c1",
+      "inputSHA256": "cebe724c9f4df8f0bd9fa95ddb1db4384a4723dd382950985319aaadf9b587c1",
+      "unchanged": true
+    },
+    "autobyteus-nfs/internal/backend/ganesha.go": {
+      "currentSHA256": "b3dee53dd35bc9542fda6be567361aaedd3655eb4849c9faa10b46b3ee5d8522",
+      "inputSHA256": "b3dee53dd35bc9542fda6be567361aaedd3655eb4849c9faa10b46b3ee5d8522",
+      "unchanged": true
+    },
+    "autobyteus-nfs/internal/backend/ganesha_native.go": {
+      "currentSHA256": "d3a203c0ece0efb587a9566c472aed2d6b6dc101f34d266fa36c4dc8ca5aea2e",
+      "inputSHA256": "d3a203c0ece0efb587a9566c472aed2d6b6dc101f34d266fa36c4dc8ca5aea2e",
+      "unchanged": true
+    },
+    "autobyteus-nfs/internal/platform/mounts.go": {
+      "currentSHA256": "b30c21fa39b9e86515c6a50e72b6e467038107afdb03c6d42ae87ede74e5b5aa",
+      "inputSHA256": "b30c21fa39b9e86515c6a50e72b6e467038107afdb03c6d42ae87ede74e5b5aa",
+      "unchanged": true
+    },
+    "autobyteus-nfs/internal/platform/commands.go": {
+      "currentSHA256": "19d6b5b27a71b80dfc4fe831242e844f69ca3c0c753c626a8ae10912d2613f18",
+      "inputSHA256": "19d6b5b27a71b80dfc4fe831242e844f69ca3c0c753c626a8ae10912d2613f18",
+      "unchanged": true
+    },
+    "autobyteus-nfs/internal/backend/apple_startup.go": {
+      "currentSHA256": "4ff72fb0c2975d1bb68d32cc54829996f1875de4593cd1a8fb07477f9525190f",
+      "inputSHA256": "4ff72fb0c2975d1bb68d32cc54829996f1875de4593cd1a8fb07477f9525190f",
+      "unchanged": true
+    },
+    "autobyteus-nfs/packaging/release-lock.json": {
+      "currentSHA256": "9d2dbab65a182d2a5f9472a73279147cc1f4402e4e71d74ba6e252db355b8513",
+      "inputSHA256": "9d2dbab65a182d2a5f9472a73279147cc1f4402e4e71d74ba6e252db355b8513",
+      "unchanged": true
+    },
+    "autobyteus-nfs/packaging/release.py": {
+      "currentSHA256": "0f78271304458555259504bd4be769c26f12c7adba5ce75f621ad5518d0b45fe",
+      "inputSHA256": "0f78271304458555259504bd4be769c26f12c7adba5ce75f621ad5518d0b45fe",
+      "unchanged": true
+    },
+    "autobyteus-nfs/packaging/RELEASE.md": {
+      "currentSHA256": "2d1168c92af4bfa59f72a061696d4f11de03621e838d72c02a13afb7e799af36",
+      "inputSHA256": "2d1168c92af4bfa59f72a061696d4f11de03621e838d72c02a13afb7e799af36",
+      "unchanged": true
+    },
+    "autobyteus-nfs/cmd/autobyteus-nfs/release.json": {
+      "currentSHA256": "534e86b9d8af6c3731eb2efcf368cc491386d75322f21d0504e17f48a6a35eb2",
+      "inputSHA256": "534e86b9d8af6c3731eb2efcf368cc491386d75322f21d0504e17f48a6a35eb2",
+      "unchanged": true
+    },
+    "autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts": {
+      "currentSHA256": "2036b2e7e104395a7a5635d057b062aa60e4532448564008797f5ebd486da35a",
+      "inputSHA256": "2036b2e7e104395a7a5635d057b062aa60e4532448564008797f5ebd486da35a",
+      "unchanged": true
+    },
+    "tickets/in-progress/shared-network-workspaces/requirements-doc.md": {
+      "currentSHA256": "62ea50f35b12843a61b287602b843b5050a88b4261de2999d70381bb6755470d",
+      "inputSHA256": "62ea50f35b12843a61b287602b843b5050a88b4261de2999d70381bb6755470d",
+      "unchanged": true
+    },
+    "tickets/in-progress/shared-network-workspaces/approval-record-sr018.md": {
+      "currentSHA256": "64399a81bda50aadd8f883930fa9c9fef1c6a3dd46c87fe74e2ed5b38223e249",
+      "inputSHA256": "64399a81bda50aadd8f883930fa9c9fef1c6a3dd46c87fe74e2ed5b38223e249",
+      "unchanged": true
+    },
+    "tickets/in-progress/shared-network-workspaces/approval-record-sr017.md": {
+      "currentSHA256": "dc033fc3641b80e13d3de052eed4e289ee4a3f36b9870f317a72ed102660ebbf",
+      "inputSHA256": "dc033fc3641b80e13d3de052eed4e289ee4a3f36b9870f317a72ed102660ebbf",
+      "unchanged": true
+    },
+    "tickets/in-progress/shared-network-workspaces/design-spec.md": {
+      "currentSHA256": "2627e9acec44a7c21c09601a868593804319edc47524616ddb6ac1890a0d8564",
+      "inputSHA256": "2627e9acec44a7c21c09601a868593804319edc47524616ddb6ac1890a0d8564",
+      "unchanged": true
+    },
+    "tickets/in-progress/shared-network-workspaces/investigation-notes.md": {
+      "currentSHA256": "546c92768ff460db555e4382b4972e44e5ec6fdedd5684aad4f8a21b5bc50a98",
+      "inputSHA256": "546c92768ff460db555e4382b4972e44e5ec6fdedd5684aad4f8a21b5bc50a98",
+      "unchanged": true
+    },
+    "tickets/in-progress/shared-network-workspaces/solution-revision-record.md": {
+      "currentSHA256": "d321384be35fb04ffed0f020a76cd58adb5ed7619330eea4176a80e5f10ac5c0",
+      "inputSHA256": "d321384be35fb04ffed0f020a76cd58adb5ed7619330eea4176a80e5f10ac5c0",
+      "unchanged": true
+    },
+    "tickets/in-progress/shared-network-workspaces/solution-design-handoff.md": {
+      "currentSHA256": "3bc089ff875f55909eda9a8aab214cf7ea743e86460994e3700b2b9ba6244cf4",
+      "inputSHA256": "3bc089ff875f55909eda9a8aab214cf7ea743e86460994e3700b2b9ba6244cf4",
+      "unchanged": true
+    },
+    "tickets/in-progress/shared-network-workspaces/design-review-report.md": {
+      "currentSHA256": "fb1687991301bafee18e68c7fd1f1aea583acc9814fd235acdd52f9f934a2f5e",
+      "inputSHA256": "fb1687991301bafee18e68c7fd1f1aea583acc9814fd235acdd52f9f934a2f5e",
+      "unchanged": true
+    },
+    "tickets/in-progress/shared-network-workspaces/architecture-review-revision-record.md": {
+      "currentSHA256": "ba053fb7f07d71b94199ac061e9149a727314abe1ff5f472bc97aa1e9bb43a3f",
+      "inputSHA256": "ba053fb7f07d71b94199ac061e9149a727314abe1ff5f472bc97aa1e9bb43a3f",
+      "unchanged": true
+    },
+    "tickets/in-progress/shared-network-workspaces/architecture-review-scope-feedback.md": {
+      "currentSHA256": "f87c31f89d9da0437a7c87d3271c77af75a31daa88861c2ecd7cfb7c3f78e360",
+      "inputSHA256": "f87c31f89d9da0437a7c87d3271c77af75a31daa88861c2ecd7cfb7c3f78e360",
+      "unchanged": true
+    },
+    "tickets/in-progress/shared-network-workspaces/implementation-handoff.md": {
+      "currentSHA256": "81d28f4c9d55bb7a67b1062bd7817c701de236d4c359a393a609d723f2bc1562",
+      "inputSHA256": "81d28f4c9d55bb7a67b1062bd7817c701de236d4c359a393a609d723f2bc1562",
+      "unchanged": true
+    },
+    "tickets/in-progress/shared-network-workspaces/implementation-revision-record.md": {
+      "currentSHA256": "e1faa3210466c3585834982e6556572a9ada3cc3ef7c4242288dbdc46be1bfd2",
+      "inputSHA256": "e1faa3210466c3585834982e6556572a9ada3cc3ef7c4242288dbdc46be1bfd2",
+      "unchanged": true
+    },
+    "tickets/in-progress/shared-network-workspaces/code-review-report.md": {
+      "currentSHA256": "e78d9c8895c36a48f18298fd96274c323e0dcf1d641c4470588f917780f0295b",
+      "inputSHA256": "e78d9c8895c36a48f18298fd96274c323e0dcf1d641c4470588f917780f0295b",
+      "unchanged": true
+    },
+    "tickets/in-progress/shared-network-workspaces/code-review-revision-record.md": {
+      "currentSHA256": "e5ed17b5cf0c4f7aaa7a90c7836f32646e15b129690034a11141190024b14fb2",
+      "inputSHA256": "e5ed17b5cf0c4f7aaa7a90c7836f32646e15b129690034a11141190024b14fb2",
+      "unchanged": true
+    },
+    "autobyteus-nfs/internal/backend/ubuntu_packages.go": {
+      "currentSHA256": "b5facb8c9b6a6301fc44abae9ad16a3d62aa3a4025e56ddf54f029033aa2fac4",
+      "inputSHA256": "b5facb8c9b6a6301fc44abae9ad16a3d62aa3a4025e56ddf54f029033aa2fac4",
+      "unchanged": true
+    }
+  },
+  "allFocusedUnchanged": true,
+  "apiManifestFilesChecked": 56,
+  "apiManifestMismatches": [],
+  "uniqueCumulativeReferences": 276,
+  "missingReferences": [],
+  "productionHash": "497efd6abb0c2cfa4c740a87f005c529cbf026a6fa218b3acd345826f4a923da",
+  "nonTicketDeltaFromAPIInput": [],
+  "focusedPathCount": 29
+}

@@ -1,0 +1,90 @@
+{
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+  "environment": {
+    "PATH": "/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/.codex/packages/standalone/releases/0.162.1-aarch64-apple-darwin/codex-path:/Users/normy/.codex/tmp/arg0/codex-arg0gYa2vy:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin",
+    "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api008-0frlwk0o/home",
+    "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api008-0frlwk0o/tmp/",
+    "LANG": "en_US.UTF-8",
+    "CI": "1",
+    "NO_COLOR": "1"
+  },
+  "checks": [
+    {
+      "name": "original-and-viewer",
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "test:nuxt",
+        "components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts",
+        "components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts",
+        "components/fileExplorer/__tests__/FileExplorerTabs.spec.ts",
+        "--run",
+        "--maxWorkers=2"
+      ],
+      "rc": 0,
+      "seconds": 15.37,
+      "log": "original-and-viewer.log"
+    },
+    {
+      "name": "adjacent",
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "test:nuxt",
+        "components/fileExplorer/__tests__",
+        "components/fileExplorer/viewers/__tests__",
+        "stores/__tests__/fileExplorerStore.spec.ts",
+        "stores/__tests__/fileExplorerNodeRouting.spec.ts",
+        "utils/fileExplorer/__tests__",
+        "--run",
+        "--maxWorkers=2"
+      ],
+      "rc": 0,
+      "seconds": 28.02,
+      "log": "adjacent.log"
+    },
+    {
+      "name": "web-boundary",
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "guard:web-boundary"
+      ],
+      "rc": 0,
+      "seconds": 0.5,
+      "log": "web-boundary.log"
+    },
+    {
+      "name": "localization-boundary",
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "guard:localization-boundary"
+      ],
+      "rc": 0,
+      "seconds": 0.4,
+      "log": "localization-boundary.log"
+    },
+    {
+      "name": "public-http",
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts",
+        "--no-watch"
+      ],
+      "rc": 0,
+      "seconds": 11.77,
+      "log": "public-http.log"
+    }
+  ],
+  "result": "Pass"
+}

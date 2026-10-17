@@ -1,0 +1,1 @@
+{"cases":[{"name":"positive directory control discovered","pass":true},{"name":"private linked source uses frontmatter name, not directory alias","pass":true},{"name":"project unmodified","pass":true},{"name":"source support intact","pass":true}],"cleanup":{"exactChildrenClosed":true,"scratchRemoved":true}}

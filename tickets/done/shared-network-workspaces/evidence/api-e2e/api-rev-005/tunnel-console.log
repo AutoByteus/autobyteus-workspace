@@ -1,0 +1,2 @@
+Host-to-owned-guest SSH loopback HTTP forwarding verified using own ephemeral key and guest-read host key; no VM peer route/bridge workaround
+{"result": "Ready", "error": null, "baseUrl": "http://127.0.0.1:50537", "pid": 43312}

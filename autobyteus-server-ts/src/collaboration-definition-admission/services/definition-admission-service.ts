@@ -195,8 +195,8 @@ export class DefinitionAdmissionService {
       code,
       reason,
       dependencyChain: Object.freeze([...dependencyChain]),
-      ownerAction: source.sourceClass === "external_read_only"
-        ? "Update this package in its owning external project to the current definition format."
+      ownerAction: source.sourceClass === "registered_package"
+        ? "Update this registered package (its folder or source repository) to the current definition format."
         : "Correct the owned package to the current definition format.",
     });
   }

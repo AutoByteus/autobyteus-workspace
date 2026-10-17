@@ -1,27 +1,23 @@
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
-import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import {
+  configuredTeamFollowerAddresses,
   projectTaskExecutionSource,
-  resolveCollaboratorCopySource,
+  type CollaboratorCopySource,
 } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
 import type { TaskExecutionSource } from "../../run-history/domain/run-execution-tree-shared-records.js";
-import type { TeamRunAgentNode, TeamRunAgentTeamNode, TeamRunConfig } from "../domain/team-run-config.js";
-import type { TeamExecutionIndex } from "../services/team-execution-index.js";
+import type { TeamRunAgentNode, TeamRunConfig } from "../domain/team-run-config.js";
 import { findTaskConfigNode } from "./task-delegation-execution-resolution.js";
 
-export type TeamTaskSource =
-  | Readonly<{ kind: "agent"; node: TeamRunAgentNode }>
-  | Readonly<{ kind: "agent_team"; node: TeamRunAgentTeamNode; handoffs: readonly CollaborationHandoff[] }>;
+export type TeamTaskSource = CollaboratorCopySource;
 
 /**
  * The runtime source of a task execution at an address, on activation and on restore: a
- * catalog copy's recorded `source` first, then the configured node, then an extra copy
- * projected from the run's collaborator entry. The only reader of task sources in the Team root.
+ * catalog copy's recorded `source` first, else the configured node ("absent `source` means
+ * configured placement only"). The only reader of task sources in the Team root.
  */
 export class TeamTaskSourceResolver {
   constructor(private readonly options: Readonly<{
     config: TeamRunConfig;
-    getIndex(): TeamExecutionIndex;
   }>) {}
 
   resolve(address: AgentTeamAddress | string, recorded?: TaskExecutionSource | null): TeamTaskSource | null {
@@ -30,21 +26,25 @@ export class TeamTaskSourceResolver {
     if (configured && configured.address !== "/") {
       return configured.kind === "agent"
         ? Object.freeze({ kind: "agent", node: configured })
-        : Object.freeze({ kind: "agent_team", node: configured, handoffs: this.options.config.handoffs });
+        : Object.freeze({
+          kind: "agent_team",
+          node: configured,
+          handoffs: this.options.config.handoffs,
+          followerAddresses: configuredTeamFollowerAddresses(configured),
+        });
     }
-    // An extra copy of a collaborator (or of a collaborator Team member) with pending identities.
-    return resolveCollaboratorCopySource(this.options.getIndex().tree.rootTeam.collaborators, address);
+    return null;
   }
 
   requireAgent(address: AgentTeamAddress | string, recorded?: TaskExecutionSource | null): TeamRunAgentNode {
     const source = this.resolve(address, recorded);
-    if (!source || source.kind !== "agent") throw new Error(`Agent '${address}' is not configured or a collaborator of this run.`);
+    if (!source || source.kind !== "agent") throw new Error(`Agent '${address}' is not configured in this run.`);
     return source.node;
   }
 
   requireTeam(address: AgentTeamAddress | string, recorded?: TaskExecutionSource | null): Extract<TeamTaskSource, { kind: "agent_team" }> {
     const source = this.resolve(address, recorded);
-    if (!source || source.kind !== "agent_team") throw new Error(`AgentTeam '${address}' is not configured or a collaborator of this run.`);
+    if (!source || source.kind !== "agent_team") throw new Error(`AgentTeam '${address}' is not configured in this run.`);
     return source;
   }
 }

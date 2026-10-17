@@ -98,7 +98,7 @@ const failedAttachmentPreviewKeys = ref(new Set<string>());
 
 // Skill tags travel as an instruction prefix in the content; show them as chips and the user's own text.
 const skillRequest = computed(() => skillRequestInstruction.parse(props.message.text ?? ''));
-// `@` mentions: the server appends a `[Mentioned collaborators]` note; show the words with inline `@Name` chips.
+// `@` mentions: the server appends a `[Mentioned agents]` note (earlier messages carry `[Mentioned collaborators]`); show the words with inline `@Name` chips.
 const presentation = computed(() => presentSentUserMessage(props.message.text ?? '', props.message.mentionNames ?? []));
 const displayText = computed(() => presentation.value.text);
 const displayParts = computed(() => splitMentionText(displayText.value, presentation.value.mentionNames));

@@ -1,0 +1,78 @@
+
+> autobyteus@1.5.4 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/fileExplorer/__tests__/FileExplorerTabs.sd-revalidate-probe.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/autobyteus-web
+
+stderr | components/fileExplorer/__tests__/FileExplorerTabs.sd-revalidate-probe.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/fileExplorer/__tests__/FileExplorerTabs.sd-revalidate-probe.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/__tests__/FileExplorerTabs.sd-revalidate-probe.spec.ts > CRR015 pending-save draft preservation > preserves later input "draft-a original" through Save completion
+CRR015_PROBE {"laterInput":"draft-a original","afterInput":{"visible":"draft-a original","draft":null,"committed":"draft-a original"},"afterComplete":{"visible":"saved checkpoint","draft":null,"committed":"saved checkpoint"},"submitted":["saved checkpoint","saved checkpoint"]}
+
+stdout | components/fileExplorer/__tests__/FileExplorerTabs.sd-revalidate-probe.spec.ts > CRR015 pending-save draft preservation > preserves later input "later independent edit" through Save completion
+CRR015_PROBE {"laterInput":"later independent edit","afterInput":{"visible":"later independent edit","draft":"later independent edit","committed":"draft-a original"},"afterComplete":{"visible":"later independent edit","draft":"later independent edit","committed":"saved checkpoint"},"submitted":["saved checkpoint","later independent edit"]}
+
+ ❯ components/fileExplorer/__tests__/FileExplorerTabs.sd-revalidate-probe.spec.ts (2 tests | 1 failed) 48ms
+   × CRR015 pending-save draft preservation > preserves later input "draft-a original" through Save completion 40ms
+     → expected 'saved checkpoint' to be 'draft-a original' // Object.is equality
+     → expected [ 'saved checkpoint', …(1) ] to deeply equal [ 'saved checkpoint', …(1) ]
+   ✓ CRR015 pending-save draft preservation > preserves later input "later independent edit" through Save completion 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/fileExplorer/__tests__/FileExplorerTabs.sd-revalidate-probe.spec.ts > CRR015 pending-save draft preservation > preserves later input "draft-a original" through Save completion
+AssertionError: expected 'saved checkpoint' to be 'draft-a original' // Object.is equality
+
+Expected: [32m"draft-a original"[39m
+Received: [31m"saved checkpoint"[39m
+
+ ❯ components/fileExplorer/__tests__/FileExplorerTabs.sd-revalidate-probe.spec.ts:85:40
+     83|     const submitted = mutate.mock.calls.map(call => call[0].variables.…
+     84|     console.log('CRR015_PROBE', JSON.stringify({ laterInput, afterInpu…
+     85|     expect.soft(afterComplete.visible).toBe(laterInput)
+       |                                        ^
+     86|     expect.soft(submitted).toEqual(['saved checkpoint', laterInput])
+     87|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  components/fileExplorer/__tests__/FileExplorerTabs.sd-revalidate-probe.spec.ts > CRR015 pending-save draft preservation > preserves later input "draft-a original" through Save completion
+AssertionError: expected [ 'saved checkpoint', …(1) ] to deeply equal [ 'saved checkpoint', …(1) ]
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  [[22m
+[2m    "saved checkpoint",[22m
+[32m-   "draft-a original",[39m
+[31m+   "saved checkpoint",[39m
+[2m  ][22m
+
+ ❯ components/fileExplorer/__tests__/FileExplorerTabs.sd-revalidate-probe.spec.ts:86:28
+     84|     console.log('CRR015_PROBE', JSON.stringify({ laterInput, afterInpu…
+     85|     expect.soft(afterComplete.visible).toBe(laterInput)
+     86|     expect.soft(submitted).toEqual(['saved checkpoint', laterInput])
+       |                            ^
+     87|   })
+     88| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  19:17:24
+   Duration  6.12s (transform 2.92s, setup 5.48s, collect 135ms, tests 48ms, environment 127ms, prepare 130ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

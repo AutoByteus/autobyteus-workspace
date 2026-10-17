@@ -1,0 +1,13 @@
+{
+  "utc": "2026-10-13T17:09:41.248257+00:00",
+  "tag": "v1.5.3-beta.5",
+  "version": "1.5.3-beta.5",
+  "base": "7170fd755d0dd5e806371dd4594eb4a9bf3e2682",
+  "releaseCommit": "abfd379059a7bc1c392a6a2137d27e32427cda26",
+  "versionOnlyDelta": true,
+  "branchPush": "Completed",
+  "annotatedTagPush": "Completed",
+  "remoteEquality": true,
+  "allPipelines": "Pending",
+  "rollout": "Not completed yet; watch all four; no manual duplicate dispatch"
+}

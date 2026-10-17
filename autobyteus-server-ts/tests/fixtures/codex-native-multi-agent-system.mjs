@@ -113,7 +113,7 @@ const mcpChecks = async thread => {
   const settings = thread.config.appServerConfig;
   assert.deepEqual(Object.keys(settings), ["mcp_servers"]);
   const serverConfig = settings.mcp_servers.autobyteus_agent_tools;
-  const expected = ["get_handoff_rules", "send_message_to", "delegate_task", "create_or_update_task", "list_projects"];
+  const expected = ["get_handoff_rules", "send_message_to", "delegate_task", "list_projects"];
   for (const tool of expected) assert(serverConfig.enabled_tools.includes(tool), tool);
   const status = await until(async () => {
     const r = await thread.client.request("mcpServerStatus/list", { threadId: thread.threadId, detail: "full" });

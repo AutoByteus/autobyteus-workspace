@@ -86,7 +86,6 @@ const agentOrgDefinitionGroup = (): AgentOrgHistoryDefinitionGroup => {
         applicationBinding: null,
         handoffs: [],
         rootOrg: {
-          collaborators: [],
           address: '/', orgDefinitionId: 'org-definition', orgDefinitionName: 'Delivery Org', orgRunId: 'org-run',
           defaultLaunchConfiguration: launch, taskExecutions: [],
           members: [{
@@ -229,6 +228,51 @@ const mountSubject = (options: {
 };
 
 describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
+  // sidebar-stop-red-default BEH-001..003: the three real root templates, not a replacement Stop stub.
+  it.each([
+    { kind: 'Agent', selector: '[data-test="terminate-agent-run"]', action: 'onTerminateRun', target: 'agent-run-1' },
+    { kind: 'Team', selector: 'button[title$="terminate_team"]', action: 'onTerminateTeam', target: 'team-run-1' },
+    { kind: 'Org', selector: 'button[aria-label="Stop Agent Org"]', action: 'onTerminateAgentOrg', target: null },
+  ] as const)('$kind root Stop is red when enabled, muted while disabled, and keeps its exact target', async (variant) => {
+    const run = { runId: 'agent-run-1', summary: 'Manager run', currentStatus: AgentStatus.Running,
+      lastActivityAt: '2026-06-30T00:00:00.000Z', isActive: true, hasCollaboration: false, source: 'history', isDraft: false };
+    const agent = { agentDefinitionId: 'manager', agentName: 'Manager', runs: [run] };
+    const group = agentOrgDefinitionGroup();
+    const { wrapper, actions, state, team } = mountSubject({ agents: [agent], agentOrgDefinitions: [group], teamExpanded: false });
+    const button = wrapper.get(variant.selector);
+    expect(button.classes()).toEqual(expect.arrayContaining([
+      'text-red-500', 'hover:bg-red-50', 'hover:text-red-600', 'disabled:text-gray-400',
+      'disabled:hover:text-gray-400', 'disabled:hover:bg-transparent', 'disabled:cursor-not-allowed', 'disabled:opacity-50',
+    ]));
+    expect(button.classes()).not.toContain('text-gray-400');
+    expect(button.classes()).not.toContain('focus:outline-none'); // keep the roots' native focus convention
+    expect(button.attributes('type')).toBe('button');
+    expect(button.attributes('aria-label')).toBe(button.attributes('title'));
+    expect(button.attributes('disabled')).toBeUndefined();
+    await button.trigger('click');
+    expect(actions[variant.action]).toHaveBeenCalledExactlyOnceWith(variant.target ?? group.runs[0]);
+    for (const action of ['onTerminateRun', 'onTerminateTeam', 'onTerminateAgentOrg'] as const) {
+      if (action !== variant.action) expect(actions[action]).not.toHaveBeenCalled();
+    }
+    expect(actions.onSelectRun).not.toHaveBeenCalled();
+    expect(actions.onSelectTeam).not.toHaveBeenCalled();
+    expect(actions.onOpenAgentOrgRun).not.toHaveBeenCalled();
+    expect(state.toggleAgentOrgRun).not.toHaveBeenCalled();
+    expect(wrapper.get('[data-test="workspace-team-row-team-run-1"] [data-test="team-activity-dot"]').attributes('data-active')).toBe('true');
+    expect(wrapper.get('[data-test="agent-org-run-open-org-run"] .bg-emerald-500').exists()).toBe(true);
+    await wrapper.setProps({ state: { ...state, isRunTerminating: () => true, isTeamTerminating: () => true, isAgentOrgTerminating: () => true } });
+    expect(button.attributes('disabled')).toBeDefined();
+    await button.trigger('click');
+    expect(actions[variant.action]).toHaveBeenCalledTimes(1);
+    await wrapper.setProps({
+      workspaceNode: { ...wrapper.props().workspaceNode, agents: [{ ...agent, runs: [{ ...run, isActive: false }] }] as any,
+        agentOrgDefinitions: [{ ...group, runs: [{ ...group.runs[0], isActive: false }] }] },
+      workspaceTeams: [{ ...team, isActive: false }],
+    });
+    expect(wrapper.find(variant.selector).exists()).toBe(false);
+    wrapper.unmount();
+  });
+
   it('keeps supplied Team images and uses the group glyph for missing or broken images', async () => {
     const definitions = ref<{id: string; avatarUrl?: string}[]>([]);
     const scope = effectScope();
@@ -488,7 +532,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     expect(childRow().exists()).toBe(false);
     await nestedRow().trigger('click');
     await wrapper.vm.$nextTick();
-    expect(state.toggleTeamMember).toHaveBeenLastCalledWith('workspace:/ws/a', 'team-run-1', 'team:software-team-run', false);
+    expect(state.toggleTeamMember).toHaveBeenLastCalledWith('workspace:/ws/a', 'team-run-1', 'team:software-team-run');
     expect(actions.onSelectTeamMember).not.toHaveBeenCalled();
     expect(childRow().exists()).toBe(true);
     await childRow().trigger('click');
@@ -566,7 +610,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     await dot.trigger('click');
     expect(state.toggleTeamMember).toHaveBeenCalledTimes(1);
     expect(state.toggleTeamMember).toHaveBeenCalledWith(
-      'workspace:/ws/a', 'team-run-1', 'team:product-team-run', false,
+      'workspace:/ws/a', 'team-run-1', 'team:product-team-run',
     );
     expect(actions.onSelectTeamMember).not.toHaveBeenCalled();
   });

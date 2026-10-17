@@ -1,0 +1,8 @@
+{
+  "classification": "Local harness correction",
+  "original": "selected-create-result.json",
+  "originalCreate": "Pass, actual host and selected API ready",
+  "failure": "Exact whole unselected snapshot equality included Docker unordered Mounts projection",
+  "differenceOnly": "Mounts array order; entries and every other field equal",
+  "correction": "Sort by unique Destination; compare exact entries plus every other field. No second create/reconnect/start/config edit. Read-only preservation and original-source proof resume."
+}

@@ -1,0 +1,14 @@
+Started public drained original detach
+public drained original detach: Pass
+Started original detached source bytes marker modes preserved
+original detached source bytes marker modes preserved: Pass
+Started private-home source refused before setup
+private-home source refused before setup: Pass
+Started private auth-named tree refused before setup
+private auth-named tree refused before setup: Pass
+Started symlink ancestor refused before setup
+symlink ancestor refused before setup: Pass
+Started public absent-source create under077 actual privileged child and bound save
+public absent-source create under077 actual privileged child and bound save: Fail
+new source failure AssertionError({'argv': ['/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart', 'exec', 'ab-nfs-api006-mac-a0000f39', '/usr/bin/sudo', '-n', '-u', 'admin', '/usr/bin/env', '-i', 'HOME=/Users/admin', 'PATH=/usr/bin:/bin:/usr/sbin:/sbin', 'LANG=C', '/bin/sh', '-c', 'umask 077; exec /Users/admin/ab-nfs-api006-mac-a0000f39-binary create --source /Users/admin/ab-nfs-api006-mac-a0000f39-source-new --backend apple --endpoint 192.168.64.2 --allow 192.168.64.2 --nodes none --yes --json'], 'rc': 1, 'seconds': 0.208, 'stdout': '', 'stderr': 'Detected private addresses: 192.168.64.2\nNo reachable local Docker daemon; no Docker nodes will be attached.\nAutoByteus NFS incomplete: required TCP 2049 is occupied; no existing service will be stopped\nAutoByteus NFS incomplete: exit status 1\n'})
+{"result": "Fail", "fatal": "AssertionError({'argv': ['/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart', 'exec', 'ab-nfs-api006-mac-a0000f39', '/usr/bin/sudo', '-n', '-u', 'admin', '/usr/bin/env', '-i', 'HOME=/Users/admin', 'PATH=/usr/bin:/bin:/usr/sbin:/sbin', 'LANG=C', '/bin/sh', '-c', 'umask 077; exec /Users/admin/ab-nfs-api006-mac-a0000f39-binary create --source /Users/admin/ab-nfs-api006-mac-a0000f39-source-new --backend apple --endpoint 192.168.64.2 --allow 192.168.64.2 --nodes none --yes --json'], 'rc': 1, 'seconds': 0.208, 'stdout': '', 'stderr': 'Detected private addresses: 192.168.64.2\\nNo reachable local Docker daemon; no Docker nodes will be attached.\\nAutoByteus NFS incomplete: required TCP 2049 is occupied; no existing service will be stopped\\nAutoByteus NFS incomplete: exit status 1\\n'})"}

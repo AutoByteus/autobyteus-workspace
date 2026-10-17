@@ -1,0 +1,21 @@
+{
+  "recordedAt": "2026-10-13T12:33:40.782826+00:00",
+  "verification": "Sufficient \u2014 verified from critical raw evidence and integrated 89-test pass",
+  "verifiedBase": "a609de982a22925299d550bea4084e578cc5cd60",
+  "integratedCommit": "c0a4c04af3d5ae1c3b00175f0b96fc81506affff",
+  "ticketBranch": "requirements/delegated-team-default-collapse",
+  "ticketCommit": "744998e67e47d1555a214d9591bf156d8f09f6a7",
+  "ticketPush": "Completed",
+  "finalizeBranch": "finalize/delegated-team-default-collapse",
+  "sourceMerge": "e3a6772951a3c0ccf54cfb5ef92350cccf16f2d2",
+  "sourceTargetPush": "Completed",
+  "remoteTarget": "origin/personal",
+  "remoteContainsTicket": true,
+  "releaseDecision": "No release \u2014 explicit user request",
+  "sourceVersion": "1.5.3-beta.3",
+  "newVersionOrTag": false,
+  "installedUserAppChanged": false,
+  "artifactSnapshot": "/home/autobyteus/workspace/.codex/delivery-artifacts/delegated-team-default-collapse",
+  "cleanup": "Completed \u2014 owned ticket worktree, local ticket/finalize branches and leased remote ticket branch removed; prune complete",
+  "finalDocumentationReceiptCommit": "Containing receipt-only commit; actual published SHA resolved in external final-remote-receipt.json and handoff"
+}

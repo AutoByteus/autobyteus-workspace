@@ -37,7 +37,7 @@ export class MemberExecutionContextBuilder {
     /** The root's `list_available_agents` for this member; absent in application-owned runs. */
     listAvailableAgents?: ((identity: CollaborationMemberExecutionIdentity) => Promise<readonly AvailableCollaborator[]>) | null;
     taskCommands: MemberTaskCommandCapability;
-    /** The TeamRun hosting the Agent (a collaborator Team or any copy); absent for the root TeamRun's own members. */
+    /** The TeamRun hosting the Agent (a Team copy); absent for the root TeamRun's own members. */
     hostTeam?: MemberHostTeam | null;
   }): Promise<MemberExecutionContext> {
     const root = requireRootExecutionIdentityKind(input.teamContext.rootIdentity, "agent_team");
@@ -49,9 +49,14 @@ export class MemberExecutionContextBuilder {
     // CR-001: the one owner decides the member's handoffs and enclosing instruction.
     const scope = resolveMemberCollaborationScope({
       memberAddress: input.agentNode.address,
+      agentRunId: input.agentNode.agentRunId,
       hostTeam: input.hostTeam,
       root: {
-        configuredRootAddresses: input.teamContext.teamNode.children.map((child) => child.address),
+        configured: {
+          addresses: input.teamContext.teamNode.children.map((child) => child.address),
+          agentRunIds: input.teamContext.teamNode.children.flatMap((child) => "agentRunId" in child ? [child.agentRunId] : []),
+          role: "team_member",
+        },
         handoffs: input.teamContext.handoffs,
         definition: { kind: "agent_team", definitionId: input.teamContext.teamNode.teamDefinitionId },
       },
@@ -78,6 +83,7 @@ export class MemberExecutionContextBuilder {
     return new MemberExecutionContext({
       identity,
       teamScoped: true,
+      collaborationRole: scope.role,
       authoredEnclosingScopeInstruction: summary.instruction,
       collaboration,
       tasks: input.taskCommands,

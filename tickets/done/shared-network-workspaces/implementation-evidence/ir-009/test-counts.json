@@ -1,0 +1,8 @@
+{
+  "topLevelPasses": 70,
+  "firstLevelSubcases": 212,
+  "packages": 7,
+  "skips": [
+    "--- SKIP: TestInstallerDirectoryModeChild (0.00s)"
+  ]
+}

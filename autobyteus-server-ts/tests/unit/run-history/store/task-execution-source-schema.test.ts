@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   parseTaskExecution,
-  validateCollaboratorInvariants,
+  validateCatalogCopyLayouts,
 } from "../../../../src/run-history/store/run-execution-tree-shared-record-schemas.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 
@@ -45,20 +45,10 @@ describe("task execution source (Directly Usable — No Migration)", () => {
     }), "task")).toThrow("is not a direct member");
   });
 
-  it("validates a catalog copy's layout against its own source, not a collaborator at the same address", () => {
+  it("validates a catalog copy's layout against its own source", () => {
     const copy = parseTaskExecution(teamCopy(), "task");
-    const collaborator = {
-      kind: "agent_team" as const, address: "/product_team" as never, teamDefinitionId: "product", teamRunId: "collab",
-      coordinatorAddress: "/product_team/lead" as never,
-      members: [{ address: "/product_team/lead" as never, agentDefinitionId: "lead", agentRunId: "c-lead", platformAgentRunId: null }],
-      handoffs: [], defaultLaunchConfiguration: launch, taskExecutions: [], addedAt: startedAt, addedViaAgentRunId: "pm",
-    };
-    expect(() => validateCollaboratorInvariants({
-      collaborators: [collaborator], reservedAddresses: [], otherRunIds: [], owners: [{ taskExecutions: [copy] }],
-    })).not.toThrow();
+    expect(() => validateCatalogCopyLayouts([{ taskExecutions: [copy] }])).not.toThrow();
     const mismatched = { ...copy, members: copy.members.slice(0, 1) };
-    expect(() => validateCollaboratorInvariants({
-      collaborators: [], reservedAddresses: [], otherRunIds: [], owners: [{ taskExecutions: [mismatched as typeof copy] }],
-    })).toThrow("does not match its catalog source");
+    expect(() => validateCatalogCopyLayouts([{ taskExecutions: [mismatched as typeof copy] }])).toThrow("does not match its catalog source");
   });
 });

@@ -1,0 +1,355 @@
+{
+  "designerDependencyABA": [
+    {
+      "phase": "baseline-default",
+      "case": "inplace-1024",
+      "observations": 57,
+      "firstExact": [
+        null,
+        null
+      ],
+      "withinFiveSeconds": false
+    },
+    {
+      "phase": "candidate-zero",
+      "case": "inplace-1024",
+      "observations": 1,
+      "firstExact": [
+        0.0006673159999976974,
+        0.0010465220000028808
+      ],
+      "withinFiveSeconds": true
+    },
+    {
+      "phase": "candidate-zero",
+      "case": "inplace-1MiB",
+      "observations": 1,
+      "firstExact": [
+        0.0035181129999983796,
+        0.005311409000000822
+      ],
+      "withinFiveSeconds": true
+    },
+    {
+      "phase": "candidate-zero",
+      "case": "atomic-replace",
+      "observations": 1,
+      "firstExact": [
+        0.001075292999999533,
+        0.0015703209999955448
+      ],
+      "withinFiveSeconds": true
+    },
+    {
+      "phase": "candidate-zero",
+      "case": "create-after-negative",
+      "observations": 10,
+      "firstExact": [
+        0.925438401000001,
+        0.9266383190000056
+      ],
+      "withinFiveSeconds": true
+    },
+    {
+      "phase": "restored-default",
+      "case": "inplace-1024",
+      "observations": 57,
+      "firstExact": [
+        null,
+        null
+      ],
+      "withinFiveSeconds": false
+    }
+  ],
+  "rawObservationRowsAudited": 127,
+  "scope": "Upstream diagnostic dependency evidence only; no reviewer runtime execution or corrected-public-path signoff",
+  "currentCandidateFilesVerified": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir008-local-candidate/autobyteus-nfs-linux-arm64",
+      "sha256": "32772499817bccc6dc8c8bd01b15a457457848e17321af6053544adf53803a64",
+      "size": 11046973
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir008-local-candidate/autobyteus-nfs-darwin-arm64",
+      "sha256": "5908c8229010102d7a1708c65e50b8674766a6c8356c4362588c0fed36167a57",
+      "size": 10580882
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir008-local-candidate/release.json",
+      "sha256": "481edc071d27e64a94ce0a02c9ee076e0c556c5eed8d11e2a59a29766e2bab53",
+      "size": 2493
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir008-local-candidate/README.txt",
+      "sha256": "b070a69ad290222dae05ff86abcd2ddaa751d25f23d687fc88963db38031bb5a",
+      "size": 420
+    }
+  ],
+  "embeddedMetadataVerified": true,
+  "engineRebuilt": false,
+  "currentProductFreshness": "pending API-F004",
+  "implementationChecksReviewed": [
+    {
+      "name": "go-race",
+      "argv": [
+        "/tmp/nfs-ir008-09yknj95/go/bin/go",
+        "test",
+        "-race",
+        "-count=1",
+        "-v",
+        "./..."
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+      "rc": 0,
+      "expected": 0,
+      "seconds": 23.329
+    },
+    {
+      "name": "go-vet",
+      "argv": [
+        "/tmp/nfs-ir008-09yknj95/go/bin/go",
+        "vet",
+        "./..."
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+      "rc": 0,
+      "expected": 0,
+      "seconds": 1.412
+    },
+    {
+      "name": "python-packaging",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "scripts/tests/test_nfs_engine_packaging.py",
+        "scripts/tests/test_nfs_installer_fixture.py",
+        "scripts/tests/test_nfs_packaging_and_launcher.py",
+        "scripts/tests/test_nfs_release_workflow.py",
+        "-v"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+      "rc": 0,
+      "expected": 0,
+      "seconds": 3.942
+    },
+    {
+      "name": "shell-syntax",
+      "argv": [
+        "bash",
+        "-n",
+        "scripts/public/docker/autobyteus-docker.d/bash/commands.sh"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+      "rc": 0,
+      "expected": 0,
+      "seconds": 0.005
+    },
+    {
+      "name": "publish-refusal",
+      "argv": [
+        "python3",
+        "autobyteus-nfs/packaging/release.py",
+        "--check-publish"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+      "rc": 1,
+      "expected": 1,
+      "seconds": 0.259
+    },
+    {
+      "name": "source-hash",
+      "argv": [
+        "python3",
+        "autobyteus-nfs/packaging/release.py",
+        "--source-hash"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+      "rc": 0,
+      "expected": 0,
+      "seconds": 0.268
+    },
+    {
+      "name": "build-darwin-arm64",
+      "argv": [
+        "/tmp/nfs-ir008-09yknj95/go/bin/go",
+        "build",
+        "-trimpath",
+        "-o",
+        "/tmp/nfs-ir008-09yknj95/nfs-darwin-arm64",
+        "./cmd/autobyteus-nfs"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+      "rc": 0,
+      "expected": 0,
+      "seconds": 6.855
+    },
+    {
+      "name": "build-darwin-amd64",
+      "argv": [
+        "/tmp/nfs-ir008-09yknj95/go/bin/go",
+        "build",
+        "-trimpath",
+        "-o",
+        "/tmp/nfs-ir008-09yknj95/nfs-darwin-amd64",
+        "./cmd/autobyteus-nfs"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+      "rc": 0,
+      "expected": 0,
+      "seconds": 5.64
+    },
+    {
+      "name": "build-linux-arm64",
+      "argv": [
+        "/tmp/nfs-ir008-09yknj95/go/bin/go",
+        "build",
+        "-trimpath",
+        "-o",
+        "/tmp/nfs-ir008-09yknj95/nfs-linux-arm64",
+        "./cmd/autobyteus-nfs"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+      "rc": 0,
+      "expected": 0,
+      "seconds": 5.437
+    },
+    {
+      "name": "build-linux-amd64",
+      "argv": [
+        "/tmp/nfs-ir008-09yknj95/go/bin/go",
+        "build",
+        "-trimpath",
+        "-o",
+        "/tmp/nfs-ir008-09yknj95/nfs-linux-amd64",
+        "./cmd/autobyteus-nfs"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+      "rc": 0,
+      "expected": 0,
+      "seconds": 5.378
+    },
+    {
+      "name": "native-version",
+      "argv": [
+        "/tmp/nfs-ir008-09yknj95/nfs-darwin-arm64",
+        "version"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+      "rc": 0,
+      "expected": 0,
+      "seconds": 0.561
+    },
+    {
+      "name": "mutation-omit-export-expiry",
+      "argv": [
+        "/tmp/nfs-ir008-09yknj95/go/bin/go",
+        "test",
+        "-count=1",
+        "-run",
+        "TestGaneshaPolicyAndPersistentRecovery",
+        "./internal/backend"
+      ],
+      "cwd": "/tmp/nfs-ir008-09yknj95/mutation-omit-export-expiry",
+      "rc": 1,
+      "expected": 1,
+      "seconds": 0.962
+    },
+    {
+      "name": "mutation-client-only-expiry",
+      "argv": [
+        "/tmp/nfs-ir008-09yknj95/go/bin/go",
+        "test",
+        "-count=1",
+        "-run",
+        "TestGaneshaPolicyAndPersistentRecovery",
+        "./internal/backend"
+      ],
+      "cwd": "/tmp/nfs-ir008-09yknj95/mutation-client-only-expiry",
+      "rc": 1,
+      "expected": 1,
+      "seconds": 0.708
+    },
+    {
+      "name": "mutation-skip-status-preflight",
+      "argv": [
+        "/tmp/nfs-ir008-09yknj95/go/bin/go",
+        "test",
+        "-count=1",
+        "-run",
+        "TestHostedConfigStatusRefusesBeforeReadiness",
+        "./internal/setup"
+      ],
+      "cwd": "/tmp/nfs-ir008-09yknj95/mutation-skip-status-preflight",
+      "rc": 1,
+      "expected": 1,
+      "seconds": 1.482
+    },
+    {
+      "name": "mutation-allow-missing-readiness",
+      "argv": [
+        "/tmp/nfs-ir008-09yknj95/go/bin/go",
+        "test",
+        "-count=1",
+        "-run",
+        "TestHostedConfigStatusRefusesBeforeReadiness",
+        "./internal/setup"
+      ],
+      "cwd": "/tmp/nfs-ir008-09yknj95/mutation-allow-missing-readiness",
+      "rc": 1,
+      "expected": 1,
+      "seconds": 1.481
+    },
+    {
+      "name": "mutation-skip-detach-preflight",
+      "argv": [
+        "/tmp/nfs-ir008-09yknj95/go/bin/go",
+        "test",
+        "-count=1",
+        "-run",
+        "TestHostedConfigDetachPreflightsBeforeEffects",
+        "./internal/setup"
+      ],
+      "cwd": "/tmp/nfs-ir008-09yknj95/mutation-skip-detach-preflight",
+      "rc": 1,
+      "expected": 1,
+      "seconds": 0.99
+    },
+    {
+      "name": "mutation-reject-partial-detach",
+      "argv": [
+        "/tmp/nfs-ir008-09yknj95/go/bin/go",
+        "test",
+        "-count=1",
+        "-run",
+        "TestHostedConfigDetachCurrentOrPartialRetryReachesExistingChecks",
+        "./internal/setup"
+      ],
+      "cwd": "/tmp/nfs-ir008-09yknj95/mutation-reject-partial-detach",
+      "rc": 1,
+      "expected": 1,
+      "seconds": 1.1
+    },
+    {
+      "name": "mutation-accept-different-config",
+      "argv": [
+        "/tmp/nfs-ir008-09yknj95/go/bin/go",
+        "test",
+        "-count=1",
+        "-run",
+        "TestGaneshaConfigPreflightAndExactRemoval",
+        "./internal/backend"
+      ],
+      "cwd": "/tmp/nfs-ir008-09yknj95/mutation-accept-different-config",
+      "rc": 1,
+      "expected": 1,
+      "seconds": 0.807
+    }
+  ],
+  "limits": [
+    "Positive setup fixtures stop at mount boundary",
+    "Initial IR008 scratch GID correction retained",
+    "Ten raw whitespace diagnostic lines retained, not source whitespace",
+    "No current Docker image identity or full qualification inferred"
+  ]
+}

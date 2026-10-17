@@ -36,6 +36,7 @@ export interface ResponsiveWorkspaceShellInput {
   leftPanelPreference: PanelPreference
   leftPanelPreferredWidth: number | null | undefined
   rightPanelPreference: PanelPreference
+  // Retained raw preference; the resolver bounds it for each prospective dock.
   rightPanelPreferredWidth: number | null | undefined
   rightPanelResizeIntent: RightPanelResizeIntent
 }
@@ -54,6 +55,7 @@ export interface ResponsiveLeftPanelState extends Omit<ResponsiveSurfaceState, '
   stripActivation: StripActivation | null
 }
 
+// preferredWidth in the resolved right state is the effective rendered width.
 export interface ResponsiveRightPanelState extends Omit<ResponsiveSurfaceState, 'presentation'> {
   presentation: RightPanelPresentation
   stripBehavior: StripBehavior | null
@@ -100,49 +102,37 @@ const sanitizePanelPreference = (value: PanelPreference): PanelPreference =>
 const sanitizeResizeIntent = (value: RightPanelResizeIntent): RightPanelResizeIntent =>
   value === 'user-sized' ? 'user-sized' : 'automatic'
 
-const sanitizePresentationWidth = (
-  value: number | null | undefined,
-  min: number,
-  max: number,
-  fallback: number,
-): number => clampWidth(value, min, max, fallback)
-
 const leftConsumedWidth = (
   presentation: 'docked' | 'strip',
   preferredWidth: number,
-  _stripBehavior: StripBehavior | undefined,
-): number => {
-  if (presentation === 'docked') {
-    return preferredWidth
-  }
-
-  return LEFT_PANEL_STRIP_WIDTH_PX
-}
+): number => presentation === 'docked' ? preferredWidth : LEFT_PANEL_STRIP_WIDTH_PX
 
 const rightConsumedWidth = (
   presentation: RightPanelPresentation,
   preferredWidth: number,
-  _stripBehavior: StripBehavior | undefined,
-): number => {
-  if (presentation === 'docked') {
-    return preferredWidth
-  }
+): number => presentation === 'docked' ? preferredWidth : RIGHT_PANEL_STRIP_WIDTH_PX
 
-  return RIGHT_PANEL_STRIP_WIDTH_PX
-}
-
-const requiredWidth = (
+// Allocate against the prospective layout, not the previous DOM-measured flow.
+// Returning the minimum when capacity is insufficient makes that candidate fail
+// its fit check instead of silently shrinking tools below their usable bound.
+const candidateRightWidth = (
+  viewportWidth: number,
   candidate: SurfaceCandidate,
   leftPreferredWidth: number,
   rightPreferredWidth: number,
   centerMinWidth: number,
-): number => (
-  leftConsumedWidth(candidate.left, leftPreferredWidth, candidate.leftStripBehavior) +
-  rightConsumedWidth(candidate.right, rightPreferredWidth, candidate.rightStripBehavior) +
-  centerMinWidth +
-  (candidate.left === 'docked' ? LEFT_PANEL_RESIZE_HANDLE_WIDTH_PX : 0) +
-  (candidate.right === 'docked' ? RIGHT_PANEL_RESIZE_HANDLE_WIDTH_PX : 0)
-)
+): number => {
+  if (candidate.right === 'strip') {
+    return rightPreferredWidth
+  }
+
+  const maxWidth = viewportWidth
+    - leftConsumedWidth(candidate.left, leftPreferredWidth)
+    - (candidate.left === 'docked' ? LEFT_PANEL_RESIZE_HANDLE_WIDTH_PX : 0)
+    - RIGHT_PANEL_RESIZE_HANDLE_WIDTH_PX
+    - centerMinWidth
+  return Math.max(RIGHT_PANEL_MIN_WIDTH_PX, Math.min(rightPreferredWidth, maxWidth))
+}
 
 const candidateFits = (
   viewportWidth: number,
@@ -150,12 +140,18 @@ const candidateFits = (
   leftPreferredWidth: number,
   rightPreferredWidth: number,
   centerMinWidth: number,
-): boolean => viewportWidth >= requiredWidth(
-  candidate,
-  leftPreferredWidth,
-  rightPreferredWidth,
-  centerMinWidth,
-)
+): boolean => {
+  const rightWidth = candidateRightWidth(
+    viewportWidth, candidate, leftPreferredWidth, rightPreferredWidth, centerMinWidth,
+  )
+  return viewportWidth >= (
+    leftConsumedWidth(candidate.left, leftPreferredWidth) +
+    rightConsumedWidth(candidate.right, rightWidth) +
+    centerMinWidth +
+    (candidate.left === 'docked' ? LEFT_PANEL_RESIZE_HANDLE_WIDTH_PX : 0) +
+    (candidate.right === 'docked' ? RIGHT_PANEL_RESIZE_HANDLE_WIDTH_PX : 0)
+  )
+}
 
 const sourceFor = (
   preference: PanelPreference,
@@ -181,7 +177,7 @@ const makeLeftPanelState = (
   preference,
   presentation,
   presentationSource: sourceFor(preference, presentation),
-  consumedWidth: leftConsumedWidth(presentation, preferredWidth, stripBehavior),
+  consumedWidth: leftConsumedWidth(presentation, preferredWidth),
   preferredWidth,
   stripBehavior: presentation === 'strip' ? stripBehavior ?? 'consuming' : null,
   stripActivation,
@@ -202,7 +198,6 @@ const makeRightPanelState = (
   consumedWidth: rightConsumedWidth(
     candidate.right,
     preferredWidth,
-    candidate.rightStripBehavior,
   ),
   preferredWidth,
   stripBehavior: candidate.right === 'strip' ? candidate.rightStripBehavior ?? 'consuming' : null,
@@ -291,7 +286,9 @@ const createState = (
     rightPanel: makeRightPanelState(
       rightPreference,
       candidate,
-      rightPreferredWidth,
+      candidateRightWidth(
+        viewportWidth, candidate, leftPreferredWidth, rightPreferredWidth, effectiveCenterMinWidth,
+      ),
       resizeIntent,
       centerProtectionMode,
       effectiveCenterMinWidth,
@@ -335,13 +332,13 @@ export const resolveResponsiveWorkspaceShellState = (
   const leftPreference = sanitizePanelPreference(input.leftPanelPreference)
   const rightPreference = sanitizePanelPreference(input.rightPanelPreference)
   const resizeIntent = sanitizeResizeIntent(input.rightPanelResizeIntent)
-  const leftPreferredWidth = sanitizePresentationWidth(
+  const leftPreferredWidth = clampWidth(
     input.leftPanelPreferredWidth,
     LEFT_PANEL_MIN_WIDTH_PX,
     LEFT_PANEL_MAX_WIDTH_PX,
     LEFT_PANEL_DEFAULT_WIDTH_PX,
   )
-  const rightPreferredWidth = sanitizePresentationWidth(
+  const rightPreferredWidth = clampWidth(
     input.rightPanelPreferredWidth,
     RIGHT_PANEL_MIN_WIDTH_PX,
     Number.POSITIVE_INFINITY,
@@ -376,7 +373,6 @@ export const resolveResponsiveWorkspaceShellState = (
   }
 
   const leftIsUserHidden = leftPreference === 'hidden-by-user'
-  const leftDocked = 'docked' as const
 
   // Manual left collapse remains a user-owned strip. A user-sized right dock
   // gets the compact center floor before the automatic 480px fallback.
@@ -439,7 +435,7 @@ export const resolveResponsiveWorkspaceShellState = (
       leftPreferredWidth,
       rightPreferredWidth,
       USER_RESIZE_CENTER_MIN_WIDTH_PX,
-      [{ left: leftDocked, right: 'docked' }],
+      [{ left: 'docked', right: 'docked' }],
     )
 
     if (userSizedCandidate) {
@@ -466,7 +462,7 @@ export const resolveResponsiveWorkspaceShellState = (
         leftPreferredWidth,
         rightPreferredWidth,
         WORKSPACE_CENTER_MIN_WIDTH_PX,
-        [{ left: leftDocked, right: 'docked' }],
+        [{ left: 'docked', right: 'docked' }],
       )
     : null
 
@@ -492,7 +488,7 @@ export const resolveResponsiveWorkspaceShellState = (
     leftPreferredWidth,
     rightPreferredWidth,
     USER_RESIZE_CENTER_MIN_WIDTH_PX,
-    rightStripCandidates(leftDocked),
+    rightStripCandidates('docked'),
   )
 
   if (rightStripCandidate) {

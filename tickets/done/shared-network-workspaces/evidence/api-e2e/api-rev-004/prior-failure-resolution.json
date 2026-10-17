@@ -1,0 +1,25 @@
+{
+  "finding": "API-F003",
+  "status": "Resolved within independently executed Linux arm64 Docker-storage plus managed-client scope",
+  "inputHead": "902638e584d8e669b632cf81bcc0a95074892403",
+  "sourceFix": "d318bd9db935affdf16d141ef4e88a6c0e4939b5",
+  "directEvidence": [
+    "selected-create-confirm-result.json",
+    "two-reboots-result.json",
+    "normal-stop-result.json",
+    "policy-veto-result.json",
+    "node-upgrade-result.json",
+    "drained-detach-confirm-result.json"
+  ],
+  "firstTwoOrdinaryReboots": {
+    "manualStartOrReconnect": false,
+    "note": "Actual API and mounted UUID/data; same immutable ID/image/config/private/source; observation duration not SLA"
+  },
+  "controls": "Normal healthy unless-stopped Stop stays stopped through ticks/reconnect/reboot; naturally captured failed-start rawStop is no-op with guidance; restart=no veto persists through ticks/explicitReconnect/reboot. Captured control holds only owned attachment job, distinct from unmodified first two boots.",
+  "harnessCorrections": [
+    "selected-harness-delta.json",
+    "detach-harness-delta.json"
+  ],
+  "remaining": "Full qualification remains incomplete: physical/independent peers, managedDocker Mac clients, actual native runtime journeys, remaining release surfaces. Source pass and scoped reboot pass do not authorize release.",
+  "historical": "API001/API002/API003 raw failures retained; API001F001 and API002F002 scoped resolutions retained."
+}

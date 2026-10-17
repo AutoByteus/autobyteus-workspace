@@ -1,0 +1,10 @@
+Started L25 LN no-drain public detach refusal leaves both running unchanged
+L25 LN no-drain public detach refusal leaves both running unchanged: Pass
+Started L25 LN actual controlled drain stops both nodes
+L25 LN actual controlled drain stops both nodes: Pass
+Started L25 LN busy mount refused without forced/lazy unmount
+L25 LN busy mount refused without forced/lazy unmount: Pass
+Started L25 LN after real drain public detach completes
+L25 LN after real drain public detach completes: Pass
+Started L25 LN both node local config private volumes source marker retained and owned attachment absent
+L25 LN both node local config private volumes source marker retained and owned attachment absent: Pass

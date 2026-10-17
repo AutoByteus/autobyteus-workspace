@@ -1,0 +1,33 @@
+
+> autobyteus@1.5.3-beta.3 test:e2e:workspaces-sidebar-dock /home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/autobyteus-web
+> node tests/e2e/workspaces-sidebar-dock-probe.mjs --browser-uid 1000 --output-dir ../tickets/in-progress/workspaces-sidebar-dock/evidence/api-e2e/browser-final --ledger-file /home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/tickets/in-progress/workspaces-sidebar-dock/api-e2e-test-case-ledger.md
+
+{
+  "result": "Pass",
+  "cases": {
+    "BR-001": {
+      "result": "Pass",
+      "name": "Wide Team/Activity actual pointer drag, three cycles and meaningful controls"
+    },
+    "BR-002": {
+      "result": "Pass",
+      "name": "Exact capacity neighbors, actual navigation resize and drag while open"
+    },
+    "BR-003": {
+      "result": "Pass",
+      "name": "Constrained modal keyboard/backdrop and wide recovery cleanup"
+    },
+    "BR-004": {
+      "result": "Pass",
+      "name": "Automatic allocation keeps 480 center floor at1210 capacity"
+    }
+  },
+  "cleanup": {
+    "routeRemoved": true,
+    "privateHomeRemoved": true,
+    "nuxtExit": 0,
+    "portFree": true,
+    "browserClosed": true
+  },
+  "evidence": "/home/autobyteus/workspace/.codex/worktrees/workspaces-sidebar-dock/tickets/in-progress/workspaces-sidebar-dock/evidence/api-e2e/browser-final/evidence.json"
+}

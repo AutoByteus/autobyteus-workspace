@@ -99,7 +99,7 @@ type TeamExecutionAddress = Readonly<{
 | --- | --- | --- | --- |
 | Current standalone Team run | `FlatTeamExecutionManager` | Each configured Agent owns one runtime-specific `AgentRun`; delegated task Teams are task-scoped child executions | `ConfiguredAgentExecutionRegistry`, `TaskAgentExecutionRegistry`, and `TaskTeamExecutionRegistry` keep configured and task lifecycles distinct. |
 | AutoByteus member | `FlatTeamAgentExecutionHandle -> AgentRunManager -> AutoByteusAgentRunBackendFactory` | Standalone AutoByteus `AgentRun` | `composeNativeAutoByteusPrompt` consumes `MemberTeamContext` and emits Team Instruction plus AgentTeam Addressing/Collaboration before native guidance. |
-| Codex or Claude member | `FlatTeamAgentExecutionHandle -> AgentRunManager` | Standalone Codex or Claude `AgentRun` | `composeSharedCarpenterPrompt` projects shared Team Instruction plus AgentTeam Addressing/Collaboration through provider instruction boundaries. `get_handoff_rules`, `send_message_to`, `delegate_task` and `create_or_update_task` remain automatically exposed through Agent Tools MCP. |
+| Codex or Claude member | `FlatTeamAgentExecutionHandle -> AgentRunManager` | Standalone Codex or Claude `AgentRun` | `composeSharedCarpenterPrompt` projects shared Team Instruction plus AgentTeam Addressing/Collaboration through provider instruction boundaries. `get_handoff_rules`, `send_message_to`, and `delegate_task` remain automatically exposed through Agent Tools MCP; task tools never are. |
 
 ## Durable Member Activation And Restore
 
@@ -247,7 +247,7 @@ terminal status has already been projected.
 Flat Team preparation is always scope-only: it builds the TeamRun and its
 member contexts but never starts a member. This holds for every Team kind with
 no option to opt out: fresh and restored standalone Teams, Org-mounted Teams,
-collaborator Teams, and delegated Team copies (task Teams), whether hosted at
+and delegated Team copies (task Teams), whether hosted at
 the root (`RootTeamExecutionDirectory.beginRootTaskTeam`) or inside a Team
 (`TaskTeamExecutionRegistry`). The full configured topology is available, but
 configured Agents remain unstarted and Offline until required by work.
@@ -289,8 +289,7 @@ Input closed for the member at that moment (Task DONE, root shutdown) is not a
 start failure: the sender gets `AGENT_RUN_NOT_ACCEPTING_INPUT` with the closure
 reason, with no `error` status and no error card. A failure while the member's
 run is already active is unexpected and is thrown, not reported this way. This
-contract is the same for UI-started Teams and Orgs, collaborator Teams and
-delegated copies.
+contract is the same for UI-started Teams and Orgs and for delegated copies.
 
 An uncertain commit or post-durability local/publication failure is nonretryable
 until safe root reopen; a definite failed write can retry after confirmed cleanup.
@@ -394,6 +393,8 @@ stop-and-delete command, mutation, modal, or transport operation.
 
 ## Server-Owned Task Delegation
 
+The rules are defined in the [Collaboration Model](../design/collaboration_model.md) (CM-1, CM-2, CM-6, CM-7); this document describes the mechanics.
+
 The only first-party delegation tool is `delegate_task`. Delegation is a pure
 spawn: it starts a fresh child and hands back its ingress run ID. It creates no
 separate delegation task-record/submission/review/settlement subsystem. Optional
@@ -425,69 +426,54 @@ the [Project Task agent run resources contract](projects.md#saved-id-delegation-
 The address uses the same canonical absolute non-root `/...` grammar as
 `send_message_to`; relative addresses, bare names, and the structural root `/`
 are invalid. `RootTeamRun.resolveDelegationPlacement` returns one immutable
-Agent or AgentTeam placement: a configured member first, then a collaborator
-of the run or a member of a collaborator Team (see
-[Agent Communication](./agent_communication.md#collaborators)); delegating to a
-collaborator starts an extra copy. Task sources come from
-`TeamTaskSourceResolver`, which projects a collaborator entry into the same
-source shape a configured placement has. An Agent cannot delegate to its
-own logical placement. An address that is neither returns
+Agent or AgentTeam placement: first the CM-1 refusal (an address in the sender's
+own team: its own address, a teammate, or in a Team root any configured root
+placement, for a configured member; `COLLABORATION_SELF_TARGET_REJECTED` with
+`send_message_to` guidance, raised before any placement or Task link), then a
+configured member, then a listed catalog definition (see
+[Agent Communication](./agent_communication.md#delegated-catalog-copies)). Task sources
+come from `TeamTaskSourceResolver`: the copy's recorded `source`, else the
+configured placement at its address. An address that is none of these returns
 `{ delegated: false, message }` rather than failing the call. Input and
 admission failures (`VALIDATION_ERROR`, `INVALID_REFERENCE_FILE`,
 `ROOT_RUN_NOT_ACTIVE`) are tool errors raised before any preparation.
-`resolveMessageRecipient` (used by `send_message_to`) resolves a configured
-member, then a collaborator Agent, a collaborator Team (its coordinator) or a
-collaborator Team member: one execution per address.
+`resolveMessageRecipient` (used by `send_message_to`) only resolves: the sender's
+own Team instance, then a configured member; one execution per address, never a
+new run.
 
-### Collaborators In A Team Root (AR-006)
+### Delegated Copies In A Team Root
 
-A Team root hosts each collaborator in its root TeamRun's
-`FlatTeamExecutionManager`:
-
-- a collaborator Agent is a direct Agent of the root TeamRun, held by
-  `local/registries/team-root-collaborator-agent-registry.ts`
-  (`TeamRootCollaboratorAgentRegistry`, beside the collaborator Team registry):
-  `prepareCollaboratorAgent` prepares its lazy handle with the activation mode it
-  was added with. Direct-agent commands, input reservation, delivery, status and
-  input snapshots, root-termination freeze and restore consult configured handles
-  first, then this registry. `FlatTeamMemberConfigResolver` and
-  `runtimeContext.memberContexts` hold configured members only (REQ-002);
-- a collaborator Team is one TeamRun under the root, held by
-  `local/registries/collaborator-team-execution-registry.ts` (lazy members, no
-  idle shutdown) and registered with the root's `TeamRunResolver`;
-  `requireTeamRun` falls back to `requireCollaboratorTeam`.
-
-`TeamExecutionIndex` records `collaborator` and `collaborator_team_member`
-executions (a collaborator Team's parent is the root TeamRun, so a member's
-physical scope is `[collaboratorTeamRunId]`). Admission prepares, commits, then
-publishes; `materializeTeamRoot` re-hosts collaborators with the root in
-`restore` mode; the root TeamRun's termination includes them.
+A Team root hosts no collaborators. A catalog Agent or Team reached with
+`delegate_task` is a new task copy hosted at the root (`TaskAgentExecutionRegistry`
+/ `TaskTeamExecutionRegistry`), recorded in `rootTeam.taskExecutions` with its
+delegator and catalog `source`. Copies stored by earlier releases under a Team
+instance keep their recorded host on restore (DEC-006). `TeamExecutionIndex`
+records configured members and task executions; its `isOwnTeamAddress` (DEC-008)
+is true for the sender's own address, any address inside a team instance that
+contains the sender at any depth, and, for a configured member, every configured
+root placement.
 
 **Member collaboration scope (CR-001).** One owner,
 `agent-collaboration/execution/domain/member-instance-scope.ts#resolveMemberCollaborationScope`,
 decides every member's outgoing handoffs and enclosing instruction in all three roots, at
 construction and restore. The hosting TeamRun's own context reaches it as `hostTeam` through the
 member-context callback. Rules, in order:
-1. a direct member of its non-root hosting Team instance (collaborator Team, any copy, including a
+1. a direct member of its non-root hosting Team instance (any Team copy, including a
    catalog copy prepared from its recorded `source`) gets that instance's handoffs and Team
    instruction;
 2. a root-level member at a configured root placement (or a copy at its address) gets the root's
    handoffs and instruction;
-3. anything else (a collaborator Agent, a catalog Agent copy, an Agent hosted by a Team it is not a
+3. anything else (a catalog Agent copy, an Agent hosted by a Team it is not a
    member of) gets none — a catalog Agent copy in a Team root gets no root-Team instruction.
 
-Agent-initiated collaborators (REQ-004/005/007) use the same hosting. The root's
-message and delegation addressing lives in `services/team-run-message-delivery.ts`
+The root's message and delegation addressing lives in `services/team-run-message-delivery.ts`
 (`TeamRunMessageDelivery`), called inside the materialization gate:
 `send_message_to(address)` resolves with the shared `MessageRecipientResolution`
-(the sender's own Team instance first, then run-wide, then a catalog bring-in via
-`TeamRunCollaborators.bringInAt`; the materialization gate admits concurrently,
-so bring-ins and `@` mention resolutions are serialized by the root's
-`CollaboratorAdmissionQueue`; `@` itself adds nothing), and `delegate_task(address)`
-adds a catalog placement with a source snapshot after configured and
-collaborator placements. Copies are placed by address through the shared
-`resolveTaskCopyHost` (REQ-012; the Team root's rule, now shared by all roots); catalog copies
-record `source` on their task execution and restore from it.
+(the sender's own Team instance first, then run-wide placements; an outside address is
+`COLLABORATION_TARGET_NOT_FOUND` and nothing is created), and `delegate_task(address)` uses
+the shared `resolveDelegationPlacement` (CM-1 refusal, configured placement, then a catalog
+placement with a source snapshot). New copies are always placed at the root; catalog copies
+record `source` on their task execution and restore from it. `@` itself adds nothing.
 `listAvailableAgents(sender)` is read-only and takes no gate.
 
 A successful Agent target creates one task Agent at the logical member's
@@ -524,7 +510,7 @@ from the delegator. The address path is `delegateToNewCopy`. See
 a description-only `delegate_task` from an agent that is not working on a Task.
 Every delegated copy therefore belongs to a Task (linked: the Project Task;
 sub-work: its creator's Task; otherwise its own ad-hoc Task), and
-`create_or_update_task({task_id, status: "DONE"})` closes it (see
+an agent that selected `update_task` closes it with `update_task({task_id, status: "DONE"})` (see
 [Projects](./projects.md#tasks-with-no-project-ad-hoc)).
 
 After delegation, parent and child talk only through `send_message_to` with run
@@ -647,30 +633,29 @@ Each Agent receives one `MemberTeamContext` containing:
 - optional Team instruction; and
 - active delivery/tool service bindings.
 
-After optional authored `Team Instruction`, the Carpenter prompt renders one
-`AgentTeam Addressing` section followed by one `AgentTeam Collaboration`
-section, before `Working Environment`. The shared exact renderer supplies the
-canonical member address, logical directory/file analogy, absolute non-root
-address rule, Team coordinator ingress rule, and the complete intent-first
-collaboration contract (REQ-009 wording). The exact copy distinguishes ordinary
-communication with the one instance at an address (its "Ordinary
-Communication" section), where a teammate's address reaches the member of the
-sender's own team instance and an available agent or team is brought in on
-first use, from spawning a new copy with every `delegate_task` call (its
-"Delegated Agents" section). It also prohibits duplicate work-packet delivery,
-tells the Agent to follow up on a copy only through its returned run ID, states
-that a quiet copy is shut down (but not while it has a running background task)
-and restored with its conversation on the next message, and presents possible rule-based handoffs that the Agent evaluates against its outcome. The
-Agent selects the single rule whose condition most specifically applies and
-notifies only that rule's recipient; it does not fan out one outcome to
-additional recipients. The renderer injects no flat recipient, representative,
-or delegation roster. Runtime exposure automatically includes `get_handoff_rules`,
-`send_message_to`, `delegate_task` and `create_or_update_task` for a valid Team
-context, with identical copy across AutoByteus, Codex, and Claude.
+After optional authored `Team Instruction`, the Carpenter prompt renders the
+collaboration sections for the member's `collaborationRole`
+(`src/agent-execution/prompt/collaboration-prompt-sections.ts`; see
+[Prompt Engineering](./prompt_engineering.md#collaboration-sections-by-role)). A
+member of a user-started team (`team_member`) gets `AgentTeam Addressing`
+(the absolute non-root address rule and the Team coordinator ingress rule) and
+`Working With Other Agents` for a team member: its teammates are reached by
+address with `send_message_to`; a task is delegated with `delegate_task`; every
+message received names its sender and ID and is answered by ID. A `Handoffs`
+subsection with the agent's possible rule-based handoffs is added only when the
+agent has handoff rules; the agent selects the single rule whose condition most
+specifically applies and notifies only that rule's recipient. No section tells
+an agent its own address, and none injects a flat recipient, representative, or
+delegation roster. The role is decided once by
+`resolveMemberCollaborationScope` and stored on the member context; a task agent
+inside a task team is a `task_agent` even when it sits at a configured address.
+Runtime exposure automatically includes `get_handoff_rules`, `send_message_to`
+and `delegate_task` for a valid Team context, with identical copy across
+AutoByteus, Codex, and Claude.
 
 `send_message_to.recipient_address` resolves through the root logical placement
 service, the sender's own Team instance first: a teammate address inside a
-collaborator Team or a delegated Team copy reaches that same instance's member,
+delegated Team copy reaches that same instance's member,
 never another copy (REQ-007). An Agent target delivers to that real Agent. An AgentTeam target
 delivers through its exact direct coordinator ingress. Child managers forward a
 root-bound delivery intent without rewriting the sender/receiver into flat or
@@ -732,10 +717,8 @@ Team-only events retain their own strict identities:
 - `TASK_EXECUTION_STARTED` carries the host `parent_team_run_id` and the new
   task Agent or task Team execution, including its nullable
   `delegator_agent_run_id`;
-- `COLLABORATOR_ADDED` carries a new root-level collaborator entry with its run
-  IDs; its executions exist (Offline) from then on;
-- `ERROR` with `COLLABORATOR_ADD_FAILED` rejects a send whose collaborator could
-  not be added and carries `collaborator_name`;
+- `ERROR` with `COLLABORATOR_ADD_FAILED` rejects a send whose `@` mention could
+  not be resolved (an ineligible definition) and carries `collaborator_name`;
 - `TEAM_COMMUNICATION_MESSAGE` carries exact sender/receiver addresses;
 - `MEMBER_INPUT_MESSAGE` carries its execution, optional sender, stable message
   identity, origin, and context files; and
@@ -886,8 +869,7 @@ history indexes are documented separately in [Agent Organization](./agent_orgs.m
 - `src/agent-team-execution/services/team-run-execution-tree-mutator.ts`
 - `src/agent-team-execution/services/team-run-persistence-coordinator.ts`
 - `src/agent-team-execution/services/member-team-context-builder.ts`
-- `src/agent-team-execution/services/member-collaboration-instruction-renderer.ts`
-- `src/agent-team-execution/services/team-collaboration-instruction-renderer.ts`
+- `src/agent-execution/prompt/collaboration-prompt-sections.ts`
 - `src/agent-team-execution/services/inter-agent-message-delivery-intent-builder.ts`
 - `src/agent-team-execution/services/member-command-status-overlay-store.ts`
 - `src/agent-team-execution/services/team-agent-event-adapter.ts`

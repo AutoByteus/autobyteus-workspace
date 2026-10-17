@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "63E82A998089CC78CC6976AF907DBE03",
+    "--script",
+    "() => {window.__api003Render=[];window.addEventListener(\"message\",e=>{if(e.data?.kind===\"API003_RENDERED\"&&e.origin===\"http://127.0.0.1:59278\"&&e.source===document.querySelector(\"iframe[title=\\\"HTML Preview\\\"]\")?.contentWindow)window.__api003Render.push({origin:e.origin,...e.data});});return {listener:\"fixture-only render receipt, exact iframe and origin checked\"};}"
+  ],
+  "rc": 0,
+  "stdout": "{\"schema_version\":\"1\",\"ok\":true,\"command\":\"run-script\",\"result\":{\"tab_id\":\"63E82A998089CC78CC6976AF907DBE03\",\"url\":\"file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat\",\"output_mode\":\"inline\",\"result\":{\"listener\":\"fixture-only render receipt, exact iframe and origin checked\"}}}\n",
+  "stderr": ""
+}

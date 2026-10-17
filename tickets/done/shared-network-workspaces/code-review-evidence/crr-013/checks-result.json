@@ -1,0 +1,171 @@
+[
+  {
+    "name": "go-version",
+    "argv": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr013-vhmry3ej/go/bin/go",
+      "version"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "rc": 0,
+    "expected": 0,
+    "seconds": 0.282
+  },
+  {
+    "name": "go-race",
+    "argv": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr013-vhmry3ej/go/bin/go",
+      "test",
+      "-race",
+      "-count=1",
+      "-v",
+      "./..."
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+    "rc": 0,
+    "expected": 0,
+    "seconds": 34.822
+  },
+  {
+    "name": "go-vet",
+    "argv": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr013-vhmry3ej/go/bin/go",
+      "vet",
+      "./..."
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+    "rc": 0,
+    "expected": 0,
+    "seconds": 5.976
+  },
+  {
+    "name": "python-packaging",
+    "argv": [
+      "python3",
+      "-m",
+      "unittest",
+      "scripts/tests/test_nfs_engine_packaging.py",
+      "scripts/tests/test_nfs_installer_fixture.py",
+      "scripts/tests/test_nfs_packaging_and_launcher.py",
+      "scripts/tests/test_nfs_release_workflow.py",
+      "-v"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "rc": 0,
+    "expected": 0,
+    "seconds": 4.847
+  },
+  {
+    "name": "publish-refusal",
+    "argv": [
+      "python3",
+      "autobyteus-nfs/packaging/release.py",
+      "--check-publish"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "rc": 1,
+    "expected": 1,
+    "seconds": 0.342
+  },
+  {
+    "name": "source-hash",
+    "argv": [
+      "python3",
+      "autobyteus-nfs/packaging/release.py",
+      "--source-hash"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "rc": 0,
+    "expected": 0,
+    "seconds": 0.344
+  },
+  {
+    "name": "test-compile-darwin-amd64",
+    "argv": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr013-vhmry3ej/go/bin/go",
+      "test",
+      "-c",
+      "-o",
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr013-vhmry3ej/darwin-amd64/",
+      "./..."
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+    "rc": 0,
+    "expected": 0,
+    "seconds": 7.185
+  },
+  {
+    "name": "test-compile-linux-arm64",
+    "argv": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr013-vhmry3ej/go/bin/go",
+      "test",
+      "-c",
+      "-o",
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr013-vhmry3ej/linux-arm64/",
+      "./..."
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+    "rc": 0,
+    "expected": 0,
+    "seconds": 7.227
+  },
+  {
+    "name": "test-compile-linux-amd64",
+    "argv": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr013-vhmry3ej/go/bin/go",
+      "test",
+      "-c",
+      "-o",
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr013-vhmry3ej/linux-amd64/",
+      "./..."
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+    "rc": 0,
+    "expected": 0,
+    "seconds": 7.261
+  },
+  {
+    "name": "mutation-binding-save",
+    "argv": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr013-vhmry3ej/go/bin/go",
+      "test",
+      "-count=1",
+      "-run",
+      "TestCreatedSourceBindingSurvivesProbeFailure",
+      "./internal/setup"
+    ],
+    "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr013-vhmry3ej/mutation-binding-save",
+    "rc": 1,
+    "expected": 1,
+    "seconds": 2.227
+  },
+  {
+    "name": "mutation-correlation",
+    "argv": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr013-vhmry3ej/go/bin/go",
+      "test",
+      "-count=1",
+      "-run",
+      "TestSourceCaptureCorrelationAndClosure",
+      "./internal/platform"
+    ],
+    "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr013-vhmry3ej/mutation-correlation",
+    "rc": 1,
+    "expected": 1,
+    "seconds": 0.902
+  },
+  {
+    "name": "mutation-duplicate",
+    "argv": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr013-vhmry3ej/go/bin/go",
+      "test",
+      "-count=1",
+      "-run",
+      "TestVolumePlistStrictIdentity",
+      "./internal/platform"
+    ],
+    "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr013-vhmry3ej/mutation-duplicate",
+    "rc": 1,
+    "expected": 1,
+    "seconds": 0.761
+  }
+]

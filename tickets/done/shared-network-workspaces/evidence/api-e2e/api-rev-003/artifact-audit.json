@@ -1,0 +1,146 @@
+{
+  "result": "Pass evidence consistency, not product validation",
+  "inputHead": "e8ed5627da2afa646c9ab89c6ce69b3a0bc0826c",
+  "currentHead": "e8ed5627da2afa646c9ab89c6ce69b3a0bc0826c",
+  "commands": [
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "autobyteus-nfs/packaging/release.py",
+        "--source-hash"
+      ],
+      "rc": 0,
+      "stdout": "4568593b99bb3dff263e9824ceb7176e04a95ec90e3cd14a9f7421b4e43055ac\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "autobyteus-nfs/packaging/release.py",
+        "--source-hash",
+        "--engine-manifest",
+        "autobyteus-nfs/out/ir005-local-candidate/engine-candidate/engine-manifest.json"
+      ],
+      "rc": 0,
+      "stdout": "5563645d23aaac13aaa26948490d68dfc12fef31775bb66156185f9052ab0acc\n",
+      "stderr": ""
+    }
+  ],
+  "onlyAPIOwnedPathsChanged": true,
+  "defaultSourceHash": "4568593b99bb3dff263e9824ceb7176e04a95ec90e3cd14a9f7421b4e43055ac",
+  "actualArm64SourceHash": "5563645d23aaac13aaa26948490d68dfc12fef31775bb66156185f9052ab0acc",
+  "cumulativeDurableTest": {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts",
+    "sha256": "2036b2e7e104395a7a5635d057b062aa60e4532448564008797f5ebd486da35a",
+    "unchanged": true
+  },
+  "retainedCandidate": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/README.txt",
+      "sha256": "9b5429541f972b6d432b903e48b5a525d2147a0d879e8caa4f969f8b2ccc6685",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/autobyteus-nfs-linux-arm64",
+      "sha256": "20022a9e553ce3d898531e66e48a843d9fd10fb2fd044474f1a471ed070b219e",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/COPYRIGHT",
+      "sha256": "f005d5cee9e5c771ac65f2cd2401a7259fc0cf71961275044adfd804d6b66bf7",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/SHA256SUMS",
+      "sha256": "59100b94a86df4f03d3720daf4c65466b4f10ad447ab41d91163023001a63735",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/autobyteus-nfs-ganesha-source-4.3-8ubuntu1+autobyteus1-arm64.tar.gz",
+      "sha256": "eed35ab4b732ac05d2afc3531e70cdc27031fb414fdb52a0daf093f33daaec0a",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/engine-build-arm64.txt",
+      "sha256": "56fad63c43f85091d84df347564dfd962a9afaafe519539849860b1807695761",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/engine-manifest.json",
+      "sha256": "4488fccf14574d27931429d4c2529c34620de575bacce63383254808f97c39a5",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/nfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb",
+      "sha256": "3bf06769646d93ea85f0277fe0726eb42d0d29a70c0108505706954e5e8d2ac6",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/nfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb",
+      "sha256": "0b5c78911cfc1b299e9894e1f841e74176fbb2cb45b158008e4530713549ebc8",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/engine-manifest.json",
+      "sha256": "4488fccf14574d27931429d4c2529c34620de575bacce63383254808f97c39a5",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/release.json",
+      "sha256": "7d647fa2d41f6916221af53a79d3a0bfc9bc296383d747fe837744c6f3ba7e9f",
+      "unchanged": true
+    }
+  ],
+  "priorAPIRevisionBodiesUnchanged": true,
+  "cleanupComplete": true,
+  "jsonParseFailures": [],
+  "snapshotOnlyRunningFields": [
+    "pre-client-resources.json",
+    "guest-ssh-readiness.json"
+  ],
+  "snapshotReconciliation": "Read-only interim snapshots inherited generic Running metadata; no live task. Final SSH/desktop/resource/cleanup receipts supersede their setup status, not their raw output.",
+  "hygiene": {
+    "privateKeyPEMFiles": [],
+    "credentialTokenPatternFiles": [],
+    "excludedBytecode": [],
+    "limits": "Pattern scan plus clean-env/build/input review; public SSH host/key and synthetic private sentinels are not live credentials. No claim of general secret detection."
+  },
+  "missingReferences": [],
+  "incomingReferenceCount": 453,
+  "referenceCount": 625,
+  "acceptanceRows": [
+    "001",
+    "002",
+    "003",
+    "004",
+    "005",
+    "006",
+    "007",
+    "008",
+    "009",
+    "010",
+    "011",
+    "012",
+    "013",
+    "014",
+    "015",
+    "016",
+    "017",
+    "018",
+    "019",
+    "020"
+  ],
+  "confidenceScores": [
+    50,
+    50,
+    50,
+    50,
+    50,
+    75,
+    75
+  ],
+  "confidence": 57.14,
+  "expectedFailure": "API-F003"
+}

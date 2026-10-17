@@ -1,0 +1,5 @@
+--- FAIL: TestAppleColdRPCStartupRechecksNFSAndMountWithoutReactivation (0.00s)
+    apple_startup_test.go:95: not yet serving 0 [/usr/sbin/rpcinfo --timeout 2 -p 192.168.1.5]
+FAIL
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/backend	0.371s
+FAIL

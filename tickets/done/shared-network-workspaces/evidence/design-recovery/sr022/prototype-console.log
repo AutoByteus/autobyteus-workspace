@@ -1,0 +1,4 @@
+baseline-default: [[None, None]]
+candidate-zero: [[0.0006673159999976974, 0.0010465220000028808], [0.0035181129999983796, 0.005311409000000822], [0.001075292999999533, 0.0015703209999955448], [0.925438401000001, 0.9266383190000056]]
+restored-default: [[None, None]]
+{"result": "Pass controlled A/B/A mechanism experiment; not product qualification", "error": null}

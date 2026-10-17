@@ -1,0 +1,2170 @@
+{
+  "checkedUtc": "2026-10-13T09:55:11.743298+00:00",
+  "checks": [
+    {
+      "round": 15,
+      "kind": "container",
+      "name": "ab-sf-fr015-68c77fbb-app-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr015-68c77fbb-app-b"
+    },
+    {
+      "round": 15,
+      "kind": "container",
+      "name": "ab-sf-fr015-68c77fbb-app-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr015-68c77fbb-app-a"
+    },
+    {
+      "round": 15,
+      "kind": "volume",
+      "name": "ab-sf-fr015-68c77fbb-nfs-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr015-68c77fbb-nfs-b: no such volume"
+    },
+    {
+      "round": 15,
+      "kind": "volume",
+      "name": "ab-sf-fr015-68c77fbb-nfs-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr015-68c77fbb-nfs-a: no such volume"
+    },
+    {
+      "round": 15,
+      "kind": "container",
+      "name": "ab-sf-fr015-68c77fbb-storage-server",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr015-68c77fbb-storage-server"
+    },
+    {
+      "round": 15,
+      "kind": "volume",
+      "name": "ab-sf-fr015-68c77fbb-b-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr015-68c77fbb-b-chromium: no such volume"
+    },
+    {
+      "round": 15,
+      "kind": "volume",
+      "name": "ab-sf-fr015-68c77fbb-b-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr015-68c77fbb-b-legacy-workspace: no such volume"
+    },
+    {
+      "round": 15,
+      "kind": "volume",
+      "name": "ab-sf-fr015-68c77fbb-b-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr015-68c77fbb-b-workspace: no such volume"
+    },
+    {
+      "round": 15,
+      "kind": "volume",
+      "name": "ab-sf-fr015-68c77fbb-b-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr015-68c77fbb-b-root-home: no such volume"
+    },
+    {
+      "round": 15,
+      "kind": "volume",
+      "name": "ab-sf-fr015-68c77fbb-b-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr015-68c77fbb-b-data: no such volume"
+    },
+    {
+      "round": 15,
+      "kind": "volume",
+      "name": "ab-sf-fr015-68c77fbb-a-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr015-68c77fbb-a-chromium: no such volume"
+    },
+    {
+      "round": 15,
+      "kind": "volume",
+      "name": "ab-sf-fr015-68c77fbb-a-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr015-68c77fbb-a-legacy-workspace: no such volume"
+    },
+    {
+      "round": 15,
+      "kind": "volume",
+      "name": "ab-sf-fr015-68c77fbb-a-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr015-68c77fbb-a-workspace: no such volume"
+    },
+    {
+      "round": 15,
+      "kind": "volume",
+      "name": "ab-sf-fr015-68c77fbb-a-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr015-68c77fbb-a-root-home: no such volume"
+    },
+    {
+      "round": 15,
+      "kind": "volume",
+      "name": "ab-sf-fr015-68c77fbb-a-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr015-68c77fbb-a-data: no such volume"
+    },
+    {
+      "round": 15,
+      "kind": "volume",
+      "name": "ab-sf-fr015-68c77fbb-storage",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr015-68c77fbb-storage: no such volume"
+    },
+    {
+      "round": 15,
+      "kind": "network",
+      "name": "ab-sf-fr015-68c77fbb-net",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: network ab-sf-fr015-68c77fbb-net not found"
+    },
+    {
+      "round": 15,
+      "kind": "image",
+      "name": "autobyteus-shared-feasibility:fr-015",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such image: autobyteus-shared-feasibility:fr-015"
+    },
+    {
+      "round": 16,
+      "kind": "container",
+      "name": "ab-sf-fr016-91f1f5b4-client",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr016-91f1f5b4-client"
+    },
+    {
+      "round": 16,
+      "kind": "volume",
+      "name": "ab-sf-fr016-91f1f5b4-nfs",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr016-91f1f5b4-nfs: no such volume"
+    },
+    {
+      "round": 16,
+      "kind": "container",
+      "name": "ab-sf-fr016-91f1f5b4-storage-server",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr016-91f1f5b4-storage-server"
+    },
+    {
+      "round": 16,
+      "kind": "volume",
+      "name": "ab-sf-fr016-91f1f5b4-storage",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr016-91f1f5b4-storage: no such volume"
+    },
+    {
+      "round": 16,
+      "kind": "network",
+      "name": "ab-sf-fr016-91f1f5b4-net",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: network ab-sf-fr016-91f1f5b4-net not found"
+    },
+    {
+      "round": 16,
+      "kind": "image",
+      "name": "autobyteus-shared-feasibility:fr-016",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such image: autobyteus-shared-feasibility:fr-016"
+    },
+    {
+      "round": 17,
+      "kind": "container",
+      "name": "ab-sf-fr017-0ae2435f-client",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr017-0ae2435f-client"
+    },
+    {
+      "round": 17,
+      "kind": "volume",
+      "name": "ab-sf-fr017-0ae2435f-nfs",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr017-0ae2435f-nfs: no such volume"
+    },
+    {
+      "round": 17,
+      "kind": "container",
+      "name": "ab-sf-fr017-0ae2435f-storage-server",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr017-0ae2435f-storage-server"
+    },
+    {
+      "round": 17,
+      "kind": "volume",
+      "name": "ab-sf-fr017-0ae2435f-storage",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr017-0ae2435f-storage: no such volume"
+    },
+    {
+      "round": 17,
+      "kind": "network",
+      "name": "ab-sf-fr017-0ae2435f-net",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: network ab-sf-fr017-0ae2435f-net not found"
+    },
+    {
+      "round": 17,
+      "kind": "image",
+      "name": "autobyteus-shared-feasibility:fr-017",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such image: autobyteus-shared-feasibility:fr-017"
+    },
+    {
+      "round": 18,
+      "kind": "container",
+      "name": "ab-sf-fr018-6aec659d-client",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr018-6aec659d-client"
+    },
+    {
+      "round": 18,
+      "kind": "volume",
+      "name": "ab-sf-fr018-6aec659d-nfs",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr018-6aec659d-nfs: no such volume"
+    },
+    {
+      "round": 18,
+      "kind": "container",
+      "name": "ab-sf-fr018-6aec659d-storage-server",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr018-6aec659d-storage-server"
+    },
+    {
+      "round": 18,
+      "kind": "volume",
+      "name": "ab-sf-fr018-6aec659d-storage",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr018-6aec659d-storage: no such volume"
+    },
+    {
+      "round": 18,
+      "kind": "network",
+      "name": "ab-sf-fr018-6aec659d-net",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: network ab-sf-fr018-6aec659d-net not found"
+    },
+    {
+      "round": 18,
+      "kind": "image",
+      "name": "autobyteus-shared-feasibility:fr-018",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such image: autobyteus-shared-feasibility:fr-018"
+    },
+    {
+      "round": 20,
+      "kind": "container",
+      "name": "ab-sf-fr020-313c4685-app-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr020-313c4685-app-b"
+    },
+    {
+      "round": 20,
+      "kind": "container",
+      "name": "ab-sf-fr020-313c4685-app-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr020-313c4685-app-a"
+    },
+    {
+      "round": 20,
+      "kind": "volume",
+      "name": "ab-sf-fr020-313c4685-nfs-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr020-313c4685-nfs-b: no such volume"
+    },
+    {
+      "round": 20,
+      "kind": "volume",
+      "name": "ab-sf-fr020-313c4685-nfs-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr020-313c4685-nfs-a: no such volume"
+    },
+    {
+      "round": 20,
+      "kind": "container",
+      "name": "ab-sf-fr020-313c4685-storage-server",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr020-313c4685-storage-server"
+    },
+    {
+      "round": 20,
+      "kind": "volume",
+      "name": "ab-sf-fr020-313c4685-b-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr020-313c4685-b-chromium: no such volume"
+    },
+    {
+      "round": 20,
+      "kind": "volume",
+      "name": "ab-sf-fr020-313c4685-b-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr020-313c4685-b-legacy-workspace: no such volume"
+    },
+    {
+      "round": 20,
+      "kind": "volume",
+      "name": "ab-sf-fr020-313c4685-b-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr020-313c4685-b-workspace: no such volume"
+    },
+    {
+      "round": 20,
+      "kind": "volume",
+      "name": "ab-sf-fr020-313c4685-b-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr020-313c4685-b-root-home: no such volume"
+    },
+    {
+      "round": 20,
+      "kind": "volume",
+      "name": "ab-sf-fr020-313c4685-b-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr020-313c4685-b-data: no such volume"
+    },
+    {
+      "round": 20,
+      "kind": "volume",
+      "name": "ab-sf-fr020-313c4685-a-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr020-313c4685-a-chromium: no such volume"
+    },
+    {
+      "round": 20,
+      "kind": "volume",
+      "name": "ab-sf-fr020-313c4685-a-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr020-313c4685-a-legacy-workspace: no such volume"
+    },
+    {
+      "round": 20,
+      "kind": "volume",
+      "name": "ab-sf-fr020-313c4685-a-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr020-313c4685-a-workspace: no such volume"
+    },
+    {
+      "round": 20,
+      "kind": "volume",
+      "name": "ab-sf-fr020-313c4685-a-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr020-313c4685-a-root-home: no such volume"
+    },
+    {
+      "round": 20,
+      "kind": "volume",
+      "name": "ab-sf-fr020-313c4685-a-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr020-313c4685-a-data: no such volume"
+    },
+    {
+      "round": 20,
+      "kind": "volume",
+      "name": "ab-sf-fr020-313c4685-storage",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr020-313c4685-storage: no such volume"
+    },
+    {
+      "round": 20,
+      "kind": "network",
+      "name": "ab-sf-fr020-313c4685-net",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: network ab-sf-fr020-313c4685-net not found"
+    },
+    {
+      "round": 20,
+      "kind": "image",
+      "name": "autobyteus-shared-feasibility:fr-020",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such image: autobyteus-shared-feasibility:fr-020"
+    },
+    {
+      "round": 22,
+      "kind": "container",
+      "name": "ab-sf-fr022-88813f88-app-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr022-88813f88-app-b"
+    },
+    {
+      "round": 22,
+      "kind": "container",
+      "name": "ab-sf-fr022-88813f88-app-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr022-88813f88-app-a"
+    },
+    {
+      "round": 22,
+      "kind": "volume",
+      "name": "ab-sf-fr022-88813f88-nfs-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr022-88813f88-nfs-b: no such volume"
+    },
+    {
+      "round": 22,
+      "kind": "volume",
+      "name": "ab-sf-fr022-88813f88-nfs-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr022-88813f88-nfs-a: no such volume"
+    },
+    {
+      "round": 22,
+      "kind": "container",
+      "name": "ab-sf-fr022-88813f88-storage-server",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr022-88813f88-storage-server"
+    },
+    {
+      "round": 22,
+      "kind": "volume",
+      "name": "ab-sf-fr022-88813f88-b-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr022-88813f88-b-chromium: no such volume"
+    },
+    {
+      "round": 22,
+      "kind": "volume",
+      "name": "ab-sf-fr022-88813f88-b-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr022-88813f88-b-legacy-workspace: no such volume"
+    },
+    {
+      "round": 22,
+      "kind": "volume",
+      "name": "ab-sf-fr022-88813f88-b-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr022-88813f88-b-workspace: no such volume"
+    },
+    {
+      "round": 22,
+      "kind": "volume",
+      "name": "ab-sf-fr022-88813f88-b-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr022-88813f88-b-root-home: no such volume"
+    },
+    {
+      "round": 22,
+      "kind": "volume",
+      "name": "ab-sf-fr022-88813f88-b-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr022-88813f88-b-data: no such volume"
+    },
+    {
+      "round": 22,
+      "kind": "volume",
+      "name": "ab-sf-fr022-88813f88-a-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr022-88813f88-a-chromium: no such volume"
+    },
+    {
+      "round": 22,
+      "kind": "volume",
+      "name": "ab-sf-fr022-88813f88-a-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr022-88813f88-a-legacy-workspace: no such volume"
+    },
+    {
+      "round": 22,
+      "kind": "volume",
+      "name": "ab-sf-fr022-88813f88-a-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr022-88813f88-a-workspace: no such volume"
+    },
+    {
+      "round": 22,
+      "kind": "volume",
+      "name": "ab-sf-fr022-88813f88-a-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr022-88813f88-a-root-home: no such volume"
+    },
+    {
+      "round": 22,
+      "kind": "volume",
+      "name": "ab-sf-fr022-88813f88-a-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr022-88813f88-a-data: no such volume"
+    },
+    {
+      "round": 22,
+      "kind": "volume",
+      "name": "ab-sf-fr022-88813f88-storage",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr022-88813f88-storage: no such volume"
+    },
+    {
+      "round": 22,
+      "kind": "network",
+      "name": "ab-sf-fr022-88813f88-net",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: network ab-sf-fr022-88813f88-net not found"
+    },
+    {
+      "round": 22,
+      "kind": "image",
+      "name": "autobyteus-shared-feasibility:fr-022",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such image: autobyteus-shared-feasibility:fr-022"
+    },
+    {
+      "round": 23,
+      "kind": "container",
+      "name": "ab-sf-fr023-db476448-app-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr023-db476448-app-b"
+    },
+    {
+      "round": 23,
+      "kind": "container",
+      "name": "ab-sf-fr023-db476448-app-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr023-db476448-app-a"
+    },
+    {
+      "round": 23,
+      "kind": "volume",
+      "name": "ab-sf-fr023-db476448-nfs-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr023-db476448-nfs-b: no such volume"
+    },
+    {
+      "round": 23,
+      "kind": "volume",
+      "name": "ab-sf-fr023-db476448-nfs-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr023-db476448-nfs-a: no such volume"
+    },
+    {
+      "round": 23,
+      "kind": "container",
+      "name": "ab-sf-fr023-db476448-storage-server",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr023-db476448-storage-server"
+    },
+    {
+      "round": 23,
+      "kind": "volume",
+      "name": "ab-sf-fr023-db476448-b-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr023-db476448-b-chromium: no such volume"
+    },
+    {
+      "round": 23,
+      "kind": "volume",
+      "name": "ab-sf-fr023-db476448-b-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr023-db476448-b-legacy-workspace: no such volume"
+    },
+    {
+      "round": 23,
+      "kind": "volume",
+      "name": "ab-sf-fr023-db476448-b-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr023-db476448-b-workspace: no such volume"
+    },
+    {
+      "round": 23,
+      "kind": "volume",
+      "name": "ab-sf-fr023-db476448-b-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr023-db476448-b-root-home: no such volume"
+    },
+    {
+      "round": 23,
+      "kind": "volume",
+      "name": "ab-sf-fr023-db476448-b-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr023-db476448-b-data: no such volume"
+    },
+    {
+      "round": 23,
+      "kind": "volume",
+      "name": "ab-sf-fr023-db476448-a-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr023-db476448-a-chromium: no such volume"
+    },
+    {
+      "round": 23,
+      "kind": "volume",
+      "name": "ab-sf-fr023-db476448-a-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr023-db476448-a-legacy-workspace: no such volume"
+    },
+    {
+      "round": 23,
+      "kind": "volume",
+      "name": "ab-sf-fr023-db476448-a-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr023-db476448-a-workspace: no such volume"
+    },
+    {
+      "round": 23,
+      "kind": "volume",
+      "name": "ab-sf-fr023-db476448-a-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr023-db476448-a-root-home: no such volume"
+    },
+    {
+      "round": 23,
+      "kind": "volume",
+      "name": "ab-sf-fr023-db476448-a-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr023-db476448-a-data: no such volume"
+    },
+    {
+      "round": 23,
+      "kind": "volume",
+      "name": "ab-sf-fr023-db476448-storage",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr023-db476448-storage: no such volume"
+    },
+    {
+      "round": 23,
+      "kind": "network",
+      "name": "ab-sf-fr023-db476448-net",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: network ab-sf-fr023-db476448-net not found"
+    },
+    {
+      "round": 23,
+      "kind": "image",
+      "name": "autobyteus-shared-feasibility:fr-023",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such image: autobyteus-shared-feasibility:fr-023"
+    },
+    {
+      "round": 24,
+      "kind": "container",
+      "name": "ab-sf-fr024-3a208da7-app-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr024-3a208da7-app-b"
+    },
+    {
+      "round": 24,
+      "kind": "container",
+      "name": "ab-sf-fr024-3a208da7-app-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr024-3a208da7-app-a"
+    },
+    {
+      "round": 24,
+      "kind": "volume",
+      "name": "ab-sf-fr024-3a208da7-nfs-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr024-3a208da7-nfs-b: no such volume"
+    },
+    {
+      "round": 24,
+      "kind": "volume",
+      "name": "ab-sf-fr024-3a208da7-nfs-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr024-3a208da7-nfs-a: no such volume"
+    },
+    {
+      "round": 24,
+      "kind": "container",
+      "name": "ab-sf-fr024-3a208da7-storage-server",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr024-3a208da7-storage-server"
+    },
+    {
+      "round": 24,
+      "kind": "volume",
+      "name": "ab-sf-fr024-3a208da7-b-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr024-3a208da7-b-chromium: no such volume"
+    },
+    {
+      "round": 24,
+      "kind": "volume",
+      "name": "ab-sf-fr024-3a208da7-b-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr024-3a208da7-b-legacy-workspace: no such volume"
+    },
+    {
+      "round": 24,
+      "kind": "volume",
+      "name": "ab-sf-fr024-3a208da7-b-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr024-3a208da7-b-workspace: no such volume"
+    },
+    {
+      "round": 24,
+      "kind": "volume",
+      "name": "ab-sf-fr024-3a208da7-b-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr024-3a208da7-b-root-home: no such volume"
+    },
+    {
+      "round": 24,
+      "kind": "volume",
+      "name": "ab-sf-fr024-3a208da7-b-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr024-3a208da7-b-data: no such volume"
+    },
+    {
+      "round": 24,
+      "kind": "volume",
+      "name": "ab-sf-fr024-3a208da7-a-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr024-3a208da7-a-chromium: no such volume"
+    },
+    {
+      "round": 24,
+      "kind": "volume",
+      "name": "ab-sf-fr024-3a208da7-a-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr024-3a208da7-a-legacy-workspace: no such volume"
+    },
+    {
+      "round": 24,
+      "kind": "volume",
+      "name": "ab-sf-fr024-3a208da7-a-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr024-3a208da7-a-workspace: no such volume"
+    },
+    {
+      "round": 24,
+      "kind": "volume",
+      "name": "ab-sf-fr024-3a208da7-a-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr024-3a208da7-a-root-home: no such volume"
+    },
+    {
+      "round": 24,
+      "kind": "volume",
+      "name": "ab-sf-fr024-3a208da7-a-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr024-3a208da7-a-data: no such volume"
+    },
+    {
+      "round": 24,
+      "kind": "volume",
+      "name": "ab-sf-fr024-3a208da7-storage",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr024-3a208da7-storage: no such volume"
+    },
+    {
+      "round": 24,
+      "kind": "network",
+      "name": "ab-sf-fr024-3a208da7-net",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: network ab-sf-fr024-3a208da7-net not found"
+    },
+    {
+      "round": 24,
+      "kind": "image",
+      "name": "autobyteus-shared-feasibility:fr-024",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such image: autobyteus-shared-feasibility:fr-024"
+    },
+    {
+      "round": 25,
+      "kind": "container",
+      "name": "ab-sf-fr025-1964d0e8-app-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr025-1964d0e8-app-b"
+    },
+    {
+      "round": 25,
+      "kind": "container",
+      "name": "ab-sf-fr025-1964d0e8-app-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr025-1964d0e8-app-a"
+    },
+    {
+      "round": 25,
+      "kind": "volume",
+      "name": "ab-sf-fr025-1964d0e8-nfs-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr025-1964d0e8-nfs-b: no such volume"
+    },
+    {
+      "round": 25,
+      "kind": "volume",
+      "name": "ab-sf-fr025-1964d0e8-nfs-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr025-1964d0e8-nfs-a: no such volume"
+    },
+    {
+      "round": 25,
+      "kind": "container",
+      "name": "ab-sf-fr025-1964d0e8-storage-server",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr025-1964d0e8-storage-server"
+    },
+    {
+      "round": 25,
+      "kind": "volume",
+      "name": "ab-sf-fr025-1964d0e8-b-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr025-1964d0e8-b-chromium: no such volume"
+    },
+    {
+      "round": 25,
+      "kind": "volume",
+      "name": "ab-sf-fr025-1964d0e8-b-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr025-1964d0e8-b-legacy-workspace: no such volume"
+    },
+    {
+      "round": 25,
+      "kind": "volume",
+      "name": "ab-sf-fr025-1964d0e8-b-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr025-1964d0e8-b-workspace: no such volume"
+    },
+    {
+      "round": 25,
+      "kind": "volume",
+      "name": "ab-sf-fr025-1964d0e8-b-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr025-1964d0e8-b-root-home: no such volume"
+    },
+    {
+      "round": 25,
+      "kind": "volume",
+      "name": "ab-sf-fr025-1964d0e8-b-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr025-1964d0e8-b-data: no such volume"
+    },
+    {
+      "round": 25,
+      "kind": "volume",
+      "name": "ab-sf-fr025-1964d0e8-a-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr025-1964d0e8-a-chromium: no such volume"
+    },
+    {
+      "round": 25,
+      "kind": "volume",
+      "name": "ab-sf-fr025-1964d0e8-a-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr025-1964d0e8-a-legacy-workspace: no such volume"
+    },
+    {
+      "round": 25,
+      "kind": "volume",
+      "name": "ab-sf-fr025-1964d0e8-a-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr025-1964d0e8-a-workspace: no such volume"
+    },
+    {
+      "round": 25,
+      "kind": "volume",
+      "name": "ab-sf-fr025-1964d0e8-a-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr025-1964d0e8-a-root-home: no such volume"
+    },
+    {
+      "round": 25,
+      "kind": "volume",
+      "name": "ab-sf-fr025-1964d0e8-a-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr025-1964d0e8-a-data: no such volume"
+    },
+    {
+      "round": 25,
+      "kind": "volume",
+      "name": "ab-sf-fr025-1964d0e8-storage",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr025-1964d0e8-storage: no such volume"
+    },
+    {
+      "round": 25,
+      "kind": "network",
+      "name": "ab-sf-fr025-1964d0e8-net",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: network ab-sf-fr025-1964d0e8-net not found"
+    },
+    {
+      "round": 25,
+      "kind": "image",
+      "name": "autobyteus-shared-feasibility:fr-025",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such image: autobyteus-shared-feasibility:fr-025"
+    },
+    {
+      "round": 26,
+      "kind": "container",
+      "name": "ab-sf-fr026-6af2e9d4-app-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr026-6af2e9d4-app-b"
+    },
+    {
+      "round": 26,
+      "kind": "container",
+      "name": "ab-sf-fr026-6af2e9d4-app-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr026-6af2e9d4-app-a"
+    },
+    {
+      "round": 26,
+      "kind": "volume",
+      "name": "ab-sf-fr026-6af2e9d4-nfs-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr026-6af2e9d4-nfs-b: no such volume"
+    },
+    {
+      "round": 26,
+      "kind": "volume",
+      "name": "ab-sf-fr026-6af2e9d4-nfs-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr026-6af2e9d4-nfs-a: no such volume"
+    },
+    {
+      "round": 26,
+      "kind": "container",
+      "name": "ab-sf-fr026-6af2e9d4-storage-server",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr026-6af2e9d4-storage-server"
+    },
+    {
+      "round": 26,
+      "kind": "volume",
+      "name": "ab-sf-fr026-6af2e9d4-b-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr026-6af2e9d4-b-chromium: no such volume"
+    },
+    {
+      "round": 26,
+      "kind": "volume",
+      "name": "ab-sf-fr026-6af2e9d4-b-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr026-6af2e9d4-b-legacy-workspace: no such volume"
+    },
+    {
+      "round": 26,
+      "kind": "volume",
+      "name": "ab-sf-fr026-6af2e9d4-b-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr026-6af2e9d4-b-workspace: no such volume"
+    },
+    {
+      "round": 26,
+      "kind": "volume",
+      "name": "ab-sf-fr026-6af2e9d4-b-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr026-6af2e9d4-b-root-home: no such volume"
+    },
+    {
+      "round": 26,
+      "kind": "volume",
+      "name": "ab-sf-fr026-6af2e9d4-b-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr026-6af2e9d4-b-data: no such volume"
+    },
+    {
+      "round": 26,
+      "kind": "volume",
+      "name": "ab-sf-fr026-6af2e9d4-a-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr026-6af2e9d4-a-chromium: no such volume"
+    },
+    {
+      "round": 26,
+      "kind": "volume",
+      "name": "ab-sf-fr026-6af2e9d4-a-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr026-6af2e9d4-a-legacy-workspace: no such volume"
+    },
+    {
+      "round": 26,
+      "kind": "volume",
+      "name": "ab-sf-fr026-6af2e9d4-a-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr026-6af2e9d4-a-workspace: no such volume"
+    },
+    {
+      "round": 26,
+      "kind": "volume",
+      "name": "ab-sf-fr026-6af2e9d4-a-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr026-6af2e9d4-a-root-home: no such volume"
+    },
+    {
+      "round": 26,
+      "kind": "volume",
+      "name": "ab-sf-fr026-6af2e9d4-a-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr026-6af2e9d4-a-data: no such volume"
+    },
+    {
+      "round": 26,
+      "kind": "volume",
+      "name": "ab-sf-fr026-6af2e9d4-storage",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr026-6af2e9d4-storage: no such volume"
+    },
+    {
+      "round": 26,
+      "kind": "network",
+      "name": "ab-sf-fr026-6af2e9d4-net",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: network ab-sf-fr026-6af2e9d4-net not found"
+    },
+    {
+      "round": 26,
+      "kind": "image",
+      "name": "autobyteus-shared-feasibility:fr-026",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such image: autobyteus-shared-feasibility:fr-026"
+    },
+    {
+      "round": 27,
+      "kind": "container",
+      "name": "ab-sf-fr027-19d964a7-app-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr027-19d964a7-app-b"
+    },
+    {
+      "round": 27,
+      "kind": "container",
+      "name": "ab-sf-fr027-19d964a7-app-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr027-19d964a7-app-a"
+    },
+    {
+      "round": 27,
+      "kind": "volume",
+      "name": "ab-sf-fr027-19d964a7-nfs-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr027-19d964a7-nfs-b: no such volume"
+    },
+    {
+      "round": 27,
+      "kind": "volume",
+      "name": "ab-sf-fr027-19d964a7-nfs-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr027-19d964a7-nfs-a: no such volume"
+    },
+    {
+      "round": 27,
+      "kind": "container",
+      "name": "ab-sf-fr027-19d964a7-storage-server",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr027-19d964a7-storage-server"
+    },
+    {
+      "round": 27,
+      "kind": "volume",
+      "name": "ab-sf-fr027-19d964a7-b-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr027-19d964a7-b-chromium: no such volume"
+    },
+    {
+      "round": 27,
+      "kind": "volume",
+      "name": "ab-sf-fr027-19d964a7-b-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr027-19d964a7-b-legacy-workspace: no such volume"
+    },
+    {
+      "round": 27,
+      "kind": "volume",
+      "name": "ab-sf-fr027-19d964a7-b-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr027-19d964a7-b-workspace: no such volume"
+    },
+    {
+      "round": 27,
+      "kind": "volume",
+      "name": "ab-sf-fr027-19d964a7-b-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr027-19d964a7-b-root-home: no such volume"
+    },
+    {
+      "round": 27,
+      "kind": "volume",
+      "name": "ab-sf-fr027-19d964a7-b-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr027-19d964a7-b-data: no such volume"
+    },
+    {
+      "round": 27,
+      "kind": "volume",
+      "name": "ab-sf-fr027-19d964a7-a-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr027-19d964a7-a-chromium: no such volume"
+    },
+    {
+      "round": 27,
+      "kind": "volume",
+      "name": "ab-sf-fr027-19d964a7-a-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr027-19d964a7-a-legacy-workspace: no such volume"
+    },
+    {
+      "round": 27,
+      "kind": "volume",
+      "name": "ab-sf-fr027-19d964a7-a-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr027-19d964a7-a-workspace: no such volume"
+    },
+    {
+      "round": 27,
+      "kind": "volume",
+      "name": "ab-sf-fr027-19d964a7-a-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr027-19d964a7-a-root-home: no such volume"
+    },
+    {
+      "round": 27,
+      "kind": "volume",
+      "name": "ab-sf-fr027-19d964a7-a-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr027-19d964a7-a-data: no such volume"
+    },
+    {
+      "round": 27,
+      "kind": "volume",
+      "name": "ab-sf-fr027-19d964a7-storage",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr027-19d964a7-storage: no such volume"
+    },
+    {
+      "round": 27,
+      "kind": "network",
+      "name": "ab-sf-fr027-19d964a7-net",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: network ab-sf-fr027-19d964a7-net not found"
+    },
+    {
+      "round": 27,
+      "kind": "image",
+      "name": "autobyteus-shared-feasibility:fr-027",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such image: autobyteus-shared-feasibility:fr-027"
+    },
+    {
+      "round": 28,
+      "kind": "container",
+      "name": "ab-sf-fr028-37de3ffb-app-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr028-37de3ffb-app-b"
+    },
+    {
+      "round": 28,
+      "kind": "container",
+      "name": "ab-sf-fr028-37de3ffb-app-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr028-37de3ffb-app-a"
+    },
+    {
+      "round": 28,
+      "kind": "volume",
+      "name": "ab-sf-fr028-37de3ffb-nfs-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr028-37de3ffb-nfs-b: no such volume"
+    },
+    {
+      "round": 28,
+      "kind": "volume",
+      "name": "ab-sf-fr028-37de3ffb-nfs-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr028-37de3ffb-nfs-a: no such volume"
+    },
+    {
+      "round": 28,
+      "kind": "container",
+      "name": "ab-sf-fr028-37de3ffb-storage-server",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr028-37de3ffb-storage-server"
+    },
+    {
+      "round": 28,
+      "kind": "volume",
+      "name": "ab-sf-fr028-37de3ffb-b-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr028-37de3ffb-b-chromium: no such volume"
+    },
+    {
+      "round": 28,
+      "kind": "volume",
+      "name": "ab-sf-fr028-37de3ffb-b-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr028-37de3ffb-b-legacy-workspace: no such volume"
+    },
+    {
+      "round": 28,
+      "kind": "volume",
+      "name": "ab-sf-fr028-37de3ffb-b-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr028-37de3ffb-b-workspace: no such volume"
+    },
+    {
+      "round": 28,
+      "kind": "volume",
+      "name": "ab-sf-fr028-37de3ffb-b-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr028-37de3ffb-b-root-home: no such volume"
+    },
+    {
+      "round": 28,
+      "kind": "volume",
+      "name": "ab-sf-fr028-37de3ffb-b-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr028-37de3ffb-b-data: no such volume"
+    },
+    {
+      "round": 28,
+      "kind": "volume",
+      "name": "ab-sf-fr028-37de3ffb-a-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr028-37de3ffb-a-chromium: no such volume"
+    },
+    {
+      "round": 28,
+      "kind": "volume",
+      "name": "ab-sf-fr028-37de3ffb-a-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr028-37de3ffb-a-legacy-workspace: no such volume"
+    },
+    {
+      "round": 28,
+      "kind": "volume",
+      "name": "ab-sf-fr028-37de3ffb-a-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr028-37de3ffb-a-workspace: no such volume"
+    },
+    {
+      "round": 28,
+      "kind": "volume",
+      "name": "ab-sf-fr028-37de3ffb-a-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr028-37de3ffb-a-root-home: no such volume"
+    },
+    {
+      "round": 28,
+      "kind": "volume",
+      "name": "ab-sf-fr028-37de3ffb-a-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr028-37de3ffb-a-data: no such volume"
+    },
+    {
+      "round": 28,
+      "kind": "volume",
+      "name": "ab-sf-fr028-37de3ffb-storage",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr028-37de3ffb-storage: no such volume"
+    },
+    {
+      "round": 28,
+      "kind": "network",
+      "name": "ab-sf-fr028-37de3ffb-net",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: network ab-sf-fr028-37de3ffb-net not found"
+    },
+    {
+      "round": 28,
+      "kind": "image",
+      "name": "autobyteus-shared-feasibility:fr-028",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such image: autobyteus-shared-feasibility:fr-028"
+    },
+    {
+      "round": 29,
+      "kind": "container",
+      "name": "ab-sf-fr029-8e9b3dda-app-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr029-8e9b3dda-app-b"
+    },
+    {
+      "round": 29,
+      "kind": "container",
+      "name": "ab-sf-fr029-8e9b3dda-app-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr029-8e9b3dda-app-a"
+    },
+    {
+      "round": 29,
+      "kind": "volume",
+      "name": "ab-sf-fr029-8e9b3dda-nfs-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr029-8e9b3dda-nfs-b: no such volume"
+    },
+    {
+      "round": 29,
+      "kind": "volume",
+      "name": "ab-sf-fr029-8e9b3dda-nfs-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr029-8e9b3dda-nfs-a: no such volume"
+    },
+    {
+      "round": 29,
+      "kind": "container",
+      "name": "ab-sf-fr029-8e9b3dda-storage-server",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr029-8e9b3dda-storage-server"
+    },
+    {
+      "round": 29,
+      "kind": "volume",
+      "name": "ab-sf-fr029-8e9b3dda-b-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr029-8e9b3dda-b-chromium: no such volume"
+    },
+    {
+      "round": 29,
+      "kind": "volume",
+      "name": "ab-sf-fr029-8e9b3dda-b-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr029-8e9b3dda-b-legacy-workspace: no such volume"
+    },
+    {
+      "round": 29,
+      "kind": "volume",
+      "name": "ab-sf-fr029-8e9b3dda-b-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr029-8e9b3dda-b-workspace: no such volume"
+    },
+    {
+      "round": 29,
+      "kind": "volume",
+      "name": "ab-sf-fr029-8e9b3dda-b-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr029-8e9b3dda-b-root-home: no such volume"
+    },
+    {
+      "round": 29,
+      "kind": "volume",
+      "name": "ab-sf-fr029-8e9b3dda-b-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr029-8e9b3dda-b-data: no such volume"
+    },
+    {
+      "round": 29,
+      "kind": "volume",
+      "name": "ab-sf-fr029-8e9b3dda-a-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr029-8e9b3dda-a-chromium: no such volume"
+    },
+    {
+      "round": 29,
+      "kind": "volume",
+      "name": "ab-sf-fr029-8e9b3dda-a-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr029-8e9b3dda-a-legacy-workspace: no such volume"
+    },
+    {
+      "round": 29,
+      "kind": "volume",
+      "name": "ab-sf-fr029-8e9b3dda-a-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr029-8e9b3dda-a-workspace: no such volume"
+    },
+    {
+      "round": 29,
+      "kind": "volume",
+      "name": "ab-sf-fr029-8e9b3dda-a-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr029-8e9b3dda-a-root-home: no such volume"
+    },
+    {
+      "round": 29,
+      "kind": "volume",
+      "name": "ab-sf-fr029-8e9b3dda-a-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr029-8e9b3dda-a-data: no such volume"
+    },
+    {
+      "round": 29,
+      "kind": "volume",
+      "name": "ab-sf-fr029-8e9b3dda-storage",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr029-8e9b3dda-storage: no such volume"
+    },
+    {
+      "round": 29,
+      "kind": "network",
+      "name": "ab-sf-fr029-8e9b3dda-net",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: network ab-sf-fr029-8e9b3dda-net not found"
+    },
+    {
+      "round": 29,
+      "kind": "image",
+      "name": "autobyteus-shared-feasibility:fr-029",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such image: autobyteus-shared-feasibility:fr-029"
+    },
+    {
+      "round": 30,
+      "kind": "container",
+      "name": "ab-sf-fr030-e9479bcd-app-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr030-e9479bcd-app-b"
+    },
+    {
+      "round": 30,
+      "kind": "container",
+      "name": "ab-sf-fr030-e9479bcd-app-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr030-e9479bcd-app-a"
+    },
+    {
+      "round": 30,
+      "kind": "volume",
+      "name": "ab-sf-fr030-e9479bcd-nfs-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr030-e9479bcd-nfs-b: no such volume"
+    },
+    {
+      "round": 30,
+      "kind": "volume",
+      "name": "ab-sf-fr030-e9479bcd-nfs-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr030-e9479bcd-nfs-a: no such volume"
+    },
+    {
+      "round": 30,
+      "kind": "container",
+      "name": "ab-sf-fr030-e9479bcd-storage-server",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr030-e9479bcd-storage-server"
+    },
+    {
+      "round": 30,
+      "kind": "volume",
+      "name": "ab-sf-fr030-e9479bcd-b-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr030-e9479bcd-b-chromium: no such volume"
+    },
+    {
+      "round": 30,
+      "kind": "volume",
+      "name": "ab-sf-fr030-e9479bcd-b-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr030-e9479bcd-b-legacy-workspace: no such volume"
+    },
+    {
+      "round": 30,
+      "kind": "volume",
+      "name": "ab-sf-fr030-e9479bcd-b-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr030-e9479bcd-b-workspace: no such volume"
+    },
+    {
+      "round": 30,
+      "kind": "volume",
+      "name": "ab-sf-fr030-e9479bcd-b-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr030-e9479bcd-b-root-home: no such volume"
+    },
+    {
+      "round": 30,
+      "kind": "volume",
+      "name": "ab-sf-fr030-e9479bcd-b-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr030-e9479bcd-b-data: no such volume"
+    },
+    {
+      "round": 30,
+      "kind": "volume",
+      "name": "ab-sf-fr030-e9479bcd-a-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr030-e9479bcd-a-chromium: no such volume"
+    },
+    {
+      "round": 30,
+      "kind": "volume",
+      "name": "ab-sf-fr030-e9479bcd-a-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr030-e9479bcd-a-legacy-workspace: no such volume"
+    },
+    {
+      "round": 30,
+      "kind": "volume",
+      "name": "ab-sf-fr030-e9479bcd-a-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr030-e9479bcd-a-workspace: no such volume"
+    },
+    {
+      "round": 30,
+      "kind": "volume",
+      "name": "ab-sf-fr030-e9479bcd-a-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr030-e9479bcd-a-root-home: no such volume"
+    },
+    {
+      "round": 30,
+      "kind": "volume",
+      "name": "ab-sf-fr030-e9479bcd-a-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr030-e9479bcd-a-data: no such volume"
+    },
+    {
+      "round": 30,
+      "kind": "volume",
+      "name": "ab-sf-fr030-e9479bcd-storage",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr030-e9479bcd-storage: no such volume"
+    },
+    {
+      "round": 30,
+      "kind": "network",
+      "name": "ab-sf-fr030-e9479bcd-net",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: network ab-sf-fr030-e9479bcd-net not found"
+    },
+    {
+      "round": 30,
+      "kind": "image",
+      "name": "autobyteus-shared-feasibility:fr-030",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such image: autobyteus-shared-feasibility:fr-030"
+    },
+    {
+      "round": 31,
+      "kind": "container",
+      "name": "ab-sf-fr031-69d2eda7-app-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr031-69d2eda7-app-b"
+    },
+    {
+      "round": 31,
+      "kind": "container",
+      "name": "ab-sf-fr031-69d2eda7-app-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr031-69d2eda7-app-a"
+    },
+    {
+      "round": 31,
+      "kind": "volume",
+      "name": "ab-sf-fr031-69d2eda7-nfs-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr031-69d2eda7-nfs-b: no such volume"
+    },
+    {
+      "round": 31,
+      "kind": "volume",
+      "name": "ab-sf-fr031-69d2eda7-nfs-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr031-69d2eda7-nfs-a: no such volume"
+    },
+    {
+      "round": 31,
+      "kind": "container",
+      "name": "ab-sf-fr031-69d2eda7-storage-server",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr031-69d2eda7-storage-server"
+    },
+    {
+      "round": 31,
+      "kind": "volume",
+      "name": "ab-sf-fr031-69d2eda7-b-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr031-69d2eda7-b-chromium: no such volume"
+    },
+    {
+      "round": 31,
+      "kind": "volume",
+      "name": "ab-sf-fr031-69d2eda7-b-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr031-69d2eda7-b-legacy-workspace: no such volume"
+    },
+    {
+      "round": 31,
+      "kind": "volume",
+      "name": "ab-sf-fr031-69d2eda7-b-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr031-69d2eda7-b-workspace: no such volume"
+    },
+    {
+      "round": 31,
+      "kind": "volume",
+      "name": "ab-sf-fr031-69d2eda7-b-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr031-69d2eda7-b-root-home: no such volume"
+    },
+    {
+      "round": 31,
+      "kind": "volume",
+      "name": "ab-sf-fr031-69d2eda7-b-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr031-69d2eda7-b-data: no such volume"
+    },
+    {
+      "round": 31,
+      "kind": "volume",
+      "name": "ab-sf-fr031-69d2eda7-a-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr031-69d2eda7-a-chromium: no such volume"
+    },
+    {
+      "round": 31,
+      "kind": "volume",
+      "name": "ab-sf-fr031-69d2eda7-a-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr031-69d2eda7-a-legacy-workspace: no such volume"
+    },
+    {
+      "round": 31,
+      "kind": "volume",
+      "name": "ab-sf-fr031-69d2eda7-a-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr031-69d2eda7-a-workspace: no such volume"
+    },
+    {
+      "round": 31,
+      "kind": "volume",
+      "name": "ab-sf-fr031-69d2eda7-a-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr031-69d2eda7-a-root-home: no such volume"
+    },
+    {
+      "round": 31,
+      "kind": "volume",
+      "name": "ab-sf-fr031-69d2eda7-a-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr031-69d2eda7-a-data: no such volume"
+    },
+    {
+      "round": 31,
+      "kind": "volume",
+      "name": "ab-sf-fr031-69d2eda7-storage",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr031-69d2eda7-storage: no such volume"
+    },
+    {
+      "round": 31,
+      "kind": "network",
+      "name": "ab-sf-fr031-69d2eda7-net",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: network ab-sf-fr031-69d2eda7-net not found"
+    },
+    {
+      "round": 31,
+      "kind": "image",
+      "name": "autobyteus-shared-feasibility:fr-031",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such image: autobyteus-shared-feasibility:fr-031"
+    },
+    {
+      "round": 32,
+      "kind": "container",
+      "name": "ab-sf-fr032-f4a2e49a-app-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr032-f4a2e49a-app-b"
+    },
+    {
+      "round": 32,
+      "kind": "container",
+      "name": "ab-sf-fr032-f4a2e49a-app-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr032-f4a2e49a-app-a"
+    },
+    {
+      "round": 32,
+      "kind": "volume",
+      "name": "ab-sf-fr032-f4a2e49a-nfs-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr032-f4a2e49a-nfs-b: no such volume"
+    },
+    {
+      "round": 32,
+      "kind": "volume",
+      "name": "ab-sf-fr032-f4a2e49a-nfs-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr032-f4a2e49a-nfs-a: no such volume"
+    },
+    {
+      "round": 32,
+      "kind": "container",
+      "name": "ab-sf-fr032-f4a2e49a-storage-server",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr032-f4a2e49a-storage-server"
+    },
+    {
+      "round": 32,
+      "kind": "volume",
+      "name": "ab-sf-fr032-f4a2e49a-b-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr032-f4a2e49a-b-chromium: no such volume"
+    },
+    {
+      "round": 32,
+      "kind": "volume",
+      "name": "ab-sf-fr032-f4a2e49a-b-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr032-f4a2e49a-b-legacy-workspace: no such volume"
+    },
+    {
+      "round": 32,
+      "kind": "volume",
+      "name": "ab-sf-fr032-f4a2e49a-b-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr032-f4a2e49a-b-workspace: no such volume"
+    },
+    {
+      "round": 32,
+      "kind": "volume",
+      "name": "ab-sf-fr032-f4a2e49a-b-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr032-f4a2e49a-b-root-home: no such volume"
+    },
+    {
+      "round": 32,
+      "kind": "volume",
+      "name": "ab-sf-fr032-f4a2e49a-b-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr032-f4a2e49a-b-data: no such volume"
+    },
+    {
+      "round": 32,
+      "kind": "volume",
+      "name": "ab-sf-fr032-f4a2e49a-a-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr032-f4a2e49a-a-chromium: no such volume"
+    },
+    {
+      "round": 32,
+      "kind": "volume",
+      "name": "ab-sf-fr032-f4a2e49a-a-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr032-f4a2e49a-a-legacy-workspace: no such volume"
+    },
+    {
+      "round": 32,
+      "kind": "volume",
+      "name": "ab-sf-fr032-f4a2e49a-a-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr032-f4a2e49a-a-workspace: no such volume"
+    },
+    {
+      "round": 32,
+      "kind": "volume",
+      "name": "ab-sf-fr032-f4a2e49a-a-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr032-f4a2e49a-a-root-home: no such volume"
+    },
+    {
+      "round": 32,
+      "kind": "volume",
+      "name": "ab-sf-fr032-f4a2e49a-a-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr032-f4a2e49a-a-data: no such volume"
+    },
+    {
+      "round": 32,
+      "kind": "volume",
+      "name": "ab-sf-fr032-f4a2e49a-storage",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr032-f4a2e49a-storage: no such volume"
+    },
+    {
+      "round": 32,
+      "kind": "network",
+      "name": "ab-sf-fr032-f4a2e49a-net",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: network ab-sf-fr032-f4a2e49a-net not found"
+    },
+    {
+      "round": 32,
+      "kind": "image",
+      "name": "autobyteus-shared-feasibility:fr-032",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such image: autobyteus-shared-feasibility:fr-032"
+    },
+    {
+      "round": 33,
+      "kind": "container",
+      "name": "ab-sf-fr033-75927368-app-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr033-75927368-app-b"
+    },
+    {
+      "round": 33,
+      "kind": "container",
+      "name": "ab-sf-fr033-75927368-app-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr033-75927368-app-a"
+    },
+    {
+      "round": 33,
+      "kind": "volume",
+      "name": "ab-sf-fr033-75927368-nfs-b",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr033-75927368-nfs-b: no such volume"
+    },
+    {
+      "round": 33,
+      "kind": "volume",
+      "name": "ab-sf-fr033-75927368-nfs-a",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr033-75927368-nfs-a: no such volume"
+    },
+    {
+      "round": 33,
+      "kind": "container",
+      "name": "ab-sf-fr033-75927368-storage-server",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such container: ab-sf-fr033-75927368-storage-server"
+    },
+    {
+      "round": 33,
+      "kind": "volume",
+      "name": "ab-sf-fr033-75927368-b-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr033-75927368-b-chromium: no such volume"
+    },
+    {
+      "round": 33,
+      "kind": "volume",
+      "name": "ab-sf-fr033-75927368-b-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr033-75927368-b-legacy-workspace: no such volume"
+    },
+    {
+      "round": 33,
+      "kind": "volume",
+      "name": "ab-sf-fr033-75927368-b-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr033-75927368-b-workspace: no such volume"
+    },
+    {
+      "round": 33,
+      "kind": "volume",
+      "name": "ab-sf-fr033-75927368-b-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr033-75927368-b-root-home: no such volume"
+    },
+    {
+      "round": 33,
+      "kind": "volume",
+      "name": "ab-sf-fr033-75927368-b-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr033-75927368-b-data: no such volume"
+    },
+    {
+      "round": 33,
+      "kind": "volume",
+      "name": "ab-sf-fr033-75927368-a-chromium",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr033-75927368-a-chromium: no such volume"
+    },
+    {
+      "round": 33,
+      "kind": "volume",
+      "name": "ab-sf-fr033-75927368-a-legacy-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr033-75927368-a-legacy-workspace: no such volume"
+    },
+    {
+      "round": 33,
+      "kind": "volume",
+      "name": "ab-sf-fr033-75927368-a-workspace",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr033-75927368-a-workspace: no such volume"
+    },
+    {
+      "round": 33,
+      "kind": "volume",
+      "name": "ab-sf-fr033-75927368-a-root-home",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr033-75927368-a-root-home: no such volume"
+    },
+    {
+      "round": 33,
+      "kind": "volume",
+      "name": "ab-sf-fr033-75927368-a-data",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr033-75927368-a-data: no such volume"
+    },
+    {
+      "round": 33,
+      "kind": "volume",
+      "name": "ab-sf-fr033-75927368-storage",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: get ab-sf-fr033-75927368-storage: no such volume"
+    },
+    {
+      "round": 33,
+      "kind": "network",
+      "name": "ab-sf-fr033-75927368-net",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: network ab-sf-fr033-75927368-net not found"
+    },
+    {
+      "round": 33,
+      "kind": "image",
+      "name": "autobyteus-shared-feasibility:fr-033",
+      "absent": true,
+      "exit": 1,
+      "missingObjectMessage": "Error response from daemon: No such image: autobyteus-shared-feasibility:fr-033"
+    }
+  ],
+  "exactAbsenceChecks": 270,
+  "allAbsent": true,
+  "originalApplicationImageRetained": true,
+  "scope": "Exact owned FR015\u2013033 Docker resources only; private Tart inventory/retirement separate in FR033/vm-final-cleanup.json. No global prune or user-node mutation.",
+  "priorCheckerDisposition": "sr010-resource-audit-initial.json retains initial case-sensitive message parser failure; corrected case-insensitive missing-object parsing and re-executed every exact command. No cleanup mutation/global prune."
+}

@@ -486,7 +486,7 @@ ordinary tree-row style: no border or tint at rest, `gray-50` hover, a 2px
 `indigo-500` `:focus-visible` ring, and the same selected treatment as a member
 row. A transient task-Team row uses an unboxed 16px `slate-500` filled
 people-group icon (`heroicons:user-group-20-solid`) and a semibold name. Team
-identity uses this group glyph regardless of configured, collaborator or delegated
+identity uses this group glyph regardless of configured or delegated
 role; existing image-first Team avatars remain unchanged. Project/Temp Task Team
 workers and Memory Team groups use the same glyph, retaining their existing sizes
 and Memory task-role boxes/colors. Unrelated capability icons, including the model
@@ -1023,44 +1023,86 @@ The saved-run view uses the start surfaces' visual language:
   models.
 - **Members** list for Teams and Orgs. Changing the team- or org-wide model
   updates every non-customized member, including members of placed teams.
-- **Collaborators and delegated copies**, for Agent, Team and Org runs that have
-  any: a second, read-only `RunMembersSection` under Members, with the
-  description "Started by agents in this run. Shown as they run; they cannot be
-  edited here."
+- **Delegated copies**, for Agent, Team and Org runs that have
+  any: a second `RunMembersSection` under Members, with the description "Started
+  by agents in this run. Stop one to change its model; its next message resumes it
+  on the new model."
   - **Rows.** The rows come from `utils/runSettings/delegatedLaunchRows.ts`
     (`teamDelegatedLaunchNodes`, `collaborationDelegatedLaunchNodes`), which builds
     `RunMemberNode`s with `runMemberTree.memberNode`. They are drawn with the same
     `RunMemberRow` as Members, so a copy looks like the run's own Members list.
-  - **Collapsed by default.** Each collaborator and open delegated copy is one
+  - **Collapsed by default.** Each open delegated copy is one
     row. Expansion is local to the section and starts empty. It looks the same
     for a running and a stopped run.
-  - **Row content.** A row shows a Collaborator or Delegated copy badge. Its
-    summary is `model · runtime · approval`, followed by its source label.
-  - **Notes on a collapsed Team.** A collapsed Team copy or collaborator whose
+  - **Row content.** A row shows a Delegated copy badge. Its
+    summary is `model · runtime · approval`, followed by its source label. A row
+    whose model the user chose (its own choice, or its Team's for a member that
+    follows the Team) shows its model like any edited member, with no source label.
+  - **Notes on a collapsed Team.** A collapsed Team copy whose
     agents have fallback notes also shows "Notes: N".
-  - **Opening a Team** shows its read-only settings card, then its Members:
+  - **Opening a Team** shows its settings card, then its Members:
     - the copy's coordinator carries the Coordinator chip;
     - a team-level fallback note is shown once, on the Team;
     - each member shows only its own notes;
-    - each member opens to its read-only settings card.
-  - **Opening an Agent** shows its read-only settings card.
+    - each member opens to its settings card.
+  - **Opening an Agent** shows its settings card.
+  - These cards are locked while the copy runs and editable while it is stopped
+    (see Editing below).
   - **Keys and names.** Rows are keyed `<address>@<run ID>`, because one address
-    can hold a collaborator and extra copies. Names follow Members: the role,
+    can hold several copies. Names follow Members: the role,
     else the last address segment.
   - **Source labels:**
     - Agent default;
     - Team default;
     - Inherited from the run;
-    - As configured in this run: a copy of a configured placement, or an extra
-      copy at a collaborator address. It has no recorded source and shows the
-      in-run placement's launch;
+    - As configured in this run: a copy of a configured placement. It has no
+      recorded source and shows the in-run placement's launch;
     - Source not recorded: a record from before sources were recorded.
   - **Fallback line.** A skipped default shows "{layer} {model} was not used:
     {detail}".
-  - **Effective values.** Member values come from the contract packages'
-    effective-member functions. A member's source is its own, else its Team's.
-  - **Locked.** Rows are never customized or required and have no reset
-    control.
+  - **Effective values.** Values come from the contract packages' copy launch
+    rule (`teamCopyAgentLaunch`, `collaborationCopyAgentLaunch`): the agent's own
+    choice, else its Team's when it follows the Team (`teamMemberFollowsTeam`;
+    for a copy of a configured Team, equal runtime, model and settings), else its
+    started value. This edit's choices are applied as they are made. A member's
+    source is its own, else its Team's.
+  - **Stop.** A running copy (any of its agents not offline) has
+    the run's red stop icon on its own row, never on one member of a Team. It
+    calls `delegatedLaunchDraftStore.stop` (`stopDelegatedExecution`): the copy and
+    the copies it started stop and stay restorable; the run keeps running. The same
+    action is on the copy's sidebar row (`DelegatedStopButton`), whose enabled
+    icon is red at rest, darker red on pale red when hovered, and red again on
+    leave, like all sidebar root Stops. Disabled/pending sidebar icons are muted
+    gray without the enabled-hover accent. Settings stop styling is unchanged.
+  - **Editing (SR-007).** While a copy is stopped (stopped by the user, idled out,
+    or the run is stopped), its rows edit the model and its settings like a stopped
+    run's member (`RunSettingsCard`; runtime, approval and workspace locked); a
+    Team row edits the Team's choice. While it runs, its model is locked with the
+    hint "Stop this copy to change its model." There is no separate reset: the
+    user picks the model again. Model menus list the copy's options
+    (`delegatedLaunchModelOptions`).
+  - **Save.** The changes join the run's Save bar
+    (`delegatedLaunchDraftStore`). On a stopped run they are saved with the run's
+    own changed models in one request (`updateDelegatedLaunchSelections` with
+    `configuredPatches`); a workspace change is saved on its own. A copy woken
+    before Save refuses the Save ("This copy is running. Stop it, then change its
+    model."). Right after Save the rows show the saved choice: Settings reads the
+    run's canonical settings again. A stopped Agent also rereads its collaboration
+    tree and closed-task list into the Settings snapshot; it does not depend on
+    an old live collaboration view. The current editor and expanded rows stay
+    mounted while the accepted model/config and Team followers are refreshed.
+    Save remains pending until that readback completes. A live run also publishes
+    the choice to its views (`DELEGATED_LAUNCH_SELECTIONS_CHANGED` on the Team stream,
+    `delegated_launch_selections_changed` on Org and Agent streams). The Team view
+    records it in place; Org and Agent views reload. Member conversations then
+    show the model the copy runs on.
+  - **Save recovery.** A rejected or failed write retains the edits for correction
+    or retry. If the write succeeds but canonical readback fails, Settings says
+    "Settings were saved, but could not be refreshed. Refresh before making more
+    changes." It locks editing and offers **Refresh** rather than showing stale
+    "Saved" or treating committed changes as unsaved. Refresh rereads the same
+    canonical snapshot without another Save or starting/resuming the run. Cancel
+    before Save writes nothing; repeated edits start from the accepted values.
   - **Closed copies.** Copies whose Task is DONE or CANCELLED, and everything
     under them, are left out.
   - **Refresh.** For a saved Team or Org run, a copy started while Settings is
@@ -1315,7 +1357,7 @@ the UI must not imply improver completion proves downstream improvement.
 
 **+** on a run starts another run like it, through `useRunStart`:
 
-- **Agent** (the Chat run view, including an `@` collaborator child's view):
+- **Agent** (the Chat run view, including a delegated child's view):
   `copyAgentFromConfig(displayed config)` opens New chat for the agent on
   screen, prefilled with its workspace (temp when it has none), runtime, model,
   `llmConfig` (thinking and other model settings) and tool approval.

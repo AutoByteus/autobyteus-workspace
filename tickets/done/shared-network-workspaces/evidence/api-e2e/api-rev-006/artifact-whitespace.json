@@ -1,0 +1,6 @@
+{
+  "rc": 2,
+  "stdout": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-006/go-race.log:342: trailing whitespace.\n+        \ntickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-006/go-race.log:345: trailing whitespace.\n+        \ntickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-006/go-race.log:359: trailing whitespace.\n+        \ntickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-006/go-race.log:360: trailing whitespace.\n+        \n",
+  "stderr": "",
+  "scope": "Raw logs preserved verbatim. Canonical docs whitespace clean, no production/test-code changes; any raw log diagnostics are evidence exceptions, not hidden source warnings."
+}

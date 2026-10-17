@@ -1,6 +1,13 @@
 import type { TranslationCatalog } from '../../runtime/types';
 
 const shellMessages = {
+  'shell.tokenUsage.throughput.title': "TPS",
+  'shell.tokenUsage.throughput.unit': "词元/秒",
+  'shell.tokenUsage.throughput.endToEndQualifier': "含首词元等待时间",
+  'shell.tokenUsage.throughput.helpTitle': "TPS 如何计算",
+  'shell.tokenUsage.throughput.generationHelp': "最近一次模型调用的输出词元数 ÷ 从首个流式输出到调用结束的时间（{seconds} 秒内 {tokens} 个词元）。不含等待首词元的时间和工具执行时间。",
+  'shell.tokenUsage.throughput.endToEndHelp': "最近一次模型调用的输出词元数 ÷ 从发送请求到调用结束的时间（{seconds} 秒内 {tokens} 个词元）。包含等待首词元的时间，因此低于纯生成速度。",
+  'shell.tokenUsage.throughput.generalHelp': "每次模型调用后更新。过短的调用会被跳过。重新加载后不保留。",
   'shell.pages.index.redirecting_to_chat': '正在打开对话...',
   'shell.navigation.chat': '对话',
   'shell.components.AppLeftPanel.new_chat': '新对话',

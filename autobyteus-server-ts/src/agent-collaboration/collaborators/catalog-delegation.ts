@@ -6,21 +6,17 @@ import type {
   TaskTeamExecutionSource,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { CatalogTaskSource } from "./collaborator-admission.js";
-import { CollaboratorAddError } from "./collaborator-errors.js";
-import { projectTaskSourceMember } from "./collaborator-source-projector.js";
-import type { SenderTeamInstance } from "./message-recipient-resolution.js";
+import { CollaboratorAddError, ownTeamDelegationRefusedMessage } from "./collaborator-errors.js";
 
-/** The index facts a root supplies for delegation inside a catalog Team copy. */
+/** The index fact a root supplies for the own-Team delegation rule (CM-1, DEC-008). */
 export interface DelegationSourceIndexPort {
-  teamInstancesOf(senderAgentRunId: string): readonly SenderTeamInstance[];
-  /** The recorded catalog source of a task Team copy; null for every other Team instance. */
-  instanceCatalogSource(teamRunId: string): TaskTeamExecutionSource | null;
+  isOwnTeamAddress(senderAgentRunId: string, address: AgentTeamAddress): boolean;
 }
 
 /**
  * A delegation target in any root: an Agent or Agent Team placement. `source` is present only
- * when the copy starts from a definition snapshot (a catalog definition, or a teammate inside
- * a catalog Team copy); otherwise the root resolves the source from its own placements.
+ * when the copy starts from a catalog definition snapshot; otherwise the root resolves the
+ * source from its own configured placements.
  * `launchNotes` are present only on a fresh catalog admission's placement (never on a snapshot
  * re-projection or an in-run placement), so a recorded fallback is never repeated as new.
  */
@@ -42,11 +38,11 @@ const sourcedPlacement = (address: AgentTeamAddress, source: TaskExecutionSource
 };
 
 /**
- * `delegate_task(address)` placement (DS-003), called inside the root gate:
- * 1. a teammate inside the sender's own catalog Team copy, from that copy's snapshot (REQ-007);
- * 2. the root's in-run placements (configured, then collaborator), unchanged;
- * 3. a listed catalog definition that is not in the run: a fresh copy with its source
- *    snapshot. No collaborator entry is created (Q-1).
+ * `delegate_task(address)` placement (DS-001), called inside the root gate:
+ * 1. CM-1: the sender itself, a teammate or its own Team is refused before any placement,
+ *    preparation or Task link, with guidance to use `send_message_to`;
+ * 2. the root's in-run configured placements, unchanged;
+ * 3. a listed catalog definition that is not in the run: a fresh copy with its source snapshot.
  * A catalog definition that cannot run returns its reason as a not-found delegation result.
  */
 export const resolveDelegationPlacement = async (input: Readonly<{
@@ -56,12 +52,8 @@ export const resolveDelegationPlacement = async (input: Readonly<{
   resolveInRun(): DelegationPlacement;
   catalogSource(): Promise<CatalogTaskSource | null>;
 }>): Promise<DelegationPlacement> => {
-  for (const instance of input.port.teamInstancesOf(input.senderAgentRunId)) {
-    if (!input.address.startsWith(`${instance.address}/`)) continue;
-    const snapshot = input.port.instanceCatalogSource(instance.teamRunId);
-    const member = snapshot ? projectTaskSourceMember(snapshot, input.address) : null;
-    if (member) return sourcedPlacement(input.address, member);
-    break;
+  if (input.port.isOwnTeamAddress(input.senderAgentRunId, input.address)) {
+    throw new CollaborationContractError("COLLABORATION_SELF_TARGET_REJECTED", ownTeamDelegationRefusedMessage(input.address));
   }
   try {
     return input.resolveInRun();

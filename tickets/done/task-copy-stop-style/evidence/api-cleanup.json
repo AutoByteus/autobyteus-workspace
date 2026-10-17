@@ -1,0 +1,26 @@
+{
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 10522,
+      "alive": false
+    },
+    {
+      "label": "frontend",
+      "pid": 10661,
+      "alive": false
+    }
+  ],
+  "ports": [
+    {
+      "url": "http://127.0.0.1:39187",
+      "listening": false
+    },
+    {
+      "url": "http://127.0.0.1:34289",
+      "listening": false
+    }
+  ],
+  "ownedRootExists": false,
+  "outerHomeExists": false
+}

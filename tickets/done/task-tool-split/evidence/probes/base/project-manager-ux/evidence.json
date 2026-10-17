@@ -1,0 +1,174 @@
+{
+  "startedAt": "2026-10-15T07:54:29.536Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PMU-002": {
+      "result": "Pass",
+      "description": "Agent root: live status, live move highlight, opening the worker, DONE → Offline muted",
+      "durationMs": 4303,
+      "details": {
+        "live": {
+          "state": "idle",
+          "openable": "true",
+          "tag": "BUTTON",
+          "name": "release notes writer pmuagent f524"
+        },
+        "done": {
+          "state": "offline",
+          "openable": "false",
+          "tag": "DIV",
+          "name": "release notes writer pmuagent f524"
+        },
+        "feed": {
+          "total": 18,
+          "byType": {
+            "project_upserted": 8,
+            "task_upserted": 7,
+            "task_worker_status": 3
+          }
+        },
+        "errors": []
+      }
+    },
+    "PMU-021": {
+      "result": "Pass",
+      "description": "Show Task in Projects, docked: picker switch (remembered after reload), centred / focused / 2.4 s highlight, center and selection unchanged, Temp tasks, Enter opens, back from an open Task, only the latest highlighted, search kept / cleared, keyboard Tab / Enter / Space; a row click (agent copy, Team copy) opens the copy and locates nothing",
+      "durationMs": 16862,
+      "details": {
+        "first": {
+          "path": "/chat?id=manager_pmulocate_0fbc_21da8aef0caa46c785859d5ca537836a",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_d690bccb-f05b-4095-9ca0-6c19bebeebc3",
+          "located": [
+            "project-task-row-project_task_cbd1e6ad-1245-4505-91c9-18a602e12ca5"
+          ],
+          "focused": "project-task-row-project_task_cbd1e6ad-1245-4505-91c9-18a602e12ca5"
+        },
+        "highlight": {
+          "centreOffset": 701,
+          "inView": false,
+          "atEdge": false,
+          "background": "rgb(238, 242, 255)",
+          "boxShadow": "rgb(99, 102, 241) 2px 0px 0px 0px inset",
+          "animation": "task-live-f1a92bd3"
+        },
+        "firstGeometry": {
+          "centreOffset": 40,
+          "inView": true,
+          "atEdge": true,
+          "background": "rgb(238, 242, 255)",
+          "boxShadow": "rgb(99, 102, 241) 2px 0px 0px 0px inset",
+          "animation": "task-live-f1a92bd3"
+        },
+        "afterHighlight": {
+          "path": "/chat?id=manager_pmulocate_0fbc_21da8aef0caa46c785859d5ca537836a",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_d690bccb-f05b-4095-9ca0-6c19bebeebc3",
+          "located": [],
+          "focused": "project-task-row-project_task_cbd1e6ad-1245-4505-91c9-18a602e12ca5"
+        },
+        "temp": {
+          "path": "/chat?id=manager_pmulocate_0fbc_21da8aef0caa46c785859d5ca537836a",
+          "docked": true,
+          "drawer": false,
+          "picker": "temp",
+          "located": [
+            "project-task-row-ad_hoc_task_793bd5ac-c76d-4d9d-98e9-ab8add77494b"
+          ],
+          "focused": "project-task-row-ad_hoc_task_793bd5ac-c76d-4d9d-98e9-ab8add77494b"
+        },
+        "fromOpenTask": {
+          "path": "/chat?id=manager_pmulocate_0fbc_21da8aef0caa46c785859d5ca537836a",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_d690bccb-f05b-4095-9ca0-6c19bebeebc3",
+          "located": [
+            "project-task-row-project_task_79870e76-2fcf-46a1-ab74-f16198d58fd9"
+          ],
+          "focused": "project-task-row-project_task_79870e76-2fcf-46a1-ab74-f16198d58fd9"
+        },
+        "twice": {
+          "path": "/chat?id=manager_pmulocate_0fbc_21da8aef0caa46c785859d5ca537836a",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_d690bccb-f05b-4095-9ca0-6c19bebeebc3",
+          "located": [
+            "project-task-row-project_task_79870e76-2fcf-46a1-ab74-f16198d58fd9"
+          ],
+          "focused": "project-task-row-project_task_79870e76-2fcf-46a1-ab74-f16198d58fd9"
+        },
+        "searchKept": "ship the copy",
+        "searchCleared": "",
+        "keyboardFocus": {
+          "test": "workspace-task-worker-task-summary",
+          "ring": "rgb(255, 255, 255) 0px 0px 0px 0px, rgb(99, 102, 241) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+        },
+        "pickerAfterReload": "project:project_d690bccb-f05b-4095-9ca0-6c19bebeebc3",
+        "rowClick": {
+          "path": "/chat?id=manager_pmulocate_0fbc_21da8aef0caa46c785859d5ca537836a",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_d690bccb-f05b-4095-9ca0-6c19bebeebc3",
+          "located": [],
+          "focused": null
+        },
+        "selectedSummaryColour": "rgb(67, 56, 202)",
+        "teamRowClick": {
+          "path": "/chat?id=manager_pmulocate_0fbc_21da8aef0caa46c785859d5ca537836a",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_d690bccb-f05b-4095-9ca0-6c19bebeebc3",
+          "located": [],
+          "focused": null
+        },
+        "teamSummaryStillLocates": {
+          "path": "/chat?id=manager_pmulocate_0fbc_21da8aef0caa46c785859d5ca537836a",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_d690bccb-f05b-4095-9ca0-6c19bebeebc3",
+          "located": [
+            "project-task-row-project_task_79870e76-2fcf-46a1-ab74-f16198d58fd9"
+          ],
+          "focused": "project-task-row-project_task_79870e76-2fcf-46a1-ab74-f16198d58fd9"
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 4547,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 4513,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [],
+  "feed": {
+    "total": 86,
+    "byType": {
+      "connected": 1,
+      "project_upserted": 36,
+      "task_upserted": 36,
+      "task_worker_status": 13
+    }
+  },
+  "stack": {
+    "backendUrl": "http://127.0.0.1:54863",
+    "frontendUrl": "http://127.0.0.1:54864",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-BZGFG5"
+  },
+  "browserVersion": "155.0.8059.41",
+  "warmup": {
+    "reloadsDuringWarmup": 1
+  },
+  "result": "Pass",
+  "finishedAt": "2026-10-15T07:55:23.168Z"
+}

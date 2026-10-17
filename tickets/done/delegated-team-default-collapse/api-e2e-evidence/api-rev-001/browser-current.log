@@ -1,0 +1,12 @@
+
+> autobyteus@1.5.3-beta.3 test:e2e:delegated-team-default-collapse /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/autobyteus-web
+> node tests/e2e/delegated-team-default-collapse-probe.mjs --output-dir /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/tickets/in-progress/delegated-team-default-collapse/api-e2e-evidence/api-rev-001/browser-current --ledger-file /home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/tickets/in-progress/delegated-team-default-collapse/api-e2e-test-case-ledger.md
+
+Seeding representative Task 1/7
+Seeding representative Task 2/7
+Seeding representative Task 3/7
+Seeding representative Task 4/7
+Seeding representative Task 5/7
+Seeding representative Task 6/7
+Seeding representative Task 7/7
+{"result":"Pass","cases":["B-001","P-001","B-002","B-003","B-004","B-006","B-005"],"errors":[],"cleanup":{"browserClosed":true,"frontend":{"pid":76285,"status":"terminated","exit":"SIGTERM"},"backend":{"pid":76163,"status":"terminated","exit":0},"dataRootRemoved":true,"backendPortClosed":true,"frontendPortClosed":true},"evidencePath":"/home/autobyteus/workspace/.codex/worktrees/delegated-team-default-collapse/tickets/in-progress/delegated-team-default-collapse/api-e2e-evidence/api-rev-001/browser-current/evidence.json"}

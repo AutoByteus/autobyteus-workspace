@@ -1,0 +1,52 @@
+[
+  {
+    "command": [
+      "python3",
+      "scripts/check_licensing.py"
+    ],
+    "exit": 0,
+    "stdout": "Licensing is consistent.\nTracked files scanned: 6556\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "python3",
+      "scripts/check_repository_artifact_hygiene.py"
+    ],
+    "exit": 0,
+    "stdout": "Repository artifact hygiene check passed.\nTracked files scanned: 62961\nPath-length threshold: 200\nLongest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "git",
+      "diff",
+      "--check",
+      "--cached"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "git",
+      "diff",
+      "--check",
+      "e22245f097c208e66065302cfc30814cc5ffd14f"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  }
+]

@@ -1,0 +1,252 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/data
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/data/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:57920
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:57920
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-pending-save-draft-preservation/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/data/db/probe.db"
+
+SQLite database probe.db created at file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/data/db/probe.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:32601) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 19 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+{"level":30,"time":1792085552505,"pid":32601,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:57945"}
+{"level":30,"time":1792085552530,"pid":32601,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:57920"}
+[2026-10-15T17:32:32.530Z] [INFO] [server.runtime] Server listening on 127.0.0.1:57920
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 35 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace.
+Created and registered workspace ID: agent_ws_06184242c5c7f7714a6b1fabbbf1c1ea0c804587c943c3b5cf2dd0349b1dbfd4
+Created WorkspaceFileExplorer for agent_ws_06184242c5c7f7714a6b1fabbbf1c1ea0c804587c943c3b5cf2dd0349b1dbfd4 (file-explorer-websocket).
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 5ad9a022-3fbb-4e91-bad3-62a245c453cb for workspace agent_ws_06184242c5c7f7714a6b1fabbbf1c1ea0c804587c943c3b5cf2dd0349b1dbfd4
+Created file explorer session 5ad9a022-3fbb-4e91-bad3-62a245c453cb for workspace agent_ws_06184242c5c7f7714a6b1fabbbf1c1ea0c804587c943c3b5cf2dd0349b1dbfd4. Active sessions: 1
+File explorer WebSocket connected: 5ad9a022-3fbb-4e91-bad3-62a245c453cb for workspace agent_ws_06184242c5c7f7714a6b1fabbbf1c1ea0c804587c943c3b5cf2dd0349b1dbfd4
+File explorer websocket attached for workspace agent_ws_06184242c5c7f7714a6b1fabbbf1c1ea0c804587c943c3b5cf2dd0349b1dbfd4
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace
+FileExplorerSession closed: 5ad9a022-3fbb-4e91-bad3-62a245c453cb
+Closed file explorer session 5ad9a022-3fbb-4e91-bad3-62a245c453cb. Active sessions: 0
+File explorer WebSocket disconnected: 5ad9a022-3fbb-4e91-bad3-62a245c453cb
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 04b49113-c61d-4b5d-b11a-55f98086b5d3 for workspace agent_ws_06184242c5c7f7714a6b1fabbbf1c1ea0c804587c943c3b5cf2dd0349b1dbfd4
+Created file explorer session 04b49113-c61d-4b5d-b11a-55f98086b5d3 for workspace agent_ws_06184242c5c7f7714a6b1fabbbf1c1ea0c804587c943c3b5cf2dd0349b1dbfd4. Active sessions: 1
+File explorer WebSocket connected: 04b49113-c61d-4b5d-b11a-55f98086b5d3 for workspace agent_ws_06184242c5c7f7714a6b1fabbbf1c1ea0c804587c943c3b5cf2dd0349b1dbfd4
+File explorer websocket attached for workspace agent_ws_06184242c5c7f7714a6b1fabbbf1c1ea0c804587c943c3b5cf2dd0349b1dbfd4
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace
+FileExplorerSession closed: 04b49113-c61d-4b5d-b11a-55f98086b5d3
+Closed file explorer session 04b49113-c61d-4b5d-b11a-55f98086b5d3. Active sessions: 0
+File explorer WebSocket disconnected: 04b49113-c61d-4b5d-b11a-55f98086b5d3
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: ab9f92dd-7b6f-471a-a02b-a7eaf9a6cf50 for workspace agent_ws_06184242c5c7f7714a6b1fabbbf1c1ea0c804587c943c3b5cf2dd0349b1dbfd4
+Created file explorer session ab9f92dd-7b6f-471a-a02b-a7eaf9a6cf50 for workspace agent_ws_06184242c5c7f7714a6b1fabbbf1c1ea0c804587c943c3b5cf2dd0349b1dbfd4. Active sessions: 1
+File explorer WebSocket connected: ab9f92dd-7b6f-471a-a02b-a7eaf9a6cf50 for workspace agent_ws_06184242c5c7f7714a6b1fabbbf1c1ea0c804587c943c3b5cf2dd0349b1dbfd4
+File explorer websocket attached for workspace agent_ws_06184242c5c7f7714a6b1fabbbf1c1ea0c804587c943c3b5cf2dd0349b1dbfd4
+Watcher detected modification: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace/psd001.txt
+Watcher detected modification: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace/psd001.txt
+Watcher detected modification: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace/psd002.txt
+Watcher detected modification: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace/psd002.txt
+Watcher detected modification: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace/psd003.txt
+Watcher detected modification: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace/psd003.txt
+Watcher detected modification: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace/psd004.txt
+Watcher detected modification: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace/psd004.txt
+Watcher detected modification: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace/psd005.txt
+Watcher detected modification: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace/psd006.txt
+Watcher detected modification: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace/psd008.txt
+Watcher detected modification: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace/psd010.txt
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-rDKIoD/workspace
+FileExplorerSession closed: ab9f92dd-7b6f-471a-a02b-a7eaf9a6cf50
+Closed file explorer session ab9f92dd-7b6f-471a-a02b-a7eaf9a6cf50. Active sessions: 0
+File explorer WebSocket disconnected: ab9f92dd-7b6f-471a-a02b-a7eaf9a6cf50
+[2026-10-15T17:32:58.052Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-10-15T17:32:58.065Z] [INFO] [server.runtime] Server closed cleanly.

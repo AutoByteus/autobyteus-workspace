@@ -1,0 +1,5 @@
+ [32m✓[39m tests/e2e/projects/delegated-copy-model-change.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 7649[2mms[22m[39m
+     [33m[2m✓[22m[39m DCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save [33m 3969[2mms[22m[39m
+     [33m[2m✓[22m[39m DCM-004: the standalone Agent root stops a copy, saves its choice and resumes it on that model [33m 1629[2mms[22m[39m
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m2 passed[39m[22m[90m (2)[39m

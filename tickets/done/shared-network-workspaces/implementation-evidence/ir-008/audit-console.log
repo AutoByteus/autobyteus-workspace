@@ -1,0 +1,21 @@
+{
+  "inputHead": "391d65a993fbb0ca891e043d6a7eea5e4981eebc",
+  "sourceCommit": "d65aeda24fc4b9a534a3941b194dd4a55b88c00c",
+  "classification": {
+    "task_size": "Large",
+    "architectural_risk": "High"
+  },
+  "unchangedInputCount": 1083,
+  "retainedIR005IR007FilesUnchanged": 15,
+  "oldDistFileCountUnchanged": 286,
+  "newIR008FilesVerified": 4,
+  "strictFunctionsUnchanged": [
+    "WriteGanesha",
+    "VerifyGanesha",
+    "EnsureGanesha",
+    "RemoveGaneshaConfiguration"
+  ],
+  "incomingReferencesRetained": 1041,
+  "defaultSourceHash": "ae8e023775c9f7ab060e469cc9770a34ccc1321a8ae9d338a95a70ae0cd15076",
+  "sameEngineSourceHash": "a6ef7dee582e9b4ba0edd7449bac4d292acfb944073502f0fb63bd8356653342"
+}

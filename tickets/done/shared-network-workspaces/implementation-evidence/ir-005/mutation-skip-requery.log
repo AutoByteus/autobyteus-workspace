@@ -1,0 +1,8 @@
+--- FAIL: TestUbuntuEmbeddedInstallAndFailureCleanup (0.19s)
+    --- FAIL: TestUbuntuEmbeddedInstallAndFailureCleanup/success (0.03s)
+        ubuntu_packages_test.go:110: no exact version requery [/usr/bin/dpkg-query -W -f=${Status} ${Version} nfs-common /usr/bin/dpkg-query -W -f=${Status} ${Version} nfs-ganesha /usr/bin/dpkg-query -W -f=${Status} ${Version} nfs-ganesha-vfs /usr/bin/systemctl is-active --quiet nfs-ganesha.service /usr/bin/systemctl daemon-reload /usr/bin/apt-get update /usr/bin/apt-get install --yes --no-install-recommends nfs-common=client-pin /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir005-b31e16r_/go-tmp/TestUbuntuEmbeddedInstallAndFailureCleanupsuccess970227986/001/engine-install-2063662701/nfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir005-b31e16r_/go-tmp/TestUbuntuEmbeddedInstallAndFailureCleanupsuccess970227986/001/engine-install-2063662701/nfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb /usr/bin/systemctl daemon-reload]
+    --- FAIL: TestUbuntuEmbeddedInstallAndFailureCleanup/requery (0.04s)
+        ubuntu_packages_test.go:107: requery <nil>
+FAIL
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/backend	0.641s
+FAIL

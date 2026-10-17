@@ -1,0 +1,38 @@
+{
+  "result": "Pass artifact integrity; canonical review remains Fail",
+  "referenceCount": 1003,
+  "incomingReferencesPreserved": true,
+  "unchangedUpstreamHashCount": 990,
+  "upstreamMismatches": [],
+  "priorCRR001Through009PrefixPreserved": true,
+  "priorPrefixBytes": 54209,
+  "priorPrefixSHA256": "bf789686c74d706565cb13f759ed08acabe912d0c5fa6afd1e0644fb112376c4",
+  "reviewerOnlyTrackedChanges": [
+    "tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-010/audit-console.log",
+    "tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-010/audit-failure-package.py",
+    "tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-010/checks-and-limits.md",
+    "tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-010/engine-source-audit.json",
+    "tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-010/execution-evidence-review.json",
+    "tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-010/final-checks.json",
+    "tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-010/finalize-review.py",
+    "tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-010/input-audit.json",
+    "tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-010/package-index.json",
+    "tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-010/primary-contracts.md",
+    "tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-010/routing.json",
+    "tickets/in-progress/shared-network-workspaces/code-review-report.md",
+    "tickets/in-progress/shared-network-workspaces/code-review-revision-record.md"
+  ],
+  "authoredWhitespace": "Pass",
+  "jsonErrors": [],
+  "pythonSyntax": "Pass",
+  "sourceOrDurableTestChange": false,
+  "runtimeResourcesCreated": false,
+  "reviewerCleanup": "N/A - no runtime resources created",
+  "apiCleanup": "Inherited API004 Complete; not a new teardown",
+  "generatedOutputLimit": "Five prior untracked dist trees retained/unstaged; no hash identity claim",
+  "noLiveValidationClaim": true,
+  "routing": {
+    "when": "When review identifies a Design Impact, Requirement Gap, or Unclear issue that requires upstream requirements or design revision.",
+    "recipient_address": "/software_engineering_team/solution_designer"
+  }
+}
