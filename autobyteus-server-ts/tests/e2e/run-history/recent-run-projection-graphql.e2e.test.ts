@@ -20,10 +20,10 @@ import { AgentRunActivationRegistry } from "../../../src/agent-execution/runtime
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
+import { RootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
-import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
-import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
+import { testAgentNode, testExecutionTree, writeCurrentTeamRunPackage } from "../../fixtures/current-team-run-fixtures.js";
 import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
 
 const GRAPHQL_QUERY = `
@@ -303,6 +303,9 @@ describe("recent run projection GraphQL e2e", () => {
   });
 
   const execGraphql = async <T>(query: string, variables: Record<string, unknown>): Promise<T> => {
+    // Cases seed run packages directly into a fresh memory dir (beforeEach): admit what is on disk now, in the readiness
+    // state the history services share, as the app does at startup.
+    await new RootRunPackageReadinessIndex(memoryDir).rebuild();
     const result = await graphql({ schema, source: query, variableValues: variables });
     if (result.errors?.length) throw result.errors[0];
     return result.data as T;
@@ -335,7 +338,7 @@ describe("recent run projection GraphQL e2e", () => {
       rootTeamRunId: input.teamRunId,
       ancestorTeamRunIds: [],
     });
-    await new TeamRunExecutionTreeStore().write(rootDir, testExecutionTree({
+    await writeCurrentTeamRunPackage(rootDir, testExecutionTree({
       rootTeamRunId: input.teamRunId,
       rootTeamDefinitionId: "recent-window-team-definition",
       teamDefinitionName: "Recent Window Team",
@@ -723,6 +726,11 @@ describe("recent run projection GraphQL e2e", () => {
     const files = await archivePrefix(memberDir, "page-team", rows);
     await writeJsonl(files.activePath, rows);
     const archiveHashBefore = await sha256(files.archivePath);
+    // Another subject: an admitted standalone run, to present the member's cursor to.
+    const otherRunId = "active-page-275-other-subject";
+    const otherRunDir = path.join(memoryDir, "agents", otherRunId);
+    await writeStandaloneMetadata(otherRunId, otherRunDir);
+    await writeJsonl(path.join(otherRunDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME), rows.slice(0, 3));
 
     const reads = trackRawTraceReads();
     const pages: ActiveTracePagePayload[] = [];
@@ -746,8 +754,13 @@ describe("recent run projection GraphQL e2e", () => {
 
       await expect(execGraphql(
         STANDALONE_ACTIVE_TRACE_PAGE_QUERY,
-        { runId: memberRunId, beforeCursor: pages[0]?.beforeCursor },
+        { runId: otherRunId, beforeCursor: pages[0]?.beforeCursor },
       )).rejects.toThrow("does not belong to this run subject");
+      // A team member is not a standalone run: the standalone query refuses its id outright.
+      await expect(execGraphql(
+        STANDALONE_ACTIVE_TRACE_PAGE_QUERY,
+        { runId: memberRunId, beforeCursor: pages[0]?.beforeCursor },
+      )).rejects.toThrow(`Run package 'agent:${memberRunId}' is unavailable`);
     } finally {
       reads.restore();
     }
