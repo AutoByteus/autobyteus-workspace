@@ -647,7 +647,8 @@ const leftPanelAcrossPages = async () => {
         await page.locator(`[data-test="agent-org-definition-${slug(names.org)}"]`).click();
         await page.locator(`[data-test="agent-org-run-open-${root.rootId}"]`).click();
       }
-      const member = kind === 'team' ? page.locator(`[data-test="workspace-team-member-${root.rootId}-/worker"]`)
+      // The Team's only member is its coordinator /manager (its worker and helper are catalog Agents, see createDefinitions).
+      const member = kind === 'team' ? page.locator(`[data-test="workspace-team-member-${root.rootId}-/manager"]`)
         : page.locator(`[data-test="agent-org-agent-row-${root.managerRunId}"]`);
       await member.waitFor({ timeout: 30000 });
       await member.click();
