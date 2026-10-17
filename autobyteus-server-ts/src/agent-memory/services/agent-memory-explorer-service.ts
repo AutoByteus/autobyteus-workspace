@@ -42,6 +42,18 @@ const workspaceOf = (run: AgentRunRecord): string | null =>
 const createdAtOf = (run: AgentRunRecord): string | null =>
   run.catalogRow?.createdAt ?? run.metadata?.startedAt ?? run.metadata?.preparedAt ?? run.taskAgent?.startedAt ?? null;
 
+/** Resolves an agent definition's display name; `null` when the definition can no longer be found. */
+type AgentDefinitionLookup = {
+  getAgentDefinitionById(agentDefinitionId: string): Promise<{ name?: string | null } | null>;
+};
+
+const PROCESS_AGENT_DEFINITIONS: AgentDefinitionLookup = {
+  getAgentDefinitionById: async (agentDefinitionId) => {
+    const { AgentDefinitionService } = await import("../../agent-definition/services/agent-definition-service.js");
+    return AgentDefinitionService.getInstance().getAgentDefinitionById(agentDefinitionId);
+  },
+};
+
 type AgentGroup = {
   attribution: AgentMemoryAttribution;
   agentDefinitionId: string | null;
@@ -54,6 +66,7 @@ export class AgentMemoryExplorerService {
   private readonly metadataStore: AgentRunMetadataStore;
   private readonly catalogService: AgentRunHistoryCatalogService;
   private readonly summaryBuilder: MemoryRunSummaryBuilder;
+  private readonly agentDefinitions: AgentDefinitionLookup;
   private readonly memoryDir: string;
 
   constructor(
@@ -63,12 +76,14 @@ export class AgentMemoryExplorerService {
       metadataStore?: AgentRunMetadataStore;
       catalogService?: AgentRunHistoryCatalogService;
       summaryBuilder?: MemoryRunSummaryBuilder;
+      agentDefinitions?: AgentDefinitionLookup; // default: the process agent definition service
     } = {},
   ) {
     this.memoryDir = memoryDir;
     this.metadataStore = dependencies.metadataStore ?? new AgentRunMetadataStore(memoryDir);
     this.catalogService = dependencies.catalogService ?? new AgentRunHistoryCatalogService(memoryDir);
     this.summaryBuilder = dependencies.summaryBuilder ?? new MemoryRunSummaryBuilder(store);
+    this.agentDefinitions = dependencies.agentDefinitions ?? PROCESS_AGENT_DEFINITIONS;
   }
 
   async listAgentsWithMemory(
@@ -144,7 +159,23 @@ export class AgentMemoryExplorerService {
       group.runs.push(run);
     }
 
+    // A group no history row names (e.g. only task agents, which G1 keeps out of the history) shows its
+    // definition's name; the id only when the definition can no longer be found (D-5, DEC-018).
+    for (const group of groups.values()) {
+      if (group.agentDefinitionId && group.displayName === group.stableId) {
+        group.displayName = await this.definitionName(group.agentDefinitionId);
+      }
+    }
     return Array.from(groups.values());
+  }
+
+  private async definitionName(agentDefinitionId: string): Promise<string> {
+    try {
+      return (await this.agentDefinitions.getAgentDefinitionById(agentDefinitionId))?.name?.trim() || agentDefinitionId;
+    } catch (error) {
+      console.warn(`Failed reading agent definition '${agentDefinitionId}' for memory explorer: ${String(error)}`);
+      return agentDefinitionId;
+    }
   }
 
   private async readCatalogRowsByRunId(): Promise<Map<string, RunHistoryIndexRow>> {

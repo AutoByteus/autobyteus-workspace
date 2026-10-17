@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Solution Designer / design-spec.md (SR-009), ARCH-REV-004 Pass / round 1 | N/A | `Initial Baseline` | SR-009, ARCH-REV-004 | Implemented D-1..D-10 and U-1..U-5; ready for Code Review |
 | IR-002 | Code Reviewer / code-review-report.md / CRR-001 round 1 | CR-001, CR-002, CR-003 | `Local Fix` | SR-009, ARCH-REV-004, CRR-001 | Unused declarations removed; one task-agent metadata parse path; team own-file placement recorded; unreadable coordinating tree warned |
+| IR-003 | Code Reviewer / code-review-report.md / CRR-005 (requirement refinement DEC-018) | CR-004 | `Local Fix` | SR-009, ARCH-REV-004, CRR-005 | Memory page group shows the definition's name when no history row names it; id only when the definition is gone |
 
 ## Revision Entries
 
@@ -54,3 +55,23 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Local validation and result: build typecheck clean; unused-declaration check clean for touched files; unit 715 files passed; integration green apart from the 2 pre-existing agent-status failures.
 - Next recipient or routing: Code Reviewer (Targeted Delta Review of CR-001..CR-003).
 - Remaining limitations or risks: unchanged from IR-001 (AC-016 journey for API/E2E; the "Dilan principle" question).
+
+### IR-003 — Memory page group name from the agent definition (DEC-018)
+
+- Triggering role, report path, and round: Code Reviewer, `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/tickets/in-progress/delegated-copy-own-run-memory/code-review-report.md`, CRR-005 (Fail — Local Fix), after the Solution Designer's DEC-018 (requirements-doc.md).
+- Triggering finding IDs: CR-004
+- Classification: `Local Fix`
+- Prior authoritative result: IR-002 (CRR-002 Pass).
+- Current authoritative result: IR-002 plus the group display name from the definition; classification unchanged (Large / High).
+- Related solution revision IDs: SR-009 (DEC-017, DEC-018 recorded in requirements-doc.md)
+- Related architecture-review revision IDs: ARCH-REV-004
+- Related code-review revision IDs: CRR-005
+- Related API/E2E revision IDs: N/A (API/E2E reruns the Memory page check after review)
+- Related delivery revision IDs: N/A
+- Why this implementation revision is recorded: DEC-018 refines D-5; a task-agent-only group showed the definition id because task agents have no history row (G1).
+- Approved behavior or requirement IDs affected: D-5, REQ-010, AC-013, DEC-018.
+- Implementation delta: `AgentMemoryExplorerService` takes an optional `agentDefinitions` lookup (default: the process `AgentDefinitionService`, loaded lazily as the history catalog does); after grouping, a definition group no history row names gets the definition's name, the id when the definition is not found, and the id with a warning if the lookup fails.
+- Changed files or areas: `autobyteus-server-ts/src/agent-memory/services/agent-memory-explorer-service.ts`; `autobyteus-server-ts/tests/unit/agent-memory/agent-memory-explorer-task-agents.test.ts`; `implementation-handoff.md`.
+- Local validation and result: build typecheck clean; agent-memory, memory-sync and graphql unit folders 41 files / 213 tests passed.
+- Next recipient or routing: Code Reviewer (Targeted Delta Review of CR-004).
+- Remaining limitations or risks: AC-020's locator sub-case is verified by composition (DEC-017); the full unit suite was not rerun for this change.

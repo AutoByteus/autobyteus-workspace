@@ -28,16 +28,16 @@ agents, and the readiness check skips task-agent folders. Deleting a run keeps i
 migration `20261017_task_agent_own_run_v1` brings existing data to the new layout. Released migrations
 were repointed to frozen copies first (D-9). Current-code names no longer carry version numbers (D-10).
 
-- Implementation cycle: `Rework` (IR-002: Local Fix for CRR-001 CR-001..CR-003; IR-001 initial baseline)
+- Implementation cycle: `Rework` (IR-003: Local Fix for CRR-005 CR-004; IR-002: CRR-001 CR-001..CR-003; IR-001 initial baseline)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/tickets/in-progress/delegated-copy-own-run-memory/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
+- Current implementation revision ID: `IR-003`
 - Related solution revision IDs: `SR-009` (cumulative SR-005..SR-009)
 - Related architecture-review revision IDs: `ARCH-REV-004`
-- Related code-review revision IDs: `CRR-001` (Fail, Local Fix)
+- Related code-review revision IDs: `CRR-001` (Fail, Local Fix), `CRR-002` (Pass), `CRR-005` (Fail, Local Fix: DEC-018)
 - Related API/E2E / delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-001`, `CR-002`, `CR-003` (IR-002)
+- Triggering finding IDs: `CR-004` (IR-003); `CR-001`, `CR-002`, `CR-003` (IR-002)
 - Commits: `8bbd081c8d` (D-10 renames), `5a5359e707` (D-9 frozen copies), and the behavior commit on top
-  (D-1..D-8, tests, docs, web text and ticket artifacts) is `6bcb206e4e`; the IR-002 local fix is the commit after it.
+  (D-1..D-8, tests, docs, web text and ticket artifacts) is `6bcb206e4e`; the IR-002 and IR-003 local fixes follow it.
 
 ## Routing Classification (Mandatory)
 
@@ -61,7 +61,7 @@ were repointed to frozen copies first (D-9). Current-code names no longer carry 
 | D-2 / DS-008; REQ-001, REQ-002; AC-001, AC-002 | One placement rule: run part, task agent (`agents/<id>/`), task-team member (`agent_teams/<team>/<id>/`) | `agent-memory/domain/agent-run-memory-placement.ts`, `AgentMemoryLayout.getAgentRunMemoryDirPath`, `agent-run-memory-locator.ts` (replaces `rooted-agent-memory-locator.ts`), handles and registries (`memoryPlacement`), `TeamRunContext.teamKind` / `memberMemoryPlacement`, the indexes' `getMemoryPlacementForAgent`, the location services, the adapters' restore checks | Implemented. Writers decide the placement at construction; readers take it from the index chain. Both use the same module |
 | D-3 / REQ-005; AC-005, AC-017 | G1 (metadata with `taskAgent` is not a standalone run), G2 (a team tree with `taskAgent` is not a team run); task-agent readers / writers | `agent-run-metadata-store.ts` (`readMetadataState` G1, `readTaskAgentMetadata(State)`, `writeTaskAgentMetadata`), `team-run-execution-tree-store.ts` (G2 in `read` / `readSync`, `isTaskAgentTeamDir`) | Implemented. The guards sit in the readers, so every existing caller (listing, admission, restore, offline repair, stale-prepared cleanup) gets them without a code change |
 | D-4 / BEH-009; REQ-011; AC-014, AC-021 | Email model: once within a run, in both logs across runs; receiver's log first; append never rewrites; composed read de-duplicated and filtered to loaded endpoints | `run-history/store/task-agent-message-logs.ts`, message stores `team-communication-store.ts`, `agent-org-communication-messages-store.ts`, standalone store `appendMessage` / `readMessages`; `PreparedTeamMessageCommit.logOwners`, append plan `resolveLogOwners`, adapters' `messageLogOwnerOf` | Implemented. A failure after the first log is durable surfaces as `renamed_finalization_indeterminate`, which is today's fail-stop path. Unit: `task-agent-message-logs.test.ts` |
-| D-5 / BEH-006; REQ-010; AC-013 | Memory page lists task agents under their definition; detached ones not listed | `agent-memory/services/agent-memory-explorer-service.ts`, `run-history/store/task-agent-link-check.ts` | Implemented. A coordinating tree that cannot be read links nothing; its task agents are skipped with one warning naming the run (CR-003, rule 7). Unit: `agent-memory-explorer-task-agents.test.ts` |
+| D-5 / BEH-006; REQ-010; AC-013 | Memory page lists task agents under their definition; detached ones not listed | `agent-memory/services/agent-memory-explorer-service.ts`, `run-history/store/task-agent-link-check.ts` | Implemented. A coordinating tree that cannot be read links nothing; its task agents are skipped with one warning naming the run (CR-003, rule 7). A group no history row names (e.g. task agents only) shows its definition's name from the agent definition service; the id only when the definition is not found (DEC-018, CR-004). Unit: `agent-memory-explorer-task-agents.test.ts` |
 | D-6 / readiness | Task-agent folders are not root candidates | `run-history/services/root-run-package-current-validator.ts` | Implemented. Deviation 1 below |
 | D-7 / BEH-007; REQ-009; AC-012 | Delete keeps task agents; the confirmation says so | delete removes only the run's own folder (no code path reaches the L1 folders); web text `useWorkspaceHistoryMutations.ts`, `localization/messages/{en,zh-CN}/workspace.ts` | Implemented |
 | D-8 / BEH-008; REQ-006, REQ-007, REQ-012, REQ-014, REQ-017, REQ-018; AC-008..AC-011, AC-015, AC-020, AC-021 | Startup migration with per-run input gate, rename, reduce (L4), merge logs, dispositions, per-run containment | `app-data-migrations/migrations/task-agent-own-run-v1/` (`released-coordinating-trees.ts`, `coordinating-run-migration.ts`, `task-agent-own-run-v1-app-data-migration.ts`), registered last | Implemented. Unit: `task-agent-own-run-v1-app-data-migration.test.ts` (every shape, second start, interruption at each step, F-RERUN-MSG, F-PENDING-FAILED, unreadable log). Built-server: `collaborators-to-delegated-runs-startup.e2e.test.ts` runs collaborators-v1 then ours in one start (the F-PENDING path) |
@@ -224,6 +224,12 @@ kept. The web search found only test data (`report_v1`).
 - E2E runs used a clean environment: `env -i PATH HOME=<tmp> TMPDIR=<tmp>`.
 
 ## Local Implementation Checks Run
+
+IR-003 (after CRR-005 / DEC-018): build typecheck 0 errors; no new test-typecheck error in the changed test;
+`vitest run tests/unit/agent-memory tests/unit/memory-sync tests/unit/api/graphql` 41 files / 213 tests
+passed. New case: a task-agent-only group shows the definition's name ("Code Reviewer") and a group whose
+definition is gone shows its id. The full unit suite was not rerun for this one-file change (stopped at the
+user's request); the IR-002 run was 715 files green.
 
 IR-002 (after CRR-001): build typecheck 0 errors; the `--noUnusedLocals --noUnusedParameters` check clean for
 touched files; server unit 715 files passed, 4 skipped (5775 tests); integration 75 passed, 1 file with the

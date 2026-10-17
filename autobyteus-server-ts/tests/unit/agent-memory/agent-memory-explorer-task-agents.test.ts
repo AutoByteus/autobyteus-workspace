@@ -56,6 +56,26 @@ describe("Memory page Agents list with task agents (D-5)", () => {
     expect((await service.listAgentsWithMemory("reviews")).entries.map((group) => group.agentDefinitionId)).toEqual(["code-reviewer"]);
   });
 
+  it("shows a task-agent-only group under its definition's name, and the id only when the definition is gone (DEC-018)", async () => {
+    memory = fs.mkdtempSync(path.join(os.tmpdir(), "agent-memory-explorer-task-agents-"));
+    const retired = { ...copy("retired-copy"), source: { ...copy("retired-copy").source, agentDefinitionId: "retired-agent" } };
+    await new StandaloneRootPackageStore().writeTree(new AgentMemoryLayout(memory).getAgentRunCollaborationDirPath("hub"), validateStandaloneRootTreePayload({
+      ...emptyStandaloneRootTree({ host: { address: "/assistant" as never, agentRunId: "hub", agentDefinitionId: "assistant" }, createdAt: T0 }),
+      taskExecutions: [copy("reviewer-copy"), retired],
+    }, "hub"));
+    for (const runId of ["reviewer-copy", "retired-copy"]) touch(path.join(memory, "agents", runId, "raw_traces_active.jsonl"), 1000);
+    const definitions: Record<string, { name: string }> = { "code-reviewer": { name: "Code Reviewer" } };
+    const service = new AgentMemoryExplorerService(new MemoryFileStore(memory), memory, {
+      agentDefinitions: { getAgentDefinitionById: async (id) => definitions[id] ?? null },
+    });
+
+    const groups = (await service.listAgentsWithMemory()).entries;
+    expect(groups.map((group) => [group.agentDefinitionId, group.displayName]).sort())
+      .toEqual([["code-reviewer", "Code Reviewer"], ["retired-agent", "retired-agent"]]);
+    // The name is searchable like any other group's name.
+    expect((await service.listAgentsWithMemory("Code Reviewer")).entries.map((group) => group.agentDefinitionId)).toEqual(["code-reviewer"]);
+  });
+
   it("skips the task agents of a coordinating run whose tree cannot be read, with one warning naming the run (rule 7)", async () => {
     memory = fs.mkdtempSync(path.join(os.tmpdir(), "agent-memory-explorer-task-agents-"));
     const dir = new AgentMemoryLayout(memory).getAgentRunCollaborationDirPath("hub");
