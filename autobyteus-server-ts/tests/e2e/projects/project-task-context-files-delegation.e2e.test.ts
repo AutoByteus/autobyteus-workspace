@@ -24,7 +24,7 @@ const enabled = process.env.RUN_AGY_FAILURE_E2E === "1"
 const suite = enabled ? describe : describe.skip;
 
 type Frame = { type: string; payload: Record<string, any> };
-const PROJECT_TOOLS = ["list_projects", "list_project_tasks", "create_or_update_project", "create_task", "update_task"];
+const PROJECT_TOOLS = ["list_projects", "list_project_tasks", "create_project", "update_project", "create_task", "update_task"];
 const AD_HOC_ID = /ad_hoc_task_[0-9a-f-]{36}/;
 const PNG = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64");
 const segment = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");

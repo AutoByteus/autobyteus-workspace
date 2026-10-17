@@ -146,7 +146,7 @@ const gql = async (query, variables = {}) => {
 };
 const workspace = () => path.join(stack.dataRoot, 'workspace');
 const config = () => ({ workspaceRootPath: workspace(), llmModelIdentifier: 'gemini-3.8-flash-low', llmConfig: null, autoExecuteTools: true, runtimeKind: 'antigravity_cli' });
-const MANAGER_TOOLS = ['list_projects', 'list_project_tasks', 'create_or_update_project', 'create_task', 'update_task'];
+const MANAGER_TOOLS = ['list_projects', 'list_project_tasks', 'create_project', 'update_project', 'create_task', 'update_task'];
 const createDefinitions = async (label) => {
   const s = `${label} ${randomUUID().slice(0, 4)}`;
   const agent = async (name, toolNames) => (await gql('mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}',
