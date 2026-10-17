@@ -83,6 +83,11 @@ export class AgentTurnRunner {
             consecutiveOutputLimitStops = 0;
             nextInput = await this.runToolStep(llmOutcome, completedToolResultsForInterruptedProjection);
             continue;
+          default: {
+            // A new LlmPhaseOutcome without a handler is a compile error here, never a silent re-run.
+            const unhandled: never = llmOutcome;
+            throw new Error(`Unhandled LLM outcome: ${JSON.stringify(unhandled)}`);
+          }
         }
       }
     } catch (error) {
