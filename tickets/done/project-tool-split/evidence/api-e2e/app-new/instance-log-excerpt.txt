@@ -1,0 +1,28 @@
+[2026-10-17T08:08:10.827Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_project'
+[2026-10-17T08:08:10.827Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'update_project'
+[2026-10-17T08:08:10.827Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_or_update_project'
+[2026-10-17T08:08:10.830Z] [ERROR] [electron.embedded-server.stderr] Overwriting existing tool definition for name: 'search_web'
+[60922:1017/100827.327661:ERROR:content/browser/network_service_instance_impl.cc:703] Network service crashed or was terminated, restarting service.
+[60922:1017/100827.331703:ERROR:content/browser/gpu/gpu_process_host.cc:998] GPU process exited unexpectedly: exit_code=15
+[2026-10-17T08:08:41.210Z] [ERROR] [electron.embedded-server.stderr] ┌─────────────────────────────────────────────────────────┐
+[2026-10-17T08:08:41.210Z] [ERROR] [electron.embedded-server.stderr] │  Update available 5.22.0 -> 8.0.0-rc.23                 │
+[2026-10-17T08:08:41.211Z] [ERROR] [electron.embedded-server.stderr] │                                                         │
+[2026-10-17T08:08:41.211Z] [ERROR] [electron.embedded-server.stderr] │  This is a major update - please follow the guide at    │
+[2026-10-17T08:08:41.211Z] [ERROR] [electron.embedded-server.stderr] │  https://pris.ly/d/major-version-upgrade                │
+[2026-10-17T08:08:41.211Z] [ERROR] [electron.embedded-server.stderr] │                                                         │
+[2026-10-17T08:08:41.211Z] [ERROR] [electron.embedded-server.stderr] │  Run the following to update                            │
+[2026-10-17T08:08:41.211Z] [ERROR] [electron.embedded-server.stderr] │    npm i --save-dev prisma@latest                       │
+[2026-10-17T08:08:41.211Z] [ERROR] [electron.embedded-server.stderr] │    npm i @prisma/client@latest                          │
+[2026-10-17T08:08:41.211Z] [ERROR] [electron.embedded-server.stderr] └─────────────────────────────────────────────────────────┘
+[2026-10-17T08:08:41.372Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_project'
+[2026-10-17T08:08:41.372Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'update_project'
+[2026-10-17T08:08:41.372Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_or_update_project'
+[2026-10-17T08:08:41.374Z] [ERROR] [electron.embedded-server.stderr] Overwriting existing tool definition for name: 'search_web'
+[2026-10-17T08:08:58.939Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-4ZMpwM/server-data/memory/agents/pts_new_tools_824da22573284e27a06be8f416c8425c/raw_traces_active.jsonl
+[2026-10-17T08:09:04.519Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-4ZMpwM/server-data/memory/agents/pts_old_tool_7adf68be50504b108881cb6a6531fb0d/raw_traces_active.jsonl
+[2026-10-17T08:09:08.346Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-4ZMpwM/server-data/memory/agents/pts_transition_019892f19a98492d8f8a055f4d514907/raw_traces_active.jsonl
+[2026-10-17T08:09:10.637Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-4ZMpwM/server-data/memory/agents/pts_no_project_tool_8b7bee80db1e4d7fa5b790d5d019f5ea/raw_traces_active.jsonl
+[2026-10-17T08:09:12.816Z] [WARN] [electron.embedded-server.stderr] (node:67656) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: list_projects, mcp__autobyteus_agent_tools__list_projects, create_project, mcp__autobyteus_agent_tools__create_project, update_project, mcp
+[2026-10-17T08:09:12.816Z] [ERROR] [electron.embedded-server.stderr] (Use `AutoByteus --trace-warnings ...` to show where the warning was created)
+[2026-10-17T08:09:19.875Z] [WARN] [electron.embedded-server.stderr] (node:67656) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: list_projects, mcp__autobyteus_agent_tools__list_projects, create_or_update_project, mcp__autobyteus_agent_tools__create_or_update_project,
+[2026-10-17T08:11:02.718Z] [ERROR] [electron.embedded-server.stderr] Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed

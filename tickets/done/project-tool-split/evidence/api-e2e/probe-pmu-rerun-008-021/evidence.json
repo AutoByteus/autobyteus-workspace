@@ -1,0 +1,180 @@
+{
+  "startedAt": "2026-10-17T07:12:18.446Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PMU-008": {
+      "result": "Fail",
+      "description": "AC-012/013: left panel kept across Chat, Projects, board and Task page; run, Team member and Org rows open from Projects",
+      "durationMs": 36085,
+      "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-team-member-delivery_team_pmuleft_e093_cfc7b473c2dc431da86708bf6d194129-/worker\"]') to be visible\n",
+      "pages": [
+        {
+          "url": "http://127.0.0.1:51858/workspace",
+          "center": "M\nmanager\nOffline\nContext Files (0)\n(drag, paste, or upload)",
+          "console": [
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Workspace.vue: Mounted. Fetching server settings and loading profiles...",
+            "log: [useTerminalSession] Connecting to: ws://127.0.0.1:51857/ws/terminal/5c3ba459-d80c-46bd-af45-2901842c3199",
+            "log: [useTerminalSession] Connected",
+            "log: Agent WebSocket connected",
+            "log: Team WebSocket transport connected",
+            "log: [useTerminalSession] Disconnected: 1005 ",
+            "log: serverStore: Checking server health at /rest/health",
+            "log: Workspace.vue: Mounted. Fetching server settings and loading profiles...",
+            "log: Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+          ]
+        }
+      ]
+    },
+    "PMU-021": {
+      "result": "Pass",
+      "description": "Show Task in Projects, docked: picker switch (remembered after reload), centred / focused / 2.4 s highlight, center and selection unchanged, Temp tasks, Enter opens, back from an open Task, only the latest highlighted, search kept / cleared, keyboard Tab / Enter / Space; a row click (agent copy, Team copy) opens the copy and locates nothing",
+      "durationMs": 19450,
+      "details": {
+        "first": {
+          "path": "/chat?id=manager_pmulocate_8011_bc5408181f5043798c8231bfb508e8ac",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_52e02f8d-cbb3-4b0c-a58a-15ccdd297614",
+          "located": [
+            "project-task-row-project_task_c9ea9830-f1de-465c-bf81-4d3be46b173e"
+          ],
+          "focused": "project-task-row-project_task_c9ea9830-f1de-465c-bf81-4d3be46b173e"
+        },
+        "highlight": {
+          "centreOffset": 710,
+          "inView": false,
+          "atEdge": false,
+          "background": "rgb(238, 242, 255)",
+          "boxShadow": "rgb(99, 102, 241) 2px 0px 0px 0px inset",
+          "animation": "task-live-f1a92bd3"
+        },
+        "firstGeometry": {
+          "centreOffset": 40,
+          "inView": true,
+          "atEdge": true,
+          "background": "rgb(238, 242, 255)",
+          "boxShadow": "rgb(99, 102, 241) 2px 0px 0px 0px inset",
+          "animation": "task-live-f1a92bd3"
+        },
+        "afterHighlight": {
+          "path": "/chat?id=manager_pmulocate_8011_bc5408181f5043798c8231bfb508e8ac",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_52e02f8d-cbb3-4b0c-a58a-15ccdd297614",
+          "located": [],
+          "focused": "project-task-row-project_task_c9ea9830-f1de-465c-bf81-4d3be46b173e"
+        },
+        "temp": {
+          "path": "/chat?id=manager_pmulocate_8011_bc5408181f5043798c8231bfb508e8ac",
+          "docked": true,
+          "drawer": false,
+          "picker": "temp",
+          "located": [
+            "project-task-row-ad_hoc_task_eb17a815-3b14-4e16-8c83-51b8255dfb49"
+          ],
+          "focused": "project-task-row-ad_hoc_task_eb17a815-3b14-4e16-8c83-51b8255dfb49"
+        },
+        "fromOpenTask": {
+          "path": "/chat?id=manager_pmulocate_8011_bc5408181f5043798c8231bfb508e8ac",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_52e02f8d-cbb3-4b0c-a58a-15ccdd297614",
+          "located": [
+            "project-task-row-project_task_10fd44af-677c-4b8f-87ab-b8faf42954a6"
+          ],
+          "focused": "project-task-row-project_task_10fd44af-677c-4b8f-87ab-b8faf42954a6"
+        },
+        "twice": {
+          "path": "/chat?id=manager_pmulocate_8011_bc5408181f5043798c8231bfb508e8ac",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_52e02f8d-cbb3-4b0c-a58a-15ccdd297614",
+          "located": [
+            "project-task-row-project_task_10fd44af-677c-4b8f-87ab-b8faf42954a6"
+          ],
+          "focused": "project-task-row-project_task_10fd44af-677c-4b8f-87ab-b8faf42954a6"
+        },
+        "searchKept": "ship the copy",
+        "searchCleared": "",
+        "keyboardFocus": {
+          "test": "workspace-task-worker-task-summary",
+          "ring": "rgb(255, 255, 255) 0px 0px 0px 0px, rgb(99, 102, 241) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+        },
+        "pickerAfterReload": "project:project_52e02f8d-cbb3-4b0c-a58a-15ccdd297614",
+        "rowClick": {
+          "path": "/chat?id=manager_pmulocate_8011_bc5408181f5043798c8231bfb508e8ac",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_52e02f8d-cbb3-4b0c-a58a-15ccdd297614",
+          "located": [],
+          "focused": null
+        },
+        "selectedSummaryColour": "rgb(67, 56, 202)",
+        "teamRowClick": {
+          "path": "/chat?id=manager_pmulocate_8011_bc5408181f5043798c8231bfb508e8ac",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_52e02f8d-cbb3-4b0c-a58a-15ccdd297614",
+          "located": [],
+          "focused": null
+        },
+        "teamSummaryStillLocates": {
+          "path": "/chat?id=manager_pmulocate_8011_bc5408181f5043798c8231bfb508e8ac",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_52e02f8d-cbb3-4b0c-a58a-15ccdd297614",
+          "located": [
+            "project-task-row-project_task_10fd44af-677c-4b8f-87ab-b8faf42954a6"
+          ],
+          "focused": "project-task-row-project_task_10fd44af-677c-4b8f-87ab-b8faf42954a6"
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 86139,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 85772,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "PMU-008",
+      "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-team-member-delivery_team_pmuleft_e093_cfc7b473c2dc431da86708bf6d194129-/worker\"]') to be visible\n"
+    }
+  ],
+  "feed": {
+    "total": 75,
+    "byType": {
+      "connected": 1,
+      "task_upserted": 33,
+      "task_worker_status": 11,
+      "project_upserted": 30
+    }
+  },
+  "stack": {
+    "backendUrl": "http://127.0.0.1:51857",
+    "frontendUrl": "http://127.0.0.1:51858",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-NLeblG"
+  },
+  "browserVersion": "155.0.8059.84",
+  "warmup": {
+    "reloadsDuringWarmup": 0
+  },
+  "result": "Fail",
+  "finishedAt": "2026-10-17T07:14:22.944Z"
+}

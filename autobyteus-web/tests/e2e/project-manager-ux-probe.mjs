@@ -146,7 +146,7 @@ const gql = async (query, variables = {}) => {
 };
 const workspace = () => path.join(stack.dataRoot, 'workspace');
 const config = () => ({ workspaceRootPath: workspace(), llmModelIdentifier: 'gemini-3.8-flash-low', llmConfig: null, autoExecuteTools: true, runtimeKind: 'antigravity_cli' });
-const MANAGER_TOOLS = ['list_projects', 'list_project_tasks', 'create_or_update_project', 'create_task', 'update_task'];
+const MANAGER_TOOLS = ['list_projects', 'list_project_tasks', 'create_project', 'update_project', 'create_task', 'update_task'];
 const createDefinitions = async (label) => {
   const s = `${label} ${randomUUID().slice(0, 4)}`;
   const agent = async (name, toolNames) => (await gql('mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}',
@@ -647,7 +647,8 @@ const leftPanelAcrossPages = async () => {
         await page.locator(`[data-test="agent-org-definition-${slug(names.org)}"]`).click();
         await page.locator(`[data-test="agent-org-run-open-${root.rootId}"]`).click();
       }
-      const member = kind === 'team' ? page.locator(`[data-test="workspace-team-member-${root.rootId}-/worker"]`)
+      // The Team's only member is its coordinator /manager (its worker and helper are catalog Agents, see createDefinitions).
+      const member = kind === 'team' ? page.locator(`[data-test="workspace-team-member-${root.rootId}-/manager"]`)
         : page.locator(`[data-test="agent-org-agent-row-${root.managerRunId}"]`);
       await member.waitFor({ timeout: 30000 });
       await member.click();

@@ -39,8 +39,9 @@ The server ships no Project manager agent. Any Agent whose definition selects
 the Project tools can manage Projects through the existing Chat or `@`, for
 example the agent repository's **Project Task Manager** (`project-task-manager`,
 with its `project-task-management` skill) when that repository is configured as
-an agent package root. A managing Agent typically selects the five Project/Task
-tools plus `list_available_agents`, `delegate_task` and `send_message_to`. It
+an agent package root. A managing Agent typically selects the Project/Task
+tools (`list_projects`, `list_project_tasks`, `create_project`,
+`update_project`, `create_task`, `update_task`) plus `list_available_agents`, `delegate_task` and `send_message_to`. It
 is not a Project-page panel or a scheduler. This feature does not guarantee
 worker completion reports, automatic DONE, scheduling, or a worker self-update
 convention.
@@ -56,6 +57,9 @@ ordinary, deletable custom setting. Nothing migrates or deletes it. Tools must
 be selected explicitly in the agent definition; no task tool is added
 automatically, not even to an agent with `delegate_task`. A definition that still
 lists the removed `create_or_update_task` gets no task tool from that name.
+Neither `create_project` nor `update_project` is added automatically either; the
+deprecated `create_or_update_project` stays available to definitions that list
+it (see [Project And Task Agent Tools](#project-and-task-agent-tools)).
 
 ## Main Owners
 
@@ -435,21 +439,26 @@ names the file and says to fix or restore it and restart:
 Recovery: there is no self-repair and no automatic reload. Fix or restore the
 file and restart.
 
-## Exactly Five Agent Tools
+## Project And Task Agent Tools
 
 Inputs use snake_case; result fields use camelCase. Native tools and Agent
-Tools MCP share the parser, manifest, services and error projection.
+Tools MCP share the parsers, manifest, services and error projection. Each tool
+is selected per agent definition; none is added automatically.
 
 | Tool | Exact input / behavior | Result object |
 | --- | --- | --- |
 | `list_projects` | `{}` only; list all node-local Project ID/name/description, no selection or mutation | `{projects: [{projectId, name, description}]}` |
 | `list_project_tasks` | Required `project_id`; optional exact `status`: TODO, IN_PROGRESS, DONE or CANCELLED | `{projectId, tasks: [...]}` |
-| `create_or_update_project` | Omit `project_id` to create with required `name`; supply known `project_id` to patch `name?`, `description?`, `workspaces?` | `{project: {projectId, name, description, workspaces: [{workspaceRootPath, description}]}}` |
+| `create_project` | `{name, description?, workspaces?}` (no `project_id`); creates a Project | `{project: {projectId, name, description, workspaces: [{workspaceRootPath, description}]}}` |
+| `update_project` | `{project_id, name?, description?, workspaces?}`; patches a known Project, at least one change | `{project: {...}}` (same shape) |
+| `create_or_update_project` (**deprecated**) | Kept unchanged for the transition: without `project_id` it runs as `create_project`, with `project_id` as `update_project` (same parsers, results and errors). Select `create_project` and/or `update_project` instead; it will be removed in a later release | `{project: {...}}` (same shape) |
 | `create_task` | `{project_id, description, context_files?, depends_on?}` (**omit status**, no `task_id`); creates a TODO Project Task with the Project's next key | `{task: {...}}` |
 | `update_task` | `{task_id, description?, status?, context_files?, depends_on?}` with **no `project_id`**; the Task ID alone (a Project Task's key or long ID, or a Task with no Project's ID) identifies the Task. Its description also tells an agent how to close a Task a description-only delegation created and how to reopen a closed Task | `{task: {...}}` |
 
-`create_or_update_project` preserves omitted fields on patch. A blank Project
-description clears it; unknown IDs never create. Names are trimmed, nonblank
+`update_project` preserves omitted fields. A blank Project
+description clears it; unknown IDs never create. `create_project` rejects
+`project_id` as an unsupported argument; `update_project` without `project_id`
+returns `PROJECT_TOOL_ARGUMENT_INVALID`. Names are trimmed, nonblank
 and unique case-insensitively. Creation defaults to blank description/no links.
 `workspaces?: [{workspace_path, description?}]` is a **complete replacement list**,
 not append; omission preserves all links and `[]` unlinks without deleting
@@ -459,7 +468,8 @@ Retained links preserve omitted descriptions; blank description clears it. New
 links default to blank description. Registration is not a prerequisite, and a
 Project save never registers or creates the referenced folders. Null/wrong types,
 old ID rows, unknown row/top-level keys and canonical duplicate paths fail before
-mutation; an empty patch returns `PROJECT_PATCH_REQUIRED`. The acknowledgement
+mutation; a create without a name returns `PROJECT_NAME_REQUIRED` and an empty
+patch returns `PROJECT_PATCH_REQUIRED`. The acknowledgement
 contains committed metadata and path/description links, not Task counts,
 availability or a work assessment.
 

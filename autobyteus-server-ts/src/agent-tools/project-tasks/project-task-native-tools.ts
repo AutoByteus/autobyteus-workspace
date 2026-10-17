@@ -27,6 +27,17 @@ export class ListProjectTasksTool extends ProjectTaskNativeTool {
   static getDescription() { return PROJECT_TASK_TOOL_DESCRIPTIONS.list_project_tasks; }
   static getArgumentSchema() { return buildProjectTaskToolSchema("list_project_tasks"); }
 }
+export class CreateProjectTool extends ProjectTaskNativeTool {
+  static getName() { return "create_project"; }
+  static getDescription() { return PROJECT_TASK_TOOL_DESCRIPTIONS.create_project; }
+  static getArgumentSchema() { return buildProjectTaskToolSchema("create_project"); }
+}
+export class UpdateProjectTool extends ProjectTaskNativeTool {
+  static getName() { return "update_project"; }
+  static getDescription() { return PROJECT_TASK_TOOL_DESCRIPTIONS.update_project; }
+  static getArgumentSchema() { return buildProjectTaskToolSchema("update_project"); }
+}
+/** Deprecated: kept for the transition and runs as create_project or update_project; removed in a later release (project-tool-split FU-2). */
 export class CreateOrUpdateProjectTool extends ProjectTaskNativeTool {
   static getName() { return "create_or_update_project"; }
   static getDescription() { return PROJECT_TASK_TOOL_DESCRIPTIONS.create_or_update_project; }
@@ -43,5 +54,7 @@ export class UpdateTaskTool extends ProjectTaskNativeTool {
   static getArgumentSchema() { return buildProjectTaskToolSchema("update_task"); }
 }
 export function registerProjectTaskTools(): void {
-  registerToolClass(ListProjectsTool); registerToolClass(ListProjectTasksTool); registerToolClass(CreateOrUpdateProjectTool); registerToolClass(CreateTaskTool); registerToolClass(UpdateTaskTool);
+  registerToolClass(ListProjectsTool); registerToolClass(ListProjectTasksTool);
+  registerToolClass(CreateProjectTool); registerToolClass(UpdateProjectTool); registerToolClass(CreateOrUpdateProjectTool);
+  registerToolClass(CreateTaskTool); registerToolClass(UpdateTaskTool);
 }

@@ -198,7 +198,7 @@ Registry definitions with `ToolOrigin.MCP` and `metadata.mcp_server_id` are
 eligible only when the registered tool name is selected by the agent definition.
 Name-overlap behavior is adapter-policy driven: protected first-party
 platform/control adapters such as `send_message_to`, `get_handoff_rules` and
-the five Project/Task tools reserve their names and block configured MCP collisions, while browser static adapters prefer the
+the Project/Task tools reserve their names and block configured MCP collisions, while browser static adapters prefer the
 selected configured MCP-origin route. That lets a Docker/remote BrowserServer
 MCP tool such as `open_tab` route through its configured MCP source even though
 an embedded Electron browser adapter with the same name exists in code. The
@@ -249,8 +249,8 @@ one canonical AutoByteus tool name. The default adapter set currently covers:
 - media tools from `src/agent-tools/media`
 - `delegate_task` from `src/agent-tools/task-delegation`
 - `publish_artifacts`
-- `list_projects`, `list_project_tasks`, `create_or_update_project`,
-  `create_task`, `update_task` from
+- `list_projects`, `list_project_tasks`, `create_project`, `update_project`,
+  `create_or_update_project` (deprecated), `create_task`, `update_task` from
   `src/agent-tools/project-tasks`
 
 The catalog filters by the session's resolved effective tool names. That set is
@@ -307,22 +307,27 @@ implemented in MCP dispatch. Each canonical name must be explicitly selected;
 these adapters require no MemberTeamContext and do not depend on the Projects UI,
 which is always available on desktop (there is no visibility flag). An active run-session and normal
 local admission are still required. One selected name cannot expose the rest.
-All four use protect_static_adapter collision policy; retired task tools and
+All of them use protect_static_adapter collision policy; retired task tools and
 category-wide native task exposure are not restored.
 
 - `list_projects({})` → `{projects: [{projectId, name, description}]}` for all
   current-node Projects, sorted by name/ID. It does not bind/select a Project.
 - `list_project_tasks({project_id, status?})` → `{projectId, tasks}`. The explicit
   Project is required; status must be exact TODO, IN_PROGRESS, DONE or CANCELLED (CANCELLED = dropped as not needed).
-- `create_or_update_project({project_id?, name?, description?, workspaces?})` → `{project}`.
-  Omit project_id to create with required nonblank name; supply known project_id
-  to patch at least one field. Omitted fields persist; blank description clears.
+- `create_project({name, description?, workspaces?})` → `{project}`: creates with a
+  required nonblank name; `project_id` is rejected as an unsupported argument.
+- `update_project({project_id, name?, description?, workspaces?})` → `{project}`:
+  patches a known Project, at least one field. Omitted fields persist; blank description clears.
   Workspaces are `[{workspace_path, description?}]`: absolute node-local paths;
   supplied list fully replaces, [] unlinks only, omission preserves. Retained links
   preserve omitted description; blank clears. Canonical duplicates reject the
   entire change. Registration/existence are not required; Save never registers or
   creates folders. Old workspace_id rows are rejected, not translated.
   Result is saved projectId/name/description and workspaceRootPath/description only.
+- `create_or_update_project({project_id?, name?, description?, workspaces?})` →
+  `{project}` is **deprecated** and kept unchanged for the transition: without
+  project_id it runs as `create_project`, with it as `update_project`. It will be
+  removed in a later release.
 - `create_task` → `{task}`. `{project_id, description, context_files?, depends_on?}`:
   required nonempty description, **omit status** and `task_id` (new TODO with
   the Project's next key).
@@ -342,7 +347,7 @@ category-wide native task exposure are not restored.
   removes. The app's file types and 25 MiB limit apply, and any invalid entry
   fails the whole call with no change. When files were attached, the result's
   `task` also lists them as `attachedContextFiles: [{storedFilename,
-  displayName}]`. See [Projects](projects.md#exactly-five-agent-tools).
+  displayName}]`. See [Projects](projects.md#project-and-task-agent-tools).
 
 Task projections include projectId/taskId (a Project Task's key, see
 [Task keys](projects.md#task-keys-and-depends-on)), description/status,
@@ -356,7 +361,7 @@ Known domain errors preserve `{error:{code,message}}`; unexpected execution
 errors redact to PROJECT_OPERATION_FAILED. Tool errors set isError:true; text
 and structuredContent represent the same JSON object. Native projection is
 shared, while inactive-session/unselected-tool/local-admission rejection remains
-with the existing host/session boundary. See [Projects](projects.md#exactly-five-agent-tools)
+with the existing host/session boundary. See [Projects](projects.md#project-and-task-agent-tools)
 for exact masks/errors, persisted continuity and context-byte ownership.
 
 Server-owned structured-JSON adapters validate their operation result first,

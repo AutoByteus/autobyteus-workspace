@@ -74,8 +74,8 @@ not paid inference. Agent-run testing is not the user's verification.
   proof of current source.
 - **Serialize builds and dev servers within one worktree.** Parallel builds or Nuxt dev
   servers in the same package overwrite each other's outputs.
-- **Green server baseline.** Server `test:unit`, `test:integration` and `typecheck` pass on
-  the base branch, so a failure there is caused by your change or is a new base failure
+- **Green server suites.** Server `test:unit`, `test:integration` and `typecheck` are kept
+  passing. Every failure there is a real failure: find its cause and fix or report it
   (Rule 9). Run `test:integration:prepare` once per worktree and after changing server or
   SDK source; `test:integration` names any missing build output and exits.
 - **Server test isolation.** For `tests/unit/` and `tests/integration/`,
@@ -162,9 +162,6 @@ not paid inference. Agent-run testing is not the user's verification.
   `autobyteus-team-stream-contracts`, `autobyteus-collaboration-stream-contracts`) track
   their `dist/`, which their consumers import. After changing their source, rebuild with
   `pnpm -C <package> build` and commit the `dist/` changes too.
-- **Known baseline exception.** Two content-cadence cases in
-  `tests/integration/agent/agent-status-websocket.integration.test.ts` fail because of a
-  reported product defect. Remove this note when it is fixed.
 
 ## Environment-specific setup: headless Linux and containers
 
@@ -234,12 +231,17 @@ ticket-owned automation does not require a new global package command.
 8. **Linux:** use `--from-worktree`/`--build` or an extracted AppImage, a real or virtual
    display, and `ffmpeg` for recordings; see
    [Isolated instances on Linux](docs/isolated-app-instances.md#linux).
-9. **Fix failures that also fail on the base; don't just note them.** "Also fails on the
-   base" shows your change did not cause it; it does not close it. Find out why.
-   - A cause in the test or a small local fix: fix it in the same branch as its own commit,
+9. **Fix every failure you hit; find its cause first.** Diagnose it on your own worktree:
+   read the failing assertion, reproduce it, and find why it fails. The cause shows whether
+   your change produced it, so no base-branch run is needed to decide. Run the base only when
+   you cannot find the cause, for example to bisect a regression.
+   - Caused by your change: it is a defect in the change; route it as a failure.
+   - A cause in the test, or a small local fix: fix it in the same branch as its own commit,
      labelled as a baseline fix, and name the test and cause in your report.
-   - A product change or a fix too large for the current work: report it to the accountable
-     owner as its own item, with the cause you found.
+   - A product defect not caused by your change and too large for the current work: report
+     it to the accountable owner as its own item, with the cause you found.
+
+   Never close a failure as "pre-existing" or "flaky" without its cause.
 
 ## Evidence and cleanup
 
