@@ -12,7 +12,7 @@
       </div>
       <div class="mt-4 flex gap-2">
         <button data-test="select-standalone" type="button" @click="selectStandalone">Standalone</button>
-        <button data-test="select-team" type="button" @click="selectTeam">Nested team member</button>
+        <button data-test="select-team" type="button" @click="selectTeam">Team member</button>
       </div>
       <div class="mt-6 rounded-lg border border-slate-200">
         <AgentUserInputTextArea :target="composerTarget" />
@@ -40,11 +40,15 @@ import type { Conversation } from '~/types/conversation';
 import { useToasts } from '~/composables/useToasts';
 import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 
+// The probe renders only its subject; the app shell's run-history sync would treat these fixture
+// runs as absent from history and disconnect their streams.
+definePageMeta({ layout: false });
+
 const composerTarget = useComposerTarget();
 
 const STANDALONE_RUN_ID = 'browser-agent-run';
 const TEAM_RUN_ID = 'browser-team-run';
-const TEAM_MEMBER_ADDRESS = '/review_group/critic';
+const TEAM_MEMBER_ADDRESS = '/critic';
 const TEAM_MEMBER_RUN_ID = 'browser-task-team-critic-run';
 
 const makeContext = (runId: string, definitionId: string): AgentContext => {

@@ -1,4 +1,10 @@
 #!/usr/bin/env node
+// Interrupt result presentation (SR008): a Stop that fails, is accepted, or loses its socket before
+// the ACK is presented once and keeps the run state, for a standalone run and a Team member.
+// The probe owns a Nuxt dev server, headless Chrome, and a WebSocket server that speaks the current
+// agent and Team stream contracts; every GraphQL request, the health check and the
+// agent-package-definitions feed are answered by the probe.
+// Command: pnpm -C autobyteus-web test:e2e:interrupt-result-presentation --output-dir <fresh dir>
 
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
@@ -9,6 +15,7 @@ import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright-core';
 import { WebSocketServer } from 'ws';
+import { parseTeamStreamServerMessage, teamRunExecutionTreeDtoSchema } from '@autobyteus/team-stream-contracts';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const webDir = path.resolve(here, '../..');
@@ -27,19 +34,28 @@ const executablePath = browserArg >= 0
     '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const timeoutMs = 45_000;
 const TEAM_RUN_ID = 'browser-team-run';
-const TEAM_MEMBER_ADDRESS = '/review_group/critic';
+const TEAM_MEMBER_ADDRESS = '/critic';
 const TEAM_MEMBER_RUN_ID = 'browser-task-team-critic-run';
-const teamExecutionTree = {
-  schema_version: 1,
+const launchConfiguration = {
+  runtime_kind: 'autobyteus',
+  llm_model_identifier: 'browser-probe-model',
+  llm_config: null,
+  auto_execute_tools: false,
+  workspace_root_path: null,
+};
+// Current flat Team V2 execution-tree DTO; parsed here so a contract drift fails the probe early.
+const teamExecutionTree = teamRunExecutionTreeDtoSchema.parse({
   created_at: '2026-08-03T00:00:00.000Z',
   archived_at: null,
   application_binding: null,
   handoffs: [],
   root_team: {
+    address: '/',
     team_definition_id: 'browser-team-definition',
     team_definition_name: 'Browser Team',
     team_run_id: TEAM_RUN_ID,
     coordinator_address: TEAM_MEMBER_ADDRESS,
+    default_launch_configuration: launchConfiguration,
     members: [{
       kind: 'configured_agent',
       address: TEAM_MEMBER_ADDRESS,
@@ -48,17 +64,11 @@ const teamExecutionTree = {
       description: null,
       agent_run_id: TEAM_MEMBER_RUN_ID,
       platform_agent_run_id: null,
-      launch_configuration: {
-        runtime_kind: 'AUTOBYTEUS',
-        llm_model_identifier: 'browser-probe-model',
-        llm_config: null,
-        auto_execute_tools: false,
-        workspace_root_path: null,
-      },
+      launch_configuration: launchConfiguration,
     }],
     task_executions: [],
   },
-};
+});
 
 const getFreePort = () => new Promise((resolve, reject) => {
   const server = net.createServer();
@@ -121,6 +131,7 @@ const evidence = {
   generatedAt: new Date().toISOString(),
   browserExecutable: executablePath,
   frames: [],
+  graphqlOperations: [],
   browserEvents: [],
   scenarios: {},
   cleanup: {},
@@ -137,7 +148,29 @@ const normalizeTarget = (kind, command) => kind === 'standalone'
       agent_run_id: command.payload.agent_run_id,
     };
 
+// Every GraphQL operation the fixture page sends: the runs have no file changes, and the Team
+// member's stored projection is empty (its live context is built in the page).
+const graphqlAnswers = {
+  GetRunFileChanges: () => ({ getRunFileChanges: [] }),
+  GetTeamMemberRunProjection: () => ({
+    getTeamMemberRunProjection: {
+      agentRunId: TEAM_MEMBER_RUN_ID,
+      summary: null,
+      lastActivityAt: null,
+      conversation: [],
+      activities: [],
+      hasEarlierActiveTraceEvents: false,
+    },
+  }),
+};
+
 const sendJson = (socket, message) => socket.send(JSON.stringify(message));
+// Team frames are checked against the current Team stream contract before they are sent.
+const sendTeamJson = (socket, message) => sendJson(socket, parseTeamStreamServerMessage(message));
+const agentStatus = (status) => ({
+  type: 'AGENT_STATUS',
+  payload: { status, agent_id: 'browser-agent-run', recoverableBlock: null },
+});
 
 const startWsServer = async () => {
   const port = await getFreePort();
@@ -149,20 +182,23 @@ const startWsServer = async () => {
   server.on('connection', (socket, request) => {
     const kind = request.url?.includes('/ws/agent-team/') ? 'team' : 'standalone';
     connections[kind].add(socket);
-    evidence.frames.push({ direction: 'connect', kind, url: request.url });
-    socket.once('close', () => connections[kind].delete(socket));
+    evidence.frames.push({ direction: 'connect', kind, url: request.url, at: Date.now() });
+    socket.once('close', (code, reason) => {
+      connections[kind].delete(socket);
+      evidence.frames.push({ direction: 'close', kind, code, reason: reason.toString(), at: Date.now() });
+    });
     if (kind === 'standalone') {
       sendJson(socket, { type: 'CONNECTED', payload: { agent_id: 'browser-agent-run' } });
-      sendJson(socket, { type: 'AGENT_STATUS', payload: { status: 'running', agent_id: 'browser-agent-run' } });
+      sendJson(socket, agentStatus('running'));
     } else {
-      sendJson(socket, { type: 'CONNECTED', payload: { session_id: 'browser-team-session', root_team_run_id: TEAM_RUN_ID } });
-      sendJson(socket, {
+      sendTeamJson(socket, { type: 'CONNECTED', payload: { session_id: 'browser-team-session', root_team_run_id: TEAM_RUN_ID } });
+      sendTeamJson(socket, {
         type: 'TEAM_EXECUTION_VIEW_SNAPSHOT',
         payload: {
           root_team_run_id: TEAM_RUN_ID,
           base_change_sequence: 0,
           execution_tree: teamExecutionTree,
-          tasks: [],
+          closed_task_executions: [],
           messages: [],
           agent_statuses: [{
             agent_run_id: TEAM_MEMBER_RUN_ID,
@@ -172,10 +208,12 @@ const startWsServer = async () => {
             tool_name: null,
             error_message: null,
             error_details: null,
+            recoverableBlock: null,
           }],
+          agent_input_states: [],
         },
       });
-      sendJson(socket, { type: 'TEAM_RUN_LIFECYCLE', payload: { is_active: true } });
+      sendTeamJson(socket, { type: 'TEAM_RUN_LIFECYCLE', payload: { is_active: true } });
     }
     socket.on('message', (raw) => {
       const command = JSON.parse(raw.toString());
@@ -194,14 +232,15 @@ const startWsServer = async () => {
         ...(!accepted ? {
           code: kind === 'team' ? 'NO_ACTIVE_MEMBER_TURN' : 'NO_ACTIVE_TURN',
           message: kind === 'team'
-            ? 'The nested member has no active provider turn.'
+            ? 'The Team member has no active provider turn.'
             : 'The provider has no active turn.',
         } : {}),
         ...(kind === 'team' ? { agent_run_id: target.agent_run_id } : { target }),
       };
       const response = { type: 'AGENT_COMMAND_ACK', payload };
       evidence.frames.push({ direction: 'server-to-client', kind, mode, message: response });
-      sendJson(socket, response);
+      if (kind === 'team') sendTeamJson(socket, response);
+      else sendJson(socket, response);
     });
   });
   return { server, port };
@@ -312,26 +351,21 @@ try {
     const contextId = `context-${nextContextId++}`;
     activeContexts.set(context, contextId);
     await context.route('**/rest/health', (route) => route.fulfill({ status: 200, body: '{"status":"ok"}' }));
-    await context.route('**/graphql', (route) => route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({
-        data: {
-          providerModelCatalogSnapshots: [],
-          applicationsCapability: {
-            enabled: false,
-            scope: 'BOUND_NODE',
-            settingKey: 'ENABLE_APPLICATIONS',
-            source: 'INITIALIZED_EMPTY_CATALOG',
-          },
-          agentDefinitions: [],
-          agentTeamDefinitions: [],
-          workspaces: [],
-          workspaceInfos: [],
-          workspacesWithMetadata: [],
-        },
-      }),
-    }));
+    // The app opens the node's definition change feed on startup; a connected frame is all it needs.
+    await context.routeWebSocket(/\/ws\/agent-package-definitions(\?|$)/, (ws) => {
+      evidence.frames.push({ direction: 'connect', kind: 'agent-package-definitions' });
+      ws.send(JSON.stringify({ type: 'connected' }));
+    });
+    await context.route('**/graphql', (route) => {
+      const operationName = route.request().postDataJSON()?.operationName ?? null;
+      evidence.graphqlOperations.push(operationName);
+      const answer = graphqlAnswers[operationName];
+      if (!answer) {
+        recordFailure('graphql-harness', new Error(`Unexpected GraphQL operation '${operationName}'`));
+        return route.fulfill({ status: 500, contentType: 'application/json', body: '{"errors":[{"message":"unexpected operation"}]}' });
+      }
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: answer() }) });
+    });
     const page = await context.newPage();
     page.on('console', (message) => evidence.browserEvents.push({ type: `console:${message.type()}`, text: message.text() }));
     page.on('pageerror', (error) => evidence.browserEvents.push({ type: 'pageerror', text: error.message }));
@@ -346,9 +380,20 @@ try {
       });
       throw error;
     }
-    await waitFor('both browser WebSockets', () => connections.standalone.size > 0 && connections.team.size > 0);
-    if (selected === 'team') await page.locator('[data-test="select-team"]').click();
-    await page.locator('button[title="Stop generation"]').waitFor({ state: 'visible' });
+    const recordPageState = async (type) => evidence.browserEvents.push({
+      type,
+      url: page.url(),
+      snapshot: await page.evaluate(() => window.__interruptProbe?.snapshot() ?? null).catch(() => null),
+      body: (await page.locator('body').innerText().catch(() => '')).slice(0, 4000),
+    });
+    try {
+      await waitFor('both browser WebSockets', () => connections.standalone.size > 0 && connections.team.size > 0);
+      if (selected === 'team') await page.locator('[data-test="select-team"]').click();
+      await page.locator('button[title="Stop generation"]').waitFor({ state: 'visible' });
+    } catch (error) {
+      await recordPageState('fixture-not-ready');
+      throw error;
+    }
     return { context, page };
   };
 
@@ -389,7 +434,7 @@ try {
       const beforeTerminal = await snapshot(page);
       assert.equal(beforeTerminal.standaloneStatus, 'running');
       for (const socket of connections.standalone) {
-        sendJson(socket, { type: 'AGENT_STATUS', payload: { status: 'idle', agent_id: 'browser-agent-run' } });
+        sendJson(socket, agentStatus('idle'));
       }
       await page.locator('button[title="Send message"]').waitFor({ state: 'visible' });
       const afterTerminal = await snapshot(page);
@@ -429,7 +474,7 @@ try {
     try {
       const before = await snapshot(page);
       await page.locator('button[title="Stop generation"]').click();
-      await waitFor('one nested team failure toast', async () => (await toastTexts(page)).length === 1);
+      await waitFor('one Team member failure toast', async () => (await toastTexts(page)).length === 1);
       const after = await snapshot(page);
       const toasts = await toastTexts(page);
       assert.match(toasts[0], /Could not stop browser-task-team-critic-run.*no active provider turn/i);
