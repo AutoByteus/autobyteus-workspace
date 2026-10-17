@@ -21,6 +21,7 @@ import { WorkspaceRunHistoryService } from "../../../src/run-history/services/wo
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { createNoopAgentToolMcpRunSessionDeactivator } from "../../fixtures/agent-tool-mcp-run-session-deactivator-fixtures.js";
 import { createAgentRunManagerInfrastructureFixture } from "../../fixtures/agent-run-manager-infrastructure-fixtures.js";
+import { testBackendFactory } from "../../fixtures/agent-run-preparation-fixtures.js";
 import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
 
 const workspaceHistoryHolder = vi.hoisted(() => ({ service: null as any }));
@@ -77,6 +78,8 @@ const createErrorBackend = (accepted: boolean): RuntimeFixture => {
     backend: {
       runId: RUN_ID,
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      inputCapabilities: { activeTurnAppend: "unsupported" },
+      compactionRecovery: { kind: "unsupported" },
       getContext: () => context,
       isActive: () => active,
       getPlatformAgentRunId: () => "fixture-thread-error",
@@ -85,6 +88,7 @@ const createErrorBackend = (accepted: boolean): RuntimeFixture => {
         phase: active ? "error" : "idle",
         currentTurn: { kind: "NONE" },
       }),
+      hasRunningBackgroundTasks: () => false,
       subscribeToSourceEventBatches: () => () => undefined,
       dispatchUserInput: vi.fn(async () => ({ accepted: true as const, turnId: "fixture-turn" })),
       approveToolInvocation: vi.fn(async () => ({ accepted: true as const })),
@@ -94,7 +98,7 @@ const createErrorBackend = (accepted: boolean): RuntimeFixture => {
   };
 };
 
-const createFactory = (backend: AgentRunBackend): AgentRunBackendFactory => ({
+const createFactory = (backend: AgentRunBackend): AgentRunBackendFactory => testBackendFactory({
   createBackend: vi.fn(async () => backend),
   restoreBackend: vi.fn(async () => backend),
 });
@@ -159,17 +163,21 @@ type Harness = {
   schema: GraphQLSchema;
   graphql: typeof graphqlFn;
   manager: AgentRunManager;
-  closeStudioServices: () => void;
-  dataRoot: string;
 };
+
+/** Each resource registers its release as soon as it exists, so a failed setup cannot leak the
+ * process AgentRunManager singleton into the next test. */
+const cleanups: Array<() => unknown> = [];
 
 const startHarness = async (terminationAccepted: boolean): Promise<Harness & RuntimeFixture> => {
   const dataRoot = await mkdtemp(path.join(os.tmpdir(), "standalone-error-termination-e2e-"));
+  cleanups.push(() => rm(dataRoot, { recursive: true, force: true }));
   await writeFile(path.join(dataRoot, ".env"), "APP_ENV=test\n", "utf8");
   appConfigProvider.config.setCustomAppDataDir(dataRoot);
   const runtime = createErrorBackend(terminationAccepted);
   const manager = createManager(runtime.backend);
-  const candidate = await manager.prepareNewAgentRun({ runId: RUN_ID, config: createConfig() });
+  cleanups.push(() => AgentRunManager.releaseProcessInstance(manager));
+  const candidate = await manager.beginActivation({ kind: "new", runId: RUN_ID, config: createConfig() }).prepare();
   candidate.commitPublication();
 
   const memoryDir = appConfigProvider.config.getMemoryDir();
@@ -219,14 +227,13 @@ const startHarness = async (terminationAccepted: boolean): Promise<Harness & Run
     agentTeamDefinitionService: {} as never,
     agentRunService,
   });
+  cleanups.push(() => studioHandle.close());
   const schema = await buildGraphqlSchema();
   return {
     ...runtime,
     schema,
     graphql: await loadGraphql(),
     manager,
-    closeStudioServices: studioHandle.close,
-    dataRoot,
   };
 };
 
@@ -273,15 +280,10 @@ const terminate = async (harness: Harness) => execute<{
   }
 `, { runId: RUN_ID });
 
-const harnesses: Harness[] = [];
-
 afterEach(async () => {
   workspaceHistoryHolder.service = null;
-  while (harnesses.length > 0) {
-    const harness = harnesses.pop()!;
-    harness.closeStudioServices();
-    AgentRunManager.releaseProcessInstance(harness.manager);
-    await rm(harness.dataRoot, { recursive: true, force: true });
+  while (cleanups.length > 0) {
+    await cleanups.pop()!();
   }
   vi.clearAllMocks();
 });
@@ -289,7 +291,6 @@ afterEach(async () => {
 describe("Standalone Error run status and termination GraphQL lifecycle", () => {
   it("lists a manager-owned Error runtime as active, terminates it, and retains inactive history", async () => {
     const harness = await startHarness(true);
-    harnesses.push(harness);
 
     const initial = await queryHistory(harness);
     const initialRun = initial.listWorkspaceRunHistory[0]?.agentDefinitions[0]?.runs[0];
@@ -335,7 +336,6 @@ describe("Standalone Error run status and termination GraphQL lifecycle", () => 
 
   it("keeps a rejected Error runtime active and retryable without recording false termination", async () => {
     const harness = await startHarness(false);
-    harnesses.push(harness);
 
     await expect(terminate(harness)).resolves.toEqual({
       terminateAgentRun: {

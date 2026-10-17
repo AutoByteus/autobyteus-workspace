@@ -20,7 +20,9 @@
 //   S1 R05 Team "+" → New chat prefilled with the member overrides (AC-008)
 //   S2 R02 Org Run → Org launch page; a member override (Codex + Ask first) and a placed-team folder workspace →
 //          the active Org run's config matches (AC-003)
-//   S2 R03 Org launch rejected by the server → "Couldn't start this Agent Org. Try again.", values kept (AC-003)
+//   S2 R03 Org launch rejected by the server → "Couldn't start this Agent Org. Try again.", values kept (AC-003);
+//          the rejection is the server's failure result injected on the launch request only, because the
+//          page's readiness check now blocks Run before any cause the client can see reaches the server
 //   S2 R06 Org "+" → Org launch page prefilled with the overrides and the placed-team workspace (AC-008)
 //   S3 R07 Saved Team run: running locks (incl. Fast) → Terminate team → locked-runtime model menu → change →
 //          Cancel → change again → Save → readback → resume keeps the saved config (AC-009..011, AC-019)
@@ -660,7 +662,7 @@ defineCase('R02', 'S2 AC-003: Org Run → Org launch page; Scout customized (Cod
   return r
 })
 
-defineCase('R03', 'S2 AC-003: the server rejects the Org launch (its member definition was deleted meanwhile) → "Couldn\'t start this Agent Org. Try again.", values kept, Run enabled, no run created', async (page) => {
+defineCase('R03', 'S2 AC-003: the server rejects the Org launch → "Couldn\'t start this Agent Org. Try again.", values kept, Run enabled, no run created', async (page) => {
   const r = {}
   await page.goto(`${frontUrl}/agent-orgs`, { waitUntil: 'domcontentloaded' }); await settle(page, 1500)
   await page.locator(sel(`org-card-${ids.fragileOrg}`)).getByRole('button', { name: 'Run', exact: true }).click()
@@ -670,10 +672,29 @@ defineCase('R03', 'S2 AC-003: the server rejects the Org launch (its member defi
   await card.locator(sel('chat-approval-toggle')).click(); await delay(300)
   r.before = { model: await card.locator(sel('chat-model-trigger')).innerText(), approval: await card.locator(sel('chat-approval-toggle')).innerText() }
   const orgRunsBefore = JSON.stringify(await gql('{ listWorkspaceRunHistory(limitPerAgent: 50) { workspaceRootPath } }')).length
-  await gql('mutation($id:String!){deleteAgentDefinition(id:$id){success message}}', { id: ids.fragile })
-  await page.locator(sel('org-launch-run')).click()
-  r.status = await waitFor('failure copy', async () => { const t = await page.locator(sel('org-launch-status')).innerText().catch(() => ''); return /Couldn.t start this Agent Org/.test(t) ? t : null }, 60000)
-  r.after = { model: await card.locator(sel('chat-model-trigger')).innerText(), approval: await card.locator(sel('chat-approval-toggle')).innerText(), url: page.url(), runDisabled: await page.locator(sel('org-launch-run')).isDisabled() }
+  // The subject is the page's failure presentation. A cause the client can see (e.g. deleting the member's
+  // definition) now disables Run first (client readiness, DI-004), so the launch request alone receives the
+  // server's failure result (createAgentOrgRun: success false, no run id); every other request reaches the server.
+  r.launchRequests = []
+  const rejectLaunch = async (route) => {
+    const body = route.request().postDataJSON?.() ?? null
+    if (body?.operationName !== 'CreateAgentOrgRun') return route.fallback()
+    r.launchRequests.push(body.variables?.input?.agentOrgDefinitionId ?? null)
+    return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: { createAgentOrgRun: {
+      __typename: 'AgentOrgRunMutationResult', success: false, message: 'R03 injected server rejection.', agentOrgRunId: null,
+    } } }) })
+  }
+  await page.route('**/graphql', rejectLaunch)
+  try {
+    r.runEnabledBefore = !(await page.locator(sel('org-launch-run')).isDisabled())
+    assert(r.runEnabledBefore, 'Run disabled before the launch', r)
+    await page.locator(sel('org-launch-run')).click()
+    r.status = await waitFor('failure copy', async () => { const t = await page.locator(sel('org-launch-status')).innerText().catch(() => ''); return /Couldn.t start this Agent Org/.test(t) ? t : null }, 60000)
+    r.after = { model: await card.locator(sel('chat-model-trigger')).innerText(), approval: await card.locator(sel('chat-approval-toggle')).innerText(), url: page.url(), runDisabled: await page.locator(sel('org-launch-run')).isDisabled() }
+  } finally {
+    await page.unroute('**/graphql', rejectLaunch)
+  }
+  assert(r.launchRequests.length === 1 && r.launchRequests[0] === ids.fragileOrg, 'exactly one Org launch request reached the boundary', r)
   assert(r.status.trim() === "Couldn't start this Agent Org. Try again.", 'failure copy', r.status)
   assert(r.after.model === r.before.model && r.after.approval === r.before.approval && /mode=configuration/.test(r.after.url) && !r.after.runDisabled, 'values not kept or Run disabled after the failure', r)
   r.historyUnchanged = JSON.stringify(await gql('{ listWorkspaceRunHistory(limitPerAgent: 50) { workspaceRootPath } }')).length === orgRunsBefore

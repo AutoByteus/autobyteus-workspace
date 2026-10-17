@@ -52,6 +52,7 @@ const deferred = <T>(): Deferred<T> => {
 class ScriptedAgentRunBackend implements AgentRunBackend {
   readonly runtimeKind = RuntimeKind.CODEX_APP_SERVER;
   readonly inputCapabilities = { activeTurnAppend: "supported" } as const;
+  readonly compactionRecovery = { kind: "unsupported" } as const;
   readonly messages: AgentInputUserMessage[] = [];
   active = true;
 
@@ -117,6 +118,10 @@ class ScriptedAgentRunBackend implements AgentRunBackend {
 
   getLifecycleSnapshot(): AgentRuntimeLifecycleSnapshot {
     return this.lifecycleSnapshot;
+  }
+
+  hasRunningBackgroundTasks(): boolean {
+    return false;
   }
 
   subscribeToSourceEventBatches(listener: AgentRunSourceEventBatchListener): () => void {
@@ -423,7 +428,7 @@ describe("Agent command-correlated status overlay e2e", () => {
       });
       expect(await waitForBufferedMessage(firstMessages, 1)).toEqual({
         type: "AGENT_STATUS",
-        payload: { status: "idle", agent_id: runId },
+        payload: { status: "idle", agent_id: runId, recoverableBlock: null },
       });
 
       const firstSendStart = firstMessages.length;
@@ -437,7 +442,7 @@ describe("Agent command-correlated status overlay e2e", () => {
         ),
       ).toEqual({
         type: "AGENT_STATUS",
-        payload: { status: "initializing", agent_id: runId },
+        payload: { status: "initializing", agent_id: runId, recoverableBlock: null },
       });
       await firstBackend.emitTurnStarted("turn-first");
       await waitForMessageAfter(
@@ -475,7 +480,7 @@ describe("Agent command-correlated status overlay e2e", () => {
       });
       expect(await waitForBufferedMessage(secondMessages, 1)).toEqual({
         type: "AGENT_STATUS",
-        payload: { status: "offline", agent_id: runId },
+        payload: { status: "offline", agent_id: runId, recoverableBlock: null },
       });
       expect(harness.agentRunService.restoreAgentRun).not.toHaveBeenCalled();
 
@@ -490,7 +495,7 @@ describe("Agent command-correlated status overlay e2e", () => {
         ),
       ).toEqual({
         type: "AGENT_STATUS",
-        payload: { status: "initializing", agent_id: runId },
+        payload: { status: "initializing", agent_id: runId, recoverableBlock: null },
       });
       expect(harness.agentRunService.resolveCommandReadyAgentRun).toHaveBeenCalledWith(runId);
 
