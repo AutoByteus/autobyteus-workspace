@@ -120,7 +120,7 @@ const validateHistoricalManifest = (raw: unknown, rootTeamRunId: string): void =
 export class TeamRunMigrationStateClassifier {
   private readonly layout: AgentMemoryLayout;
 
-  constructor(private readonly memoryDir: string) {
+  constructor(memoryDir: string) {
     this.layout = new AgentMemoryLayout(memoryDir);
   }
 

@@ -67,7 +67,7 @@ export class MigrateNativeWorkingContextSnapshotsV5Migration
   private readonly classifier: ReleasedRuntimeMemoryLocationClassifier;
   private readonly converter = new NativeWorkingContextSnapshotV5Converter();
 
-  constructor(private readonly memoryDir: string) {
+  constructor(memoryDir: string) {
     this.classifier = new ReleasedRuntimeMemoryLocationClassifier(memoryDir);
   }
 

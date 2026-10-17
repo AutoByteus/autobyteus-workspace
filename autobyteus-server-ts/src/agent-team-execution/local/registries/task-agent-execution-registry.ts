@@ -4,7 +4,7 @@ import type { AgentOperationResult } from "../../../agent-execution/domain/agent
 import type { AgentRunManager } from "../../../agent-execution/services/agent-run-manager.js";
 import type { AgentRunInputOptions, AgentRunInputReservationResult } from "../../../agent-execution/input/agent-run-input-contract.js";
 import type { PrepareTaskAgentInput, RestoreTaskAgentInput } from "../../domain/task-agent-execution.js";
-import { createTaskExecutionPreparation, type TaskExecutionPreparationOperation, type PreparedTaskExecution } from "../../domain/prepared-task-execution.js";
+import { createTaskExecutionPreparation, type TaskExecutionPreparationOperation } from "../../domain/prepared-task-execution.js";
 import type { TeamRunContext } from "../../domain/team-run-context.js";
 import { FlatAgentExecutionContext, type FlatTeamExecutionContext } from "../flat-team-execution-context.js";
 import { FlatTeamAgentExecutionHandle } from "../flat-team-agent-execution-handle.js";

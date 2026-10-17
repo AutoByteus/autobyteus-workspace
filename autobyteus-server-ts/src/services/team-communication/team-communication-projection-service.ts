@@ -9,7 +9,6 @@ import type {
   TeamCommunicationMessage,
   TeamCommunicationProjection,
   TeamCommunicationReferenceFile,
-  TeamCommunicationReferenceFileType,
 } from "./team-communication-types.js";
 import { projectTeamReferenceFile } from "../../agent-team-execution/services/team-reference-file-projection.js";
 

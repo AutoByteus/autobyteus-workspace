@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentMemoryExplorerService } from "../../../src/agent-memory/services/agent-memory-explorer-service.js";
 import { MemoryFileStore } from "../../../src/agent-memory/store/memory-file-store.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
@@ -21,6 +21,9 @@ const touch = (filePath: string, mtime: number) => {
   fs.utimesSync(filePath, mtime, mtime);
 };
 
+const copy = (agentRunId: string) => ({ address: "/code_reviewer", agentRunId, platformAgentRunId: null, delegatorAgentRunId: "hub", startedAt: T0,
+  source: { kind: "agent", agentDefinitionId: "code-reviewer", launchConfiguration: testOrgLaunchConfiguration("/workspace/reviews") } });
+
 describe("Memory page Agents list with task agents (D-5)", () => {
   let memory: string;
   afterEach(() => fs.rmSync(memory, { recursive: true, force: true }));
@@ -32,8 +35,6 @@ describe("Memory page Agents list with task agents (D-5)", () => {
       runId: "hub", agentDefinitionId: "assistant", workspaceRootPath: "/workspace", memoryDir: layout.getStandaloneRunDirPath("hub"),
       llmModelIdentifier: "model", llmConfig: null, autoExecuteTools: true, runtimeKind: RuntimeKind.AUTOBYTEUS, platformAgentRunId: null, startedAt: T0,
     });
-    const copy = (agentRunId: string) => ({ address: "/code_reviewer", agentRunId, platformAgentRunId: null, delegatorAgentRunId: "hub", startedAt: T0,
-      source: { kind: "agent", agentDefinitionId: "code-reviewer", launchConfiguration: testOrgLaunchConfiguration("/workspace/reviews") } });
     const store = new StandaloneRootPackageStore();
     const dir = layout.getAgentRunCollaborationDirPath("hub");
     await store.writeTree(dir, validateStandaloneRootTreePayload({
@@ -53,5 +54,26 @@ describe("Memory page Agents list with task agents (D-5)", () => {
     const runs = (await service.listAgentRunsWithMemory({ attribution: "DEFINITION", agentDefinitionId: "code-reviewer" })).entries;
     expect(runs).toEqual([expect.objectContaining({ runId: "linked-copy", agentDefinitionId: "code-reviewer", workspaceRootPath: "/workspace/reviews", createdAt: T0 })]);
     expect((await service.listAgentsWithMemory("reviews")).entries.map((group) => group.agentDefinitionId)).toEqual(["code-reviewer"]);
+  });
+
+  it("skips the task agents of a coordinating run whose tree cannot be read, with one warning naming the run (rule 7)", async () => {
+    memory = fs.mkdtempSync(path.join(os.tmpdir(), "agent-memory-explorer-task-agents-"));
+    const dir = new AgentMemoryLayout(memory).getAgentRunCollaborationDirPath("hub");
+    await new StandaloneRootPackageStore().writeTree(dir, validateStandaloneRootTreePayload({
+      ...emptyStandaloneRootTree({ host: { address: "/assistant" as never, agentRunId: "hub", agentDefinitionId: "assistant" }, createdAt: T0 }),
+      taskExecutions: [copy("copy-a"), copy("copy-b")],
+    }, "hub"));
+    fs.writeFileSync(path.join(dir, "collaboration_tree.json"), "{ not json");
+    for (const runId of ["copy-a", "copy-b"]) touch(path.join(memory, "agents", runId, "raw_traces_active.jsonl"), 1000);
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    try {
+      const groups = (await new AgentMemoryExplorerService(new MemoryFileStore(memory), memory).listAgentsWithMemory()).entries;
+      expect(groups).toEqual([]);
+      const skipped = warn.mock.calls.map((call) => String(call[0])).filter((line) => line.includes("Skipping the task agents"));
+      expect(skipped).toHaveLength(1);
+      expect(skipped[0]).toContain("agent run 'hub'");
+    } finally {
+      warn.mockRestore();
+    }
   });
 });

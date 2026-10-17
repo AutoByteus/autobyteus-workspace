@@ -174,6 +174,9 @@ describe("G1 and G2: a task agent is never read as a run the user started (D-3, 
     expect(await metadata.readMetadata("reviewer-run")).toBeNull();
     expect(await metadata.readMetadataState("reviewer-run")).toEqual({ kind: "missing" });
     expect(await metadata.readTaskAgentMetadata("reviewer-run")).toMatchObject({ runId: "reviewer-run", taskAgent: { origin: "catalog" } });
+    // The synchronous task-agent reader (the stores' sync composed reads) shares the same parse path.
+    expect(metadata.readTaskAgentMetadataStateSync("reviewer-run")).toEqual(await metadata.readTaskAgentMetadataState("reviewer-run"));
+    expect(metadata.readTaskAgentMetadataStateSync("no-such-run")).toEqual({ kind: "missing" });
   });
 
   it("hides a task agent team's own tree from the team-run reader and from startup admission, linked or detached", async () => {

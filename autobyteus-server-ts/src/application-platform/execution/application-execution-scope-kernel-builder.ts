@@ -13,7 +13,6 @@ import { FlatTeamExecutionFactory } from "../../agent-team-execution/local/flat-
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { createTaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { MemberExecutionContextBuilder } from "../../agent-team-execution/services/member-team-context-builder.js";
-import { createTeamFlatExecutionCallbacks } from "../../agent-team-execution/services/team-flat-execution-callbacks.js";
 import { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import { TeamRunIdentityAllocator } from "../../agent-team-execution/services/team-run-identity-allocator.js";
 import { TeamRunService } from "../../agent-team-execution/services/team-run-service.js";

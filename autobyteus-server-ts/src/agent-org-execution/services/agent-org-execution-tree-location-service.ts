@@ -171,9 +171,3 @@ export class AgentOrgExecutionTreeLocationService {
     return this.store.readSync(this.layout.getOrgDirPath(id), id);
   }
 }
-
-const required = (value: string, label: string): string => {
-  const normalized = value?.trim();
-  if (!normalized) throw new Error(`${label} is required.`);
-  return normalized;
-};

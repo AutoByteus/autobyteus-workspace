@@ -23,7 +23,12 @@ export class TaskAgentLinkChecker {
     const key = `${coordinatingRun.kind}:${coordinatingRun.runId}`;
     let ids = this.linked.get(key);
     if (!ids) {
-      ids = this.readLinkedRunIds(coordinatingRun).catch(() => new Set<string>());
+      // An unreadable coordinating tree links nothing: its task agents are skipped, reported once (rule 7).
+      ids = this.readLinkedRunIds(coordinatingRun).catch((error: unknown) => {
+        console.warn(`Skipping the task agents of ${coordinatingRun.kind} run '${coordinatingRun.runId}': `
+          + `its execution tree cannot be read: ${error instanceof Error ? error.message : String(error)}`);
+        return new Set<string>();
+      });
       this.linked.set(key, ids);
     }
     return (await ids).has(runId);

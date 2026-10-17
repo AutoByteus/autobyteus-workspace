@@ -1,4 +1,5 @@
 import path from "node:path";
+import { readFileSync } from "node:fs";
 import fs from "node:fs/promises";
 import type { AgentRunMetadata, TaskAgentRunMetadata } from "./agent-run-metadata-types.js";
 import { hasTaskAgentSection, parseTaskAgentRunMetadata } from "./task-agent-own-file-schema.js";
@@ -72,6 +73,18 @@ export type TaskAgentRunMetadataReadState =
   | Readonly<{ kind: "unreadable"; error: Error }>;
 
 const asError = (error: unknown): Error => error instanceof Error ? error : new Error(String(error));
+const isMissing = (error: unknown): boolean => (error as NodeJS.ErrnoException | null)?.code === "ENOENT";
+
+/** The one parse path of a task agent's own file, for the async and the sync reader. */
+const taskAgentMetadataState = (read: () => string, runId: string): TaskAgentRunMetadataReadState => {
+  try {
+    const parsed: unknown = JSON.parse(read());
+    if (!hasTaskAgentSection(parsed)) return { kind: "missing" };
+    return { kind: "present", metadata: parseTaskAgentRunMetadata(parsed, runId) };
+  } catch (error) {
+    return isMissing(error) ? { kind: "missing" } : { kind: "unreadable", error: asError(error) };
+  }
+};
 
 /**
  * The one reader and writer of `run_metadata.json`. A standalone run is a file without a `taskAgent`
@@ -137,14 +150,19 @@ export class AgentRunMetadataStore {
   /** A task agent's own file; `missing` when there is no file or the file is a standalone run's. */
   async readTaskAgentMetadataState(runId: string): Promise<TaskAgentRunMetadataReadState> {
     const normalizedRunId = runId.trim();
+    let text: string;
     try {
-      const parsed: unknown = JSON.parse(await fs.readFile(this.getMetadataPath(normalizedRunId), "utf-8"));
-      if (!hasTaskAgentSection(parsed)) return { kind: "missing" };
-      return { kind: "present", metadata: parseTaskAgentRunMetadata(parsed, normalizedRunId) };
+      text = await fs.readFile(this.getMetadataPath(normalizedRunId), "utf-8");
     } catch (error) {
-      if ((error as NodeJS.ErrnoException)?.code === "ENOENT") return { kind: "missing" };
-      return { kind: "unreadable", error: asError(error) };
+      return isMissing(error) ? { kind: "missing" } : { kind: "unreadable", error: asError(error) };
     }
+    return taskAgentMetadataState(() => text, normalizedRunId);
+  }
+
+  /** The synchronous task-agent reader, for the stores' synchronous composed reads. */
+  readTaskAgentMetadataStateSync(runId: string): TaskAgentRunMetadataReadState {
+    const normalizedRunId = runId.trim();
+    return taskAgentMetadataState(() => readFileSync(this.getMetadataPath(normalizedRunId), "utf-8"), normalizedRunId);
   }
 
   async readTaskAgentMetadata(runId: string): Promise<TaskAgentRunMetadata | null> {

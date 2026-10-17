@@ -11,7 +11,7 @@ import {
   type AtomicRunPackageFileCommitWriter,
   type RunPackageFileWriteResult,
 } from "./atomic-run-package-file-commit-writer.js";
-import { hasTaskAgentSection, parseTaskAgentRunMetadata } from "./task-agent-own-file-schema.js";
+import { hasTaskAgentSection } from "./task-agent-own-file-schema.js";
 import { validateTaskAgentTeamTreePayload } from "./task-agent-team-tree-schema.js";
 import { getTeamRunExecutionTreePath } from "./team-run-execution-tree-path.js";
 
@@ -64,13 +64,7 @@ export class TaskAgentOwnFiles {
   }
 
   readAgentSync(agentRunId: string): TaskAgentRunMetadataReadState {
-    try {
-      const parsed: unknown = JSON.parse(fs.readFileSync(this.metadata.getMetadataPath(agentRunId), "utf-8"));
-      if (!hasTaskAgentSection(parsed)) return { kind: "missing" };
-      return { kind: "present", metadata: parseTaskAgentRunMetadata(parsed, agentRunId) };
-    } catch (error) {
-      return isMissing(error) ? { kind: "missing" } : { kind: "unreadable", error: asError(error) };
-    }
+    return this.metadata.readTaskAgentMetadataStateSync(agentRunId);
   }
 
   writeAgent(metadata: TaskAgentRunMetadata): Promise<RunPackageFileWriteResult> {
