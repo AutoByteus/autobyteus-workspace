@@ -15,7 +15,7 @@ import type { ProjectTask, TaskWorkerRef, TaskWorkerTask } from '~/types/project
 const agent: TaskWorkerRef = { kind: 'agent', agentRunId: 'a1' }
 const team: TaskWorkerRef = { kind: 'team', teamRunId: 't1' }
 const workerTask = (taskId: string, projectId: string | null = 'p1', status: TaskWorkerTask['status'] = 'IN_PROGRESS'): TaskWorkerTask =>
-  ({ taskId, projectId, taskKey: projectId ? `p1-${taskId}` : null, description: `Task ${taskId}`, status })
+  ({ taskId, projectId, description: `Task ${taskId}`, status })
 type Answer = { workerKind: 'agent' | 'team'; workerRunId: string; task: TaskWorkerTask | null }
 const answering = (...answers: Answer[]) => ({ data: { taskWorkerTasks: answers } })
 const settle = () => new Promise((resolve) => setTimeout(resolve, 0))

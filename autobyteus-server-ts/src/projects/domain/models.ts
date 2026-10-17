@@ -118,8 +118,6 @@ export interface TaskWithoutProjectView {
 export interface TaskWorkerTaskView {
   taskId: string;
   projectId: string | null;
-  /** The Project Task's key; null for a Temp task. */
-  taskKey: string | null;
   description: string;
   status: ProjectTaskStatus;
 }

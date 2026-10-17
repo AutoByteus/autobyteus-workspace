@@ -57,18 +57,19 @@ describe('TaskDependencyBadge (UXJ-001, VIS-002a–d)', () => {
   })
 })
 
-describe('ProjectTaskRow key line and badge (DEC-001, DEC-009)', () => {
+describe('ProjectTaskRow: no key line, badge kept (task-keys-declutter REQ-001; DEC-009)', () => {
   const mountRow = (row: ProjectTask | TaskWithoutProject) => mount(ProjectTaskRow, { props: { task: row }, global: { stubs: { NuxtLink: RouterLinkStub } } })
 
-  it('a Project Task card shows its key above the summary and its badge from the Project list', () => {
+  it('a Project Task card starts with its summary, shows no key of its own, and keeps its badge from the Project list', () => {
     const tasks = [task(35), task(41, 'TODO', ['t35'])]
     seed(tasks)
     const wrapper = mountRow(tasks[1]!)
-    const key = wrapper.get('[data-testid="project-task-row-key"]')
-    expect(key.text()).toBe('autobyteus-41')
-    expect(key.classes()).toEqual(expect.arrayContaining(['text-xs', 'font-medium', 'leading-5', 'text-slate-500']))
-    expect(key.element.nextElementSibling?.getAttribute('data-testid')).toBe('project-task-row-text')
-    expect(wrapper.get('[data-testid="project-task-row-dependency"]').text()).toContain('Blocked by')
+    expect(wrapper.find('[data-testid="project-task-row-key"]').exists()).toBe(false)
+    expect(wrapper.get('[data-testid="project-task-row-link"]').element.firstElementChild?.getAttribute('data-testid')).toBe('project-task-row-text')
+    expect(wrapper.text()).not.toContain('autobyteus-41')
+    const badge = wrapper.get('[data-testid="project-task-row-dependency"]')
+    expect(badge.text()).toContain('Blocked by')
+    expect(badge.get('[data-testid="task-key"]').attributes('data-key')).toBe('autobyteus-35')
   })
 
   it('a Temp task card has no key and no badge', () => {

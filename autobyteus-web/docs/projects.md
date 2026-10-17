@@ -136,8 +136,11 @@ characters with "…". Search still matches the full description, and the Task p
 
 ### Task keys and "Depends on"
 
-Every Project Task shows its readable key (`autobyteus-42`, server-assigned,
+Every Project Task has a readable key (`autobyteus-42`, server-assigned,
 permanent; the long `taskId` stays the identity in requests and the change feed).
+The key is shown where it links to or refers to a Task: the Task page chip,
+dependency rows, the picker, badges and URLs. Board cards and the Workspaces-tree
+Task summary show no key.
 Temp tasks have no key and no dependencies.
 
 - **Key URLs**: Task page and Edit task URLs use the key
@@ -148,8 +151,9 @@ Temp tasks have no key and no dependencies.
   the resolved Task's `taskId`. A long-ID URL (old links) opens the Task and is
   replaced by the key URL, keeping the query. Temp-task URLs are unchanged.
 
-- **Card** (`ProjectTaskRow`): a quiet key line (12/20 px, medium, slate-500)
-  above the summary. On To Do / In Progress cards with dependencies,
+- **Card** (`ProjectTaskRow`): no key line; the card starts with the summary
+  (keys appear only where they link or refer to a Task, task-keys-declutter).
+  On To Do / In Progress cards with dependencies,
   `TaskDependencyBadge` shows "Blocked by <key>" (amber, link icon) while any
   dependency is To Do or In Progress (the lowest key, "+N" for the other open
   ones), otherwise "Dependency cancelled: <key>" (grey, x-circle) when one was
@@ -305,9 +309,8 @@ Under Agent runs (`AgentRunTaskRows`) and Team runs
 (`WorkspaceTeamExecutionTree`), a delegated copy row that is a **Task worker**
 (its Task's root) shows a second line under its name: the summary of its current
 Task (`TaskWorkerTaskSummary`, text from `taskSummaryLabel`), gray, indigo when
-the row is selected or on hover. A Project Task's summary leads with its key in
-medium weight ("autobyteus-29 Token Meter accuracy…"), and its tooltip and
-accessible name read "Show Task in Projects: <key> <summary>"; a Temp task has no key. Team members, sub-work copies and converted
+the row is selected or on hover. It shows no Task key; its tooltip and
+accessible name read "Show Task in Projects: <summary>". Team members, sub-work copies and converted
 unowned runs keep one line. Agent Org rows are unchanged (not in scope). The
 row's elbow and chevron align with the name line
 (`WorkspaceHierarchyBranches` `anchor="name-line"`). Summaries exist only where

@@ -100,10 +100,12 @@ describe("Project Task keys and dependencies (services)", () => {
       expect(JSON.stringify(emitted)).not.toContain("lastNumber");
     });
 
-    it("a Temp task's worker answer has a null key (AC-007)", async () => {
+    it("a Task worker's answer carries no key (task-keys-declutter REQ-004)", async () => {
       const execution = { agentRunId: "temp-worker" };
       await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "manager", hostRoot, execution, adHocTask: { description: "Temp", referenceFiles: [] } });
-      expect((await tasks.currentTasksOfTaskWorkers([execution]))[0]?.task).toMatchObject({ projectId: null, taskKey: null });
+      const answer = (await tasks.currentTasksOfTaskWorkers([execution]))[0]?.task;
+      expect(answer).toMatchObject({ projectId: null, description: "Temp" });
+      expect(answer).not.toHaveProperty("taskKey");
     });
   });
 

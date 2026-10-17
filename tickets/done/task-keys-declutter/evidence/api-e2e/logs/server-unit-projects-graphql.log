@@ -1,0 +1,269 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/unit/projects/task-execution-existing-copy-assignment.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/projects/task-execution-existing-copy-assignment.test.ts [2m([22m[2m13 tests[22m[2m)[22m[33m 1616[2mms[22m[39m
+[90mstdout[2m | tests/unit/projects/project-task-keys-and-dependencies.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/projects/project-task-keys-and-dependencies.test.ts [2m([22m[2m14 tests[22m[2m)[22m[33m 1322[2mms[22m[39m
+[90mstdout[2m | tests/unit/projects/project-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/projects/project-service.test.ts [2m([22m[2m43 tests[22m[2m)[22m[33m 1433[2mms[22m[39m
+[90mstdout[2m | tests/unit/projects/project-task-context-store.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/projects/project-task-context-store.test.ts[2m > [22m[2mTask-owned context transaction[2m > [22m[2mcopies real bytes, persists metadata only, projects restart references and retains on Done
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/autobyteus-server-ts
+
+[90mstderr[2m | tests/unit/projects/project-task-context-store.test.ts[2m > [22m[2mTask-owned context transaction[2m > [22m[2mreturns proven committed metadata even when subsequent lock finalization fails
+[22m[39mProjects data committed; lock finalization failed. Error: release failure
+    at Object.<anonymous> [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/autobyteus-server-ts/[39mtests/unit/projects/project-task-context-store.test.ts:92:69[90m)[39m
+    at Object.unlink (file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/node_modules/[4m.pnpm[24m/@vitest+spy@4.0.18/node_modules/[4m@vitest/spy[24m/dist/index.js:285:34)
+    at code [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/autobyteus-server-ts/[39msrc/persistence/file/store-utils.ts:55:20[90m)[39m
+    at withFilePathLock [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/autobyteus-server-ts/[39msrc/persistence/file/store-utils.ts:123:9[90m)[39m
+    at ProjectStore.withCommitLock [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/autobyteus-server-ts/[39msrc/projects/stores/project-store.ts:267:14[90m)[39m
+    at ProjectTaskService.create [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/autobyteus-server-ts/[39msrc/projects/services/project-task-service.ts:422:18[90m)[39m
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/autobyteus-server-ts/[39mtests/unit/projects/project-task-context-store.test.ts:95:18
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/node_modules/[4m.pnpm[24m/@vitest+runner@4.0.18/node_modules/[4m@vitest/runner[24m/dist/index.js:915:20
+
+[90mstderr[2m | tests/unit/projects/project-task-context-store.test.ts[2m > [22m[2mTask-owned context transaction[2m > [22m[2mcleanup failure cannot turn a confirmed file-removal commit into rollback
+[22m[39mTask context cleanup failed. Error: cleanup unavailable
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/autobyteus-server-ts/[39mtests/unit/projects/project-task-context-store.test.ts:121:63
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/node_modules/[4m.pnpm[24m/@vitest+runner@4.0.18/node_modules/[4m@vitest/runner[24m/dist/index.js:915:20
+
+ [32m✓[39m tests/unit/projects/project-task-context-store.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 1151[2mms[22m[39m
+[90mstdout[2m | tests/unit/projects/task-execution-resources.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/projects/task-execution-resources.test.ts[2m > [22m[2mTask agent run resources (SR-023/SR-024)[2m > [22m[2mlinks `starting` before resources, writes the exact documented file, and settles start once
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/projects/task-execution-resources.test.ts [2m([22m[2m12 tests[22m[2m)[22m[33m 978[2mms[22m[39m
+[90mstdout[2m | tests/unit/projects/project-task-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/projects/project-task-service.test.ts[2m > [22m[2mProjectTaskService[2m > [22m[2mcreates a TODO Task from a trimmed multi-line description in its own task.json
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/projects/project-task-service.test.ts [2m([22m[2m15 tests[22m[2m)[22m[33m 678[2mms[22m[39m
+[90mstdout[2m | tests/unit/projects/project-task-local-context-files.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/projects/project-task-local-context-files.test.ts [2m([22m[2m18 tests[22m[2m)[22m[33m 660[2mms[22m[39m
+[90mstdout[2m | tests/unit/projects/task-execution-resource-reactivation.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/projects/task-execution-resource-reactivation.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 679[2mms[22m[39m
+[90mstdout[2m | tests/unit/projects/task-cancelled-status.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/projects/task-cancelled-status.test.ts [2m([22m[2m10 tests[22m[2m)[22m[33m 505[2mms[22m[39m
+ [32m✓[39m tests/unit/projects/project-store-task-keys.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 611[2mms[22m[39m
+[90mstdout[2m | tests/unit/projects/ad-hoc-tasks.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/projects/ad-hoc-tasks.test.ts [2m([22m[2m10 tests[22m[2m)[22m[33m 582[2mms[22m[39m
+ [32m✓[39m tests/unit/projects/project-store-per-folder.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 485[2mms[22m[39m
+[90mstdout[2m | tests/unit/projects/task-worker-current-tasks.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/projects/task-worker-current-tasks.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 426[2mms[22m[39m
+[90mstdout[2m | tests/unit/projects/project-change-publication.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/projects/project-change-publication.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 297[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/types/memory-view-member-resolver.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/api/graphql/types/memory-view-member-resolver.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 146[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/types/agent-org-run-config.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:37205) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [32m✓[39m tests/unit/api/graphql/types/agent-org-run-config.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 67[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/project-tasks-schema.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:37514) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [32m✓[39m tests/unit/api/graphql/project-tasks-schema.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 63[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/projects-schema.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:37524) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [32m✓[39m tests/unit/api/graphql/projects-schema.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 54[2mms[22m[39m
+ [32m✓[39m tests/unit/projects/task-root-view.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 70[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/types/reload-agent-package-definitions.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:37535) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstderr[2m | tests/unit/api/graphql/types/reload-agent-package-definitions.test.ts[2m > [22m[2mreloadAgentPackageDefinitions GraphQL boundary[2m > [22m[2mreports a failed reload as a GraphQL error
+[22m[39mError reloading agent package definitions: Error: EIO
+
+ [32m✓[39m tests/unit/api/graphql/types/reload-agent-package-definitions.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 49[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/types/definition-load-issues.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/api/graphql/types/definition-load-issues.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 47[2mms[22m[39m
+ [32m✓[39m tests/unit/api/graphql/types/definition-problems.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+ [32m✓[39m tests/unit/projects/project-change-publisher.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+ [32m✓[39m tests/unit/projects/task-execution-current-entry.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+ [32m✓[39m tests/unit/api/graphql/types/agent-team-run.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/types/app-data-migrations.test.ts[2m > [22m[2mAppDataMigrationResolver[2m > [22m[2mrebuilds compound current-package admission before a manual TeamRun migration Retry completes
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/api/graphql/types/app-data-migrations.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m tests/unit/projects/task-key-and-dependency-rules.test.ts [2m([22m[2m21 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/types/llm-provider.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/api/graphql/types/llm-provider.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m tests/unit/projects/project-change-hub.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/unit/api/graphql/types/projects.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/api/graphql/studio-application-api-services.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/types/agent-run.test.ts[2m > [22m[2mAgentRunResolver[2m > [22m[2mroutes tool approval through the live AgentRun subject
+[22m[39mReceived tool invocation approval request for agent run 'run-native-1', invocation 'tool-1', approved: true
+
+[90mstdout[2m | tests/unit/api/graphql/types/agent-run.test.ts[2m > [22m[2mAgentRunResolver[2m > [22m[2mroutes tool approval through the live AgentRun subject
+[22m[39mSuccessfully posted tool execution approval for agent run 'run-native-1', invocation 'tool-1'.
+
+ [32m✓[39m tests/unit/api/graphql/types/agent-run.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/api/graphql/types/server-settings.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/api/graphql/types/team-run-history.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/converters/workspace-converter.test.ts[2m > [22m[2mWorkspaceConverter[2m > [22m[2mmaps a regular workspace's metadata with isTemp false
+[22m[39mCreated metadata-only FileSystemWorkspace at /path/to/ws.
+
+[90mstdout[2m | tests/unit/api/graphql/converters/workspace-converter.test.ts[2m > [22m[2mWorkspaceConverter[2m > [22m[2mmaps the temp workspace with its fixed id and isTemp true
+[22m[39mCreated metadata-only FileSystemWorkspace at /path/to/temp.
+Initialized TempWorkspace at /path/to/temp with fixed ID 'temp_ws_default'
+
+ [32m✓[39m tests/unit/api/graphql/converters/workspace-converter.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/api/graphql/types/run-history.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/api/graphql/errors/skill-name-conflict-graphql-error.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/converters/tool-definition-converter.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/api/graphql/converters/tool-definition-converter.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/api/graphql/types/memory-explorer-types.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/api/graphql/converters/memory-view-converter.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/converters/user-input-converter.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/api/graphql/converters/user-input-converter.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/types/memory-view-types.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/api/graphql/types/memory-view-types.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 1[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m42 passed[39m[22m[90m (42)[39m
+[2m      Tests [22m [1m[32m306 passed[39m[22m[90m (306)[39m
+[2m   Start at [22m 19:16:35
+[2m   Duration [22m 39.52s[2m (transform 4.29s, setup 315ms, import 23.15s, tests 12.07s, environment 3ms)[22m
+
+unit exit 0

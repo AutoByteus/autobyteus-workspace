@@ -19,8 +19,6 @@
       data-testid="project-task-row-link"
       @click="activation === 'select' && emit('select', task.taskId)"
     >
-      <!-- A Project Task's key, quiet, above the summary (Temp tasks have none). -->
-      <span v-if="taskKey" class="mb-0.5 flex text-xs font-medium leading-5 text-slate-500" data-testid="project-task-row-key"><TaskKey :task-key="taskKey" /></span>
       <span class="line-clamp-2 break-words text-sm font-medium leading-6 text-slate-800" data-testid="project-task-row-text">{{ summary }}</span>
       <span v-if="preview" class="mt-1 line-clamp-2 break-words text-xs leading-5 text-slate-500" data-testid="project-task-row-preview">{{ preview }}</span>
       <!-- "Blocked by <key>" / "Dependency cancelled: <key>" (open Project Tasks only). -->
@@ -37,7 +35,6 @@ import { Icon } from '@iconify/vue'
 import type { ProjectTask, TaskWithoutProject } from '~/types/project'
 import ProjectTaskWorkers from './ProjectTaskWorkers.vue'
 import TaskDependencyBadge from './TaskDependencyBadge.vue'
-import TaskKey from './TaskKey.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useProjectTaskStore } from '~/stores/projectTaskStore'
 import { taskPagePath } from '~/utils/projects/taskPagePath'
@@ -64,8 +61,8 @@ const taskRoute = computed(() => 'projectId' in props.task
   : `/projects/temp-tasks/tasks/${props.task.taskId}`)
 const fileCount = computed(() => 'contextFiles' in props.task ? props.task.contextFiles?.length ?? 0 : 0)
 const live = computed(() => store.liveChanges[props.task.taskId] ?? null)
-// A Project Task's key and its Project's Tasks (for the dependency badge); a Temp task has neither.
-const taskKey = computed(() => 'taskKey' in props.task ? props.task.taskKey : '')
+// The Project's Tasks, for the dependency badge (a Temp task has none). Cards show no key: keys appear
+// where they link or refer to a Task (task-keys-declutter).
 const projectTasks = computed<ProjectTask[]>(() => 'projectId' in props.task ? store.getList(props.task.projectId)?.tasks ?? [] : [])
 
 // "Show Task in Projects" (the tab's `select` cards): once the board made this Task visible, the card

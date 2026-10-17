@@ -1,0 +1,5 @@
+
+> autobyteus@1.5.5-beta.3 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-declutter/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.

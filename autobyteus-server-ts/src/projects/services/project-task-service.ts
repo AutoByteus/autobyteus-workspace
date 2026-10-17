@@ -225,8 +225,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
       const location = this.resources.rootTaskLocationOf(execution);
       const view = location && await this.readTaskChangeView(location)
         .catch((error: unknown) => { console.warn("TASK_WORKER_TASK_READ_FAILED", { execution, error: error instanceof Error ? error.message : String(error) }); return null; });
-      return { execution, task: view && { taskId: view.task.taskId, projectId: view.kind === "project" ? view.projectId : null,
-        taskKey: view.kind === "project" ? view.task.taskKey : null, description: view.task.description, status: view.task.status } };
+      return { execution, task: view && { taskId: view.task.taskId, projectId: view.kind === "project" ? view.projectId : null, description: view.task.description, status: view.task.status } };
     }));
   }
   async beginContextDraft(projectId: string, taskId?: string) {

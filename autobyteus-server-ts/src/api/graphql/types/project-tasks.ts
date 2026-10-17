@@ -156,8 +156,6 @@ export class TaskWithoutProject {
 export class TaskWorkerTaskView {
   @Field(() => String) taskId!: string;
   @Field(() => String, { nullable: true }) projectId!: string | null;
-  /** The Project Task's key; null for a Temp task. */
-  @Field(() => String, { nullable: true }) taskKey!: string | null;
   @Field(() => String) description!: string;
   @Field(() => ProjectTaskStatus) status!: ProjectTaskStatus;
 }
