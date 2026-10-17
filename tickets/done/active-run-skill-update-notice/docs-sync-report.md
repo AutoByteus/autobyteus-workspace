@@ -1,5 +1,7 @@
 # Docs Sync Report — active-run-skill-update-notice
 
+Current for delivery round **DR-002**. The DR-002 delta is at the end. The DR-001 sections below stay valid except where the delta says otherwise.
+
 ## Scope
 
 - Ticket: `active-run-skill-update-notice`. `task_size=Large`, `architectural_risk=High`, reviewed route.
@@ -86,3 +88,15 @@ Not applicable: docs were updated. `TESTING.md` alone is unchanged, as recorded 
 
 - Result: `Pass`
 - Next delivery action: commit the docs; write the handoff summary; hold for user verification.
+
+## DR-002 Delta (after the DR-001 Local Fix)
+
+- Trigger: CRR-007 test-review pass after IR-004 (`f977849b29`), CRR-006 and API-REV-003. Branch at `06c4a62f16`.
+- Integrated base: `origin/personal` @ `c2e366806ae20622084d06917f7132967c5fb8a2` (300 commits; v1.5.5-beta.1). Merged as `0be06dea6b` with no textual conflicts.
+- Docs re-verified:
+  - **`skill_update_notices.md`**, updated by IR-004 (no-create write, retries 1/5/15/60 s while tracked, nothing written after release, awaited `close()`). It was checked against the code: the `stat` directory check, the `wx` temp file, `DEFAULT_SEEN_VERSIONS_RETRY_DELAYS_MS` and `close()` → watcher, service, tracker.
+  - **Delivery addition** (`480d9f4aa4`): the accepted limitation that a run whose memory folder never appears while tracked has no stored record.
+  - **Docs edited on both sides of the merge:** `modules/README.md`, `agent_execution.md`, `agent_memory.md`, web `agent_execution_architecture.md`. They merged cleanly. This ticket's sections are intact and unique (index row; "Platform Input Preface And Run Lifecycle Observer"; recording allow-list; `seen_skill_versions.json`; "Skill updated" label).
+  - **Base feature checked for doc impact:** private runtime skill profiles (`runtime-skill-profile.ts`, shared workspaces). Profiles **symlink** each skill to its real source folder, so runtimes still read live files, and the notice's `SKILL.md` path stays correct. `skills.md` § "Skill Changes During Active Runs" remains accurate.
+- `TESTING.md`: still unchanged. The base's `TESTING.md` additions (signed-in CLI `HOME`, the AGY gap, migration testing) kept the same "When this file may be updated" policy. The live suite header (`skill-update-notice-live.e2e.test.ts`, file header comment) documents the new restore/delete case per runtime, its gate and its command.
+- Result: `Pass`.
