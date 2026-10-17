@@ -1,6 +1,6 @@
 # Handoff Summary — task-keys-declutter
 
-> **Status (DR-001): verified; release decision Stable `v1.5.5` (user, 2026-10-17); release notes shown to the user, used as drafted.**
+> **Status (DR-001): stable `v1.5.5` released and checked by the user. Android APK asset missing (transient upload failure, rerun pending); everything else published.**
 
 ## What Shipped
 

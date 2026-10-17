@@ -41,7 +41,8 @@
   - Delivery viewed the screenshots `dsk-d1-board-page-1440x900.png` and `dsk-d3-tree-1440x900.png`.
   - The full server unit suite passed (above).
 - More evidence requested: `None`
-- User check needed: `Yes`. The Task's Done-when asks for the user's check of the released build. It is pending until after the release.
+- User check needed: `Yes`. The Task's Done-when asks for the user's check of the released build.
+- User check reference: **Passed** (2026-10-17). The user upgraded their desktop app to `v1.5.5` ("i am runnign the 1.5.5 now"), was asked to check the board cards, the tree summaries and the Task page chip, and replied "i checked now its working. thanks".
 
 ## Release Decision
 
@@ -63,7 +64,29 @@
 - Ticket archived to `tickets/done/task-keys-declutter/`.
 - Path hygiene: three implementation evidence logs had `:` in their names, which a Windows checkout rejects. This is the `v1.5.2-beta.1` failure that `RELEASE.md` warns about. They were renamed before any push, with `:` → `-`: `web-audit-localization-literals.log`, `web-guard-localization-boundary.log`, `web-guard-web-boundary.log`. No document referenced the old names. `check_repository_artifact_hygiene.py` now passes.
 
-Recorded in the next revision entries as each step completes.
+- Repository finalization:
+  - Ticket commit `29ca564d21` (local `codex/task-keys-declutter`; never pushed, per `RELEASE.md`).
+  - `finalize/task-keys-declutter` from `origin/personal@aa84fd026c`; `--no-ff` merge `be52a331a4`. Its tree is identical to the ticket tree. On the merge: hygiene passed, licensing consistent, and no `*/dist/` paths.
+  - Status: `Completed`.
+- Version, tag and release commit:
+  - Removed the untracked `*/dist/` folders first.
+  - `desktop-release.sh release 1.5.5 --release-notes tickets/done/task-keys-declutter/release-notes.md --branch finalize/task-keys-declutter --no-push` → `696e09b374` "chore(release): bump workspace release version to 1.5.5". It bumps `autobyteus-web/package.json`, and writes `.github/release-notes/release-notes.md`, identical to the ticket's notes. Annotated tag `v1.5.5`.
+  - After a re-fetch showed `origin/personal` unchanged at `aa84fd026c`, pushed `aa84fd026c..696e09b374 HEAD -> personal` and then the tag `v1.5.5`.
+
+### Release / Publication — **Partial**
+
+| Workflow | Run | Result |
+| --- | --- | --- |
+| Desktop Release | 39055669130 | success |
+| iOS App Store Connect Release | 39055669147 | success (TestFlight upload) |
+| Server Docker Release | 39055669121 | success |
+| Android APK Release | 39055669125 | **failure**: build succeeded; the publish step failed on a GitHub server error ("Unicorn!" page) about two minutes into the APK upload |
+| AutoByteus NFS Release | 39055669153 | failure; not part of this release (the user: NFS is moving out of the superrepo) |
+
+- GitHub release `v1.5.5`: **Latest**, not a pre-release, with the curated notes. **16 of 17 assets**: the macOS, Linux and Windows desktop files, the four `latest*.yml` files and the Android `.sha256`. **The APK itself is missing.**
+- Docker Hub: `1.5.5`, `latest` and `beta` share digest `sha256:1bdcb7c765c1…` (amd64 and arm64).
+- Classification: a transient publish failure, not a fault in the tag's content. The fix in `RELEASE.md` is `gh run rerun 39055669125 --failed`, which does not touch the tag. Delivery asked the user whether to rerun it, and that decision is pending, so Android stays recorded as partial. The tag is never moved or deleted.
+- Cleanup: the ticket worktree and the `codex/` and `finalize/` branches are removed after this record is pushed. Remote branch cleanup: not required (never pushed). API/E2E stopped the isolated instance (iso-59740-05cd).
 
 ## Environment Or Persisted-Data Transition Notes
 
