@@ -2,7 +2,7 @@
 
 ## Release / Publication / Deployment Scope
 
-- Repository finalization of the verified change into `origin/personal`. There is no release, publication or deployment: the user did not ask for one, and the guide's default is No release.
+- Repository finalization of the verified change into `origin/personal` (DR-002), then a **beta release `v1.5.5-beta.3`** (DR-003). The delegating Task's "Done when" asks for "tests, a beta release, and the user's check in the app" (`handoff-architecture-design-complete.md` line 42; `investigation-notes.md` line 22). DR-001 and DR-002 wrongly recorded that nobody had asked for a release; the Solution Designer's receipt check caught it.
 - `task_size=Large`, `architectural_risk=High`, route: Reviewed (ARCH-REV-003 → IR-003 → CRR-002 → API-REV-001 → CRR-003 → DR-001 Blocked/Local Fix → IR-004 → CRR-004 → API-REV-002 → CRR-005 → DR-002).
 
 ## Project Release Guide
@@ -16,7 +16,7 @@
 - Handoff summary artifact: `tickets/in-progress/task-keys-and-dependencies/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `tickets/in-progress/task-keys-and-dependencies/delivery-revision-record.md`
-- Current delivery revision ID: `DR-002`
+- Current delivery revision ID: `DR-003`
 
 ## Initial Delivery Integration Refresh
 
@@ -87,7 +87,8 @@
   - Not tested: a migration I/O fault during a desktop upgrade (it needs fault injection; the startup E2E covers the failure path on synthesized data).
   - Integrated-state rerun: as above.
 - More evidence requested: `None`
-- User check needed: `No`. API/E2E reached every behavior on owned surfaces: isolated desktop instances, an owned data root, and a real model on the user's allowed provider. Nothing depends on the user's own accounts or nodes.
+- User check needed: **`Yes`**, because the delegating Task's "Done when" asks for the user's check in the app. (DR-001/DR-002 said `No`, which was wrong.) The evidence alone already proves the change works; this check is the requested acceptance step on the released beta.
+- User check reference: **pending** (DR-003). The user was asked directly in the delivery conversation on 2026-10-17 to install `v1.5.5-beta.3` and check the steps listed in Final Status.
 - Re-verification after re-integration (DR-002): `Sufficient`.
   - API-REV-002 re-proved every critical AC at `c95e0138e8`, at 95.6% confidence with no category below 90%.
   - Delivery opened the round-2 evidence:
@@ -97,12 +98,12 @@
     - `live-r2/live-001-claude-haiku.json`: 10/10 checks, including "Task created after the rename keeps the prefix (live-keys-5)" through the new `update_project`.
     - `browser/projects-feature-ledger-r2.txt`: PT-E2E-001..017 Pass.
     - `logs/r2-server-e2e-project-task-boundaries.log`: 14/14.
-  - User check needed: `No` (unchanged).
+  - User check needed: see above (Yes, pending since DR-003).
 
 ## Release Decision
 
-- Decision: `No release`
-- Decided by: the release guide's default ("No release … the default when the user does not ask for one"). Neither the delegated request nor the handoff asked for a release. A beta or stable release is available on request; the next tag ships server and web together, as this change requires.
+- Decision: **`Beta`** (`v1.5.5-beta.3`)
+- Decided by: the user's request. The delegating Task's "Done when" says "tests, a beta release, and the user's check in the app". DR-001/DR-002 recorded `No release` by mistake; the Solution Designer's receipt check (`_delivery-receipts/task-keys-and-dependencies/solution-designer-receipt-verification.md`) found it, and DR-003 corrects it.
 
 ## Docs Sync Result
 
@@ -123,7 +124,11 @@
 
 ## Version / Tag / Release Commit
 
-- None (No release). `autobyteus-web/package.json` stays at the base's `1.5.5-beta.2`.
+- Release worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies-beta`, branch `finalize/task-keys-and-dependencies-beta` from `origin/personal@1e8b45486b`.
+- Checks before tagging, on `1e8b45486b`: `check_licensing.py` "Licensing is consistent."; `check_repository_artifact_hygiene.py` passed.
+- Version: `python3 scripts/release_versions.py next-beta` → `1.5.5-beta.3`.
+- `bash scripts/desktop-release.sh beta --branch finalize/task-keys-and-dependencies-beta --no-push` → commit `516e592d7b` "chore(release): bump workspace release version to 1.5.5-beta.3" (`autobyteus-web/package.json` only) and annotated tag `v1.5.5-beta.3`.
+- After re-fetching, `origin/personal` was still `1e8b45486b`. Pushed `1e8b45486b..516e592d7b HEAD -> personal`, then the tag `v1.5.5-beta.3`.
 
 ## Repository Finalization
 
@@ -143,12 +148,31 @@
 
 ## Release / Publication / Deployment
 
-- Applicable: `No`
-- Method: `Project Release Guide` (No release)
-- Pipelines triggered and their results: none (no tag)
-- Published artifacts checked: N/A
-- Release/publication/deployment result: `Not required`
-- Release notes handoff result: `Not required`
+- Applicable: `Yes` (Beta)
+- Method: `Project Release Guide` (`RELEASE.md` → Cutting The Release, beta)
+- Pipelines triggered and their results (tag push `v1.5.5-beta.3`):
+
+| Workflow | Run | Result |
+| --- | --- | --- |
+| Desktop Release | 39045177328 | success |
+| Android APK Release | 39045177303 | success |
+| iOS App Store Connect Release | 39045177374 | success |
+| Server Docker Release | 39045177298 | success |
+| AutoByteus NFS Release | 39045177326 | failure (not part of this release: the user says NFS is moving out of the superrepo; no action) |
+
+- Published artifacts checked:
+  - GitHub release `v1.5.5-beta.3`: `isPrerelease: true`, not a draft, **17 assets**, which matches the guide's table:
+    - macOS arm64 and x64: `.dmg`, `.zip` and both blockmaps;
+    - Linux x64 and arm64 AppImages;
+    - the Windows `.exe`;
+    - `latest.yml`, `latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml`;
+    - the Android APK and its `.sha256`.
+  - Docker Hub `autobyteus/autobyteus-server`:
+    - `1.5.5-beta.3` and `beta` share digest `sha256:2620dcf053bf…` (amd64 and arm64);
+    - `latest` is unchanged (`sha256:8c6724d5e830…`, 2026-10-15).
+  - TestFlight upload: the iOS workflow succeeded.
+- Release/publication/deployment result: **`Completed`** (all four release workflows succeeded)
+- Release notes handoff result: `Not required`. A beta uses GitHub generated notes.
 
 ## Post-Finalization Cleanup
 
@@ -161,7 +185,7 @@
 
 ## Release Notes Summary
 
-- Release notes artifact: `Not required` (no stable release)
+- Release notes artifact: `Not required` (beta; generated notes)
 - Release notes status: `Not required`
 
 ## Deployment Steps
@@ -193,10 +217,15 @@
 
 ## Final Status
 
-- Verification complete (from the evidence): `Yes` (DR-002, API-REV-002 at `c95e0138e8`)
-- Repository finalization complete: `Yes` (`1b108514cb` on `personal`)
-- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`, No release)
-- Applicable safe cleanup complete or not required: confirmed in the terminal message (DR-002)
-- Unresolved blocker: `None`
-- Successful terminal package eligible for return: `Yes`, after this record's push and cleanup
-- Terminal package sent to `/solution_designer`: sent right after cleanup (`/software_engineering_team/solution_designer`)
+- Verification complete from the evidence: `Yes` (DR-002)
+- User check in the app (requested by the Task): **`Pending`**. Steps the user was asked to check on `v1.5.5-beta.3`, with **Settings > Updates > Receive beta updates** on:
+  1. Every Project Task card shows a key (e.g. `autobyteus-1`); existing Tasks are numbered in creation order.
+  2. A Task page shows the key chip (copy works) and a Dependencies card.
+  3. Edit task → "Depends on" adds a dependency, and the board card shows "Blocked by <key>" until that Task is Done.
+  4. The Workspaces-tree Task summary reads "<key> <summary>".
+- Repository finalization complete: `Yes` (`1b108514cb`, record `1e8b45486b`, release commit `516e592d7b` on `personal`)
+- Release complete: `Yes` (Beta `v1.5.5-beta.3`, 4/4 release workflows, 17 assets, Docker `1.5.5-beta.3` / `beta`)
+- Applicable safe cleanup complete or not required: ticket worktree and branches removed (DR-002). The beta worktree and `finalize/task-keys-and-dependencies-beta` are removed after this record is pushed.
+- Unresolved blocker: none. The user's check is pending.
+- Successful terminal package eligible for return: **`No`**, until the user's check is recorded
+- Terminal package sent to `/solution_designer`: not yet (DR-003)

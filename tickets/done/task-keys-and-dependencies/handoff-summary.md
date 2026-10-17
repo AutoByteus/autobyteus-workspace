@@ -1,8 +1,8 @@
 # Handoff Summary — task-keys-and-dependencies
 
-> **Status (DR-002): Delivery Completed. Finalized into `personal`, no release.**
-> - DR-001 was blocked by the project-tool-split conflict. IR-004 resolved it, and CRR-004, API-REV-002 and CRR-005 passed.
-> - Delivery re-verified the change on `origin/personal@66429d6f31` and finalized it. See `delivery-revision-record.md`.
+> **Status (DR-003): finalized into `personal` and released as beta `v1.5.5-beta.3` (complete: 17 assets, Docker `1.5.5-beta.3` / `beta`). The user's check in the app is pending.**
+> - The delegating Task asks for a beta and the user's check; DR-002 had wrongly recorded No release.
+> - See `release-deployment-report.md` and `delivery-revision-record.md`.
 
 ## What Shipped
 
@@ -75,7 +75,7 @@
 
 ## Release
 
-- No release: the user did not ask for one, and the release guide's default is to finalize only.
+- Beta `v1.5.5-beta.3` (DR-003), as the delegating Task's "Done when" asks. DR-001 and DR-002 wrongly said No release.
 - The change ships with the next beta or stable release, which is available on request.
 - DR-002 re-confirms No release: neither the request nor the handoff asks for one.
 - Server and web must ship together: new required fields, the strict `/ws/projects` schema and key URLs. A single tag already ships both.
