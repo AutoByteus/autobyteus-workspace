@@ -28,4 +28,11 @@ The latest docs sync report, handoff summary and release/deployment report remai
 
 #### DR-001 Finalization Result
 
-Recorded after the merge into `personal`. See the record commit that follows the merge.
+- Ticket branch commit: `e1b29dd7ef` ("chore(delivery): archive baseline-e2e-probe-repair (DR-001, verified, no release)") on `codex/baseline-e2e-probe-repair`; not pushed (per `RELEASE.md`)
+- Target advanced after verification: `No`. `origin/personal` was still `de532ceb43` at the post-commit fetch and again before the push.
+- Re-integration before final merge: `Not needed`
+- Merge into target: `ec934ca753` (`--no-ff`, on `finalize/baseline-e2e-probe-repair` from `origin/personal`); its tree is identical to the verified ticket branch tree
+- Push target branch: `Completed`, `de532ceb43..ec934ca753 HEAD -> personal`
+- Repository finalization status: `Completed`
+- Release: `Not required` (no tag, no pipelines)
+- This record update is committed on `finalize/baseline-e2e-probe-repair` and pushed to `personal` after a fresh fetch check. Worktree and branch cleanup follow that push and are confirmed in the terminal message.

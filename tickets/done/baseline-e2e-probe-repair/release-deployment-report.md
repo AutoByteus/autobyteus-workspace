@@ -79,17 +79,17 @@ Not applicable (no release; no version bump, no tag).
 
 - Bootstrap context source: requirements/design (base `origin/personal`) and `RELEASE.md` (target `origin/personal`, `--no-ff` from `finalize/<ticket>`)
 - Ticket branch: `codex/baseline-e2e-probe-repair`
-- Ticket branch commit result: see `delivery-revision-record.md` → DR-001 Finalization Result
+- Ticket branch commit result: `Completed`, `e1b29dd7ef`
 - Ticket branch push result: `Not required` (per `RELEASE.md`; the ticket branch is merged locally from the worktree)
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification: see DR-001 Finalization Result
+- Target advanced after verification: `No` (`origin/personal` still `de532ceb43` before the merge and before the push)
 - Delivery-owned edits protected before re-integration: `Completed` (committed before the merge)
-- Re-integration before final merge result: see DR-001 Finalization Result
+- Re-integration before final merge result: `Not needed`
 - Target branch update result: `git fetch origin personal`; `git checkout -b finalize/baseline-e2e-probe-repair origin/personal`
-- Merge into target result: see DR-001 Finalization Result
-- Push target branch result: see DR-001 Finalization Result
-- Repository finalization status: see DR-001 Finalization Result
+- Merge into target result: `Completed`, `ec934ca753` (`--no-ff`; tree identical to the verified ticket tree)
+- Push target branch result: `Completed`, `de532ceb43..ec934ca753 HEAD -> personal`
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
@@ -136,7 +136,7 @@ If a repaired suite turns out to hide a real regression, revert the merge commit
 ## Final Status
 
 - Verification complete: `Yes` (from the evidence)
-- Repository finalization complete: see DR-001 Finalization Result
+- Repository finalization complete: `Yes` (`ec934ca753` on `origin/personal`)
 - Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`)
 - Applicable safe cleanup complete or not required: confirmed in the terminal message
 - Unresolved blocker: `None`
