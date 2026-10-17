@@ -165,6 +165,18 @@ not paid inference. Agent-run testing is not the user's verification.
 - **Known baseline exception.** Two content-cadence cases in
   `tests/integration/agent/agent-status-websocket.integration.test.ts` fail because of a
   reported product defect. Remove this note when it is fixed.
+- **Known intermittent e2e.** `tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts` runs
+  real 60 s idle-shutdown and 100 s background-step timers in the Agent, Team and Org roots
+  at once, with tight deadlines. Under load it fails sometimes, on the base too:
+  - a stop takes longer than its 15 s limit;
+  - a shutdown lands a few ms under the 59 s lower bound, because the test starts timing
+    when it notices the step exit;
+  - a delegation is refused with "model … is not available on antigravity_cli". AGY model
+    discovery gives `agy --help` only 3 s, and the scripted CLI is a Node process that can
+    start slower than that under load.
+
+  Rerun it alone before treating a failure as yours. It is reported to the idle-shutdown
+  and AGY model discovery owners; remove this note when it is fixed.
 
 ## Environment-specific setup: headless Linux and containers
 
