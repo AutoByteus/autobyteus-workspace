@@ -14,7 +14,7 @@
         <NuxtLink to="/projects" class="mt-4 inline-flex min-h-10 items-center rounded-md px-3 text-sm font-medium text-blue-700 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" data-testid="projects-panel-open-projects">{{ t('projects.panel.openProjectsPage') }}</NuxtLink>
       </div>
       <template v-else>
-        <ProjectsPanelTaskDetail v-if="view.kind === 'task'" :choice="panel.choice" :task-id="view.taskId" @back="view = { kind: 'board' }" />
+        <ProjectsPanelTaskDetail v-if="view.kind === 'task'" :key="view.taskId" :choice="panel.choice" :task-id="view.taskId" @back="view = { kind: 'board' }" @open-task="openTask" />
         <!-- The board stays mounted while a Task is open, so returning keeps its search and scroll. -->
         <div v-show="view.kind === 'board'" data-testid="projects-panel-board">
           <ProjectTaskBoard v-if="panel.choice.kind === 'project'" :key="panel.choice.projectId" :project-id="panel.choice.projectId" compact @select-task="openTask" />

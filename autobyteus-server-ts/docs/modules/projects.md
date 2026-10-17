@@ -102,11 +102,13 @@ lists the removed `create_or_update_task` gets no task tool from that name.
 - **Optional files.** A missing `agent_run_resources.json` means no agent runs
   were started for the Task. A missing `context/` means the Task has no files.
 
-`project.json` holds the released Project fields minus `tasks`:
-`projectId, name, description, createdAt, updatedAt, workspaces[]`.
+`project.json` holds the released Project fields minus `tasks`, plus the Task
+key allocation state:
+`projectId, name, description, createdAt, updatedAt, workspaces[], taskKeys{prefix, lastNumber}`.
 
-`task.json` holds the released Task fields plus `projectId`:
-`taskId, projectId, description, status, createdAt, updatedAt, contextFiles[]`.
+`task.json` holds the released Task fields plus `projectId`, its key and its
+dependencies:
+`taskId, projectId, taskKey, description, status, dependsOnTaskIds[], createdAt, updatedAt, contextFiles[]`.
 
 Tasks with no Project live outside the Projects root, so no Project scan or the
 Projects migration gate ever sees them. `AdHocTasksLayout` owns
@@ -128,7 +130,9 @@ additive: a missing directory means no ad-hoc Tasks, and nothing is migrated.
 - **Reading is tolerant.** `readProjectFile` and `readTaskFile` in
   `project-store.ts` keep recognized fields only. A file whose IDs do not match
   its folders is not a Project or Task. Malformed optional context metadata
-  never discards an otherwise valid Task.
+  never discards an otherwise valid Task. A Project needs valid `taskKeys` and a
+  Task needs a `taskKey` (both supplied by `project-task-keys-v1` for released
+  data); an absent `dependsOnTaskIds` means no dependencies.
 - **Writing is exact and one file at a time.** Writes use the existing per-file
   lock and atomic temp-file-plus-rename. Project create, update and delete
   serialize on one catalog lock, so name uniqueness is checked against the
@@ -138,6 +142,57 @@ additive: a missing directory means no ad-hoc Tasks, and nothing is migrated.
   releasing its lock fails afterwards, the committed Task is returned with a
   warning. This is bounded in-memory commit proof. It is not a durable journal,
   an fsync or power-loss promise, or a rollback protocol.
+
+### Task keys and "depends on"
+
+- **Key.** Every Project Task has a permanent readable key `<prefix>-<number>`
+  (`autobyteus-42`), stored as `taskKey` and never changed (`ProjectStore`
+  keeps it on every update). The long `taskId` stays the stored identity (Task
+  files, GraphQL arguments, change-feed scope, agent run resources); the key is
+  the agent-facing Task ID and the Task page URL ID (see below and the web docs).
+- **Prefix.** `ProjectService` reserves a Project's prefix once, in the catalog-
+  locked create callback: `taskKeyPrefixOf(name)` (lower case, diacritics removed
+  from Latin letters only, each run of non-letter/digit characters → "-",
+  trimmed, `project` when empty; `domain/task-keys.ts`), then the smallest free
+  `-2`, `-3`, … suffix against every current Project's prefix and every retired
+  one. A rename never changes it: `ProjectStore.updateProject` always keeps the
+  stored `taskKeys`. Deleting a Project first appends its prefix to
+  `<appData>/projects/retired-task-key-prefixes.json` (`{"prefixes": [...]}`,
+  under the catalog lock, before `project.json` is removed), so an old key never
+  reaches another Task. A missing file means none: Projects deleted before keys
+  existed had no keys.
+- **Number.** `ProjectStore.createTask` allocates the next number after the
+  context step succeeds, under the catalog lock shared by every `project.json`
+  writer: it raises `taskKeys.lastNumber` (the highest number ever assigned in
+  the Project) and writes the key in the Task's first write. Numbers are never
+  reused (deletes leave gaps). Allocation is not a Project edit: the Project's
+  `updatedAt` stays and nothing is published for the Project.
+- **Depends on.** `dependsOnTaskIds` is the one stored relationship (same-Project
+  `taskId`s, set on the later Task). Create and update (`dependsOnTaskIds`
+  supplied = replace, `[]` = clear, omitted = keep) are validated against the
+  Project's current Tasks before any context step or write, through
+  `TaskDependencyWrites` and `domain/task-dependencies.ts`: an ID that is the
+  Task itself, is not a current Task of the Project, or would close a loop
+  (directly or through other Tasks) is rejected with `TASK_DEPENDENCY_INVALID`
+  and nothing is written. Replacements are serialized per Project (an in-process
+  path lock), so concurrent edits cannot close a loop. Deleting a Task drops it
+  from every dependent, keeping their `updatedAt`, and republishes them; a
+  failing cleanup is logged and never fails the delete. Readers ignore an ID
+  that names no current Task. "Blocked by", "Dependency cancelled" and
+  "Required by" are derived by clients and never stored. Dependencies only
+  inform: no status, delegation or reopen path checks them.
+- **The agent-facing Task ID.** For a Project Task, agents see and use the key:
+  tool results carry it as `taskId`, dependencies as `dependsOn` keys, and
+  agent-facing texts (refusals, the existing-copy assignment message, the
+  undelivered-work text) name Tasks by key, or "a deleted Task" when the Task no
+  longer exists. Every Task-ID input (`update_task task_id`, `delegate_task
+  task_id`, `depends_on`) accepts a key in any letter case or the long ID.
+  `TaskReferences` (owned by `ProjectTaskService`) resolves them: the long ID
+  exactly, else the key through `ProjectStore.findTaskByKey` (the Project owning
+  the prefix, then its Task). After resolution only the long ID travels inward;
+  run resources, assignments and the feed stay keyed by it. Saved context data
+  (`storedFilename`, `locator`, `localPath`, delegated reference-file paths)
+  keeps its stored form. A Task with no Project keeps its ID.
 
 ### What is never persisted
 
@@ -206,8 +261,8 @@ How the migration behaves:
 - **Frozen Project readers.** It reads the source only through
   `released-projects-array-v1.ts`. Project target classification, equality and
   post-write validation use `released-project-folder-v1.ts`, retaining the
-  released four-field workspace entries. Task output still uses the unchanged
-  current `readTaskFile` before the source is retired.
+  released four-field workspace entries. Task targets use the frozen
+  `readReleasedTaskFileV1` in the same file.
 - **Skips.** Invalid rows or Tasks, a duplicate `projectId`, and conflicting
   existing targets are `SKIPPED` with a warning and preserved. The unshipped
   dev `{taskLifetimes}` row is skipped silently as known residue.
@@ -224,12 +279,42 @@ to finish. Other features keep working."). Chat, agents and everything else
 keep working. Un-migrated data is never shown as an empty Project list. Current
 code checks only that `projects.json` **exists**; it never reads the old shape.
 
-**Maintenance obligation (data_migration_guideline §4).** The Project target
-reader is already frozen inside the migration; do not reconnect it to the
-current tolerant `readProjectFile`. The migration still imports current
-`ProjectsLayout` and `readTaskFile`. Before changing either imported contract,
-freeze its released behavior inside `projects-per-folder-v1`. Keep historical
-classifiers/fixtures unchanged and rerun migration/startup coverage.
+**Maintenance obligation (data_migration_guideline §4).** The Project and Task
+target readers are frozen inside the migration; do not reconnect them to the
+current tolerant readers. The migration still imports current `ProjectsLayout`.
+Before changing it, freeze its released behavior inside `projects-per-folder-v1`.
+Keep historical classifiers/fixtures unchanged and rerun migration/startup coverage.
+
+### Task keys for released data (`project-task-keys-v1`)
+
+The STARTUP_ONLY migration `20261017_project_task_keys_v1` (`requiredOnStartup`,
+prerequisite `20261005_projects_per_folder_v1`) gives released per-folder data
+its keys once:
+
+- **Plan.** Projects already holding valid `taskKeys` reserve their prefixes
+  first. Unkeyed valid Projects follow in creation order (`createdAt`, then
+  `projectId`), each taking the frozen prefix rule plus the smallest free
+  suffix, so the older Project keeps the plain prefix. Each Project's valid Tasks
+  are numbered from 1 in creation order (`createdAt`, then `taskId`).
+- **Frozen shapes.** Candidates are classified only through
+  `released-project-files-v2.ts` (the readers at `c600028072`); the prefix rule
+  is frozen in `task-key-prefix-v1.ts`. Current `readProjectFile` /
+  `readTaskFile` are imported only to validate the output.
+- **Writes.** Each write adds `taskKey` (Tasks first) or `taskKeys` (the
+  Project's marker, last) to the parsed file, keeps every other key and value,
+  and replaces the file atomically. No backups or journal.
+- **Dispositions.** An invalid `project.json` or `task.json` is preserved and
+  skipped with a warning (it was already not shown); a folder without
+  `project.json` or `task.json` is not a candidate. A Task already holding a
+  different key fails that Project before anything of it is written.
+- **No lockout.** A Project that cannot be keyed keeps no marker, stays
+  preserved and hidden (the current reader requires `taskKeys`), and the rest of
+  Projects and all new work keep working. A restart retries; Tasks already
+  carrying their planned key are recognized, so an interrupted attempt finishes
+  with the same keys. A second start after success changes nothing.
+- **References (guideline checklist item 8).** `dependsOnTaskIds` and agent run
+  resources reference `taskId`, which the migration never changes; keys are not
+  referenced by any stored data.
 
 ## Agent Run Resources
 
@@ -316,9 +401,9 @@ in-memory index (no scan of Task files); otherwise null. It never throws.
 `ProjectTaskService.currentTasksOfTaskWorkers(workers)` is the only Projects
 read built on it (delegated-copy-task-locator). It waits for `load()`, then for
 each `{agentRunId}` or `{teamRunId}` reads the Task's change view and answers
-`{execution, task: {taskId, projectId, description, status} | null}`
+`{execution, task: {taskId, projectId, taskKey, description, status} | null}`
 (`TaskWorkerTaskResult` / `TaskWorkerTaskView` in `domain/models.ts`;
-`projectId` null means a Task with no Project). `task` is null when the copy is
+`projectId` and `taskKey` null mean a Task with no Project). `task` is null when the copy is
 no Task's root, or when its Task or that Task's Project no longer exists. A
 closed (DONE or CANCELLED) current Task is still answered. One worker never
 fails the batch: an unexpected read error is logged as
@@ -360,8 +445,8 @@ Tools MCP share the parser, manifest, services and error projection.
 | `list_projects` | `{}` only; list all node-local Project ID/name/description, no selection or mutation | `{projects: [{projectId, name, description}]}` |
 | `list_project_tasks` | Required `project_id`; optional exact `status`: TODO, IN_PROGRESS, DONE or CANCELLED | `{projectId, tasks: [...]}` |
 | `create_or_update_project` | Omit `project_id` to create with required `name`; supply known `project_id` to patch `name?`, `description?`, `workspaces?` | `{project: {projectId, name, description, workspaces: [{workspaceRootPath, description}]}}` |
-| `create_task` | `{project_id, description, context_files?}` (**omit status**, no `task_id`); creates a TODO Project Task | `{task: {...}}` |
-| `update_task` | `{task_id, description?, status?, context_files?}` with **no `project_id`**; the Task ID alone identifies a Project Task or a Task with no Project. Its description also tells an agent how to close a Task a description-only delegation created and how to reopen a closed Task | `{task: {...}}` |
+| `create_task` | `{project_id, description, context_files?, depends_on?}` (**omit status**, no `task_id`); creates a TODO Project Task with the Project's next key | `{task: {...}}` |
+| `update_task` | `{task_id, description?, status?, context_files?, depends_on?}` with **no `project_id`**; the Task ID alone (a Project Task's key or long ID, or a Task with no Project's ID) identifies the Task. Its description also tells an agent how to close a Task a description-only delegation created and how to reopen a closed Task | `{task: {...}}` |
 
 `create_or_update_project` preserves omitted fields on patch. A blank Project
 description clears it; unknown IDs never create. Names are trimmed, nonblank
@@ -379,8 +464,9 @@ contains committed metadata and path/description links, not Task counts,
 availability or a work assessment.
 
 `list_project_tasks` stays global: it returns every Task in the Project, with
-an optional `status` filter. Each Task has `projectId`, `taskId`, the full
-`description`, `status` and `contextFiles`, plus **one** of:
+an optional `status` filter. Each Task has `projectId`, `taskId` (its key), the
+full `description`, `status`, `dependsOn` (the keys of the Tasks it depends on
+that still exist) and `contextFiles`, plus **one** of:
 - `assignments` and `closedAssignments`: the Task's open `role: assigned`
   entries (`closedAt: null`), from any Manager, and every closed one (one per
   earlier assignment period, in link order). Each names the copy for what it
@@ -400,15 +486,24 @@ give the copy that did a DONE Task a follow-up Task with `delegate_task` and its
 `teamRunId` / `agentRunId` (see [Follow-up Task to an existing
 copy](#follow-up-task-to-an-existing-copy)).
 
-`create_task` and `update_task` return `{task: {projectId, taskId, status}}`, with
-`projectId: null` for a Task with no Project. When the call attached context
-files, `task` also has `attachedContextFiles: [{storedFilename, displayName}]`:
-exactly the files this call attached, in argument order. Calls that attach no
-files return the three fields only. It is a recorded-business
+`create_task` and `update_task` return `{task: {projectId, taskId, status, dependsOn}}`
+(`taskId` is the key; `dependsOn` lists keys), and `{task: {projectId: null, taskId,
+status}}` for a Task with no Project (its ID; no `dependsOn`). When the call
+attached context files, `task` also has `attachedContextFiles: [{storedFilename,
+displayName}]`: exactly the files this call attached, in argument order.
+
+`depends_on` (create and update) is an array of Task references (keys or long
+IDs) of the same Project; on update it replaces the saved list (`[]` clears,
+omitted keeps; a `depends_on`-only patch is valid). Each reference is resolved
+to its stored ID, then the Projects dependency rules apply (no self, no loop,
+updates serialized per Project). A reference that names no current Task of this
+Project (unknown, another Project's, a Task with no Project) and `depends_on` on
+a Task with no Project fail with `TASK_DEPENDENCY_INVALID`, and nothing is
+written. Dependencies only inform: no tool refuses or delays work because of them. It is a recorded-business
 acknowledgement, not an assessment or proof of a stop. Update resolves the Task
-by ID through `ProjectTaskService.updateTaskById`: first a direct read of
+through `ProjectTaskService.updateTaskById`: first a direct read of
 `ad-hoc-tasks/<taskId>/task.json` (no scan, no Projects gate), otherwise the
-Project Task found across Projects. Create goes through
+Project Task with that long ID found across Projects, otherwise by key. Create goes through
 `ProjectTaskService.createTaskWithLocalContextFiles`. The Projects page's
 `createTask` / `updateTask({projectId, taskId, ...})` stay the draft-based,
 Project-only boundary; local paths never travel on those GraphQL commands.
@@ -785,7 +880,7 @@ The Projects pages follow changes live through one per-node WebSocket,
 | --- | --- |
 | `project_upserted {project}` | A Project was created or updated, or one of its Tasks changed (fresh counts). Same fields as GraphQL `Project`. |
 | `project_removed {projectId}` | A Project was deleted. |
-| `task_upserted {scope, task}` | A Task was created or changed, or its assignments changed. `scope` is `{kind: "project", projectId}` or `{kind: "no_project"}`; `task` is the GraphQL view of that scope. |
+| `task_upserted {scope, task}` | A Task was created or changed, or its assignments changed (also each dependent cleaned after a delete). `scope` is `{kind: "project", projectId}` or `{kind: "no_project"}`; `task` is the GraphQL view of that scope (a Project Task includes `taskKey` and `dependsOnTaskIds`). |
 | `task_removed {scope, taskId}` | A Task was deleted (a Temp task with its run's deletion). |
 | `task_worker_status {scope, taskId, status}` | The root's worker status changed. |
 
@@ -921,7 +1016,7 @@ Project queries and mutations keep their names; there is no Projects capability 
 `workspaces`.
 
 - `projectTasks(projectId)` returns full ProjectTask records with
-  `contextFiles` and `root` (see [Task roots](#task-roots)). GraphQL Task reads
+  `taskKey`, `dependsOnTaskIds`, `contextFiles` and `root` (see [Task roots](#task-roots)). GraphQL Task reads
   do not list the other assignments.
 - `tasksWithoutProject` returns the Tasks with no Project (Temp tasks), latest
   change first: `taskId, description, status, referenceFiles, createdAt,
@@ -929,14 +1024,15 @@ Project queries and mutations keep their names; there is no Projects capability 
 - `taskWorkerTasks(agentRunIds: [String!]!, teamRunIds: [String!]!)` returns
   `[TaskWorkerTask!]!`, one per listed run (agents first, then teams):
   `workerKind` (`agent` | `team`), `workerRunId` and a nullable `task`
-  `{taskId, projectId, description, status}`. It is the batched
+  `{taskId, projectId, taskKey, description, status}` (`taskKey` null for a Temp task). It is the batched
   [current Task of a Task worker](#current-task-of-a-task-worker) read used by
   the web app's Workspaces tree; an ID that is no Task's root answers
   `task: null`.
-- `createProjectTask({projectId, description, contextDraft?})` creates a TODO
-  Task.
-- `updateProjectTask({projectId, taskId, description, contextChanges?})` edits
-  text and context, preserving status. **There is no GraphQL or manual UI
+- `createProjectTask({projectId, description, contextDraft?, dependsOnTaskIds?})` creates a TODO
+  Task with the Project's next key.
+- `updateProjectTask({projectId, taskId, description, contextChanges?, dependsOnTaskIds?})` edits
+  text, context and dependencies (supplied = replace, `[]` = clear, omitted = keep), preserving status.
+  Invalid dependencies fail with `TASK_DEPENDENCY_INVALID`. **There is no GraphQL or manual UI
   status mutation.**
 - `deleteProjectTask({projectId, taskId})` returns a Boolean.
 - GraphQL context metadata includes the locator, not the native tool's

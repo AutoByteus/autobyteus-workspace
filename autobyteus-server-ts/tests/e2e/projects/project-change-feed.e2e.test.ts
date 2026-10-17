@@ -34,7 +34,7 @@ const segment = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "_")
 const callTool = (name: string, args: object) => `CALL_TOOL:${JSON.stringify({ name, arguments: args })}`;
 const AD_HOC_ID = /ad_hoc_task_[0-9a-f-]{36}/;
 const ROOT_FIELDS = "kind recipientAddress ingressAgentRunId teamRunId hostRoot { kind runId } start startError { code message } closed status";
-const PROJECT_TASKS = `query($id:String!){projectTasks(projectId:$id){taskId projectId description status createdAt updatedAt
+const PROJECT_TASKS = `query($id:String!){projectTasks(projectId:$id){taskId projectId taskKey description status dependsOnTaskIds createdAt updatedAt
   contextFiles { storedFilename displayName mimeType sizeBytes locator } root { ${ROOT_FIELDS} }}}`;
 const TASKS_WITHOUT_PROJECT = `query{tasksWithoutProject{taskId description status referenceFiles createdAt updatedAt root { ${ROOT_FIELDS} }}}`;
 const PROJECT = `query($id:String!){project(projectId:$id){projectId name description createdAt updatedAt
@@ -358,8 +358,11 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     from = monitor.frames.length;
     const taskCreated = await root.managerCalls(callTool("create_task", { project_id: projectId,
       description: callTool("delegate_task", { recipient_address: `/${segment(names.helper)}`, description: "Reply OK." }) }));
-    const taskId = (JSON.stringify(taskCreated).match(/"taskId":"([^"]+)"/) ?? [])[1]!;
-    expect(taskId, JSON.stringify(taskCreated)).toBeTruthy();
+    // Tools name a Project Task by its key; the feed and GraphQL carry its stored ID and the key.
+    const taskKey = (JSON.stringify(taskCreated).match(/"taskId":"([^"]+)"/) ?? [])[1]!;
+    expect(taskKey, JSON.stringify(taskCreated)).toMatch(/^pcf-launch-[0-9a-f]{6}-1$/);
+    let taskId = "";
+    await until(async () => { taskId = ((await graphql(PROJECT_TASKS, { id: projectId })).projectTasks as any[]).find((t) => t.taskKey === taskKey)?.taskId ?? ""; return Boolean(taskId); }, "task id of key");
     const scope = { kind: "project", projectId };
     await until(() => monitor.frames.slice(from).some((f) => f.type === "task_upserted" && f.task.taskId === taskId), "task arrives", 2_000);
     let task = await settledTask(scope, taskId, "new Task");
@@ -369,7 +372,7 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     // AC-004/005: the agent delegates the Task; the root arrives (agent, started, named, hosted by this root) and its
     // worker's status follows. The worker's own helper (AC-006) never becomes the root.
     from = monitor.frames.length;
-    const delegated = await root.managerCalls(callTool("delegate_task", { recipient_address: workerAddress, task_id: taskId }));
+    const delegated = await root.managerCalls(callTool("delegate_task", { recipient_address: workerAddress, task_id: taskKey }));
     const worker = delegated.target_agent_run_id as string;
     expect(worker).toBeTruthy();
     const nodes = await root.waitForNodes("worker and its helper", (all) => all.length >= 2);
@@ -385,12 +388,12 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     record.statusesAfterDelegation = statusesAfterDelegation;
     // AC-003: the agent changes the status; one moved view; counts follow.
     from = monitor.frames.length;
-    await root.managerCalls(callTool("update_task", { task_id: taskId, status: "IN_PROGRESS" }));
+    await root.managerCalls(callTool("update_task", { task_id: taskKey, status: "IN_PROGRESS" }));
     task = await settledTask(scope, taskId, "IN_PROGRESS", (t) => t.status === "IN_PROGRESS");
     expect(task.root.closed).toBe(false);
     // AC-008: DONE. Views in commit order; the last view is DONE with a closed, Offline root (P-002); counts follow.
     from = monitor.frames.length;
-    await root.managerCalls(callTool("update_task", { task_id: taskId, status: "DONE" }));
+    await root.managerCalls(callTool("update_task", { task_id: taskKey, status: "DONE" }));
     task = await settledTask(scope, taskId, "DONE", (t) => t.status === "DONE" && t.root?.closed === true);
     expect(task.root).toMatchObject({ ingressAgentRunId: worker, start: "started", closed: true, status: "offline" });
     const doneViews = monitor.frames.slice(from).filter((f) => f.type === "task_upserted" && f.task.taskId === taskId).map((f) => f.task);
@@ -401,7 +404,7 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     expect(feedProject(monitor.frames, projectId)).toMatchObject({ taskCount: 1, openTaskCount: 0 });
     record.doneViews = doneViews.map((view) => ({ status: view.status, closed: view.root?.closed, rootStatus: view.root?.status }));
     // AC-023: the agent reopens; the Task moves, the root stays closed/Offline. The assigner's message reactivates it.
-    await root.managerCalls(callTool("update_task", { task_id: taskId, status: "IN_PROGRESS" }));
+    await root.managerCalls(callTool("update_task", { task_id: taskKey, status: "IN_PROGRESS" }));
     task = await settledTask(scope, taskId, "reopened", (t) => t.status === "IN_PROGRESS");
     expect(task.root).toMatchObject({ closed: true, status: "offline" });
     from = monitor.frames.length;

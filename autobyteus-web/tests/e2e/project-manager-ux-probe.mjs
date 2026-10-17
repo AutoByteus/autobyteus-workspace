@@ -1009,7 +1009,9 @@ const projectsTab = async () => {
   await panel.getByTestId('projects-panel-task').waitFor();
   const detail = await panel.getByTestId('projects-panel-task-description').innerText();
   assert(detail === 'Prepare the launch checklist', 'full description in the tab', { detail });
-  assert(await panel.getByTestId('projects-panel-task-open-page').getAttribute('href') === `/projects/${projectId}/tasks/${existing}`, 'Open in Projects links the Task page');
+  // task-keys-and-dependencies (REQ-022): in-app Task links use the key URL.
+  const existingKey = (await gql('query($id:String!){projectTasks(projectId:$id){taskId taskKey}}', { id: projectId })).projectTasks.find((t) => t.taskId === existing).taskKey;
+  assert(await panel.getByTestId('projects-panel-task-open-page').getAttribute('href') === `/projects/${projectId}/tasks/${existingKey}`, 'Open in Projects links the Task page by key');
   // Icons load on first use; both header icons must render.
   const iconDrawn = (testId) => panel.getByTestId(testId).locator('svg path').first().waitFor({ timeout: 15000 });
   await iconDrawn('projects-panel-task-back'); await iconDrawn('projects-panel-task-open-page');

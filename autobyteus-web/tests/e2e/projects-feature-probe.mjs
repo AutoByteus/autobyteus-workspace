@@ -140,7 +140,7 @@ const gql = async (node, query, variables = {}) => {
   return body.data;
 };
 const PROJECT_FIELDS = 'projectId name description taskCount openTaskCount workspaces { workspaceRootPath displayName description availability }';
-const TASK_FIELDS = 'taskId projectId description status createdAt updatedAt contextFiles { storedFilename displayName mimeType sizeBytes locator }';
+const TASK_FIELDS = 'taskId projectId taskKey description status dependsOnTaskIds createdAt updatedAt contextFiles { storedFilename displayName mimeType sizeBytes locator }';
 const api = {
   // projects-always-on: settings are written through the ordinary server-settings API (Advanced).
   setSetting: async (node, key, value) => (await gql(node, 'mutation($k: String!, $v: String!) { updateServerSetting(key: $k, value: $v) }', { k: key, v: value })).updateServerSetting,
@@ -156,6 +156,8 @@ const api = {
   tasks: async (node, projectId) => (await gql(node, `query($id: String!) { projectTasks(projectId: $id) { ${TASK_FIELDS} } }`, { id: projectId })).projectTasks,
   createTask: async (node, projectId, description) => (await gql(node, `mutation($i: CreateProjectTaskInput!) { createProjectTask(input: $i) { ${TASK_FIELDS} } }`, { i: { projectId, description } })).createProjectTask,
   deleteProject: async (node, projectId) => (await gql(node, 'mutation($id: String!) { deleteProject(projectId: $id) }', { id: projectId })).deleteProject,
+  // task-keys-and-dependencies: an edit from another client (GraphQL), to observe live board updates.
+  setDependsOn: async (node, projectId, task, dependsOnTaskIds) => (await gql(node, `mutation($i: UpdateProjectTaskInput!) { updateProjectTask(input: $i) { ${TASK_FIELDS} } }`, { i: { projectId, taskId: task.taskId, description: task.description, dependsOnTaskIds } })).updateProjectTask,
 };
 const readEnvFile = node => fs.readFile(path.join(node.dataRoot, '.env'), 'utf-8');
 const readWorkspacesJson = node => fs.readFile(path.join(node.dataRoot, 'workspaces.json'), 'utf-8');
@@ -266,6 +268,8 @@ const toolWrite = async args => {
   await run(process.execPath, [path.join(serverDir, 'tests/fixtures/project-task-tool-writer.mjs'), nodeA.dataRoot, 'task_id' in args ? 'update_task' : 'create_task', JSON.stringify(args), output], serverDir, nodeA.env, path.join(outputDir, 'external-tool.log'));
   return JSON.parse(await fs.readFile(output, 'utf8')).task;
 };
+/** Agent tools name a Project Task by its key (task-keys REQ-018); board rows and GraphQL use the stored long ID. */
+const storedIdOf = async (projectId, taskKey) => (await api.tasks(nodeA, projectId)).find(t => t.taskKey === taskKey).taskId;
 const blankProject = async name => { await goto('/projects'); await page.getByTestId('projects-new-button').click(); await page.getByTestId('project-name-input').fill(name); await page.getByTestId('project-form-submit').click(); await page.getByTestId('project-detail-name').waitFor(); return (await api.projects(nodeA)).find(p => p.name === name); };
 try {
   assert(!ledger || existsSync(ledger), 'Initialize ledger before execution');
@@ -459,7 +463,7 @@ try {
     assert(await page.getByTestId('task-context-file-name').count() === 2, 'Failed save retains files');
     assert((await api.tasks(nodeA, project.projectId)).find(t => t.taskId === task.taskId).description === task.description, 'Failed write leaves saved content unchanged');
     await screenshot('task-edit-save-error');
-    await page.locator('#task-page-description').press('Meta+Enter'); await waitFor('edit detail route', () => pathname() === `/projects/${project.projectId}/tasks/${task.taskId}`);
+    await page.locator('#task-page-description').press('Meta+Enter'); await waitFor('edit detail route (key URL, task-keys REQ-022)', () => pathname() === `/projects/${project.projectId}/tasks/${task.taskKey}`);
     const edited = (await api.tasks(nodeA, project.projectId)).find(t => t.taskId === task.taskId); assert(edited.description === 'Browser task revised\nFull second line', 'Same failed draft retries successfully'); assert(edited.createdAt === task.createdAt && edited.status === 'TODO' && edited.contextFiles.length === 2, 'Edit identity/status/context preserved');
     await page.getByTestId('task-page-delete').click(); await page.getByTestId('task-page-delete-cancel').waitFor(); assert(await page.getByTestId('task-page-delete-cancel').evaluate(e => document.activeElement === e), 'Cancel first focus');
     await page.keyboard.press('Escape'); await waitFor('Delete focus restored', async () => page.getByTestId('task-page-delete').evaluate(e => document.activeElement === e)); obs.edited = edited;
@@ -468,6 +472,7 @@ try {
   await runCase('PT-E2E-007', 'External native tool commit -> physical non-deduplicated Refresh preserves search/route and moves status', async obs => {
     await search().fill('Browser'); const before = page.url();
     const created = await toolWrite({ project_id: project.projectId, description: 'Browser external' });
+    created.taskId = await storedIdOf(project.projectId, created.taskId);
     await toolWrite({ task_id: task.taskId, status: 'DONE' });
     assert(await row(created.taskId).count() === 0, 'No invented automatic refresh');
     let physical = 0; const countRequest = req => { if (req.url().endsWith('/graphql') && req.postData()?.includes('projectTasks(')) physical++; }; page.on('request', countRequest);
@@ -489,7 +494,7 @@ try {
     await search().fill('no such match'); await page.getByTestId('project-tasks-no-match').waitFor(); await page.getByTestId('project-tasks-clear-search').click(); await row(task.taskId).waitFor(); obs.retainedRows = idsBefore;
   });
   await runCase('PT-E2E-009', 'Continuous divided rows and desktop/narrow container breakpoint, ordinary page wrapping', async obs => {
-    const one = await toolWrite({ project_id: project.projectId, description: 'Second contiguous To Do\nQuieter preview' }); await refresh().click(); await row(one.taskId).waitFor();
+    const one = await toolWrite({ project_id: project.projectId, description: 'Second contiguous To Do\nQuieter preview' }); one.taskId = await storedIdOf(project.projectId, one.taskId); await refresh().click(); await row(one.taskId).waitFor();
     const styles = await page.locator('div[data-testid^=project-task-row-]').evaluateAll(es => es.map(e => { const s = getComputedStyle(e); return { radius: s.borderRadius, shadow: s.boxShadow, margin: s.marginBottom, tag: e.tagName }; }));
     assert(styles.every(s => s.radius === '0px' && s.shadow === 'none' && s.margin === '0px' && s.tag === 'DIV'), 'Contiguous rows (each a stretched link), no cards');
     const lanes = async () => page.locator('[data-testid^=project-task-column-]').filter({ has: page.locator('h2') }).evaluateAll(es => es.map(e => { const b = e.getBoundingClientRect(); return { top: b.top, left: b.left, width: b.width }; }));
@@ -591,6 +596,152 @@ try {
     await goto(`/projects/${id}/edit`); await page.getByTestId('project-form-submit').waitFor(); await check();
     obs.rawKeys = 0; await api.deleteProject(nodeA, id);
     await page.evaluate(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
+  });
+  // task-keys-and-dependencies (REQ-009–014, REQ-022): keys, derived badges and lists, the Depends on picker, live updates,
+  // delete cleanup and key URLs on the real board, Task page and editor. Statuses and the first dependencies are written
+  // by the real agent tools (external writer, then a fresh board load), as agents set them; the user's edits go through the UI.
+  await runCase('PT-E2E-017', 'Task keys and depends on: key lines, Blocked by / Dependency cancelled badges, key chip copy, Dependencies card links, picker (newest first, loop greyed, keyboard), new Task with a dependency, live clear, delete drops dependents, key URLs (task-keys AC-011–015, 017, 018, 026)', async obs => {
+    const p = await api.createProject(nodeA, 'Keys Board'); const pid = p.projectId;
+    const made = [];
+    for (const d of ['Schema for the board', 'API on the schema', 'Old sync service', 'Docs for the API', 'Release the board']) made.push(await api.createTask(nodeA, pid, d));
+    const [t1, t2, t3, t4, t5] = made;
+    assert(JSON.stringify(made.map(t => t.taskKey)) === JSON.stringify([1, 2, 3, 4, 5].map(n => `keys-board-${n}`)), 'Keys in creation order: ' + made.map(t => t.taskKey));
+    await toolWrite({ task_id: t3.taskKey, status: 'CANCELLED' });
+    const ack2 = await toolWrite({ task_id: t2.taskKey, depends_on: [t1.taskKey.toUpperCase()] });
+    await toolWrite({ task_id: t4.taskKey, depends_on: [t3.taskKey] });
+    await toolWrite({ task_id: t5.taskId, depends_on: [t2.taskKey, t1.taskId] });
+    obs.toolAck = ack2;
+    assert(JSON.stringify(ack2.dependsOn) === JSON.stringify(['keys-board-1']) && ack2.taskId === 'keys-board-2', 'Tool ack names the Task and dependencies by key: ' + JSON.stringify(ack2));
+    await board(pid);
+    const keyLine = async t => row(t.taskId).getByTestId('project-task-row-key').getByTestId('task-key').getAttribute('data-key');
+    for (const t of [t1, t2, t4, t5]) assert(await keyLine(t) === t.taskKey, `Key line on ${t.taskKey}`);
+    const badgeOf = async t => {
+      for (const kind of ['blocked', 'cancelled']) {
+        const badge = row(t.taskId).getByTestId(`task-dependency-badge-${kind}`);
+        if (await badge.count()) return { kind, text: (await badge.innerText()).replace(/\s+/g, ' ').trim(), title: await badge.getAttribute('title') };
+      }
+      return null;
+    };
+    obs.badges = { t1: await badgeOf(t1), t2: await badgeOf(t2), t4: await badgeOf(t4), t5: await badgeOf(t5) };
+    assert(obs.badges.t1 === null, 'No badge without dependencies: ' + JSON.stringify(obs.badges));
+    assert(obs.badges.t2?.kind === 'blocked' && obs.badges.t2.text === 'Blocked by keys-board-1', 'Blocked by one (VIS-002b): ' + JSON.stringify(obs.badges));
+    assert(obs.badges.t4?.kind === 'cancelled' && obs.badges.t4.text === 'Dependency cancelled: keys-board-3', 'Dependency cancelled (VIS-002c): ' + JSON.stringify(obs.badges));
+    assert(obs.badges.t5?.kind === 'blocked' && obs.badges.t5.text === 'Blocked by keys-board-1 +1'
+      && obs.badges.t5.title === 'Depends on: keys-board-1 (To Do), keys-board-2 (To Do)', 'Blocked by lowest open key +1, tooltip lists all (VIS-002a): ' + JSON.stringify(obs.badges));
+    await screenshot('PT-E2E-017-board-badges');
+
+    // Task page: key URL, chip after the status, copy, Dependencies card; rows navigate by key URL.
+    await row(t2.taskId).click(); await page.getByTestId('task-page-heading').waitFor();
+    assert(pathname() === `/projects/${pid}/tasks/keys-board-2`, 'Board opens the key URL: ' + pathname());
+    await page.getByTestId('task-key-chip').waitFor();
+    assert(await page.getByTestId('task-key-chip').getByTestId('task-key').getAttribute('data-key') === 'keys-board-2', 'Key chip');
+    obs.chipAfterStatus = await page.getByTestId('project-task-page').evaluate(root => {
+      const chip = root.querySelector('[data-testid="task-key-chip"]');
+      const status = [...root.querySelectorAll('*')].find(e => e.children.length === 0 && /^(To Do|In Progress|Done|Cancelled)$/.test(e.textContent?.trim() ?? '') && !e.closest('[data-testid="task-dependencies"]'));
+      return status && chip ? Boolean(status.compareDocumentPosition(chip) & Node.DOCUMENT_POSITION_FOLLOWING) : null;
+    });
+    assert(obs.chipAfterStatus === true, 'Key chip after the status: ' + obs.chipAfterStatus);
+    const dependsOn = () => page.getByTestId('task-dependencies-depends-on'), requiredBy = () => page.getByTestId('task-dependencies-required-by');
+    assert(await dependsOn().getByTestId(`task-dependency-${t1.taskId}`).count() === 1 && (await dependsOn().getByTestId('task-dependency-status').innerText()).trim() === 'To Do', 'Depends on row with status');
+    assert((await page.getByTestId('task-dependencies-informs').innerText()).trim() === 'Only informs: work on this Task can start at any time.', 'Informs note while blocked');
+    assert(await requiredBy().getByTestId(`task-dependency-${t5.taskId}`).count() === 1, 'Required by lists the dependent');
+    await page.context().grantPermissions(['clipboard-read', 'clipboard-write'], { origin: frontendUrl });
+    await page.getByTestId('task-key-copy').click(); await page.getByTestId('task-key-copied').waitFor();
+    obs.copied = { text: (await page.getByTestId('task-key-copied').innerText()).trim(), clipboard: await page.evaluate(() => navigator.clipboard.readText()) };
+    assert(obs.copied.text === 'Copied' && obs.copied.clipboard === 'keys-board-2', 'Copy puts the key on the clipboard and confirms: ' + JSON.stringify(obs.copied));
+    await screenshot('PT-E2E-017-task-page-copied');
+    await sleep(1800); assert(await page.getByTestId('task-key-copied').count() === 0, 'Copied confirmation gone after 1.5 s');
+    assert(await dependsOn().getByTestId(`task-dependency-${t1.taskId}`).getAttribute('href') === `/projects/${pid}/tasks/keys-board-1`, 'Dependency row links the key URL');
+    await dependsOn().getByTestId(`task-dependency-${t1.taskId}`).click();
+    await waitFor('dependency row opens keys-board-1', () => pathname() === `/projects/${pid}/tasks/keys-board-1`);
+    await waitFor('keys-board-1 Required by', async () => await requiredBy().getByTestId(`task-dependency-${t5.taskId}`).count() === 1
+      && await requiredBy().getByTestId(`task-dependency-${t2.taskId}`).count() === 1);
+    assert((await dependsOn().getByTestId('task-dependencies-none').innerText()).trim() === 'None', 'Depends on: None');
+
+    // Edit keys-board-1: the picker lists this Project newest first, without itself; its dependents are greyed loop options.
+    await page.getByTestId('task-page-edit').click(); await page.locator('#task-page-description').waitFor();
+    assert(pathname() === `/projects/${pid}/tasks/keys-board-1/edit`, 'Edit key URL: ' + pathname());
+    const input = page.getByTestId('task-dependency-input'); await input.click();
+    const options = page.getByTestId('task-dependency-options').getByRole('option');
+    await waitFor('options open', async () => await options.count() > 0);
+    obs.options = await options.evaluateAll(es => es.map(e => ({ key: e.querySelector('[data-testid="task-key"]')?.getAttribute('data-key'), disabled: e.getAttribute('aria-disabled') === 'true', text: e.innerText.replace(/\s+/g, ' ').trim() })));
+    assert(JSON.stringify(obs.options.map(o => o.key)) === JSON.stringify(['keys-board-5', 'keys-board-4', 'keys-board-3', 'keys-board-2']), 'Newest key first, itself excluded: ' + JSON.stringify(obs.options));
+    assert(JSON.stringify(obs.options.map(o => o.disabled)) === JSON.stringify([true, false, false, true]), 'Dependents greyed as loop options: ' + JSON.stringify(obs.options));
+    assert(obs.options[0].text.includes('Depends on this Task') && obs.options[2].text.includes('Cancelled'), 'Loop label and status shown: ' + JSON.stringify(obs.options));
+    assert(await input.getAttribute('role') === 'combobox' && await input.getAttribute('aria-expanded') === 'true', 'Combobox expanded');
+    await screenshot('PT-E2E-017-picker-loop');
+    const activeKey = () => page.evaluate(() => document.getElementById(document.querySelector('[data-testid="task-dependency-input"]').getAttribute('aria-activedescendant') || '')?.querySelector('[data-testid="task-key"]')?.getAttribute('data-key') ?? null);
+    // Before any arrow key the active option is the first listed (here a greyed loop option, as in the approved prototype);
+    // Enter on it adds nothing. Arrow keys move over the options skipping loop options (spec: Accessibility And Keyboard).
+    obs.initialActive = await activeKey();
+    await input.press('Enter'); await sleep(200);
+    assert(await page.getByTestId('task-dependency-selected').count() === 0, 'Enter on a loop option adds nothing');
+    obs.activeKeys = [];
+    for (let i = 0; i < 4; i++) { await input.press('ArrowDown'); obs.activeKeys.push(await activeKey()); }
+    for (let i = 0; i < 2; i++) { await input.press('ArrowUp'); obs.activeKeys.push(await activeKey()); }
+    assert(obs.activeKeys.every(k => k === 'keys-board-4' || k === 'keys-board-3'), 'Arrows never land on loop options: ' + JSON.stringify(obs.activeKeys));
+    await input.fill('docs'); await waitFor('filtered to Docs', async () => await options.count() === 1);
+    await input.press('Enter');
+    await page.getByTestId(`task-dependency-selected-${t4.taskId}`).waitFor();
+    assert(await input.getAttribute('aria-expanded') === 'false', 'List closes after a choice');
+    assert(await input.evaluate(e => document.activeElement === e), 'Focus stays in the search');
+    await input.fill('zzz-none'); await page.getByTestId('task-dependency-options').getByText('No other Tasks in this Project match.').waitFor();
+    await input.press('Escape'); await waitFor('Esc closes', async () => await input.getAttribute('aria-expanded') === 'false');
+    await page.getByTestId('task-page-save').click(); await waitFor('saved back to the Task page', () => pathname() === `/projects/${pid}/tasks/keys-board-1`);
+    let stored = await api.tasks(nodeA, pid);
+    assert(JSON.stringify(stored.find(t => t.taskId === t1.taskId).dependsOnTaskIds) === JSON.stringify([t4.taskId]), 'Stored on this Task only');
+    assert(JSON.stringify(stored.find(t => t.taskId === t4.taskId).dependsOnTaskIds) === JSON.stringify([t3.taskId]), 'The other Task unchanged');
+
+    // New task with a dependency: the next key and Blocked by on the board (VIS-009b).
+    await board(pid); await page.getByTestId('project-tasks-new-button').click(); await page.locator('#task-page-description').fill('Follow-up: API examples');
+    await page.getByTestId('task-dependency-input').fill('keys-board-2'); await page.getByTestId(`task-dependency-option-${t2.taskId}`).click();
+    await page.getByTestId(`task-dependency-selected-${t2.taskId}`).waitFor();
+    await screenshot('PT-E2E-017-new-task-chosen');
+    await page.locator('#task-page-description').press('Control+Enter'); await page.getByTestId('project-task-columns').waitFor();
+    const t6 = (await api.tasks(nodeA, pid)).find(t => t.description === 'Follow-up: API examples');
+    assert(t6.taskKey === 'keys-board-6' && JSON.stringify(t6.dependsOnTaskIds) === JSON.stringify([t2.taskId]), 'Next key, stored dependency: ' + JSON.stringify(t6));
+    await waitFor('new card badge', async () => (await badgeOf(t6))?.text === 'Blocked by keys-board-2');
+    assert(await keyLine(t6) === 'keys-board-6', 'New card key line');
+
+    // Live: another client clears keys-board-2's dependency; its badge disappears without a task-list request (AC-011, AC-012).
+    let refreshes = 0; const countRefresh = req => { if (req.url().endsWith('/graphql') && req.postData()?.includes('projectTasks(')) refreshes++; }; page.on('request', countRefresh);
+    try {
+      await api.setDependsOn(nodeA, pid, (await api.tasks(nodeA, pid)).find(t => t.taskId === t2.taskId), []);
+      await waitFor('live badge clear', async () => await badgeOf(t2) === null, 10000);
+    } finally { page.off('request', countRefresh); }
+    assert(refreshes === 0, 'Live update needed no task-list request: ' + refreshes); obs.liveClear = true;
+
+    // Delete keys-board-2 (others depend on it): dropped from dependents; their badges and lists update (AC-018).
+    await row(t2.taskId).click(); await page.getByTestId('task-page-delete').click(); await page.getByTestId('task-page-delete-confirm').click(); await page.getByTestId('project-task-columns').waitFor();
+    stored = await api.tasks(nodeA, pid);
+    obs.afterDelete = stored.map(t => [t.taskKey, t.dependsOnTaskIds]);
+    assert(JSON.stringify(stored.find(t => t.taskId === t6.taskId).dependsOnTaskIds) === '[]' && JSON.stringify(stored.find(t => t.taskId === t5.taskId).dependsOnTaskIds) === JSON.stringify([t1.taskId]), 'Deleted Task dropped from dependents: ' + JSON.stringify(obs.afterDelete));
+    await waitFor('dependents re-derived', async () => await badgeOf(t6) === null && (await badgeOf(t5))?.text === 'Blocked by keys-board-1');
+    const t7 = await api.createTask(nodeA, pid, 'After the delete');
+    assert(t7.taskKey === 'keys-board-7', 'Numbers are never reused: ' + t7.taskKey);
+
+    // Long-ID and other-case URLs open the Task and are replaced by the key URL (page and edit) (AC-026).
+    await goto(`/projects/${pid}/tasks/${t1.taskId}?tab=details`);
+    await waitFor('long-ID URL replaced', () => pathname() === `/projects/${pid}/tasks/keys-board-1`);
+    obs.queryKept = new URL(page.url()).searchParams.get('tab');
+    assert(obs.queryKept === 'details', 'Query kept on replace');
+    await page.getByTestId('task-key-chip').waitFor();
+    await goto(`/projects/${pid}/tasks/${t1.taskId}/edit`); await waitFor('long-ID edit URL replaced', () => pathname() === `/projects/${pid}/tasks/keys-board-1/edit`);
+    await page.locator('#task-page-description').waitFor();
+    await goto(`/projects/${pid}/tasks/KEYS-BOARD-4`); await waitFor('upper-case key URL replaced', () => pathname() === `/projects/${pid}/tasks/keys-board-4`);
+    await goto(`/projects/${pid}/tasks/keys-board-2`); await page.getByTestId('task-page-not-found').waitFor(); // deleted: its key opens nothing
+
+    // Long Project names: the whole key on the card; tooltip and data carry the full key; the number stays visible (AC-017).
+    const longP = await api.createProject(nodeA, 'Customer Onboarding Experience Redesign Program');
+    const l1 = await api.createTask(nodeA, longP.projectId, 'Long key one'); const l2 = await api.createTask(nodeA, longP.projectId, 'Long key two');
+    await toolWrite({ task_id: l2.taskKey, depends_on: [l1.taskKey] });
+    await board(longP.projectId);
+    obs.longKeys = await row(l2.taskId).evaluate(r => [...r.querySelectorAll('[data-testid="task-key"]')].map(e => ({ key: e.getAttribute('data-key'), title: e.getAttribute('title'), text: e.textContent, width: Math.round(e.getBoundingClientRect().width) })));
+    assert(obs.longKeys.length === 2 && obs.longKeys.every(k => k.title === k.key && k.text.endsWith(k.key.slice(k.key.lastIndexOf('-')))), 'Full key in title, number visible: ' + JSON.stringify(obs.longKeys));
+    assert(obs.longKeys[0].text === 'customer-onboarding-experience-redesign-program-2', 'Card key line whole where it fits: ' + JSON.stringify(obs.longKeys));
+    await screenshot('PT-E2E-017-long-keys');
+    assert(evidence.browserErrors.length === 0, 'No browser page errors: ' + evidence.browserErrors.join('; '));
+    await api.deleteProject(nodeA, longP.projectId); await api.deleteProject(nodeA, pid);
   });
   if (voiceInput) {
     await runProjectVoiceCases({ page, context, goto, api, node: nodeA, runCase, waitFor, screenshot });

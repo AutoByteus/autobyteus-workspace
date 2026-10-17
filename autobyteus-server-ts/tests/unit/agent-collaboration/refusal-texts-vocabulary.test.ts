@@ -67,7 +67,7 @@ describe("refusal and result texts use the agent-facing vocabulary (REQ-008, AC-
       "'/x' is not the address of an available agent or agent team. If you have list_available_agents, it shows the addresses you can use.");
     expect(ROOT_NOT_ACTIVE_MESSAGE).toBe("This work is stopping or has stopped, so the message or delegation was not sent.");
     expect(ASSIGNER_ONLY_REACTIVATION_MESSAGE).toContain("Only the agent that assigned the Task can continue it");
-    const current = notCurrentTaskMessage({ teamRunId: "t1" } as never, { taskId: "B", status: "DONE" }, "A");
+    const current = notCurrentTaskMessage({ teamRunId: "t1" } as never, { taskReference: "B", status: "DONE" }, "A");
     expect(current).toContain("This task agent's current Task is B (DONE); setting Task A to TODO or IN_PROGRESS does not reach it.");
     for (const text of [
       messageTargetNotFoundMessage("/x"), ownTeamDelegationRefusedMessage("/x"), delegationTargetUnavailableMessage("/x"),

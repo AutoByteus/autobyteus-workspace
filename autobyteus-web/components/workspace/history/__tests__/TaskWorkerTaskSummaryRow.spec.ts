@@ -19,7 +19,9 @@ const teamRow = () => row({
   transientKind: 'task_team', rowKey: 'team:review-team', agentRunId: null, teamRunIdForNode: 'review-team',
   memberAddress: '/docs_review_team', memberKind: 'agent_team', displayName: 'docs review team', currentStatus: null, hasChildren: true,
 });
-const task: TaskWorkerTask = { taskId: 'task-1', projectId: 'p1', description: 'Ship the summary line\nwith details', status: 'IN_PROGRESS' };
+// A Temp task (no key): the summary layout and names below are the same for Project Tasks, which add the key first.
+const task: TaskWorkerTask = { taskId: 'task-1', projectId: null, taskKey: null, description: 'Ship the summary line\nwith details', status: 'IN_PROGRESS' };
+const projectTask: TaskWorkerTask = { ...task, projectId: 'p1', taskKey: 'autobyteus-29' };
 const mountRow = (props: Record<string, unknown>) => mount(WorkspaceTransientExecutionRow, { props: { row: row(), ...props } as any });
 const summary = (wrapper: ReturnType<typeof mountRow>) => wrapper.get('[data-test="workspace-task-worker-task-summary"]');
 
@@ -93,5 +95,19 @@ describe('WorkspaceTransientExecutionRow Task summary', () => {
     await wrapper.vm.$nextTick();
     expect(summary(wrapper).attributes('aria-label')).toBe('在项目中显示任务：Ship the summary line');
     expect(wrapper.get('[role="treeitem"]').attributes('aria-label')).toMatch(/, 任务：Ship the summary line$/);
+  });
+
+  it("a Project Task's summary leads with its key in medium weight; tooltip and name include the key (UXJ-004, VIS-012)", async () => {
+    const wrapper = mountRow({ task: projectTask });
+    const key = summary(wrapper).get('[data-test="workspace-task-worker-task-key"]');
+    expect(key.text()).toBe('autobyteus-29');
+    expect(key.classes()).toEqual(expect.arrayContaining(['font-medium', 'mr-1']));
+    expect(summary(wrapper).text().replace('autobyteus-29', '')).toBe('Ship the summary line');
+    expect(summary(wrapper).attributes('aria-label')).toBe('Show Task in Projects: autobyteus-29 Ship the summary line');
+    expect(summary(wrapper).attributes('title')).toBe('Show Task in Projects: autobyteus-29 Ship the summary line');
+    await localizationRuntime.setPreference('zh-CN');
+    await wrapper.vm.$nextTick();
+    expect(summary(wrapper).attributes('aria-label')).toBe('在项目中显示任务：autobyteus-29 Ship the summary line');
+    expect(mountRow({ task }).find('[data-test="workspace-task-worker-task-key"]').exists()).toBe(false);
   });
 });

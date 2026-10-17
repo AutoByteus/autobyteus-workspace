@@ -19,8 +19,12 @@
       data-testid="project-task-row-link"
       @click="activation === 'select' && emit('select', task.taskId)"
     >
+      <!-- A Project Task's key, quiet, above the summary (Temp tasks have none). -->
+      <span v-if="taskKey" class="mb-0.5 flex text-xs font-medium leading-5 text-slate-500" data-testid="project-task-row-key"><TaskKey :task-key="taskKey" /></span>
       <span class="line-clamp-2 break-words text-sm font-medium leading-6 text-slate-800" data-testid="project-task-row-text">{{ summary }}</span>
       <span v-if="preview" class="mt-1 line-clamp-2 break-words text-xs leading-5 text-slate-500" data-testid="project-task-row-preview">{{ preview }}</span>
+      <!-- "Blocked by <key>" / "Dependency cancelled: <key>" (open Project Tasks only). -->
+      <span v-if="'taskKey' in task && task.dependsOnTaskIds.length" class="mt-2 flex" data-testid="project-task-row-dependency"><TaskDependencyBadge :task="task" :tasks="projectTasks" /></span>
       <span v-if="fileCount" class="mt-2 inline-flex items-center gap-1 text-xs text-slate-500" data-testid="task-row-file-count"><Icon icon="heroicons:paper-clip" class="h-3.5 w-3.5" aria-hidden="true" />{{ t(fileCount === 1 ? 'projects.ui.fileCountOne' : 'projects.ui.fileCount', {count: fileCount}) }}</span>
     </component>
     <ProjectTaskWorkers v-if="task.root" class="relative z-10" density="row" :root="task.root" />
@@ -32,8 +36,11 @@ import { computed, nextTick, ref, resolveComponent, watch } from 'vue'
 import { Icon } from '@iconify/vue'
 import type { ProjectTask, TaskWithoutProject } from '~/types/project'
 import ProjectTaskWorkers from './ProjectTaskWorkers.vue'
+import TaskDependencyBadge from './TaskDependencyBadge.vue'
+import TaskKey from './TaskKey.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useProjectTaskStore } from '~/stores/projectTaskStore'
+import { taskPagePath } from '~/utils/projects/taskPagePath'
 import { useTaskLocatorStore } from '~/stores/taskLocatorStore'
 import { taskCardPreview, taskCardSummary, taskSummaryLabel } from '~/utils/projects/taskSummary'
 
@@ -53,10 +60,13 @@ const summary = computed(() => taskCardSummary(props.task.description))
 const preview = computed(() => taskCardPreview(props.task.description))
 const label = computed(() => taskSummaryLabel(props.task.description))
 const taskRoute = computed(() => 'projectId' in props.task
-  ? `/projects/${props.task.projectId}/tasks/${props.task.taskId}`
+  ? taskPagePath(props.task.projectId, props.task)
   : `/projects/temp-tasks/tasks/${props.task.taskId}`)
 const fileCount = computed(() => 'contextFiles' in props.task ? props.task.contextFiles?.length ?? 0 : 0)
 const live = computed(() => store.liveChanges[props.task.taskId] ?? null)
+// A Project Task's key and its Project's Tasks (for the dependency badge); a Temp task has neither.
+const taskKey = computed(() => 'taskKey' in props.task ? props.task.taskKey : '')
+const projectTasks = computed<ProjectTask[]>(() => 'projectId' in props.task ? store.getList(props.task.projectId)?.tasks ?? [] : [])
 
 // "Show Task in Projects" (the tab's `select` cards): once the board made this Task visible, the card
 // scrolls to the centre (instant with reduced motion), takes focus (Enter opens the Task) and completes

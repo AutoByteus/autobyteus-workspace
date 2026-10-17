@@ -540,8 +540,10 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
   const cancelledScenario = async (kind: Kind) => {
     const projectId = (await graphql(`mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}`,
       { input: { name: `Task cancelled ${kind} ${randomUUID().slice(0, 8)}` } })).createProject.projectId as string;
-    const taskC = (await graphql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`,
-      { input: { projectId, description: "Draft the migration guide." } })).createProjectTask.taskId as string;
+    const createdC = (await graphql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId taskKey}}`,
+      { input: { projectId, description: "Draft the migration guide." } })).createProjectTask;
+    // Tool results name the Project Task by its key; the stored long ID stays its identity (files, feed).
+    const taskC = createdC.taskId as string, taskCKey = createdC.taskKey as string;
     const cDir = projectTaskDir(projectId, taskC);
     const workerAddress = kind !== "org" ? `/${segment(names.worker)}` : "/worker";
     // A raw /ws/projects client: every frame must satisfy the strict server schema, including CANCELLED views.
@@ -572,7 +574,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     // its entry closed, its process stopped, and the feed carries CANCELLED with a closed root.
     let view = root.state.view; let from = view.frames.length; let feedFrom = feedFrames.length;
     const ack = await root.managerCalls(callTool("update_task", { task_id: taskC, status: "CANCELLED" }));
-    expect(ack).toMatchObject({ task: { projectId, taskId: taskC, status: "CANCELLED" } });
+    expect(ack).toMatchObject({ task: { projectId, taskId: taskCKey, status: "CANCELLED" } });
     await until(() => view.frames.slice(from).some(root.closedFrame), "live closure on CANCELLED", 60_000);
     expect(keys(root.refsOf(view.frames.slice(from).find(root.closedFrame)!))).toEqual([`agent:${worker}`]);
     expect(await status()).toBe("CANCELLED");
@@ -625,7 +627,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     // AC-003: the agent reopens the Task: the status changes live, nothing starts, the entry stays closed.
     view = root.state.view; from = view.frames.length; feedFrom = feedFrames.length;
     const reopenedAck = await root.managerCalls(callTool("update_task", { task_id: taskC, status: "IN_PROGRESS" }));
-    expect(reopenedAck).toMatchObject({ task: { taskId: taskC, status: "IN_PROGRESS" } });
+    expect(reopenedAck).toMatchObject({ task: { taskId: taskCKey, status: "IN_PROGRESS" } });
     await until(() => upserts(taskC, feedFrom).some((t) => t.status === "IN_PROGRESS"), "feed: reopened view", 30_000);
     expect(await readBytes(path.join(cDir, "agent_run_resources.json"))).toBe(resourcesClosed);
     expect(view.frames.slice(from).some(root.reopenedFrame)).toBe(false);

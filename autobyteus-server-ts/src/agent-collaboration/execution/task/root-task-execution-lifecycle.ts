@@ -128,11 +128,11 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
     let join: TaskExecutionJoin;
     if (linked) {
       if (owner) throw new TaskDelegationError("TASK_AGENT_RESOURCE_OWNED_SENDER", "You are a task agent, so you can't use task_id. Delegate with a description instead; that work is part of your Task.");
-      const taskId = requireTaskString(input.task_id, "task_id");
-      const saved = await this.resourceScope.port().resolveAssignment(taskId).catch(error => { throw asTaskDelegationError(error); });
+      // The agent's task_id (key or ID) is resolved once; only the stored ID goes on.
+      const saved = await this.resourceScope.port().resolveAssignment(requireTaskString(input.task_id, "task_id")).catch(error => { throw asTaskDelegationError(error); });
       description = saved.description;
       referenceFiles = await validateTaskReferenceFiles(saved.referenceFiles);
-      join = { role: "assigned", taskId, assignedBy: context.identity.agentRunId };
+      join = { role: "assigned", taskId: saved.taskId, assignedBy: context.identity.agentRunId };
     } else {
       if (owner && !owner.open) throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "Your Task is DONE or CANCELLED, so you can't start new work.");
       // An unowned copy could not be told apart from an unreadable Task's work: reject before any planning.
@@ -152,25 +152,25 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
   }
 
   /**
-   * DS-002, `delegate_task` with a copy's own ID: finds the copy in this root, asks the Task side whether
-   * this sender may give it Task `taskId`, settles its previous stop and checks it can be restored, commits
+   * DS-002, `delegate_task` with a copy's own ID: resolves the named Task first (its refusals come before the
+   * copy's), finds the copy in this root, asks the Task side whether this sender may give it the Task, settles its previous stop and checks it can be restored, commits
    * the new assignment, publishes it as reopened, then delivers the Task's work through the root's exact
    * delivery (which wakes or restores it with its conversation). Every refusal before the commit changes nothing.
    */
   async assignToExistingCopy(context: TaskDelegationContext, input: AssignToExistingCopyInput, deliverWork: DeliverTaskWork): Promise<TaskDelegationOutcome> {
     const sender = context.identity.agentRunId;
-    let target: TaskExecutionTarget, taskId: string, description: string, referenceFiles: readonly string[];
+    let target: TaskExecutionTarget, taskId: string, taskReference: string, description: string, referenceFiles: readonly string[];
     try {
       this.assertAdmitting(context.identity);
       this.adapter.assertCurrentSchemaReady();
       if (this.resourceScope.ownerOf(sender)) throw new TaskDelegationError("TASK_AGENT_RESOURCE_OWNED_SENDER", "You are a task agent, so you can't use task_id. Delegate with a description instead; that work is part of your Task.");
-      taskId = requireTaskString(input.taskId, "task_id");
       const port = this.resourceScope.port();
+      // The agent's task_id (key or ID) is resolved once; only the stored ID goes on, the key only into texts.
+      const saved = await port.resolveAssignment(requireTaskString(input.taskId, "task_id"));
+      ({ taskId, taskReference, description } = saved);
       const found = resolveExistingCopy(this.adapter, input.copy);
       if (!found) return await this.refuseCopyOutsideTree(port, input.copy, sender, taskId);
       target = found;
-      const saved = await port.resolveAssignment(taskId);
-      ({ description } = saved);
       referenceFiles = await validateTaskReferenceFiles(saved.referenceFiles);
       await port.assertAssignable({ execution: target.execution, requestedBy: sender, taskId });
       await this.queue.submit({ kind: "reopen", executeAtQueueHead: () => this.prepareClosedCopyForResume(target.execution, target.ingressAgentRunId) });
@@ -181,7 +181,7 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
       throw error;
     }
     this.adapter.publishTaskExecutionsReopened(Object.freeze([target.execution]));
-    const content = buildExistingCopyTaskMessage({ taskId, description });
+    const content = buildExistingCopyTaskMessage({ taskReference, description });
     let delivered: AgentOperationResult;
     try { delivered = await this.withLiveLease(sender, () => deliverWork(target.ingressAgentRunId, content, referenceFiles)); }
     catch (error) { delivered = { accepted: false, code: "TASK_WORK_NOT_DELIVERED", message: errorMessage(error) }; }
@@ -190,8 +190,8 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
       const reason = delivered.message ?? delivered.code ?? "delivery was not accepted";
       try { await port.markFailed(target.execution, { code: delivered.code ?? "TASK_WORK_NOT_DELIVERED", message: reason }); }
       catch (recordError) { throw new TaskDispatchIndeterminateError(target.execution, recordError); }
-      return { delegated: false, message: `Task ${taskId} was given to the task agent, but the message with its work was not delivered (${reason}). `
-        + `Message the task agent's run id ${target.ingressAgentRunId}, or set Task ${taskId} to CANCELLED, or delegate it to a new task agent.` };
+      return { delegated: false, message: `Task ${taskReference} was given to the task agent, but the message with its work was not delivered (${reason}). `
+        + `Message the task agent's run id ${target.ingressAgentRunId}, or set Task ${taskReference} to CANCELLED, or delegate it to a new task agent.` };
     }
     try { await port.markStarted(target.execution); }
     catch (error) { throw new TaskDispatchIndeterminateError(target.execution, error); }

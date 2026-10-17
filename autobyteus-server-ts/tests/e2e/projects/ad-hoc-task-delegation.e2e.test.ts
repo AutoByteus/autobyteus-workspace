@@ -339,7 +339,11 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     expect(createWithoutProject).toContain("PROJECT_TOOL_ARGUMENT_INVALID");
     expect(await adHocTaskIds()).toEqual([...adHocBefore, adHocTaskId!].sort());
     const patched = await managerCalls(callTool("update_task", { task_id: projectTaskId, description: "Patched by id." }));
-    expect(patched).toContain(projectTaskId);
+    // task-keys-and-dependencies (REQ-018/019): the long ID is accepted; the result names the Project Task by its key.
+    const projectTaskKey = ((await graphql(`query($id:String!){projectTasks(projectId:$id){taskId taskKey}}`, { id: projectId })).projectTasks as Array<{ taskId: string; taskKey: string }>)
+      .find((task) => task.taskId === projectTaskId)!.taskKey;
+    expect(patched).toContain(`"taskId":"${projectTaskKey}"`);
+    expect(patched).not.toContain(projectTaskId);
     expect((await projectTasks(projectId)).find((task) => task.taskId === projectTaskId)?.description).toBe("Patched by id.");
 
     // 4. Open copy: messaging it by run ID works before DONE.

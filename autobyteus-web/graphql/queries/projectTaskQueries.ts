@@ -24,6 +24,8 @@ export const ProjectTaskFields = gql`
     contextFiles { storedFilename displayName mimeType sizeBytes locator }
     updatedAt
     root { ...TaskRootFields }
+    taskKey
+    dependsOnTaskIds
   }
   ${TaskRootFields}
 `
@@ -42,7 +44,7 @@ export const GetTaskWorkerTasks = gql`
     taskWorkerTasks(agentRunIds: $agentRunIds, teamRunIds: $teamRunIds) {
       workerKind
       workerRunId
-      task { taskId projectId description status }
+      task { taskId projectId description status taskKey }
     }
   }
 `
