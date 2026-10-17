@@ -102,4 +102,14 @@ The pre-merge refresh found `origin/personal` at `a716a4632e`, 12 commits past t
 
 #### DR-002 Finalization Result
 
-- Recorded in the follow-up `docs(delivery)` record commit on `personal` (below this line in that commit).
+- Ticket-branch delivery commit: `2726d03f2b` on `codex/task-keys-and-dependencies` (local; never pushed, per `RELEASE.md`).
+- Target re-check: `origin/personal` was still `66429d6f31` at merge time, so it had not advanced after verification and needed no re-integration.
+- `finalize/task-keys-and-dependencies` from `origin/personal@66429d6f31`: `git merge --no-ff` → `1b108514cb`. The merge tree is identical to the verified ticket tree (`git diff --quiet codex/task-keys-and-dependencies HEAD`).
+- Checks on the merge:
+  - `check_repository_artifact_hygiene.py`: passed;
+  - `check_licensing.py`: "Licensing is consistent.";
+  - no `*/dist/` paths in the merge diff.
+- Re-fetch before push: `origin/personal` unchanged. Pushed `66429d6f31..1b108514cb HEAD -> personal`.
+- Release: none (No release). No tag, pipeline or version bump; `autobyteus-web/package.json` stays `1.5.5-beta.2`.
+- Repository finalization status: `Completed`.
+- Cleanup: worktree removal, prune, local branch deletion and receipt export follow this record's push; confirmed in the terminal message.

@@ -133,13 +133,13 @@
 - Ticket branch push result: `Not required` (per `RELEASE.md`; never pushed)
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification: recorded in DR-002 Finalization Result
+- Target advanced after verification: `No` (`origin/personal` still `66429d6f31` at merge and again before the push)
 - Delivery-owned edits protected before re-integration: `Completed` (committed before the merge)
-- Re-integration before final merge result: recorded in DR-002 Finalization Result
+- Re-integration before final merge result: `Not needed`
 - Target branch update result: `git fetch origin personal`; `git checkout -b finalize/task-keys-and-dependencies origin/personal`
-- Merge into target result: `git merge --no-ff codex/task-keys-and-dependencies` (SHA in DR-002)
-- Push target branch result: `git push origin HEAD:personal` after a re-fetch confirmed `origin/personal` unchanged (SHA in DR-002)
-- Repository finalization status: recorded in DR-002 Finalization Result. That record is committed in a follow-up `docs(delivery)` commit on `personal`, as for earlier tickets.
+- Merge into target result: `Completed`, `1b108514cb` (`--no-ff`; tree identical to the verified ticket tree)
+- Push target branch result: `Completed`, `66429d6f31..1b108514cb HEAD -> personal` after a re-fetch confirmed `origin/personal` unchanged
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
@@ -180,7 +180,7 @@
 
 ## Verification Checks
 
-- Repository: `python3 scripts/check_repository_artifact_hygiene.py` and `python3 scripts/check_licensing.py` are run on the `finalize/task-keys-and-dependencies` merge before the push. Results are in DR-002 Finalization Result.
+- Repository, on merge `1b108514cb` before the push: `check_repository_artifact_hygiene.py` passed; `check_licensing.py` reports "Licensing is consistent."; no `*/dist/` path in the merge diff.
 
 ## Rollback Criteria
 
@@ -194,9 +194,9 @@
 ## Final Status
 
 - Verification complete (from the evidence): `Yes` (DR-002, API-REV-002 at `c95e0138e8`)
-- Repository finalization complete: see DR-002 Finalization Result (record commit)
+- Repository finalization complete: `Yes` (`1b108514cb` on `personal`)
 - Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`, No release)
 - Applicable safe cleanup complete or not required: confirmed in the terminal message (DR-002)
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: after the push and cleanup (DR-002)
-- Terminal package sent to `/solution_designer`: recorded in DR-002
+- Successful terminal package eligible for return: `Yes`, after this record's push and cleanup
+- Terminal package sent to `/solution_designer`: sent right after cleanup (`/software_engineering_team/solution_designer`)
