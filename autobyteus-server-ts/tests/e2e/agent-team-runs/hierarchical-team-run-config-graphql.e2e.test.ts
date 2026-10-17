@@ -63,7 +63,7 @@ const createAgentDefinition = async (serverUrl: string, name: string): Promise<s
 const createTeamDefinition = async (serverUrl: string, input: {
   name: string;
   coordinatorMemberName: string;
-  nodes: Array<{ memberName: string; ref: string; refType: "AGENT" | "AGENT_TEAM"; refScope: "SHARED" }>;
+  nodes: Array<{ memberName: string; ref: string; refScope: "SHARED" }>;
 }): Promise<string> => {
   const result = await executeGraphql<{
     createAgentTeamDefinition: { id: string };
@@ -104,21 +104,15 @@ const seedHierarchy = async (serverUrl: string, label: string) => {
   const observerId = await createAgentDefinition(serverUrl, `${label}-observer`);
   const researchLeadId = await createAgentDefinition(serverUrl, `${label}-research-lead`);
   const reviewerId = await createAgentDefinition(serverUrl, `${label}-reviewer`);
-  const researchTeamId = await createTeamDefinition(serverUrl, {
-    name: `${label}-research-team`,
-    coordinatorMemberName: "lead",
-    nodes: [
-      { memberName: "lead", ref: researchLeadId, refType: "AGENT", refScope: "SHARED" },
-      { memberName: "reviewer", ref: reviewerId, refType: "AGENT", refScope: "SHARED" },
-    ],
-  });
+  // A team contains agents only (flat teams since v1.4.70; remove-nested-task-team).
   const rootTeamId = await createTeamDefinition(serverUrl, {
     name: `${label}-root-team`,
     coordinatorMemberName: "coordinator",
     nodes: [
-      { memberName: "coordinator", ref: coordinatorId, refType: "AGENT", refScope: "SHARED" },
-      { memberName: "observer", ref: observerId, refType: "AGENT", refScope: "SHARED" },
-      { memberName: "Research", ref: researchTeamId, refType: "AGENT_TEAM", refScope: "SHARED" },
+      { memberName: "coordinator", ref: coordinatorId, refScope: "SHARED" },
+      { memberName: "observer", ref: observerId, refScope: "SHARED" },
+      { memberName: "lead", ref: researchLeadId, refScope: "SHARED" },
+      { memberName: "reviewer", ref: reviewerId, refScope: "SHARED" },
     ],
   });
   return { rootTeamId, coordinatorId, observerId, researchLeadId, reviewerId };
@@ -154,67 +148,37 @@ type ExactConfigurationNode = {
   members?: ExactConfigurationNode[];
 };
 
-const normalizeLaunchConfiguration = (
-  value: Record<string, unknown>,
-  projection: "persisted" | "graphql",
-): CompleteLaunchConfiguration => projection === "persisted"
-  ? {
-      runtimeKind: value.runtimeKind as string,
-      llmModelIdentifier: value.llmModelIdentifier as string,
-      llmConfig: value.llmConfig as Record<string, unknown> | null,
-      autoExecuteTools: value.autoExecuteTools as boolean,
-      workspaceRootPath: value.workspaceRootPath as string | null,
-    }
-  : {
-      runtimeKind: value.runtime_kind as string,
-      llmModelIdentifier: value.llm_model_identifier as string,
-      llmConfig: value.llm_config as Record<string, unknown> | null,
-      autoExecuteTools: value.auto_execute_tools as boolean,
-      workspaceRootPath: value.workspace_root_path as string | null,
-    };
 
-const normalizeExactConfigurationTree = (
-  root: Record<string, unknown>,
-  projection: "persisted" | "graphql",
-): ExactConfigurationNode => {
+/** The stored tree is camelCase; the GraphQL resume tree is snake_case (and carries no schema version). */
+type Projection = "persisted" | "graphql";
+const key = (projection: Projection, camel: string, snake: string) => (projection === "persisted" ? camel : snake);
+const normalizeLaunchConfiguration = (value: Record<string, unknown>, p: Projection): CompleteLaunchConfiguration => ({
+  runtimeKind: value[key(p, "runtimeKind", "runtime_kind")] as string,
+  llmModelIdentifier: value[key(p, "llmModelIdentifier", "llm_model_identifier")] as string,
+  llmConfig: value[key(p, "llmConfig", "llm_config")] as Record<string, unknown> | null,
+  autoExecuteTools: value[key(p, "autoExecuteTools", "auto_execute_tools")] as boolean,
+  workspaceRootPath: value[key(p, "workspaceRootPath", "workspace_root_path")] as string | null,
+});
+
+const normalizeExactConfigurationTree = (root: Record<string, unknown>, p: Projection): ExactConfigurationNode => {
   const members = root.members as Array<Record<string, unknown>>;
-  const defaultKey = projection === "persisted"
-    ? "defaultLaunchConfiguration"
-    : "default_launch_configuration";
-  const definitionKey = projection === "persisted"
-    ? "agentDefinitionId"
-    : "agent_definition_id";
-  const launchKey = projection === "persisted"
-    ? "launchConfiguration"
-    : "launch_configuration";
   return {
     address: root.address as string,
-    defaultLaunchConfiguration: normalizeLaunchConfiguration(
-      root[defaultKey] as Record<string, unknown>,
-      projection,
-    ),
+    defaultLaunchConfiguration: normalizeLaunchConfiguration(root[key(p, "defaultLaunchConfiguration", "default_launch_configuration")] as Record<string, unknown>, p),
     members: members.map((member): ExactConfigurationNode => {
-      if (Array.isArray(member.members)) {
-        return normalizeExactConfigurationTree(member, projection);
-      }
+      // A team's members are agents only: a member that carries members (a team) fails here.
+      expect(member.members, `member ${String(member.address)} is an agent`).toBeUndefined();
       return {
         address: member.address as string,
-        agentDefinitionId: member[definitionKey] as string,
-        launchConfiguration: normalizeLaunchConfiguration(
-          member[launchKey] as Record<string, unknown>,
-          projection,
-        ),
+        agentDefinitionId: member[key(p, "agentDefinitionId", "agent_definition_id")] as string,
+        launchConfiguration: normalizeLaunchConfiguration(member[key(p, "launchConfiguration", "launch_configuration")] as Record<string, unknown>, p),
       };
     }),
   };
 };
 
-const assertExactConfigurationTree = (
-  root: Record<string, unknown>,
-  projection: "persisted" | "graphql",
-  expected: ExactConfigurationNode,
-): void => {
-  expect(normalizeExactConfigurationTree(root, projection)).toEqual(expected);
+const assertExactConfigurationTree = (root: Record<string, unknown>, p: Projection, expected: ExactConfigurationNode): void => {
+  expect(normalizeExactConfigurationTree(root, p)).toEqual(expected);
 };
 
 afterEach(async () => {
@@ -229,8 +193,8 @@ afterEach(async () => {
   }
 });
 
-describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
-  it("persists root, nested-Team, and exact-Agent configurations and restores them after process restart", async () => {
+describe("TeamRun configuration GraphQL and V2 lifecycle", () => {
+  it("persists the team and exact-Agent configurations and restores them after process restart", async () => {
     const target = makeTarget("hierarchical-team-run-current");
     const first = await startServer(target);
     const fixture = await seedHierarchy(first.serverUrl, `hierarchy-${Date.now()}`);
@@ -247,7 +211,8 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
       autoExecuteTools: false,
       workspaceRootPath: rootWorkspace,
     };
-    const researchTeamConfiguration: CompleteLaunchConfiguration = {
+    // Agents may differ from the team's default (their own model settings and workspace).
+    const researchConfiguration: CompleteLaunchConfiguration = {
       runtimeKind: "autobyteus",
       llmModelIdentifier: model,
       llmConfig: { temperature: 0.2 },
@@ -262,7 +227,7 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
       autoExecuteTools: true,
       workspaceRootPath: rootWorkspace,
     };
-    const leadConfiguration = { ...researchTeamConfiguration };
+    const leadConfiguration = { ...researchConfiguration };
     const reviewerConfiguration: CompleteLaunchConfiguration = {
       runtimeKind: "autobyteus",
       llmModelIdentifier: model,
@@ -285,20 +250,14 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
           launchConfiguration: observerConfiguration,
         },
         {
-          address: "/Research",
-          defaultLaunchConfiguration: researchTeamConfiguration,
-          members: [
-            {
-              address: "/Research/lead",
-              agentDefinitionId: fixture.researchLeadId,
-              launchConfiguration: leadConfiguration,
-            },
-            {
-              address: "/Research/reviewer",
-              agentDefinitionId: fixture.reviewerId,
-              launchConfiguration: reviewerConfiguration,
-            },
-          ],
+          address: "/lead",
+          agentDefinitionId: fixture.researchLeadId,
+          launchConfiguration: leadConfiguration,
+        },
+        {
+          address: "/reviewer",
+          agentDefinitionId: fixture.reviewerId,
+          launchConfiguration: reviewerConfiguration,
         },
       ],
     };
@@ -313,10 +272,6 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
             teamAddress: "/",
             ...rootTeamConfiguration,
           },
-          {
-            teamAddress: "/Research",
-            ...researchTeamConfiguration,
-          },
         ],
         memberConfigs: [
           {
@@ -330,12 +285,12 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
             ...observerConfiguration,
           },
           {
-            memberAddress: "/Research/lead",
+            memberAddress: "/lead",
             agentDefinitionId: fixture.researchLeadId,
             ...leadConfiguration,
           },
           {
-            memberAddress: "/Research/reviewer",
+            memberAddress: "/reviewer",
             agentDefinitionId: fixture.reviewerId,
             ...reviewerConfiguration,
           },
@@ -360,12 +315,7 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
 
     const activeResume = await resumeConfig(first.serverUrl, teamRunId);
     expect(activeResume).toMatchObject({ teamRunId, isActive: true });
-    expect((activeResume.executionTree as any).schema_version).toBe(2);
-    assertExactConfigurationTree(
-      (activeResume.executionTree as any).root_team,
-      "graphql",
-      expectedConfigurationTree,
-    );
+    assertExactConfigurationTree((activeResume.executionTree as any).root_team, "graphql", expectedConfigurationTree);
 
     const terminated = await executeGraphql<{ terminateAgentTeamRun: { success: boolean } }>(first.serverUrl, `
       mutation TerminateHierarchicalTeamRun($teamRunId: String!) {
@@ -378,12 +328,7 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
     const second = await startServer(target);
     const restartedResume = await resumeConfig(second.serverUrl, teamRunId);
     expect(restartedResume).toMatchObject({ teamRunId, isActive: false });
-    expect((restartedResume.executionTree as any).schema_version).toBe(2);
-    assertExactConfigurationTree(
-      (restartedResume.executionTree as any).root_team,
-      "graphql",
-      expectedConfigurationTree,
-    );
+    assertExactConfigurationTree((restartedResume.executionTree as any).root_team, "graphql", expectedConfigurationTree);
     const restored = await executeGraphql<{
       restoreAgentTeamRun: { success: boolean; teamRunId: string | null };
     }>(second.serverUrl, `
@@ -394,11 +339,7 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
     expect(restored.restoreAgentTeamRun).toEqual({ success: true, teamRunId });
     const restoredResume = await resumeConfig(second.serverUrl, teamRunId);
     expect(restoredResume).toMatchObject({ teamRunId, isActive: true });
-    assertExactConfigurationTree(
-      (restoredResume.executionTree as any).root_team,
-      "graphql",
-      expectedConfigurationTree,
-    );
+    assertExactConfigurationTree((restoredResume.executionTree as any).root_team, "graphql", expectedConfigurationTree);
   }, 180_000);
 
   it.each([
@@ -431,19 +372,12 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
             : { runtimeKind: "autobyteus" }),
           workspaceRootPath: rejectedWorkspace,
         },
-        {
-          teamAddress: "/Research",
-          llmModelIdentifier: model,
-          autoExecuteTools: false,
-          runtimeKind: "autobyteus",
-          workspaceRootPath: rejectedWorkspace,
-        },
       ],
       memberConfigs: [
         ["/coordinator", fixture.coordinatorId],
         ["/observer", fixture.observerId],
-        ["/Research/lead", fixture.researchLeadId],
-        ["/Research/reviewer", fixture.reviewerId],
+        ["/lead", fixture.researchLeadId],
+        ["/reviewer", fixture.reviewerId],
       ].map(([memberAddress, agentDefinitionId], index) => ({
         memberAddress,
         agentDefinitionId,
