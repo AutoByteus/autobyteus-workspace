@@ -8,7 +8,7 @@ import { FlatTeamExecutionFactory, type FlatTeamPreparationOperation, type Prepa
 import type { TeamRun } from "../../../agent-team-execution/domain/team-run.js";
 import type { TeamRunAgentTeamNode } from "../../../agent-team-execution/domain/team-run-config.js";
 import type { PrepareTaskTeamInput } from "../../../agent-team-execution/domain/task-team-execution.js";
-import { createTaskExecutionPreparation, type TaskExecutionPreparationOperation, type PreparedTaskExecution } from "../../../agent-team-execution/domain/prepared-task-execution.js";
+import { createTaskExecutionPreparation, type TaskExecutionPreparationOperation } from "../../../agent-team-execution/domain/prepared-task-execution.js";
 import { TaskExecutionTeardownIndeterminateError } from "../task/task-delegation-command.js";
 import { isRunningTaskExecutionStatus } from "../task/task-execution-running-work.js";
 import type { ConfiguredMemberActivationMode } from "../../../agent-team-execution/local/flat-team-execution-context.js";

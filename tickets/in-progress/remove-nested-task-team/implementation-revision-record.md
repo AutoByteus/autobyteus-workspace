@@ -8,6 +8,7 @@ implementation rounds only.
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | architecture_reviewer — ARCH-REV-002 Pass; solution_designer SR-006 scope reduction | N/A | `Initial Baseline` | SR-001..SR-006, ARCH-REV-002 | Implemented; local checks pass; to Code Review |
+| IR-002 | code_reviewer — `code-review-report.md` CRR-001 (Fail, Local Fix) | CR-001 | `Local Fix` | CRR-001 | Unused imports removed; `--noUnusedLocals` clean in touched files; back to Code Review |
 
 ## Revision Entries
 
@@ -48,3 +49,26 @@ implementation rounds only.
 - Next recipient or routing: `get_handoff_rules` → Code Reviewer (Large / High).
 - Remaining limitations or risks: see handoff Known Risks (launch-configuration team scopes are a
   follow-up; retired-run warnings repeat per scan — accepted R-3).
+
+### IR-002 — CR-001: unused imports in touched server files
+
+- Triggering role, report path, and round: code_reviewer, `code-review-report.md` / `code-review-revision-record.md`, CRR-001.
+- Triggering finding IDs: CR-001
+- Classification: `Local Fix`
+- Prior authoritative result: IR-001 (CRR-001 Fail on Cleanup Completeness 8.7 only).
+- Current authoritative result: the three unused imports are removed; no behavior change.
+- Related solution / architecture-review / code-review / API/E2E / delivery revision IDs: SR-006 / ARCH-REV-002 / CRR-001 / N/A / N/A
+- Why recorded: Core Principle 7 (dead code, including pre-existing, in touched files).
+- Approved behavior or requirement IDs affected: none (cleanup).
+- Implementation delta: removed `type PreparedTaskExecution` from the imports of
+  `autobyteus-server-ts/src/agent-collaboration/execution/backends/root-team-execution-directory.ts` and
+  `autobyteus-server-ts/src/agent-team-execution/local/registries/task-team-execution-registry.ts`, and the
+  `TeamRunAgentTeamNode` import from the latter.
+- Local validation and result: `tsc -p tsconfig.build.json --noEmit --noUnusedLocals` reports no TS6133/TS6192/TS6196 in any
+  server src file changed in `db00ba16a9..HEAD` (41 remaining reports are all in files this branch does not touch); the two
+  touched contract source files are clean with `--noUnusedLocals`; `pnpm typecheck` passes; `vitest run tests/unit/agent-team-execution
+  tests/unit/agent-collaboration` 69 files / 670 tests pass.
+- Next recipient or routing: `get_handoff_rules` → Code Reviewer (targeted delta review).
+- Remaining limitations or risks: follow-ups — unused locals in untouched files (41 server reports; contracts
+  `team-stream-server-message.ts` `compactionRecoveryBlockSchema`); optional narrowing of `RunHistoryStableExecutionRow.memberKind`
+  to `'agent'` (non-blocking, not done: the type is shared with the root display row and transient rows via `TeamMemberTreeRow['kind']`).
