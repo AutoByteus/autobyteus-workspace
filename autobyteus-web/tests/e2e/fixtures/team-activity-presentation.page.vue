@@ -4,7 +4,7 @@
       <h1 class="text-xl font-semibold">Team status (history) and binary activity (running) presentation probe</h1>
       <p data-test="resolved-locale" class="mt-1 text-sm text-slate-600">{{ resolvedLocale }}</p>
       <p data-test="independent-facts" class="mt-1 text-sm text-slate-600">
-        member={{ memberStatus }} subscribed={{ subscribed }} stopPending={{ stopPending }} failures={{ stopFailureCount }}
+        member={{ memberStatus }} stopPending={{ stopPending }} failures={{ stopFailureCount }}
       </p>
       <div class="mt-3 flex flex-wrap gap-2">
         <button data-test="set-locale-en" type="button" @click="setPreference('en')">English</button>
@@ -66,7 +66,6 @@ import type {
 const { resolvedLocale, setPreference } = useLocalization();
 const activeRunIsActive = ref(true);
 const memberStatus = ref<AgentStatus>(AgentStatus.Error);
-const subscribed = ref(false);
 const stopPending = ref(false);
 const stopFailureCount = ref(0);
 const representativeFlip = ref(false);
@@ -239,7 +238,6 @@ const varyIndependentFacts = () => {
   memberStatus.value = memberStatus.value === AgentStatus.Error
     ? AgentStatus.Running
     : AgentStatus.Error;
-  subscribed.value = !subscribed.value;
   representativeFlip.value = !representativeFlip.value;
 };
 
