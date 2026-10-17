@@ -1,0 +1,283 @@
+{
+  "startedAt": "2026-10-15T07:51:52.399Z",
+  "result": "Fail",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PT-E2E-001": {
+      "title": "Fresh node: Projects always available after Agent Orgs, /projects opens; separate-node API isolation (projects-always-on AC-001)",
+      "result": "Pass",
+      "startedAt": "2026-10-15T07:52:16.629Z",
+      "observations": {
+        "nav": [
+          "Chat",
+          "Agents",
+          "Agent Teams",
+          "Agent Orgs",
+          "Projects",
+          "Skills",
+          "Memory",
+          "Nodes"
+        ],
+        "otherNode": "project_5a60794c-da53-43c0-8fd3-148e4a27943d"
+      },
+      "finishedAt": "2026-10-15T07:52:17.057Z"
+    },
+    "PT-E2E-002": {
+      "title": "Ordinary New Project validation/focus/Cancel and zero-link save to Tasks",
+      "result": "Pass",
+      "startedAt": "2026-10-15T07:52:17.058Z",
+      "observations": {
+        "projectId": "project_2befc403-954e-447a-8b3a-107ef98cbe3e"
+      },
+      "finishedAt": "2026-10-15T07:52:20.814Z"
+    },
+    "PT-E2E-003": {
+      "title": "Picker/manual share one path; exact entries, no registration/mkdir, unavailable link editing",
+      "result": "Pass",
+      "startedAt": "2026-10-15T07:52:20.815Z",
+      "observations": {
+        "links": [
+          {
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-pzzWs4/original-workspace",
+            "displayName": "original-workspace",
+            "description": "existing context",
+            "availability": "AVAILABLE"
+          },
+          {
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-pzzWs4/never-mkdir #?雪\\folder",
+            "displayName": "never-mkdir #?雪\\folder",
+            "description": "manual reference",
+            "availability": "UNREGISTERED"
+          }
+        ],
+        "disk": [
+          {
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-pzzWs4/original-workspace",
+            "description": "existing context"
+          },
+          {
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-pzzWs4/never-mkdir #?雪\\folder",
+            "description": "manual reference"
+          }
+        ],
+        "manualPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-pzzWs4/never-mkdir #?雪\\folder"
+      },
+      "finishedAt": "2026-10-15T07:52:23.271Z"
+    },
+    "PT-E2E-004": {
+      "title": "Invalid paths/canonical duplicates and failed transport preserve Project, registry and folders",
+      "result": "Pass",
+      "startedAt": "2026-10-15T07:52:23.271Z",
+      "observations": {
+        "rejections": [
+          {
+            "invalid": "relative/folder",
+            "code": "WORKSPACE_PATH_INVALID",
+            "responseStatus": 200
+          },
+          {
+            "invalid": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-pzzWs4/original-workspace/../original-workspace/",
+            "code": "WORKSPACE_ALREADY_LINKED",
+            "responseStatus": 200
+          }
+        ],
+        "rejectedSaves": 1,
+        "absentPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-pzzWs4/failed-save-no-registration"
+      },
+      "finishedAt": "2026-10-15T07:52:23.926Z"
+    },
+    "PT-E2E-005": {
+      "title": "Task ordinary composer validation, search-preserving Cancel, typed/file save clears search",
+      "result": "Fail",
+      "startedAt": "2026-10-15T07:52:23.927Z",
+      "observations": {
+        "presentation": [
+          {
+            "locale": "en",
+            "viewport": {
+              "width": 1512,
+              "height": 862
+            },
+            "layout": {
+              "card": {
+                "top": 172,
+                "bottom": 534,
+                "left": 509.5,
+                "right": 1325.5,
+                "height": 362
+              },
+              "label": {
+                "top": 197,
+                "bottom": 217,
+                "left": 534.5,
+                "right": 1300.5,
+                "height": 20
+              },
+              "composer": {
+                "top": 229,
+                "bottom": 509,
+                "left": 534.5,
+                "right": 1300.5,
+                "height": 280
+              },
+              "padding": 24,
+              "border": 1,
+              "firstChildIsLabel": true,
+              "labelOffset": 25,
+              "composerGap": 12,
+              "overflow": false,
+              "fit": {
+                "rootScroll": 1189,
+                "rootClient": 1189,
+                "docScroll": 1512,
+                "innerWidth": 1512,
+                "actions": [
+                  [
+                    1118,
+                    1198,
+                    79
+                  ],
+                  [
+                    1210,
+                    1326,
+                    116
+                  ]
+                ],
+                "widest": []
+              },
+              "actionsFit": true
+            },
+            "association": {
+              "invalid": "false",
+              "describedBy": null,
+              "references": [],
+              "focused": false
+            }
+          }
+        ]
+      },
+      "error": "Error: Form/actions fit wide and narrow layout (new en 390: {\"rootScroll\":113,\"rootClient\":70,\"docScroll\":390,\"innerWidth\":390,\"actions\":[[199,278,79],[290,374,84]],\"widest\":[\"A.inline-flex min-h-9 items-center gap-1.5 rounded t#task-back-to-board:393\",\"SPAN.font-normal text-slate-400#:421\",\"SPAN.text-xs font-medium text-slate-700#:419\",\"SPAN.text-xs text-slate-400#:412\"]})\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split-api-base/autobyteus-web/tests/e2e/projects-feature-probe.mjs:48:64)\n    at inspectTaskPresentation (file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split-api-base/autobyteus-web/tests/e2e/projects-feature-probe.mjs:240:7)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split-api-base/autobyteus-web/tests/e2e/projects-feature-probe.mjs:403:5\n    at async runCase (file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split-api-base/autobyteus-web/tests/e2e/projects-feature-probe.mjs:258:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split-api-base/autobyteus-web/tests/e2e/projects-feature-probe.mjs:401:3",
+      "finishedAt": "2026-10-15T07:52:25.213Z"
+    },
+    "PT-E2E-006": {
+      "title": "Concise detail, HTTP download, edit Cancel then save preserves ID/status/context; inline deletion focus/Escape",
+      "result": "Fail",
+      "startedAt": "2026-10-15T07:52:25.214Z",
+      "observations": {},
+      "error": "TypeError: Cannot read properties of undefined (reading 'taskId')\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split-api-base/autobyteus-web/tests/e2e/projects-feature-probe.mjs:439:20\n    at runCase (file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split-api-base/autobyteus-web/tests/e2e/projects-feature-probe.mjs:258:15)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split-api-base/autobyteus-web/tests/e2e/projects-feature-probe.mjs:438:3",
+      "finishedAt": "2026-10-15T07:52:25.264Z"
+    },
+    "PT-E2E-007": {
+      "title": "External native tool commit -> physical non-deduplicated Refresh preserves search/route and moves status",
+      "result": "Fail",
+      "startedAt": "2026-10-15T07:52:25.265Z",
+      "observations": {},
+      "error": "locator.fill: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByTestId('project-tasks-search-input')\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split-api-base/autobyteus-web/tests/e2e/projects-feature-probe.mjs:469:20\n    at runCase (/Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split-api-base/autobyteus-web/tests/e2e/projects-feature-probe.mjs:258:15)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split-api-base/autobyteus-web/tests/e2e/projects-feature-probe.mjs:468:3",
+      "finishedAt": "2026-10-15T07:52:55.320Z"
+    },
+    "PT-E2E-008": {
+      "title": "Failed Refresh retains prior success and persistent actionable error, then retry; no-match and empty are distinct",
+      "result": "Fail",
+      "startedAt": "2026-10-15T07:52:55.320Z",
+      "observations": {},
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByTestId('project-tasks-refresh')\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split-api-base/autobyteus-web/tests/e2e/projects-feature-probe.mjs:485:68\n    at async runCase (/Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split-api-base/autobyteus-web/tests/e2e/projects-feature-probe.mjs:258:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split-api-base/autobyteus-web/tests/e2e/projects-feature-probe.mjs:482:3",
+      "finishedAt": "2026-10-15T07:53:25.378Z"
+    },
+    "PT-E2E-009": {
+      "title": "Continuous divided rows and desktop/narrow container breakpoint, ordinary page wrapping",
+      "result": "Fail",
+      "startedAt": "2026-10-15T07:53:25.378Z",
+      "observations": {},
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByTestId('project-tasks-refresh')\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split-api-base/autobyteus-web/tests/e2e/projects-feature-probe.mjs:492:142\n    at async runCase (/Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split-api-base/autobyteus-web/tests/e2e/projects-feature-probe.mjs:258:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split-api-base/autobyteus-web/tests/e2e/projects-feature-probe.mjs:491:3",
+      "finishedAt": "2026-10-15T07:53:56.410Z"
+    },
+    "PT-E2E-010": {
+      "title": "Real backend process restart preserves Tasks, context HTTP bytes and links",
+      "result": "Fail",
+      "startedAt": "2026-10-15T07:53:56.413Z",
+      "observations": {},
+      "error": "TypeError: Cannot read properties of undefined (reading 'taskId')\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split-api-base/autobyteus-web/tests/e2e/projects-feature-probe.mjs:507:53\n    at Array.find (<anonymous>)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split-api-base/autobyteus-web/tests/e2e/projects-feature-probe.mjs:507:25\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async runCase (file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split-api-base/autobyteus-web/tests/e2e/projects-feature-probe.mjs:258:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split-api-base/autobyteus-web/tests/e2e/projects-feature-probe.mjs:502:3",
+      "finishedAt": "2026-10-15T07:53:58.493Z"
+    },
+    "PT-E2E-011": {
+      "title": "All-Task Project deletion includes Done; Cancel preserves originals, explicit cascade affects only Project",
+      "result": "Fail",
+      "startedAt": "2026-10-15T07:53:58.494Z",
+      "observations": {},
+      "error": "Error: Full/open counts distinct\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split-api-base/autobyteus-web/tests/e2e/projects-feature-probe.mjs:48:64)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split-api-base/autobyteus-web/tests/e2e/projects-feature-probe.mjs:511:64\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async runCase (file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split-api-base/autobyteus-web/tests/e2e/projects-feature-probe.mjs:258:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split-api-base/autobyteus-web/tests/e2e/projects-feature-probe.mjs:510:3",
+      "finishedAt": "2026-10-15T07:53:58.544Z"
+    },
+    "PT-E2E-012": {
+      "title": "Ordinary route read/Refresh ordering: late old Project response cannot populate another Project",
+      "result": "Pass",
+      "startedAt": "2026-10-15T07:53:58.544Z",
+      "observations": {
+        "realOldResponseReleased": true
+      },
+      "finishedAt": "2026-10-15T07:53:59.892Z"
+    },
+    "PT-E2E-013": {
+      "title": "120 current Tasks: complete search/counts/no-match across statuses, no truncation or mutation",
+      "result": "Pass",
+      "startedAt": "2026-10-15T07:53:59.892Z",
+      "observations": {
+        "total": 120
+      },
+      "finishedAt": "2026-10-15T07:54:01.674Z"
+    },
+    "PT-E2E-014": {
+      "title": "Task keyboard create/edit/inline-confirmed delete plus unknown Project/Task recovery",
+      "result": "Pass",
+      "startedAt": "2026-10-15T07:54:01.675Z",
+      "observations": {
+        "deletedTaskId": "project_task_c10e55c3-4561-4e6e-80f9-1596883aa450"
+      },
+      "finishedAt": "2026-10-15T07:54:03.662Z"
+    },
+    "PT-E2E-015": {
+      "title": "Upgraded node with the retired flag stored as false: Projects still shown and opens, no Basics switch, the key is an ordinary deletable Advanced setting (projects-always-on AC-002/003)",
+      "result": "Pass",
+      "startedAt": "2026-10-15T07:54:03.662Z",
+      "observations": {
+        "stored": {
+          "key": "ENABLE_PROJECTS",
+          "value": "false",
+          "isDeletable": true
+        },
+        "deleted": true
+      },
+      "finishedAt": "2026-10-15T07:54:05.593Z"
+    },
+    "PT-E2E-016": {
+      "title": "zh-CN ordinary Project/Task forms/board/detail contain localized controls and no raw Project keys",
+      "result": "Pass",
+      "startedAt": "2026-10-15T07:54:05.594Z",
+      "observations": {
+        "rawKeys": 0
+      },
+      "finishedAt": "2026-10-15T07:54:06.509Z"
+    }
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "browser": "closed",
+    "frontend": "terminated:99784",
+    "nodeA": "terminated:3677",
+    "nodeB": "terminated:99757",
+    "frontendPortReleased": true,
+    "nodeAPortReleased": true,
+    "nodeBPortReleased": true,
+    "tempRootRemoved": true
+  },
+  "error": null,
+  "isolation": {
+    "tempRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-pzzWs4",
+    "nodeA": "http://127.0.0.1:54295",
+    "nodeB": "http://127.0.0.1:54299",
+    "frontend": "http://127.0.0.1:54347"
+  },
+  "browserVersion": "155.0.8059.41",
+  "finishedAt": "2026-10-15T07:54:07.106Z"
+}

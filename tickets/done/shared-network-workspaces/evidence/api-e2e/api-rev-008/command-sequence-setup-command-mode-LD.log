@@ -1,0 +1,6 @@
+Started FS01 LD supported NFS create without application nodes
+FS01 LD supported NFS create without application nodes: Pass
+Started start command-only ab-nfs-api008-cmd-a
+start command-only ab-nfs-api008-cmd-a: Pass
+Started start command-only ab-nfs-api008-cmd-b
+start command-only ab-nfs-api008-cmd-b: Pass

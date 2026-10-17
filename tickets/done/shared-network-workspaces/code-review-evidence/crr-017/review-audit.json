@@ -1,0 +1,77 @@
+{
+  "entryPoint": "Implementation Review \u2014 delivery Local Fix integration",
+  "revision": "CRR-017",
+  "scope": "Targeted Delta Review; test-only reconciliation, not a new successful-API result",
+  "head": "1ea11e4eea2a76b17c6ac02d37f4cc7ea591e593",
+  "merge": "a4afd758a9766274b08f675c04952b19913fff0c",
+  "parents": [
+    "4f44d11562700d9518f42ae9be946d65163d23fc",
+    "5096011674c7db6ec0e92e522ea37f32f8f4ea40"
+  ],
+  "overlappingNonTicketPaths": [
+    "autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts",
+    "autobyteus-web/docs/file_explorer.md"
+  ],
+  "allSixTestBodiesByteIdentical": true,
+  "testCount": 6,
+  "unchangedPaths": {
+    "autobyteus-nfs": true,
+    "autobyteus-web/components/fileExplorer/FileExplorerTabs.vue": true,
+    "autobyteus-web/stores/fileExplorerContentActions.ts": true,
+    "autobyteus-web/stores/fileExplorerState.ts": true,
+    "autobyteus-server-ts/tests/e2e/helpers/studio-runtime-test-server.ts": true,
+    "autobyteus-server-ts/src/workspaces/workspace-manager.ts": true
+  },
+  "IR010DraftDocSectionPreserved": true,
+  "unexpectedNonoverlapMergeChanges": [],
+  "packageRefs": 58,
+  "packageHashMismatches": [],
+  "logs": {
+    "install": {
+      "exitCode": 0,
+      "sha256": "4bf5a883f5f361b56ab275646a69befdffc605110d5f00fa1c3e40e52c652e46",
+      "testSummary": []
+    },
+    "integration-prepare": {
+      "exitCode": 0,
+      "sha256": "2d8051174e322527c969b87668bafe88445634fd7f8d3800f4e889a3b63afccd",
+      "testSummary": []
+    },
+    "server-typecheck": {
+      "exitCode": 0,
+      "sha256": "02322399acaae52bf7c7d30f2622ceaa3dcfceeacb3b66375326b380c38c0800",
+      "testSummary": []
+    },
+    "workspace-rest": {
+      "exitCode": 0,
+      "sha256": "903db989cf6c8500afca211db369568e74e970372de7169bac92e0bb2f0a8659",
+      "testSummary": [
+        "Test Files  1 passed (1)",
+        "Tests  6 passed (6)"
+      ]
+    },
+    "workspace-unit": {
+      "exitCode": 0,
+      "sha256": "08b628006931a08b4481e66a9c8a9d0d622caa8b153d89b9dfe15c7cc3825bb4",
+      "testSummary": [
+        "Test Files  9 passed (9)",
+        "Tests  48 passed (48)"
+      ]
+    },
+    "adjacent-explorer": {
+      "exitCode": 0,
+      "sha256": "b4b0a8d2c58ded71763c68500ec6c6c8668e73607ae3bfee5cbfff311afb79b1",
+      "testSummary": [
+        "Test Files  2 passed (2)",
+        "Tests  12 passed (12)"
+      ]
+    }
+  },
+  "priorHistoryBytes": 88009,
+  "priorHistorySha256": "c5f1c36a89f161cf3cc5da82016b6f9b4750d20c07bd6ccb1d2cb7908a85bf3f",
+  "priorSourceReportSha256": "999711b76fec2e268335f6e3ab77c1540bb30fb1ea4427bf693a9a553445a743",
+  "successfulTestReportSha256": "6f860810ea5ee8c7ff75f564a962683f690e6ff5446ceebd56e1c0c26dc00ccd",
+  "diff": "6\t2\tautobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts",
+  "reviewerRuntimeExecution": "None; source/diff and fresh local evidence sufficient for pre-API gate",
+  "cleanup": "No reviewer runtime resources created"
+}

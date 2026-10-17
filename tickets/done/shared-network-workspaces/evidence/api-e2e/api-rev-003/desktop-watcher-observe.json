@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "63E82A998089CC78CC6976AF907DBE03",
+    "--script",
+    "() => ({observedAt:Date.now(),visibleBeforeDeliberateReload:document.querySelector(\".file-explorer-content\")?.innerText.includes(\"desktop-remote.txt\"),tree:document.querySelector(\".file-explorer-content\")?.innerText,limit:\"one storage-side write observation, not guaranteed notifications\"})"
+  ],
+  "rc": 0,
+  "stdout": "{\"schema_version\":\"1\",\"ok\":true,\"command\":\"run-script\",\"result\":{\"tab_id\":\"63E82A998089CC78CC6976AF907DBE03\",\"url\":\"file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat\",\"output_mode\":\"inline\",\"result\":{\"observedAt\":1791963436986,\"visibleBeforeDeliberateReload\":false,\"tree\":\"assets\\ndiagram one.png\\napi003-lock.txt\\nindex.html\",\"limit\":\"one storage-side write observation, not guaranteed notifications\"}}}\n",
+  "stderr": ""
+}

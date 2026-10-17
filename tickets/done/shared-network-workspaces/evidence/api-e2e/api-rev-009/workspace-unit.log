@@ -1,0 +1,358 @@
+
+ RUN  v4.0.18 /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/repo/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/repo/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reads registered roots without activation, temp cleanup, existence checks or registry writes
+Platform detection: Windows=false
+App root directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/repo/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/repo/autobyteus-server-ts
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates and registers a workspace
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-w15Ifp
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-w15Ifp.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates and registers a workspace
+Created and registered workspace ID: agent_ws_78053c3925293b74d71c5097a2a04a7167ec5a13d9b04dd9f3a08fb1e6dc340c
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates and registers a workspace
+Closing FileSystemWorkspace agent_ws_78053c3925293b74d71c5097a2a04a7167ec5a13d9b04dd9f3a08fb1e6dc340c
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace with the same config
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-vTVgkm
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-vTVgkm.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace with the same config
+Created and registered workspace ID: agent_ws_85efe95e22c154e6800c785af64e98c59258a32b1220c22ca0f61b34a79e3752
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace with the same config
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-vTVgkm
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-vTVgkm.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace with the same config
+Reusing registered workspace ID: agent_ws_85efe95e22c154e6800c785af64e98c59258a32b1220c22ca0f61b34a79e3752
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace with the same config
+Closing FileSystemWorkspace agent_ws_85efe95e22c154e6800c785af64e98c59258a32b1220c22ca0f61b34a79e3752
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace when equivalent root paths normalize to the same workspace ID
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-p8pn24
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-p8pn24.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace when equivalent root paths normalize to the same workspace ID
+Created and registered workspace ID: agent_ws_81ed8cc6da0b3487ec129a87f588b9223e6f67b8234e5a1e841c92df089b909d
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace when equivalent root paths normalize to the same workspace ID
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-p8pn24/.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-p8pn24.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace when equivalent root paths normalize to the same workspace ID
+Reusing registered workspace ID: agent_ws_81ed8cc6da0b3487ec129a87f588b9223e6f67b8234e5a1e841c92df089b909d
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace when equivalent root paths normalize to the same workspace ID
+Closing FileSystemWorkspace agent_ws_81ed8cc6da0b3487ec129a87f588b9223e6f67b8234e5a1e841c92df089b909d
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > routes the configured temp root to TempWorkspace instead of registering a filesystem workspace
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-jevzTX/.
+Resolved configured temp workspace root to TempWorkspace.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > routes the configured temp root to TempWorkspace instead of registering a filesystem workspace
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-jevzTX
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-jevzTX.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-jevzTX with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > routes the configured temp root to TempWorkspace instead of registering a filesystem workspace
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > decommissions persisted filesystem entries for the configured temp root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-BVqHme.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > decommissions persisted filesystem entries for the configured temp root
+Removed 1 persisted filesystem registry entry for the configured temp workspace root.
+Closing FileSystemWorkspace agent_ws_2c456f9d4ce574e2a7f99b050787d2677754369b06883c35c1abcc30b3728472
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > decommissions persisted filesystem entries for the configured temp root
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-BVqHme
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-BVqHme.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-BVqHme with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > decommissions persisted filesystem entries for the configured temp root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-O30ioQ.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > decommissions persisted filesystem entries for the configured temp root
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-eQh7tv
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-eQh7tv.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Created and registered workspace ID: agent_ws_b024f9f7b1b610afdb40d2501a70d0334763ee0e6cd21d3357871845a1f80708
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-iG5kku
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-iG5kku.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Created and registered workspace ID: agent_ws_a7f95f4e965c7015b78daf3b986be760cb501d763b49a5d79d511568f194d6b6
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Closing FileSystemWorkspace agent_ws_b024f9f7b1b610afdb40d2501a70d0334763ee0e6cd21d3357871845a1f80708
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Closing FileSystemWorkspace agent_ws_a7f95f4e965c7015b78daf3b986be760cb501d763b49a5d79d511568f194d6b6
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates the temp workspace on first call
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-z0AyW1
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-z0AyW1.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-z0AyW1 with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates the temp workspace on first call
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns cached temp workspace on subsequent calls
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-ssXea7
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-ssXea7.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-ssXea7 with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns cached temp workspace on subsequent calls
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-REkcKV
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-REkcKV.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Created and registered workspace ID: agent_ws_affbf5122969585462f556486dfa0b46627566291f53fc0dbe0314eba53faa86
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Closing FileSystemWorkspace agent_ws_affbf5122969585462f556486dfa0b46627566291f53fc0dbe0314eba53faa86
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-REkcKV
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-REkcKV.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Created and registered workspace ID: agent_ws_affbf5122969585462f556486dfa0b46627566291f53fc0dbe0314eba53faa86
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Closing FileSystemWorkspace agent_ws_affbf5122969585462f556486dfa0b46627566291f53fc0dbe0314eba53faa86
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > removes a registered workspace entry without deleting workspace files
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-kuj5WI
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-kuj5WI.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > removes a registered workspace entry without deleting workspace files
+Created and registered workspace ID: agent_ws_da896e4410024f0bb86a1a00c82b5a31203bd07499b8fe401eef5b5509460f16
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > removes a registered workspace entry without deleting workspace files
+Closing FileSystemWorkspace agent_ws_da896e4410024f0bb86a1a00c82b5a31203bd07499b8fe401eef5b5509460f16
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates the temp workspace from its stable workspace ID
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-FRLwMp
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-FRLwMp.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-FRLwMp with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates the temp workspace from its stable workspace ID
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > rebinds a cached skill workspace after generation publication and rejects a removed skill
+Creating on-demand SkillWorkspace for: writer
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > rebinds a cached skill workspace after generation publication and rejects a removed skill
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-18QyFP/g1.
+Initialized SkillWorkspace for skill 'writer' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-18QyFP/g1
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > rebinds a cached skill workspace after generation publication and rejects a removed skill
+Closing FileSystemWorkspace skill_ws_writer
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > rebinds a cached skill workspace after generation publication and rejects a removed skill
+Creating on-demand SkillWorkspace for: writer
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > rebinds a cached skill workspace after generation publication and rejects a removed skill
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-18QyFP/g2.
+Initialized SkillWorkspace for skill 'writer' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-ws-18QyFP/g2
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > rebinds a cached skill workspace after generation publication and rejects a removed skill
+Closing FileSystemWorkspace skill_ws_writer
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > rebinds a cached skill workspace after generation publication and rejects a removed skill
+Creating on-demand SkillWorkspace for: writer
+
+stderr | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > rebinds a cached skill workspace after generation publication and rejects a removed skill
+Failed to create skill workspace skill_ws_writer: Error: SkillWorkspace creation failed for 'writer': Error: Skill 'writer' not found
+
+ ✓ tests/unit/workspaces/workspace-manager.test.ts (14 tests) 39ms
+stdout | tests/unit/workspaces/workspace-registry-store.test.ts > WorkspaceRegistryStore > preserves existing registry entries when load and upsert overlap
+Platform detection: Windows=false
+App root directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/repo/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/repo/autobyteus-server-ts
+
+ ✓ tests/unit/workspaces/workspace-registry-store.test.ts (5 tests) 33ms
+ ✓ tests/unit/workspaces/shared-workspace-binding.test.ts (10 tests) 29ms
+stdout | tests/unit/workspaces/workspace-removal-guard.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/workspaces/workspace-removal-guard.test.ts (3 tests) 3ms
+stdout | tests/unit/workspaces/workspace-manager-skill-integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/workspaces/workspace-manager-skill-integration.test.ts > WorkspaceManager skill integration > creates and caches a SkillWorkspace for skill_ws_ IDs
+Creating on-demand SkillWorkspace for: MySkill
+
+stdout | tests/unit/workspaces/workspace-manager-skill-integration.test.ts > WorkspaceManager skill integration > throws for unknown workspace IDs
+Platform detection: Windows=false
+App root directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/repo/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/repo/autobyteus-server-ts
+
+ ✓ tests/unit/workspaces/workspace-manager-skill-integration.test.ts (3 tests) 5ms
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > uses the fixed TEMP_WORKSPACE_ID
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-temp-ws-joiH8r.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-temp-ws-joiH8r with fixed ID 'temp_ws_default'
+
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > returns a friendly name
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-temp-ws-qDgclO.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-temp-ws-qDgclO with fixed ID 'temp_ws_default'
+
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > inherits from FileSystemWorkspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-temp-ws-Yaw2rm.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-temp-ws-Yaw2rm with fixed ID 'temp_ws_default'
+
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > stores rootPath in config
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-temp-ws-Arh8cP.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-temp-ws-Arh8cP with fixed ID 'temp_ws_default'
+
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > initializes metadata only and acquires file explorer explicitly
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-temp-ws-fHIpiy.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/tmp/autobyteus-temp-ws-fHIpiy with fixed ID 'temp_ws_default'
+
+stderr | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > initializes metadata only and acquires file explorer explicitly
+FileSystemWorkspace.initialize() is metadata-only for temp_ws_default; file explorer acquisition is explicit.
+
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > initializes metadata only and acquires file explorer explicitly
+Created WorkspaceFileExplorer for temp_ws_default (unit-test).
+
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > initializes metadata only and acquires file explorer explicitly
+Closing FileSystemWorkspace temp_ws_default
+
+ ✓ tests/unit/workspaces/temp-workspace.test.ts (5 tests) 5ms
+stdout | tests/unit/workspaces/filesystem-workspace-id.test.ts > FileSystemWorkspace ID > derives a deterministic workspaceId from the normalized root path
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace.
+
+stdout | tests/unit/workspaces/filesystem-workspace-id.test.ts > FileSystemWorkspace ID > canonicalizes the root path before deriving the workspaceId
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace.
+
+stdout | tests/unit/workspaces/filesystem-workspace-id.test.ts > FileSystemWorkspace ID > accepts an explicit workspaceId when provided
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace.
+
+ ✓ tests/unit/workspaces/filesystem-workspace-id.test.ts (3 tests) 3ms
+stdout | tests/unit/workspaces/skill-workspace.test.ts > SkillWorkspace > creates a workspace for an existing skill
+Created metadata-only FileSystemWorkspace at /opt/skills/TestSkill.
+Initialized SkillWorkspace for skill 'TestSkill' at /opt/skills/TestSkill
+
+ ✓ tests/unit/workspaces/skill-workspace.test.ts (2 tests) 4ms
+ ✓ tests/unit/workspaces/workspace-path-utils.test.ts (3 tests) 2ms
+
+ Test Files  9 passed (9)
+      Tests  48 passed (48)
+   Start at  18:44:14
+   Duration  8.07s (transform 2.87s, setup 94ms, import 6.54s, tests 124ms, environment 1ms)
+

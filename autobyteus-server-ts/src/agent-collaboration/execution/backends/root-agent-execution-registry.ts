@@ -11,7 +11,7 @@ import type { RootedAgentMemoryLocator } from "../services/rooted-agent-memory-l
 import { createCollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../domain/root-execution-identity.js";
 import { TaskAgentDurabilityEventGate } from "../services/task-agent-durability-event-gate.js";
 import type { FlatTeamExecutionCallbacks } from "../../../agent-team-execution/local/flat-team-execution-callbacks.js";
-import { createTaskExecutionPreparation, type TaskExecutionPreparationOperation, type PreparedTaskExecution } from "../../../agent-team-execution/domain/prepared-task-execution.js";
+import { createTaskExecutionPreparation, type TaskExecutionPreparationOperation } from "../../../agent-team-execution/domain/prepared-task-execution.js";
 import { TaskExecutionTeardownIndeterminateError } from "../task/task-delegation-command.js";
 import { isRunningTaskExecutionStatus } from "../task/task-execution-running-work.js";
 import { createCollaborationAgentStatusSnapshot, type CollaborationAgentStatusSnapshot } from "../domain/collaboration-agent-execution-event.js";
@@ -209,14 +209,14 @@ export class RootAgentExecutionRegistry {
     const handle = this.active.get(agentRunId);
     return handle
       ? handle.reserveInput(message, options)
-      : Promise.resolve({ reserved: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: `Root-hosted AgentRun '${agentRunId}' is not active.` });
+      : Promise.resolve({ reserved: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: `The agent '${agentRunId}' is not running, so the message was not sent.` });
   }
   async executeCommand(agentRunId: string, command: TeamMemberExecutionCommand): Promise<AgentOperationResult> {
     const handle = this.active.get(agentRunId);
-    if (!handle) return { accepted: false, code: "RUN_NOT_FOUND", message: `Root-hosted AgentRun '${agentRunId}' is not active.` };
+    if (!handle) return { accepted: false, code: "RUN_NOT_FOUND", message: `The agent '${agentRunId}' is not running, so the message was not sent.` };
     // AR-005: never let approve/interrupt re-activate a shut-down task run through the handle.
     if (command.kind !== "post_message" && this.taskAgentRunIds.has(agentRunId) && !this.isTaskLive(agentRunId)) {
-      return { accepted: false, code: "RUN_NOT_ACTIVE", message: `Task AgentRun '${agentRunId}' is shut down.` };
+      return { accepted: false, code: "RUN_NOT_ACTIVE", message: `The task agent '${agentRunId}' has stopped, so the message was not sent.` };
     }
     switch (command.kind) {
       case "post_message": return handle.postMessage(command.message);
@@ -237,7 +237,7 @@ export class RootAgentExecutionRegistry {
       const created = await this.createHandle(sourceNode, "restore", this.options.callbacks);
       if (!this.materializationOpen || this.active.has(sourceNode.agentRunId)) {
         created.dispose();
-        throw new Error(`Task AgentRun '${sourceNode.agentRunId}' could not be restored.`);
+        throw new Error(`The task agent ${sourceNode.agentRunId} could not continue with its conversation.`);
       }
       this.active.set(sourceNode.agentRunId, created);
       this.taskAgentRunIds.add(sourceNode.agentRunId);

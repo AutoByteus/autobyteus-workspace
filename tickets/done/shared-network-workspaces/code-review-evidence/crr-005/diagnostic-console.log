@@ -1,0 +1,6 @@
+clone ab-nfs-crr005-f046d4e6
+install exact guest dependencies
+diagnostic original
+diagnostic diagnostic_disabled
+diagnostic restored
+{"result": "Diagnostic Complete, not product Pass", "cleanup": true}

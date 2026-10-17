@@ -1,0 +1,283 @@
+name: AutoByteus NFS Release
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Existing repository tag (vX.Y.Z or beta); no separate version stream'
+        required: true
+        type: string
+      candidate_run_id:
+        description: 'Prior build-only run containing the exact qualified engine candidate (required for publish)'
+        required: false
+        type: string
+      publish:
+        description: 'Publish only after current-source qualification and explicit user/release approval'
+        default: false
+        type: boolean
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: nfs-${{ inputs.release_tag || github.ref_name }}
+  cancel-in-progress: false
+jobs:
+  prepare:
+    runs-on: ubuntu-24.04
+    outputs:
+      tag: ${{ steps.meta.outputs.tag }}
+      publish: ${{ steps.meta.outputs.publish }}
+      base: ${{ steps.meta.outputs.base }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.release_tag || github.ref }}
+      - name: Check release job gates without publishing
+        run: python3 -m unittest scripts/tests/test_nfs_release_workflow.py -v
+      - id: meta
+        env:
+          TAG: ${{ inputs.release_tag || github.ref_name }}
+          CANDIDATE_RUN: ${{ inputs.candidate_run_id }}
+          WANT_PUBLISH: ${{ github.event_name == 'push' || inputs.publish }}
+        run: |
+          set -euo pipefail
+          [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]
+          python3 -c 'import json,sys; assert json.load(open("autobyteus-web/package.json"))["version"] == sys.argv[1][1:]' "$TAG"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "base=$(jq -r .ubuntuBaseImage autobyteus-nfs/packaging/release-lock.json)" >> "$GITHUB_OUTPUT"
+          if [[ "$WANT_PUBLISH" == true ]]; then
+            [[ "$CANDIDATE_RUN" =~ ^[0-9]+$ ]] # Never rebuild qualified engine bytes during publication
+            python3 autobyteus-nfs/packaging/release.py --check-publish
+          fi
+          echo "publish=$WANT_PUBLISH" >> "$GITHUB_OUTPUT"
+  engine-packages:
+    needs: prepare
+    if: needs.prepare.outputs.publish != 'true'
+    strategy:
+      matrix:
+        include:
+          - {runner: ubuntu-24.04, arch: amd64}
+          - {runner: ubuntu-24.04-arm, arch: arm64}
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.tag }}
+      - name: Build exact distro recipe in the pinned disposable builder
+        env:
+          BASE: ${{ needs.prepare.outputs.base }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/engine-output"
+          docker run --rm -e BASE="$BASE" \
+            -v "$PWD/autobyteus-nfs/packaging/engine:/recipe:ro" \
+            -v "$RUNNER_TEMP/engine-output:/output" "$BASE" bash -euc '
+              sed -i "s/^Types: deb$/Types: deb deb-src/" /etc/apt/sources.list.d/ubuntu.sources
+              apt-get update
+              DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends build-essential devscripts fakeroot curl ca-certificates lsb-release
+              DEBIAN_FRONTEND=noninteractive apt-get build-dep -y nfs-ganesha=4.3-8ubuntu1
+              useradd -m -u 1001 builder
+              install -d -o builder -g builder /work
+              su builder -s /bin/bash -c "python3 /recipe/build.py --work /work/source-build --output /work/output --base $BASE"
+              cp -a /work/output/. /output/
+            '
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nfs-engine-package-${{ matrix.arch }}
+          path: ${{ runner.temp }}/engine-output/
+  engine-inputs:
+    needs: [prepare, engine-packages]
+    # Only publication may skip the rebuild; failures/cancellation never qualify.
+    if: ${{ !cancelled() && needs.prepare.result == 'success' && ((needs.prepare.outputs.publish != 'true' && needs.engine-packages.result == 'success') || (needs.prepare.outputs.publish == 'true' && needs.engine-packages.result == 'skipped')) }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.tag }}
+      - uses: actions/download-artifact@v4
+        if: needs.prepare.outputs.publish != 'true'
+        with:
+          pattern: nfs-engine-package-*
+          path: engine-parts
+      - name: Assemble once per candidate
+        if: needs.prepare.outputs.publish != 'true'
+        run: python3 autobyteus-nfs/packaging/engine/manifest.py merge --inputs engine-parts/nfs-engine-package-amd64 engine-parts/nfs-engine-package-arm64 --output engine-candidate
+      - uses: actions/download-artifact@v4
+        if: needs.prepare.outputs.publish == 'true'
+        with:
+          name: nfs-engine-candidate
+          path: engine-candidate
+          run-id: ${{ inputs.candidate_run_id }}
+          github-token: ${{ github.token }}
+      - name: Verify candidate identities (publication never substitutes a rebuild)
+        env:
+          PUBLISH: ${{ needs.prepare.outputs.publish }}
+        run: |
+          python3 autobyteus-nfs/packaging/engine/manifest.py verify --directory engine-candidate
+          if [[ "$PUBLISH" == true ]]; then
+            python3 -c 'import json; assert json.load(open("engine-candidate/engine-manifest.json")) == json.load(open("autobyteus-nfs/packaging/release-lock.json"))["engine"]'
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nfs-engine-candidate
+          path: engine-candidate/
+  engine:
+    needs: [prepare, engine-inputs]
+    # Explicit status checks carry the legitimate skipped ancestor through needs.
+    if: ${{ !cancelled() && needs.prepare.result == 'success' && needs.engine-inputs.result == 'success' }}
+    runs-on: ubuntu-24.04
+    permissions:
+      packages: write
+      contents: read
+    outputs:
+      image: ${{ steps.identity.outputs.image }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.tag }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: nfs-engine-candidate
+          path: engine-candidate
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        if: needs.prepare.outputs.publish == 'true'
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: name
+        run: echo "image=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/autobyteus-nfs" >> "$GITHUB_OUTPUT"
+      - id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: autobyteus-nfs/packaging/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: ${{ needs.prepare.outputs.publish == 'true' }}
+          outputs: ${{ needs.prepare.outputs.publish != 'true' && 'type=oci,dest=/tmp/autobyteus-nfs-engine.tar' || '' }}
+          tags: ${{ steps.name.outputs.image }}:${{ needs.prepare.outputs.tag }}
+          build-args: |
+            UBUNTU_BASE=${{ needs.prepare.outputs.base }}
+      - id: identity
+        run: echo 'image=${{ steps.name.outputs.image }}@${{ steps.build.outputs.digest }}' >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v4
+        if: needs.prepare.outputs.publish != 'true'
+        with:
+          name: nfs-engine-build-only
+          path: /tmp/autobyteus-nfs-engine.tar
+  binaries:
+    needs: [prepare, engine-inputs, engine]
+    if: ${{ !cancelled() && needs.prepare.result == 'success' && needs.engine-inputs.result == 'success' && needs.engine.result == 'success' }}
+    strategy:
+      matrix:
+        include:
+          - {runner: macos-15, os: darwin, arch: arm64}
+          - {runner: macos-15-intel, os: darwin, arch: amd64}
+          - {runner: ubuntu-24.04, os: linux, arch: amd64}
+          - {runner: ubuntu-24.04-arm, os: linux, arch: arm64}
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.tag }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: nfs-engine-candidate
+          path: engine-candidate
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27.2'
+          cache: false
+      - name: Unit checks, qualified metadata and binary smoke
+        env:
+          TAG: ${{ needs.prepare.outputs.tag }}
+          ENGINE: ${{ needs.engine.outputs.image }}
+        run: |
+          set -euo pipefail
+          python3 autobyteus-nfs/packaging/release.py --tag "$TAG" --engine-image "$ENGINE" --engine-manifest engine-candidate/engine-manifest.json --engine-artifacts engine-candidate --target ${{ matrix.os }}-${{ matrix.arch }} --output autobyteus-nfs/cmd/autobyteus-nfs/release.json
+          cd autobyteus-nfs
+          go test -race ./...
+          go vet ./...
+          mkdir -p out
+          CGO_ENABLED=0 go build -trimpath -o out/autobyteus-nfs ./cmd/autobyteus-nfs
+          python3 -c 'import os; assert os.path.getsize("out/autobyteus-nfs") <= 100*1024*1024'
+          test "$(out/autobyteus-nfs version)" = "$TAG"
+          cp cmd/autobyteus-nfs/release.json LICENSE THIRD_PARTY_NOTICES out/
+          cat "$(go env GOROOT)/LICENSE" >> out/THIRD_PARTY_NOTICES
+          if [[ "${{ matrix.os }}" == linux ]]; then cat ../engine-candidate/${{ matrix.arch }}/COPYRIGHT >> out/THIRD_PARTY_NOTICES; fi
+      - name: Sign and notarize Mac command-line binary for publication
+        if: matrix.os == 'darwin' && needs.prepare.outputs.publish == 'true'
+        env:
+          CERTIFICATE: ${{ secrets.NFS_MAC_CERTIFICATE_P12_BASE64 }}
+          PASSWORD: ${{ secrets.NFS_MAC_CERTIFICATE_PASSWORD }}
+          IDENTITY: ${{ secrets.NFS_MAC_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          set -euo pipefail
+          test -n "$CERTIFICATE" && test -n "$IDENTITY" && test -n "$APPLE_ID" && test -n "$APPLE_APP_SPECIFIC_PASSWORD" && test -n "$APPLE_TEAM_ID"
+          keychain="$RUNNER_TEMP/nfs-signing.keychain-db"
+          cert="$RUNNER_TEMP/nfs-certificate.p12"
+          trap 'security delete-keychain "$keychain" || true; rm -f "$cert"' EXIT
+          printf '%s' "$CERTIFICATE" | base64 --decode > "$cert"
+          security create-keychain -p "$PASSWORD" "$keychain"
+          security unlock-keychain -p "$PASSWORD" "$keychain"
+          security import "$cert" -k "$keychain" -P "$PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$PASSWORD" "$keychain"
+          codesign --force --timestamp --options runtime --keychain "$keychain" --sign "$IDENTITY" autobyteus-nfs/out/autobyteus-nfs
+          codesign --verify --strict --verbose=2 autobyteus-nfs/out/autobyteus-nfs
+          ditto -c -k --keepParent autobyteus-nfs/out/autobyteus-nfs "$RUNNER_TEMP/nfs-notarize.zip"
+          xcrun notarytool submit "$RUNNER_TEMP/nfs-notarize.zip" --apple-id "$APPLE_ID" --password "$APPLE_APP_SPECIFIC_PASSWORD" --team-id "$APPLE_TEAM_ID" --wait
+      - name: Package versioned archive
+        env:
+          TAG: ${{ needs.prepare.outputs.tag }}
+        run: |
+          mkdir -p artifacts
+          tar -czf "artifacts/autobyteus-nfs-${TAG#v}-${{ matrix.os }}-${{ matrix.arch }}.tar.gz" -C autobyteus-nfs/out LICENSE THIRD_PARTY_NOTICES autobyteus-nfs release.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nfs-${{ matrix.os }}-${{ matrix.arch }}
+          path: artifacts/*
+  publish:
+    needs: [prepare, engine-inputs, engine, binaries]
+    if: ${{ !cancelled() && needs.prepare.outputs.publish == 'true' && needs.prepare.result == 'success' && needs.engine-inputs.result == 'success' && needs.engine.result == 'success' && needs.binaries.result == 'success' }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.tag }}
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: nfs-*-*64
+          merge-multiple: true
+          path: artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          name: nfs-engine-candidate
+          path: engine-candidate
+      - name: Publish only qualified assets to the existing repository release
+        env:
+          TAG: ${{ needs.prepare.outputs.tag }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 autobyteus-nfs/packaging/release.py --check-publish
+          for target in darwin-arm64 darwin-amd64 linux-arm64 linux-amd64; do
+            if ! jq -e --arg target "$target" '.qualifiedTargets | index($target) != null' autobyteus-nfs/packaging/release-lock.json >/dev/null; then
+              rm -f "artifacts/autobyteus-nfs-${TAG#v}-${target}.tar.gz"
+            fi
+          done
+          sed "s/__RELEASE_TAG__/$TAG/g" scripts/public/nfs/install.sh > artifacts/autobyteus-nfs-install.sh
+          python3 autobyteus-nfs/packaging/release.py --tag "$TAG" --engine-image '${{ needs.engine.outputs.image }}' --engine-manifest engine-candidate/engine-manifest.json --output artifacts/autobyteus-nfs-manifest.json
+          cp engine-candidate/*/autobyteus-nfs-ganesha-source-*.tar.gz artifacts/
+          cp engine-candidate/*/engine-build-*.txt artifacts/
+          cp engine-candidate/engine-manifest.json artifacts/autobyteus-nfs-engine-manifest.json
+          (cd artifacts && sha256sum *.tar.gz > SHA256SUMS-nfs)
+          gh release view "$TAG" >/dev/null
+          gh release upload "$TAG" artifacts/* --clobber

@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-009/run-reviewer-checks.py", line 22, in <module>
+    with tarfile.open(archive) as f: f.extractall(S,filter='data')
+TypeError: extractall() got an unexpected keyword argument 'filter'

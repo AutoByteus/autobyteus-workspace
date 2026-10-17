@@ -1,0 +1,6 @@
+lrwxr-xr-x  1 admin  admin  24 Oct 13 12:33 /opt/homebrew/opt/libtirpc -> ../Cellar/libtirpc/1.3.8
+
+PASS native nonroot pinned UNFS3 server uses chosen APFS folder without Docker or OS nfsd changes
+FAIL native Mac mounts its selected APFS source through actual NFSv3 before Linux-client negotiation RuntimeError("owned VM command failed ('exec', 'ab-sf-fr043-macos', '/usr/bin/sudo'): mount_nfs: can't mount /Users/admin/.ab-sf-native-source-ab-sf-fr047-094d2e1c from 192.168.64.2 onto /Volumes/autobyteus-shared: RPC struct is bad\nmount: /Volumes/autobyteus-shared failed with 72\n")
+PROBE FAILURE RuntimeError("owned VM command failed ('exec', 'ab-sf-fr043-macos', '/usr/bin/sudo'): mount_nfs: can't mount /Users/admin/.ab-sf-native-source-ab-sf-fr047-094d2e1c from 192.168.64.2 onto /Volumes/autobyteus-shared: RPC struct is bad\nmount: /Volumes/autobyteus-shared failed with 72\n")
+{"run": "ab-sf-fr047-094d2e1c", "passes": 1, "fatal": "RuntimeError(\"owned VM command failed ('exec', 'ab-sf-fr043-macos', '/usr/bin/sudo'): mount_nfs: can't mount /Users/admin/.ab-sf-native-source-ab-sf-fr047-094d2e1c from 192.168.64.2 onto /Volumes/autobyteus-shared: RPC struct is bad\\nmount: /Volumes/autobyteus-shared failed with 72\\n\")"}

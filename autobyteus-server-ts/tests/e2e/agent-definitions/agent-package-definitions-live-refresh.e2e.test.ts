@@ -727,7 +727,7 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     record.deletedDelegation = refused;
     // The existing refusal for an address that is not available (delegate_task's documented `delegated: false`).
     expect(JSON.parse(refused.text)).toEqual({ delegated: false,
-      message: "'/apar_doomed' is not a mounted Agent or Agent Team, a collaborator or an available agent of this run." });
+      message: "'/apar_doomed' is not the address of an available agent or agent team. If you have list_available_agents, it shows the addresses you can use." });
     evidence.dcf007 = record;
   }, 240_000);
 

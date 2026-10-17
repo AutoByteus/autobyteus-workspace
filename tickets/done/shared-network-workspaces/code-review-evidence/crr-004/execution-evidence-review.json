@@ -1,0 +1,273 @@
+{
+  "derivedReviewNotNewVMExecution": true,
+  "runs": [
+    {
+      "name": "baseline-trace",
+      "evidence": "implementation-evidence/ir-004/baseline-trace-result.json",
+      "sha256": "21433ebbba736e5c166764d1e997cdd6b6976789830efedbc5553b11dbdbceae",
+      "result": "Fail",
+      "createRC": 1,
+      "createSeconds": 25.445,
+      "createArgv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-ir004-2b38faee",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "umask 077; exec /Users/admin/ab-nfs-ir004-2b38faee-binary create --source /Users/admin/ab-nfs-ir004-2b38faee-source --endpoint 192.168.128.2 --allow 192.168.128.2,192.168.128.1 --nodes none --yes --json"
+      ],
+      "binary": {
+        "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/baseline-nfs",
+        "sha256": "813c0853261d4a13e6a9346d3f678066836c7c82ef8e5328b2448c495cd58abe",
+        "sourceHead": "4ed9a12720e04daa2fad0c5d3b8d20b5ceb62c79",
+        "productionSourceHash": "c80ec19ffc7e496687b341738796f8c7c915af829209081779e43cffc88f5a85"
+      },
+      "cleanup": {
+        "cloneAbsent": true,
+        "cacheRetained": true
+      },
+      "createStdout": ""
+    },
+    {
+      "name": "fixed-trace",
+      "evidence": "implementation-evidence/ir-004/fixed-trace-result.json",
+      "sha256": "fdcfbe50316d263a54c3629c837724aa3695a3ee55d9579ccbca66bbecb6c09c",
+      "result": "Pass",
+      "createRC": 0,
+      "createSeconds": 12.438,
+      "createArgv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-ir004-52b2643e",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "umask 077; exec /Users/admin/ab-nfs-ir004-52b2643e-binary create --source /Users/admin/ab-nfs-ir004-52b2643e-source --endpoint 192.168.128.2 --allow 192.168.128.2,192.168.128.1 --nodes none --yes --json"
+      ],
+      "binary": {
+        "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/fixed-nfs",
+        "sha256": "6cb351bbcdd324b727ccc74967cfdb3bb923ae03d8e3ba133c008c1371efa89d",
+        "sourceHead": "4ed9a12720e04daa2fad0c5d3b8d20b5ceb62c79",
+        "productionSourceHash": "e217e5afdb7973751dbfb69523fc951e3802e37a301f8f8ae76132659388e69a",
+        "uncommittedDelta": true
+      },
+      "cleanup": {
+        "cloneAbsent": true,
+        "cacheRetained": true
+      },
+      "createStdout": "{\n  \"connection\": {\n    \"storageId\": \"90dcee4c-3bfd-41b7-835a-94803939453c\",\n    \"endpoint\": \"192.168.128.2\",\n    \"export\": \"/Users/admin/ab-nfs-ir004-52b2643e-source\",\n    \"protocol\": \"3\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\"\n  },\n  \"status\": {\n    \"storageId\": \"90dcee4c-3bfd-41b7-835a-94803939453c\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\",\n    \"hostReady\": true,\n    \"nodes\": {},\n    \"limitation\": \"Hard NFS checks may stall; no outage deadline or local substitute\"\n  }\n}\n"
+    },
+    {
+      "name": "fixed-plain",
+      "evidence": "implementation-evidence/ir-004/fixed-plain-result.json",
+      "sha256": "722550672317a0c5c6e913328488708cd72de2b44fb0c28b7ff46dbfa7dfd75a",
+      "result": "Fail",
+      "createRC": 1,
+      "createSeconds": 10.915,
+      "createArgv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-ir004-0e6d1d39",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "umask 077; exec /Users/admin/ab-nfs-ir004-0e6d1d39-binary create --source /Users/admin/ab-nfs-ir004-0e6d1d39-source --endpoint 192.168.128.2 --allow 192.168.128.2,192.168.128.1 --nodes none --yes --json"
+      ],
+      "binary": {
+        "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/fixed-nfs",
+        "sha256": "6cb351bbcdd324b727ccc74967cfdb3bb923ae03d8e3ba133c008c1371efa89d",
+        "sourceHead": "4ed9a12720e04daa2fad0c5d3b8d20b5ceb62c79",
+        "productionSourceHash": "e217e5afdb7973751dbfb69523fc951e3802e37a301f8f8ae76132659388e69a",
+        "uncommittedDelta": true
+      },
+      "cleanup": {
+        "cloneAbsent": true,
+        "cacheRetained": true
+      },
+      "createStdout": ""
+    },
+    {
+      "name": "final-trace",
+      "evidence": "implementation-evidence/ir-004/final-trace-result.json",
+      "sha256": "9209233110fb54e29dbad14d0a799a9d3c0afc02685147c3eb1c8d038f6cc695",
+      "result": "Fail",
+      "createRC": 1,
+      "createSeconds": 14.454,
+      "createArgv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-ir004-81e6464a",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "umask 077; exec /Users/admin/ab-nfs-ir004-81e6464a-binary create --source /Users/admin/ab-nfs-ir004-81e6464a-source --endpoint 192.168.128.2 --allow 192.168.128.2,192.168.128.1 --nodes none --yes --json"
+      ],
+      "binary": {
+        "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/final-nfs",
+        "sha256": "bc37b1dae01cb4c7060b6710a85dfa4b29f100bc5900583bf26467cf662fa0ca",
+        "sourceHead": "4ed9a12720e04daa2fad0c5d3b8d20b5ceb62c79",
+        "productionSourceHash": "4a375b37075c4604be59033428de0af7b38a518e74d6c22cc58d5d5c94725c90",
+        "uncommittedDelta": true
+      },
+      "cleanup": {
+        "cloneAbsent": true,
+        "cacheRetained": true
+      },
+      "createStdout": ""
+    },
+    {
+      "name": "transport-trace",
+      "evidence": "implementation-evidence/ir-004/transport-trace-result.json",
+      "sha256": "2e56200a129cd17d1cc81efa6bcea8daff8f7e7f38c790418cdf305a96401288",
+      "result": "Fail",
+      "createRC": 1,
+      "createSeconds": 12.948,
+      "createArgv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-ir004-d751336f",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "umask 077; exec /Users/admin/ab-nfs-ir004-d751336f-binary create --source /Users/admin/ab-nfs-ir004-d751336f-source --endpoint 192.168.128.2 --allow 192.168.128.2,192.168.128.1 --nodes none --yes --json"
+      ],
+      "binary": {
+        "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/transport-nfs",
+        "sha256": "22f651321834f5b08452149636463a8880b13dc436133055fcb389e2f60ef561",
+        "sourceHead": "4ed9a12720e04daa2fad0c5d3b8d20b5ceb62c79",
+        "productionSourceHash": "b28254c58bd0f5e77b007dda475880731e4e2faf2214c8e02b4799ed444c459e",
+        "uncommittedDelta": true
+      },
+      "cleanup": {
+        "cloneAbsent": true,
+        "cacheRetained": true
+      },
+      "createStdout": ""
+    },
+    {
+      "name": "ports-trace",
+      "evidence": "implementation-evidence/ir-004/ports-trace-result.json",
+      "sha256": "a2e0742eb60ef062af85e81cdc29aadadf32fc4d03f0be68829e66027e6ad0eb",
+      "result": "Fail",
+      "createRC": 0,
+      "createSeconds": 16.975,
+      "createArgv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-ir004-f5c5581c",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "umask 077; exec /Users/admin/ab-nfs-ir004-f5c5581c-binary create --source /Users/admin/ab-nfs-ir004-f5c5581c-source --endpoint 192.168.128.2 --allow 192.168.128.2,192.168.128.1 --nodes none --yes --json"
+      ],
+      "binary": {
+        "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/ports-nfs",
+        "sha256": "e8c88d75a1ce43fcffd78f831dbfde38e8f4c11af06274251b600ea7bd5535c1",
+        "sourceHead": "4ed9a12720e04daa2fad0c5d3b8d20b5ceb62c79",
+        "productionSourceHash": "497efd6abb0c2cfa4c740a87f005c529cbf026a6fa218b3acd345826f4a923da",
+        "uncommittedDelta": true
+      },
+      "cleanup": {
+        "cloneAbsent": true,
+        "cacheRetained": true
+      },
+      "createStdout": "{\n  \"connection\": {\n    \"storageId\": \"a39d8107-3620-420b-9126-9d45aeb4f5b7\",\n    \"endpoint\": \"192.168.128.2\",\n    \"export\": \"/Users/admin/ab-nfs-ir004-f5c5581c-source\",\n    \"protocol\": \"3\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\"\n  },\n  \"status\": {\n    \"storageId\": \"a39d8107-3620-420b-9126-9d45aeb4f5b7\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\",\n    \"hostReady\": true,\n    \"nodes\": {},\n    \"limitation\": \"Hard NFS checks may stall; no outage deadline or local substitute\"\n  }\n}\n"
+    },
+    {
+      "name": "ports-plain",
+      "evidence": "implementation-evidence/ir-004/ports-plain-result.json",
+      "sha256": "3b91a474bb8968306d57594725607f8a6551ae1f6cc59f7bf3e32747d746ccf0",
+      "result": "Pass",
+      "createRC": 0,
+      "createSeconds": 13.406,
+      "createArgv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-ir004-b4ae4a95",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "umask 077; exec /Users/admin/ab-nfs-ir004-b4ae4a95-binary create --source /Users/admin/ab-nfs-ir004-b4ae4a95-source --endpoint 192.168.128.2 --allow 192.168.128.2,192.168.128.1 --nodes none --yes --json"
+      ],
+      "binary": {
+        "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/ports-nfs",
+        "sha256": "e8c88d75a1ce43fcffd78f831dbfde38e8f4c11af06274251b600ea7bd5535c1",
+        "sourceHead": "4ed9a12720e04daa2fad0c5d3b8d20b5ceb62c79",
+        "productionSourceHash": "497efd6abb0c2cfa4c740a87f005c529cbf026a6fa218b3acd345826f4a923da",
+        "uncommittedDelta": true
+      },
+      "cleanup": {
+        "cloneAbsent": true,
+        "cacheRetained": true
+      },
+      "createStdout": "{\n  \"connection\": {\n    \"storageId\": \"2f3799de-00a4-42a7-b1d0-0c6838746e2b\",\n    \"endpoint\": \"192.168.128.2\",\n    \"export\": \"/Users/admin/ab-nfs-ir004-b4ae4a95-source\",\n    \"protocol\": \"3\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\"\n  },\n  \"status\": {\n    \"storageId\": \"2f3799de-00a4-42a7-b1d0-0c6838746e2b\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\",\n    \"hostReady\": true,\n    \"nodes\": {},\n    \"limitation\": \"Hard NFS checks may stall; no outage deadline or local substitute\"\n  }\n}\n",
+      "sourceIdentityUnchanged": true,
+      "originalMountedHash": "ef8d07df7c211955b4516cc18893f96f71594a340d0603b2f771d9cf13ec748b",
+      "hostReady": true,
+      "jobRunning": true,
+      "privateOwnerModesVerified": true,
+      "noReconnectInvocation": true
+    },
+    {
+      "name": "ports-confirm-trace",
+      "evidence": "implementation-evidence/ir-004/ports-confirm-trace-result.json",
+      "sha256": "d820c41083032acb83d3ee57a8c34f24ecb50902570af1b01723c18df5275b8a",
+      "result": "Pass",
+      "createRC": 0,
+      "createSeconds": 11.495,
+      "createArgv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-ir004-90fab912",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "umask 077; exec /Users/admin/ab-nfs-ir004-90fab912-binary create --source /Users/admin/ab-nfs-ir004-90fab912-source --endpoint 192.168.128.2 --allow 192.168.128.2,192.168.128.1 --nodes none --yes --json"
+      ],
+      "binary": {
+        "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir004-y8cmfo2k/ports-nfs",
+        "sha256": "e8c88d75a1ce43fcffd78f831dbfde38e8f4c11af06274251b600ea7bd5535c1",
+        "sourceHead": "4ed9a12720e04daa2fad0c5d3b8d20b5ceb62c79",
+        "productionSourceHash": "497efd6abb0c2cfa4c740a87f005c529cbf026a6fa218b3acd345826f4a923da",
+        "uncommittedDelta": true
+      },
+      "cleanup": {
+        "cloneAbsent": true,
+        "cacheRetained": true
+      },
+      "createStdout": "{\n  \"connection\": {\n    \"storageId\": \"6aa69fc6-d58d-4f02-8da1-bc31caa5bdf0\",\n    \"endpoint\": \"192.168.128.2\",\n    \"export\": \"/Users/admin/ab-nfs-ir004-90fab912-source\",\n    \"protocol\": \"3\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\"\n  },\n  \"status\": {\n    \"storageId\": \"6aa69fc6-d58d-4f02-8da1-bc31caa5bdf0\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\",\n    \"hostReady\": true,\n    \"nodes\": {},\n    \"limitation\": \"Hard NFS checks may stall; no outage deadline or local substitute\"\n  }\n}\n",
+      "sourceIdentityUnchanged": true,
+      "originalMountedHash": "ef8d07df7c211955b4516cc18893f96f71594a340d0603b2f771d9cf13ec748b",
+      "hostReady": true,
+      "jobRunning": true,
+      "privateOwnerModesVerified": true,
+      "noReconnectInvocation": true
+    }
+  ],
+  "limits": "Raw reports authoritative; ports-trace overall Fail retained though create passed. Historical final-trace is rejected candidate2, not accepted source. Native VM is not physical/full matrix proof."
+}

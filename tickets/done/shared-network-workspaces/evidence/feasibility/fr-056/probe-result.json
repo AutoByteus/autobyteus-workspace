@@ -1,0 +1,24 @@
+{
+  "scope": "Grok native private-plugin discovery, no model or mounted filesystem; not integrated ACP proof",
+  "commands": [
+    {
+      "argv": [
+        "/Users/normy/.grok/bin/grok",
+        "--plugin-dir",
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr056-discovery-8c1_mqkq/plugin",
+        "--cwd",
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr056-discovery-8c1_mqkq/project",
+        "inspect",
+        "--json"
+      ],
+      "rc": 2,
+      "stdout": "",
+      "stderr": "error: unexpected argument '--plugin-dir' found\n\n  tip: to pass '--plugin-dir' as a value, use '-- --plugin-dir'\n\nUsage: grok [OPTIONS] [PROMPT] [COMMAND]\n\nFor more information, try '--help'.\n"
+    }
+  ],
+  "cases": [],
+  "fatal": "AssertionError(\"error: unexpected argument '--plugin-dir' found\\n\\n  tip: to pass '--plugin-dir' as a value, use '-- --plugin-dir'\\n\\nUsage: grok [OPTIONS] [PROMPT] [COMMAND]\\n\\nFor more information, try '--help'.\\n\")",
+  "cleanup": {
+    "ownedScratchRemoved": true
+  }
+}

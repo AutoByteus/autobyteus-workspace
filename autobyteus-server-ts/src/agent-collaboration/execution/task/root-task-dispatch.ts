@@ -15,7 +15,7 @@ import {
  */
 export type TaskExecutionJoin =
   | (Readonly<{ role: "assigned"; assignedBy: string }> & TaskExecutionAssignmentTarget)
-  | Readonly<{ role: "delegated" | "broughtIn"; creator: TaskExecutionReference }>;
+  | Readonly<{ role: "delegated"; creator: TaskExecutionReference }>;
 
 /**
  * One staged dispatch on the root lifecycle's queue. A Task copy is linked after identity planning

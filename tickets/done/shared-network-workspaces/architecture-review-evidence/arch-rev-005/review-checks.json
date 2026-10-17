@@ -1,0 +1,187 @@
+{
+  "review": "ARCH-REV-005",
+  "date": "2026-10-14T08:48:58.570291+00:00",
+  "reviewedCommit": "cd1519a7984fa534b0bee9e56ce120a1f81f4736",
+  "head": "cd1519a7984fa534b0bee9e56ce120a1f81f4736",
+  "branch": "codex/shared-network-workspaces",
+  "inputReferenceCount": 667,
+  "uniqueReferenceCount": 667,
+  "missingReferences": [],
+  "protectedScope": "SR021 protected input except two reviewer-owned current artifacts, plus current four designer artifacts and eleven added source paths",
+  "protectedCount": 650,
+  "changedProtected": [],
+  "retainedCandidateCount": 11,
+  "retainedCandidateChanges": [],
+  "approvedBasisByteIdentical": {
+    "requirements-doc.md": true,
+    "approval-record-sr018.md": true,
+    "approval-record-sr017.md": true
+  },
+  "productionAggregate": {
+    "expected": "4568593b99bb3dff263e9824ceb7176e04a95ec90e3cd14a9f7421b4e43055ac",
+    "actual": "4568593b99bb3dff263e9824ceb7176e04a95ec90e3cd14a9f7421b4e43055ac",
+    "rc": 0,
+    "stderr": ""
+  },
+  "sourceHashes": {
+    "autobyteus-nfs/internal/setup/lifecycle.go": "cebe724c9f4df8f0bd9fa95ddb1db4384a4723dd382950985319aaadf9b587c1",
+    "autobyteus-nfs/internal/setup/status.go": "6d488eb5638dfaef59a30187d54ddbc978f1fd8f3e7604dfff8733fe4df07558",
+    "autobyteus-nfs/internal/setup/apply.go": "e25440cce677595a94f451af2063e8d34b369110cd65a5516554d1be716a21a2",
+    "autobyteus-nfs/internal/setup/service.go": "017612907a194031fdd5dc8fa53b3283926e3c61e2fa4901d0f24dd7969fb8d9",
+    "autobyteus-nfs/internal/setup/pending.go": "d39d9c1de4be3eb0bde29a50f4acc9c8d1294191a2fa7e40512e82dda1f5ad14",
+    "autobyteus-nfs/internal/setup/detach_nodes.go": "2136c50138bd823505f23d62accec10eae5f94e8fc9296baebca6085de1ce495",
+    "autobyteus-nfs/internal/docker/client.go": "618f09a83d9bd63ea930513af68415baf8452948f928a1c90c3a356f64d4029a",
+    "autobyteus-nfs/internal/docker/ownership.go": "516fe147e46982a43781de4e1bf95bb11e1ea64826ac158d59a08a0c956b52fc",
+    "autobyteus-nfs/internal/docker/snapshot.go": "12a8cc9aede92cd3e1b43274739c049e63e35e00f30d22acf4eb7759c550706f",
+    "autobyteus-nfs/internal/docker/attachment.go": "45bda66ab5e8c69bfac891a06d409792edeb77cebec14de72c3b0b5a8e8d05c9",
+    "autobyteus-nfs/internal/docker/exec.go": "a136ef244da1bdca1856527fe42bded90a23ae77c9284aa0f6326a8bf48b821a",
+    "autobyteus-nfs/internal/docker/recreate.go": "028c876b0fcfa2085ad412751fc80a29dc0494b842a4e1bf3c9d0d67e005dfca",
+    "autobyteus-nfs/internal/docker/recovery.go": "bd648fb6fa0d053cb6dbacdc0922eb05fa3655ebed328a564a6cfba7a932dc5f",
+    "autobyteus-nfs/internal/docker/engine.go": "0c09243620d03e31bb7640a661aa13316a6ea997672e362a8eac477493123bf3",
+    "autobyteus-nfs/internal/cli/run.go": "f902a2a1d6b216dca0ac7ad8a73cee71350333c022f88482ffddf85b52484aed",
+    "autobyteus-nfs/internal/service/supervisor.go": "b1bc16f43d80c956c560481a226108a510f1e0ce47bae765c32361525e2cbc84",
+    "autobyteus-nfs/internal/platform/jobs.go": "cf687b9385a8c51aca8f7256ca695425c0d9e2bb2f6f1480df8bb579b5ce70c4",
+    "autobyteus-nfs/internal/config/state.go": "1c0691c2c454269ae5327b66e7c28a9f0318aeaec8fe2ab1ad98a98f7cd13a6b",
+    "autobyteus-nfs/internal/config/store.go": "50851f3c5beea87e2e482eca287daa6d41f45c13223cf0de1993e1130d47b250",
+    "scripts/public/docker/autobyteus-docker.d/bash/commands.sh": "0cd7a12df19071f93af87c70a60cfb027fbf5d7e5c3463e0f2263145196e563b"
+  },
+  "designCommitFiles": [
+    "tickets/in-progress/shared-network-workspaces/design-spec.md",
+    "tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr021/audit-package.py",
+    "tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr021/final-audit.json",
+    "tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr021/input-audit.json",
+    "tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr021/lifecycle-investigation.md",
+    "tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr021/moby-kill.txt",
+    "tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr021/moby-restart-policy.txt",
+    "tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr021/moby-restore.txt",
+    "tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr021/moby-start.txt",
+    "tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr021/moby-state.txt",
+    "tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr021/moby-stop.txt",
+    "tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr021/moby-volume.txt",
+    "tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr021/observed-start-states.json",
+    "tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr021/package-index.json",
+    "tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr021/primary-sources.json",
+    "tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr021/routing.json",
+    "tickets/in-progress/shared-network-workspaces/investigation-notes.md",
+    "tickets/in-progress/shared-network-workspaces/solution-design-handoff.md",
+    "tickets/in-progress/shared-network-workspaces/solution-revision-record.md"
+  ],
+  "rawEvidenceChecks": {
+    "distinctNormalBootIds": true,
+    "phaseIdentityAndConfigPreserved": {
+      "Id": true,
+      "Image": true,
+      "Config": true,
+      "HostConfig": true
+    },
+    "publicReconnectHostReadyButNodeStopped": true,
+    "diagnosticNamedStartSameObservedIdApiRestored": true,
+    "secondBootAllObservedSelectedNodesStopped": true,
+    "secondBootAllObservedAPICallsFail": true,
+    "bothFailedIncarnationsHaveQualifiedFields": true,
+    "laterSuccessfulStartChangesIncarnation": true,
+    "sourceAndMountSameBytesAndUUID": true
+  },
+  "observations": [
+    {
+      "elapsed": 0.449,
+      "nodeRunning": false,
+      "hostReady": null,
+      "apiRC": 7
+    },
+    {
+      "elapsed": 10.956,
+      "nodeRunning": false,
+      "hostReady": null,
+      "apiRC": 7
+    },
+    {
+      "elapsed": 21.53,
+      "nodeRunning": false,
+      "hostReady": true,
+      "apiRC": 7
+    },
+    {
+      "elapsed": 32.1,
+      "nodeRunning": false,
+      "hostReady": true,
+      "apiRC": 7
+    },
+    {
+      "elapsed": 42.68,
+      "nodeRunning": false,
+      "hostReady": true,
+      "apiRC": 7
+    },
+    {
+      "elapsed": 53.269,
+      "nodeRunning": false,
+      "hostReady": true,
+      "apiRC": 7
+    },
+    {
+      "elapsed": 63.862,
+      "nodeRunning": false,
+      "hostReady": true,
+      "apiRC": 7
+    },
+    {
+      "elapsed": 74.442,
+      "nodeRunning": false,
+      "hostReady": true,
+      "apiRC": 7
+    },
+    {
+      "elapsed": 85.036,
+      "nodeRunning": false,
+      "hostReady": true,
+      "apiRC": 7
+    },
+    {
+      "elapsed": 95.628,
+      "nodeRunning": false,
+      "hostReady": true,
+      "apiRC": 7
+    },
+    {
+      "elapsed": 106.206,
+      "nodeRunning": false,
+      "hostReady": true,
+      "apiRC": 7
+    },
+    {
+      "elapsed": 116.866,
+      "nodeRunning": false,
+      "hostReady": true,
+      "apiRC": 7
+    },
+    {
+      "elapsed": 127.446,
+      "nodeRunning": false,
+      "hostReady": true,
+      "apiRC": 7
+    },
+    {
+      "elapsed": 138.019,
+      "nodeRunning": false,
+      "hostReady": true,
+      "apiRC": 7
+    },
+    {
+      "elapsed": 148.599,
+      "nodeRunning": false,
+      "hostReady": true,
+      "apiRC": 7
+    }
+  ],
+  "diagnosticLimit": "The inherited diagnostic command uses node name; before/after inspect proves the same ID/config. SR021 requires immutable-ID calls. This audit does not execute Docker or emulate the new recovery parser.",
+  "primarySourcesRead": [
+    "https://raw.githubusercontent.com/moby/moby/docker-v29.1.3/daemon/start.go",
+    "https://raw.githubusercontent.com/moby/moby/docker-v29.1.3/daemon/stop.go",
+    "https://raw.githubusercontent.com/moby/moby/docker-v29.1.3/daemon/container/state.go",
+    "https://raw.githubusercontent.com/moby/moby/docker-v29.1.3/daemon/container/monitor.go",
+    "https://docs.docker.com/engine/containers/start-containers-automatically/"
+  ],
+  "limits": "Read-only source/approved basis/raw API003 receipt audit; no reviewer build, product suite, runtime, VM, provider or live-resource operation. No automatic recovery or negative-control Pass inferred. One attempted web open of api/types/container/inspect.go returned Internal Error; not used as evidence.",
+  "pass": true
+}

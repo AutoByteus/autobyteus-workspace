@@ -39,7 +39,7 @@ export interface TeamRunBackend {
   tryShutDownDirectTaskExecutionIfQuiet(reference: TaskExecutionReference): Promise<boolean>;
   /** User Stop of one live direct task execution, quiet or not; it stays restorable. False when not live. */
   shutDownDirectTaskExecutionForUser(reference: TaskExecutionReference): Promise<boolean>;
-  /** User control of a direct configured or collaborator Agent of this TeamRun; null for any other AgentRun. */
+  /** User control of a direct configured Agent of this TeamRun; null for any other AgentRun. */
   getRetainedAgentControl(agentRunId: string): RetainedAgentExecutionControl | null;
   cancelRuntimeActivation(): void;
   releaseOwnedRuntime(): Promise<AgentOperationResult>;

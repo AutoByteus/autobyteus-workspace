@@ -1,0 +1,6 @@
+Started explicit start owned current node before native storage selection
+explicit start owned current node before native storage selection: Pass
+Started public native create selects existing current managed Docker client
+public native create selects existing current managed Docker client: Fail
+Native managed client Fail/incomplete RuntimeError('Detected private addresses: 192.168.64.4, 172.18.0.1, 172.17.0.1\nLocal managed Docker nodes: autobyteus-server-0, autobyteus-server-1\nAutoByteus NFS incomplete: already configured; use status/reconnect/detach\nAutoByteus NFS incomplete: exit status 1\n')
+{"result": "Fail", "fatal": "RuntimeError('Detected private addresses: 192.168.64.4, 172.18.0.1, 172.17.0.1\\nLocal managed Docker nodes: autobyteus-server-0, autobyteus-server-1\\nAutoByteus NFS incomplete: already configured; use status/reconnect/detach\\nAutoByteus NFS incomplete: exit status 1\\n')"}

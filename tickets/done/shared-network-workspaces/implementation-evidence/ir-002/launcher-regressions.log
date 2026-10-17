@@ -1,0 +1,21 @@
+.F.............ss....................
+======================================================================
+FAIL: test_bash_install_no_update_path_skips_profile_write (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/scripts/tests/test_public_docker_launcher_shared_workspace.py", line 535, in test_bash_install_no_update_path_skips_profile_write
+    self.assertIn(export_line, install.stdout)
+AssertionError: 'export PATH=\'/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-launcher-test-nj_777yy/install bin\'\\\'\'s\':"$PATH"' not found in '[AutoByteus Docker] Installed AutoByteus Docker launcher: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-launcher-test-nj_777yy/install bin\'s/autobyteus-docker\n[AutoByteus Docker] Install directory is not on this shell\'s PATH: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-launcher-test-nj_777yy/install bin\'s\n[AutoByteus Docker] Persistent PATH update skipped by request; add the export command below to your shell profile if you want persistence.\nRun now:\n  Direct path: \'/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-launcher-test-nj_777yy/install bin\\\'\\\\\'\\\'s/autobyteus-docker\' new-container\n  Or update this shell first: export PATH=\'/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-launcher-test-nj_777yy/install bin\\\'\\\\\'\\\'s\':"$PATH"\nCurrent-shell note: this installer process cannot change the PATH of the terminal that launched it.\nPersistent PATH setup (copy/paste for future shells):\n  autobyteus_docker_profile=\'/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-launcher-test-nj_777yy/home/.bashrc\'\n  autobyteus_docker_path_line=\'export PATH=\\\'\\\\\'\\\'/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-launcher-test-nj_777yy/install bin\\\\\'\\\\\'\\\'\\\\\\\'\\\\\'\\\'\\\\\'\\\\\'\\\'s\\\'\\\\\'\\\':"$PATH"\'\n  touch "$autobyteus_docker_profile"\n  grep -qxF "$autobyteus_docker_path_line" "$autobyteus_docker_profile" || printf \'%s\\n\' "$autobyteus_docker_path_line" >> "$autobyteus_docker_profile"\n  source "$autobyteus_docker_profile"\n  unset autobyteus_docker_profile autobyteus_docker_path_line\nAfter applying the export above, or after opening a new terminal if the persistent profile update above succeeded, you can run:\n  autobyteus-docker new-container\n  autobyteus-docker workspace paths\n  autobyteus-docker storage\n  autobyteus-docker urls\n'
+
+======================================================================
+FAIL: test_public_launcher_source_files_stay_within_reviewable_size_guard (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) (path=PosixPath('scripts/public/docker/autobyteus-docker.d/bash/docker-runtime.sh'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/scripts/tests/test_public_docker_launcher_shared_workspace.py", line 756, in test_public_launcher_source_files_stay_within_reviewable_size_guard
+    self.assertLessEqual(effective_lines, MAX_PUBLIC_LAUNCHER_SOURCE_LINES)
+AssertionError: 503 not less than or equal to 500
+
+----------------------------------------------------------------------
+Ran 38 tests in 37.398s
+
+FAILED (failures=2, skipped=2)

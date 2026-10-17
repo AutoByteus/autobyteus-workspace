@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-55232-e816",
+    "pid": 24963,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:55233",
+    "graphqlUrl": "http://127.0.0.1:55233/graphql",
+    "controlEndpoint": "http://127.0.0.1:55232",
+    "controlPort": 55232,
+    "serverPort": 55233,
+    "dataRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/cpw-data-root",
+    "ownsDataRoot": false,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/Users/normy/autobyteus_org/autobyteus-worktrees/cpw-data-root/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-55232-e816.log"
+  }
+}

@@ -1,0 +1,14 @@
+Started fresh nonempty owned source and native prerequisites
+fresh nonempty owned source and native prerequisites: Pass
+Started public native create under077 nonroot clear-groups
+public native create under077 nonroot clear-groups: Pass
+Started native mounted bytes UUID source identity and nonroot RW
+native mounted bytes UUID source identity and nonroot RW: Pass
+Started actual installed engine jobs private modes manifest and client policy
+actual installed engine jobs private modes manifest and client policy: Pass
+Started ordinary boot automatic mounted nonroot RW before manual reconnect
+ordinary boot automatic mounted nonroot RW before manual reconnect: Pass
+Started separate explicit public reconnect
+separate explicit public reconnect: Fail
+native regression incomplete/fail RuntimeError('AutoByteus NFS incomplete: another administrative operation is checking/incomplete; restore storage and wait: resource temporarily unavailable\nAutoByteus NFS incomplete: exit status 1\n')
+{"result": "Fail", "fatal": "RuntimeError('AutoByteus NFS incomplete: another administrative operation is checking/incomplete; restore storage and wait: resource temporarily unavailable\\nAutoByteus NFS incomplete: exit status 1\\n')"}

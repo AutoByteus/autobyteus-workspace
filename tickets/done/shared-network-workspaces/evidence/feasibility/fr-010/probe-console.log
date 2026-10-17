@@ -1,0 +1,5 @@
+PASS two fresh real application-image nodes serve independent GraphQL endpoints
+PASS daemon mounts one export into both application nodes; private state and credentials isolated
+PASS each application registers the ordinary mounted project through its public workspace API
+PROBE FAILURE AssertionError({'event': 'INSPECT', 'heldCount': 1, 'materializedRoot': '/home/autobyteus/shared/project/.claude/skills/causal-685052f', 'exists': True, 'sha256': '305904dd8e2dbaff7f803ace13aad5289ec2957098125186968e3f07388924fc', 'linkTarget': '/home/autobyteus/data/skills/causal-685052f', 'privateSourceExists': True})
+{"run": "ab-sf-fr010-b40c8537", "passes": 3, "fatal": "AssertionError({'event': 'INSPECT', 'heldCount': 1, 'materializedRoot': '/home/autobyteus/shared/project/.claude/skills/causal-685052f', 'exists': True, 'sha256': '305904dd8e2dbaff7f803ace13aad5289ec2957098125186968e3f07388924fc', 'linkTarget': '/home/autobyteus/data/skills/causal-685052f', 'privateSourceExists': True})", "cleanup_ok": true}

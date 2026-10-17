@@ -1,0 +1,5 @@
+{
+  "firstConfirmation": "bounded~10s denial observation inconclusive; exit1; finally original755 restored and public reconnect/mountedRW passed",
+  "sourceEvidence": "mac-controls-confirm-result.json + console; raw result Running is unfinished, NOT pass",
+  "next": "120s observation only, not SLA, no flush/remount; condition then actual public refusal; symmetric restored access observation"
+}

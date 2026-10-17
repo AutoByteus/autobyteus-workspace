@@ -1,0 +1,8 @@
+Started explicitly drain own selected test node before safe detach
+explicitly drain own selected test node before safe detach: Pass
+Started public detach --yes --drained through installed owner
+public detach --yes --drained through installed owner: Pass
+Started drained detach current config private/source preservation and exact attempt removal
+drained detach current config private/source preservation and exact attempt removal: Fail
+Detach regression Fail/incomplete AssertionError()
+{"result": "Fail", "fatal": "AssertionError()"}

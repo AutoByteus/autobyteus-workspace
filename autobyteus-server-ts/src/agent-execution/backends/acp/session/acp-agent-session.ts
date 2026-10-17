@@ -13,6 +13,8 @@ import { describeAcpError } from "../../../../runtime-management/acp/acp-error-m
 import type { AcpAgentSessionProfile, AcpMcpReadinessRequirement, AcpMcpServerStatus } from "../acp-agent-session-profile.js";
 import { AcpSessionUpdateConverter } from "../events/acp-session-update-converter.js";
 import { AcpPermissionBridge } from "./acp-permission-bridge.js";
+import { ModelCallRequestBoundary } from "../../shared/model-call-request-boundary.js";
+import type { ModelCallThroughput } from "../../../domain/model-call-throughput.js";
 
 export const ACP_TURN_IDLE_TIMEOUT_MS = 300_000;
 const CANCELLED: RequestPermissionResponse = { outcome: { outcome: "cancelled" } };
@@ -36,6 +38,8 @@ export type AcpAgentSessionOptions = Readonly<{
   emit: (events: AgentRunEvent[]) => void;
   onFailed: (failure: AcpSessionFailure) => void;
   idleTimeoutMs?: number;
+  /** Frame receipt clock in milliseconds for model-call timing; defaults to `Date.now`. */
+  now?: () => number;
 }>;
 
 type McpWaiter = Readonly<{ serverName: string; resolve: () => void; reject: (error: Error) => void }>;
@@ -59,10 +63,17 @@ export class AcpAgentSession implements AcpSessionFrameHandler {
   private readonly mcpWaiters = new Set<McpWaiter>();
   private readonly idleTimeoutMs: number;
   private readonly unsubscribeClose: () => void;
+  /**
+   * End-to-end model-call timing (DEC-002): chunks arrive in bursts, so only the request
+   * boundary (prompt send, the previous call's usage, a finished tool) to the usage effect is used.
+   */
+  private readonly callBoundary = new ModelCallRequestBoundary();
+  private readonly now: () => number;
 
   constructor(private readonly options: AcpAgentSessionOptions) {
     this.converter = new AcpSessionUpdateConverter(options.runId, options.profile);
     this.idleTimeoutMs = options.idleTimeoutMs ?? ACP_TURN_IDLE_TIMEOUT_MS;
+    this.now = options.now ?? Date.now;
     this.unsubscribeClose = options.connection.onClose((close) =>
       this.fail({ code: close.code, message: `${options.connection.agentLabel} stopped unexpectedly.` }));
   }
@@ -114,6 +125,8 @@ export class AcpAgentSession implements AcpSessionFrameHandler {
     this.callOrdinal = 1;
     this.userDeniedInTurn = false;
     const started = this.converter.startTurn(turnId);
+    this.callBoundary.reset();
+    this.callBoundary.markBoundary(this.now());
     this.refreshIdleTimer();
     void this.options.connection.prompt({ sessionId, prompt }).then(
       (response) => this.finishTurn(turnId, () => this.endTurnFor(response.stopReason)),
@@ -159,6 +172,7 @@ export class AcpAgentSession implements AcpSessionFrameHandler {
   onSessionUpdate(notification: SessionNotification): void {
     if (this.currentState === "opening_load") return;
     if (!this.isInTurn()) return;
+    this.observeCallBoundary(notification.update);
     this.options.emit(this.converter.convertUpdate(notification.update));
     this.refreshIdleTimer();
   }
@@ -184,7 +198,7 @@ export class AcpAgentSession implements AcpSessionFrameHandler {
       } else if (effect.kind === "compaction") {
         this.options.emit(this.converter.compaction(sessionId, effect));
       } else {
-        this.options.emit(this.converter.usage(effect.payload));
+        this.options.emit(this.converter.usage(this.withCallThroughput(effect.payload)));
         this.callOrdinal += 1;
       }
     }
@@ -207,6 +221,31 @@ export class AcpAgentSession implements AcpSessionFrameHandler {
     this.options.emit(this.converter.approvalRequested(toolCallId));
     this.refreshIdleTimer();
     return decision;
+  }
+
+  /**
+   * The call's first agent chunk freezes its request boundary; a finished tool opens the next
+   * one. A `tool_call` itself is not call output: an agent may announce it after the call's usage.
+   */
+  private observeCallBoundary(update: SessionNotification["update"]): void {
+    if (update.sessionUpdate === "agent_message_chunk" || update.sessionUpdate === "agent_thought_chunk") {
+      this.callBoundary.markOutput();
+    } else if (update.sessionUpdate === "tool_call_update" &&
+      (update.status === "completed" || update.status === "failed")) {
+      this.callBoundary.markBoundary(this.now());
+    }
+  }
+
+  private withCallThroughput(payload: Record<string, unknown>): Record<string, unknown> {
+    if (payload.reports_model_call !== true) return payload;
+    const completedAtMs = this.now();
+    const requestStartAtMs = this.callBoundary.completeCall(completedAtMs);
+    const outputTokens = payload.reported_output_tokens;
+    if (requestStartAtMs === null || typeof outputTokens !== "number") return payload;
+    const outputThroughput: ModelCallThroughput = {
+      method: "end_to_end", output_tokens: outputTokens, duration_ms: completedAtMs - requestStartAtMs,
+    };
+    return { ...payload, output_throughput: outputThroughput };
   }
 
   /**

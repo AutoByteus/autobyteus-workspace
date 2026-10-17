@@ -1,0 +1,631 @@
+{
+  "id": "ab-nfs-api001-7a371989",
+  "nodes": {
+    "server": "ab-nfs-api001-7a371989-server",
+    "nativeClient": "ab-nfs-api001-7a371989-client"
+  },
+  "baseImage": "ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377",
+  "source": "/Users/admin/ab-nfs-api001-7a371989-source",
+  "mountRoot": "/Volumes/autobyteus-shared",
+  "binary": {
+    "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api001-pk2d0kur/autobyteus-nfs",
+    "sha256": "ddf7f65c02d8326f8fbf83c332aa4863d63b5c7ce859fa584c5ae3ed919de68f",
+    "sourceHead": "3b7dd9a2895f4b8fedc5e1bcdd00c913d97fae2f",
+    "metadata": "unchanged development-unqualified"
+  },
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "clone",
+        "ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377",
+        "ab-nfs-api001-7a371989-server"
+      ],
+      "rc": 0,
+      "seconds": 0.036,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "set",
+        "ab-nfs-api001-7a371989-server",
+        "--cpu",
+        "2",
+        "--memory",
+        "4096"
+      ],
+      "rc": 0,
+      "seconds": 0.021,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api001-7a371989-server",
+        "/usr/bin/sw_vers"
+      ],
+      "rc": 2,
+      "seconds": 0.023,
+      "stdout": "",
+      "stderr": "VM \"ab-nfs-api001-7a371989-server\" is not running\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api001-7a371989-server",
+        "/usr/bin/sw_vers"
+      ],
+      "timedOut": 5,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api001-7a371989-server",
+        "/usr/bin/sw_vers"
+      ],
+      "timedOut": 5,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api001-7a371989-server",
+        "/usr/bin/sw_vers"
+      ],
+      "timedOut": 5,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api001-7a371989-server",
+        "/usr/bin/sw_vers"
+      ],
+      "timedOut": 5,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api001-7a371989-server",
+        "/usr/bin/sw_vers"
+      ],
+      "timedOut": 5,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api001-7a371989-server",
+        "/usr/bin/sw_vers"
+      ],
+      "rc": 0,
+      "seconds": 0.373,
+      "stdout": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "-i",
+        "ab-nfs-api001-7a371989-server",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "umask 077; cat > /Users/admin/ab-nfs-api001-7a371989-binary; chmod 755 /Users/admin/ab-nfs-api001-7a371989-binary"
+      ],
+      "rc": 0,
+      "seconds": 2.348,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api001-7a371989-server",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "shasum -a 256 /Users/admin/ab-nfs-api001-7a371989-binary; /Users/admin/ab-nfs-api001-7a371989-binary version; id; /usr/bin/stat -f \"%u:%g %Lp %N\" /Library /Volumes"
+      ],
+      "rc": 0,
+      "seconds": 1.334,
+      "stdout": "ddf7f65c02d8326f8fbf83c332aa4863d63b5c7ce859fa584c5ae3ed919de68f  /Users/admin/ab-nfs-api001-7a371989-binary\ndevelopment-unqualified\nuid=501(admin) gid=20(staff) groups=20(staff),12(everyone),61(localaccounts),79(_appserverusr),80(admin),81(_appserveradm),264(_webdeveloper),701(com.apple.sharepoint.group.1),33(_appstore),98(_lpadmin),100(_lpoperator),204(_developer),250(_analyticsusers),395(com.apple.access_ftp),398(com.apple.access_screensharing),399(com.apple.access_ssh),400(com.apple.access_remote_ae)\n0:0 755 /Library\n0:0 755 /Volumes\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "clone",
+        "ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377",
+        "ab-nfs-api001-7a371989-client"
+      ],
+      "rc": 0,
+      "seconds": 0.029,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "set",
+        "ab-nfs-api001-7a371989-client",
+        "--cpu",
+        "2",
+        "--memory",
+        "4096"
+      ],
+      "rc": 0,
+      "seconds": 0.019,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api001-7a371989-client",
+        "/usr/bin/sw_vers"
+      ],
+      "rc": 2,
+      "seconds": 0.02,
+      "stdout": "",
+      "stderr": "VM \"ab-nfs-api001-7a371989-client\" is not running\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api001-7a371989-client",
+        "/usr/bin/sw_vers"
+      ],
+      "timedOut": 5,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api001-7a371989-client",
+        "/usr/bin/sw_vers"
+      ],
+      "timedOut": 5,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api001-7a371989-client",
+        "/usr/bin/sw_vers"
+      ],
+      "timedOut": 5,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api001-7a371989-client",
+        "/usr/bin/sw_vers"
+      ],
+      "timedOut": 5,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api001-7a371989-client",
+        "/usr/bin/sw_vers"
+      ],
+      "timedOut": 5,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api001-7a371989-client",
+        "/usr/bin/sw_vers"
+      ],
+      "timedOut": 5,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api001-7a371989-client",
+        "/usr/bin/sw_vers"
+      ],
+      "rc": 0,
+      "seconds": 2.508,
+      "stdout": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "-i",
+        "ab-nfs-api001-7a371989-client",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "umask 077; cat > /Users/admin/ab-nfs-api001-7a371989-binary; chmod 755 /Users/admin/ab-nfs-api001-7a371989-binary"
+      ],
+      "rc": 0,
+      "seconds": 1.094,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api001-7a371989-client",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "shasum -a 256 /Users/admin/ab-nfs-api001-7a371989-binary; /Users/admin/ab-nfs-api001-7a371989-binary version; id; /usr/bin/stat -f \"%u:%g %Lp %N\" /Library /Volumes"
+      ],
+      "rc": 0,
+      "seconds": 2.461,
+      "stdout": "ddf7f65c02d8326f8fbf83c332aa4863d63b5c7ce859fa584c5ae3ed919de68f  /Users/admin/ab-nfs-api001-7a371989-binary\ndevelopment-unqualified\nuid=501(admin) gid=20(staff) groups=20(staff),12(everyone),61(localaccounts),79(_appserverusr),80(admin),81(_appserveradm),264(_webdeveloper),701(com.apple.sharepoint.group.1),33(_appstore),98(_lpadmin),100(_lpoperator),204(_developer),250(_analyticsusers),395(com.apple.access_ftp),398(com.apple.access_screensharing),399(com.apple.access_ssh),400(com.apple.access_remote_ae)\n0:0 755 /Library\n0:0 755 /Volumes\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api001-7a371989-server",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/usr/sbin/ipconfig getifaddr en0"
+      ],
+      "rc": 0,
+      "seconds": 0.972,
+      "stdout": "192.168.128.2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api001-7a371989-client",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/usr/sbin/ipconfig getifaddr en0"
+      ],
+      "rc": 0,
+      "seconds": 0.786,
+      "stdout": "192.168.129.2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/sbin/route",
+        "-n",
+        "get",
+        "192.168.128.2"
+      ],
+      "rc": 0,
+      "seconds": 0.005,
+      "stdout": "   route to: 192.168.128.2\ndestination: 192.168.128.2\n  interface: bridge100\n      flags: <UP,HOST,DONE,LLINFO,WASCLONED,IFSCOPE,IFREF>\n recvpipe  sendpipe  ssthresh  rtt,msec    rttvar  hopcount      mtu     expire\n       0         0         0         0         0         0      1500      1119 \n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/sbin/ifconfig",
+        "bridge100"
+      ],
+      "rc": 0,
+      "seconds": 0.005,
+      "stdout": "bridge100: flags=8a63<UP,BROADCAST,SMART,RUNNING,ALLMULTI,SIMPLEX,MULTICAST> mtu 1500\n\toptions=63<RXCSUM,TXCSUM,TSO4,TSO6>\n\tether be:d0:74:32:81:64\n\tinet 192.168.128.1 netmask 0xffffff00 broadcast 192.168.128.255\n\tinet6 fe80::bcd0:74ff:fe32:8164%bridge100 prefixlen 64 scopeid 0x1a \n\tinet6 fd88:b29f:b1ba:498e:1c46:41e:af05:ac07 prefixlen 64 autoconf secured \n\tConfiguration:\n\t\tid 0:0:0:0:0:0 priority 0 hellotime 0 fwddelay 0\n\t\tmaxage 0 holdcnt 0 proto stp maxaddr 100 timeout 1200\n\t\troot id 0:0:0:0:0:0 priority 0 ifcost 0 port 0\n\t\tipfilter disabled flags 0x0\n\tmember: vmenet0 flags=20003<LEARNING,DISCOVER,VIRTIO>\n\t        ifmaxaddr 0 port 25 priority 0 path cost 0\n\tAddress cache:\n\t\t72:76:f4:5e:d8:14 Vlan1 vmenet0 1147 flags=0<>\n\tnd6 options=201<PERFORMNUD,DAD>\n\tmedia: autoselect\n\tstatus: active\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api001-7a371989-server",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "set -e; test ! -e /Users/admin/ab-nfs-api001-7a371989-source; test ! -e /Volumes/autobyteus-shared; test ! -e /etc/exports; mkdir -m 755 /Users/admin/ab-nfs-api001-7a371989-source; mkdir -m 755 /Users/admin/ab-nfs-api001-7a371989-source/project; printf ORIGINAL_API001 > /Users/admin/ab-nfs-api001-7a371989-source/project/preexisting.txt"
+      ],
+      "rc": 0,
+      "seconds": 0.462,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api001-7a371989-server",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "umask 077; exec /Users/admin/ab-nfs-api001-7a371989-binary create --source /Users/admin/ab-nfs-api001-7a371989-source --endpoint 192.168.128.2 --allow 192.168.128.2,192.168.129.2,192.168.128.1 --nodes none --yes --json"
+      ],
+      "rc": 1,
+      "seconds": 10.819,
+      "stdout": "",
+      "stderr": "Detected private addresses: 192.168.128.2\nNo reachable local Docker daemon; no Docker nodes will be attached.\nAutoByteus NFS plan:\n - Apple nfsd: TCP2049 + RPC111 + mountd20048; exact export/settings to apply:\n# BEGIN AutoByteus NFS fc1c2eec-b2ef-4c40-8ef6-82b314bc3230\n\"/Users/admin/ab-nfs-api001-7a371989-source\" -mapall=501:20 192.168.128.2\n\"/Users/admin/ab-nfs-api001-7a371989-source\" -mapall=501:20 192.168.129.2\n\"/Users/admin/ab-nfs-api001-7a371989-source\" -mapall=501:20 192.168.128.1\n# END AutoByteus NFS fc1c2eec-b2ef-4c40-8ef6-82b314bc3230\n# BEGIN AutoByteus NFS fc1c2eec-b2ef-4c40-8ef6-82b314bc3230\nnfs.server.mount.port=20048\nnfs.server.bonjour=0\nnfs.server.udp=0\nnfs.server.mount.require_resv_port=0\n# END AutoByteus NFS fc1c2eec-b2ef-4c40-8ef6-82b314bc3230\n\n - Export chosen source in place: /Users/admin/ab-nfs-api001-7a371989-source\n - Map ALL clients to nonroot 501:20; no recursive ownership change\n - Trust private hosts/subnets: 192.168.128.2, 192.168.129.2, 192.168.128.1\n - Attach 192.168.128.2:/Users/admin/ab-nfs-api001-7a371989-source at /Volumes/autobyteus-shared\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\nAutoByteus NFS incomplete: mount_nfs failed: exit status 74: mount_nfs: can't mount with remote locks when server (192.168.128.2) is not running rpc.statd: RPC prog. not avail\n\nAutoByteus NFS incomplete: exit status 1\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api001-7a371989-server",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/sbin/mount; sudo -n /bin/launchctl print system/com.autobyteus.nfs; sudo -n /bin/cat /Library/'Application Support'/AutoByteusNFS/service.log; sudo -n /bin/ls -la /Library/'Application Support'/AutoByteusNFS; sudo -n /usr/bin/pgrep -lf autobyteus-nfs"
+      ],
+      "rc": 1,
+      "seconds": 0.649,
+      "stdout": "/dev/disk2s1s1 on / (apfs, sealed, local, read-only, journaled)\ndevfs on /dev (devfs, local, nobrowse)\n/dev/disk2s6 on /System/Volumes/VM (apfs, local, noexec, journaled, noatime, nobrowse)\n/dev/disk2s2 on /System/Volumes/Preboot (apfs, local, journaled, nobrowse)\n/dev/disk2s4 on /System/Volumes/Update (apfs, local, journaled, nobrowse)\n/dev/disk1s2 on /System/Volumes/xarts (apfs, local, noexec, journaled, noatime, nobrowse)\n/dev/disk1s1 on /System/Volumes/iSCPreboot (apfs, local, journaled, nobrowse)\n/dev/disk1s3 on /System/Volumes/Hardware (apfs, local, journaled, nobrowse)\n/dev/disk2s5 on /System/Volumes/Data (apfs, NFS exported, local, journaled, nobrowse, root data)\n/dev/disk4s1 on /System/Library/AssetsV2/com_apple_MobileAsset_UAF_Siri_Understanding/purpose_auto/c10eb90af2d4996616c3cd0f6bac0833eb4925fa.asset/.AssetData (apfs, sealed, local, read-only, journaled, nobrowse)\n/dev/disk6s1 on /System/Library/AssetsV2/com_apple_MobileAsset_PKITrustStore/purpose_auto/6dd55b0d06633a00de6f57ccb910a66a5ba2409a.asset/.AssetData (apfs, sealed, local, read-only, journaled, nobrowse)\nmap auto_home on /System/Volumes/Data/home (autofs, automounted, nobrowse)\ntotal 40\ndrwx------   8 root  admin   256 Oct 13 19:27 .\ndrwxr-xr-x  12 root  admin   384 Oct 13 19:27 ..\n-rw-------   1 root  admin   973 Oct 13 19:27 apple-resource.json\n-rw-------   1 root  admin   323 Oct 13 19:27 attachment.json\n-rw-------   1 root  admin    19 Oct 13 19:27 docker-endpoint.json\n-rw-------   1 root  admin   382 Oct 13 19:27 hosted-filesystem.json\n-rw-------   1 root  admin     0 Oct 13 19:27 operation.lock\n-rw-------   1 root  admin  3162 Oct 13 19:27 pending-setup.json\n",
+      "stderr": "Bad request.\nCould not find service \"com.autobyteus.nfs\" in domain for system\ncat: /Library/Application Support/AutoByteusNFS/service.log: No such file or directory\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api001-7a371989-client",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/sbin/mount; sudo -n /bin/launchctl print system/com.autobyteus.nfs; sudo -n /bin/cat /Library/'Application Support'/AutoByteusNFS/service.log; sudo -n /bin/ls -la /Library/'Application Support'/AutoByteusNFS; sudo -n /usr/bin/pgrep -lf autobyteus-nfs"
+      ],
+      "rc": 1,
+      "seconds": 0.566,
+      "stdout": "/dev/disk2s1s1 on / (apfs, sealed, local, read-only, journaled)\ndevfs on /dev (devfs, local, nobrowse)\n/dev/disk2s6 on /System/Volumes/VM (apfs, local, noexec, journaled, noatime, nobrowse)\n/dev/disk2s2 on /System/Volumes/Preboot (apfs, local, journaled, nobrowse)\n/dev/disk2s4 on /System/Volumes/Update (apfs, local, journaled, nobrowse)\n/dev/disk1s2 on /System/Volumes/xarts (apfs, local, noexec, journaled, noatime, nobrowse)\n/dev/disk1s1 on /System/Volumes/iSCPreboot (apfs, local, journaled, nobrowse)\n/dev/disk1s3 on /System/Volumes/Hardware (apfs, local, journaled, nobrowse)\n/dev/disk2s5 on /System/Volumes/Data (apfs, local, journaled, nobrowse, root data)\n/dev/disk4s1 on /System/Library/AssetsV2/com_apple_MobileAsset_UAF_Siri_Understanding/purpose_auto/c10eb90af2d4996616c3cd0f6bac0833eb4925fa.asset/.AssetData (apfs, sealed, local, read-only, journaled, nobrowse)\n/dev/disk6s1 on /System/Library/AssetsV2/com_apple_MobileAsset_PKITrustStore/purpose_auto/6dd55b0d06633a00de6f57ccb910a66a5ba2409a.asset/.AssetData (apfs, sealed, local, read-only, journaled, nobrowse)\nmap auto_home on /System/Volumes/Data/home (autofs, automounted, nobrowse)\n",
+      "stderr": "Bad request.\nCould not find service \"com.autobyteus.nfs\" in domain for system\ncat: /Library/Application Support/AutoByteusNFS/service.log: No such file or directory\nls: /Library/Application Support/AutoByteusNFS: No such file or directory\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "stop",
+        "ab-nfs-api001-7a371989-client",
+        "--timeout",
+        "15"
+      ],
+      "rc": 0,
+      "seconds": 0.328,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "delete",
+        "ab-nfs-api001-7a371989-client"
+      ],
+      "rc": 0,
+      "seconds": 0.259,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "stop",
+        "ab-nfs-api001-7a371989-server",
+        "--timeout",
+        "15"
+      ],
+      "rc": 0,
+      "seconds": 0.233,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "delete",
+        "ab-nfs-api001-7a371989-server"
+      ],
+      "rc": 0,
+      "seconds": 0.24,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "list"
+      ],
+      "rc": 0,
+      "seconds": 0.034,
+      "stdout": "Source Name                                                                                                        Disk  Size  Accessed     State  \nOCI    ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377 50\u00a0GB 33\u00a0GB vor 1 Minute stopped\n",
+      "stderr": ""
+    }
+  ],
+  "cases": [
+    {
+      "name": "storage create on original nonempty APFS source",
+      "status": "Fail",
+      "error": "RuntimeError('Detected private addresses: 192.168.128.2\\nNo reachable local Docker daemon; no Docker nodes will be attached.\\nAutoByteus NFS plan:\\n - Apple nfsd: TCP2049 + RPC111 + mountd20048; exact export/settings to apply:\\n# BEGIN AutoByteus NFS fc1c2eec-b2ef-4c40-8ef6-82b314bc3230\\n\"/Users/admin/ab-nfs-api001-7a371989-source\" -mapall=501:20 192.168.128.2\\n\"/Users/admin/ab-nfs-api001-7a371989-source\" -mapall=501:20 192.168.129.2\\n\"/Users/admin/ab-nfs-api001-7a371989-source\" -mapall=501:20 192.168.128.1\\n# END AutoByteus NFS fc1c2eec-b2ef-4c40-8ef6-82b314bc3230\\n# BEGIN AutoByteus NFS fc1c2eec-b2ef-4c40-8ef6-82b314bc3230\\nnfs.server.mount.port=20048\\nnfs.server.bonjour=0\\nnfs.server.udp=0\\nnfs.server.mount.require_resv_port=0\\n# END AutoByteus NFS fc1c2eec-b2ef-4c40-8ef6-82b314bc3230\\n\\n - Export chosen source in place: /Users/admin/ab-nfs-api001-7a371989-source\\n - Map ALL clients to nonroot 501:20; no recursive ownership change\\n - Trust private hosts/subnets: 192.168.128.2, 192.168.129.2, 192.168.128.1\\n - Attach 192.168.128.2:/Users/admin/ab-nfs-api001-7a371989-source at /Volumes/autobyteus-shared\\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\\nAutoByteus NFS incomplete: mount_nfs failed: exit status 74: mount_nfs: can\\'t mount with remote locks when server (192.168.128.2) is not running rpc.statd: RPC prog. not avail\\n\\nAutoByteus NFS incomplete: exit status 1\\n')",
+      "seconds": 10.82
+    }
+  ],
+  "cleanup": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "stop",
+        "ab-nfs-api001-7a371989-client",
+        "--timeout",
+        "15"
+      ],
+      "rc": 0,
+      "seconds": 0.328,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "vm": "ab-nfs-api001-7a371989-client",
+      "processExited": true
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "delete",
+        "ab-nfs-api001-7a371989-client"
+      ],
+      "rc": 0,
+      "seconds": 0.259,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "stop",
+        "ab-nfs-api001-7a371989-server",
+        "--timeout",
+        "15"
+      ],
+      "rc": 0,
+      "seconds": 0.233,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "vm": "ab-nfs-api001-7a371989-server",
+      "processExited": true
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "delete",
+        "ab-nfs-api001-7a371989-server"
+      ],
+      "rc": 0,
+      "seconds": 0.24,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "clonesAbsent": true,
+      "cacheRetained": true
+    }
+  ],
+  "scope": "V02 healthy current CLI matrix: two owned native macOS VMs, optional owned\nDocker Desktop Linux kernel clients, restart and detach. Same physical host,\nnot Linux-native hosting, managed-node attachment, real models or release proof.\nUses existing public cached image, no host shares/credentials or user-node changes.\n",
+  "processes": [
+    {
+      "vm": "ab-nfs-api001-7a371989-server",
+      "pid": 18660,
+      "phase": "boot"
+    },
+    {
+      "vm": "ab-nfs-api001-7a371989-client",
+      "pid": 19359,
+      "phase": "boot"
+    }
+  ],
+  "ips": {
+    "ab-nfs-api001-7a371989-server": "192.168.128.2",
+    "ab-nfs-api001-7a371989-client": "192.168.129.2"
+  },
+  "hostOnlyGateway": "192.168.128.1",
+  "result": "Fail",
+  "fatal": "RuntimeError('Detected private addresses: 192.168.128.2\\nNo reachable local Docker daemon; no Docker nodes will be attached.\\nAutoByteus NFS plan:\\n - Apple nfsd: TCP2049 + RPC111 + mountd20048; exact export/settings to apply:\\n# BEGIN AutoByteus NFS fc1c2eec-b2ef-4c40-8ef6-82b314bc3230\\n\"/Users/admin/ab-nfs-api001-7a371989-source\" -mapall=501:20 192.168.128.2\\n\"/Users/admin/ab-nfs-api001-7a371989-source\" -mapall=501:20 192.168.129.2\\n\"/Users/admin/ab-nfs-api001-7a371989-source\" -mapall=501:20 192.168.128.1\\n# END AutoByteus NFS fc1c2eec-b2ef-4c40-8ef6-82b314bc3230\\n# BEGIN AutoByteus NFS fc1c2eec-b2ef-4c40-8ef6-82b314bc3230\\nnfs.server.mount.port=20048\\nnfs.server.bonjour=0\\nnfs.server.udp=0\\nnfs.server.mount.require_resv_port=0\\n# END AutoByteus NFS fc1c2eec-b2ef-4c40-8ef6-82b314bc3230\\n\\n - Export chosen source in place: /Users/admin/ab-nfs-api001-7a371989-source\\n - Map ALL clients to nonroot 501:20; no recursive ownership change\\n - Trust private hosts/subnets: 192.168.128.2, 192.168.129.2, 192.168.128.1\\n - Attach 192.168.128.2:/Users/admin/ab-nfs-api001-7a371989-source at /Volumes/autobyteus-shared\\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\\nAutoByteus NFS incomplete: mount_nfs failed: exit status 74: mount_nfs: can\\'t mount with remote locks when server (192.168.128.2) is not running rpc.statd: RPC prog. not avail\\n\\nAutoByteus NFS incomplete: exit status 1\\n')",
+  "diagnostics": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api001-7a371989-server",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/sbin/mount; sudo -n /bin/launchctl print system/com.autobyteus.nfs; sudo -n /bin/cat /Library/'Application Support'/AutoByteusNFS/service.log; sudo -n /bin/ls -la /Library/'Application Support'/AutoByteusNFS; sudo -n /usr/bin/pgrep -lf autobyteus-nfs"
+      ],
+      "rc": 1,
+      "seconds": 0.649,
+      "stdout": "/dev/disk2s1s1 on / (apfs, sealed, local, read-only, journaled)\ndevfs on /dev (devfs, local, nobrowse)\n/dev/disk2s6 on /System/Volumes/VM (apfs, local, noexec, journaled, noatime, nobrowse)\n/dev/disk2s2 on /System/Volumes/Preboot (apfs, local, journaled, nobrowse)\n/dev/disk2s4 on /System/Volumes/Update (apfs, local, journaled, nobrowse)\n/dev/disk1s2 on /System/Volumes/xarts (apfs, local, noexec, journaled, noatime, nobrowse)\n/dev/disk1s1 on /System/Volumes/iSCPreboot (apfs, local, journaled, nobrowse)\n/dev/disk1s3 on /System/Volumes/Hardware (apfs, local, journaled, nobrowse)\n/dev/disk2s5 on /System/Volumes/Data (apfs, NFS exported, local, journaled, nobrowse, root data)\n/dev/disk4s1 on /System/Library/AssetsV2/com_apple_MobileAsset_UAF_Siri_Understanding/purpose_auto/c10eb90af2d4996616c3cd0f6bac0833eb4925fa.asset/.AssetData (apfs, sealed, local, read-only, journaled, nobrowse)\n/dev/disk6s1 on /System/Library/AssetsV2/com_apple_MobileAsset_PKITrustStore/purpose_auto/6dd55b0d06633a00de6f57ccb910a66a5ba2409a.asset/.AssetData (apfs, sealed, local, read-only, journaled, nobrowse)\nmap auto_home on /System/Volumes/Data/home (autofs, automounted, nobrowse)\ntotal 40\ndrwx------   8 root  admin   256 Oct 13 19:27 .\ndrwxr-xr-x  12 root  admin   384 Oct 13 19:27 ..\n-rw-------   1 root  admin   973 Oct 13 19:27 apple-resource.json\n-rw-------   1 root  admin   323 Oct 13 19:27 attachment.json\n-rw-------   1 root  admin    19 Oct 13 19:27 docker-endpoint.json\n-rw-------   1 root  admin   382 Oct 13 19:27 hosted-filesystem.json\n-rw-------   1 root  admin     0 Oct 13 19:27 operation.lock\n-rw-------   1 root  admin  3162 Oct 13 19:27 pending-setup.json\n",
+      "stderr": "Bad request.\nCould not find service \"com.autobyteus.nfs\" in domain for system\ncat: /Library/Application Support/AutoByteusNFS/service.log: No such file or directory\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api001-7a371989-client",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/sbin/mount; sudo -n /bin/launchctl print system/com.autobyteus.nfs; sudo -n /bin/cat /Library/'Application Support'/AutoByteusNFS/service.log; sudo -n /bin/ls -la /Library/'Application Support'/AutoByteusNFS; sudo -n /usr/bin/pgrep -lf autobyteus-nfs"
+      ],
+      "rc": 1,
+      "seconds": 0.566,
+      "stdout": "/dev/disk2s1s1 on / (apfs, sealed, local, read-only, journaled)\ndevfs on /dev (devfs, local, nobrowse)\n/dev/disk2s6 on /System/Volumes/VM (apfs, local, noexec, journaled, noatime, nobrowse)\n/dev/disk2s2 on /System/Volumes/Preboot (apfs, local, journaled, nobrowse)\n/dev/disk2s4 on /System/Volumes/Update (apfs, local, journaled, nobrowse)\n/dev/disk1s2 on /System/Volumes/xarts (apfs, local, noexec, journaled, noatime, nobrowse)\n/dev/disk1s1 on /System/Volumes/iSCPreboot (apfs, local, journaled, nobrowse)\n/dev/disk1s3 on /System/Volumes/Hardware (apfs, local, journaled, nobrowse)\n/dev/disk2s5 on /System/Volumes/Data (apfs, local, journaled, nobrowse, root data)\n/dev/disk4s1 on /System/Library/AssetsV2/com_apple_MobileAsset_UAF_Siri_Understanding/purpose_auto/c10eb90af2d4996616c3cd0f6bac0833eb4925fa.asset/.AssetData (apfs, sealed, local, read-only, journaled, nobrowse)\n/dev/disk6s1 on /System/Library/AssetsV2/com_apple_MobileAsset_PKITrustStore/purpose_auto/6dd55b0d06633a00de6f57ccb910a66a5ba2409a.asset/.AssetData (apfs, sealed, local, read-only, journaled, nobrowse)\nmap auto_home on /System/Volumes/Data/home (autofs, automounted, nobrowse)\n",
+      "stderr": "Bad request.\nCould not find service \"com.autobyteus.nfs\" in domain for system\ncat: /Library/Application Support/AutoByteusNFS/service.log: No such file or directory\nls: /Library/Application Support/AutoByteusNFS: No such file or directory\n"
+    }
+  ]
+}

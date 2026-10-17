@@ -63,7 +63,7 @@
           @change="(key, change) => emit('change-member', key, change)"
         />
 
-        <!-- REQ-007 (SR-006, SR-007): collaborators and copies as member rows, collapsed until opened. A stopped
+        <!-- REQ-007 (SR-006, SR-007): delegated copies as member rows, collapsed until opened. A stopped
              copy's model and its settings are edited like a stopped run's member; a running one has a stop icon. -->
         <RunMembersSection
           v-if="delegated.length"
@@ -139,7 +139,7 @@ const props = withDefaults(defineProps<{
   rootModelUnavailable?: boolean
   members?: readonly RunMemberNode[]
   lockedModelsFor?: ((key: string) => readonly ChatModelOption[] | null) | null
-  /** Collaborators and open delegated copies (REQ-007); a row's own locks say whether its model can change. */
+  /** Open delegated copies (REQ-007); a row's own locks say whether its model can change. */
   delegated?: readonly RunMemberNode[]
   delegatedLockedModelsFor?: ((key: string) => readonly ChatModelOption[] | null) | null
   /** The outcome of a copy's Stop when it needs saying (a failure, or older copies it could not stop). */

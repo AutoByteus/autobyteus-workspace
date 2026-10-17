@@ -1,0 +1,6 @@
+PASS direct MOUNT3 accepts exact allowed network peer and denies reachable excluded peer
+PASS different mounted client UIDs see local owner presentation but source remains nonroot owner
+PASS client root cannot read server-root private directory and creates only squashed nonroot files
+PASS binary-verifier candidate has exactly one winner in every concurrent mounted exclusive-create trial
+PROBE FAILURE RuntimeError("warning: unable to access '/root/.config/git/ignore': Permission denied\nwarning: unable to access '/root/.config/git/attributes': Permission denied\nfatal: error when closing loose object file: Permission denied\n")
+{"run": "ab-sf-fr050-7c155f0a", "passes": 4, "fatal": "RuntimeError(\"warning: unable to access '/root/.config/git/ignore': Permission denied\\nwarning: unable to access '/root/.config/git/attributes': Permission denied\\nfatal: error when closing loose object file: Permission denied\\n\")"}

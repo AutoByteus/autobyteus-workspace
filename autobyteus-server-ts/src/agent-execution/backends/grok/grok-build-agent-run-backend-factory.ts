@@ -1,3 +1,4 @@
+import { grokPrivateSkills } from "./grok-private-skills.js";
 import type { AgentDefinitionService } from "../../../agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../../skills/services/skill-service.js";
 import type { AgentToolMcpRunSessionActivator } from "../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
@@ -17,6 +18,7 @@ export const createGrokBuildAgentRunBackendFactory = (input: Readonly<{
   mcpSessions: AgentToolMcpRunSessionActivator;
 }>): AcpAgentRunBackendFactory => new AcpAgentRunBackendFactory({
   launchProfile: grokBuildLaunchProfile,
+  privateSkills: grokPrivateSkills,
   sessionProfile: grokBuildSessionProfile,
   definitions: input.definitions,
   skills: input.skills,

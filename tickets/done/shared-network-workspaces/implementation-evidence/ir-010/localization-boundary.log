@@ -1,0 +1,6 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.3-beta.2 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.

@@ -1,0 +1,140 @@
+[
+  {
+    "id": "ganesha43",
+    "url": "https://raw.githubusercontent.com/nfs-ganesha/nfs-ganesha/V4.3/src/Protocols/NFS/nfs4_Compound.c",
+    "sha256": "da9641e89d9b8b24f01509595a330bf4dfb026ac65d9e1899e0cac3a9345f3a3",
+    "bytes": 51480,
+    "symbolLines": {
+      "[NFS4_OP_GET_DIR_DELEGATION]": [
+        439
+      ]
+    }
+  },
+  {
+    "id": "ganeshaFix",
+    "url": "https://api.github.com/repos/nfs-ganesha/nfs-ganesha/commits/98eb77c",
+    "sha256": "929549772b5eabe38450c7192b9888774417691b9a76962c05b9bbcb8414c350",
+    "bytes": 4730,
+    "symbolLines": {},
+    "commit": "98eb77c4fd94effa6882b214698a77752ec79f6e",
+    "title": "Return NFS4ERR_NOTSUPP for GET_DIR_DELEGATION (NFSv4.1 op 46) #1385",
+    "date": "2026-04-10T23:02:35Z",
+    "files": [
+      "src/Protocols/NFS/nfs4_Compound.c"
+    ]
+  },
+  {
+    "id": "linuxProc",
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v7.0/fs/nfs/nfs4proc.c",
+    "sha256": "b72212bc7b71000c66fe538db517b61f0436354e67a74f01cce2d9c2c58391c0",
+    "bytes": 294476,
+    "symbolLines": {
+      "should_request_dir_deleg": [
+        4375,
+        4450
+      ],
+      "case -ENOTSUPP": [
+        4469,
+        4493,
+        10129
+      ],
+      "case -EOPNOTSUPP": [
+        4470,
+        4494
+      ]
+    }
+  },
+  {
+    "id": "linuxXdr",
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v7.0/fs/nfs/nfs4xdr.c",
+    "sha256": "ad711bb79eb0f44c5d343961eb0d4826c8a162df92d9a3030721134a24940472",
+    "bytes": 208696,
+    "symbolLines": {
+      "decode_op_hdr": [
+        3256,
+        3287,
+        3291,
+        4419,
+        4467,
+        4490,
+        4504,
+        4525,
+        4563,
+        4600,
+        4860,
+        5014,
+        5081,
+        5105,
+        5148,
+        5167,
+        5177,
+        5188,
+        5194,
+        5199,
+        5305,
+        5343,
+        5355,
+        5365,
+        5370,
+        5380,
+        5405,
+        5423,
+        5457,
+        5470,
+        5482,
+        5488,
+        5500,
+        5550,
+        5557,
+        5621,
+        5629,
+        5643,
+        5713,
+        5721,
+        5744,
+        5868,
+        5896,
+        5918,
+        5923,
+        5928,
+        5946,
+        6010,
+        6053,
+        6116,
+        6185,
+        6207,
+        6233,
+        6255
+      ],
+      "EREMOTEIO": [
+        3280,
+        3567,
+        4701,
+        5091,
+        5956
+      ],
+      "decode_get_dir_delegation": [
+        6002,
+        6562
+      ],
+      "OP_GET_DIR_DELEGATION": [
+        2018,
+        6010
+      ]
+    }
+  },
+  {
+    "id": "linuxDir",
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v7.0/fs/nfs/nfs4dir.c",
+    "error": "<HTTPError 404: 'Not Found'>"
+  },
+  {
+    "id": "linuxParams",
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v7.0/fs/nfs/super.c",
+    "sha256": "a37e45abcc49eca2f91eb987a6bb82d7c8cd72cfef88a7b00863fc74c99f6aad",
+    "bytes": 38888,
+    "symbolLines": {
+      "directory_delegations": []
+    }
+  }
+]

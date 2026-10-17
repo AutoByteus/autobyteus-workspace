@@ -1,0 +1,2 @@
+live-claude exit 0
+run-settings-live full exit 1

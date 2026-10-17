@@ -1,0 +1,3 @@
+PASS patched UNFS3 squashed-data daemon directly serves selected Mac source without file handles
+PROBE FAILURE RuntimeError("docker: Error response from daemon: No such image: sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1\n\nRun 'docker run --help' for more information\n")
+{"run": "ab-sf-fr052-2ecf19a0", "passes": 1, "fatal": "RuntimeError(\"docker: Error response from daemon: No such image: sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1\\n\\nRun 'docker run --help' for more information\\n\")"}

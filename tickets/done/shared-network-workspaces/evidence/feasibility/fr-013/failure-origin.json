@@ -1,0 +1,7 @@
+{
+  "status": "failed exact-byte fixture assertion, not a product filesystem or private-plugin failure",
+  "cause": "native Write omitted required terminal newline; Read tool displays text as lines, initial prompt asked exact text but did not explicitly specify newline bytes",
+  "nativeSkillAndReadAndWriteExecuted": true,
+  "providerResultError": false,
+  "fixForNextRound": "explicit one-newline publication contract in skill and prompts, retain FR-013 outputs"
+}

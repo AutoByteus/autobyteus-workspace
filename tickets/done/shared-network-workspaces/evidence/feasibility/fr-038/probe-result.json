@@ -1,0 +1,44 @@
+{
+  "scope": "owned Mac host scratch bind file-handle prerequisite, not filesystem export or final Docker-server proof",
+  "source": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr038-host-source-zsq0te14",
+  "node": "ab-sf-fr038-bind-capability",
+  "image": "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1",
+  "commands": [
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--name",
+        "ab-sf-fr038-bind-capability",
+        "--label",
+        "org.autobyteus.probe=fr-038",
+        "--mount",
+        "type=bind,src=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr038-host-source-zsq0te14,dst=/probe-source",
+        "--entrypoint",
+        "python3",
+        "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1",
+        "-c",
+        "import ctypes,os,json\nclass Handle(ctypes.Structure):\n _fields_=[('handle_bytes',ctypes.c_uint),('handle_type',ctypes.c_int),('bytes',ctypes.c_ubyte*128)]\nx=Handle();x.handle_bytes=128;m=ctypes.c_int();lib=ctypes.CDLL(None,use_errno=True);v=lib.name_to_handle_at(-100,b'/probe-source/preexisting.txt',ctypes.byref(x),ctypes.byref(m),0);e=ctypes.get_errno();print(json.dumps({'syscall':'name_to_handle_at','result':v,'errno':e,'message':os.strerror(e),'handleBytes':x.handle_bytes,'mountId':m.value,'filePreserved':open('/probe-source/preexisting.txt').read(),'mount':next(l.strip() for l in open('/proc/mounts') if ' /probe-source ' in l)}))\n"
+      ],
+      "rc": 0,
+      "stdout": "{\"syscall\": \"name_to_handle_at\", \"result\": -1, \"errno\": 95, \"message\": \"Operation not supported\", \"handleBytes\": 128, \"mountId\": 0, \"filePreserved\": \"KEEP_HOST_FOLDER\", \"mount\": \"/run/host_mark/private /probe-source fakeowner rw,nosuid,nodev,relatime,fakeowner 0 0\"}\n",
+      "stderr": ""
+    }
+  ],
+  "observation": {
+    "syscall": "name_to_handle_at",
+    "result": -1,
+    "errno": 95,
+    "message": "Operation not supported",
+    "handleBytes": 128,
+    "mountId": 0,
+    "filePreserved": "KEEP_HOST_FOLDER",
+    "mount": "/run/host_mark/private /probe-source fakeowner rw,nosuid,nodev,relatime,fakeowner 0 0"
+  },
+  "hostFixturePreserved": true,
+  "cleanup": {
+    "containerAbsent": true,
+    "fixtureRemoved": true
+  }
+}

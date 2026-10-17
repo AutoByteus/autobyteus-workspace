@@ -60,7 +60,7 @@ const applyUnit = (
   nested: Array<[string, KindDefinitionReadResult]> = [],
 ) => definitions.store.apply(kind, folderId, {
   status: "read",
-  location: { packageRoot: ROOT, folderDir: `${ROOT}/${kind}/${folderId}`, sourceClass: "external_read_only" },
+  location: { packageRoot: ROOT, folderDir: `${ROOT}/${kind}/${folderId}`, sourceClass: "registered_package" },
   root,
   nested: new Map(nested),
 });

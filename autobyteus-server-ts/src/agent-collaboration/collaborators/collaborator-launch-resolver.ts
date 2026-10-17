@@ -103,7 +103,7 @@ export class CollaboratorLaunchResolver {
     };
 
     return plans.map((plan): CollaboratorEntryPlan => {
-      const identity = { name: plan.name, address: plan.address, addedAt: plan.addedAt, addedViaAgentRunId: plan.addedViaAgentRunId };
+      const identity = { name: plan.name, address: plan.address };
       if (plan.kind === "agent") {
         const own = verdictOf(plan);
         return Object.freeze({

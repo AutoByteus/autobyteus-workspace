@@ -1,0 +1,100 @@
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 5 connections.
+Initialized server settings service with 19 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /Users/admin/.ab-sf-ab-sf-fr025-1964d0e8/temp
+Created metadata-only FileSystemWorkspace at /Users/admin/.ab-sf-ab-sf-fr025-1964d0e8/temp.
+Initialized TempWorkspace at /Users/admin/.ab-sf-ab-sf-fr025-1964d0e8/temp with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+{"level":30,"time":1791881910995,"pid":741,"hostname":"Manageds-Virtual-Machine.local","msg":"Server listening at http://127.0.0.1:49155"}
+{"level":30,"time":1791881911016,"pid":741,"hostname":"Manageds-Virtual-Machine.local","msg":"Server listening at http://192.168.64.2:53677"}
+[2026-10-13T08:58:31.017Z] [INFO] [server.runtime] Server listening on 192.168.64.2:53677
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 35 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /Volumes/autobyteus-shared/project
+Created metadata-only FileSystemWorkspace at /Volumes/autobyteus-shared/project.
+Created and registered workspace ID: agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106
+Agent Definition created successfully with ID: ab-sf-fr025-1964d0e8-codex-app-server-0e94d
+Creating new workspace for rootPath: /Volumes/autobyteus-shared/project
+Created metadata-only FileSystemWorkspace at /Volumes/autobyteus-shared/project.
+Reusing registered workspace ID: agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106
+Creating new workspace for rootPath: /Volumes/autobyteus-shared/project
+Created metadata-only FileSystemWorkspace at /Volumes/autobyteus-shared/project.
+Reusing registered workspace ID: agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106
+Agent websocket attached for run ab_sf_fr025_1964d0e8_codex_app_server_0e94d_3396dbcd89ed4532bfca1220e6b3d958
+Created agent session 80fbae58-c03c-4329-b71d-b4bd6c4c1193 for run ab_sf_fr025_1964d0e8_codex_app_server_0e94d_3396dbcd89ed4532bfca1220e6b3d958
+Agent WebSocket connected: session=80fbae58-c03c-4329-b71d-b4bd6c4c1193, run=ab_sf_fr025_1964d0e8_codex_app_server_0e94d_3396dbcd89ed4532bfca1220e6b3d958
+[CodexAppServerClient] stderr: [2m2026-10-13T08:58:39.827947Z[0m [31mERROR[0m [2mcodex_core::tools::router[0m[2m:[0m [3merror[0m[2m=[0mfailed to spawn code-mode host /Users/admin/.ab-sf-ab-sf-fr025-1964d0e8/tools/codex-code-mode-host: No such file or directory (os error 2)
+[CodexAppServerClient] stderr: [2m2026-10-13T08:58:42.070422Z[0m [31mERROR[0m [2mcodex_core::tools::router[0m[2m:[0m [3merror[0m[2m=[0mfailed to spawn code-mode host /Users/admin/.ab-sf-ab-sf-fr025-1964d0e8/tools/codex-code-mode-host: No such file or directory (os error 2)
+[CodexAppServerClient] stderr: [2m2026-10-13T08:58:43.977550Z[0m [31mERROR[0m [2mcodex_core::tools::router[0m[2m:[0m [3merror[0m[2m=[0mfailed to spawn code-mode host /Users/admin/.ab-sf-ab-sf-fr025-1964d0e8/tools/codex-code-mode-host: No such file or directory (os error 2)
+Closed agent session 80fbae58-c03c-4329-b71d-b4bd6c4c1193
+Agent WebSocket disconnected: 80fbae58-c03c-4329-b71d-b4bd6c4c1193

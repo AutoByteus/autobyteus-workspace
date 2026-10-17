@@ -1,0 +1,63 @@
+{
+  "entryPoint": "Successful API/E2E proportional durable-test review",
+  "round": 1,
+  "codeReviewRevision": "CRR-016",
+  "head": "a53c133a262ca859e8b8103c737a0ce385019aa5",
+  "sourceCommit": "a3f65bfe6e7859a3167cb41013b80bc223385cfb",
+  "ancestor": "f13bdd0eb79aacc63dffa5995b9c86f359001468",
+  "durableDelta": [
+    "M\tautobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts",
+    "A\tautobyteus-web/components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts",
+    "M\tautobyteus-web/components/fileExplorer/__tests__/FileExplorerTabs.spec.ts",
+    "A\tautobyteus-web/components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts"
+  ],
+  "reviewedFiles": {
+    "autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts": "2036b2e7e104395a7a5635d057b062aa60e4532448564008797f5ebd486da35a",
+    "autobyteus-server-ts/tests/e2e/helpers/studio-runtime-test-server.ts": "150f7e687ee3fc044c5732ec78408d541c2cd5cd3d954a03f3d7b724bab183da",
+    "autobyteus-web/components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts": "d840d8e2706cee756bae4f77a40b740ef37cf032edf68a2c9d957dc1020c5e98",
+    "autobyteus-web/components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts": "54e1298b0b1bf21f134b5b050bc57edca415b43ecbf6342d77b4b6524f57e0dc",
+    "autobyteus-web/components/fileExplorer/__tests__/FileExplorerTabs.spec.ts": "01c5eae143cf0ae87b091e37eeb8a436229403fa8067cb558f49ef315e91128c"
+  },
+  "contextInputs": {
+    "tickets/in-progress/shared-network-workspaces/api-e2e-execution-coverage-report.md": "38e701fb345bcaa460d8971849a7a9bd8a5ce2b19191d68f7fc22314d37100a9",
+    "tickets/in-progress/shared-network-workspaces/api-e2e-coverage-investigation.md": "59fca0d8f2838d073d57fa76eaf0393171aca90a9582761ec35468a41d7b37ac",
+    "tickets/in-progress/shared-network-workspaces/api-e2e-test-case-ledger.md": "ee5db8666bf1f7538b6c1e178a73d04ddbc9182966504dad3c97e5848c92cea8",
+    "tickets/in-progress/shared-network-workspaces/api-e2e-revision-record.md": "828d23f2db30167bae710ee6fbb6efa6872d12d21a4ba99c514bad4d93295897",
+    "tickets/in-progress/shared-network-workspaces/requirements-doc.md": "eeaac5c0b92fbfac2f83a1942549177365f53ada73c6328a0a75142a537023a1",
+    "tickets/in-progress/shared-network-workspaces/design-spec.md": "1b3974b7a0ebff69b9d5e5c6cb200669e5a47d27168ca843ffae0d51c96f52f1",
+    "tickets/in-progress/shared-network-workspaces/implementation-handoff.md": "196bcf9ced64204b3007d6bc6fc3e9bf1cd6f0c90bb2edc21c9f3a832e13bc9c",
+    "tickets/in-progress/shared-network-workspaces/code-review-report.md": "999711b76fec2e268335f6e3ab77c1540bb30fb1ea4427bf693a9a553445a743"
+  },
+  "helperDiffFromAncestor": "",
+  "api008ChangesOutsideTicket": "",
+  "sourceReviewSha256": "999711b76fec2e268335f6e3ab77c1540bb30fb1ea4427bf693a9a553445a743",
+  "priorHistoryBytes": 83949,
+  "priorHistorySha256": "8c912d24decefd27208780a2269b9b084bfe18a52e53d50811fe974663acec71",
+  "testReviewReportPreviouslyExisted": false,
+  "repositoryLogs": {
+    "original-and-viewer.log": {
+      "sha256": "0fa30a4501a4f7b8fbff93a0180d99e37f9797616991f1f9a82553498e398bf6",
+      "expectedSummary": "12 passed (12)",
+      "present": true
+    },
+    "adjacent.log": {
+      "sha256": "faf848967e9c55cd8d55ebde52b6edb7ad9ce994dc65bd4e0a97aab9a0053984",
+      "expectedSummary": "148 passed (148)",
+      "present": true
+    },
+    "public-http.log": {
+      "sha256": "9a89b6c793bb15cd942e9768a6ae94f2fbb23cbfcd50fcc82867b53c4b7a99c3",
+      "expectedSummary": "6 passed (6)",
+      "present": true
+    }
+  },
+  "filesystemSummary": {
+    "result": "Pass",
+    "scope": "User-directed command-only filesystem validation, ONE Linux VM/TWO generic command containers, LN then LD",
+    "caseGroupCount": 17,
+    "allGroupsPass": true,
+    "cleanup": "Complete"
+  },
+  "reviewerTestExecution": "None; diff and fresh API008 logs sufficient. No full workflow rerun.",
+  "sourceEdits": "None"
+}

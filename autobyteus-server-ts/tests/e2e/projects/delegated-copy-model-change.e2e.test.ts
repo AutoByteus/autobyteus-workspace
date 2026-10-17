@@ -26,7 +26,7 @@ import { fileURLToPath } from "node:url";
 // DCM-003 a stopped Team run: the copies' choices and the run's own settings in one Save; one unavailable model
 //   refuses the whole Save and writes nothing; after the run is reopened, the copy's next message runs on its choice.
 // DCM-004 the standalone Agent root: Stop, Save, resume on the chosen model.
-// DCM-005 the Org root: an agent copy, a Team copy and a collaborator (DEC-001) are stopped, changed and resumed; the live
+// DCM-005 the Org root: an agent copy and a Team copy are stopped, changed and resumed; the live
 //   view receives `delegated_launch_selections_changed`; the same definition delegated again starts on normal resolution
 //   (AC-007).
 // DCM-006 a Team copy whose member is mid-turn (a fake Grok replaying `cancel.jsonl`: the turn stays open until the server
@@ -391,7 +391,7 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
   };
   const started = (runId: string, label: string) => until(async () => (await launchesOf(runId)).length > 0, label, 60_000);
 
-  it("DCM-005: the Org root: an agent copy, a Team copy and a collaborator are stopped, changed and resumed; the view publishes the choice; a later copy uses normal resolution", async () => {
+  it("DCM-005: the Org root: an agent copy and a Team copy are stopped, changed and resumed; an outside address is not found; the view publishes the choice; a later copy uses normal resolution", async () => {
     const root = await startRoot("org");
     const copyRunId = await agentCopyScenario(root);
     // IR-002: the live Org view is told about the committed choice.
@@ -418,22 +418,13 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
     await until(async () => (await launchesOf(lead, from)).length > 0, "org: Team copy lead resumed", 60_000);
     expect(await launchesOf(lead, from)).toEqual([ALT]);
 
-    // DEC-001: a collaborator brought in with send_message_to is stopped and changed the same way.
+    // collaboration-model-contract: collaborators no longer exist, so there is no collaborator to change; messaging an
+    // outside address is not found and records nothing, and a stored collaborator is a delegated run (the copies above).
     const scribeAddress = `/${segment(names.scribe!)}`;
-    await expect(root.managerCalls(callTool("send_message_to", { recipient_address: scribeAddress, content: "Take notes." }))).resolves.toMatchObject({ accepted: true });
-    let collaborator: Rec | undefined;
-    await until(async () => Boolean(collaborator = objectsIn(await root.storedTree()).find((entry) => entry.address === scribeAddress && (entry.addedViaAgentRunId ?? entry.added_via_agent_run_id))),
-      "org: collaborator recorded", 30_000);
-    const scribeRunId = (collaborator!.agentRunId ?? collaborator!.agent_run_id) as string;
-    await started(scribeRunId, "org: collaborator started");
-    expect(await launchesOf(scribeRunId)).toEqual([MODEL]);
-    await expect(update(root.rootKind, root.rootId, [{ agentRunId: scribeRunId, selection: choice(ALT) }])).resolves.toMatchObject({ outcome: "COPY_RUNNING" });
-    await expect(stop(root.rootKind, root.rootId, { agentRunId: scribeRunId })).resolves.toMatchObject({ success: true, outcome: "STOPPED" });
-    await expect(update(root.rootKind, root.rootId, [{ agentRunId: scribeRunId, selection: choice(ALT) }])).resolves.toMatchObject({ success: true, outcome: "UPDATED" });
-    from = (await agyLaunches()).length;
-    await expect(messageCopy(root, scribeRunId, "More notes, please.")).resolves.toMatchObject({ accepted: true });
-    await until(async () => (await launchesOf(scribeRunId, from)).length > 0, "org: collaborator resumed", 60_000);
-    expect(await launchesOf(scribeRunId, from)).toEqual([ALT]);
+    const treeBefore = JSON.stringify(objectsIn(await root.storedTree()).filter((entry) => entry.address === scribeAddress));
+    await expect(root.managerCalls(callTool("send_message_to", { recipient_address: scribeAddress, content: "Take notes." })))
+      .resolves.toMatchObject({ accepted: false, code: "COLLABORATION_TARGET_NOT_FOUND" });
+    expect(JSON.stringify(objectsIn(await root.storedTree()).filter((entry) => entry.address === scribeAddress))).toBe(treeBefore);
     await terminate("org", root.rootId);
   }, 300_000);
 

@@ -1,0 +1,217 @@
+{
+  "finding": "API-F005",
+  "result": "Fail",
+  "classification": "Unclear \u2014 persisted source identity/platform integration; independent failure-origin review to determine implementation/design owner",
+  "AC": [
+    "AC-007",
+    "AC-014",
+    "AC-017",
+    "AC-018",
+    "AC-019"
+  ],
+  "scenarios": [
+    "SCN-009",
+    "SCN-013"
+  ],
+  "expected": "Ordinary machine restart reuses same original source without manual mount/config edits; fail closed on actual replacement remains required",
+  "observed": "Fresh public native Mac create succeeds, ordinary boots change st_dev while inode/owner/mode/source bytes/marker remain; persistent dev/inode check refuses automatic and explicit reconnect; native mount stays absent",
+  "source": "/Users/admin/ab-nfs-api005-mac-59bba374-source",
+  "binary": {
+    "guestPath": "/Users/admin/ab-nfs-api005-mac-59bba374-binary",
+    "sha256": "5908c8229010102d7a1708c65e50b8674766a6c8356c4362588c0fed36167a57"
+  },
+  "connection": {
+    "storageId": "7d29fab2-7ce0-47cb-9183-73a810590a07",
+    "endpoint": "192.168.64.2",
+    "export": "/Users/admin/ab-nfs-api005-mac-59bba374-source",
+    "protocol": "3",
+    "mountRoot": "/Volumes/autobyteus-shared"
+  },
+  "initialSourceIdentity": "16777228:506781:501:20:755",
+  "rows": [
+    {
+      "receipt": "second-boot",
+      "observation": 0,
+      "currentSourceDeviceInodeUidGidMode": [
+        16777230,
+        506781,
+        501,
+        20,
+        755
+      ],
+      "volumeUUID": null,
+      "deviceNode": null,
+      "mountPoint": null,
+      "diskInfoError": "Could not find disk: /Users/admin/ab-nfs-api005-mac-59bba374-source",
+      "recordSourceMarkerAndOriginalBytesUnchanged": true,
+      "storedDevice": 16777228,
+      "storedInode": 506781
+    },
+    {
+      "receipt": "second-boot",
+      "observation": 1,
+      "currentSourceDeviceInodeUidGidMode": [
+        16777227,
+        506781,
+        501,
+        20,
+        755
+      ],
+      "volumeUUID": null,
+      "deviceNode": null,
+      "mountPoint": null,
+      "diskInfoError": "Could not find disk: /Users/admin/ab-nfs-api005-mac-59bba374-source",
+      "recordSourceMarkerAndOriginalBytesUnchanged": true,
+      "storedDevice": 16777228,
+      "storedInode": 506781
+    },
+    {
+      "receipt": "second-boot",
+      "observation": 2,
+      "currentSourceDeviceInodeUidGidMode": [
+        16777227,
+        506781,
+        501,
+        20,
+        755
+      ],
+      "volumeUUID": null,
+      "deviceNode": null,
+      "mountPoint": null,
+      "diskInfoError": "Could not find disk: /Users/admin/ab-nfs-api005-mac-59bba374-source",
+      "recordSourceMarkerAndOriginalBytesUnchanged": true,
+      "storedDevice": 16777228,
+      "storedInode": 506781
+    },
+    {
+      "receipt": "second-boot",
+      "observation": 3,
+      "currentSourceDeviceInodeUidGidMode": [
+        16777227,
+        506781,
+        501,
+        20,
+        755
+      ],
+      "volumeUUID": null,
+      "deviceNode": null,
+      "mountPoint": null,
+      "diskInfoError": "Could not find disk: /Users/admin/ab-nfs-api005-mac-59bba374-source",
+      "recordSourceMarkerAndOriginalBytesUnchanged": true,
+      "storedDevice": 16777228,
+      "storedInode": 506781
+    },
+    {
+      "receipt": "second-boot",
+      "observation": 4,
+      "currentSourceDeviceInodeUidGidMode": [
+        16777227,
+        506781,
+        501,
+        20,
+        755
+      ],
+      "volumeUUID": null,
+      "deviceNode": null,
+      "mountPoint": null,
+      "diskInfoError": "Could not find disk: /Users/admin/ab-nfs-api005-mac-59bba374-source",
+      "recordSourceMarkerAndOriginalBytesUnchanged": true,
+      "storedDevice": 16777228,
+      "storedInode": 506781
+    },
+    {
+      "receipt": "third-boot-with-valid-disk-info",
+      "observation": 0,
+      "currentSourceDeviceInodeUidGidMode": [
+        16777227,
+        506781,
+        501,
+        20,
+        755
+      ],
+      "volumeUUID": "A19FE379-BE62-4297-9A39-3934CC88214B",
+      "deviceNode": "/dev/disk2s5",
+      "mountPoint": "/System/Volumes/Data",
+      "diskInfoError": null,
+      "recordSourceMarkerAndOriginalBytesUnchanged": true,
+      "storedDevice": 16777228,
+      "storedInode": 506781
+    },
+    {
+      "receipt": "third-boot-with-valid-disk-info",
+      "observation": 1,
+      "currentSourceDeviceInodeUidGidMode": [
+        16777230,
+        506781,
+        501,
+        20,
+        755
+      ],
+      "volumeUUID": "A19FE379-BE62-4297-9A39-3934CC88214B",
+      "deviceNode": "/dev/disk2s5",
+      "mountPoint": "/System/Volumes/Data",
+      "diskInfoError": null,
+      "recordSourceMarkerAndOriginalBytesUnchanged": true,
+      "storedDevice": 16777228,
+      "storedInode": 506781
+    },
+    {
+      "receipt": "third-boot-with-valid-disk-info",
+      "observation": 2,
+      "currentSourceDeviceInodeUidGidMode": [
+        16777230,
+        506781,
+        501,
+        20,
+        755
+      ],
+      "volumeUUID": "A19FE379-BE62-4297-9A39-3934CC88214B",
+      "deviceNode": "/dev/disk2s5",
+      "mountPoint": "/System/Volumes/Data",
+      "diskInfoError": null,
+      "recordSourceMarkerAndOriginalBytesUnchanged": true,
+      "storedDevice": 16777228,
+      "storedInode": 506781
+    },
+    {
+      "receipt": "third-boot-with-valid-disk-info",
+      "observation": 3,
+      "currentSourceDeviceInodeUidGidMode": [
+        16777230,
+        506781,
+        501,
+        20,
+        755
+      ],
+      "volumeUUID": "A19FE379-BE62-4297-9A39-3934CC88214B",
+      "deviceNode": "/dev/disk2s5",
+      "mountPoint": "/System/Volumes/Data",
+      "diskInfoError": null,
+      "recordSourceMarkerAndOriginalBytesUnchanged": true,
+      "storedDevice": 16777228,
+      "storedInode": 506781
+    }
+  ],
+  "noRepair": "No config/source identity rewrite, direct mount, engine/job restart, forced outage, cache workaround or source replacement. Explicit reconnect only after automatic observations, recorded separately.",
+  "validVolumeUUID": "A19FE379-BE62-4297-9A39-3934CC88214B",
+  "deviceSequence": [
+    16777228,
+    16777230,
+    16777227,
+    16777230
+  ],
+  "evidence": [
+    "mac-native-result.json",
+    "mac-reboot-observe.json",
+    "mac-reboot-diagnostic.json",
+    "mac-reboot-confirm-result.json",
+    "mac-volume-boot-result.json",
+    "mac-detach-result.json"
+  ],
+  "limits": [
+    "Mac VM not physical hardware; diagnostic second-boot diskutil source-directory argument invalid, never used as UUID proof; third-boot disk2s5 result supplies valid same-volume before/after proof",
+    "First210s observation is not a product deadline: explicit repeated source-identity rejection and missing mount is the finding",
+    "API-F001 native first-create and API-F003 Linux Docker node lifecycle scoped resolutions remain; latest IR008 Linux cache-policy delta does not change Apple/source identity implementation",
+    "Do not remove anti-replacement safety or accept marker alone as fix; repair belongs to reviewed requirement/design/implementation authority"
+  ]
+}

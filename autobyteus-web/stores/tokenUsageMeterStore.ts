@@ -181,7 +181,7 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
   const teamAggregateEntries = reactive<Record<string, TeamTokenUsageAggregateEntry>>({});
   const seenUsageKeys = new Set<string>();
   const teamAggregateRequests = new Map<string, Promise<TokenUsageRunSummary | null>>();
-  /** Standalone run roll-ups (host plus collaborators and copies), apart from the host's exact live summary. */
+  /** Standalone run roll-ups (host plus delegated copies), apart from the host's exact live summary. */
   const standaloneRunSummaries = reactive<Record<string, TokenUsageRunSummary>>({});
   const standaloneRunRequests = new Map<string, Promise<TokenUsageRunSummary | null>>();
   const { clearOnLiveModelCall, ...compactionMarks } = createTokenUsageCompactionMarks();
@@ -269,16 +269,13 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     if (!runId) return false;
     const seenKey = payload.usage_event_id || payload.idempotency_key;
     if (seenKey && seenUsageKeys.has(seenKey)) return false;
-    if (!payload.run_summary_after_event) {
-      throughput.observeMissingSummary(runId, payload);
-      return false;
-    }
+    // TPS is decided per call on the server, independent of accounting and persistence.
+    throughput.record(runId, payload);
+    if (!payload.run_summary_after_event) return false;
     const summary = mapTokenUsageRunSummaryDto(payload.run_summary_after_event, { runId });
     if (seenKey) seenUsageKeys.add(seenKey);
     clearOnLiveModelCall(runId, payload.reports_model_call);
-    const advanced = upsertRecordBackedAgentRunSummary({ runId, summary });
-    if (advanced) throughput.observe(runId, payload, summary);
-    return advanced;
+    return upsertRecordBackedAgentRunSummary({ runId, summary });
   }
 
   function applyTeamTokenUsage(
@@ -291,18 +288,15 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     if (!teamRunId || !runId || details.agent_run_id !== runId) return false;
     const seenKey = details.usage_event_id || details.idempotency_key;
     if (seenUsageKeys.has(seenKey)) return false;
-    if (!details.run_summary_after_event) {
-      throughput.observeMissingSummary(runId, details);
-      return false;
-    }
+    throughput.record(runId, details);
+    if (!details.run_summary_after_event) return false;
     const summary = mapTokenUsageRunSummaryDto(details.run_summary_after_event, {
       runId,
       rootTeamRunId: teamRunId,
     });
     seenUsageKeys.add(seenKey);
     clearOnLiveModelCall(runId, details.reports_model_call);
-    const advanced = upsertRecordBackedTeamMemberSummary({ teamRunId, agentRunId: runId, summary });
-    if (advanced) throughput.observe(runId, details, summary);
+    upsertRecordBackedTeamMemberSummary({ teamRunId, agentRunId: runId, summary });
 
     const current = teamAggregateEntries[teamRunId];
     const liveGeneration = (current?.liveGeneration ?? 0) + 1;
@@ -477,7 +471,7 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
 
   return {
     ...compactionMarks,
-    getRunThroughput: throughput.getRunThroughput,
+    getRunTps: throughput.getRunTps,
     hasAnyUsage,
     getRunSummary,
     getStandaloneRunSummary,

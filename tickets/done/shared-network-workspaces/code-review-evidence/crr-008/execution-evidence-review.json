@@ -1,0 +1,545 @@
+{
+  "result": "Confirmed API-F003 failure mechanism and API-F002 scoped resolution from archived raw evidence; not a new reproduction",
+  "firstLifecycleCases": [
+    {
+      "name": "normal selected Docker node restart",
+      "status": "Pass",
+      "seconds": 2.735
+    },
+    {
+      "name": "same node automatically healthy after Docker restart",
+      "status": "Pass",
+      "seconds": 4.691
+    },
+    {
+      "name": "Docker restart preserves exact image node config private mounts ports aliases and unselected node",
+      "status": "Pass",
+      "seconds": 1.047
+    },
+    {
+      "name": "normal whole guest reboot restores host and selected managedDocker client without reconnect",
+      "status": "Fail",
+      "seconds": 192.129
+    }
+  ],
+  "secondBootBefore": "a9d015f0-147e-4827-9825-4c68cb8143ba",
+  "secondBootAfter": "9132285f-1f71-4078-a84c-b5f986712316",
+  "selectedID": "689c89e631dd82ef0f57b454332f3a57d45806e898dc5c3e00f1c3240e7c0a38",
+  "selectedImage": "sha256:dd986b8ae47f0947516d1b708df200161d28a33706eb177b59b1afa70be937b4",
+  "restartPolicy": {
+    "Name": "unless-stopped",
+    "MaximumRetryCount": 0
+  },
+  "sameIDConfigHostConfigAcrossSecondBoot": true,
+  "publicReconnectRC": 0,
+  "publicReconnectStatus": {
+    "storageId": "71887d49-17ec-4e6f-a734-03ebd3abaafd",
+    "mountRoot": "/Volumes/autobyteus-shared",
+    "hostReady": true,
+    "nodes": {
+      "autobyteus-server-0": "attached, stopped (not ready)"
+    },
+    "limitation": "Hard NFS checks may stall; no outage deadline or local substitute"
+  },
+  "diagnosticOnlyStartRestoresSameNode": true,
+  "observations": [
+    {
+      "seconds": 0.449,
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 255,
+        "Error": "error while mounting volume '/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data': failed to mount local volume: mount :/autobyteus/71887d49-17ec-4e6f-a734-03ebd3abaafd:/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data, data: addr=192.168.64.7,hard,tcp,vers=4.1,actimeo=1,timeo=50,retrans=2,nosharecache: connection refused",
+        "StartedAt": "2026-10-14T07:46:10.535901764Z",
+        "FinishedAt": "2026-10-14T07:46:56.914818293Z"
+      },
+      "apiRC": 7,
+      "statusRC": 1,
+      "status": null
+    },
+    {
+      "seconds": 10.956,
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 255,
+        "Error": "error while mounting volume '/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data': failed to mount local volume: mount :/autobyteus/71887d49-17ec-4e6f-a734-03ebd3abaafd:/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data, data: addr=192.168.64.7,hard,tcp,vers=4.1,actimeo=1,timeo=50,retrans=2,nosharecache: connection refused",
+        "StartedAt": "2026-10-14T07:46:10.535901764Z",
+        "FinishedAt": "2026-10-14T07:46:56.914818293Z"
+      },
+      "apiRC": 7,
+      "statusRC": 1,
+      "status": null
+    },
+    {
+      "seconds": 21.53,
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 255,
+        "Error": "error while mounting volume '/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data': failed to mount local volume: mount :/autobyteus/71887d49-17ec-4e6f-a734-03ebd3abaafd:/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data, data: addr=192.168.64.7,hard,tcp,vers=4.1,actimeo=1,timeo=50,retrans=2,nosharecache: connection refused",
+        "StartedAt": "2026-10-14T07:46:10.535901764Z",
+        "FinishedAt": "2026-10-14T07:46:56.914818293Z"
+      },
+      "apiRC": 7,
+      "statusRC": 0,
+      "status": {
+        "storageId": "71887d49-17ec-4e6f-a734-03ebd3abaafd",
+        "mountRoot": "/Volumes/autobyteus-shared",
+        "hostReady": true,
+        "nodes": {
+          "autobyteus-server-0": "attached, stopped (not ready)"
+        },
+        "limitation": "Hard NFS checks may stall; no outage deadline or local substitute"
+      }
+    },
+    {
+      "seconds": 32.1,
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 255,
+        "Error": "error while mounting volume '/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data': failed to mount local volume: mount :/autobyteus/71887d49-17ec-4e6f-a734-03ebd3abaafd:/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data, data: addr=192.168.64.7,hard,tcp,vers=4.1,actimeo=1,timeo=50,retrans=2,nosharecache: connection refused",
+        "StartedAt": "2026-10-14T07:46:10.535901764Z",
+        "FinishedAt": "2026-10-14T07:46:56.914818293Z"
+      },
+      "apiRC": 7,
+      "statusRC": 0,
+      "status": {
+        "storageId": "71887d49-17ec-4e6f-a734-03ebd3abaafd",
+        "mountRoot": "/Volumes/autobyteus-shared",
+        "hostReady": true,
+        "nodes": {
+          "autobyteus-server-0": "attached, stopped (not ready)"
+        },
+        "limitation": "Hard NFS checks may stall; no outage deadline or local substitute"
+      }
+    },
+    {
+      "seconds": 42.68,
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 255,
+        "Error": "error while mounting volume '/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data': failed to mount local volume: mount :/autobyteus/71887d49-17ec-4e6f-a734-03ebd3abaafd:/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data, data: addr=192.168.64.7,hard,tcp,vers=4.1,actimeo=1,timeo=50,retrans=2,nosharecache: connection refused",
+        "StartedAt": "2026-10-14T07:46:10.535901764Z",
+        "FinishedAt": "2026-10-14T07:46:56.914818293Z"
+      },
+      "apiRC": 7,
+      "statusRC": 0,
+      "status": {
+        "storageId": "71887d49-17ec-4e6f-a734-03ebd3abaafd",
+        "mountRoot": "/Volumes/autobyteus-shared",
+        "hostReady": true,
+        "nodes": {
+          "autobyteus-server-0": "attached, stopped (not ready)"
+        },
+        "limitation": "Hard NFS checks may stall; no outage deadline or local substitute"
+      }
+    },
+    {
+      "seconds": 53.269,
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 255,
+        "Error": "error while mounting volume '/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data': failed to mount local volume: mount :/autobyteus/71887d49-17ec-4e6f-a734-03ebd3abaafd:/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data, data: addr=192.168.64.7,hard,tcp,vers=4.1,actimeo=1,timeo=50,retrans=2,nosharecache: connection refused",
+        "StartedAt": "2026-10-14T07:46:10.535901764Z",
+        "FinishedAt": "2026-10-14T07:46:56.914818293Z"
+      },
+      "apiRC": 7,
+      "statusRC": 0,
+      "status": {
+        "storageId": "71887d49-17ec-4e6f-a734-03ebd3abaafd",
+        "mountRoot": "/Volumes/autobyteus-shared",
+        "hostReady": true,
+        "nodes": {
+          "autobyteus-server-0": "attached, stopped (not ready)"
+        },
+        "limitation": "Hard NFS checks may stall; no outage deadline or local substitute"
+      }
+    },
+    {
+      "seconds": 63.862,
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 255,
+        "Error": "error while mounting volume '/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data': failed to mount local volume: mount :/autobyteus/71887d49-17ec-4e6f-a734-03ebd3abaafd:/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data, data: addr=192.168.64.7,hard,tcp,vers=4.1,actimeo=1,timeo=50,retrans=2,nosharecache: connection refused",
+        "StartedAt": "2026-10-14T07:46:10.535901764Z",
+        "FinishedAt": "2026-10-14T07:46:56.914818293Z"
+      },
+      "apiRC": 7,
+      "statusRC": 0,
+      "status": {
+        "storageId": "71887d49-17ec-4e6f-a734-03ebd3abaafd",
+        "mountRoot": "/Volumes/autobyteus-shared",
+        "hostReady": true,
+        "nodes": {
+          "autobyteus-server-0": "attached, stopped (not ready)"
+        },
+        "limitation": "Hard NFS checks may stall; no outage deadline or local substitute"
+      }
+    },
+    {
+      "seconds": 74.442,
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 255,
+        "Error": "error while mounting volume '/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data': failed to mount local volume: mount :/autobyteus/71887d49-17ec-4e6f-a734-03ebd3abaafd:/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data, data: addr=192.168.64.7,hard,tcp,vers=4.1,actimeo=1,timeo=50,retrans=2,nosharecache: connection refused",
+        "StartedAt": "2026-10-14T07:46:10.535901764Z",
+        "FinishedAt": "2026-10-14T07:46:56.914818293Z"
+      },
+      "apiRC": 7,
+      "statusRC": 0,
+      "status": {
+        "storageId": "71887d49-17ec-4e6f-a734-03ebd3abaafd",
+        "mountRoot": "/Volumes/autobyteus-shared",
+        "hostReady": true,
+        "nodes": {
+          "autobyteus-server-0": "attached, stopped (not ready)"
+        },
+        "limitation": "Hard NFS checks may stall; no outage deadline or local substitute"
+      }
+    },
+    {
+      "seconds": 85.036,
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 255,
+        "Error": "error while mounting volume '/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data': failed to mount local volume: mount :/autobyteus/71887d49-17ec-4e6f-a734-03ebd3abaafd:/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data, data: addr=192.168.64.7,hard,tcp,vers=4.1,actimeo=1,timeo=50,retrans=2,nosharecache: connection refused",
+        "StartedAt": "2026-10-14T07:46:10.535901764Z",
+        "FinishedAt": "2026-10-14T07:46:56.914818293Z"
+      },
+      "apiRC": 7,
+      "statusRC": 0,
+      "status": {
+        "storageId": "71887d49-17ec-4e6f-a734-03ebd3abaafd",
+        "mountRoot": "/Volumes/autobyteus-shared",
+        "hostReady": true,
+        "nodes": {
+          "autobyteus-server-0": "attached, stopped (not ready)"
+        },
+        "limitation": "Hard NFS checks may stall; no outage deadline or local substitute"
+      }
+    },
+    {
+      "seconds": 95.628,
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 255,
+        "Error": "error while mounting volume '/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data': failed to mount local volume: mount :/autobyteus/71887d49-17ec-4e6f-a734-03ebd3abaafd:/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data, data: addr=192.168.64.7,hard,tcp,vers=4.1,actimeo=1,timeo=50,retrans=2,nosharecache: connection refused",
+        "StartedAt": "2026-10-14T07:46:10.535901764Z",
+        "FinishedAt": "2026-10-14T07:46:56.914818293Z"
+      },
+      "apiRC": 7,
+      "statusRC": 0,
+      "status": {
+        "storageId": "71887d49-17ec-4e6f-a734-03ebd3abaafd",
+        "mountRoot": "/Volumes/autobyteus-shared",
+        "hostReady": true,
+        "nodes": {
+          "autobyteus-server-0": "attached, stopped (not ready)"
+        },
+        "limitation": "Hard NFS checks may stall; no outage deadline or local substitute"
+      }
+    },
+    {
+      "seconds": 106.206,
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 255,
+        "Error": "error while mounting volume '/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data': failed to mount local volume: mount :/autobyteus/71887d49-17ec-4e6f-a734-03ebd3abaafd:/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data, data: addr=192.168.64.7,hard,tcp,vers=4.1,actimeo=1,timeo=50,retrans=2,nosharecache: connection refused",
+        "StartedAt": "2026-10-14T07:46:10.535901764Z",
+        "FinishedAt": "2026-10-14T07:46:56.914818293Z"
+      },
+      "apiRC": 7,
+      "statusRC": 0,
+      "status": {
+        "storageId": "71887d49-17ec-4e6f-a734-03ebd3abaafd",
+        "mountRoot": "/Volumes/autobyteus-shared",
+        "hostReady": true,
+        "nodes": {
+          "autobyteus-server-0": "attached, stopped (not ready)"
+        },
+        "limitation": "Hard NFS checks may stall; no outage deadline or local substitute"
+      }
+    },
+    {
+      "seconds": 116.866,
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 255,
+        "Error": "error while mounting volume '/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data': failed to mount local volume: mount :/autobyteus/71887d49-17ec-4e6f-a734-03ebd3abaafd:/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data, data: addr=192.168.64.7,hard,tcp,vers=4.1,actimeo=1,timeo=50,retrans=2,nosharecache: connection refused",
+        "StartedAt": "2026-10-14T07:46:10.535901764Z",
+        "FinishedAt": "2026-10-14T07:46:56.914818293Z"
+      },
+      "apiRC": 7,
+      "statusRC": 0,
+      "status": {
+        "storageId": "71887d49-17ec-4e6f-a734-03ebd3abaafd",
+        "mountRoot": "/Volumes/autobyteus-shared",
+        "hostReady": true,
+        "nodes": {
+          "autobyteus-server-0": "attached, stopped (not ready)"
+        },
+        "limitation": "Hard NFS checks may stall; no outage deadline or local substitute"
+      }
+    },
+    {
+      "seconds": 127.446,
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 255,
+        "Error": "error while mounting volume '/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data': failed to mount local volume: mount :/autobyteus/71887d49-17ec-4e6f-a734-03ebd3abaafd:/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data, data: addr=192.168.64.7,hard,tcp,vers=4.1,actimeo=1,timeo=50,retrans=2,nosharecache: connection refused",
+        "StartedAt": "2026-10-14T07:46:10.535901764Z",
+        "FinishedAt": "2026-10-14T07:46:56.914818293Z"
+      },
+      "apiRC": 7,
+      "statusRC": 0,
+      "status": {
+        "storageId": "71887d49-17ec-4e6f-a734-03ebd3abaafd",
+        "mountRoot": "/Volumes/autobyteus-shared",
+        "hostReady": true,
+        "nodes": {
+          "autobyteus-server-0": "attached, stopped (not ready)"
+        },
+        "limitation": "Hard NFS checks may stall; no outage deadline or local substitute"
+      }
+    },
+    {
+      "seconds": 138.019,
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 255,
+        "Error": "error while mounting volume '/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data': failed to mount local volume: mount :/autobyteus/71887d49-17ec-4e6f-a734-03ebd3abaafd:/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data, data: addr=192.168.64.7,hard,tcp,vers=4.1,actimeo=1,timeo=50,retrans=2,nosharecache: connection refused",
+        "StartedAt": "2026-10-14T07:46:10.535901764Z",
+        "FinishedAt": "2026-10-14T07:46:56.914818293Z"
+      },
+      "apiRC": 7,
+      "statusRC": 0,
+      "status": {
+        "storageId": "71887d49-17ec-4e6f-a734-03ebd3abaafd",
+        "mountRoot": "/Volumes/autobyteus-shared",
+        "hostReady": true,
+        "nodes": {
+          "autobyteus-server-0": "attached, stopped (not ready)"
+        },
+        "limitation": "Hard NFS checks may stall; no outage deadline or local substitute"
+      }
+    },
+    {
+      "seconds": 148.599,
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 255,
+        "Error": "error while mounting volume '/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data': failed to mount local volume: mount :/autobyteus/71887d49-17ec-4e6f-a734-03ebd3abaafd:/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data, data: addr=192.168.64.7,hard,tcp,vers=4.1,actimeo=1,timeo=50,retrans=2,nosharecache: connection refused",
+        "StartedAt": "2026-10-14T07:46:10.535901764Z",
+        "FinishedAt": "2026-10-14T07:46:56.914818293Z"
+      },
+      "apiRC": 7,
+      "statusRC": 0,
+      "status": {
+        "storageId": "71887d49-17ec-4e6f-a734-03ebd3abaafd",
+        "mountRoot": "/Volumes/autobyteus-shared",
+        "hostReady": true,
+        "nodes": {
+          "autobyteus-server-0": "attached, stopped (not ready)"
+        },
+        "limitation": "Hard NFS checks may stall; no outage deadline or local substitute"
+      }
+    }
+  ],
+  "journalExtract": {
+    "firstBoot": [
+      "Oct 14 07:40:08.806168 ubuntu systemd[1]: Started autobyteus-nfs.service - AutoByteus NFS attachment service.",
+      "Oct 14 07:40:10.280246 ubuntu dockerd[867]: time=\"2026-10-14T07:40:10.280156960Z\" level=error msg=\"failed to start container\" container=689c89e631dd82ef0f57b454332f3a57d45806e898dc5c3e00f1c3240e7c0a38 error=\"error while mounting volume '/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data': failed to mount local volume: mount :/autobyteus/71887d49-17ec-4e6f-a734-03ebd3abaafd:/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data, data: addr=192.168.64.7,hard,tcp,vers=4.1,actimeo=1,timeo=50,retrans=2,nosharecache: connection refused\"",
+      "Oct 14 07:40:10.302066 ubuntu dockerd[867]: time=\"2026-10-14T07:40:10.302017627Z\" level=info msg=\"Daemon has completed initialization\"",
+      "Oct 14 07:40:10.302165 ubuntu dockerd[867]: time=\"2026-10-14T07:40:10.302084335Z\" level=info msg=\"API listen on /run/docker.sock\""
+    ],
+    "secondBoot": [
+      "Oct 14 07:46:56.353925 ubuntu systemd[1]: Started autobyteus-nfs.service - AutoByteus NFS attachment service.",
+      "Oct 14 07:46:57.935220 ubuntu dockerd[882]: time=\"2026-10-14T07:46:57.934974127Z\" level=error msg=\"failed to start container\" container=689c89e631dd82ef0f57b454332f3a57d45806e898dc5c3e00f1c3240e7c0a38 error=\"error while mounting volume '/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data': failed to mount local volume: mount :/autobyteus/71887d49-17ec-4e6f-a734-03ebd3abaafd:/var/lib/docker/volumes/autobyteus-nfs-71887d49-17ec-4e6f-a734-03ebd3abaafd/_data, data: addr=192.168.64.7,hard,tcp,vers=4.1,actimeo=1,timeo=50,retrans=2,nosharecache: connection refused\"",
+      "Oct 14 07:46:57.962894 ubuntu dockerd[882]: time=\"2026-10-14T07:46:57.962855835Z\" level=info msg=\"Daemon has completed initialization\"",
+      "Oct 14 07:46:57.963324 ubuntu dockerd[882]: time=\"2026-10-14T07:46:57.962910585Z\" level=info msg=\"API listen on /run/docker.sock\"",
+      "2026-10-14T07:46:57.940143044Z 14/10/2026 07:46:57 : epoch 6acf3371 : ubuntu : ganesha.nfsd-1[main] main :MAIN :EVENT :ganesha.nfsd Starting: Ganesha Version 4.3"
+    ]
+  },
+  "preservation": {
+    "sourceIdentity": [
+      64769,
+      787680,
+      1000,
+      109,
+      493
+    ],
+    "sourceHash": "f3b155a47b0ef3a4832a4aee3d3a4f613736ed5de21f618dcea5f41b092b60da",
+    "sourceMarker": {
+      "storageId": "71887d49-17ec-4e6f-a734-03ebd3abaafd"
+    },
+    "mountedHash": "f3b155a47b0ef3a4832a4aee3d3a4f613736ed5de21f618dcea5f41b092b60da",
+    "mountedMarker": {
+      "storageId": "71887d49-17ec-4e6f-a734-03ebd3abaafd"
+    },
+    "directoryDelegations": "Y",
+    "uid": 1000,
+    "gid": 109,
+    "groups": []
+  },
+  "nativePriorFailureResolution": {
+    "cases": [
+      {
+        "name": "fresh reference preflight and nonempty original source",
+        "status": "Pass",
+        "seconds": 0.114
+      },
+      {
+        "name": "one public bundled create under077 exact nonroot identity",
+        "status": "Pass",
+        "seconds": 16.778
+      },
+      {
+        "name": "original source identity and mounted bytes UUID defaultY",
+        "status": "Pass",
+        "seconds": 0.597
+      },
+      {
+        "name": "installed exact engine private modes mask staging cleanup managed jobs",
+        "status": "Pass",
+        "seconds": 0.112
+      },
+      {
+        "name": "public reconnect 1",
+        "status": "Pass",
+        "seconds": 0.508
+      },
+      {
+        "name": "public reconnect 2",
+        "status": "Pass",
+        "seconds": 0.605
+      },
+      {
+        "name": "post reconnect original source and mounted identity preserved",
+        "status": "Pass",
+        "seconds": 0.307
+      }
+    ],
+    "proof": {
+      "sourceIdentity": [
+        64769,
+        577887,
+        1000,
+        109,
+        493
+      ],
+      "sourceHash": "f3b155a47b0ef3a4832a4aee3d3a4f613736ed5de21f618dcea5f41b092b60da",
+      "sourceMarker": {
+        "storageId": "83da2722-274d-493d-a360-ddb5bfe11c10"
+      },
+      "mountedHash": "f3b155a47b0ef3a4832a4aee3d3a4f613736ed5de21f618dcea5f41b092b60da",
+      "mountedMarker": {
+        "storageId": "83da2722-274d-493d-a360-ddb5bfe11c10"
+      },
+      "directoryDelegations": "Y",
+      "uid": 1000,
+      "gid": 109,
+      "groups": []
+    },
+    "binary": {
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api003-cc7rp5vo/autobyteus-nfs-linux-arm64",
+      "sha256": "0f7d6a37e8d418f3fd16ae83e16ef4ca45fd75311a93cb40237665afca4db2b4",
+      "size": 11033781
+    },
+    "sourceHash": "5563645d23aaac13aaa26948490d68dfc12fef31775bb66156185f9052ab0acc"
+  },
+  "cleanupResult": "Complete",
+  "limits": [
+    "No deadline guarantee inferred from 150s observation; source shows no selected-node recovery path",
+    "Manual start is diagnostic, not automatic recovery Pass",
+    "No physical-peer/other OS/other Docker version generalization",
+    "No fresh runtime/UI/test-suite execution by reviewer"
+  ]
+}

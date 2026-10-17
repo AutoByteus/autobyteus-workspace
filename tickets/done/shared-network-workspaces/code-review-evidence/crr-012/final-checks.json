@@ -1,0 +1,23 @@
+{
+  "result": "Pass evidence/preservation checks, NOT product Pass",
+  "productResult": "Fail / Design Impact / CR007 API-F005",
+  "inputHead": "190e130290ca74307430fac6b28f0bc736766033",
+  "incomingReferenceCount": 1285,
+  "protectedIncomingPaths": 1283,
+  "inputManifestVerified": 1283,
+  "retainedCandidates": 19,
+  "oldDistFiles": 286,
+  "revisionPrefixPreserved": true,
+  "onlyAllowedReviewChanges": true,
+  "referenceCount": 1302,
+  "pythonSyntax": "Pass",
+  "jsonParse": "Pass",
+  "ownedMarkdownWhitespace": "Pass",
+  "noProductionOrDurableTestChanges": true,
+  "noRuntimeExecutionOrResources": true,
+  "routing": {
+    "when": "When review identifies a Design Impact, Requirement Gap, or Unclear issue that requires upstream requirements or design revision.",
+    "recipient_address": "/software_engineering_team/solution_designer"
+  },
+  "noDelegationMergePushReleaseTaskDone": true
+}

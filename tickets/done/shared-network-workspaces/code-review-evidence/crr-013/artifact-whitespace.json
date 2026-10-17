@@ -1,0 +1,25 @@
+{
+  "rawDiagnosticLines": [
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-013/go-race.log",
+      "line": 342,
+      "text": "        "
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-013/go-race.log",
+      "line": 345,
+      "text": "        "
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-013/go-race.log",
+      "line": 359,
+      "text": "        "
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-013/go-race.log",
+      "line": 360,
+      "text": "        "
+    }
+  ],
+  "note": "Retained raw evidence; source whitespace passes independently; artifact-only blank-at-eol exception"
+}

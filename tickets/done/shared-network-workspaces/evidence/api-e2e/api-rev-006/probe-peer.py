@@ -1,0 +1,2 @@
+exec((__import__('pathlib').Path(__file__).resolve().parent/'mac-common.py').read_text());OUT='peer-network-result.json';linux=json.loads((E/'linux-native-result.json').read_text());ip=linux['endpoint'];r['linuxEndpoint']=ip;r['scope']='read-only TCP prerequisite; not public connect, not physical proof'
+r['peer']=m('route -n get '+ip+'; nc -z -v -w 3 '+ip+' 22; nc -z -v -w 3 '+ip+' 2049',15,False);r['result']='Reachable' if r['peer']['rc']==0 else 'Peer TCP2049 unavailable';save()

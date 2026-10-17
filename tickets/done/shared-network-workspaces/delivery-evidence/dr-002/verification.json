@@ -1,0 +1,168 @@
+{
+  "at": "2026-10-15T16:55:25.718523+00:00",
+  "result": "Sufficient \u2014 verified from evidence for command-only increment",
+  "candidate": "8abaadc5968f4d4d47738331c260a5cd43b8164e",
+  "testedIntegratedInput": "bd57ef932dcd9e12c8470f0a1accbce0928d7ae5",
+  "integratedMerge": "a4afd758a9766274b08f675c04952b19913fff0c",
+  "checkedBase": "5096011674c7db6ec0e92e522ea37f32f8f4ea40",
+  "freshBaseAlreadyAncestor": true,
+  "postIntegrationChecks": [
+    {
+      "name": "install",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@autobyteus-example/brief-studio-authoring...",
+        "install",
+        "--frozen-lockfile"
+      ],
+      "exit": 0,
+      "log": "evidence/api-e2e/api-rev-009/install.log",
+      "hashMatched": true
+    },
+    {
+      "name": "integration-prepare",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "test:integration:prepare"
+      ],
+      "exit": 0,
+      "log": "evidence/api-e2e/api-rev-009/integration-prepare.log",
+      "hashMatched": true
+    },
+    {
+      "name": "server-typecheck",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "typecheck"
+      ],
+      "exit": 0,
+      "log": "evidence/api-e2e/api-rev-009/server-typecheck.log",
+      "hashMatched": true
+    },
+    {
+      "name": "workspace-rest",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts",
+        "--no-watch"
+      ],
+      "exit": 0,
+      "log": "evidence/api-e2e/api-rev-009/workspace-rest.log",
+      "hashMatched": true
+    },
+    {
+      "name": "workspace-unit",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/unit/workspaces",
+        "--no-watch"
+      ],
+      "exit": 0,
+      "log": "evidence/api-e2e/api-rev-009/workspace-unit.log",
+      "hashMatched": true
+    },
+    {
+      "name": "adjacent-explorer",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/integration/file-explorer/file-explorer.integration.test.ts",
+        "tests/e2e/file-explorer/search-content-http.e2e.test.ts",
+        "--no-watch"
+      ],
+      "exit": 0,
+      "log": "evidence/api-e2e/api-rev-009/adjacent-explorer.log",
+      "hashMatched": true
+    },
+    {
+      "name": "workspace-rest-repeat",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts",
+        "--no-watch"
+      ],
+      "exit": 0,
+      "log": "evidence/api-e2e/api-rev-009/workspace-rest-repeat.log",
+      "hashMatched": true
+    }
+  ],
+  "uniqueTests": 66,
+  "repeatExecutions": 6,
+  "filesystemCounts": {
+    "LN": {
+      "subcases": 13,
+      "samples": 24,
+      "maxSeconds": 0.060969295000006696,
+      "independentFiles": 80,
+      "atomicReplacements": 200,
+      "completeReads": 5899
+    },
+    "LD": {
+      "subcases": 13,
+      "samples": 24,
+      "maxSeconds": 0.05631738299999256,
+      "independentFiles": 80,
+      "atomicReplacements": 200,
+      "completeReads": 7132
+    }
+  },
+  "criticalRetainedEvidenceReadAndHashChecked": [
+    "evidence/api-e2e/api-rev-008/command-final-summary.json",
+    "evidence/api-e2e/api-rev-008/command-carried-evidence.json",
+    "evidence/api-e2e/api-rev-008/command-cleanup.json",
+    "evidence/api-e2e/api-rev-008/LN-commands-result.json",
+    "evidence/api-e2e/api-rev-008/LD-commands-result.json",
+    "evidence/api-e2e/api-rev-008/LN-command-setup-result.json",
+    "evidence/api-e2e/api-rev-008/LD-command-setup-result.json",
+    "evidence/api-e2e/api-rev-008/LN-command-detach-result.json",
+    "evidence/api-e2e/api-rev-008/LD-command-detach-result.json",
+    "evidence/api-e2e/api-rev-008/user-command-only-direction.json"
+  ],
+  "nestedCarryReceiptsChecked": 13,
+  "carriedFailuresDisposition": {
+    "LN-lifecycle-result.json": "stopped-node Ports-empty harness oracle; corrected actual snapshots in resume",
+    "LD-lifecycle-v2-result.json": "already-current upgrade ID-change overassertion outside credited L17\u201319; actual replacement proof separately credited",
+    "LN-source-detach-result.json": "no-drain refusal wording overassertion; corrected repeat separately credited"
+  },
+  "onlyPostValidationNonTicketChanges": [
+    "autobyteus-nfs/README.md",
+    "autobyteus-server-ts/docs/modules/shared_network_workspaces.md",
+    "autobyteus-web/docs/file_explorer.md"
+  ],
+  "judgement": "Direct filesystem commands prove the critical user-selected boundary; current integrated build and lifecycle/socket checks close DR001. API008 and API009 each have applicable 95% confidence categories, not a whole-product score. No additional runtime repetition warranted: remote base already integrated and tested; only documentation subsequently changes.",
+  "userCheckNeeded": false,
+  "userCheckReason": "Evidence suffices within explicitly user-selected command-only scope; no unreachable user-only dependency. This is not user-executed verification.",
+  "limits": [
+    "One Ubuntu VM with two generic containers sharing one kernel/cache; LN then LD",
+    "FS13-15 and refusal controls audited carry, not fresh API008 execution",
+    "No UI/editor/API product acceptance or new live-editor closure",
+    "Not independent-client/kernel/physical/Mac/cross-OS/external-join/authenticated-agent/publication qualification",
+    "Visibility samples are not throughput/scalability benchmarks"
+  ],
+  "knownFollowUp": "CR-FUP002 unresolved/nonblocking existing project_task_a4f90984-add2-4300-983d-de54ded3032b",
+  "cleanup": "API008 and API009 direct cleanup receipts inspected; complete"
+}

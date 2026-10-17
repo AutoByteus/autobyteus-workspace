@@ -1,0 +1,6 @@
+{
+  "classification": "Harness contract mismatch / cache observation",
+  "observed": "Mac fresh read immediately after Linux modification returned old bytes at 0.319 seconds; both Linux API and backing were current.",
+  "notProved": "That round did not measure subsequent visibility, so no <=5-second success or violation established.",
+  "next": "FR-028 polls independent fresh opens on Mac/both Linux/backing within approved5-second bound, preserving unchanged mount cache options and original failed result."
+}

@@ -34,7 +34,6 @@ const upsertInterAgentDelivery = (payload: MemberInputMessagePayload, context: A
     type: 'inter_agent_message',
     ...(messageId ? { messageId } : {}),
     senderAgentRunId: payload.sender_agent_run_id?.trim() || delivery.senderAgentRunId || '',
-    senderName: delivery.senderName,
     recipientRoleName: '',
     messageType: 'agent_message',
     content: delivery.body,

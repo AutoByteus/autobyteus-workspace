@@ -1,0 +1,14 @@
+{
+  "result": "Pass",
+  "protectedIncomingPathsUnchanged": 1086,
+  "priorRevisionPrefixBytesPreserved": 59831,
+  "retainedCandidatesUnchanged": 19,
+  "preexistingDistFilesUnchanged": 286,
+  "sourceWhitespacePass": true,
+  "rawArtifactWhitespace": "see artifact-whitespace.log; preserved diagnostic blank is not a source waiver",
+  "scratchAbsent": true,
+  "incomingReferencesRetained": 1088,
+  "referenceCount": 1122,
+  "noProductionDurableTestEdits": true,
+  "noPublicRuntimeClaim": true
+}

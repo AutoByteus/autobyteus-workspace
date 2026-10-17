@@ -1,0 +1,32 @@
+{
+  "scope": "Final source/evidence consistency, not product qualification",
+  "sourceCommit": "9992ffb30d4fbaab4852b87b2495738f1b5be908",
+  "deltaHashesMatched": 26,
+  "unchangedPathsMatched": 1030,
+  "priorRevisionPrefixBytePreserved": true,
+  "sourceSizeGuardrailsPass": true,
+  "retainedCandidateFilesMatched": 11,
+  "retainedCandidateIgnored": true,
+  "implementationSourceHash": "302cdaf6b87e0ec4b0456376a2adba66be1b7294306c01f4f3df93ef285d4a1c",
+  "testedArm64CandidateSourceHash": "588a8826111e970bee40f59fe62163d56c730f965d35fe15971dfe99a54e33b6",
+  "evidenceJSONAndHarnessASTPass": true,
+  "highConfidenceSecretPatternAlerts": [],
+  "secretScanLimit": "Narrow private-key/provider token pattern scan, not exhaustive.",
+  "ownedScratchAbsent": true,
+  "bothVMCleanupReceiptsPass": true,
+  "temporarySourceDownloadAbsent": true,
+  "finalRaceLogPassingPackages": 7,
+  "localCommandsExpectedResults": 12,
+  "finalRaceNote": "Final full race rerun after last release-equality unit added. Completed exit0 observed; stdout preserved. Original command receipts precede that test-only addition.",
+  "sourceWhitespaceExcludingExactPatchPass": true,
+  "exactPatchWhitespace": {
+    "rc": 2,
+    "output": "autobyteus-nfs/packaging/engine/get-dir-delegation.patch:12: space before tab in indent.\n+ \t\t.exp_perm_flags = 0},\nautobyteus-nfs/packaging/engine/get-dir-delegation.patch:13: space before tab in indent.\n+ \t[NFS4_OP_GET_DIR_DELEGATION] = {\nautobyteus-nfs/packaging/engine/get-dir-delegation.patch:14: space before tab in indent.\n+ \t\t.name = \"OP_GET_DIR_DELEGATION\",\nautobyteus-nfs/packaging/engine/get-dir-delegation.patch:17: space before tab in indent.\n+ \t\t.resume = nfs4_default_resume,\nautobyteus-nfs/packaging/engine/get-dir-delegation.patch:20: space before tab in indent.\n+ \t\t.resp_size = sizeof(GET_DIR_DELEGATION4res),\nautobyteus-nfs/packaging/engine/get-dir-delegation.patch:21: space before tab in indent.\n+ \t\t.exp_perm_flags = 0\t/* tbd */},\nautobyteus-nfs/packaging/engine/get-dir-delegation.patch:22: space before tab in indent.\n+ \t[NFS4_OP_GETDEVICEINFO] = {\n",
+    "disposition": "Unified-diff context marker space precedes original upstream tabs. Exact verified patch preserved, not normalized."
+  },
+  "canonicalAuthoredWhitespacePass": true,
+  "newAuthoredEvidenceTrailingWhitespacePass": true,
+  "rawLogsPreserved": "Unmodified command logs retain upstream whitespace; not normalized or represented as source lint.",
+  "frontend": "N/A backend/build-only delta, no rendered interaction change",
+  "authoritativeReports": "CRR005 Fail/Design Impact; API002 Fail/57.14% remain unmodified. ARCH004 Pass is architecture only."
+}

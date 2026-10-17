@@ -1,0 +1,7 @@
+{
+  "origin": "Temporary test parser",
+  "actualPTYReceipt": "Correct mounted cwd/root UID/Git status rc0/top/count1/key safe.directory/value exact project present in raw log",
+  "cause": "PTY emits bracketed-paste end escape plus bare CR before actual receipt, initial regex accepted LF/CRLF only",
+  "correction": "Accept bare CR or LF record boundary; receipt JSON assertions unchanged",
+  "sourceUnchanged": true
+}

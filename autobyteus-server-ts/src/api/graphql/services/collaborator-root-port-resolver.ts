@@ -22,7 +22,7 @@ import { TeamRunExecutionTreeStore } from "../../../run-history/store/team-run-e
  * Collaborator facts of an active or stored root of any kind, for the candidates query. An
  * Agent root's facts depend on the focused agent (the host never offers itself), so
  * `focusedAgentRunId` is required for `agent` and ignored for Team and Org roots.
- * `null` when the root does not exist or cannot host collaborators.
+ * `null` when the root does not exist or cannot host delegated copies.
  */
 export const resolveCollaboratorRootPort = async (
   rootSubjectKind: RootSubjectKind,
@@ -72,7 +72,7 @@ export const resolveCollaboratorRootPort = async (
 const emptyPort = (agentDefinitionId: string): CollaboratorRootPort => Object.freeze({
   rootKind: "agent",
   isApplicationBound: false,
-  rootLaunchConfiguration: () => { throw new Error("This run cannot host collaborators."); },
+  rootLaunchConfiguration: () => { throw new Error("This run cannot host delegated copies."); },
   ownDefinition: () => Object.freeze({ kind: "agent", definitionId: agentDefinitionId }),
   inRunPlacementsByDefinition: () => new Map(),
   collaborators: () => [],

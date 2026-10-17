@@ -1,0 +1,25 @@
+{
+  "result": "Pass",
+  "protectedSourceHashesUnchanged": {
+    "autobyteus-web/components/fileExplorer/FileExplorerTabs.vue": true,
+    "autobyteus-web/components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts": true,
+    "autobyteus-web/components/fileExplorer/__tests__/FileExplorerTabs.spec.ts": true,
+    "autobyteus-web/docs/file_explorer.md": true,
+    "autobyteus-web/stores/fileExplorerContentActions.ts": true,
+    "autobyteus-web/stores/fileExplorerState.ts": true
+  },
+  "trackedChanged": [
+    "tickets/in-progress/shared-network-workspaces/api-e2e-coverage-investigation.md",
+    "tickets/in-progress/shared-network-workspaces/api-e2e-execution-coverage-report.md",
+    "tickets/in-progress/shared-network-workspaces/api-e2e-revision-record.md",
+    "tickets/in-progress/shared-network-workspaces/api-e2e-test-case-ledger.md"
+  ],
+  "jsonFilesParsed": 37,
+  "pythonFilesCompiled": 34,
+  "proofLinksMissing": [],
+  "ledgerActivePassRows": 17,
+  "revisionCount": 1,
+  "cleanup": "Complete",
+  "priorRevisionPrefixPreserved": true,
+  "workingTreeWhitespace": ""
+}

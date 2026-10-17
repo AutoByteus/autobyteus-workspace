@@ -1,0 +1,265 @@
+{
+  "source": "final-trace-packets.log",
+  "limits": "Evidence-only decoder of complete, single-record IPv4 TCP RPC payloads in\nowned guest tcpdump -X text. Not a stream reassembler; skipped/incomplete payloads\nare not evidence of absence. No network access or product use.\n",
+  "records": [
+    {
+      "line": 25,
+      "time": "2026-10-13 20:01:42.011713",
+      "flow": "192.168.128.2.1023 > 192.168.128.2.111: Flags [P.], seq 1:61, ack 1, win 6380, options [nop,nop,TS val 1761664833 ecr 3559731860], length 60",
+      "xid": "0x6d95e57",
+      "kind": "call",
+      "program": 100000,
+      "version": 2,
+      "procedure": 3,
+      "argumentsHex": "000186a3000000030000000600000000"
+    },
+    {
+      "line": 76,
+      "time": "2026-10-13 20:01:44.013008",
+      "flow": "192.168.128.2.1022 > 192.168.128.2.111: Flags [P.], seq 1:45, ack 1, win 6380, options [nop,nop,TS val 1474422780 ecr 1625941749], length 44",
+      "xid": "0x8ef7e5e",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 0
+    },
+    {
+      "line": 90,
+      "time": "2026-10-13 20:01:45.032556",
+      "flow": "192.168.128.2.111 > 192.168.128.2.1023: Flags [P.], seq 1:33, ack 62, win 6380, options [nop,nop,TS val 3559734881 ecr 1761666834], length 32",
+      "xid": "0x6d95e57",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000000"
+    },
+    {
+      "line": 98,
+      "time": "2026-10-13 20:01:45.032573",
+      "flow": "192.168.128.2.111 > 192.168.128.2.1022: Flags [P.], seq 1:29, ack 45, win 6380, options [nop,nop,TS val 1625942769 ecr 1474422780], length 28",
+      "xid": "0x8ef7e5e",
+      "kind": "accepted-reply",
+      "status": 3,
+      "resultsHex": ""
+    },
+    {
+      "line": 270,
+      "time": "2026-10-13 20:01:45.034408",
+      "flow": "127.0.0.1.1020 > 127.0.0.1.111: Flags [P.], seq 1:89, ack 1, win 6380, options [nop,nop,TS val 993270037 ecr 2136045379], length 88",
+      "xid": "0x4301d076",
+      "kind": "call",
+      "program": 100000,
+      "version": 3,
+      "procedure": 1,
+      "argumentsHex": "000186b80000000100000003746370000000000d302e302e302e302e332e32353300000000000004726f6f74"
+    },
+    {
+      "line": 302,
+      "time": "2026-10-13 20:01:45.034471",
+      "flow": "127.0.0.1.111 > 127.0.0.1.1020: Flags [P.], seq 1:33, ack 89, win 6379, options [nop,nop,TS val 2136045380 ecr 993270037], length 32",
+      "xid": "0x4301d076",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000001"
+    },
+    {
+      "line": 550,
+      "time": "2026-10-13 20:01:45.035788",
+      "flow": "127.0.0.1.1016 > 127.0.0.1.111: Flags [P.], seq 1:89, ack 1, win 6380, options [nop,nop,TS val 4243494005 ecr 1835035240], length 88",
+      "xid": "0x3a446040",
+      "kind": "call",
+      "program": 100000,
+      "version": 3,
+      "procedure": 1,
+      "argumentsHex": "000186b50000000000000003746370000000000d302e302e302e302e332e32343900000000000004726f6f74"
+    },
+    {
+      "line": 567,
+      "time": "2026-10-13 20:01:45.035819",
+      "flow": "127.0.0.1.111 > 127.0.0.1.1016: Flags [P.], seq 1:33, ack 89, win 6379, options [nop,nop,TS val 1835035240 ecr 4243494005], length 32",
+      "xid": "0x3a446040",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000001"
+    },
+    {
+      "line": 629,
+      "time": "2026-10-13 20:01:45.035954",
+      "flow": "127.0.0.1.1015 > 127.0.0.1.111: Flags [P.], seq 1:89, ack 1, win 6380, options [nop,nop,TS val 3467709433 ecr 2905093591], length 88",
+      "xid": "0x48057eb2",
+      "kind": "call",
+      "program": 100000,
+      "version": 3,
+      "procedure": 1,
+      "argumentsHex": "000186b50000000100000003746370000000000d302e302e302e302e332e32343900000000000004726f6f74"
+    },
+    {
+      "line": 646,
+      "time": "2026-10-13 20:01:45.035985",
+      "flow": "127.0.0.1.111 > 127.0.0.1.1015: Flags [P.], seq 1:33, ack 89, win 6379, options [nop,nop,TS val 2905093591 ecr 3467709433], length 32",
+      "xid": "0x48057eb2",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000001"
+    },
+    {
+      "line": 708,
+      "time": "2026-10-13 20:01:45.036108",
+      "flow": "127.0.0.1.1014 > 127.0.0.1.111: Flags [P.], seq 1:89, ack 1, win 6380, options [nop,nop,TS val 721694283 ecr 2842357293], length 88",
+      "xid": "0x9e4c961f",
+      "kind": "call",
+      "program": 100000,
+      "version": 3,
+      "procedure": 1,
+      "argumentsHex": "000186b50000000300000003746370000000000d302e302e302e302e332e32343900000000000004726f6f74"
+    },
+    {
+      "line": 725,
+      "time": "2026-10-13 20:01:45.036132",
+      "flow": "127.0.0.1.111 > 127.0.0.1.1014: Flags [P.], seq 1:33, ack 89, win 6379, options [nop,nop,TS val 2842357293 ecr 721694283], length 32",
+      "xid": "0x9e4c961f",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000001"
+    },
+    {
+      "line": 787,
+      "time": "2026-10-13 20:01:45.036269",
+      "flow": "127.0.0.1.1013 > 127.0.0.1.111: Flags [P.], seq 1:89, ack 1, win 6380, options [nop,nop,TS val 1575437650 ecr 1622622760], length 88",
+      "xid": "0x1a8e1855",
+      "kind": "call",
+      "program": 100000,
+      "version": 3,
+      "procedure": 1,
+      "argumentsHex": "000186b50000000400000003746370000000000d302e302e302e302e332e32343900000000000004726f6f74"
+    },
+    {
+      "line": 804,
+      "time": "2026-10-13 20:01:45.036292",
+      "flow": "127.0.0.1.111 > 127.0.0.1.1013: Flags [P.], seq 1:33, ack 89, win 6379, options [nop,nop,TS val 1622622760 ecr 1575437650], length 32",
+      "xid": "0x1a8e1855",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000001"
+    },
+    {
+      "line": 1232,
+      "time": "2026-10-13 20:01:45.118938",
+      "flow": "127.0.0.1.1007 > 127.0.0.1.111: Flags [P.], seq 1:85, ack 1, win 6380, options [nop,nop,TS val 3190417209 ecr 1935393588], length 84",
+      "xid": "0xc7488c02",
+      "kind": "call",
+      "program": 100000,
+      "version": 3,
+      "procedure": 1,
+      "argumentsHex": "000186a30000000200000003746370000000000b302e302e302e302e382e310000000004726f6f74"
+    },
+    {
+      "line": 1249,
+      "time": "2026-10-13 20:01:45.119019",
+      "flow": "127.0.0.1.111 > 127.0.0.1.1007: Flags [P.], seq 1:33, ack 85, win 6379, options [nop,nop,TS val 1935393588 ecr 3190417209], length 32",
+      "xid": "0xc7488c02",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000001"
+    },
+    {
+      "line": 1311,
+      "time": "2026-10-13 20:01:45.121069",
+      "flow": "127.0.0.1.1006 > 127.0.0.1.111: Flags [P.], seq 1:85, ack 1, win 6380, options [nop,nop,TS val 1184946726 ecr 1051305676], length 84",
+      "xid": "0x3115829b",
+      "kind": "call",
+      "program": 100000,
+      "version": 3,
+      "procedure": 1,
+      "argumentsHex": "000186a30000000300000003746370000000000b302e302e302e302e382e310000000004726f6f74"
+    },
+    {
+      "line": 1328,
+      "time": "2026-10-13 20:01:45.121109",
+      "flow": "127.0.0.1.111 > 127.0.0.1.1006: Flags [P.], seq 1:33, ack 85, win 6379, options [nop,nop,TS val 1051305676 ecr 1184946726], length 32",
+      "xid": "0x3115829b",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000001"
+    },
+    {
+      "line": 1580,
+      "time": "2026-10-13 20:01:45.124449",
+      "flow": "127.0.0.1.1003 > 127.0.0.1.111: Flags [P.], seq 1:89, ack 1, win 6380, options [nop,nop,TS val 2795762502 ecr 4233568034], length 88",
+      "xid": "0x617fee44",
+      "kind": "call",
+      "program": 100000,
+      "version": 3,
+      "procedure": 1,
+      "argumentsHex": "000186a50000000100000003746370000000000d302e302e302e302e37382e383000000000000004726f6f74"
+    },
+    {
+      "line": 1597,
+      "time": "2026-10-13 20:01:45.124475",
+      "flow": "127.0.0.1.111 > 127.0.0.1.1003: Flags [P.], seq 1:33, ack 89, win 6379, options [nop,nop,TS val 4233568034 ecr 2795762502], length 32",
+      "xid": "0x617fee44",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000001"
+    },
+    {
+      "line": 1659,
+      "time": "2026-10-13 20:01:45.124744",
+      "flow": "127.0.0.1.1002 > 127.0.0.1.111: Flags [P.], seq 1:89, ack 1, win 6380, options [nop,nop,TS val 3276421889 ecr 3787219332], length 88",
+      "xid": "0x2d016361",
+      "kind": "call",
+      "program": 100000,
+      "version": 3,
+      "procedure": 1,
+      "argumentsHex": "000186a50000000300000003746370000000000d302e302e302e302e37382e383000000000000004726f6f74"
+    },
+    {
+      "line": 1676,
+      "time": "2026-10-13 20:01:45.124797",
+      "flow": "127.0.0.1.111 > 127.0.0.1.1002: Flags [P.], seq 1:33, ack 89, win 6379, options [nop,nop,TS val 3787219332 ecr 3276421889], length 32",
+      "xid": "0x2d016361",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000001"
+    },
+    {
+      "line": 1988,
+      "time": "2026-10-13 20:01:45.147013",
+      "flow": "127.0.0.1.998 > 127.0.0.1.111: Flags [P.], seq 1:89, ack 1, win 6380, options [nop,nop,TS val 4133085205 ecr 1529604053], length 88",
+      "xid": "0x4e75febb",
+      "kind": "call",
+      "program": 100000,
+      "version": 3,
+      "procedure": 1,
+      "argumentsHex": "000186ab0000000100000003746370000000000d302e302e302e302e332e32333100000000000004726f6f74"
+    },
+    {
+      "line": 2005,
+      "time": "2026-10-13 20:01:45.147050",
+      "flow": "127.0.0.1.111 > 127.0.0.1.998: Flags [P.], seq 1:33, ack 89, win 6379, options [nop,nop,TS val 1529604053 ecr 4133085205], length 32",
+      "xid": "0x4e75febb",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000001"
+    },
+    {
+      "line": 2067,
+      "time": "2026-10-13 20:01:45.147196",
+      "flow": "127.0.0.1.997 > 127.0.0.1.111: Flags [P.], seq 1:89, ack 1, win 6380, options [nop,nop,TS val 52321053 ecr 4236396452], length 88",
+      "xid": "0x8773b27a",
+      "kind": "call",
+      "program": 100000,
+      "version": 3,
+      "procedure": 1,
+      "argumentsHex": "000186ab0000000200000003746370000000000d302e302e302e302e332e32333100000000000004726f6f74"
+    },
+    {
+      "line": 2084,
+      "time": "2026-10-13 20:01:45.147223",
+      "flow": "127.0.0.1.111 > 127.0.0.1.997: Flags [P.], seq 1:33, ack 89, win 6379, options [nop,nop,TS val 4236396452 ecr 52321053], length 32",
+      "xid": "0x8773b27a",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000001"
+    }
+  ]
+}

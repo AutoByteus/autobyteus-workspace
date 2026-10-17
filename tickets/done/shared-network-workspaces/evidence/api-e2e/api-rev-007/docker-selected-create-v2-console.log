@@ -1,0 +1,14 @@
+Started operator starts own safely detached node before Docker storage setup
+operator starts own safely detached node before Docker storage setup: Pass
+Started preserved original ext4 source and marker before Docker setup
+preserved original ext4 source and marker before Docker setup: Pass
+Started public selected Docker-storage create against same preserved source
+public selected Docker-storage create against same preserved source: Pass
+Started exact chosen image config private state ports aliases and unselected preservation
+exact chosen image config private state ports aliases and unselected preservation: Pass
+Started same original nonempty source and native mount identity preserved
+same original nonempty source and native mount identity preserved: Pass
+Started installed identity private modes and active managed job
+installed identity private modes and active managed job: Pass
+Current Docker-storage selected public create Pass; healthy visibility next; native package is already installed but stopped; not fresh-Docker-only machine claim
+{"result": "Pass", "fatal": null}

@@ -1,0 +1,2174 @@
+{
+  "source": "ports-confirm-trace-packets.log",
+  "limits": "Evidence-only decoder of complete, single-record IPv4 TCP RPC payloads in\nowned guest tcpdump -X text. Not a stream reassembler; skipped/incomplete payloads\nare not evidence of absence. No network access or product use.\n",
+  "records": [
+    {
+      "line": 25,
+      "time": "2026-10-13 20:09:16.061756",
+      "flow": "192.168.128.2.1023 > 192.168.128.2.111: Flags [P.], seq 1:45, ack 1, win 6380, options [nop,nop,TS val 1700368876 ecr 1480305023], length 44",
+      "xid": "0x344c2e3f",
+      "kind": "call",
+      "program": 100000,
+      "version": 2,
+      "procedure": 4,
+      "argumentsHex": ""
+    },
+    {
+      "line": 39,
+      "time": "2026-10-13 20:09:16.402786",
+      "flow": "192.168.128.2.111 > 192.168.128.2.1023: Flags [P.], seq 1:153, ack 45, win 6380, options [nop,nop,TS val 1480305364 ecr 1700368876], length 152",
+      "xid": "0x344c2e3f",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000001000186a000000002000000110000006f00000001000186a000000003000000110000006f00000001000186a000000004000000110000006f00000001000186a000000002000000060000006f00000001000186a000000003000000060000006f00000001000186a000000004000000060000006f00000000"
+    },
+    {
+      "line": 178,
+      "time": "2026-10-13 20:09:16.405269",
+      "flow": "127.0.0.1.1021 > 127.0.0.1.111: Flags [P.], seq 1:89, ack 1, win 6380, options [nop,nop,TS val 1910687204 ecr 1685835744], length 88",
+      "xid": "0x29edf85e",
+      "kind": "call",
+      "program": 100000,
+      "version": 3,
+      "procedure": 1,
+      "argumentsHex": "000186b80000000100000003746370000000000d302e302e302e302e332e32353400000000000004726f6f74"
+    },
+    {
+      "line": 225,
+      "time": "2026-10-13 20:09:16.405470",
+      "flow": "127.0.0.1.111 > 127.0.0.1.1021: Flags [P.], seq 1:33, ack 89, win 6379, options [nop,nop,TS val 1685835745 ecr 1910687204], length 32",
+      "xid": "0x29edf85e",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000001"
+    },
+    {
+      "line": 488,
+      "time": "2026-10-13 20:09:16.407409",
+      "flow": "127.0.0.1.1017 > 127.0.0.1.111: Flags [P.], seq 1:89, ack 1, win 6380, options [nop,nop,TS val 643587686 ecr 2130631861], length 88",
+      "xid": "0xfeb733d9",
+      "kind": "call",
+      "program": 100000,
+      "version": 3,
+      "procedure": 1,
+      "argumentsHex": "000186b50000000000000003746370000000000d302e302e302e302e332e32353000000000000004726f6f74"
+    },
+    {
+      "line": 505,
+      "time": "2026-10-13 20:09:16.407436",
+      "flow": "127.0.0.1.111 > 127.0.0.1.1017: Flags [P.], seq 1:33, ack 89, win 6379, options [nop,nop,TS val 2130631861 ecr 643587686], length 32",
+      "xid": "0xfeb733d9",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000001"
+    },
+    {
+      "line": 567,
+      "time": "2026-10-13 20:09:16.407576",
+      "flow": "127.0.0.1.1016 > 127.0.0.1.111: Flags [P.], seq 1:89, ack 1, win 6380, options [nop,nop,TS val 199669597 ecr 1824097751], length 88",
+      "xid": "0x62adbc20",
+      "kind": "call",
+      "program": 100000,
+      "version": 3,
+      "procedure": 1,
+      "argumentsHex": "000186b50000000100000003746370000000000d302e302e302e302e332e32353000000000000004726f6f74"
+    },
+    {
+      "line": 584,
+      "time": "2026-10-13 20:09:16.407602",
+      "flow": "127.0.0.1.111 > 127.0.0.1.1016: Flags [P.], seq 1:33, ack 89, win 6379, options [nop,nop,TS val 1824097751 ecr 199669597], length 32",
+      "xid": "0x62adbc20",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000001"
+    },
+    {
+      "line": 646,
+      "time": "2026-10-13 20:09:16.407739",
+      "flow": "127.0.0.1.1015 > 127.0.0.1.111: Flags [P.], seq 1:89, ack 1, win 6380, options [nop,nop,TS val 1530773207 ecr 217276571], length 88",
+      "xid": "0xdc3435f4",
+      "kind": "call",
+      "program": 100000,
+      "version": 3,
+      "procedure": 1,
+      "argumentsHex": "000186b50000000300000003746370000000000d302e302e302e302e332e32353000000000000004726f6f74"
+    },
+    {
+      "line": 663,
+      "time": "2026-10-13 20:09:16.407761",
+      "flow": "127.0.0.1.111 > 127.0.0.1.1015: Flags [P.], seq 1:33, ack 89, win 6379, options [nop,nop,TS val 217276571 ecr 1530773207], length 32",
+      "xid": "0xdc3435f4",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000001"
+    },
+    {
+      "line": 725,
+      "time": "2026-10-13 20:09:16.407893",
+      "flow": "127.0.0.1.1014 > 127.0.0.1.111: Flags [P.], seq 1:89, ack 1, win 6380, options [nop,nop,TS val 3854483709 ecr 1214721489], length 88",
+      "xid": "0x837f4dc8",
+      "kind": "call",
+      "program": 100000,
+      "version": 3,
+      "procedure": 1,
+      "argumentsHex": "000186b50000000400000003746370000000000d302e302e302e302e332e32353000000000000004726f6f74"
+    },
+    {
+      "line": 742,
+      "time": "2026-10-13 20:09:16.407914",
+      "flow": "127.0.0.1.111 > 127.0.0.1.1014: Flags [P.], seq 1:33, ack 89, win 6379, options [nop,nop,TS val 1214721489 ecr 3854483709], length 32",
+      "xid": "0x837f4dc8",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000001"
+    },
+    {
+      "line": 1174,
+      "time": "2026-10-13 20:09:16.413748",
+      "flow": "127.0.0.1.1008 > 127.0.0.1.111: Flags [P.], seq 1:85, ack 1, win 6380, options [nop,nop,TS val 1063140362 ecr 218243525], length 84",
+      "xid": "0x3fea8846",
+      "kind": "call",
+      "program": 100000,
+      "version": 3,
+      "procedure": 1,
+      "argumentsHex": "000186a30000000200000003746370000000000b302e302e302e302e382e310000000004726f6f74"
+    },
+    {
+      "line": 1191,
+      "time": "2026-10-13 20:09:16.413785",
+      "flow": "127.0.0.1.111 > 127.0.0.1.1008: Flags [P.], seq 1:33, ack 85, win 6379, options [nop,nop,TS val 218243525 ecr 1063140362], length 32",
+      "xid": "0x3fea8846",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000001"
+    },
+    {
+      "line": 1253,
+      "time": "2026-10-13 20:09:16.413936",
+      "flow": "127.0.0.1.1007 > 127.0.0.1.111: Flags [P.], seq 1:85, ack 1, win 6380, options [nop,nop,TS val 158666355 ecr 4224190044], length 84",
+      "xid": "0x23805211",
+      "kind": "call",
+      "program": 100000,
+      "version": 3,
+      "procedure": 1,
+      "argumentsHex": "000186a30000000300000003746370000000000b302e302e302e302e382e310000000004726f6f74"
+    },
+    {
+      "line": 1270,
+      "time": "2026-10-13 20:09:16.413962",
+      "flow": "127.0.0.1.111 > 127.0.0.1.1007: Flags [P.], seq 1:33, ack 85, win 6379, options [nop,nop,TS val 4224190044 ecr 158666355], length 32",
+      "xid": "0x23805211",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000001"
+    },
+    {
+      "line": 1522,
+      "time": "2026-10-13 20:09:16.414978",
+      "flow": "127.0.0.1.1004 > 127.0.0.1.111: Flags [P.], seq 1:89, ack 1, win 6380, options [nop,nop,TS val 3595465661 ecr 3582688291], length 88",
+      "xid": "0x8ef24ad1",
+      "kind": "call",
+      "program": 100000,
+      "version": 3,
+      "procedure": 1,
+      "argumentsHex": "000186a50000000100000003746370000000000d302e302e302e302e37382e383000000000000004726f6f74"
+    },
+    {
+      "line": 1539,
+      "time": "2026-10-13 20:09:16.415000",
+      "flow": "127.0.0.1.111 > 127.0.0.1.1004: Flags [P.], seq 1:33, ack 89, win 6379, options [nop,nop,TS val 3582688291 ecr 3595465661], length 32",
+      "xid": "0x8ef24ad1",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000001"
+    },
+    {
+      "line": 1601,
+      "time": "2026-10-13 20:09:16.415105",
+      "flow": "127.0.0.1.1003 > 127.0.0.1.111: Flags [P.], seq 1:89, ack 1, win 6380, options [nop,nop,TS val 3210854478 ecr 1734679308], length 88",
+      "xid": "0xd425d3ad",
+      "kind": "call",
+      "program": 100000,
+      "version": 3,
+      "procedure": 1,
+      "argumentsHex": "000186a50000000300000003746370000000000d302e302e302e302e37382e383000000000000004726f6f74"
+    },
+    {
+      "line": 1618,
+      "time": "2026-10-13 20:09:16.415127",
+      "flow": "127.0.0.1.111 > 127.0.0.1.1003: Flags [P.], seq 1:33, ack 89, win 6379, options [nop,nop,TS val 1734679308 ecr 3210854478], length 32",
+      "xid": "0xd425d3ad",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000001"
+    },
+    {
+      "line": 1930,
+      "time": "2026-10-13 20:09:16.421365",
+      "flow": "127.0.0.1.999 > 127.0.0.1.111: Flags [P.], seq 1:89, ack 1, win 6380, options [nop,nop,TS val 950219630 ecr 161965131], length 88",
+      "xid": "0x37f43e92",
+      "kind": "call",
+      "program": 100000,
+      "version": 3,
+      "procedure": 1,
+      "argumentsHex": "000186ab0000000100000003746370000000000d302e302e302e302e332e32333200000000000004726f6f74"
+    },
+    {
+      "line": 1947,
+      "time": "2026-10-13 20:09:16.421401",
+      "flow": "127.0.0.1.111 > 127.0.0.1.999: Flags [P.], seq 1:33, ack 89, win 6379, options [nop,nop,TS val 161965132 ecr 950219630], length 32",
+      "xid": "0x37f43e92",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000001"
+    },
+    {
+      "line": 2009,
+      "time": "2026-10-13 20:09:16.421576",
+      "flow": "127.0.0.1.998 > 127.0.0.1.111: Flags [P.], seq 1:89, ack 1, win 6380, options [nop,nop,TS val 1108591075 ecr 2271840840], length 88",
+      "xid": "0xd9a151",
+      "kind": "call",
+      "program": 100000,
+      "version": 3,
+      "procedure": 1,
+      "argumentsHex": "000186ab0000000200000003746370000000000d302e302e302e302e332e32333200000000000004726f6f74"
+    },
+    {
+      "line": 2026,
+      "time": "2026-10-13 20:09:16.421605",
+      "flow": "127.0.0.1.111 > 127.0.0.1.998: Flags [P.], seq 1:33, ack 89, win 6379, options [nop,nop,TS val 2271840840 ecr 1108591075], length 32",
+      "xid": "0xd9a151",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000001"
+    },
+    {
+      "line": 2250,
+      "time": "2026-10-13 20:09:16.665452",
+      "flow": "192.168.128.2.994 > 192.168.128.2.111: Flags [P.], seq 1:45, ack 1, win 6380, options [nop,nop,TS val 825754942 ecr 2229736029], length 44",
+      "xid": "0x781b4d03",
+      "kind": "call",
+      "program": 100000,
+      "version": 2,
+      "procedure": 4,
+      "argumentsHex": ""
+    },
+    {
+      "line": 2264,
+      "time": "2026-10-13 20:09:16.665508",
+      "flow": "192.168.128.2.111 > 192.168.128.2.994: Flags [P.], seq 1:513, ack 45, win 6380, options [nop,nop,TS val 2229736029 ecr 825754942], length 512",
+      "xid": "0x781b4d03",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000001000186a000000002000000110000006f00000001000186a000000003000000110000006f00000001000186a000000004000000110000006f00000001000186a000000002000000060000006f00000001000186a000000003000000060000006f00000001000186a000000004000000060000006f00000001000186b800000001000000110000026a00000001000186b80000000100000006000003fe00000001000186b50000000000000011000003cb00000001000186b50000000100000011000003cb00000001000186b50000000300000011000003cb00000001000186b50000000400000011000003cb00000001000186b50000000000000006000003fa00000001000186b50000000100000006000003fa00000001000186b50000000300000006000003fa00000001000186b50000000400000006000003fa00000001000186a300000002000000060000080100000001000186a300000003000000060000080100000001000186a5000000010000000600004e5000000001000186a5000000030000000600004e5000000001000186ab00000001000000110000036000000001000186ab00000002000000110000036000000001000186ab0000000100000006000003e800000001000186ab0000000200000006000003e800000000"
+    },
+    {
+      "line": 2356,
+      "time": "2026-10-13 20:09:16.673445",
+      "flow": "192.168.128.2.993 > 192.168.128.2.111: Flags [P.], seq 1:61, ack 1, win 6380, options [nop,nop,TS val 1744319369 ecr 2933445530], length 60",
+      "xid": "0x7ff00d0a",
+      "kind": "call",
+      "program": 100000,
+      "version": 2,
+      "procedure": 3,
+      "argumentsHex": "000186a3000000030000000600000000"
+    },
+    {
+      "line": 2371,
+      "time": "2026-10-13 20:09:16.673495",
+      "flow": "192.168.128.2.111 > 192.168.128.2.993: Flags [P.], seq 1:33, ack 61, win 6380, options [nop,nop,TS val 2933445530 ecr 1744319369], length 32",
+      "xid": "0x7ff00d0a",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000801"
+    },
+    {
+      "line": 2433,
+      "time": "2026-10-13 20:09:16.673813",
+      "flow": "192.168.128.2.992 > 192.168.128.2.2049: Flags [P.], seq 1:45, ack 1, win 6380, options [nop,nop,TS val 2157970289 ecr 3523594977], length 44: NFS request xid 3519397545 40 null",
+      "xid": "0xd1c5bea9",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 0
+    },
+    {
+      "line": 2447,
+      "time": "2026-10-13 20:09:16.673903",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.992: Flags [P.], seq 1:29, ack 45, win 32768, options [nop,nop,TS val 3523594977 ecr 2157970289], length 28: NFS reply xid 3519397545 reply ok 24 null",
+      "xid": "0xd1c5bea9",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": ""
+    },
+    {
+      "line": 2496,
+      "time": "2026-10-13 20:09:16.679355",
+      "flow": "192.168.128.2.991 > 192.168.128.2.111: Flags [P.], seq 1:61, ack 1, win 6380, options [nop,nop,TS val 369064544 ecr 807163013], length 60",
+      "xid": "0x34221ec9",
+      "kind": "call",
+      "program": 100000,
+      "version": 2,
+      "procedure": 3,
+      "argumentsHex": "000186a5000000030000000600000000"
+    },
+    {
+      "line": 2511,
+      "time": "2026-10-13 20:09:16.679410",
+      "flow": "192.168.128.2.111 > 192.168.128.2.991: Flags [P.], seq 1:33, ack 61, win 6380, options [nop,nop,TS val 807163014 ecr 369064544], length 32",
+      "xid": "0x34221ec9",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00004e50"
+    },
+    {
+      "line": 2573,
+      "time": "2026-10-13 20:09:16.679641",
+      "flow": "192.168.128.2.990 > 192.168.128.2.20048: Flags [P.], seq 1:45, ack 1, win 6380, options [nop,nop,TS val 2448748976 ecr 362356986], length 44",
+      "xid": "0x389bec47",
+      "kind": "call",
+      "program": 100005,
+      "version": 3,
+      "procedure": 0
+    },
+    {
+      "line": 2587,
+      "time": "2026-10-13 20:09:16.679776",
+      "flow": "192.168.128.2.20048 > 192.168.128.2.990: Flags [P.], seq 1:29, ack 45, win 6380, options [nop,nop,TS val 362356986 ecr 2448748976], length 28",
+      "xid": "0x389bec47",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": ""
+    },
+    {
+      "line": 2648,
+      "time": "2026-10-13 20:09:16.713237",
+      "flow": "192.168.128.2.49154 > 192.168.128.2.111: Flags [P.], seq 1:69, ack 1, win 65535, options [nop,nop,TS val 733383584 ecr 2856895000], length 68",
+      "xid": "0xe8fec001",
+      "kind": "call",
+      "program": 100000,
+      "version": 2,
+      "procedure": 0,
+      "argumentsHex": "000000000000000000000001000000000000000000000000"
+    },
+    {
+      "line": 2664,
+      "time": "2026-10-13 20:09:16.713299",
+      "flow": "192.168.128.2.111 > 192.168.128.2.49154: Flags [P.], seq 1:29, ack 69, win 6379, options [nop,nop,TS val 2856895011 ecr 733383584], length 28",
+      "xid": "0xe8fec001",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": ""
+    },
+    {
+      "line": 2677,
+      "time": "2026-10-13 20:09:16.713326",
+      "flow": "192.168.128.2.49154 > 192.168.128.2.111: Flags [P.], seq 69:153, ack 29, win 65535, options [nop,nop,TS val 733383584 ecr 2856895011], length 84",
+      "xid": "0xe8fec002",
+      "kind": "call",
+      "program": 100000,
+      "version": 2,
+      "procedure": 3,
+      "argumentsHex": "000000000000000000000001000000000000000000000000000186a3000000030000000600000000"
+    },
+    {
+      "line": 2694,
+      "time": "2026-10-13 20:09:16.713348",
+      "flow": "192.168.128.2.111 > 192.168.128.2.49154: Flags [P.], seq 29:61, ack 153, win 6378, options [nop,nop,TS val 2856895011 ecr 733383584], length 32",
+      "xid": "0xe8fec002",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000801"
+    },
+    {
+      "line": 2756,
+      "time": "2026-10-13 20:09:16.724858",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 1:69, ack 1, win 65535, options [nop,nop,TS val 1067800978 ecr 1272164779], length 68: NFS request xid 3909009411 64 null",
+      "xid": "0xe8fec003",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 0
+    },
+    {
+      "line": 2772,
+      "time": "2026-10-13 20:09:16.724921",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 1:29, ack 69, win 32768, options [nop,nop,TS val 1272164790 ecr 1067800978], length 28: NFS reply xid 3909009411 reply ok 24 null",
+      "xid": "0xe8fec003",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": ""
+    },
+    {
+      "line": 2809,
+      "time": "2026-10-13 20:09:16.725074",
+      "flow": "192.168.128.2.988 > 192.168.128.2.20048: Flags [P.], seq 1:117, ack 1, win 6380, options [nop,nop,TS val 1389021605 ecr 1550767428], length 116",
+      "xid": "0xe8fec004",
+      "kind": "call",
+      "program": 100005,
+      "version": 3,
+      "procedure": 1
+    },
+    {
+      "line": 2828,
+      "time": "2026-10-13 20:09:16.725233",
+      "flow": "192.168.128.2.20048 > 192.168.128.2.988: Flags [P.], seq 1:73, ack 117, win 6379, options [nop,nop,TS val 1550767428 ecr 1389021605], length 72",
+      "xid": "0xe8fec004",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000001c4e58000091b94c490000000100000000080000009ab30700000000000000000100000001"
+    },
+    {
+      "line": 2856,
+      "time": "2026-10-13 20:09:16.725291",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 69:229, ack 29, win 65535, options [nop,nop,TS val 1067800978 ecr 1272164790], length 160: NFS request xid 3909009413 156 getattr fh Unknown/4E58000091B94C490000000100000000080000009AB3070000000000",
+      "xid": "0xe8fec005",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 1
+    },
+    {
+      "line": 2878,
+      "time": "2026-10-13 20:09:16.725346",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 29:145, ack 229, win 32768, options [nop,nop,TS val 1272164790 ecr 1067800978], length 116: NFS reply xid 3909009413 reply ok 112 getattr DIR 755 ids 501/20 sz 128",
+      "xid": "0xe8fec005",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "0000000000000002000001ed00000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b39a6ace8fd412c6145a6ace8fe128d4c4746ace8fe128d4c474"
+    },
+    {
+      "line": 2897,
+      "time": "2026-10-13 20:09:16.725382",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 229:389, ack 145, win 65535, options [nop,nop,TS val 1067800979 ecr 1272164790], length 160: NFS request xid 3909009414 156 fsinfo fh Unknown/4E58000091B94C490000000100000000080000009AB3070000000000",
+      "xid": "0xe8fec006",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 19
+    },
+    {
+      "line": 2919,
+      "time": "2026-10-13 20:09:16.725409",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 145:313, ack 389, win 32768, options [nop,nop,TS val 1272164791 ecr 1067800979], length 168: NFS reply xid 3909009414 reply ok 164 fsinfo POST: DIR 755 ids 501/20 sz 128 nlink 4 rdev 0/0 fsid 100000c fileid 7b39a a/m/ctime 1791922132.314971226 1791922145.685032564 1791922145.685032564 rtmax 1048576 rtpref 1048576 wtmax 1048576 wtpref 1048576 dtpref 1048576 rtmult 512 wtmult 512 maxfsz 18446744073709551615 delta 0.000001",
+      "xid": "0xe8fec006",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000000100000002000001ed00000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b39a6ace8fd412c6145a6ace8fe128d4c4746ace8fe128d4c47400100000001000000000020000100000001000000000020000100000ffffffffffffffff00000000000000010000001b"
+    },
+    {
+      "line": 2941,
+      "time": "2026-10-13 20:09:16.725430",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 389:549, ack 313, win 65535, options [nop,nop,TS val 1067800979 ecr 1272164791], length 160: NFS request xid 3909009415 156 pathconf fh Unknown/4E58000091B94C490000000100000000080000009AB3070000000000",
+      "xid": "0xe8fec007",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 20
+    },
+    {
+      "line": 2963,
+      "time": "2026-10-13 20:09:16.725469",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 313:457, ack 549, win 32768, options [nop,nop,TS val 1272164791 ecr 1067800979], length 144: NFS reply xid 3909009415 reply ok 140 pathconf POST: DIR 755 ids 501/20 sz 128 nlink 4 rdev 0/0 fsid 100000c fileid 7b39a a/m/ctime 1791922132.314971226 1791922145.685032564 1791922145.685032564 linkmax 32767 namemax 255 notrunc chownres igncase keepcase",
+      "xid": "0xe8fec007",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000000100000002000001ed00000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b39a6ace8fd412c6145a6ace8fe128d4c4746ace8fe128d4c47400007fff000000ff00030db000030db00000000100000001"
+    },
+    {
+      "line": 2984,
+      "time": "2026-10-13 20:09:16.725490",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 549:709, ack 457, win 65535, options [nop,nop,TS val 1067800979 ecr 1272164791], length 160: NFS request xid 3909009416 156 fsstat fh Unknown/4E58000091B94C490000000100000000080000009AB3070000000000",
+      "xid": "0xe8fec008",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 18
+    },
+    {
+      "line": 3006,
+      "time": "2026-10-13 20:09:16.725517",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 457:629, ack 709, win 32768, options [nop,nop,TS val 1272164791 ecr 1067800979], length 172: NFS reply xid 3909009416 reply ok 168 fsstat POST: DIR 755 ids 501/20 sz 128 nlink 4 rdev 0/0 fsid 100000c fileid 7b39a a/m/ctime 1791922132.314971226 1791922145.685032564 1791922145.685032564 tbytes 49475674112 fbytes 18359468032 abytes 18359468032 tfiles 179598756 ffiles 179291680 afiles 179291680 invar 0",
+      "xid": "0xe8fec008",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000000100000002000001ed00000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b39a6ace8fd412c6145a6ace8fe128d4c4746ace8fe128d4c4740000000b84fae00000000004464f400000000004464f4000000000000ab475a4000000000aafc620000000000aafc62000000000"
+    },
+    {
+      "line": 3028,
+      "time": "2026-10-13 20:09:16.730481",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 709:817, ack 629, win 65535, options [nop,nop,TS val 1067800984 ecr 1272164791], length 108: NFS request xid 3909009417 104 lookup fh Unknown/4E58000091B94C490000000100000000080000009AB3070000000000 \"._.\"",
+      "xid": "0xe8fec009",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 3046,
+      "time": "2026-10-13 20:09:16.732305",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 817:981, ack 629, win 65535, options [nop,nop,TS val 1067800985 ecr 1272164796], length 164: NFS request xid 3909009418 160 access fh Unknown/4E58000091B94C490000000100000000080000009AB3070000000000 NFS_ACCESS_FULL",
+      "xid": "0xe8fec00a",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 4
+    },
+    {
+      "line": 3068,
+      "time": "2026-10-13 20:09:16.732807",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 981:1085, ack 629, win 65535, options [nop,nop,TS val 1067800986 ecr 1272164797], length 104: NFS request xid 3909009419 100 access fh Unknown/4E58000091B94C490000000100000000080000009AB3070000000000 NFS_ACCESS_FULL",
+      "xid": "0xe8fec00b",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 4
+    },
+    {
+      "line": 3086,
+      "time": "2026-10-13 20:09:16.733538",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 629:749, ack 1085, win 32765, options [nop,nop,TS val 1272164799 ecr 1067800986], length 120: NFS reply xid 3909009417 reply ok 116 lookup ERROR: No such file or directory post dattr: DIR 755 ids 501/20 sz 128 nlink 4 rdev 0/0 fsid 100000c fileid 7b39a a/m/ctime 1791922132.314971226 1791922145.685032564 1791922145.685032564",
+      "xid": "0xe8fec009",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000020000000100000002000001ed00000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b39a6ace8fd412c6145a6ace8fe128d4c4746ace8fe128d4c474"
+    },
+    {
+      "line": 3099,
+      "time": "2026-10-13 20:09:16.733549",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 749:873, ack 1085, win 32768, options [nop,nop,TS val 1272164799 ecr 1067800986], length 124: NFS reply xid 3909009418 reply ok 120 access attr: DIR 755 ids 501/20 sz 128 nlink 4 rdev 0/0 fsid 100000c fileid 7b39a a/m/ctime 1791922132.314971226 1791922145.685032564 1791922145.685032564 c 001f",
+      "xid": "0xe8fec00a",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000000100000002000001ed00000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b39a6ace8fd412c6145a6ace8fe128d4c4746ace8fe128d4c4740000001f"
+    },
+    {
+      "line": 3112,
+      "time": "2026-10-13 20:09:16.733552",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 873:997, ack 1085, win 32768, options [nop,nop,TS val 1272164799 ecr 1067800986], length 124: NFS reply xid 3909009419 reply ok 120 access attr: DIR 755 ids 501/20 sz 128 nlink 4 rdev 0/0 fsid 100000c fileid 7b39a a/m/ctime 1791922132.314971226 1791922145.685032564 1791922145.685032564 c 001f",
+      "xid": "0xe8fec00b",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000000100000002000001ed00000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b39a6ace8fd412c6145a6ace8fe128d4c4746ace8fe128d4c4740000001f"
+    },
+    {
+      "line": 3143,
+      "time": "2026-10-13 20:09:16.733591",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 1085:1245, ack 997, win 65535, options [nop,nop,TS val 1067800987 ecr 1272164799], length 160: NFS request xid 3909009420 156 getattr fh Unknown/4E58000091B94C490000000100000000080000009AB3070000000000",
+      "xid": "0xe8fec00c",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 1
+    },
+    {
+      "line": 3165,
+      "time": "2026-10-13 20:09:16.733709",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 1245:1345, ack 997, win 65535, options [nop,nop,TS val 1067800987 ecr 1272164799], length 100: NFS request xid 3909009421 96 fsstat fh Unknown/4E58000091B94C490000000100000000080000009AB3070000000000",
+      "xid": "0xe8fec00d",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 18
+    },
+    {
+      "line": 3183,
+      "time": "2026-10-13 20:09:16.734188",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 997:1113, ack 1345, win 32767, options [nop,nop,TS val 1272164799 ecr 1067800987], length 116: NFS reply xid 3909009420 reply ok 112 getattr DIR 755 ids 501/20 sz 128",
+      "xid": "0xe8fec00c",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "0000000000000002000001ed00000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b39a6ace8fd412c6145a6ace8fe128d4c4746ace8fe128d4c474"
+    },
+    {
+      "line": 3196,
+      "time": "2026-10-13 20:09:16.734195",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 1113:1285, ack 1345, win 32768, options [nop,nop,TS val 1272164799 ecr 1067800987], length 172: NFS reply xid 3909009421 reply ok 168 fsstat POST: DIR 755 ids 501/20 sz 128 nlink 4 rdev 0/0 fsid 100000c fileid 7b39a a/m/ctime 1791922132.314971226 1791922145.685032564 1791922145.685032564 tbytes 49475674112 fbytes 18359451648 abytes 18359451648 tfiles 179598597 ffiles 179291520 afiles 179291520 invar 0",
+      "xid": "0xe8fec00d",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000000100000002000001ed00000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b39a6ace8fd412c6145a6ace8fe128d4c4746ace8fe128d4c4740000000b84fae00000000004464f000000000004464f0000000000000ab47505000000000aafc580000000000aafc58000000000"
+    },
+    {
+      "line": 3224,
+      "time": "2026-10-13 20:09:16.736857",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 1345:1521, ack 1285, win 65535, options [nop,nop,TS val 1067800990 ecr 1272164799], length 176: NFS request xid 3909009422 172 lookup fh Unknown/4E58000091B94C490000000100000000080000009AB3070000000000 \".DS_Store\"",
+      "xid": "0xe8fec00e",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 3247,
+      "time": "2026-10-13 20:09:16.740541",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 1285:1405, ack 1521, win 32768, options [nop,nop,TS val 1272164806 ecr 1067800990], length 120: NFS reply xid 3909009422 reply ok 116 lookup ERROR: No such file or directory post dattr: DIR 755 ids 501/20 sz 128 nlink 4 rdev 0/0 fsid 100000c fileid 7b39a a/m/ctime 1791922132.314971226 1791922145.685032564 1791922145.685032564",
+      "xid": "0xe8fec00e",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000020000000100000002000001ed00000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b39a6ace8fd412c6145a6ace8fe128d4c4746ace8fe128d4c474"
+    },
+    {
+      "line": 3266,
+      "time": "2026-10-13 20:09:16.748402",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 1521:1629, ack 1405, win 65535, options [nop,nop,TS val 1067801002 ecr 1272164806], length 108: NFS request xid 3909009423 104 lookup fh Unknown/4E58000091B94C490000000100000000080000009AB3070000000000 \"DCIM\"",
+      "xid": "0xe8fec00f",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 3284,
+      "time": "2026-10-13 20:09:16.748458",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 1405:1525, ack 1629, win 32768, options [nop,nop,TS val 1272164814 ecr 1067801002], length 120: NFS reply xid 3909009423 reply ok 116 lookup ERROR: No such file or directory post dattr: DIR 755 ids 501/20 sz 128 nlink 4 rdev 0/0 fsid 100000c fileid 7b39a a/m/ctime 1791922132.314971226 1791922145.685032564 1791922145.685032564",
+      "xid": "0xe8fec00f",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000020000000100000002000001ed00000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b39a6ace8fd412c6145a6ace8fe128d4c4746ace8fe128d4c474"
+    },
+    {
+      "line": 3303,
+      "time": "2026-10-13 20:09:16.748500",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 1629:1769, ack 1525, win 65535, options [nop,nop,TS val 1067801002 ecr 1272164814], length 140: NFS request xid 3909009424 136 lookup fh Unknown/4E58000091B94C490000000100000000080000009AB3070000000000 \".metadata_never_index_unless_rootfs\"",
+      "xid": "0xe8fec010",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 3323,
+      "time": "2026-10-13 20:09:16.748535",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 1525:1645, ack 1769, win 32768, options [nop,nop,TS val 1272164814 ecr 1067801002], length 120: NFS reply xid 3909009424 reply ok 116 lookup ERROR: No such file or directory post dattr: DIR 755 ids 501/20 sz 128 nlink 4 rdev 0/0 fsid 100000c fileid 7b39a a/m/ctime 1791922132.314971226 1791922145.685032564 1791922145.685032564",
+      "xid": "0xe8fec010",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000020000000100000002000001ed00000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b39a6ace8fd412c6145a6ace8fe128d4c4746ace8fe128d4c474"
+    },
+    {
+      "line": 3342,
+      "time": "2026-10-13 20:09:16.748559",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 1769:1897, ack 1645, win 65535, options [nop,nop,TS val 1067801002 ecr 1272164814], length 128: NFS request xid 3909009425 124 lookup fh Unknown/4E58000091B94C490000000100000000080000009AB3070000000000 \".metadata_never_index\"",
+      "xid": "0xe8fec011",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 3362,
+      "time": "2026-10-13 20:09:16.748591",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 1645:1765, ack 1897, win 32768, options [nop,nop,TS val 1272164814 ecr 1067801002], length 120: NFS reply xid 3909009425 reply ok 116 lookup ERROR: No such file or directory post dattr: DIR 755 ids 501/20 sz 128 nlink 4 rdev 0/0 fsid 100000c fileid 7b39a a/m/ctime 1791922132.314971226 1791922145.685032564 1791922145.685032564",
+      "xid": "0xe8fec011",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000020000000100000002000001ed00000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b39a6ace8fd412c6145a6ace8fe128d4c4746ace8fe128d4c474"
+    },
+    {
+      "line": 3381,
+      "time": "2026-10-13 20:09:16.748615",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 1897:2029, ack 1765, win 65535, options [nop,nop,TS val 1067801002 ecr 1272164814], length 132: NFS request xid 3909009426 128 lookup fh Unknown/4E58000091B94C490000000100000000080000009AB3070000000000 \".metadata_direct_scope_only\"",
+      "xid": "0xe8fec012",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 3401,
+      "time": "2026-10-13 20:09:16.748646",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 1765:1885, ack 2029, win 32768, options [nop,nop,TS val 1272164814 ecr 1067801002], length 120: NFS reply xid 3909009426 reply ok 116 lookup ERROR: No such file or directory post dattr: DIR 755 ids 501/20 sz 128 nlink 4 rdev 0/0 fsid 100000c fileid 7b39a a/m/ctime 1791922132.314971226 1791922145.685032564 1791922145.685032564",
+      "xid": "0xe8fec012",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000020000000100000002000001ed00000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b39a6ace8fd412c6145a6ace8fe128d4c4746ace8fe128d4c474"
+    },
+    {
+      "line": 3420,
+      "time": "2026-10-13 20:09:16.748809",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 2029:2149, ack 1885, win 65535, options [nop,nop,TS val 1067801002 ecr 1272164814], length 120: NFS request xid 3909009427 116 lookup fh Unknown/4E58000091B94C490000000100000000080000009AB3070000000000 \".Spotlight-V100\"",
+      "xid": "0xe8fec013",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 3439,
+      "time": "2026-10-13 20:09:16.748845",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 1885:2005, ack 2149, win 32768, options [nop,nop,TS val 1272164814 ecr 1067801002], length 120: NFS reply xid 3909009427 reply ok 116 lookup ERROR: No such file or directory post dattr: DIR 755 ids 501/20 sz 128 nlink 4 rdev 0/0 fsid 100000c fileid 7b39a a/m/ctime 1791922132.314971226 1791922145.685032564 1791922145.685032564",
+      "xid": "0xe8fec013",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000020000000100000002000001ed00000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b39a6ace8fd412c6145a6ace8fe128d4c4746ace8fe128d4c474"
+    },
+    {
+      "line": 3470,
+      "time": "2026-10-13 20:09:16.785370",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 2149:2309, ack 2005, win 65535, options [nop,nop,TS val 1067801038 ecr 1272164814], length 160: NFS request xid 3909009428 156 fsstat fh Unknown/4E58000091B94C490000000100000000080000009AB3070000000000",
+      "xid": "0xe8fec014",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 18
+    },
+    {
+      "line": 3492,
+      "time": "2026-10-13 20:09:16.785462",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 2005:2177, ack 2309, win 32768, options [nop,nop,TS val 1272164851 ecr 1067801038], length 172: NFS reply xid 3909009428 reply ok 168 fsstat POST: DIR 755 ids 501/20 sz 128 nlink 4 rdev 0/0 fsid 100000c fileid 7b39a a/m/ctime 1791922132.314971226 1791922145.685032564 1791922145.685032564 tbytes 49475674112 fbytes 18359394304 abytes 18359394304 tfiles 179598038 ffiles 179290960 afiles 179290960 invar 0",
+      "xid": "0xe8fec014",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000000100000002000001ed00000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b39a6ace8fd412c6145a6ace8fe128d4c4746ace8fe128d4c4740000000b84fae00000000004464e200000000004464e2000000000000ab472d6000000000aafc350000000000aafc35000000000"
+    },
+    {
+      "line": 3514,
+      "time": "2026-10-13 20:09:16.796916",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 2309:2429, ack 2177, win 65535, options [nop,nop,TS val 1067801050 ecr 1272164851], length 120: NFS request xid 3909009429 116 lookup fh Unknown/4E58000091B94C490000000100000000080000009AB3070000000000 \".autobyteus-nfs\"",
+      "xid": "0xe8fec015",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 3533,
+      "time": "2026-10-13 20:09:16.796994",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 2177:2417, ack 2429, win 32768, options [nop,nop,TS val 1272164862 ecr 1067801050], length 240: NFS reply xid 3909009429 reply ok 236 lookup fh Unknown/4E58000091B94C4900000001000000000800000081B5070000000000 DIR 700 ids 501/20 sz 128 nlink 4 rdev 0/0 fsid 100000c fileid 7b581 a/m/ctime 1791922145.685025147 1791922145.722333980 1791922145.722333980 post dattr: DIR 755 ids 501/20 sz 128 nlink 4 rdev 0/0 fsid 100000c fileid 7b39a a/m/ctime 1791922132.314971226 1791922145.685032564 1791922145.685032564",
+      "xid": "0xe8fec015",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000001c4e58000091b94c4900000001000000000800000081b50700000000000000000100000002000001c000000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b5816ace8fe128d4a77b6ace8fe12b0df11c6ace8fe12b0df11c0000000100000002000001ed00000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b39a6ace8fd412c6145a6ace8fe128d4c4746ace8fe128d4c474"
+    },
+    {
+      "line": 3560,
+      "time": "2026-10-13 20:09:16.797063",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 2429:2533, ack 2417, win 65535, options [nop,nop,TS val 1067801050 ecr 1272164862], length 104: NFS request xid 3909009430 100 access fh Unknown/4E58000091B94C4900000001000000000800000081B5070000000000 NFS_ACCESS_FULL",
+      "xid": "0xe8fec016",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 4
+    },
+    {
+      "line": 3578,
+      "time": "2026-10-13 20:09:16.797086",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 2417:2541, ack 2533, win 32768, options [nop,nop,TS val 1272164862 ecr 1067801050], length 124: NFS reply xid 3909009430 reply ok 120 access attr: DIR 700 ids 501/20 sz 128 nlink 4 rdev 0/0 fsid 100000c fileid 7b581 a/m/ctime 1791922145.685025147 1791922145.722333980 1791922145.722333980 c 001f",
+      "xid": "0xe8fec016",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000000100000002000001c000000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b5816ace8fe128d4a77b6ace8fe12b0df11c6ace8fe12b0df11c0000001f"
+    },
+    {
+      "line": 3597,
+      "time": "2026-10-13 20:09:16.797113",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 2533:2649, ack 2541, win 65535, options [nop,nop,TS val 1067801050 ecr 1272164862], length 116: NFS request xid 3909009431 112 lookup fh Unknown/4E58000091B94C4900000001000000000800000081B5070000000000 \"storage.json\"",
+      "xid": "0xe8fec017",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 3616,
+      "time": "2026-10-13 20:09:16.797155",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 2541:2781, ack 2649, win 32768, options [nop,nop,TS val 1272164862 ecr 1067801050], length 240: NFS reply xid 3909009431 reply ok 236 lookup fh Unknown/4E58000091B94C4900000001000000000800000082B5070000000000 REG 600 ids 501/20 sz 53 nlink 1 rdev 0/0 fsid 100000c fileid 7b582 a/m/ctime 1791922146.56039732 1791922145.685133355 1791922145.685133355 post dattr: DIR 700 ids 501/20 sz 128 nlink 4 rdev 0/0 fsid 100000c fileid 7b581 a/m/ctime 1791922145.685025147 1791922145.722333980 1791922145.722333980",
+      "xid": "0xe8fec017",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000001c4e58000091b94c4900000001000000000800000082b507000000000000000001000000010000018000000001000001f500000014000000000000003500000000000010000000000000000000000000000100000c000000000007b5826ace8fe2035719346ace8fe128d64e2b6ace8fe128d64e2b0000000100000002000001c000000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b5816ace8fe128d4a77b6ace8fe12b0df11c6ace8fe12b0df11c"
+    },
+    {
+      "line": 3643,
+      "time": "2026-10-13 20:09:16.797218",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 2649:2753, ack 2781, win 65535, options [nop,nop,TS val 1067801050 ecr 1272164862], length 104: NFS request xid 3909009432 100 access fh Unknown/4E58000091B94C4900000001000000000800000082B5070000000000 NFS_ACCESS_FULL",
+      "xid": "0xe8fec018",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 4
+    },
+    {
+      "line": 3661,
+      "time": "2026-10-13 20:09:16.797237",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 2781:2905, ack 2753, win 32768, options [nop,nop,TS val 1272164862 ecr 1067801050], length 124: NFS reply xid 3909009432 reply ok 120 access attr: REG 600 ids 501/20 sz 53 nlink 1 rdev 0/0 fsid 100000c fileid 7b582 a/m/ctime 1791922146.56039732 1791922145.685133355 1791922145.685133355 c 001d",
+      "xid": "0xe8fec018",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "0000000000000001000000010000018000000001000001f500000014000000000000003500000000000010000000000000000000000000000100000c000000000007b5826ace8fe2035719346ace8fe128d64e2b6ace8fe128d64e2b0000001d"
+    },
+    {
+      "line": 3680,
+      "time": "2026-10-13 20:09:16.797280",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 2753:2865, ack 2905, win 65535, options [nop,nop,TS val 1067801050 ecr 1272164862], length 112: NFS request xid 3909009433 108 read fh Unknown/4E58000091B94C4900000001000000000800000082B5070000000000 32768 bytes @ 0",
+      "xid": "0xe8fec019",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 6
+    },
+    {
+      "line": 3699,
+      "time": "2026-10-13 20:09:16.797716",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 2905:3093, ack 2865, win 32768, options [nop,nop,TS val 1272164863 ecr 1067801050], length 188: NFS reply xid 3909009433 reply ok 184 read REG 600 ids 501/20 sz 53 nlink 1 rdev 0/0 fsid 100000c fileid 7b582 a/m/ctime 1791922146.56039732 1791922145.685133355 1791922145.685133355 53 bytes EOF",
+      "xid": "0xe8fec019",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "0000000000000001000000010000018000000001000001f500000014000000000000003500000000000010000000000000000000000000000100000c000000000007b5826ace8fe2035719346ace8fe128d64e2b6ace8fe128d64e2b0000003500000001000000357b2273746f726167654964223a2236616136396663362d643538642d346630322d386461312d626333316361613562646630227d0a000000"
+    },
+    {
+      "line": 3722,
+      "time": "2026-10-13 20:09:16.797925",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 2865:2977, ack 3093, win 65535, options [nop,nop,TS val 1067801051 ecr 1272164863], length 112: NFS request xid 3909009434 108 lookup fh Unknown/4E58000091B94C4900000001000000000800000081B5070000000000 \"health\"",
+      "xid": "0xe8fec01a",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 3741,
+      "time": "2026-10-13 20:09:16.797983",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 3093:3333, ack 2977, win 32768, options [nop,nop,TS val 1272164863 ecr 1067801051], length 240: NFS reply xid 3909009434 reply ok 236 lookup fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 DIR 700 ids 501/20 sz 64 nlink 2 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922145.730242397 1791922145.730242397 post dattr: DIR 700 ids 501/20 sz 128 nlink 4 rdev 0/0 fsid 100000c fileid 7b581 a/m/ctime 1791922145.685025147 1791922145.722333980 1791922145.722333980",
+      "xid": "0xe8fec01a",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000001c4e58000091b94c4900000001000000000800000086b50700000000000000000100000002000001c000000002000001f500000014000000000000004000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fe12b869d5d6ace8fe12b869d5d0000000100000002000001c000000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b5816ace8fe128d4a77b6ace8fe12b0df11c6ace8fe12b0df11c"
+    },
+    {
+      "line": 3768,
+      "time": "2026-10-13 20:09:16.798079",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 2977:3081, ack 3333, win 65535, options [nop,nop,TS val 1067801051 ecr 1272164863], length 104: NFS request xid 3909009435 100 access fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 NFS_ACCESS_FULL",
+      "xid": "0xe8fec01b",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 4
+    },
+    {
+      "line": 3786,
+      "time": "2026-10-13 20:09:16.798099",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 3333:3457, ack 3081, win 32768, options [nop,nop,TS val 1272164863 ecr 1067801051], length 124: NFS reply xid 3909009435 reply ok 120 access attr: DIR 700 ids 501/20 sz 64 nlink 2 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922145.730242397 1791922145.730242397 c 001f",
+      "xid": "0xe8fec01b",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000000100000002000001c000000002000001f500000014000000000000004000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fe12b869d5d6ace8fe12b869d5d0000001f"
+    },
+    {
+      "line": 3805,
+      "time": "2026-10-13 20:09:16.798132",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 3081:3221, ack 3457, win 65535, options [nop,nop,TS val 1067801051 ecr 1272164863], length 140: NFS request xid 3909009436 136 lookup fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 \"dad45d85-8377-4932-ba02-f65873424c11\"",
+      "xid": "0xe8fec01c",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 3825,
+      "time": "2026-10-13 20:09:16.798161",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 3457:3577, ack 3221, win 32768, options [nop,nop,TS val 1272164863 ecr 1067801051], length 120: NFS reply xid 3909009436 reply ok 116 lookup ERROR: No such file or directory post dattr: DIR 700 ids 501/20 sz 64 nlink 2 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922145.730242397 1791922145.730242397",
+      "xid": "0xe8fec01c",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000020000000100000002000001c000000002000001f500000014000000000000004000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fe12b869d5d6ace8fe12b869d5d"
+    },
+    {
+      "line": 3844,
+      "time": "2026-10-13 20:09:16.798207",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 3221:3373, ack 3577, win 65535, options [nop,nop,TS val 1067801051 ecr 1272164863], length 152: NFS request xid 3909009438 148 create fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 \"dad45d85-8377-4932-ba02-f65873424c11\"",
+      "xid": "0xe8fec01e",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 8
+    },
+    {
+      "line": 3859,
+      "time": "2026-10-13 20:09:16.798210",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 3373:3517, ack 3577, win 65535, options [nop,nop,TS val 1067801051 ecr 1272164863], length 144: NFS request xid 3909009439 140 lookup fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 \"._dad45d85-8377-4932-ba02-f65873424c11\"",
+      "xid": "0xe8fec01f",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 3880,
+      "time": "2026-10-13 20:09:16.798294",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 3577:3849, ack 3517, win 32768, options [nop,nop,TS val 1272164863 ecr 1067801051], length 272: NFS reply xid 3909009438 reply ok 268 create fh Unknown/4E58000091B94C49000000010000000008000000D8B6070000000000 REG 0 ids 501/20 sz 0 nlink 1 rdev 0/0 fsid 100000c fileid 7b6d8 a/m/ctime 633437444.854775807 1791922156.798249529 1791922156.798249529 dir attr: PRE: sz 64 mtime 1791922145.730242397 ctime 1791922145.730242397 POST: DIR 700 ids 501/20 sz 96 nlink 3 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922156.798261654 1791922156.798261654",
+      "xid": "0xe8fec01e",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000000000000010000001c4e58000091b94c49000000010000000008000000d8b607000000000000000001000000010000000000000001000001f500000014000000000000000000000000000000000000000000000000000000000100000c000000000007b6d825c17d0432f2d7ff6ace8fec2f9452396ace8fec2f9452390000000100000000000000406ace8fe12b869d5d6ace8fe12b869d5d0000000100000002000001c000000003000001f500000014000000000000006000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fec2f9481966ace8fec2f948196"
+    },
+    {
+      "line": 3903,
+      "time": "2026-10-13 20:09:16.798302",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 3849:3969, ack 3517, win 32768, options [nop,nop,TS val 1272164863 ecr 1067801051], length 120: NFS reply xid 3909009439 reply ok 116 lookup ERROR: No such file or directory post dattr: DIR 700 ids 501/20 sz 96 nlink 3 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922156.798261654 1791922156.798261654",
+      "xid": "0xe8fec01f",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000020000000100000002000001c000000003000001f500000014000000000000006000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fec2f9481966ace8fec2f948196"
+    },
+    {
+      "line": 3928,
+      "time": "2026-10-13 20:09:16.798334",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 3517:3649, ack 3969, win 65535, options [nop,nop,TS val 1067801051 ecr 1272164863], length 132: NFS request xid 3909009441 128 setattr fh Unknown/4E58000091B94C49000000010000000008000000D8B6070000000000",
+      "xid": "0xe8fec021",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 2
+    },
+    {
+      "line": 3948,
+      "time": "2026-10-13 20:09:16.798380",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 3969:4117, ack 3649, win 32768, options [nop,nop,TS val 1272164864 ecr 1067801051], length 148: NFS reply xid 3909009441 reply ok 144 setattr PRE: sz 0 mtime 1791922156.798249529 ctime 1791922156.798249529 POST: REG 600 ids 501/20 sz 0 nlink 1 rdev 0/0 fsid 100000c fileid 7b6d8 a/m/ctime 1791922156.798348612 1791922156.798348612 1791922156.798373737",
+      "xid": "0xe8fec021",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000000100000000000000006ace8fec2f9452396ace8fec2f94523900000001000000010000018000000001000001f500000014000000000000000000000000000000000000000000000000000000000100000c000000000007b6d86ace8fec2f95d5446ace8fec2f95d5446ace8fec2f963769"
+    },
+    {
+      "line": 3969,
+      "time": "2026-10-13 20:09:16.798398",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 3649:3749, ack 4117, win 65535, options [nop,nop,TS val 1067801052 ecr 1272164864], length 100: NFS request xid 3909009443 96 getattr fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000",
+      "xid": "0xe8fec023",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 1
+    },
+    {
+      "line": 3987,
+      "time": "2026-10-13 20:09:16.798428",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 4117:4233, ack 3749, win 32768, options [nop,nop,TS val 1272164864 ecr 1067801052], length 116: NFS reply xid 3909009443 reply ok 112 getattr DIR 700 ids 501/20 sz 96",
+      "xid": "0xe8fec023",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "0000000000000002000001c000000003000001f500000014000000000000006000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fec2f9481966ace8fec2f948196"
+    },
+    {
+      "line": 4006,
+      "time": "2026-10-13 20:09:16.798565",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 3749:3929, ack 4233, win 65535, options [nop,nop,TS val 1067801052 ecr 1272164864], length 180: NFS request xid 3909009444 176 write fh Unknown/4E58000091B94C49000000010000000008000000D8B6070000000000 58 (58) bytes @ 0 <unstable>",
+      "xid": "0xe8fec024",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 7
+    },
+    {
+      "line": 4029,
+      "time": "2026-10-13 20:09:16.798619",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 4233:4397, ack 3929, win 32768, options [nop,nop,TS val 1272164864 ecr 1067801052], length 164: NFS reply xid 3909009444 reply ok 160 write PRE: sz 0 mtime 1791922156.798348612 ctime 1791922156.798373737 POST: REG 600 ids 501/20 sz 58 nlink 1 rdev 0/0 fsid 100000c fileid 7b6d8 a/m/ctime 1791922156.798348612 1791922156.798613279 1791922156.798613279 58 bytes <unstable> verf 6ace8fec00008cc9",
+      "xid": "0xe8fec024",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000000100000000000000006ace8fec2f95d5446ace8fec2f96376900000001000000010000018000000001000001f500000014000000000000003a00000000000010000000000000000000000000000100000c000000000007b6d86ace8fec2f95d5446ace8fec2f99df1f6ace8fec2f99df1f0000003a000000006ace8fec00008cc9"
+    },
+    {
+      "line": 4051,
+      "time": "2026-10-13 20:09:16.798657",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 3929:4041, ack 4397, win 65535, options [nop,nop,TS val 1067801052 ecr 1272164864], length 112: NFS request xid 3909009445 108 commit fh Unknown/4E58000091B94C49000000010000000008000000D8B6070000000000 0 bytes @ 58",
+      "xid": "0xe8fec025",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 21
+    },
+    {
+      "line": 4070,
+      "time": "2026-10-13 20:09:16.798921",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 4397:4553, ack 4041, win 32768, options [nop,nop,TS val 1272164864 ecr 1067801052], length 156: NFS reply xid 3909009445 reply ok 152 commit PRE: sz 58 mtime 1791922156.798613279 ctime 1791922156.798613279 POST: REG 600 ids 501/20 sz 58 nlink 1 rdev 0/0 fsid 100000c fileid 7b6d8 a/m/ctime 1791922156.798348612 1791922156.798613279 1791922156.798613279 verf 6ace8fec00008cc9",
+      "xid": "0xe8fec025",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "0000000000000001000000000000003a6ace8fec2f99df1f6ace8fec2f99df1f00000001000000010000018000000001000001f500000014000000000000003a00000000000010000000000000000000000000000100000c000000000007b6d86ace8fec2f95d5446ace8fec2f99df1f6ace8fec2f99df1f6ace8fec00008cc9"
+    },
+    {
+      "line": 4091,
+      "time": "2026-10-13 20:09:16.798988",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 4041:4141, ack 4553, win 65535, options [nop,nop,TS val 1067801052 ecr 1272164864], length 100: NFS request xid 3909009447 96 getattr fh Unknown/4E58000091B94C49000000010000000008000000D8B6070000000000",
+      "xid": "0xe8fec027",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 1
+    },
+    {
+      "line": 4109,
+      "time": "2026-10-13 20:09:16.799049",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 4553:4669, ack 4141, win 32768, options [nop,nop,TS val 1272164864 ecr 1067801052], length 116: NFS reply xid 3909009447 reply ok 112 getattr REG 600 ids 501/20 sz 58",
+      "xid": "0xe8fec027",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000000000000010000018000000001000001f500000014000000000000003a00000000000010000000000000000000000000000100000c000000000007b6d86ace8fec2f95d5446ace8fec2f99df1f6ace8fec2f99df1f"
+    },
+    {
+      "line": 4128,
+      "time": "2026-10-13 20:09:16.799193",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 4141:4245, ack 4669, win 65535, options [nop,nop,TS val 1067801052 ecr 1272164864], length 104: NFS request xid 3909009448 100 access fh Unknown/4E58000091B94C49000000010000000008000000D8B6070000000000 NFS_ACCESS_FULL",
+      "xid": "0xe8fec028",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 4
+    },
+    {
+      "line": 4146,
+      "time": "2026-10-13 20:09:16.799260",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 4669:4793, ack 4245, win 32768, options [nop,nop,TS val 1272164864 ecr 1067801052], length 124: NFS reply xid 3909009448 reply ok 120 access attr: REG 600 ids 501/20 sz 58 nlink 1 rdev 0/0 fsid 100000c fileid 7b6d8 a/m/ctime 1791922156.798348612 1791922156.798613279 1791922156.798613279 c 001d",
+      "xid": "0xe8fec028",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "0000000000000001000000010000018000000001000001f500000014000000000000003a00000000000010000000000000000000000000000100000c000000000007b6d86ace8fec2f95d5446ace8fec2f99df1f6ace8fec2f99df1f0000001d"
+    },
+    {
+      "line": 4165,
+      "time": "2026-10-13 20:09:16.799390",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 4245:4385, ack 4793, win 65535, options [nop,nop,TS val 1067801053 ecr 1272164864], length 140: NFS request xid 3909009449 136 lookup fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 \"dad45d85-8377-4932-ba02-f65873424c11\"",
+      "xid": "0xe8fec029",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 4185,
+      "time": "2026-10-13 20:09:16.799442",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 4793:5033, ack 4385, win 32768, options [nop,nop,TS val 1272164865 ecr 1067801053], length 240: NFS reply xid 3909009449 reply ok 236 lookup fh Unknown/4E58000091B94C49000000010000000008000000D8B6070000000000 REG 600 ids 501/20 sz 58 nlink 1 rdev 0/0 fsid 100000c fileid 7b6d8 a/m/ctime 1791922156.798348612 1791922156.798613279 1791922156.798613279 post dattr: DIR 700 ids 501/20 sz 96 nlink 3 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922156.798261654 1791922156.798261654",
+      "xid": "0xe8fec029",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000001c4e58000091b94c49000000010000000008000000d8b607000000000000000001000000010000018000000001000001f500000014000000000000003a00000000000010000000000000000000000000000100000c000000000007b6d86ace8fec2f95d5446ace8fec2f99df1f6ace8fec2f99df1f0000000100000002000001c000000003000001f500000014000000000000006000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fec2f9481966ace8fec2f948196"
+    },
+    {
+      "line": 4212,
+      "time": "2026-10-13 20:09:16.799483",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 4385:4525, ack 5033, win 65535, options [nop,nop,TS val 1067801053 ecr 1272164865], length 140: NFS request xid 3909009451 136 lookup fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 \"dad45d85-8377-4932-ba02-f65873424c11\"",
+      "xid": "0xe8fec02b",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 4232,
+      "time": "2026-10-13 20:09:16.799534",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 5033:5273, ack 4525, win 32768, options [nop,nop,TS val 1272164865 ecr 1067801053], length 240: NFS reply xid 3909009451 reply ok 236 lookup fh Unknown/4E58000091B94C49000000010000000008000000D8B6070000000000 REG 600 ids 501/20 sz 58 nlink 1 rdev 0/0 fsid 100000c fileid 7b6d8 a/m/ctime 1791922156.798348612 1791922156.798613279 1791922156.798613279 post dattr: DIR 700 ids 501/20 sz 96 nlink 3 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922156.798261654 1791922156.798261654",
+      "xid": "0xe8fec02b",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000001c4e58000091b94c49000000010000000008000000d8b607000000000000000001000000010000018000000001000001f500000014000000000000003a00000000000010000000000000000000000000000100000c000000000007b6d86ace8fec2f95d5446ace8fec2f99df1f6ace8fec2f99df1f0000000100000002000001c000000003000001f500000014000000000000006000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fec2f9481966ace8fec2f948196"
+    },
+    {
+      "line": 4259,
+      "time": "2026-10-13 20:09:16.799563",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 4525:4665, ack 5273, win 65535, options [nop,nop,TS val 1067801053 ecr 1272164865], length 140: NFS request xid 3909009452 136 remove fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 \"dad45d85-8377-4932-ba02-f65873424c11\"",
+      "xid": "0xe8fec02c",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 12
+    },
+    {
+      "line": 4279,
+      "time": "2026-10-13 20:09:16.799631",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 5273:5421, ack 4665, win 32768, options [nop,nop,TS val 1272164865 ecr 1067801053], length 148: NFS reply xid 3909009452 reply ok 144 remove PRE: sz 96 mtime 1791922156.798261654 ctime 1791922156.798261654 POST: DIR 700 ids 501/20 sz 64 nlink 2 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922156.799614404 1791922156.799614404",
+      "xid": "0xe8fec02c",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000000100000000000000606ace8fec2f9481966ace8fec2f9481960000000100000002000001c000000002000001f500000014000000000000004000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fec2fa925c46ace8fec2fa925c4"
+    },
+    {
+      "line": 4300,
+      "time": "2026-10-13 20:09:16.799671",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 4665:4765, ack 5421, win 65535, options [nop,nop,TS val 1067801053 ecr 1272164865], length 100: NFS request xid 3909009454 96 getattr fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000",
+      "xid": "0xe8fec02e",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 1
+    },
+    {
+      "line": 4318,
+      "time": "2026-10-13 20:09:16.799716",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 5421:5537, ack 4765, win 32768, options [nop,nop,TS val 1272164865 ecr 1067801053], length 116: NFS reply xid 3909009454 reply ok 112 getattr DIR 700 ids 501/20 sz 64",
+      "xid": "0xe8fec02e",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "0000000000000002000001c000000002000001f500000014000000000000004000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fec2fa925c46ace8fec2fa925c4"
+    },
+    {
+      "line": 4337,
+      "time": "2026-10-13 20:09:16.799794",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 4765:4905, ack 5537, win 65535, options [nop,nop,TS val 1067801053 ecr 1272164865], length 140: NFS request xid 3909009456 136 lookup fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 \"dad45d85-8377-4932-ba02-f65873424c11\"",
+      "xid": "0xe8fec030",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 4357,
+      "time": "2026-10-13 20:09:16.799825",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 5537:5657, ack 4905, win 32768, options [nop,nop,TS val 1272164865 ecr 1067801053], length 120: NFS reply xid 3909009456 reply ok 116 lookup ERROR: No such file or directory post dattr: DIR 700 ids 501/20 sz 64 nlink 2 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922156.799614404 1791922156.799614404",
+      "xid": "0xe8fec030",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000020000000100000002000001c000000002000001f500000014000000000000004000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fec2fa925c46ace8fec2fa925c4"
+    },
+    {
+      "line": 4376,
+      "time": "2026-10-13 20:09:16.818460",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 4905:5009, ack 5657, win 65535, options [nop,nop,TS val 1067801072 ecr 1272164865], length 104: NFS request xid 3909009457 100 access fh Unknown/4E58000091B94C4900000001000000000800000081B5070000000000 NFS_ACCESS_FULL",
+      "xid": "0xe8fec031",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 4
+    },
+    {
+      "line": 4394,
+      "time": "2026-10-13 20:09:16.818537",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 5657:5781, ack 5009, win 32768, options [nop,nop,TS val 1272164884 ecr 1067801072], length 124: NFS reply xid 3909009457 reply ok 120 access attr: DIR 700 ids 501/20 sz 128 nlink 4 rdev 0/0 fsid 100000c fileid 7b581 a/m/ctime 1791922145.685025147 1791922145.722333980 1791922145.722333980 c 001f",
+      "xid": "0xe8fec031",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000000100000002000001c000000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b5816ace8fe128d4a77b6ace8fe12b0df11c6ace8fe12b0df11c0000001f"
+    },
+    {
+      "line": 4413,
+      "time": "2026-10-13 20:09:16.818569",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 5009:5113, ack 5781, win 65535, options [nop,nop,TS val 1067801072 ecr 1272164884], length 104: NFS request xid 3909009458 100 access fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 NFS_ACCESS_FULL",
+      "xid": "0xe8fec032",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 4
+    },
+    {
+      "line": 4431,
+      "time": "2026-10-13 20:09:16.818594",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 5781:5905, ack 5113, win 32768, options [nop,nop,TS val 1272164884 ecr 1067801072], length 124: NFS reply xid 3909009458 reply ok 120 access attr: DIR 700 ids 501/20 sz 64 nlink 2 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922156.799614404 1791922156.799614404 c 001f",
+      "xid": "0xe8fec032",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000000100000002000001c000000002000001f500000014000000000000004000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fec2fa925c46ace8fec2fa925c40000001f"
+    },
+    {
+      "line": 4450,
+      "time": "2026-10-13 20:09:16.818622",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 5113:5253, ack 5905, win 65535, options [nop,nop,TS val 1067801072 ecr 1272164884], length 140: NFS request xid 3909009459 136 lookup fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 \"dad45d85-8377-4932-ba02-f65873424c11\"",
+      "xid": "0xe8fec033",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 4470,
+      "time": "2026-10-13 20:09:16.818659",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 5905:6025, ack 5253, win 32768, options [nop,nop,TS val 1272164884 ecr 1067801072], length 120: NFS reply xid 3909009459 reply ok 116 lookup ERROR: No such file or directory post dattr: DIR 700 ids 501/20 sz 64 nlink 2 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922156.799614404 1791922156.799614404",
+      "xid": "0xe8fec033",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000020000000100000002000001c000000002000001f500000014000000000000004000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fec2fa925c46ace8fec2fa925c4"
+    },
+    {
+      "line": 4489,
+      "time": "2026-10-13 20:09:16.926786",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 5253:5413, ack 6025, win 65535, options [nop,nop,TS val 1067801180 ecr 1272164884], length 160: NFS request xid 3909009460 156 fsstat fh Unknown/4E58000091B94C490000000100000000080000009AB3070000000000",
+      "xid": "0xe8fec034",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 18
+    },
+    {
+      "line": 4511,
+      "time": "2026-10-13 20:09:16.926870",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 6025:6197, ack 5413, win 32768, options [nop,nop,TS val 1272164992 ecr 1067801180], length 172: NFS reply xid 3909009460 reply ok 168 fsstat POST: DIR 755 ids 501/20 sz 128 nlink 4 rdev 0/0 fsid 100000c fileid 7b39a a/m/ctime 1791922132.314971226 1791922145.685032564 1791922145.685032564 tbytes 49475674112 fbytes 18359508992 abytes 18359508992 tfiles 179599160 ffiles 179292080 afiles 179292080 invar 0",
+      "xid": "0xe8fec034",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000000100000002000001ed00000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b39a6ace8fd412c6145a6ace8fe128d4c4746ace8fe128d4c4740000000b84fae00000000004464fe00000000004464fe000000000000ab47738000000000aafc7b0000000000aafc7b000000000"
+    },
+    {
+      "line": 4533,
+      "time": "2026-10-13 20:09:16.934493",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 5413:5513, ack 6197, win 65535, options [nop,nop,TS val 1067801188 ecr 1272164992], length 100: NFS request xid 3909009461 96 getattr fh Unknown/4E58000091B94C4900000001000000000800000081B5070000000000",
+      "xid": "0xe8fec035",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 1
+    },
+    {
+      "line": 4551,
+      "time": "2026-10-13 20:09:16.934579",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 6197:6313, ack 5513, win 32768, options [nop,nop,TS val 1272165000 ecr 1067801188], length 116: NFS reply xid 3909009461 reply ok 112 getattr DIR 700 ids 501/20 sz 128",
+      "xid": "0xe8fec035",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "0000000000000002000001c000000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b5816ace8fe128d4a77b6ace8fe12b0df11c6ace8fe12b0df11c"
+    },
+    {
+      "line": 4570,
+      "time": "2026-10-13 20:09:16.934625",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 5513:5613, ack 6313, win 65535, options [nop,nop,TS val 1067801188 ecr 1272165000], length 100: NFS request xid 3909009462 96 getattr fh Unknown/4E58000091B94C4900000001000000000800000082B5070000000000",
+      "xid": "0xe8fec036",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 1
+    },
+    {
+      "line": 4588,
+      "time": "2026-10-13 20:09:16.934668",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 6313:6429, ack 5613, win 32768, options [nop,nop,TS val 1272165000 ecr 1067801188], length 116: NFS reply xid 3909009462 reply ok 112 getattr REG 600 ids 501/20 sz 53",
+      "xid": "0xe8fec036",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000000000000010000018000000001000001f500000014000000000000003500000000000010000000000000000000000000000100000c000000000007b5826ace8fe2035719346ace8fe128d64e2b6ace8fe128d64e2b"
+    },
+    {
+      "line": 4607,
+      "time": "2026-10-13 20:09:16.934782",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 5613:5713, ack 6429, win 65535, options [nop,nop,TS val 1067801188 ecr 1272165000], length 100: NFS request xid 3909009463 96 getattr fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000",
+      "xid": "0xe8fec037",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 1
+    },
+    {
+      "line": 4625,
+      "time": "2026-10-13 20:09:16.934823",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 6429:6545, ack 5713, win 32768, options [nop,nop,TS val 1272165000 ecr 1067801188], length 116: NFS reply xid 3909009463 reply ok 112 getattr DIR 700 ids 501/20 sz 64",
+      "xid": "0xe8fec037",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "0000000000000002000001c000000002000001f500000014000000000000004000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fec2fa925c46ace8fec2fa925c4"
+    },
+    {
+      "line": 4644,
+      "time": "2026-10-13 20:09:16.934903",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 5713:5853, ack 6545, win 65535, options [nop,nop,TS val 1067801188 ecr 1272165000], length 140: NFS request xid 3909009464 136 lookup fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 \"d5c96bc4-dc5e-4fbc-b3ec-8028d1f7fac5\"",
+      "xid": "0xe8fec038",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 4664,
+      "time": "2026-10-13 20:09:16.934945",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 6545:6665, ack 5853, win 32768, options [nop,nop,TS val 1272165000 ecr 1067801188], length 120: NFS reply xid 3909009464 reply ok 116 lookup ERROR: No such file or directory post dattr: DIR 700 ids 501/20 sz 64 nlink 2 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922156.799614404 1791922156.799614404",
+      "xid": "0xe8fec038",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000020000000100000002000001c000000002000001f500000014000000000000004000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fec2fa925c46ace8fec2fa925c4"
+    },
+    {
+      "line": 4683,
+      "time": "2026-10-13 20:09:16.935000",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 5853:6005, ack 6665, win 65535, options [nop,nop,TS val 1067801188 ecr 1272165000], length 152: NFS request xid 3909009466 148 create fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 \"d5c96bc4-dc5e-4fbc-b3ec-8028d1f7fac5\"",
+      "xid": "0xe8fec03a",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 8
+    },
+    {
+      "line": 4698,
+      "time": "2026-10-13 20:09:16.935007",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 6005:6149, ack 6665, win 65535, options [nop,nop,TS val 1067801188 ecr 1272165000], length 144: NFS request xid 3909009467 140 lookup fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 \"._d5c96bc4-dc5e-4fbc-b3ec-8028d1f7fac5\"",
+      "xid": "0xe8fec03b",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 4719,
+      "time": "2026-10-13 20:09:16.935083",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 6665:6937, ack 6149, win 32768, options [nop,nop,TS val 1272165000 ecr 1067801188], length 272: NFS reply xid 3909009466 reply ok 268 create fh Unknown/4E58000091B94C49000000010000000008000000E1B6070000000000 REG 0 ids 501/20 sz 0 nlink 1 rdev 0/0 fsid 100000c fileid 7b6e1 a/m/ctime 633437444.854775807 1791922156.935051902 1791922156.935051902 dir attr: PRE: sz 64 mtime 1791922156.799614404 ctime 1791922156.799614404 POST: DIR 700 ids 501/20 sz 96 nlink 3 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922156.935059111 1791922156.935059111",
+      "xid": "0xe8fec03a",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000000000000010000001c4e58000091b94c49000000010000000008000000e1b607000000000000000001000000010000000000000001000001f500000014000000000000000000000000000000000000000000000000000000000100000c000000000007b6e125c17d0432f2d7ff6ace8fec37bbc27e6ace8fec37bbc27e0000000100000000000000406ace8fec2fa925c46ace8fec2fa925c40000000100000002000001c000000003000001f500000014000000000000006000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fec37bbdea76ace8fec37bbdea7"
+    },
+    {
+      "line": 4748,
+      "time": "2026-10-13 20:09:16.935098",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 6937:7057, ack 6149, win 32768, options [nop,nop,TS val 1272165000 ecr 1067801188], length 120: NFS reply xid 3909009467 reply ok 116 lookup ERROR: No such file or directory post dattr: DIR 700 ids 501/20 sz 96 nlink 3 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922156.935059111 1791922156.935059111",
+      "xid": "0xe8fec03b",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000020000000100000002000001c000000003000001f500000014000000000000006000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fec37bbdea76ace8fec37bbdea7"
+    },
+    {
+      "line": 4767,
+      "time": "2026-10-13 20:09:16.935139",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 6149:6281, ack 7057, win 65535, options [nop,nop,TS val 1067801188 ecr 1272165000], length 132: NFS request xid 3909009469 128 setattr fh Unknown/4E58000091B94C49000000010000000008000000E1B6070000000000",
+      "xid": "0xe8fec03d",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 2
+    },
+    {
+      "line": 4787,
+      "time": "2026-10-13 20:09:16.935203",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 7057:7205, ack 6281, win 32768, options [nop,nop,TS val 1272165000 ecr 1067801188], length 148: NFS reply xid 3909009469 reply ok 144 setattr PRE: sz 0 mtime 1791922156.935051902 ctime 1791922156.935051902 POST: REG 600 ids 501/20 sz 0 nlink 1 rdev 0/0 fsid 100000c fileid 7b6e1 a/m/ctime 1791922156.935164153 1791922156.935164153 1791922156.935195736",
+      "xid": "0xe8fec03d",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000000100000000000000006ace8fec37bbc27e6ace8fec37bbc27e00000001000000010000018000000001000001f500000014000000000000000000000000000000000000000000000000000000000100000c000000000007b6e16ace8fec37bd78f96ace8fec37bd78f96ace8fec37bdf458"
+    },
+    {
+      "line": 4808,
+      "time": "2026-10-13 20:09:16.935229",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 6281:6381, ack 7205, win 65535, options [nop,nop,TS val 1067801188 ecr 1272165000], length 100: NFS request xid 3909009471 96 getattr fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000",
+      "xid": "0xe8fec03f",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 1
+    },
+    {
+      "line": 4826,
+      "time": "2026-10-13 20:09:16.935268",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 7205:7321, ack 6381, win 32768, options [nop,nop,TS val 1272165000 ecr 1067801188], length 116: NFS reply xid 3909009471 reply ok 112 getattr DIR 700 ids 501/20 sz 96",
+      "xid": "0xe8fec03f",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "0000000000000002000001c000000003000001f500000014000000000000006000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fec37bbdea76ace8fec37bbdea7"
+    },
+    {
+      "line": 4845,
+      "time": "2026-10-13 20:09:16.935351",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 6381:6561, ack 7321, win 65535, options [nop,nop,TS val 1067801188 ecr 1272165000], length 180: NFS request xid 3909009472 176 write fh Unknown/4E58000091B94C49000000010000000008000000E1B6070000000000 58 (58) bytes @ 0 <unstable>",
+      "xid": "0xe8fec040",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 7
+    },
+    {
+      "line": 4868,
+      "time": "2026-10-13 20:09:16.935416",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 7321:7485, ack 6561, win 32768, options [nop,nop,TS val 1272165001 ecr 1067801188], length 164: NFS reply xid 3909009472 reply ok 160 write PRE: sz 0 mtime 1791922156.935164153 ctime 1791922156.935195736 POST: REG 600 ids 501/20 sz 58 nlink 1 rdev 0/0 fsid 100000c fileid 7b6e1 a/m/ctime 1791922156.935164153 1791922156.935411236 1791922156.935411236 58 bytes <unstable> verf 6ace8fec00008cc9",
+      "xid": "0xe8fec040",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000000100000000000000006ace8fec37bd78f96ace8fec37bdf45800000001000000010000018000000001000001f500000014000000000000003a00000000000010000000000000000000000000000100000c000000000007b6e16ace8fec37bd78f96ace8fec37c13e246ace8fec37c13e240000003a000000006ace8fec00008cc9"
+    },
+    {
+      "line": 4890,
+      "time": "2026-10-13 20:09:16.935448",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 6561:6673, ack 7485, win 65535, options [nop,nop,TS val 1067801189 ecr 1272165001], length 112: NFS request xid 3909009473 108 commit fh Unknown/4E58000091B94C49000000010000000008000000E1B6070000000000 0 bytes @ 58",
+      "xid": "0xe8fec041",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 21
+    },
+    {
+      "line": 4909,
+      "time": "2026-10-13 20:09:16.935750",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 7485:7641, ack 6673, win 32768, options [nop,nop,TS val 1272165001 ecr 1067801189], length 156: NFS reply xid 3909009473 reply ok 152 commit PRE: sz 58 mtime 1791922156.935411236 ctime 1791922156.935411236 POST: REG 600 ids 501/20 sz 58 nlink 1 rdev 0/0 fsid 100000c fileid 7b6e1 a/m/ctime 1791922156.935164153 1791922156.935411236 1791922156.935411236 verf 6ace8fec00008cc9",
+      "xid": "0xe8fec041",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "0000000000000001000000000000003a6ace8fec37c13e246ace8fec37c13e2400000001000000010000018000000001000001f500000014000000000000003a00000000000010000000000000000000000000000100000c000000000007b6e16ace8fec37bd78f96ace8fec37c13e246ace8fec37c13e246ace8fec00008cc9"
+    },
+    {
+      "line": 4930,
+      "time": "2026-10-13 20:09:16.935793",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 6673:6773, ack 7641, win 65535, options [nop,nop,TS val 1067801189 ecr 1272165001], length 100: NFS request xid 3909009475 96 getattr fh Unknown/4E58000091B94C49000000010000000008000000E1B6070000000000",
+      "xid": "0xe8fec043",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 1
+    },
+    {
+      "line": 4948,
+      "time": "2026-10-13 20:09:16.935833",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 7641:7757, ack 6773, win 32768, options [nop,nop,TS val 1272165001 ecr 1067801189], length 116: NFS reply xid 3909009475 reply ok 112 getattr REG 600 ids 501/20 sz 58",
+      "xid": "0xe8fec043",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000000000000010000018000000001000001f500000014000000000000003a00000000000010000000000000000000000000000100000c000000000007b6e16ace8fec37bd78f96ace8fec37c13e246ace8fec37c13e24"
+    },
+    {
+      "line": 4967,
+      "time": "2026-10-13 20:09:16.935910",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 6773:6877, ack 7757, win 65535, options [nop,nop,TS val 1067801189 ecr 1272165001], length 104: NFS request xid 3909009476 100 access fh Unknown/4E58000091B94C49000000010000000008000000E1B6070000000000 NFS_ACCESS_FULL",
+      "xid": "0xe8fec044",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 4
+    },
+    {
+      "line": 4985,
+      "time": "2026-10-13 20:09:16.935945",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 7757:7881, ack 6877, win 32768, options [nop,nop,TS val 1272165001 ecr 1067801189], length 124: NFS reply xid 3909009476 reply ok 120 access attr: REG 600 ids 501/20 sz 58 nlink 1 rdev 0/0 fsid 100000c fileid 7b6e1 a/m/ctime 1791922156.935164153 1791922156.935411236 1791922156.935411236 c 001d",
+      "xid": "0xe8fec044",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "0000000000000001000000010000018000000001000001f500000014000000000000003a00000000000010000000000000000000000000000100000c000000000007b6e16ace8fec37bd78f96ace8fec37c13e246ace8fec37c13e240000001d"
+    },
+    {
+      "line": 5004,
+      "time": "2026-10-13 20:09:16.936053",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 6877:7017, ack 7881, win 65535, options [nop,nop,TS val 1067801189 ecr 1272165001], length 140: NFS request xid 3909009477 136 lookup fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 \"d5c96bc4-dc5e-4fbc-b3ec-8028d1f7fac5\"",
+      "xid": "0xe8fec045",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 5024,
+      "time": "2026-10-13 20:09:16.936103",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 7881:8121, ack 7017, win 32768, options [nop,nop,TS val 1272165001 ecr 1067801189], length 240: NFS reply xid 3909009477 reply ok 236 lookup fh Unknown/4E58000091B94C49000000010000000008000000E1B6070000000000 REG 600 ids 501/20 sz 58 nlink 1 rdev 0/0 fsid 100000c fileid 7b6e1 a/m/ctime 1791922156.935164153 1791922156.935411236 1791922156.935411236 post dattr: DIR 700 ids 501/20 sz 96 nlink 3 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922156.935059111 1791922156.935059111",
+      "xid": "0xe8fec045",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000001c4e58000091b94c49000000010000000008000000e1b607000000000000000001000000010000018000000001000001f500000014000000000000003a00000000000010000000000000000000000000000100000c000000000007b6e16ace8fec37bd78f96ace8fec37c13e246ace8fec37c13e240000000100000002000001c000000003000001f500000014000000000000006000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fec37bbdea76ace8fec37bbdea7"
+    },
+    {
+      "line": 5051,
+      "time": "2026-10-13 20:09:16.936144",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 7017:7157, ack 8121, win 65535, options [nop,nop,TS val 1067801189 ecr 1272165001], length 140: NFS request xid 3909009479 136 lookup fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 \"d5c96bc4-dc5e-4fbc-b3ec-8028d1f7fac5\"",
+      "xid": "0xe8fec047",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 5071,
+      "time": "2026-10-13 20:09:16.936186",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 8121:8361, ack 7157, win 32768, options [nop,nop,TS val 1272165001 ecr 1067801189], length 240: NFS reply xid 3909009479 reply ok 236 lookup fh Unknown/4E58000091B94C49000000010000000008000000E1B6070000000000 REG 600 ids 501/20 sz 58 nlink 1 rdev 0/0 fsid 100000c fileid 7b6e1 a/m/ctime 1791922156.935164153 1791922156.935411236 1791922156.935411236 post dattr: DIR 700 ids 501/20 sz 96 nlink 3 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922156.935059111 1791922156.935059111",
+      "xid": "0xe8fec047",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000001c4e58000091b94c49000000010000000008000000e1b607000000000000000001000000010000018000000001000001f500000014000000000000003a00000000000010000000000000000000000000000100000c000000000007b6e16ace8fec37bd78f96ace8fec37c13e246ace8fec37c13e240000000100000002000001c000000003000001f500000014000000000000006000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fec37bbdea76ace8fec37bbdea7"
+    },
+    {
+      "line": 5098,
+      "time": "2026-10-13 20:09:16.936216",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 7157:7297, ack 8361, win 65535, options [nop,nop,TS val 1067801189 ecr 1272165001], length 140: NFS request xid 3909009480 136 remove fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 \"d5c96bc4-dc5e-4fbc-b3ec-8028d1f7fac5\"",
+      "xid": "0xe8fec048",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 12
+    },
+    {
+      "line": 5118,
+      "time": "2026-10-13 20:09:16.936280",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 8361:8509, ack 7297, win 32768, options [nop,nop,TS val 1272165001 ecr 1067801189], length 148: NFS reply xid 3909009480 reply ok 144 remove PRE: sz 96 mtime 1791922156.935059111 ctime 1791922156.935059111 POST: DIR 700 ids 501/20 sz 64 nlink 2 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922156.936262736 1791922156.936262736",
+      "xid": "0xe8fec048",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000000100000000000000606ace8fec37bbdea76ace8fec37bbdea70000000100000002000001c000000002000001f500000014000000000000004000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fec37ce3c506ace8fec37ce3c50"
+    },
+    {
+      "line": 5139,
+      "time": "2026-10-13 20:09:16.936310",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 7297:7397, ack 8509, win 65535, options [nop,nop,TS val 1067801189 ecr 1272165001], length 100: NFS request xid 3909009482 96 getattr fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000",
+      "xid": "0xe8fec04a",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 1
+    },
+    {
+      "line": 5157,
+      "time": "2026-10-13 20:09:16.936357",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 8509:8625, ack 7397, win 32768, options [nop,nop,TS val 1272165001 ecr 1067801189], length 116: NFS reply xid 3909009482 reply ok 112 getattr DIR 700 ids 501/20 sz 64",
+      "xid": "0xe8fec04a",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "0000000000000002000001c000000002000001f500000014000000000000004000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fec37ce3c506ace8fec37ce3c50"
+    },
+    {
+      "line": 5176,
+      "time": "2026-10-13 20:09:16.936422",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 7397:7537, ack 8625, win 65535, options [nop,nop,TS val 1067801190 ecr 1272165001], length 140: NFS request xid 3909009484 136 lookup fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 \"d5c96bc4-dc5e-4fbc-b3ec-8028d1f7fac5\"",
+      "xid": "0xe8fec04c",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 5196,
+      "time": "2026-10-13 20:09:16.936456",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 8625:8745, ack 7537, win 32768, options [nop,nop,TS val 1272165002 ecr 1067801190], length 120: NFS reply xid 3909009484 reply ok 116 lookup ERROR: No such file or directory post dattr: DIR 700 ids 501/20 sz 64 nlink 2 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922156.936262736 1791922156.936262736",
+      "xid": "0xe8fec04c",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000020000000100000002000001c000000002000001f500000014000000000000004000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fec37ce3c506ace8fec37ce3c50"
+    },
+    {
+      "line": 5215,
+      "time": "2026-10-13 20:09:16.946330",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 7537:7677, ack 8745, win 65535, options [nop,nop,TS val 1067801199 ecr 1272165002], length 140: NFS request xid 3909009485 136 lookup fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 \"d5c96bc4-dc5e-4fbc-b3ec-8028d1f7fac5\"",
+      "xid": "0xe8fec04d",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 5235,
+      "time": "2026-10-13 20:09:16.946432",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 8745:8865, ack 7677, win 32768, options [nop,nop,TS val 1272165012 ecr 1067801199], length 120: NFS reply xid 3909009485 reply ok 116 lookup ERROR: No such file or directory post dattr: DIR 700 ids 501/20 sz 64 nlink 2 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922156.936262736 1791922156.936262736",
+      "xid": "0xe8fec04d",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000020000000100000002000001c000000002000001f500000014000000000000004000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fec37ce3c506ace8fec37ce3c50"
+    },
+    {
+      "line": 5278,
+      "time": "2026-10-13 20:09:16.962186",
+      "flow": "192.168.128.2.987 > 192.168.128.2.111: Flags [P.], seq 1:45, ack 1, win 6380, options [nop,nop,TS val 3041439670 ecr 2291688804], length 44",
+      "xid": "0xcdfd9491",
+      "kind": "call",
+      "program": 100000,
+      "version": 2,
+      "procedure": 4,
+      "argumentsHex": ""
+    },
+    {
+      "line": 5292,
+      "time": "2026-10-13 20:09:16.962248",
+      "flow": "192.168.128.2.111 > 192.168.128.2.987: Flags [P.], seq 1:513, ack 45, win 6380, options [nop,nop,TS val 2291688804 ecr 3041439670], length 512",
+      "xid": "0xcdfd9491",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000001000186a000000002000000110000006f00000001000186a000000003000000110000006f00000001000186a000000004000000110000006f00000001000186a000000002000000060000006f00000001000186a000000003000000060000006f00000001000186a000000004000000060000006f00000001000186b800000001000000110000026a00000001000186b80000000100000006000003fe00000001000186b50000000000000011000003cb00000001000186b50000000100000011000003cb00000001000186b50000000300000011000003cb00000001000186b50000000400000011000003cb00000001000186b50000000000000006000003fa00000001000186b50000000100000006000003fa00000001000186b50000000300000006000003fa00000001000186b50000000400000006000003fa00000001000186a300000002000000060000080100000001000186a300000003000000060000080100000001000186a5000000010000000600004e5000000001000186a5000000030000000600004e5000000001000186ab00000001000000110000036000000001000186ab00000002000000110000036000000001000186ab0000000100000006000003e800000001000186ab0000000200000006000003e800000000"
+    },
+    {
+      "line": 5384,
+      "time": "2026-10-13 20:09:16.971881",
+      "flow": "192.168.128.2.986 > 192.168.128.2.111: Flags [P.], seq 1:61, ack 1, win 6380, options [nop,nop,TS val 3924691670 ecr 531610178], length 60",
+      "xid": "0x67422fb4",
+      "kind": "call",
+      "program": 100000,
+      "version": 2,
+      "procedure": 3,
+      "argumentsHex": "000186a3000000030000000600000000"
+    },
+    {
+      "line": 5399,
+      "time": "2026-10-13 20:09:16.971937",
+      "flow": "192.168.128.2.111 > 192.168.128.2.986: Flags [P.], seq 1:33, ack 61, win 6380, options [nop,nop,TS val 531610178 ecr 3924691670], length 32",
+      "xid": "0x67422fb4",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000801"
+    },
+    {
+      "line": 5461,
+      "time": "2026-10-13 20:09:16.972194",
+      "flow": "192.168.128.2.985 > 192.168.128.2.2049: Flags [P.], seq 1:45, ack 1, win 6380, options [nop,nop,TS val 605339090 ecr 3960107774], length 44: NFS request xid 2895132544 40 null",
+      "xid": "0xac903780",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 0
+    },
+    {
+      "line": 5475,
+      "time": "2026-10-13 20:09:16.972244",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.985: Flags [P.], seq 1:29, ack 45, win 32768, options [nop,nop,TS val 3960107774 ecr 605339090], length 28: NFS reply xid 2895132544 reply ok 24 null",
+      "xid": "0xac903780",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": ""
+    },
+    {
+      "line": 5524,
+      "time": "2026-10-13 20:09:16.979983",
+      "flow": "192.168.128.2.984 > 192.168.128.2.111: Flags [P.], seq 1:61, ack 1, win 6380, options [nop,nop,TS val 670845003 ecr 1000142455], length 60",
+      "xid": "0xd8fcbd3b",
+      "kind": "call",
+      "program": 100000,
+      "version": 2,
+      "procedure": 3,
+      "argumentsHex": "000186a5000000030000000600000000"
+    },
+    {
+      "line": 5539,
+      "time": "2026-10-13 20:09:16.980029",
+      "flow": "192.168.128.2.111 > 192.168.128.2.984: Flags [P.], seq 1:33, ack 61, win 6380, options [nop,nop,TS val 1000142455 ecr 670845003], length 32",
+      "xid": "0xd8fcbd3b",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00004e50"
+    },
+    {
+      "line": 5601,
+      "time": "2026-10-13 20:09:16.980274",
+      "flow": "192.168.128.2.983 > 192.168.128.2.20048: Flags [P.], seq 1:45, ack 1, win 6380, options [nop,nop,TS val 3617957651 ecr 1070641369], length 44",
+      "xid": "0x5f502edc",
+      "kind": "call",
+      "program": 100005,
+      "version": 3,
+      "procedure": 0
+    },
+    {
+      "line": 5615,
+      "time": "2026-10-13 20:09:16.980315",
+      "flow": "192.168.128.2.20048 > 192.168.128.2.983: Flags [P.], seq 1:29, ack 45, win 6380, options [nop,nop,TS val 1070641369 ecr 3617957651], length 28",
+      "xid": "0x5f502edc",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": ""
+    },
+    {
+      "line": 5652,
+      "time": "2026-10-13 20:09:16.990970",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 7677:7777, ack 8865, win 65535, options [nop,nop,TS val 1067801244 ecr 1272165012], length 100: NFS request xid 3909009486 96 fsstat fh Unknown/4E58000091B94C490000000100000000080000009AB3070000000000",
+      "xid": "0xe8fec04e",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 18
+    },
+    {
+      "line": 5670,
+      "time": "2026-10-13 20:09:16.991032",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 8865:9037, ack 7777, win 32768, options [nop,nop,TS val 1272165056 ecr 1067801244], length 172: NFS reply xid 3909009486 reply ok 168 fsstat POST: DIR 755 ids 501/20 sz 128 nlink 4 rdev 0/0 fsid 100000c fileid 7b39a a/m/ctime 1791922132.314971226 1791922145.685032564 1791922145.685032564 tbytes 49475674112 fbytes 18359504896 abytes 18359504896 tfiles 179599120 ffiles 179292040 afiles 179292040 invar 0",
+      "xid": "0xe8fec04e",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000000100000002000001ed00000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b39a6ace8fd412c6145a6ace8fe128d4c4746ace8fe128d4c4740000000b84fae00000000004464fd00000000004464fd000000000000ab47710000000000aafc788000000000aafc78800000000"
+    },
+    {
+      "line": 5692,
+      "time": "2026-10-13 20:09:17.010551",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 7777:7917, ack 9037, win 65535, options [nop,nop,TS val 1067801264 ecr 1272165056], length 140: NFS request xid 3909009487 136 lookup fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 \"d554a325-4bcc-4f68-b6c3-d19e02c61f39\"",
+      "xid": "0xe8fec04f",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 5712,
+      "time": "2026-10-13 20:09:17.010623",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 9037:9157, ack 7917, win 32768, options [nop,nop,TS val 1272165076 ecr 1067801264], length 120: NFS reply xid 3909009487 reply ok 116 lookup ERROR: No such file or directory post dattr: DIR 700 ids 501/20 sz 64 nlink 2 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922156.936262736 1791922156.936262736",
+      "xid": "0xe8fec04f",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000020000000100000002000001c000000002000001f500000014000000000000004000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fec37ce3c506ace8fec37ce3c50"
+    },
+    {
+      "line": 5731,
+      "time": "2026-10-13 20:09:17.010695",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 7917:8069, ack 9157, win 65535, options [nop,nop,TS val 1067801264 ecr 1272165076], length 152: NFS request xid 3909009489 148 create fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 \"d554a325-4bcc-4f68-b6c3-d19e02c61f39\"",
+      "xid": "0xe8fec051",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 8
+    },
+    {
+      "line": 5746,
+      "time": "2026-10-13 20:09:17.010698",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 8069:8213, ack 9157, win 65535, options [nop,nop,TS val 1067801264 ecr 1272165076], length 144: NFS request xid 3909009490 140 lookup fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 \"._d554a325-4bcc-4f68-b6c3-d19e02c61f39\"",
+      "xid": "0xe8fec052",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 5767,
+      "time": "2026-10-13 20:09:17.010776",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 9157:9429, ack 8213, win 32768, options [nop,nop,TS val 1272165076 ecr 1067801264], length 272: NFS reply xid 3909009489 reply ok 268 create fh Unknown/4E58000091B94C49000000010000000008000000E2B6070000000000 REG 0 ids 501/20 sz 0 nlink 1 rdev 0/0 fsid 100000c fileid 7b6e2 a/m/ctime 633437444.854775807 1791922157.10746360 1791922157.10746360 dir attr: PRE: sz 64 mtime 1791922156.936262736 ctime 1791922156.936262736 POST: DIR 700 ids 501/20 sz 96 nlink 3 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922157.10755193 1791922157.10755193",
+      "xid": "0xe8fec051",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000000000000010000001c4e58000091b94c49000000010000000008000000e2b607000000000000000001000000010000000000000001000001f500000014000000000000000000000000000000000000000000000000000000000100000c000000000007b6e225c17d0432f2d7ff6ace8fed00a3f9f86ace8fed00a3f9f80000000100000000000000406ace8fec37ce3c506ace8fec37ce3c500000000100000002000001c000000003000001f500000014000000000000006000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fed00a41c796ace8fed00a41c79"
+    },
+    {
+      "line": 5790,
+      "time": "2026-10-13 20:09:17.010785",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 9429:9549, ack 8213, win 32768, options [nop,nop,TS val 1272165076 ecr 1067801264], length 120: NFS reply xid 3909009490 reply ok 116 lookup ERROR: No such file or directory post dattr: DIR 700 ids 501/20 sz 96 nlink 3 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922157.10755193 1791922157.10755193",
+      "xid": "0xe8fec052",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000020000000100000002000001c000000003000001f500000014000000000000006000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fed00a41c796ace8fed00a41c79"
+    },
+    {
+      "line": 5815,
+      "time": "2026-10-13 20:09:17.010820",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 8213:8345, ack 9549, win 65535, options [nop,nop,TS val 1067801264 ecr 1272165076], length 132: NFS request xid 3909009492 128 setattr fh Unknown/4E58000091B94C49000000010000000008000000E2B6070000000000",
+      "xid": "0xe8fec054",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 2
+    },
+    {
+      "line": 5835,
+      "time": "2026-10-13 20:09:17.010884",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 9549:9697, ack 8345, win 32768, options [nop,nop,TS val 1272165076 ecr 1067801264], length 148: NFS reply xid 3909009492 reply ok 144 setattr PRE: sz 0 mtime 1791922157.10746360 ctime 1791922157.10746360 POST: REG 600 ids 501/20 sz 0 nlink 1 rdev 0/0 fsid 100000c fileid 7b6e2 a/m/ctime 1791922157.10848735 1791922157.10848735 1791922157.10876652",
+      "xid": "0xe8fec054",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000000100000000000000006ace8fed00a3f9f86ace8fed00a3f9f800000001000000010000018000000001000001f500000014000000000000000000000000000000000000000000000000000000000100000c000000000007b6e26ace8fed00a589df6ace8fed00a589df6ace8fed00a5f6ec"
+    },
+    {
+      "line": 5856,
+      "time": "2026-10-13 20:09:17.010953",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 8345:8445, ack 9697, win 65535, options [nop,nop,TS val 1067801264 ecr 1272165076], length 100: NFS request xid 3909009494 96 getattr fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000",
+      "xid": "0xe8fec056",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 1
+    },
+    {
+      "line": 5874,
+      "time": "2026-10-13 20:09:17.011055",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 9697:9813, ack 8445, win 32768, options [nop,nop,TS val 1272165076 ecr 1067801264], length 116: NFS reply xid 3909009494 reply ok 112 getattr DIR 700 ids 501/20 sz 96",
+      "xid": "0xe8fec056",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "0000000000000002000001c000000003000001f500000014000000000000006000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fed00a41c796ace8fed00a41c79"
+    },
+    {
+      "line": 5893,
+      "time": "2026-10-13 20:09:17.011258",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 8445:8625, ack 9813, win 65535, options [nop,nop,TS val 1067801264 ecr 1272165076], length 180: NFS request xid 3909009495 176 write fh Unknown/4E58000091B94C49000000010000000008000000E2B6070000000000 58 (58) bytes @ 0 <unstable>",
+      "xid": "0xe8fec057",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 7
+    },
+    {
+      "line": 5916,
+      "time": "2026-10-13 20:09:17.011412",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 9813:9977, ack 8625, win 32768, options [nop,nop,TS val 1272165077 ecr 1067801264], length 164: NFS reply xid 3909009495 reply ok 160 write PRE: sz 0 mtime 1791922157.10848735 ctime 1791922157.10876652 POST: REG 600 ids 501/20 sz 58 nlink 1 rdev 0/0 fsid 100000c fileid 7b6e2 a/m/ctime 1791922157.10848735 1791922157.11403902 1791922157.11403902 58 bytes <unstable> verf 6ace8fec00008cc9",
+      "xid": "0xe8fec057",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000000100000000000000006ace8fed00a589df6ace8fed00a5f6ec00000001000000010000018000000001000001f500000014000000000000003a00000000000010000000000000000000000000000100000c000000000007b6e26ace8fed00a589df6ace8fed00ae027e6ace8fed00ae027e0000003a000000006ace8fec00008cc9"
+    },
+    {
+      "line": 5938,
+      "time": "2026-10-13 20:09:17.011454",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 8625:8737, ack 9977, win 65535, options [nop,nop,TS val 1067801265 ecr 1272165077], length 112: NFS request xid 3909009496 108 commit fh Unknown/4E58000091B94C49000000010000000008000000E2B6070000000000 0 bytes @ 58",
+      "xid": "0xe8fec058",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 21
+    },
+    {
+      "line": 5957,
+      "time": "2026-10-13 20:09:17.011718",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 9977:10133, ack 8737, win 32768, options [nop,nop,TS val 1272165077 ecr 1067801265], length 156: NFS reply xid 3909009496 reply ok 152 commit PRE: sz 58 mtime 1791922157.11403902 ctime 1791922157.11403902 POST: REG 600 ids 501/20 sz 58 nlink 1 rdev 0/0 fsid 100000c fileid 7b6e2 a/m/ctime 1791922157.10848735 1791922157.11403902 1791922157.11403902 verf 6ace8fec00008cc9",
+      "xid": "0xe8fec058",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "0000000000000001000000000000003a6ace8fed00ae027e6ace8fed00ae027e00000001000000010000018000000001000001f500000014000000000000003a00000000000010000000000000000000000000000100000c000000000007b6e26ace8fed00a589df6ace8fed00ae027e6ace8fed00ae027e6ace8fec00008cc9"
+    },
+    {
+      "line": 5978,
+      "time": "2026-10-13 20:09:17.011753",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 8737:8837, ack 10133, win 65535, options [nop,nop,TS val 1067801265 ecr 1272165077], length 100: NFS request xid 3909009498 96 getattr fh Unknown/4E58000091B94C49000000010000000008000000E2B6070000000000",
+      "xid": "0xe8fec05a",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 1
+    },
+    {
+      "line": 5996,
+      "time": "2026-10-13 20:09:17.011803",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 10133:10249, ack 8837, win 32768, options [nop,nop,TS val 1272165077 ecr 1067801265], length 116: NFS reply xid 3909009498 reply ok 112 getattr REG 600 ids 501/20 sz 58",
+      "xid": "0xe8fec05a",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000000000000010000018000000001000001f500000014000000000000003a00000000000010000000000000000000000000000100000c000000000007b6e26ace8fed00a589df6ace8fed00ae027e6ace8fed00ae027e"
+    },
+    {
+      "line": 6015,
+      "time": "2026-10-13 20:09:17.011928",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 8837:8941, ack 10249, win 65535, options [nop,nop,TS val 1067801265 ecr 1272165077], length 104: NFS request xid 3909009499 100 access fh Unknown/4E58000091B94C49000000010000000008000000E2B6070000000000 NFS_ACCESS_FULL",
+      "xid": "0xe8fec05b",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 4
+    },
+    {
+      "line": 6033,
+      "time": "2026-10-13 20:09:17.011972",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 10249:10373, ack 8941, win 32768, options [nop,nop,TS val 1272165077 ecr 1067801265], length 124: NFS reply xid 3909009499 reply ok 120 access attr: REG 600 ids 501/20 sz 58 nlink 1 rdev 0/0 fsid 100000c fileid 7b6e2 a/m/ctime 1791922157.10848735 1791922157.11403902 1791922157.11403902 c 001d",
+      "xid": "0xe8fec05b",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "0000000000000001000000010000018000000001000001f500000014000000000000003a00000000000010000000000000000000000000000100000c000000000007b6e26ace8fed00a589df6ace8fed00ae027e6ace8fed00ae027e0000001d"
+    },
+    {
+      "line": 6052,
+      "time": "2026-10-13 20:09:17.012073",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 8941:9081, ack 10373, win 65535, options [nop,nop,TS val 1067801265 ecr 1272165077], length 140: NFS request xid 3909009500 136 lookup fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 \"d554a325-4bcc-4f68-b6c3-d19e02c61f39\"",
+      "xid": "0xe8fec05c",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 6072,
+      "time": "2026-10-13 20:09:17.012127",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 10373:10613, ack 9081, win 32768, options [nop,nop,TS val 1272165077 ecr 1067801265], length 240: NFS reply xid 3909009500 reply ok 236 lookup fh Unknown/4E58000091B94C49000000010000000008000000E2B6070000000000 REG 600 ids 501/20 sz 58 nlink 1 rdev 0/0 fsid 100000c fileid 7b6e2 a/m/ctime 1791922157.10848735 1791922157.11403902 1791922157.11403902 post dattr: DIR 700 ids 501/20 sz 96 nlink 3 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922157.10755193 1791922157.10755193",
+      "xid": "0xe8fec05c",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000001c4e58000091b94c49000000010000000008000000e2b607000000000000000001000000010000018000000001000001f500000014000000000000003a00000000000010000000000000000000000000000100000c000000000007b6e26ace8fed00a589df6ace8fed00ae027e6ace8fed00ae027e0000000100000002000001c000000003000001f500000014000000000000006000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fed00a41c796ace8fed00a41c79"
+    },
+    {
+      "line": 6099,
+      "time": "2026-10-13 20:09:17.012167",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 9081:9221, ack 10613, win 65535, options [nop,nop,TS val 1067801265 ecr 1272165077], length 140: NFS request xid 3909009502 136 lookup fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 \"d554a325-4bcc-4f68-b6c3-d19e02c61f39\"",
+      "xid": "0xe8fec05e",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 6119,
+      "time": "2026-10-13 20:09:17.012220",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 10613:10853, ack 9221, win 32768, options [nop,nop,TS val 1272165077 ecr 1067801265], length 240: NFS reply xid 3909009502 reply ok 236 lookup fh Unknown/4E58000091B94C49000000010000000008000000E2B6070000000000 REG 600 ids 501/20 sz 58 nlink 1 rdev 0/0 fsid 100000c fileid 7b6e2 a/m/ctime 1791922157.10848735 1791922157.11403902 1791922157.11403902 post dattr: DIR 700 ids 501/20 sz 96 nlink 3 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922157.10755193 1791922157.10755193",
+      "xid": "0xe8fec05e",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000001c4e58000091b94c49000000010000000008000000e2b607000000000000000001000000010000018000000001000001f500000014000000000000003a00000000000010000000000000000000000000000100000c000000000007b6e26ace8fed00a589df6ace8fed00ae027e6ace8fed00ae027e0000000100000002000001c000000003000001f500000014000000000000006000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fed00a41c796ace8fed00a41c79"
+    },
+    {
+      "line": 6146,
+      "time": "2026-10-13 20:09:17.012257",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 9221:9361, ack 10853, win 65535, options [nop,nop,TS val 1067801265 ecr 1272165077], length 140: NFS request xid 3909009503 136 remove fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 \"d554a325-4bcc-4f68-b6c3-d19e02c61f39\"",
+      "xid": "0xe8fec05f",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 12
+    },
+    {
+      "line": 6166,
+      "time": "2026-10-13 20:09:17.012345",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 10853:11001, ack 9361, win 32768, options [nop,nop,TS val 1272165077 ecr 1067801265], length 148: NFS reply xid 3909009503 reply ok 144 remove PRE: sz 96 mtime 1791922157.10755193 ctime 1791922157.10755193 POST: DIR 700 ids 501/20 sz 64 nlink 2 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922157.12329068 1791922157.12329068",
+      "xid": "0xe8fec05f",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000000100000000000000606ace8fed00a41c796ace8fed00a41c790000000100000002000001c000000002000001f500000014000000000000004000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fed00bc206c6ace8fed00bc206c"
+    },
+    {
+      "line": 6187,
+      "time": "2026-10-13 20:09:17.012387",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 9361:9461, ack 11001, win 65535, options [nop,nop,TS val 1067801266 ecr 1272165077], length 100: NFS request xid 3909009505 96 getattr fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000",
+      "xid": "0xe8fec061",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 1
+    },
+    {
+      "line": 6205,
+      "time": "2026-10-13 20:09:17.012423",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 11001:11117, ack 9461, win 32768, options [nop,nop,TS val 1272165078 ecr 1067801266], length 116: NFS reply xid 3909009505 reply ok 112 getattr DIR 700 ids 501/20 sz 64",
+      "xid": "0xe8fec061",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "0000000000000002000001c000000002000001f500000014000000000000004000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fed00bc206c6ace8fed00bc206c"
+    },
+    {
+      "line": 6224,
+      "time": "2026-10-13 20:09:17.012489",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 9461:9601, ack 11117, win 65535, options [nop,nop,TS val 1067801266 ecr 1272165078], length 140: NFS request xid 3909009507 136 lookup fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 \"d554a325-4bcc-4f68-b6c3-d19e02c61f39\"",
+      "xid": "0xe8fec063",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 6244,
+      "time": "2026-10-13 20:09:17.012520",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 11117:11237, ack 9601, win 32768, options [nop,nop,TS val 1272165078 ecr 1067801266], length 120: NFS reply xid 3909009507 reply ok 116 lookup ERROR: No such file or directory post dattr: DIR 700 ids 501/20 sz 64 nlink 2 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922157.12329068 1791922157.12329068",
+      "xid": "0xe8fec063",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000020000000100000002000001c000000002000001f500000014000000000000004000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fed00bc206c6ace8fed00bc206c"
+    },
+    {
+      "line": 6263,
+      "time": "2026-10-13 20:09:17.021705",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 9601:9741, ack 11237, win 65535, options [nop,nop,TS val 1067801275 ecr 1272165078], length 140: NFS request xid 3909009508 136 lookup fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 \"d554a325-4bcc-4f68-b6c3-d19e02c61f39\"",
+      "xid": "0xe8fec064",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 6283,
+      "time": "2026-10-13 20:09:17.021784",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 11237:11357, ack 9741, win 32768, options [nop,nop,TS val 1272165087 ecr 1067801275], length 120: NFS reply xid 3909009508 reply ok 116 lookup ERROR: No such file or directory post dattr: DIR 700 ids 501/20 sz 64 nlink 2 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922157.12329068 1791922157.12329068",
+      "xid": "0xe8fec064",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000020000000100000002000001c000000002000001f500000014000000000000004000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fed00bc206c6ace8fed00bc206c"
+    },
+    {
+      "line": 6302,
+      "time": "2026-10-13 20:09:17.033112",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 9741:9941, ack 11357, win 65535, options [nop,nop,TS val 1067801286 ecr 1272165087], length 200: NFS request xid 3909009509 196 lookup fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 \"dad45d85-8377-4932-ba02-f65873424c11\"",
+      "xid": "0xe8fec065",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 6326,
+      "time": "2026-10-13 20:09:17.033166",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 11357:11477, ack 9941, win 32768, options [nop,nop,TS val 1272165098 ecr 1067801286], length 120: NFS reply xid 3909009509 reply ok 116 lookup ERROR: No such file or directory post dattr: DIR 700 ids 501/20 sz 64 nlink 2 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922157.12329068 1791922157.12329068",
+      "xid": "0xe8fec065",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000020000000100000002000001c000000002000001f500000014000000000000004000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fed00bc206c6ace8fed00bc206c"
+    },
+    {
+      "line": 6345,
+      "time": "2026-10-13 20:09:17.033454",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 9941:10141, ack 11477, win 65535, options [nop,nop,TS val 1067801287 ecr 1272165098], length 200: NFS request xid 3909009510 196 lookup fh Unknown/4E58000091B94C4900000001000000000800000086B5070000000000 \"d5c96bc4-dc5e-4fbc-b3ec-8028d1f7fac5\"",
+      "xid": "0xe8fec066",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 6369,
+      "time": "2026-10-13 20:09:17.033501",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 11477:11597, ack 10141, win 32768, options [nop,nop,TS val 1272165099 ecr 1067801287], length 120: NFS reply xid 3909009510 reply ok 116 lookup ERROR: No such file or directory post dattr: DIR 700 ids 501/20 sz 64 nlink 2 rdev 0/0 fsid 100000c fileid 7b586 a/m/ctime 1791922145.722325730 1791922157.12329068 1791922157.12329068",
+      "xid": "0xe8fec066",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000020000000100000002000001c000000002000001f500000014000000000000004000000000000000000000000000000000000000000100000c000000000007b5866ace8fe12b0dd0e26ace8fed00bc206c6ace8fed00bc206c"
+    },
+    {
+      "line": 6388,
+      "time": "2026-10-13 20:09:17.719927",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 10141:10301, ack 11597, win 65535, options [nop,nop,TS val 1067801973 ecr 1272165099], length 160: NFS request xid 3909009511 156 fsstat fh Unknown/4E58000091B94C490000000100000000080000009AB3070000000000",
+      "xid": "0xe8fec067",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 18
+    },
+    {
+      "line": 6410,
+      "time": "2026-10-13 20:09:17.720023",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 11597:11769, ack 10301, win 32768, options [nop,nop,TS val 1272165785 ecr 1067801973], length 172: NFS reply xid 3909009511 reply ok 168 fsstat POST: DIR 755 ids 501/20 sz 128 nlink 4 rdev 0/0 fsid 100000c fileid 7b39a a/m/ctime 1791922132.314971226 1791922145.685032564 1791922145.685032564 tbytes 49475674112 fbytes 18358927360 abytes 18358927360 tfiles 179593478 ffiles 179286400 afiles 179286400 invar 0",
+      "xid": "0xe8fec067",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000000100000002000001ed00000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b39a6ace8fd412c6145a6ace8fe128d4c4746ace8fe128d4c4740000000b84fae00000000004464700000000000446470000000000000ab46106000000000aafb180000000000aafb18000000000"
+    },
+    {
+      "line": 6432,
+      "time": "2026-10-13 20:09:17.890699",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 10301:10461, ack 11769, win 65535, options [nop,nop,TS val 1067802144 ecr 1272165785], length 160: NFS request xid 3909009512 156 getattr fh Unknown/4E58000091B94C490000000100000000080000009AB3070000000000",
+      "xid": "0xe8fec068",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 1
+    },
+    {
+      "line": 6454,
+      "time": "2026-10-13 20:09:17.890793",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 11769:11885, ack 10461, win 32768, options [nop,nop,TS val 1272165956 ecr 1067802144], length 116: NFS reply xid 3909009512 reply ok 112 getattr DIR 755 ids 501/20 sz 128",
+      "xid": "0xe8fec068",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "0000000000000002000001ed00000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b39a6ace8fd412c6145a6ace8fe128d4c4746ace8fe128d4c474"
+    },
+    {
+      "line": 6473,
+      "time": "2026-10-13 20:09:17.890839",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 10461:10633, ack 11885, win 65535, options [nop,nop,TS val 1067802144 ecr 1272165956], length 172: NFS request xid 3909009513 168 lookup fh Unknown/4E58000091B94C490000000100000000080000009AB3070000000000 \"project\"",
+      "xid": "0xe8fec069",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 6495,
+      "time": "2026-10-13 20:09:17.890887",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 11885:12125, ack 10633, win 32768, options [nop,nop,TS val 1272165956 ecr 1067802144], length 240: NFS reply xid 3909009513 reply ok 236 lookup fh Unknown/4E58000091B94C490000000100000000080000009BB3070000000000 DIR 755 ids 501/20 sz 96 nlink 3 rdev 0/0 fsid 100000c fileid 7b39b a/m/ctime 1791922132.319258017 1791922132.319482809 1791922132.319482809 post dattr: DIR 755 ids 501/20 sz 128 nlink 4 rdev 0/0 fsid 100000c fileid 7b39a a/m/ctime 1791922132.314971226 1791922145.685032564 1791922145.685032564",
+      "xid": "0xe8fec069",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000001c4e58000091b94c490000000100000000080000009bb30700000000000000000100000002000001ed00000003000001f500000014000000000000006000000000000000000000000000000000000000000100000c000000000007b39b6ace8fd413077da16ace8fd4130aebb96ace8fd4130aebb90000000100000002000001ed00000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b39a6ace8fd412c6145a6ace8fe128d4c4746ace8fe128d4c474"
+    },
+    {
+      "line": 6522,
+      "time": "2026-10-13 20:09:17.890947",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 10633:10797, ack 12125, win 65535, options [nop,nop,TS val 1067802144 ecr 1272165956], length 164: NFS request xid 3909009514 160 access fh Unknown/4E58000091B94C490000000100000000080000009BB3070000000000 NFS_ACCESS_FULL",
+      "xid": "0xe8fec06a",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 4
+    },
+    {
+      "line": 6544,
+      "time": "2026-10-13 20:09:17.891011",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 12125:12249, ack 10797, win 32768, options [nop,nop,TS val 1272165956 ecr 1067802144], length 124: NFS reply xid 3909009514 reply ok 120 access attr: DIR 755 ids 501/20 sz 96 nlink 3 rdev 0/0 fsid 100000c fileid 7b39b a/m/ctime 1791922132.319258017 1791922132.319482809 1791922132.319482809 c 001f",
+      "xid": "0xe8fec06a",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000000100000002000001ed00000003000001f500000014000000000000006000000000000000000000000000000000000000000100000c000000000007b39b6ace8fd413077da16ace8fd4130aebb96ace8fd4130aebb90000001f"
+    },
+    {
+      "line": 6563,
+      "time": "2026-10-13 20:09:17.891059",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 10797:10977, ack 12249, win 65535, options [nop,nop,TS val 1067802144 ecr 1272165956], length 180: NFS request xid 3909009515 176 lookup fh Unknown/4E58000091B94C490000000100000000080000009BB3070000000000 \"preexisting.txt\"",
+      "xid": "0xe8fec06b",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 3
+    },
+    {
+      "line": 6586,
+      "time": "2026-10-13 20:09:17.891100",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 12249:12489, ack 10977, win 32768, options [nop,nop,TS val 1272165956 ecr 1067802144], length 240: NFS reply xid 3909009515 reply ok 236 lookup fh Unknown/4E58000091B94C490000000100000000080000009CB3070000000000 REG 644 ids 501/20 sz 14 nlink 1 rdev 0/0 fsid 100000c fileid 7b39c a/m/ctime 1791922138.415847608 1791922132.319533976 1791922132.319533976 post dattr: DIR 755 ids 501/20 sz 96 nlink 3 rdev 0/0 fsid 100000c fileid 7b39b a/m/ctime 1791922132.319258017 1791922132.319482809 1791922132.319482809",
+      "xid": "0xe8fec06b",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000001c4e58000091b94c490000000100000000080000009cb30700000000000000000100000001000001a400000001000001f500000014000000000000000e00000000000010000000000000000000000000000100000c000000000007b39c6ace8fda18c954b86ace8fd4130bb3986ace8fd4130bb3980000000100000002000001ed00000003000001f500000014000000000000006000000000000000000000000000000000000000000100000c000000000007b39b6ace8fd413077da16ace8fd4130aebb96ace8fd4130aebb9"
+    },
+    {
+      "line": 6613,
+      "time": "2026-10-13 20:09:17.891168",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 10977:11141, ack 12489, win 65535, options [nop,nop,TS val 1067802144 ecr 1272165956], length 164: NFS request xid 3909009516 160 access fh Unknown/4E58000091B94C490000000100000000080000009CB3070000000000 NFS_ACCESS_FULL",
+      "xid": "0xe8fec06c",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 4
+    },
+    {
+      "line": 6635,
+      "time": "2026-10-13 20:09:17.891200",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 12489:12613, ack 11141, win 32768, options [nop,nop,TS val 1272165956 ecr 1067802144], length 124: NFS reply xid 3909009516 reply ok 120 access attr: REG 644 ids 501/20 sz 14 nlink 1 rdev 0/0 fsid 100000c fileid 7b39c a/m/ctime 1791922138.415847608 1791922132.319533976 1791922132.319533976 c 001d",
+      "xid": "0xe8fec06c",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000000100000001000001a400000001000001f500000014000000000000000e00000000000010000000000000000000000000000100000c000000000007b39c6ace8fda18c954b86ace8fd4130bb3986ace8fd4130bb3980000001d"
+    },
+    {
+      "line": 6654,
+      "time": "2026-10-13 20:09:17.891246",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 11141:11313, ack 12613, win 65535, options [nop,nop,TS val 1067802144 ecr 1272165956], length 172: NFS request xid 3909009517 168 read fh Unknown/4E58000091B94C490000000100000000080000009CB3070000000000 32768 bytes @ 0",
+      "xid": "0xe8fec06d",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 6
+    },
+    {
+      "line": 6676,
+      "time": "2026-10-13 20:09:17.891553",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 12613:12761, ack 11313, win 32768, options [nop,nop,TS val 1272165957 ecr 1067802144], length 148: NFS reply xid 3909009517 reply ok 144 read REG 644 ids 501/20 sz 14 nlink 1 rdev 0/0 fsid 100000c fileid 7b39c a/m/ctime 1791922138.415847608 1791922132.319533976 1791922132.319533976 14 bytes EOF",
+      "xid": "0xe8fec06d",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "000000000000000100000001000001a400000001000001f500000014000000000000000e00000000000010000000000000000000000000000100000c000000000007b39c6ace8fda18c954b86ace8fd4130bb3986ace8fd4130bb3980000000e000000010000000e4f524947494e414c5f49523030340000"
+    },
+    {
+      "line": 6697,
+      "time": "2026-10-13 20:09:18.316110",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 11313:11473, ack 12761, win 65535, options [nop,nop,TS val 1067802569 ecr 1272165957], length 160: NFS request xid 3909009518 156 getattr fh Unknown/4E58000091B94C4900000001000000000800000081B5070000000000",
+      "xid": "0xe8fec06e",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 1
+    },
+    {
+      "line": 6719,
+      "time": "2026-10-13 20:09:18.316218",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 12761:12877, ack 11473, win 32768, options [nop,nop,TS val 1272166381 ecr 1067802569], length 116: NFS reply xid 3909009518 reply ok 112 getattr DIR 700 ids 501/20 sz 128",
+      "xid": "0xe8fec06e",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "0000000000000002000001c000000004000001f500000014000000000000008000000000000000000000000000000000000000000100000c000000000007b5816ace8fe128d4a77b6ace8fe12b0df11c6ace8fe12b0df11c"
+    },
+    {
+      "line": 6738,
+      "time": "2026-10-13 20:09:18.316291",
+      "flow": "192.168.128.2.989 > 192.168.128.2.2049: Flags [P.], seq 11473:11633, ack 12877, win 65535, options [nop,nop,TS val 1067802569 ecr 1272166381], length 160: NFS request xid 3909009519 156 getattr fh Unknown/4E58000091B94C4900000001000000000800000082B5070000000000",
+      "xid": "0xe8fec06f",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 1
+    },
+    {
+      "line": 6760,
+      "time": "2026-10-13 20:09:18.316338",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.989: Flags [P.], seq 12877:12993, ack 11633, win 32768, options [nop,nop,TS val 1272166381 ecr 1067802569], length 116: NFS reply xid 3909009519 reply ok 112 getattr REG 600 ids 501/20 sz 53",
+      "xid": "0xe8fec06f",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000000000000010000018000000001000001f500000014000000000000003500000000000010000000000000000000000000000100000c000000000007b5826ace8fe2035719346ace8fe128d64e2b6ace8fe128d64e2b"
+    },
+    {
+      "line": 6803,
+      "time": "2026-10-13 20:09:18.565039",
+      "flow": "127.0.0.1.982 > 127.0.0.1.111: Flags [P.], seq 1:45, ack 1, win 6380, options [nop,nop,TS val 1290501352 ecr 3553052825], length 44",
+      "xid": "0xa8cf36c",
+      "kind": "call",
+      "program": 100000,
+      "version": 2,
+      "procedure": 4,
+      "argumentsHex": ""
+    },
+    {
+      "line": 6817,
+      "time": "2026-10-13 20:09:18.565097",
+      "flow": "127.0.0.1.111 > 127.0.0.1.982: Flags [P.], seq 1:513, ack 45, win 6380, options [nop,nop,TS val 3553052825 ecr 1290501352], length 512",
+      "xid": "0xa8cf36c",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": "00000001000186a000000002000000110000006f00000001000186a000000003000000110000006f00000001000186a000000004000000110000006f00000001000186a000000002000000060000006f00000001000186a000000003000000060000006f00000001000186a000000004000000060000006f00000001000186b800000001000000110000026a00000001000186b80000000100000006000003fe00000001000186b50000000000000011000003cb00000001000186b50000000100000011000003cb00000001000186b50000000300000011000003cb00000001000186b50000000400000011000003cb00000001000186b50000000000000006000003fa00000001000186b50000000100000006000003fa00000001000186b50000000300000006000003fa00000001000186b50000000400000006000003fa00000001000186a300000002000000060000080100000001000186a300000003000000060000080100000001000186a5000000010000000600004e5000000001000186a5000000030000000600004e5000000001000186ab00000001000000110000036000000001000186ab00000002000000110000036000000001000186ab0000000100000006000003e800000001000186ab0000000200000006000003e800000000"
+    }
+  ]
+}

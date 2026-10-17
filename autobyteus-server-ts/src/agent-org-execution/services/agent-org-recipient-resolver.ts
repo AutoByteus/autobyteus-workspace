@@ -4,41 +4,34 @@ import { delegationTargetUnavailableMessage } from "../../agent-collaboration/co
 import { resolveDelegationPlacement } from "../../agent-collaboration/collaborators/catalog-delegation.js";
 import {
   resolveMessageRecipient,
-  type MessageRecipientResult,
+  type CollaborationMessagePlacement,
 } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
 import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { AgentOrgExecutionIndex } from "./agent-org-execution-index.js";
 import type { AgentOrgRunCollaborators } from "./agent-org-run-collaborators.js";
 import type { ResolvedAgentOrgRecipient } from "./agent-org-task-execution-adapter.js";
 
-/**
- * Resolves Org addresses by subject (DS-002, DS-003). Called inside the Org operation gate,
- * so a catalog bring-in never re-enters it.
- */
+/** Resolves Org addresses by subject (DS-001, DS-002). Called inside the Org operation gate. */
 export class AgentOrgRecipientResolver {
   constructor(private readonly options: Readonly<{
-    taskScope(sender: CollaborationMemberExecutionIdentity): NonNullable<Parameters<typeof resolveMessageRecipient>[0]["taskScope"]>;
     getIndex(): AgentOrgExecutionIndex;
     collaborators: AgentOrgRunCollaborators;
   }>) {}
 
   /**
-   * The one instance a message reaches: within the sender's own Team instance first (a copy
-   * of a mounted Team reaches its own members, REQ-007), then a configured Agent or mounted
-   * Team (its coordinator), a collaborator or its member, then a catalog bring-in.
+   * The one standing instance a message reaches: within the sender's own Team instance first (a
+   * copy of a mounted Team reaches its own members, REQ-007), then a configured Agent or mounted
+   * Team (its coordinator); anything else is not found (messaging never creates a run).
    */
-  resolveMessageRecipient(sender: CollaborationMemberExecutionIdentity, addressInput: string): Promise<MessageRecipientResult> {
+  resolveMessageRecipient(sender: CollaborationMemberExecutionIdentity, addressInput: string): CollaborationMessagePlacement {
     return resolveMessageRecipient({
-      taskScope: this.options.taskScope(sender),
       port: () => this.options.getIndex(),
       senderAgentRunId: sender.agentRunId,
       address: this.requireAddress(addressInput),
-      catalog: { bringIn: (address) => this.options.collaborators.bringInAt({ address, senderRunId: sender.agentRunId }) },
-      notFoundMessage: (address) => `Recipient '${address}' is not an exact Agent, direct Team, collaborator or available agent in this AgentOrg.`,
     });
   }
 
-  /** A catalog teammate, a configured placement, a collaborator, then a catalog copy. */
+  /** CM-1 refusal first, then a configured placement outside the sender's own Team, then a catalog copy. */
   resolveDelegationPlacement(sender: CollaborationMemberExecutionIdentity, addressInput: string): Promise<ResolvedAgentOrgRecipient> {
     const address = this.requireAddress(addressInput);
     return resolveDelegationPlacement({
@@ -50,10 +43,7 @@ export class AgentOrgRecipientResolver {
     });
   }
 
-  /**
-   * A configured placement first, then a collaborator of this run (or a member of a
-   * collaborator Team). Delegating there starts an extra copy (REQ-013).
-   */
+  /** A configured placement of the Org (CM-1 has already refused the sender's own Team). */
   private resolveInRunDelegationPlacement(address: AgentTeamAddress): ResolvedAgentOrgRecipient {
     const index = this.options.getIndex();
     const configured = index.getConfiguredPlacement(address);
@@ -62,11 +52,6 @@ export class AgentOrgRecipientResolver {
         ? Object.freeze({ kind: "agent", address })
         : Object.freeze({ kind: "agent_team", address, coordinatorAddress: configured.coordinatorAddress });
     }
-    const collaborator = index.getCollaborator(address);
-    if (collaborator?.kind === "agent_team") {
-      return Object.freeze({ kind: "agent_team", address: collaborator.address, coordinatorAddress: collaborator.coordinatorAddress });
-    }
-    if (index.getMessagePlacement(address)?.kind === "agent") return Object.freeze({ kind: "agent", address });
     throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", delegationTargetUnavailableMessage(address));
   }
 

@@ -14,25 +14,29 @@ const HOST = "research_assistant_host";
 const launch = { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "model", llmConfig: null, autoExecuteTools: false, workspaceRootPath: "/ws" };
 const at = "2026-10-04T00:00:00.000Z";
 
-/** A collaborator Agent, a collaborator Team (two members, one with its own copy) and a root-level copy. */
+const agentSource = (agentDefinitionId: string) => ({ kind: "agent" as const, agentDefinitionId, launchConfiguration: launch });
+
+/** A delegated Agent copy, a delegated Team copy (two members, one with its own copy) and a second Agent copy. */
 const tree = (): StandaloneRootTreeSnapshot => ({
   subjectKind: "agent",
   createdAt: at,
   host: { address: "/research_assistant" as never, agentRunId: HOST, agentDefinitionId: "research-assistant" },
-  collaborators: [
-    { kind: "agent", address: "/code_reviewer" as never, agentDefinitionId: "code-reviewer", agentRunId: "reviewer-run",
-      platformAgentRunId: null, launchConfiguration: launch, addedAt: at, addedViaAgentRunId: HOST },
-    { kind: "agent_team", address: "/product_team" as never, teamDefinitionId: "product-team", teamRunId: "product-team-run",
-      coordinatorAddress: "/product_team/lead" as never, handoffs: [], defaultLaunchConfiguration: launch, addedAt: at, addedViaAgentRunId: HOST,
+  taskExecutions: [
+    { address: "/code_reviewer" as never, agentRunId: "reviewer-run", platformAgentRunId: null, delegatorAgentRunId: HOST, startedAt: at,
+      source: agentSource("code-reviewer") },
+    { address: "/product_team" as never, teamRunId: "product-team-run", delegatorAgentRunId: HOST, startedAt: at,
       members: [
-        { address: "/product_team/lead" as never, agentDefinitionId: "lead", agentRunId: "lead-run", platformAgentRunId: null },
-        { address: "/product_team/designer" as never, agentDefinitionId: "designer", agentRunId: "designer-run", platformAgentRunId: null },
+        { address: "/product_team/lead" as never, agentRunId: "lead-run", platformAgentRunId: null },
+        { address: "/product_team/designer" as never, agentRunId: "designer-run", platformAgentRunId: null },
       ],
+      source: { kind: "agent_team", teamDefinitionId: "product-team", coordinatorAddress: "/product_team/lead" as never, handoffs: [],
+        members: [{ address: "/product_team/lead" as never, agentDefinitionId: "lead" }, { address: "/product_team/designer" as never, agentDefinitionId: "designer" }],
+        defaultLaunchConfiguration: launch },
       taskExecutions: [{ address: "/product_team/designer" as never, agentRunId: "designer-copy-run", platformAgentRunId: null,
-        delegatorAgentRunId: "lead-run", startedAt: at }] },
+        delegatorAgentRunId: "lead-run", startedAt: at, source: agentSource("designer") }] },
+    { address: "/code_reviewer" as never, agentRunId: "reviewer-copy-run", platformAgentRunId: null, delegatorAgentRunId: HOST, startedAt: at,
+      source: agentSource("code-reviewer") },
   ],
-  taskExecutions: [{ address: "/code_reviewer" as never, agentRunId: "reviewer-copy-run", platformAgentRunId: null,
-    delegatorAgentRunId: HOST, startedAt: at }],
 });
 const CHILDREN = ["designer-copy-run", "designer-run", "lead-run", "reviewer-copy-run", "reviewer-run"];
 
@@ -50,7 +54,7 @@ const serviceOver = (locations: StandaloneRootLocationService) => {
 };
 
 describe("StandaloneRunTokenUsageSummaryService (REQ-006)", () => {
-  it("rolls up over the stored package of an existing run: collaborators, Team members and copies, once each", async () => {
+  it("rolls up over the stored package of an existing run: delegated Agents, Team members and copies, once each", async () => {
     const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "standalone-token-rollup-"));
     roots.push(memoryDir);
     const dir = new AgentMemoryLayout(memoryDir).getAgentRunCollaborationDirPath(HOST);

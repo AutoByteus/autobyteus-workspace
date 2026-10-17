@@ -1,0 +1,10 @@
+Started L06 LN explicit start both local nodes before operator-approved selection
+L06 LN explicit start both local nodes before operator-approved selection: Pass
+Started L03 LN both real application nodes healthy before selection
+L03 LN both real application nodes healthy before selection: Pass
+Started L06 LN fresh public create A+B preserved source UUID
+L06 LN fresh public create A+B preserved source UUID: Pass
+Started L06 LN both configuration private image network volume and source preservation
+L06 LN both configuration private image network volume and source preservation: Pass
+Started L06 LN both actual application health after NFS selection
+L06 LN both actual application health after NFS selection: Pass

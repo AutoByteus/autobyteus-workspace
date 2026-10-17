@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "F39CBF24AEE7CEC3D3F97A2834E38841",
+    "--script",
+    "() => ({text:document.body.innerText.replaceAll(\"\\u00a0\",\" \"),automaticExternalEntryVisible:document.body.innerText.includes(\"external-added.txt\")})"
+  ],
+  "rc": 0,
+  "stdout": "{\"schema_version\":\"1\",\"ok\":true,\"command\":\"run-script\",\"result\":{\"tab_id\":\"F39CBF24AEE7CEC3D3F97A2834E38841\",\"url\":\"file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat\",\"output_mode\":\"inline\",\"result\":{\"text\":\"Chat\\nAgents\\nAgent Teams\\nAgent Orgs\\nProjects\\nSkills\\nMemory\\nNodes\\nWorkspaces\\npreviews-api004\\nNo task history in this workspace.\\nproject\\nTemp Workspace\\nSettings\\nDaily Assistant\\n\\nAll your skills are available. Type / to use a skill, or @ to delegate to an agent or team.\\n\\nContext Files (0)\\n(drag, paste, or upload)\\npreviews-api004\\nAuto-approve\\nclaude-fable-5\\nAutoByteus\\nOff\\nProjects\\nFiles\\nTerminal\\nActivity\\nToken\\nArtifacts\\nBrowser\\nVNC Viewer\\nclip.mp4\\ndocument.pdf\\nimage.png\\nindex.html\\nnotes.txt\\nREADME.md\\nstyle.css\\ntone.wav\\nindex.html\\nnotes.txt\\n1\\n2\\n3\\nAPI004 UNSAVED BUFFER\\nAPI004 healthy mounted preview original\",\"automaticExternalEntryVisible\":false}}}\n",
+  "stderr": ""
+}

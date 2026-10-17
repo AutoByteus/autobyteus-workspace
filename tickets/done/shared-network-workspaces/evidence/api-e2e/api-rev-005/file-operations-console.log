@@ -1,0 +1,11 @@
+Started native mkdir create synced executable and relative symlink
+native mkdir create synced executable and relative symlink: Pass
+Started container fresh read relative symlink execute and exclusive-create refusal
+container fresh read relative symlink execute and exclusive-create refusal: Pass
+Started container modify fsync close then native read rename delete
+container modify fsync close then native read rename delete: Pass
+Started container observes rename and removes file
+container observes rename and removes file: Pass
+Started both Linux clients see independent committed outputs
+both Linux clients see independent committed outputs: Pass
+Linux same-kernel native/container ordinary operations and reciprocal/different-file writes Pass; no physical/mac/native-agent claim

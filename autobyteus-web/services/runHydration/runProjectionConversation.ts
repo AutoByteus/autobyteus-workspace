@@ -373,8 +373,6 @@ export const buildConversationFromProjection = (
       pendingAIMessage.segments.push({
         type: 'inter_agent_message',
         senderAgentRunId: entry.senderAgentRunId || delivery.senderAgentRunId || '',
-        senderAddress: entry.senderAddress ?? null,
-        senderName: delivery.senderName,
         recipientRoleName: '',
         messageType: 'agent_message',
         content: delivery.body,

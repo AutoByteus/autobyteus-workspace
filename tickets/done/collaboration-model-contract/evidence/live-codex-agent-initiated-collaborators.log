@@ -1,0 +1,543 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:19389) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-appdata-p2V8Dg
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-appdata-p2V8Dg/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-appdata-p2V8Dg/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-appdata-p2V8Dg/.env -- tip: ⚙️  override existing env vars with { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-appdata-p2V8Dg
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-appdata-p2V8Dg/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-appdata-p2V8Dg/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-appdata-p2V8Dg/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-appdata-p2V8Dg/memory
+============================================================
+Initialized server settings service with 19 predefined settings
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-appdata-p2V8Dg/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-appdata-p2V8Dg/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-appdata-p2V8Dg/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mRegistered required tool unit: Task Delegation Tools
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-15T15:20:32.143027Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent Definition created successfully with ID: aic-helper-3f9a35
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent Definition created successfully with ID: aic-twin-3f9a35
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent Definition created successfully with ID: aic-twin-3f9a35-2
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent Definition created successfully with ID: aic-plain-3f9a35
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent Definition created successfully with ID: aic-pm-3f9a35
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-mBjEYH
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-mBjEYH.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mCreated and registered workspace ID: agent_ws_cc43cd22515503cb340d69a376f52f79dc59d762a1a3a97a1505bd99fea47ee9
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-mBjEYH
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-mBjEYH.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mReusing registered workspace ID: agent_ws_cc43cd22515503cb340d69a376f52f79dc59d762a1a3a97a1505bd99fea47ee9
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-15T15:20:32.475084Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent websocket attached for run aic_plain_3f9a35_71eb2a51c75c4799a3bc4203a63a7718
+Created agent session 96ff3583-4ecc-4f19-b127-ec12ffa94915 for run aic_plain_3f9a35_71eb2a51c75c4799a3bc4203a63a7718
+Agent WebSocket connected: session=96ff3583-4ecc-4f19-b127-ec12ffa94915, run=aic_plain_3f9a35_71eb2a51c75c4799a3bc4203a63a7718
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-ZHt82O
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-ZHt82O.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mCreated and registered workspace ID: agent_ws_686e86e0bab7700b723b458479c126579e1c0622e4632cd0cfcdfee84098eda0
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-ZHt82O
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-ZHt82O.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mReusing registered workspace ID: agent_ws_686e86e0bab7700b723b458479c126579e1c0622e4632cd0cfcdfee84098eda0
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-15T15:20:36.590677Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent websocket attached for run aic_pm_3f9a35_f4b67e2723ec44299f497e057be131cc
+Created agent session 969b9db3-a438-471c-a830-29455afd7fab for run aic_pm_3f9a35_f4b67e2723ec44299f497e057be131cc
+Agent WebSocket connected: session=969b9db3-a438-471c-a830-29455afd7fab, run=aic_pm_3f9a35_f4b67e2723ec44299f497e057be131cc
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-ZHt82O
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-ZHt82O.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mReusing registered workspace ID: agent_ws_686e86e0bab7700b723b458479c126579e1c0622e4632cd0cfcdfee84098eda0
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mClosed agent session 969b9db3-a438-471c-a830-29455afd7fab
+Agent WebSocket disconnected: 969b9db3-a438-471c-a830-29455afd7fab
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mClosed agent session 96ff3583-4ecc-4f19-b127-ec12ffa94915
+Agent WebSocket disconnected: 96ff3583-4ecc-4f19-b127-ec12ffa94915
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent Definition with ID aic-helper-3f9a35 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent Definition with ID aic-twin-3f9a35 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent Definition with ID aic-twin-3f9a35-2 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent Definition with ID aic-plain-3f9a35 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID
+[22m[39mAgent Definition with ID aic-pm-3f9a35 deleted successfully.
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-15T15:21:16.217598Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mAgent Definition created successfully with ID: aic-lead-144f2a
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mAgent Definition created successfully with ID: aic-mate-144f2a
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mAgent Team Definition created successfully with ID: aic-squad-144f2a
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mAgent Definition created successfully with ID: aic-pm-144f2a
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-20Byvy
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-20Byvy.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mCreated and registered workspace ID: agent_ws_379f86327c178e49e0dcac064a8beb8bdbcd15187e3f8bb39d3fcc03b8f99514
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-20Byvy
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-20Byvy.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mReusing registered workspace ID: agent_ws_379f86327c178e49e0dcac064a8beb8bdbcd15187e3f8bb39d3fcc03b8f99514
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-15T15:21:16.497159Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mAgent websocket attached for run aic_pm_144f2a_d21ae9c6774b47a7b722be63a5cdac29
+Created agent session 0b8c0392-6bf4-452c-82b4-ca5338621c46 for run aic_pm_144f2a_d21ae9c6774b47a7b722be63a5cdac29
+Agent WebSocket connected: session=0b8c0392-6bf4-452c-82b4-ca5338621c46, run=aic_pm_144f2a_d21ae9c6774b47a7b722be63a5cdac29
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-20Byvy
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-20Byvy.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mReusing registered workspace ID: agent_ws_379f86327c178e49e0dcac064a8beb8bdbcd15187e3f8bb39d3fcc03b8f99514
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-20Byvy
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-20Byvy.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mReusing registered workspace ID: agent_ws_379f86327c178e49e0dcac064a8beb8bdbcd15187e3f8bb39d3fcc03b8f99514
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-20Byvy
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-20Byvy.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mReusing registered workspace ID: agent_ws_379f86327c178e49e0dcac064a8beb8bdbcd15187e3f8bb39d3fcc03b8f99514
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-20Byvy
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-20Byvy.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mReusing registered workspace ID: agent_ws_379f86327c178e49e0dcac064a8beb8bdbcd15187e3f8bb39d3fcc03b8f99514
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-20Byvy
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-20Byvy.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mReusing registered workspace ID: agent_ws_379f86327c178e49e0dcac064a8beb8bdbcd15187e3f8bb39d3fcc03b8f99514
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-20Byvy
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-20Byvy.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mReusing registered workspace ID: agent_ws_379f86327c178e49e0dcac064a8beb8bdbcd15187e3f8bb39d3fcc03b8f99514
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39m[CodexClientThreadRouter] app-server message was not routed {
+  kind: [32m'notification'[39m,
+  method: [32m'thread/started'[39m,
+  requestId: [90mundefined[39m,
+  threadCount: [33m7[39m,
+  paramKeys: [ [32m'thread'[39m ]
+}
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: [32m'notification'[39m,
+  method: [32m'warning'[39m,
+  requestId: [90mundefined[39m,
+  threadCount: [33m7[39m,
+  paramKeys: [ [32m'threadId'[39m, [32m'message'[39m ]
+}
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-20Byvy
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-20Byvy.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mReusing registered workspace ID: agent_ws_379f86327c178e49e0dcac064a8beb8bdbcd15187e3f8bb39d3fcc03b8f99514
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-15T15:21:56.182519Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-20Byvy
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-20Byvy.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mReusing registered workspace ID: agent_ws_379f86327c178e49e0dcac064a8beb8bdbcd15187e3f8bb39d3fcc03b8f99514
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39m[CodexClientThreadRouter] app-server message was not routed {
+  kind: [32m'notification'[39m,
+  method: [32m'deprecationNotice'[39m,
+  requestId: [90mundefined[39m,
+  threadCount: [33m2[39m,
+  paramKeys: [ [32m'summary'[39m, [32m'details'[39m ]
+}
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mClosed agent session 0b8c0392-6bf4-452c-82b4-ca5338621c46
+Agent WebSocket disconnected: 0b8c0392-6bf4-452c-82b4-ca5338621c46
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mAgent Team Definition with ID aic-squad-144f2a deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mAgent Definition with ID aic-lead-144f2a deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mAgent Definition with ID aic-mate-144f2a deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop
+[22m[39mAgent Definition with ID aic-pm-144f2a deleted successfully.
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-15T15:22:05.040312Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+[22m[39mAgent Definition created successfully with ID: aic-lead-7d06bb
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+[22m[39mAgent Definition created successfully with ID: aic-mate-7d06bb
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+[22m[39mAgent Team Definition created successfully with ID: aic-squad-7d06bb
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+[22m[39mAgent Definition created successfully with ID: aic-echo-7d06bb
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+[22m[39mAgent Definition created successfully with ID: aic-pm-7d06bb
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-IYSHGG
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-IYSHGG.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+[22m[39mCreated and registered workspace ID: agent_ws_375c50f7cd4488b8f70829eb5fbc966766e3d21f50bde6a404a81c30c52eeb11
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-IYSHGG
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-IYSHGG.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+[22m[39mReusing registered workspace ID: agent_ws_375c50f7cd4488b8f70829eb5fbc966766e3d21f50bde6a404a81c30c52eeb11
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-15T15:22:05.367469Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+[22m[39mAgent websocket attached for run aic_pm_7d06bb_6240de97544b4e578ac6461b24efb0d0
+Created agent session d06dbf82-069e-4981-9e6d-f4899a6cb13a for run aic_pm_7d06bb_6240de97544b4e578ac6461b24efb0d0
+Agent WebSocket connected: session=d06dbf82-069e-4981-9e6d-f4899a6cb13a, run=aic_pm_7d06bb_6240de97544b4e578ac6461b24efb0d0
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-IYSHGG
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-IYSHGG.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+[22m[39mReusing registered workspace ID: agent_ws_375c50f7cd4488b8f70829eb5fbc966766e3d21f50bde6a404a81c30c52eeb11
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-IYSHGG
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-IYSHGG.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+[22m[39mReusing registered workspace ID: agent_ws_375c50f7cd4488b8f70829eb5fbc966766e3d21f50bde6a404a81c30c52eeb11
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-IYSHGG
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.FiweDl4Vn9/aic-e2e-ws-IYSHGG.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+[22m[39mReusing registered workspace ID: agent_ws_375c50f7cd4488b8f70829eb5fbc966766e3d21f50bde6a404a81c30c52eeb11
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+[22m[39mClosed agent session d06dbf82-069e-4981-9e6d-f4899a6cb13a
+Agent WebSocket disconnected: d06dbf82-069e-4981-9e6d-f4899a6cb13a
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+[22m[39mAgent Team Definition with ID aic-squad-7d06bb deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+[22m[39mAgent Definition with ID aic-lead-7d06bb deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+[22m[39mAgent Definition with ID aic-mate-7d06bb deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+[22m[39mAgent Definition with ID aic-echo-7d06bb deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop
+[22m[39mAgent Definition with ID aic-pm-7d06bb deleted successfully.
+
+ [32m✓[39m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts [2m([22m[2m36 tests[22m[2m | [22m[33m33 skipped[39m[2m)[22m[33m 120072[2mms[22m[39m
+     [33m[2m✓[22m[39m codex_app_server: LE-A1 list is opt-in and read-only; an outside address is not found; delegation then messaging by run ID [33m 44093[2mms[22m[39m
+     [33m[2m✓[22m[39m codex_app_server: LE-A2 three catalog copies with source, each one unit; restore after Stop [33m 48811[2mms[22m[39m
+     [33m[2m✓[22m[39m codex_app_server: LE-A3 Agent root — a delegated Team copy's member delegates a top-level address (copy placed at the root) and its own teammate (refused); kept after Stop [33m 26962[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m3 passed[39m[22m[2m | [22m[33m33 skipped[39m[90m (36)[39m
+[2m   Start at [22m 17:20:22
+[2m   Duration [22m 129.47s[2m (transform 6.02s, setup 25ms, import 8.67s, tests 120.07s, environment 0ms)[22m
+

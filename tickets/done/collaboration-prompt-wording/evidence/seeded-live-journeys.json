@@ -1,0 +1,42 @@
+{
+  "researchLead": {
+    "id": "research-lead",
+    "name": "Research Lead"
+  },
+  "researchHelper": {
+    "id": "research-helper",
+    "name": "Research Helper"
+  },
+  "writer": {
+    "id": "writer",
+    "name": "Writer"
+  },
+  "reviewer": {
+    "id": "reviewer",
+    "name": "Reviewer"
+  },
+  "reviewCrew": {
+    "id": "review-crew",
+    "name": "Review Crew"
+  },
+  "ptm": {
+    "id": "project-task-manager",
+    "name": "Project Task Manager"
+  },
+  "coordinator": {
+    "id": "coordinator",
+    "name": "Coordinator"
+  },
+  "builder": {
+    "id": "builder",
+    "name": "Builder"
+  },
+  "deliverySquad": {
+    "id": "delivery-squad",
+    "name": "Delivery Squad"
+  },
+  "studio": {
+    "id": "studio",
+    "name": "Studio"
+  }
+}

@@ -50,14 +50,13 @@ function fixture(kind: RootKind) {
     }),
     registrationFor: ref => 'agentRunId' in ref ? registrations.get(ref.agentRunId) ?? null : null,
     ownershipChainFor: agentRunId => committed.has(agentRunId) || registrations.has(agentRunId) ? [{ agentRunId }] : [],
-    taskExecutionAt: () => null,
     taskExecutionTargetOf: ref => 'agentRunId' in ref && committed.has(ref.agentRunId) ? { root, execution: ref, ingressAgentRunId: ref.agentRunId } : null,
     cancelOwnedExecution: vi.fn(), releaseOwnedExecution: vi.fn(async ref => committed.has('agentRunId' in ref ? ref.agentRunId : '')
       ? { accepted: true } : { accepted: false, code: 'EXACT_RELEASE_AUTHORITY_UNAVAILABLE' }),
     taskExecutionChainFor: agentRunId => committed.has(agentRunId) ? [{ agentRunId }] : [],
     listTaskExecutions: () => [...committed.keys()].map(agentRunId => ({ agentRunId })), taskExecutionStatus: () => 'offline',
     containsTaskExecution: ref => committed.has('agentRunId' in ref ? ref.agentRunId : ''), publishTaskExecutionsClosed: vi.fn(),
-    discardReleasedExecution: vi.fn(), taskExecutionWithIngress: agentRunId => committed.has(agentRunId) ? { agentRunId } : null,
+    discardReleasedExecution: vi.fn(), reachingAddressOf: () => null, taskExecutionWithIngress: agentRunId => committed.has(agentRunId) ? { agentRunId } : null,
     publishTaskExecutionsReopened: vi.fn(),
     isLive: () => false, assertRestorableChain: () => undefined, restoreChain: async () => undefined, tryShutDownIfQuiet: async () => false,
   };

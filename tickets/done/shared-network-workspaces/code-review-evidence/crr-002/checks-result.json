@@ -1,0 +1,22 @@
+{
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "scripts/tests/test_nfs_packaging_and_launcher.py",
+    "scripts/tests/test_nfs_installer_fixture.py",
+    "-v"
+  ],
+  "exitCode": 0,
+  "environmentKeys": [
+    "PATH",
+    "HOME",
+    "TMPDIR",
+    "LANG",
+    "PYTHONDONTWRITEBYTECODE"
+  ],
+  "temporaryRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/crr002-check-yyv4c21j",
+  "temporaryRootRemoved": true,
+  "result": "7 enumerated;6 pass;1 Go-invoked child fixture skipped (not counted as a pass).",
+  "limit": "Reviewer did not install a Go toolchain or rerun Go. Source/test review plus IR003 native Go/bootstrap/three mutation logs are supporting implementation execution evidence, not reviewer execution. No privileged install/OS paths/export/mount/Docker/provider/user data used."
+}

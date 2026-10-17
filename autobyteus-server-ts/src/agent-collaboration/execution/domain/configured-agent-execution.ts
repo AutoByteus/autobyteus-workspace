@@ -20,7 +20,7 @@ export type AgentModelChoice = Readonly<{
 }>;
 
 /**
- * User control of one retained agent execution of a delegated copy or collaborator (DS-001,
+ * User control of one retained agent execution of a delegated copy (DS-001,
  * DS-002): whether it is stopped, a fence that holds its activation, a restorable forced stop
  * (input stays open, so the next message restores it), and the model swap for its next activation.
  */

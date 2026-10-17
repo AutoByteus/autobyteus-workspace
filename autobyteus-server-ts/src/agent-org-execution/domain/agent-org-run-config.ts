@@ -38,6 +38,6 @@ export type UpdateStoppedAgentOrgRunConfig = Readonly<{
   orgRunId: string;
   modelPatches: readonly AgentOrgRunModelConfigPatch[];
   teamWorkspacePatches: readonly TeamWorkspacePatch[];
-  /** AR-004: user model choices of delegated copies and collaborators, saved with the rest in one write. */
+  /** AR-004: user model choices of delegated copies, saved with the rest in one write. */
   delegatedChanges?: readonly DelegatedLaunchChange[];
 }>;

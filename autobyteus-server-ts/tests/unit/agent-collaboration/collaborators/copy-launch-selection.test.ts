@@ -1,11 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   configuredTeamFollowerAddresses,
-  projectCollaboratorAgentNode,
-  projectCollaboratorTeamNode,
   projectTaskExecutionSource,
-  projectTaskSourceMember,
-  resolveCollaboratorCopySource,
 } from "../../../../src/agent-collaboration/collaborators/collaborator-source-projector.js";
 import {
   restoreTaskAgentNode,
@@ -14,23 +10,20 @@ import {
 import {
   effectiveCopyAgentLaunch,
   memberFollowsTeam,
-  type CollaboratorAgentEntry,
-  type CollaboratorTeamEntry,
   type TaskTeamExecution,
   type TaskTeamExecutionSource,
   type UserLaunchSelection,
 } from "../../../../src/run-history/domain/run-execution-tree-shared-records.js";
 import {
-  parseCollaboratorEntry,
   parseTaskExecution,
 } from "../../../../src/run-history/store/run-execution-tree-shared-record-schemas.js";
 import type { TeamRunAgentNode, TeamRunAgentTeamNode } from "../../../../src/agent-team-execution/domain/team-run-config.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 
 /**
- * DS-003 / AR-003 / AR-005 / AC-005: one launch rule for copy and collaborator agents. The user
- * selection replaces only the model and its settings; hosting and restore apply it; extra and
- * teammate copies start on the started values; records without selections read and restore unchanged.
+ * DS-003 / AR-003 / AR-005 / AC-005: one launch rule for copy agents. The user
+ * selection replaces only the model and its settings; restore applies it; new
+ * copies start on the started values; records without selections read and restore unchanged.
  */
 const claude = { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", llmConfig: null, autoExecuteTools: true, workspaceRootPath: "/work" };
 const codex = { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "sol-6.1", llmConfig: { effort: "high" }, autoExecuteTools: false, workspaceRootPath: "/work" };
@@ -38,23 +31,6 @@ const selectedAt = "2026-10-13T00:00:00.000Z";
 const sonnet: UserLaunchSelection = { llmModelIdentifier: "sonnet", llmConfig: { thinking: "low" }, selectedAt };
 const haiku: UserLaunchSelection = { llmModelIdentifier: "haiku", llmConfig: null, selectedAt };
 
-const collaboratorAgent: CollaboratorAgentEntry = {
-  kind: "agent", address: "/reviewer" as never, agentDefinitionId: "reviewer", agentRunId: "reviewer-run",
-  platformAgentRunId: null, launchConfiguration: codex, addedAt: selectedAt, addedViaAgentRunId: "pm",
-  userLaunchSelection: { llmModelIdentifier: "sol-6.1-mini", llmConfig: { effort: "low" }, selectedAt },
-};
-const collaboratorTeam: CollaboratorTeamEntry = {
-  kind: "agent_team", address: "/se" as never, teamDefinitionId: "se", teamRunId: "se-run",
-  coordinatorAddress: "/se/lead" as never, handoffs: [], taskExecutions: [],
-  defaultLaunchConfiguration: claude,
-  userTeamLaunchSelection: sonnet,
-  members: [
-    { address: "/se/lead" as never, agentDefinitionId: "lead", agentRunId: "lead-run", platformAgentRunId: null },
-    { address: "/se/ie" as never, agentDefinitionId: "ie", agentRunId: "ie-run", platformAgentRunId: null, launchConfiguration: codex },
-    { address: "/se/qa" as never, agentDefinitionId: "qa", agentRunId: "qa-run", platformAgentRunId: null, userLaunchSelection: haiku },
-  ],
-  addedAt: selectedAt, addedViaAgentRunId: "pm",
-};
 const models = (node: TeamRunAgentTeamNode) => node.children.map((child) => child.kind === "agent" ? child.llmModelIdentifier : null);
 
 describe("effectiveCopyAgentLaunch", () => {
@@ -102,34 +78,16 @@ describe("memberFollowsTeam (AR-003)", () => {
   });
 });
 
-describe("collaborator hosting vs. extra copies (AR-005)", () => {
-  it("hosts a collaborator Agent on its selection", () => {
-    expect(projectCollaboratorAgentNode(collaboratorAgent)).toMatchObject({
-      runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "sol-6.1-mini", llmConfig: { effort: "low" }, autoExecuteTools: false,
-    });
-  });
-
-  it("hosts a collaborator Team with the team selection on followers and own selections first", () => {
-    expect(models(projectCollaboratorTeamNode(collaboratorTeam))).toEqual(["sonnet", "sol-6.1", "haiku"]);
-  });
-
-  it("starts extra copies and teammate copies of a collaborator on the started values", () => {
-    expect(resolveCollaboratorCopySource([collaboratorAgent], "/reviewer")?.node).toMatchObject({ llmModelIdentifier: "sol-6.1", llmConfig: { effort: "high" } });
-    const team = resolveCollaboratorCopySource([collaboratorTeam], "/se");
-    expect(team?.kind === "agent_team" && models(team.node)).toEqual(["opus", "sol-6.1", "opus"]);
-    expect(team?.kind === "agent_team" && team.followerAddresses).toEqual(["/se/lead", "/se/qa"]);
-    expect(resolveCollaboratorCopySource([collaboratorTeam], "/se/qa")?.node).toMatchObject({ llmModelIdentifier: "opus" });
-  });
-
-  it("starts catalog teammate copies on the snapshot's started values", () => {
+describe("catalog copies start on the snapshot's started values (AR-005)", () => {
+  it("starts catalog copies on the snapshot's started values", () => {
     const source: TaskTeamExecutionSource = {
       kind: "agent_team", teamDefinitionId: "se", coordinatorAddress: "/se/lead" as never, handoffs: [],
       defaultLaunchConfiguration: claude,
       members: [{ address: "/se/lead" as never, agentDefinitionId: "lead" }, { address: "/se/ie" as never, agentDefinitionId: "ie", launchConfiguration: codex }],
     };
-    expect(projectTaskSourceMember(source, "/se/lead" as never)?.launchConfiguration).toBe(claude);
     const projected = projectTaskExecutionSource("/se" as never, source);
     expect(projected.kind === "agent_team" && projected.followerAddresses).toEqual(["/se/lead"]);
+    expect(projected.kind === "agent_team" && models(projected.node)).toEqual(["opus", "sol-6.1"]);
   });
 });
 
@@ -193,12 +151,6 @@ describe("tolerant readers", () => {
     expect(team.userTeamLaunchSelection).toEqual(sonnet);
     expect(team.members[0]).toEqual({ address: "/se/lead", agentRunId: "l", platformAgentRunId: null, userLaunchSelection: haiku });
     expect(Object.keys(team.members[1]!)).toEqual(["address", "agentRunId", "platformAgentRunId"]);
-    const entry = parseCollaboratorEntry(JSON.parse(JSON.stringify(collaboratorTeam)), "c") as CollaboratorTeamEntry;
-    expect(entry.userTeamLaunchSelection).toEqual(sonnet);
-    expect(entry.members[2]!.userLaunchSelection).toEqual(haiku);
-    expect(Object.keys(entry.members[0]!)).not.toContain("userLaunchSelection");
-    expect((parseCollaboratorEntry(JSON.parse(JSON.stringify(collaboratorAgent)), "c") as CollaboratorAgentEntry).userLaunchSelection)
-      .toEqual(collaboratorAgent.userLaunchSelection);
   });
 
   it("reject a malformed selection", () => {

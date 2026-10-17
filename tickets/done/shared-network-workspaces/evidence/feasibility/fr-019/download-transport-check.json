@@ -1,0 +1,10 @@
+{
+  "pinnedManifestLayerIndex": 18,
+  "digest": "sha256:5e801e6751785955a2acbba8585d04b1d26cf0dbd9ed0dfd46142ba3b561da3f",
+  "compressedBytes": 421025371,
+  "curlExit": 28,
+  "seconds": 60.066906416,
+  "metrics": "200 247924352 4128657",
+  "stderr": "curl: (28) Operation timed out after 59764 milliseconds with 247924352 out of 421025371 bytes received\n",
+  "scope": "one task-owned image-download diagnostic, no private credentials or VM boot"
+}

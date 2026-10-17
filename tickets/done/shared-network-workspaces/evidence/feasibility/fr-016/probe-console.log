@@ -1,0 +1,4 @@
+PASS daemon mounts common export into UID10001 zero-capability client, not a privileged in-container mount
+FAIL healthy mounted identity verified, RPC liveness alone not treated as storage proof AssertionError({'status': 'WRONG_MOUNT_SOURCE', 'observedSource': ':/ab-sf-fr016-91f1f5b4', 'seconds': 0.00019066600000000022, 'starts': 0, 'alive': 0, 'maxAlive': 0, 'heartbeats': 0})
+PROBE FAILURE AssertionError({'status': 'WRONG_MOUNT_SOURCE', 'observedSource': ':/ab-sf-fr016-91f1f5b4', 'seconds': 0.00019066600000000022, 'starts': 0, 'alive': 0, 'maxAlive': 0, 'heartbeats': 0})
+{"run": "ab-sf-fr016-91f1f5b4", "passes": 1, "fatal": "AssertionError({'status': 'WRONG_MOUNT_SOURCE', 'observedSource': ':/ab-sf-fr016-91f1f5b4', 'seconds': 0.00019066600000000022, 'starts': 0, 'alive': 0, 'maxAlive': 0, 'heartbeats': 0})", "cleanup_ok": true}

@@ -1,0 +1,9 @@
+{
+  "origin": "owned backend-launch harness environment",
+  "observation": "data-dir/config file fixed, but mandatory AUTOBYTEUS_SERVER_HOST full URL omitted. Normal Electron serverRuntimeEnv supplies it. Private backend failed before serving GraphQL.",
+  "backendLog": "mac-backend.log",
+  "actualInstructedAgentsExecuted": false,
+  "credentialsTransferred": false,
+  "noFilesystemFailureClaim": true,
+  "next": "use read full MacOSServerManager/serverRuntimeEnv startup contract; empty non-secret private .env plus CLI and public URL env; retain prior failure"
+}

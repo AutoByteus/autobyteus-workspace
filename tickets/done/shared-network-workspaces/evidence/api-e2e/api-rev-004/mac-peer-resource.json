@@ -1,0 +1,120 @@
+{
+  "clone": "ab-nfs-api004-mac-5427b9a1",
+  "image": "ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377",
+  "tartHome": "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tart-state",
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "clone",
+        "ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377",
+        "ab-nfs-api004-mac-5427b9a1"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "set",
+        "ab-nfs-api004-mac-5427b9a1",
+        "--cpu",
+        "2",
+        "--memory",
+        "4096"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api004-mac-5427b9a1",
+        "/usr/bin/sw_vers"
+      ],
+      "rc": 2,
+      "stdout": "",
+      "stderr": "VM \"ab-nfs-api004-mac-5427b9a1\" is not running\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api004-mac-5427b9a1",
+        "/usr/bin/sw_vers"
+      ],
+      "rc": 0,
+      "stdout": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api004-mac-5427b9a1",
+        "/usr/sbin/ipconfig",
+        "getifaddr",
+        "en0"
+      ],
+      "rc": 0,
+      "stdout": "192.168.64.2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "-i",
+        "ab-nfs-api004-mac-5427b9a1",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "umask 077; cat > /Users/admin/ab-nfs-api004-mac-5427b9a1-binary; chmod 755 /Users/admin/ab-nfs-api004-mac-5427b9a1-binary"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api004-mac-5427b9a1",
+        "/bin/sh",
+        "-c",
+        "id; /sbin/route -n get 192.168.64.4; /sbin/ping -c 2 -W 1000 192.168.64.4"
+      ],
+      "rc": 2,
+      "stdout": "uid=501(admin) gid=20(staff) groups=20(staff),12(everyone),61(localaccounts),79(_appserverusr),80(admin),81(_appserveradm),264(_webdeveloper),701(com.apple.sharepoint.group.1),33(_appstore),98(_lpadmin),100(_lpoperator),204(_developer),250(_analyticsusers),395(com.apple.access_ftp),398(com.apple.access_screensharing),399(com.apple.access_ssh),400(com.apple.access_remote_ae)\n   route to: 192.168.64.4\ndestination: 192.168.64.0\n       mask: 255.255.255.0\n  interface: en0\n      flags: <UP,DONE,CLONING,STATIC>\n recvpipe  sendpipe  ssthresh  rtt,msec    rttvar  hopcount      mtu     expire\n       0         0         0         0         0         0      1500       -32 \nPING 192.168.64.4 (192.168.64.4): 56 data bytes\nRequest timeout for icmp_seq 0\n\n--- 192.168.64.4 ping statistics ---\n2 packets transmitted, 0 packets received, 100.0% packet loss\n",
+      "stderr": ""
+    }
+  ],
+  "result": "Ready",
+  "noHostShares": true,
+  "noUserCredentials": true,
+  "vmPid": 1506,
+  "ip": "192.168.64.2",
+  "binary": {
+    "guestPath": "/Users/admin/ab-nfs-api004-mac-5427b9a1-binary",
+    "sha256": "64085e451774b99666ae272c78111d3f3c3972a619aa4cf7e4da657abb79df04"
+  },
+  "passivePeer": {
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-api004-mac-5427b9a1",
+      "/bin/sh",
+      "-c",
+      "id; /sbin/route -n get 192.168.64.4; /sbin/ping -c 2 -W 1000 192.168.64.4"
+    ],
+    "rc": 2,
+    "stdout": "uid=501(admin) gid=20(staff) groups=20(staff),12(everyone),61(localaccounts),79(_appserverusr),80(admin),81(_appserveradm),264(_webdeveloper),701(com.apple.sharepoint.group.1),33(_appstore),98(_lpadmin),100(_lpoperator),204(_developer),250(_analyticsusers),395(com.apple.access_ftp),398(com.apple.access_screensharing),399(com.apple.access_ssh),400(com.apple.access_remote_ae)\n   route to: 192.168.64.4\ndestination: 192.168.64.0\n       mask: 255.255.255.0\n  interface: en0\n      flags: <UP,DONE,CLONING,STATIC>\n recvpipe  sendpipe  ssthresh  rtt,msec    rttvar  hopcount      mtu     expire\n       0         0         0         0         0         0      1500       -32 \nPING 192.168.64.4 (192.168.64.4): 56 data bytes\nRequest timeout for icmp_seq 0\n\n--- 192.168.64.4 ping statistics ---\n2 packets transmitted, 0 packets received, 100.0% packet loss\n",
+    "stderr": ""
+  }
+}

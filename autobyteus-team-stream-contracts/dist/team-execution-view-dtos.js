@@ -18,14 +18,14 @@ export const teamMemberExecutionIdentityDtoSchema = z.object({
     member_address: agentTeamAddressDtoSchema,
 }).strict();
 /**
- * The launch a collaborator-Team or catalog-Team-copy member runs with: its own, else its Team's.
+ * The launch a catalog-Team-copy member runs with: its own, else its Team's.
  * Every reader of such a member's launch uses this, never the Team's value directly.
  */
 export const teamMemberLaunchConfiguration = (team, member) => member.launch_configuration ?? team.default_launch_configuration;
 /** The recorded source of such a member's launch: its own, else its Team's; null when not recorded. */
 export const teamMemberLaunchSource = (team, member) => member.launch_source ?? team.default_launch_source ?? null;
 /**
- * The single launch rule of a copy or collaborator agent (mirrors the server's
+ * The single launch rule of a copy agent (mirrors the server's
  * `effectiveCopyAgentLaunch`): its own choice, else (when it follows its Team) the Team's choice,
  * else its started launch. `selected` tells which choice applied.
  */
@@ -105,27 +105,6 @@ export const taskTeamExecutionDtoSchema = z.lazy(() => z.object({
     delegator_agent_run_id: nullableNonEmptyStringSchema, started_at: nonEmptyStringSchema,
     source: taskTeamSourceSchema.optional(), ...teamSelectionSchema,
 }).strict());
-export const collaboratorEntryDtoSchema = z.discriminatedUnion("kind", [
-    z.object({
-        kind: z.literal("agent"), address: agentTeamAddressDtoSchema, agent_definition_id: nonEmptyStringSchema,
-        agent_run_id: nonEmptyStringSchema, platform_agent_run_id: nullableNonEmptyStringSchema,
-        launch_configuration: launchConfigurationSchema, launch_source: launchSourceSchema.optional(),
-        added_at: nonEmptyStringSchema, added_via_agent_run_id: nonEmptyStringSchema, ...agentSelectionSchema,
-    }).strict(),
-    z.object({
-        kind: z.literal("agent_team"), address: agentTeamAddressDtoSchema, team_definition_id: nonEmptyStringSchema,
-        team_run_id: nonEmptyStringSchema, coordinator_address: agentTeamAddressDtoSchema,
-        members: z.array(z.object({
-            address: agentTeamAddressDtoSchema, agent_definition_id: nonEmptyStringSchema,
-            agent_run_id: nonEmptyStringSchema, platform_agent_run_id: nullableNonEmptyStringSchema, ...memberLaunchSchema,
-            ...agentSelectionSchema,
-        }).strict()).min(1),
-        handoffs: z.array(handoffDtoSchema), default_launch_configuration: launchConfigurationSchema,
-        default_launch_source: launchSourceSchema.optional(),
-        task_executions: z.array(z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema])),
-        added_at: nonEmptyStringSchema, added_via_agent_run_id: nonEmptyStringSchema, ...teamSelectionSchema,
-    }).strict(),
-]);
 const configuredTeamSchema = z.lazy(() => z.object({
     kind: z.literal("configured_team"), address: agentTeamAddressDtoSchema,
     team_definition_id: nonEmptyStringSchema, role: z.string().nullable(), description: z.string().nullable(),
@@ -144,7 +123,6 @@ export const teamRunExecutionTreeDtoSchema = z.object({
         team_run_id: nonEmptyStringSchema, coordinator_address: agentTeamAddressDtoSchema,
         default_launch_configuration: launchConfigurationSchema,
         members: z.array(z.union([configuredAgentSchema, configuredTeamSchema])),
-        collaborators: z.array(collaboratorEntryDtoSchema),
         task_executions: z.array(z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema])),
     }).strict(),
 }).strict();

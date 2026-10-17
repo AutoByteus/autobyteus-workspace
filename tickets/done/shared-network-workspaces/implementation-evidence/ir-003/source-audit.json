@@ -1,0 +1,34 @@
+{
+  "reviewBasis": "caa318d795d73a85e8d3eb374d21ef532a8513f3",
+  "trigger": "CRR-001 / CR-001 P1",
+  "delta": [
+    {
+      "path": "autobyteus-nfs/internal/platform/commands.go",
+      "sha256": "19d6b5b27a71b80dfc4fe831242e844f69ca3c0c753c626a8ae10912d2613f18",
+      "bytes": 2509,
+      "nonemptyLines": 86,
+      "beforeNonemptyLines": 78,
+      "implementationSource": true
+    },
+    {
+      "path": "autobyteus-nfs/internal/platform/directory_modes_test.go",
+      "sha256": "0964267cd7fc9608bc3ed668b0bbe7fcf9c62272d9eef7e966998ae5f1d712e0",
+      "bytes": 6455,
+      "nonemptyLines": 186,
+      "beforeNonemptyLines": 0,
+      "implementationSource": false
+    },
+    {
+      "path": "scripts/tests/test_nfs_installer_fixture.py",
+      "sha256": "f0f73560b700f2012a7de7b4d870876c4952e5c7f71e28fb92a2626cff9648cb",
+      "bytes": 4886,
+      "nonemptyLines": 76,
+      "beforeNonemptyLines": 59,
+      "implementationSource": false
+    }
+  ],
+  "unchangedIR002Paths": 137,
+  "productionSourceHash": "c80ec19ffc7e496687b341738796f8c7c915af829209081779e43cffc88f5a85",
+  "scope": "one production owner, two test paths; requirements/design/review/IR001/IR002 evidence unmodified",
+  "fixCommit": "dfeac830f468994255fdafc31f66cdbeee1852cc"
+}

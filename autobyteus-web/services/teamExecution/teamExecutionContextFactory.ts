@@ -62,11 +62,10 @@ export const createTeamAgentContext = (input: {
   address: AgentTeamAddress
   workspaceMetadata: WorkspaceMetadata | null
 }): AgentContext | null => {
-  // A task execution at a collaborator address takes its source from the collaborator entry.
   // What this agent instance runs with: its user choice, else its Team's when it follows (DS-003).
   const source = teamAgentSourceAt(input.tree, input.address, input.agentRunId)
   if (!source) return null
-  // F-03 / CR-002: a collaborator or catalog copy (and its members) reads as a spaced name, as in its row.
+  // F-03 / CR-002: a catalog copy (and its members) reads as a spaced name, as in its row.
   const name = readsAsDisplayName(input.tree, source.address)
     ? memberDisplayName(source.address)
     : memberAddressBasename(source.address)

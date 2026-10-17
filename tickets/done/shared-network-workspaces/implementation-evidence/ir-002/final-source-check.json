@@ -1,0 +1,23 @@
+{
+  "sourceCommit": "f34fc81aa238051f5abd5000eb31f694df43c42b",
+  "sourceAuditPaths": 139,
+  "allHashesMatch": true,
+  "updaterRestored": true,
+  "currentElectronChecks": [
+    {
+      "name": "electron-unit-current-source",
+      "exitCode": 1,
+      "homeAbsent": true,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "name": "electron-typecheck-current-source",
+      "exitCode": 0,
+      "homeAbsent": true,
+      "ownedProcessGroupAbsent": true
+    }
+  ],
+  "goToolchainRemoved": true,
+  "generatedSdkOutputs": "left untracked/unstaged; not user-data deletion",
+  "scope": "implementation only, no real NFS/provider/API-E2E qualification"
+}

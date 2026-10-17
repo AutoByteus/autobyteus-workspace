@@ -1,0 +1,148 @@
+{
+  "vm": "ab-nfs-api005-mac-59bba374",
+  "source": "/Users/admin/ab-nfs-api005-mac-59bba374-source",
+  "binary": {
+    "guestPath": "/Users/admin/ab-nfs-api005-mac-59bba374-binary",
+    "sha256": "5908c8229010102d7a1708c65e50b8674766a6c8356c4362588c0fed36167a57"
+  },
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api005-mac-59bba374",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "/usr/bin/stat -f \"%d:%i:%u:%g:%Lp\" /Users/admin/ab-nfs-api005-mac-59bba374-source"
+      ],
+      "rc": 0,
+      "seconds": 0.337,
+      "stdout": "16777230:506781:501:20:755\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api005-mac-59bba374",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "/Users/admin/ab-nfs-api005-mac-59bba374-binary detach --yes --drained --json"
+      ],
+      "rc": 0,
+      "seconds": 0.351,
+      "stdout": "",
+      "stderr": "Owned export/settings removed; Apple nfsd remains OS-owned and was not disabled\nDetached; source, marker, named volumes and private receipts preserved.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api005-mac-59bba374",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "set -e; test ! -e /etc/autobyteus-nfs/attachment.json; test ! -e /Library/LaunchDaemons/com.autobyteus.nfs.plist; ! /sbin/mount | grep \" on /Volumes/autobyteus-shared \"; /usr/bin/stat -f \"%d:%i:%u:%g:%Lp\" /Users/admin/ab-nfs-api005-mac-59bba374-source; cat /Users/admin/ab-nfs-api005-mac-59bba374-source/project/preexisting.txt; cat /Users/admin/ab-nfs-api005-mac-59bba374-source/.autobyteus-nfs/storage.json"
+      ],
+      "rc": 0,
+      "seconds": 0.371,
+      "stdout": "16777230:506781:501:20:755\nORIGINAL_API005_MAC{\"storageId\":\"7d29fab2-7ce0-47cb-9183-73a810590a07\"}\n",
+      "stderr": ""
+    }
+  ],
+  "cases": [
+    {
+      "name": "public safe Mac detach after retained identity failure evidence",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api005-mac-59bba374",
+          "/usr/bin/sudo",
+          "-n",
+          "-u",
+          "admin",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/Users/admin",
+          "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "/Users/admin/ab-nfs-api005-mac-59bba374-binary detach --yes --drained --json"
+        ],
+        "rc": 0,
+        "seconds": 0.351,
+        "stdout": "",
+        "stderr": "Owned export/settings removed; Apple nfsd remains OS-owned and was not disabled\nDetached; source, marker, named volumes and private receipts preserved.\n"
+      },
+      "status": "Pass",
+      "seconds": 0.356
+    },
+    {
+      "name": "same current source identity original bytes and marker preserved, no owned mount/job",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api005-mac-59bba374",
+          "/usr/bin/sudo",
+          "-n",
+          "-u",
+          "admin",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/Users/admin",
+          "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "set -e; test ! -e /etc/autobyteus-nfs/attachment.json; test ! -e /Library/LaunchDaemons/com.autobyteus.nfs.plist; ! /sbin/mount | grep \" on /Volumes/autobyteus-shared \"; /usr/bin/stat -f \"%d:%i:%u:%g:%Lp\" /Users/admin/ab-nfs-api005-mac-59bba374-source; cat /Users/admin/ab-nfs-api005-mac-59bba374-source/project/preexisting.txt; cat /Users/admin/ab-nfs-api005-mac-59bba374-source/.autobyteus-nfs/storage.json"
+        ],
+        "rc": 0,
+        "seconds": 0.371,
+        "stdout": "16777230:506781:501:20:755\nORIGINAL_API005_MAC{\"storageId\":\"7d29fab2-7ce0-47cb-9183-73a810590a07\"}\n",
+        "stderr": ""
+      },
+      "status": "Pass",
+      "seconds": 0.371
+    }
+  ],
+  "result": "Pass",
+  "connection": {
+    "storageId": "7d29fab2-7ce0-47cb-9183-73a810590a07",
+    "endpoint": "192.168.64.2",
+    "export": "/Users/admin/ab-nfs-api005-mac-59bba374-source",
+    "protocol": "3",
+    "mountRoot": "/Volumes/autobyteus-shared"
+  },
+  "originalSourceIdentity": "16777228:506781:501:20:755",
+  "scope": "Cleanup/preservation after recorded normal-reboot failure; does not resolve it",
+  "currentSourceBefore": "16777230:506781:501:20:755\n"
+}

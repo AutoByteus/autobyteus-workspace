@@ -10,6 +10,7 @@ import { AgentToolMcpCatalog } from "../../../../src/agent-tools/mcp/agent-tool-
 import { BrowserToolsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/browser-tools-mcp-adapter-provider.js";
 import { MediaToolsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/media-tools-mcp-adapter-provider.js";
 import { PublishArtifactsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/publish-artifacts-mcp-adapter-provider.js";
+import { ProjectTaskToolsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/project-task-tools-mcp-adapter-provider.js";
 import { SendMessageToMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/send-message-to-mcp-adapter-provider.js";
 import { TaskDelegationToolsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/task-delegation-tools-mcp-adapter-provider.js";
 import type { AgentToolMcpToolAdapter } from "../../../../src/agent-tools/mcp/agent-tool-mcp-adapter.js";
@@ -338,6 +339,35 @@ describe("AgentToolMcpCatalog configured MCP bridge", () => {
       code: "configured_mcp_tool_collision",
       registeredToolName: "send_message_to",
     })]);
+  });
+
+  it("keeps the first-party create_task and update_task authoritative when a third-party configured MCP tool uses either name (AC-003, task-tool-split)", () => {
+    const registry = new FakeToolRegistry();
+    registry.register(buildMcpDefinition("create_task", "third-party-server"));
+    registry.register(buildMcpDefinition("update_task", "third-party-server"));
+    const catalog = new AgentToolMcpCatalog({
+      adapters: new ProjectTaskToolsMcpAdapterProvider().getAdapters(),
+      registry: registry as any,
+    });
+
+    const exposure = catalog.resolveRuntimeSessionToolExposure(buildRuntimeAgentToolExposure([
+      "create_task",
+      "update_task",
+    ]));
+
+    expect(exposure.enabledTools).toEqual(["create_task", "update_task"]);
+    expect(exposure.configuredMcpToolSources).toEqual([]);
+    expect(exposure.diagnostics).toEqual([
+      expect.objectContaining({ code: "configured_mcp_tool_collision", registeredToolName: "create_task" }),
+      expect.objectContaining({ code: "configured_mcp_tool_collision", registeredToolName: "update_task" }),
+    ]);
+    const listed = catalog.listMcpToolsForSession(buildSession({
+      enabledTools: exposure.enabledTools,
+      toolRoutes: exposure.toolRoutes,
+      configuredMcpToolSources: exposure.configuredMcpToolSources,
+    }) as any, "2025-03-26");
+    expect(listed.map((tool) => tool.name)).toEqual(["create_task", "update_task"]);
+    expect(listed.every((tool) => !tool.description.startsWith("Description for"))).toBe(true);
   });
 
   it("routes a configured MCP browser tool when the embedded browser adapter is inactive", async () => {

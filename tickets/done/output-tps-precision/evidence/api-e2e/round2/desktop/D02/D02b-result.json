@@ -1,0 +1,66 @@
+{
+  "journey": "D02b team selection",
+  "newest": {
+    "tps_coordinator_e58e3cc7404d46ae8acc0ae05c8555dd": {
+      "method": "generation",
+      "output_tokens": 656,
+      "duration_ms": 3976
+    },
+    "tps_worker_1e763a99071e49faa83a726f6f0bc991": {
+      "method": "generation",
+      "output_tokens": 483,
+      "duration_ms": 3191
+    },
+    "tps_worker_ce0bbc9502064ce9978b6ea3e241bb5d": {
+      "method": "generation",
+      "output_tokens": 518,
+      "duration_ms": 3338
+    }
+  },
+  "checks": [
+    {
+      "target": "coordinator (Team member)",
+      "runId": "tps_coordinator_e58e3cc7404d46ae8acc0ae05c8555dd",
+      "reading": {
+        "method": "generation",
+        "output_tokens": 656,
+        "duration_ms": 3976
+      },
+      "shown": {
+        "value": "165.0 tokens/s",
+        "methodHelp": "Output tokens of the latest model call ÷ time from its first streamed output to its end (656 tokens in 3.98 s). Waiting for the first token and tool time are excluded.",
+        "header": ""
+      }
+    },
+    {
+      "target": "worker (Team member)",
+      "runId": "tps_worker_1e763a99071e49faa83a726f6f0bc991",
+      "reading": {
+        "method": "generation",
+        "output_tokens": 483,
+        "duration_ms": 3191
+      },
+      "shown": {
+        "value": "151.4 tokens/s",
+        "methodHelp": "Output tokens of the latest model call ÷ time from its first streamed output to its end (483 tokens in 3.19 s). Waiting for the first token and tool time are excluded.",
+        "header": ""
+      }
+    },
+    {
+      "target": "worker (delegated copy)",
+      "runId": "tps_worker_ce0bbc9502064ce9978b6ea3e241bb5d",
+      "reading": {
+        "method": "generation",
+        "output_tokens": 518,
+        "duration_ms": 3338
+      },
+      "shown": {
+        "value": "155.2 tokens/s",
+        "methodHelp": "Output tokens of the latest model call ÷ time from its first streamed output to its end (518 tokens in 3.34 s). Waiting for the first token and tool time are excluded.",
+        "header": ""
+      }
+    }
+  ],
+  "errors": [],
+  "status": "pass"
+}

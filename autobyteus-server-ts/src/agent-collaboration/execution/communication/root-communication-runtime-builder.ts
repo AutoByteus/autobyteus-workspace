@@ -3,6 +3,7 @@ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-u
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import { rootExecutionIdentityKey } from "../domain/root-execution-identity.js";
 import type { RootCommunicationDeliveryInput } from "./root-communication-adapter.js";
+import { receivedMessageHeader } from "./received-message-header.js";
 import type { CollaborationCommunicationMessageV1 } from "./collaboration-communication-message-v1.js";
 
 const references = (values: readonly string[] | null | undefined): readonly string[] => Object.freeze([
@@ -17,7 +18,8 @@ export const buildRootCommunicationInputMessage = (input: {
 }): AgentInputUserMessage => {
   const files = references(input.message.referenceFiles);
   const fileBlock = files.length ? `\n\nReference files:\n${files.map((file) => `- ${file}`).join("\n")}` : "";
-  const content = `You received a message from sender name: ${input.delivery.senderDisplayName}, sender address: ${input.delivery.senderIdentity.memberAddress}, sender id: ${input.delivery.senderIdentity.agentRunId}\nmessage:\n${input.message.content}${fileBlock}`;
+  const header = receivedMessageHeader({ runId: input.delivery.senderIdentity.agentRunId, address: input.delivery.senderAddress });
+  const content = `${header}\nmessage:\n${input.message.content}${fileBlock}`;
   const rootKey = rootExecutionIdentityKey(input.delivery.senderIdentity.root);
   const messageId = `memberinput_${hash([rootKey, input.delivery.receiverIdentity.agentRunId, input.message.messageId, content])}`;
   return new AgentInputUserMessage(content, SenderType.AGENT, null, {

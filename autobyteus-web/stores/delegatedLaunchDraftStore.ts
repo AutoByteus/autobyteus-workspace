@@ -23,7 +23,7 @@ const rootKey = (root: DelegatedRoot): string => `${root.rootKind}:${root.rootRu
 const stopKey = (root: DelegatedRoot, reference: DelegatedReference): string => `${rootKey(root)}|${delegatedTargetKey(reference)}`
 
 /**
- * DS-001 / DS-002 (SR-007): the user's model choices for a run's delegated copies and collaborators,
+ * DS-001 / DS-002 (SR-007): the user's model choices for a run's delegated copies,
  * edited in Settings next to the run's own settings and saved through the same Save bar, and the
  * per-copy Stop shared by Settings and the sidebar rows. A choice is recorded per agent
  * (`agent:<run ID>`) or per Team (`team:<run ID>`); it is edited only while that copy is stopped.
@@ -145,7 +145,7 @@ export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', 
     isStopping(root: DelegatedRoot, reference: DelegatedReference): boolean {
       return Boolean(this.stopping[stopKey(root, reference)])
     },
-    /** DS-002: stops one copy or collaborator (and the copies it started); it stays restorable. */
+    /** DS-002: stops one copy (and the copies it started); it stays restorable. */
     async stop(root: DelegatedRoot, reference: DelegatedReference): Promise<boolean> {
       const key = stopKey(root, reference)
       if (this.stopping[key]) return false

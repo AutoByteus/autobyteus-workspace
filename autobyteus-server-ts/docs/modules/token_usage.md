@@ -709,8 +709,8 @@ records:
 
 ### Standalone Run Roll-Up
 
-A standalone run's usage includes its collaborators, the members of its
-collaborator Teams and its task copies (recursively), as a Team run's usage
+A standalone run's usage includes its delegated copies and the members of its
+Team copies (recursively), as a Team run's usage
 includes its members (REQ-006). `StandaloneRunTokenUsageSummaryService`
 (`token-usage/services/`) reads the run's collaboration tree (the live root's
 tree, else the stored package; see
@@ -766,13 +766,24 @@ stays clamped). A standalone run's panel shows its roll-up
 summary: each new host usage report refetches the roll-up. Usage reported only by
 children appears on the next host report or when the panel is opened again.
 
-The separate frontend **Output TPS** card derives a session-local estimate from
-two compatible live model-call reports: the later canonical output delta divided
-by their server observation interval. It is exact-AgentRun-only, not the
-standalone roll-up above. No accounting field or persisted timing history is
-added; fetched summaries cannot create a reading. Context-only updates and
-Claude turn-end reconciliation remain non-call observations. See
-[Output TPS](../../../autobyteus-web/docs/token_meter.md) for the method and limits.
+Each model call's TPS rides on its own canonical usage event as
+`output_throughput { method: "generation" | "end_to_end", output_tokens, duration_ms }`
+(integer milliseconds), or null. The runtime integration times the call on the
+server clock and chooses the method for its own stream; `createTokenUsageUpdatedPayload`
+passes the value through `acceptModelCallThroughput`
+(`agent-execution/domain/model-call-throughput.ts`), the only shape and
+minimum-sample check (at least 20 output tokens and 250 ms), and sets it to null
+for non-model-call events. This happens before accounting: delta, cost, fold and
+persistence carry the field untouched and never read it, the run record stores
+none of it, and a persistence failure still delivers it. For Codex, the call ends at its
+`rawResponse/completed` (its `usage.outputTokens` is the call's output). The
+reading is attached to the next model-call usage update of the turn only when
+that update's `last.outputTokens` matches, because a tool-ending call's usage
+update arrives only after the tool has run; usage arrival is never a call end. The strict presentation and Team DTOs require the
+nullable field, and the collaboration and Team projectors map it. The frontend
+**TPS** card shows the newest value per exact AgentRun; nothing is kept on the
+server or reconstructed after reload. See
+[TPS](../../../autobyteus-web/docs/token_meter.md) for the per-runtime methods and limits.
 
 Settings > Token Statistics has two sibling views:
 

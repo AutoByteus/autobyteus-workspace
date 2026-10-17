@@ -1,0 +1,10 @@
+{
+  "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky",
+  "uid": 501,
+  "gid": 20,
+  "ownedPaths": [
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky/home",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky/tmp"
+  ]
+}

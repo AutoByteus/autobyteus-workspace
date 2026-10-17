@@ -1,0 +1,258 @@
+{
+  "inputHead": "ec3bf6b270ef8d038f309b0fad1f599566d1b233",
+  "sourceCommit": "d318bd9db935affdf16d141ef4e88a6c0e4939b5",
+  "implementationBase": "50d9c9d0c883e1ad8d3a1808b9e980a7df4f132b",
+  "incomingReferences": 739,
+  "unchangedPriorPackagePaths": 1350,
+  "protectedAuthorities": {
+    "requirements-doc.md": "62ea50f35b12843a61b287602b843b5050a88b4261de2999d70381bb6755470d",
+    "approval-record-sr018.md": "64399a81bda50aadd8f883930fa9c9fef1c6a3dd46c87fe74e2ed5b38223e249",
+    "design-spec.md": "4eda01117e100ae1be419c03005ad35c65dc1015f5f235f8cf23608cb26c596f",
+    "design-review-report.md": "441e7d203c2261f85ab2cb2b22b60eb7aed8500ec2d23154697dd73942bc219b",
+    "investigation-notes.md": "d916b8044e245e298c7074ceab3b6fc6c2ef6050809e557aff3f9889d62bf6d1",
+    "solution-revision-record.md": "792a23afce12c9084b60047b33a44187c4b7c3961cabd7ceba43fb82d7f3a657",
+    "architecture-review-revision-record.md": "2684a04c0d85677863e6451ecf6398c6949df1fc46383875b314eb7a915e5836",
+    "implementation-handoff.md": "ebe66eca2726d4c4631d2c2a1a5af2ea89a9d3b417d68482813a65a6ce0ddc18",
+    "implementation-revision-record.md": "0ca9bbba533c3e70cd80bd9620cdb038dea6fd33d2c732a4e74cd2588e10bf1a",
+    "api-e2e-execution-coverage-report.md": "a022f6811583ce06281ea12851fee7275d9460f5a9b0e6c11a16418f00d8b207",
+    "api-e2e-revision-record.md": "3bd21e6d40e69cb49230364ca0c41f7b2987eb209e9f45c6d92fdadb704b7bca",
+    "code-review-report.md": "a724352cc29d78c0ddcb70dbcb53052577c9fe9ccccb14fe58b4e0cb3b09966e",
+    "code-review-revision-record.md": "2d23bdd984a776898049f16d1c7467c4cd3ee80ec844af4be7409cdc12707e48"
+  },
+  "delta": [
+    {
+      "path": "autobyteus-nfs/README.md",
+      "sha256": "fefddf6c609ef06c67216a21f85fb6d10ba828186b5ac508ad5a857c8832b0e4",
+      "beforeNonempty": 120,
+      "nonempty": 135,
+      "test": false,
+      "baseBranchNonempty": 0,
+      "added": 18,
+      "removed": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/cli/run.go",
+      "sha256": "f1a058bd22be9ab515550fba98041c46381524368d0631c569b0f2f9bba7c127",
+      "beforeNonempty": 190,
+      "nonempty": 193,
+      "test": false,
+      "baseBranchNonempty": 0,
+      "added": 5,
+      "removed": 2
+    },
+    {
+      "path": "autobyteus-nfs/internal/docker/attachment.go",
+      "sha256": "86bdd2aa13df1389f8239b7dd800f2d0fd81fd554bdaab1bb1f2080cc15979a8",
+      "beforeNonempty": 106,
+      "nonempty": 87,
+      "test": false,
+      "baseBranchNonempty": 0,
+      "added": 0,
+      "removed": 19
+    },
+    {
+      "path": "autobyteus-nfs/internal/docker/snapshot.go",
+      "sha256": "5809e7bd8c65377188d95f4885371cf858ddd433fa377735234134aea56397a7",
+      "beforeNonempty": 213,
+      "nonempty": 214,
+      "test": false,
+      "baseBranchNonempty": 0,
+      "added": 3,
+      "removed": 2
+    },
+    {
+      "path": "autobyteus-nfs/internal/docker/start_observation.go",
+      "sha256": "bc6b8fa56edd54802299061b8846d186928c7891ab49604c9ffa49078a57b11a",
+      "beforeNonempty": 0,
+      "nonempty": 117,
+      "test": false,
+      "baseBranchNonempty": 0,
+      "added": 127,
+      "removed": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/docker/start_recovery.go",
+      "sha256": "a3a7e88f117d070fa55bd5953de7b2b05d942ff7c41c9224c61215cc9fda92ff",
+      "beforeNonempty": 0,
+      "nonempty": 92,
+      "test": false,
+      "baseBranchNonempty": 0,
+      "added": 96,
+      "removed": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/docker/start_recovery_test.go",
+      "sha256": "9134bf4caea8cb3eb09922a34c7f8f708ef5f3230442206c65fadeac5caf8846",
+      "beforeNonempty": 0,
+      "nonempty": 407,
+      "test": true,
+      "baseBranchNonempty": 0,
+      "added": 414,
+      "removed": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/docker/volume.go",
+      "sha256": "73a22199213d8c921e6cdb2b50932518ffda7aa870b3efac29ab433386828431",
+      "beforeNonempty": 0,
+      "nonempty": 42,
+      "test": false,
+      "baseBranchNonempty": 0,
+      "added": 47,
+      "removed": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/lifecycle.go",
+      "sha256": "62ea8163804ac44d48d03baf486d606653c4a9cbffd0fa66f475845cbb25130f",
+      "beforeNonempty": 143,
+      "nonempty": 152,
+      "test": false,
+      "baseBranchNonempty": 0,
+      "added": 12,
+      "removed": 3
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/reconnect_nodes.go",
+      "sha256": "88c856514a448317d6ff81ef32b1011f6b754ab878cc1bbaa79625d42e4acb32",
+      "beforeNonempty": 0,
+      "nonempty": 65,
+      "test": false,
+      "baseBranchNonempty": 0,
+      "added": 68,
+      "removed": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/reconnect_nodes_test.go",
+      "sha256": "8595bf5427c539c43baddb1de3d995205d8ae57f533779d258ede70bd793ea3f",
+      "beforeNonempty": 0,
+      "nonempty": 130,
+      "test": true,
+      "baseBranchNonempty": 0,
+      "added": 135,
+      "removed": 0
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/setup_test.go",
+      "sha256": "9033878d5d5f9b9e4f52635c2fa0fca11bfb1fce16ff76c47deb615ebd6c4ba1",
+      "beforeNonempty": 43,
+      "nonempty": 43,
+      "test": true,
+      "baseBranchNonempty": 0,
+      "added": 1,
+      "removed": 1
+    },
+    {
+      "path": "autobyteus-nfs/internal/setup/status.go",
+      "sha256": "b1246c8dc6985296d05d92826c833f784ab6acb465292de2b103f6dcc7ed954e",
+      "beforeNonempty": 91,
+      "nonempty": 70,
+      "test": false,
+      "baseBranchNonempty": 0,
+      "added": 17,
+      "removed": 38
+    },
+    {
+      "path": "scripts/public/docker/autobyteus-docker.d/bash/commands.sh",
+      "sha256": "6d080f9c82735d6f126b3b9e57337e9c15acec3de82524015b8c44427aea31f7",
+      "beforeNonempty": 266,
+      "nonempty": 267,
+      "test": false,
+      "baseBranchNonempty": 266,
+      "added": 2,
+      "removed": 1
+    },
+    {
+      "path": "scripts/tests/test_nfs_packaging_and_launcher.py",
+      "sha256": "010846977f6941490b0b824c45da9a93347451d6fbe91ead22af47f6d2c02a1b",
+      "beforeNonempty": 59,
+      "nonempty": 78,
+      "test": true,
+      "baseBranchNonempty": 0,
+      "added": 20,
+      "removed": 0
+    }
+  ],
+  "retainedFiles": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/README.txt",
+      "sha256": "9b5429541f972b6d432b903e48b5a525d2147a0d879e8caa4f969f8b2ccc6685",
+      "size": 366
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/autobyteus-nfs-linux-arm64",
+      "sha256": "20022a9e553ce3d898531e66e48a843d9fd10fb2fd044474f1a471ed070b219e",
+      "size": 11033781
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/COPYRIGHT",
+      "sha256": "f005d5cee9e5c771ac65f2cd2401a7259fc0cf71961275044adfd804d6b66bf7",
+      "size": 30807
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/SHA256SUMS",
+      "sha256": "59100b94a86df4f03d3720daf4c65466b4f10ad447ab41d91163023001a63735",
+      "size": 453
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/autobyteus-nfs-ganesha-source-4.3-8ubuntu1+autobyteus1-arm64.tar.gz",
+      "sha256": "eed35ab4b732ac05d2afc3531e70cdc27031fb414fdb52a0daf093f33daaec0a",
+      "size": 1930105
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/engine-build-arm64.txt",
+      "sha256": "56fad63c43f85091d84df347564dfd962a9afaafe519539849860b1807695761",
+      "size": 57836
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/engine-manifest.json",
+      "sha256": "4488fccf14574d27931429d4c2529c34620de575bacce63383254808f97c39a5",
+      "size": 2134
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/nfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb",
+      "sha256": "3bf06769646d93ea85f0277fe0726eb42d0d29a70c0108505706954e5e8d2ac6",
+      "size": 48626
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/nfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb",
+      "sha256": "0b5c78911cfc1b299e9894e1f841e74176fbb2cb45b158008e4530713549ebc8",
+      "size": 613976
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/engine-manifest.json",
+      "sha256": "4488fccf14574d27931429d4c2529c34620de575bacce63383254808f97c39a5",
+      "size": 2134
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/release.json",
+      "sha256": "7d647fa2d41f6916221af53a79d3a0bfc9bc296383d747fe837744c6f3ba7e9f",
+      "size": 2493
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir007-local-candidate/autobyteus-nfs-linux-arm64",
+      "sha256": "0036ccef0bbb2a2510064f2e882b692687a2288eb25563d89f9c4ac9150c860c",
+      "size": 11047219
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir007-local-candidate/autobyteus-nfs-darwin-arm64",
+      "sha256": "64085e451774b99666ae272c78111d3f3c3972a619aa4cf7e4da657abb79df04",
+      "size": 10580770
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir007-local-candidate/release.json",
+      "sha256": "03c13f53da662b436827df34e96b38c24d30aa9457cc0fa9e6ecb24df11d5386",
+      "size": 2493
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir007-local-candidate/README.txt",
+      "sha256": "3ad926e0c21fa6dc0140b6c2d69776592f8a4492186d7cfa94486544171b36cc",
+      "size": 420
+    }
+  ],
+  "sourceSizes": {
+    "maxChangedProductionNonempty": 267,
+    "noOver500": true,
+    "noOver220Delta": true,
+    "testsExcluded": true
+  },
+  "status": "?? applications/brief-studio/dist/\n?? autobyteus-application-backend-sdk/dist/\n?? autobyteus-application-devkit/dist/\n?? autobyteus-application-frontend-sdk/dist/\n?? autobyteus-application-sdk-contracts/dist/\n?? tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-009/"
+}

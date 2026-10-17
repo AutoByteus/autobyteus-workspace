@@ -1,0 +1,436 @@
+{
+  "vm": "ab-nfs-api006-mac-a0000f39",
+  "source": "/Users/admin/ab-nfs-api006-mac-a0000f39-source-new",
+  "binary": {
+    "guestPath": "/Users/admin/ab-nfs-api006-mac-a0000f39-binary",
+    "sha256": "c79e5ac05367d6657bc0be74f2e8f5b9eb504af8ade265e1afdf0334218d0cf1"
+  },
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-mac-a0000f39",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "/Users/admin/ab-nfs-api006-mac-a0000f39-binary detach --yes --drained --json"
+      ],
+      "rc": 0,
+      "seconds": 0.595,
+      "stdout": "",
+      "stderr": "Owned export/settings removed; Apple nfsd remains OS-owned and was not disabled\nDetached; source, marker, named volumes and private receipts preserved.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-mac-a0000f39",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "set -e; sudo -n test ! -e /Library/Application\\ Support/AutoByteusNFS/attachment.json; test ! -e /Library/LaunchDaemons/com.autobyteus.nfs.plist; ! /sbin/mount | grep ' on /Volumes/autobyteus-shared '; stat -f \"%d:%i:%u:%g:%Lp\" /Users/admin/ab-nfs-api006-mac-a0000f39-source; cat /Users/admin/ab-nfs-api006-mac-a0000f39-source/.autobyteus-nfs/storage.json; cat /Users/admin/ab-nfs-api006-mac-a0000f39-source/project/preexisting.txt"
+      ],
+      "rc": 0,
+      "seconds": 0.114,
+      "stdout": "16777229:507558:501:20:755\n{\"storageId\":\"4ff085b0-3304-4023-a5c2-9834e38aec72\"}\nORIGINAL_API006_MAC",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-mac-a0000f39",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "/Users/admin/ab-nfs-api006-mac-a0000f39-binary create --source /Users/admin --backend apple --endpoint 192.168.64.2 --allow 192.168.64.2 --nodes none --yes --json"
+      ],
+      "rc": 1,
+      "seconds": 0.124,
+      "stdout": "",
+      "stderr": "Detected private addresses: 192.168.64.2\nNo reachable local Docker daemon; no Docker nodes will be attached.\nAutoByteus NFS incomplete: source cannot be root/home/ancestor of home or overlap the mount target\nAutoByteus NFS incomplete: exit status 1\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-mac-a0000f39",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n test ! -e /Library/Application\\ Support/AutoByteusNFS/attachment.json; test ! -e /Library/LaunchDaemons/com.autobyteus.nfs.plist"
+      ],
+      "rc": 0,
+      "seconds": 0.103,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-mac-a0000f39",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "/Users/admin/ab-nfs-api006-mac-a0000f39-binary create --source /Users/admin/ab-nfs-api006-mac-a0000f39-source/.codex --backend apple --endpoint 192.168.64.2 --allow 192.168.64.2 --nodes none --yes --json"
+      ],
+      "rc": 1,
+      "seconds": 0.134,
+      "stdout": "",
+      "stderr": "Detected private addresses: 192.168.64.2\nNo reachable local Docker daemon; no Docker nodes will be attached.\nAutoByteus NFS incomplete: private application or authentication tree cannot be exported\nAutoByteus NFS incomplete: exit status 1\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-mac-a0000f39",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n test ! -e /Library/Application\\ Support/AutoByteusNFS/attachment.json; test ! -e /Library/LaunchDaemons/com.autobyteus.nfs.plist"
+      ],
+      "rc": 0,
+      "seconds": 0.115,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-mac-a0000f39",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "ln -s /Users/admin/ab-nfs-api006-mac-a0000f39-source /Users/admin/ab-nfs-api006-mac-a0000f39-source-alias"
+      ],
+      "rc": 0,
+      "seconds": 0.068,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-mac-a0000f39",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "/Users/admin/ab-nfs-api006-mac-a0000f39-binary create --source /Users/admin/ab-nfs-api006-mac-a0000f39-source-alias/project --backend apple --endpoint 192.168.64.2 --allow 192.168.64.2 --nodes none --yes --json"
+      ],
+      "rc": 1,
+      "seconds": 0.121,
+      "stdout": "",
+      "stderr": "Detected private addresses: 192.168.64.2\nNo reachable local Docker daemon; no Docker nodes will be attached.\nAutoByteus NFS incomplete: choose canonical source path without symlink ancestors\nAutoByteus NFS incomplete: exit status 1\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-mac-a0000f39",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n test ! -e /Library/Application\\ Support/AutoByteusNFS/attachment.json; test ! -e /Library/LaunchDaemons/com.autobyteus.nfs.plist"
+      ],
+      "rc": 0,
+      "seconds": 0.088,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-mac-a0000f39",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "test ! -e /Users/admin/ab-nfs-api006-mac-a0000f39-source-new"
+      ],
+      "rc": 0,
+      "seconds": 0.071,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-mac-a0000f39",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "umask 077; exec /Users/admin/ab-nfs-api006-mac-a0000f39-binary create --source /Users/admin/ab-nfs-api006-mac-a0000f39-source-new --backend apple --endpoint 192.168.64.2 --allow 192.168.64.2 --nodes none --yes --json"
+      ],
+      "rc": 1,
+      "seconds": 0.208,
+      "stdout": "",
+      "stderr": "Detected private addresses: 192.168.64.2\nNo reachable local Docker daemon; no Docker nodes will be attached.\nAutoByteus NFS incomplete: required TCP 2049 is occupied; no existing service will be stopped\nAutoByteus NFS incomplete: exit status 1\n"
+    }
+  ],
+  "cases": [
+    {
+      "name": "public drained original detach",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api006-mac-a0000f39",
+          "/usr/bin/sudo",
+          "-n",
+          "-u",
+          "admin",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/Users/admin",
+          "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "/Users/admin/ab-nfs-api006-mac-a0000f39-binary detach --yes --drained --json"
+        ],
+        "rc": 0,
+        "seconds": 0.595,
+        "stdout": "",
+        "stderr": "Owned export/settings removed; Apple nfsd remains OS-owned and was not disabled\nDetached; source, marker, named volumes and private receipts preserved.\n"
+      },
+      "status": "Pass",
+      "seconds": 0.596
+    },
+    {
+      "name": "original detached source bytes marker modes preserved",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api006-mac-a0000f39",
+          "/usr/bin/sudo",
+          "-n",
+          "-u",
+          "admin",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/Users/admin",
+          "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "set -e; sudo -n test ! -e /Library/Application\\ Support/AutoByteusNFS/attachment.json; test ! -e /Library/LaunchDaemons/com.autobyteus.nfs.plist; ! /sbin/mount | grep ' on /Volumes/autobyteus-shared '; stat -f \"%d:%i:%u:%g:%Lp\" /Users/admin/ab-nfs-api006-mac-a0000f39-source; cat /Users/admin/ab-nfs-api006-mac-a0000f39-source/.autobyteus-nfs/storage.json; cat /Users/admin/ab-nfs-api006-mac-a0000f39-source/project/preexisting.txt"
+        ],
+        "rc": 0,
+        "seconds": 0.114,
+        "stdout": "16777229:507558:501:20:755\n{\"storageId\":\"4ff085b0-3304-4023-a5c2-9834e38aec72\"}\nORIGINAL_API006_MAC",
+        "stderr": ""
+      },
+      "status": "Pass",
+      "seconds": 0.115
+    },
+    {
+      "name": "private-home source refused before setup",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api006-mac-a0000f39",
+          "/usr/bin/sudo",
+          "-n",
+          "-u",
+          "admin",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/Users/admin",
+          "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "/Users/admin/ab-nfs-api006-mac-a0000f39-binary create --source /Users/admin --backend apple --endpoint 192.168.64.2 --allow 192.168.64.2 --nodes none --yes --json"
+        ],
+        "rc": 1,
+        "seconds": 0.124,
+        "stdout": "",
+        "stderr": "Detected private addresses: 192.168.64.2\nNo reachable local Docker daemon; no Docker nodes will be attached.\nAutoByteus NFS incomplete: source cannot be root/home/ancestor of home or overlap the mount target\nAutoByteus NFS incomplete: exit status 1\n"
+      },
+      "status": "Pass",
+      "seconds": 0.229
+    },
+    {
+      "name": "private auth-named tree refused before setup",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api006-mac-a0000f39",
+          "/usr/bin/sudo",
+          "-n",
+          "-u",
+          "admin",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/Users/admin",
+          "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "/Users/admin/ab-nfs-api006-mac-a0000f39-binary create --source /Users/admin/ab-nfs-api006-mac-a0000f39-source/.codex --backend apple --endpoint 192.168.64.2 --allow 192.168.64.2 --nodes none --yes --json"
+        ],
+        "rc": 1,
+        "seconds": 0.134,
+        "stdout": "",
+        "stderr": "Detected private addresses: 192.168.64.2\nNo reachable local Docker daemon; no Docker nodes will be attached.\nAutoByteus NFS incomplete: private application or authentication tree cannot be exported\nAutoByteus NFS incomplete: exit status 1\n"
+      },
+      "status": "Pass",
+      "seconds": 0.251
+    },
+    {
+      "name": "symlink ancestor refused before setup",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api006-mac-a0000f39",
+          "/usr/bin/sudo",
+          "-n",
+          "-u",
+          "admin",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/Users/admin",
+          "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "/Users/admin/ab-nfs-api006-mac-a0000f39-binary create --source /Users/admin/ab-nfs-api006-mac-a0000f39-source-alias/project --backend apple --endpoint 192.168.64.2 --allow 192.168.64.2 --nodes none --yes --json"
+        ],
+        "rc": 1,
+        "seconds": 0.121,
+        "stdout": "",
+        "stderr": "Detected private addresses: 192.168.64.2\nNo reachable local Docker daemon; no Docker nodes will be attached.\nAutoByteus NFS incomplete: choose canonical source path without symlink ancestors\nAutoByteus NFS incomplete: exit status 1\n"
+      },
+      "status": "Pass",
+      "seconds": 0.211
+    },
+    {
+      "name": "public absent-source create under077 actual privileged child and bound save",
+      "status": "Fail",
+      "error": "AssertionError({'argv': ['/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart', 'exec', 'ab-nfs-api006-mac-a0000f39', '/usr/bin/sudo', '-n', '-u', 'admin', '/usr/bin/env', '-i', 'HOME=/Users/admin', 'PATH=/usr/bin:/bin:/usr/sbin:/sbin', 'LANG=C', '/bin/sh', '-c', 'umask 077; exec /Users/admin/ab-nfs-api006-mac-a0000f39-binary create --source /Users/admin/ab-nfs-api006-mac-a0000f39-source-new --backend apple --endpoint 192.168.64.2 --allow 192.168.64.2 --nodes none --yes --json'], 'rc': 1, 'seconds': 0.208, 'stdout': '', 'stderr': 'Detected private addresses: 192.168.64.2\\nNo reachable local Docker daemon; no Docker nodes will be attached.\\nAutoByteus NFS incomplete: required TCP 2049 is occupied; no existing service will be stopped\\nAutoByteus NFS incomplete: exit status 1\\n'})",
+      "seconds": 0.208
+    }
+  ],
+  "result": "Fail",
+  "connection": {
+    "storageId": "4ff085b0-3304-4023-a5c2-9834e38aec72",
+    "endpoint": "192.168.64.2",
+    "export": "/Users/admin/ab-nfs-api006-mac-a0000f39-source",
+    "protocol": "3",
+    "mountRoot": "/Volumes/autobyteus-shared"
+  },
+  "baseline": {
+    "label": "initial",
+    "bootID": "AF4F68C7-F354-42B5-90E9-1CA4B7FFD6A2",
+    "bootTime": "{ sec = 1792065984, usec = 302954 } Thu Oct 15 12:06:24 2026",
+    "stat": "16777228:507558:501:20:755",
+    "volume": {
+      "DeviceNode": "/dev/disk2s5",
+      "MountPoint": "/System/Volumes/Data",
+      "FilesystemType": "apfs",
+      "VolumeUUID": "A19FE379-BE62-4297-9A39-3934CC88214B"
+    },
+    "bindingBytes": "{\n  \"installationId\": \"5c211e63-7898-4c84-98b1-d58d2be466cf\",\n  \"storageId\": \"4ff085b0-3304-4023-a5c2-9834e38aec72\",\n  \"source\": \"/Users/admin/ab-nfs-api006-mac-a0000f39-source\",\n  \"identity\": {\n    \"volumeUuid\": \"a19fe379-be62-4297-9a39-3934cc88214b\",\n    \"inode\": 507558\n  },\n  \"backend\": \"apple\",\n  \"dataUid\": 501,\n  \"dataGid\": 20,\n  \"allowlist\": [\n    \"192.168.64.2\"\n  ]\n}\n",
+    "bindingSHA256": "7191d83482d19fc1ccc9c8c472454c445bd744a589a0d5e7b765754270550693",
+    "markerBytes": "{\"storageId\":\"4ff085b0-3304-4023-a5c2-9834e38aec72\"}\n",
+    "hashes": "cee91b4a65a25850de42b87aa5b58b813994b2c941185eefee2bd1bb8cac9353  /Users/admin/ab-nfs-api006-mac-a0000f39-source/project/preexisting.txt\n85a76f9bb2c521d6c68253fc13b72151861873ae53a41ba27c57c8f899468d0e  /Users/admin/ab-nfs-api006-mac-a0000f39-source/.autobyteus-nfs/storage.json\n"
+  },
+  "fatal": "AssertionError({'argv': ['/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart', 'exec', 'ab-nfs-api006-mac-a0000f39', '/usr/bin/sudo', '-n', '-u', 'admin', '/usr/bin/env', '-i', 'HOME=/Users/admin', 'PATH=/usr/bin:/bin:/usr/sbin:/sbin', 'LANG=C', '/bin/sh', '-c', 'umask 077; exec /Users/admin/ab-nfs-api006-mac-a0000f39-binary create --source /Users/admin/ab-nfs-api006-mac-a0000f39-source-new --backend apple --endpoint 192.168.64.2 --allow 192.168.64.2 --nodes none --yes --json'], 'rc': 1, 'seconds': 0.208, 'stdout': '', 'stderr': 'Detected private addresses: 192.168.64.2\\nNo reachable local Docker daemon; no Docker nodes will be attached.\\nAutoByteus NFS incomplete: required TCP 2049 is occupied; no existing service will be stopped\\nAutoByteus NFS incomplete: exit status 1\\n'})"
+}

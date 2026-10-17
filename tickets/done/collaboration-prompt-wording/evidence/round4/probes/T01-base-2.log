@@ -1,0 +1,10 @@
+
+> autobyteus@1.5.4 test:e2e:cross-scope-agent-mentions /Users/normy/autobyteus_org/autobyteus-worktrees/cpw-base-check/autobyteus-web
+> node tests/e2e/cross-scope-agent-mentions-live-probe.mjs --runtime claude_agent_sdk --model haiku --cases T01 --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/tickets/in-progress/collaboration-prompt-wording/evidence/round4/probes/T01-base-2
+
+T01 Fail SCN-001 Team run: VIS-001 menu; @Product Team → no Team collaborator (AC-001), stored note (AC-002), the focused researcher delegates a Team copy with an ad-hoc Task (AC-003); "From Product Prototyper:"; the next send with @Note Taker (CR-003) delegates an Agent copy — locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('[data-test="chat-model-list-claude_agent_sdk"]').locator('[data-test="chat-model-option-haiku"]')
+
+Summary: 0 Pass, 1 Fail, 0 Not Applicable
+ ELIFECYCLE  Command failed with exit code 1.

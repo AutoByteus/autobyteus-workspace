@@ -12,11 +12,11 @@ import {
 } from "../domain/agent-team-address.js";
 import type { AdmissibleCollaboratorDefinition, CollaboratorDefinitionCatalog } from "./collaborator-candidate-policy.js";
 
-type PlanIdentity = Readonly<{ name: string; address: AgentTeamAddress; addedAt: string; addedViaAgentRunId: string }>;
+type PlanIdentity = Readonly<{ name: string; address: AgentTeamAddress }>;
 type TeamLayout = Readonly<{ teamDefinitionId: string; coordinatorAddress: AgentTeamAddress; handoffs: readonly CollaborationHandoff[] }>;
 
 /**
- * A collaborator (or catalog copy) before its launch is resolved: the structural snapshot and
+ * A catalog copy before its launch is resolved: the structural snapshot and
  * the definition defaults captured with it (an Agent's own default; a Team's default and each
  * member's agent default). Admission's launch resolver turns it into an entry plan.
  */
@@ -36,7 +36,7 @@ export type CollaboratorEntryPlanMember = Readonly<{
   launchSource?: LaunchConfigurationSource;
 }>;
 
-/** A collaborator before its run IDs are allocated: what admission commits, with resolved launches. */
+/** A catalog copy plan with resolved launches: what a copy's source snapshot is built from. */
 export type CollaboratorEntryPlan =
   | (PlanIdentity & Readonly<{
       kind: "agent";
@@ -51,18 +51,14 @@ export type CollaboratorEntryPlan =
       defaultLaunchSource: LaunchConfigurationSource;
     }>);
 
-export type CollaboratorEntryInput = Readonly<{
-  address: AgentTeamAddress;
-  addedAt: string;
-  addedViaAgentRunId: string;
-}>;
+export type CollaboratorEntryInput = Readonly<{ address: AgentTeamAddress }>;
 
 const captured = (value: DefaultLaunchConfig | null | undefined): DefaultLaunchConfig | null =>
   value ? Object.freeze(structuredClone(value)) : null;
 
 /**
  * Snapshots a definition into a definition plan. A Team plan keeps its layout (mounted at the
- * collaborator address), its rebased Team-local handoffs and the defaults of the Team and of
+ * copy address), its rebased Team-local handoffs and the defaults of the Team and of
  * each member's agent definition, so reopening the run never depends on later definition
  * edits. Resolving the Team layout fails when a member definition is missing.
  */
@@ -77,12 +73,7 @@ export class CollaboratorEntryBuilder {
     definition: AdmissibleCollaboratorDefinition,
     input: CollaboratorEntryInput,
   ): Promise<CollaboratorDefinitionPlan> {
-    const identity = {
-      name: definition.definition.name,
-      address: input.address,
-      addedAt: input.addedAt,
-      addedViaAgentRunId: input.addedViaAgentRunId,
-    };
+    const identity = { name: definition.definition.name, address: input.address };
     if (definition.kind === "agent") {
       return Object.freeze({
         kind: "agent",

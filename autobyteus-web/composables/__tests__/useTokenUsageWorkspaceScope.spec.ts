@@ -5,7 +5,7 @@ import { useTokenUsageWorkspaceScope } from '../useTokenUsageWorkspaceScope';
 import { useTokenUsageMeterStore } from '~/stores/tokenUsageMeterStore';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget';
-import type { TokenUsageThroughputState } from '~/types/tokenUsageMeter';
+import type { TokenUsageTps } from '~/types/tokenUsageMeter';
 import { getApolloClient } from '~/utils/apolloClient';
 
 const holder = reactive<{ target: ActiveAgentWorkspaceTarget | null }>({ target: null });
@@ -19,12 +19,7 @@ const target = (kind: ActiveAgentWorkspaceTarget['kind'], runId: string, status 
     team: { rootRunId: 'team', listMembers: () => [{ agentRunId: runId, context, address: '/member' }] },
   } as unknown as ActiveAgentWorkspaceTarget;
 };
-const ready = (runId: string): TokenUsageThroughputState => ({
-  status: 'ready', tokensPerSecond: 20, outputTokens: 200, elapsedSeconds: 10,
-  observedAt: '2026-10-13T10:00:10.000Z', identity: {
-    runId, turnId: 'turn', runtimeKind: 'codex_app_server', modelIdentifier: 'reported-model', modelValue: null, modelProvider: 'OPENAI',
-  },
-});
+const tpsOf = (model: string): TokenUsageTps => ({ method: 'generation', outputTokens: 200, durationMs: 10_000, model });
 let scope: EffectScope;
 beforeEach(() => {
   setActivePinia(createPinia()); holder.target = null; scope = effectScope();
@@ -32,40 +27,40 @@ beforeEach(() => {
 });
 afterEach(() => { scope.stop(); vi.restoreAllMocks(); });
 
-describe('selected exact-run throughput projection', () => {
+describe('selected exact-run TPS projection', () => {
   it.each(['standalone_agent', 'standalone_team_member', 'agent_org_direct_agent', 'agent_org_team_member',
     'agent_org_task_agent', 'agent_org_task_team_member', 'agent_run_task_agent', 'agent_run_task_team_member'] as const)(
     'projects %s by context.state.runId before totals are available', async (kind) => {
-      const samples = reactive<Record<string, TokenUsageThroughputState>>({ selected: ready('selected'), other: ready('other') });
-      const get = vi.spyOn(useTokenUsageMeterStore(), 'getRunThroughput').mockImplementation((id) => id ? samples[id] ?? null : null);
+      const samples = reactive<Record<string, TokenUsageTps>>({ selected: tpsOf('selected-model'), other: tpsOf('other-model') });
+      const get = vi.spyOn(useTokenUsageMeterStore(), 'getRunTps').mockImplementation((id) => id ? samples[id] ?? null : null);
       holder.target = target(kind, 'selected');
       const view = scope.run(() => useTokenUsageWorkspaceScope())!;
       await nextTick();
       expect(view.primarySummary.value).toBeNull();
-      expect(view.throughput.value).toEqual(ready('selected'));
+      expect(view.tps.value).toEqual(tpsOf('selected-model'));
       expect(get).toHaveBeenLastCalledWith('selected');
       holder.target = target(kind, 'other');
-      expect(view.throughput.value).toEqual(ready('other'));
+      expect(view.tps.value).toEqual(tpsOf('other-model'));
       holder.target = target(kind, 'new');
-      expect(view.throughput.value).toEqual({ status: 'collecting', reason: 'waitingForReports' });
+      expect(view.tps.value).toBeNull();
     },
   );
 
-  it('distinguishes no target, active collecting and inactive history without synthesizing TPS', () => {
+  it('shows no TPS without a target or a received value, whatever the run status', () => {
     const view = scope.run(() => useTokenUsageWorkspaceScope())!;
-    expect(view.throughput.value).toEqual({ status: 'unavailable', reason: 'selectAgent' });
+    expect(view.tps.value).toBeNull();
     holder.target = target('standalone_agent', 'history', AgentStatus.Offline);
-    expect(view.throughput.value).toEqual({ status: 'unavailable', reason: 'noReports' });
-    holder.target.context.state.currentStatus = AgentStatus.Initializing;
-    expect(view.throughput.value).toEqual({ status: 'collecting', reason: 'waitingForReports' });
+    expect(view.tps.value).toBeNull();
+    holder.target.context.state.currentStatus = AgentStatus.Running;
+    expect(view.tps.value).toBeNull();
   });
 
-  it('never relabels the frozen reading after configuration or status changes', () => {
+  it('never relabels the received reading after configuration or status changes', () => {
     holder.target = target('standalone_agent', 'selected');
-    vi.spyOn(useTokenUsageMeterStore(), 'getRunThroughput').mockReturnValue(ready('selected'));
+    vi.spyOn(useTokenUsageMeterStore(), 'getRunTps').mockReturnValue(tpsOf('reported-model'));
     const view = scope.run(() => useTokenUsageWorkspaceScope())!;
     holder.target.context.config.llmModelIdentifier = 'new-config-model';
     holder.target.context.state.currentStatus = AgentStatus.Offline;
-    expect(view.throughput.value).toEqual(ready('selected'));
+    expect(view.tps.value).toEqual(tpsOf('reported-model'));
   });
 });

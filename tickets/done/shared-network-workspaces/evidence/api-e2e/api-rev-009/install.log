@@ -1,0 +1,50 @@
+Scope: 10 of 13 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+.                                        | +447 ++++++++++++++++++++++++++++++++
+Progress: resolved 447, reused 0, downloaded 106, added 95
+Progress: resolved 447, reused 0, downloaded 203, added 203
+Progress: resolved 447, reused 0, downloaded 290, added 270
+Progress: resolved 447, reused 0, downloaded 348, added 310
+Progress: resolved 447, reused 0, downloaded 398, added 353
+Progress: resolved 447, reused 0, downloaded 437, added 418
+Progress: resolved 447, reused 0, downloaded 445, added 441
+Progress: resolved 447, reused 0, downloaded 446, added 445
+Progress: resolved 447, reused 0, downloaded 446, added 446
+Progress: resolved 447, reused 0, downloaded 447, added 446
+Progress: resolved 447, reused 0, downloaded 447, added 447, done
+.../node_modules/protobufjs postinstall$ node scripts/postinstall
+.../node_modules/@prisma/engines postinstall$ node scripts/postinstall.js
+.../node-pty@1.1.0/node_modules/node-pty install$ node scripts/prebuild.js || node-gyp rebuild
+.../esbuild@0.27.3/node_modules/esbuild postinstall$ node install.js
+.../node-pty@1.1.0/node_modules/node-pty install: [32m> Checking prebuilds...[0m
+.../node_modules/protobufjs postinstall: Done
+.../node-pty@1.1.0/node_modules/node-pty install: Done
+.../node-pty@1.1.0/node_modules/node-pty postinstall$ node scripts/post-install.js
+.../node-pty@1.1.0/node_modules/node-pty postinstall: [32m> Cleaning release folder...[0m
+.../node-pty@1.1.0/node_modules/node-pty postinstall: [32m> Moving conpty.dll...[0m
+.../node-pty@1.1.0/node_modules/node-pty postinstall:   SKIPPED (not Windows)
+.../node-pty@1.1.0/node_modules/node-pty postinstall: Done
+.../esbuild@0.27.3/node_modules/esbuild postinstall: Done
+.../node_modules/@prisma/engines postinstall: Done
+.../prisma@5.22.0/node_modules/prisma preinstall$ node scripts/preinstall-entry.js
+.../prisma@5.22.0/node_modules/prisma preinstall: Done
+.../node_modules/@prisma/client postinstall$ node scripts/postinstall.js
+.../node_modules/@prisma/client postinstall: prisma:warn We could not find your Prisma schema in the default locations (see: https://pris.ly/d/prisma-schema-location).
+.../node_modules/@prisma/client postinstall: If you have a Prisma schema file in a custom path, you will need to run
+.../node_modules/@prisma/client postinstall: `prisma generate --schema=./path/to/your/schema.prisma` to generate Prisma Client.
+.../node_modules/@prisma/client postinstall: If you do not have a Prisma schema file yet, you can ignore this message.
+.../node_modules/@prisma/client postinstall: Done
+ WARN  Failed to create bin at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/repo/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/repo/autobyteus-application-devkit/dist/cli.js'
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] repaired: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/repo/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+autobyteus-ts postinstall: Done
+ WARN  Failed to create bin at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/repo/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api009-it7j_h8l/repo/applications/brief-studio/node_modules/@autobyteus/application-devkit/dist/cli.js'
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @google/genai@2.24.0.                               │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 19.7s using pnpm v10.28.2

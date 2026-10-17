@@ -1,6 +1,7 @@
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import type { ResolvedInterAgentMessageDeliveryRequest } from "../domain/inter-agent-message-delivery.js";
+import { receivedMessageHeader } from "../../agent-collaboration/execution/communication/received-message-header.js";
 import { buildTeamCommunicationReferenceId } from "../../services/team-communication/team-communication-identity.js";
 import { inferTeamCommunicationReferenceFileType } from "../../services/team-communication/team-communication-normalizer.js";
 import { buildTeamMemberInputDedupeKey, buildTeamMemberInputMessageId } from "./team-member-input-event-builder.js";
@@ -29,7 +30,7 @@ export const buildRecipientVisibleInterAgentMessageContent = (
   const sender = request.sender.participant;
   const files = references(request.referenceFiles);
   const fileBlock = files.length ? `\n\nReference files:\n${files.map((path) => `- ${path}`).join("\n")}` : "";
-  return `You received a message from sender name: ${sender.displayName}, sender address: ${sender.identity.memberAddress}, sender id: ${sender.identity.agentRunId}\nmessage:\n${request.content}${fileBlock}`;
+  return `${receivedMessageHeader({ runId: sender.identity.agentRunId, address: request.senderAddress })}\nmessage:\n${request.content}${fileBlock}`;
 };
 
 export const buildInterAgentDeliveryInputMessage = (

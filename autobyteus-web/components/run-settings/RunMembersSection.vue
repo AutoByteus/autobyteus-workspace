@@ -52,7 +52,7 @@ const props = withDefaults(defineProps<{
   runtimeLocked?: boolean
   lockedModelsFor?: ((key: string) => readonly ChatModelOption[] | null) | null
   readOnly?: boolean
-  /** The section's `data-test` (a saved run has a second, read-only section for collaborators and copies). */
+  /** The section's `data-test` (a saved run has a second, read-only section for delegated copies). */
   testId?: string
 }>(), { testId: 'run-members', title: '', description: '', locked: () => ({}), runtimeLocked: false, lockedModelsFor: null, readOnly: false })
 

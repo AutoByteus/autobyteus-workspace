@@ -1,0 +1,6 @@
+DLP-003 Pass AC-001/003/004/005/010: Manager chat from the UI; copies and a second Pair copy from its composer; teammate refusal, helper copy and Grok engineer from the copy lead's conversation; Settings rows
+DLP-004 Pass AC-010: Team run (New chat) and Org run (Org launch page) whose manager delegates the Squad and the Pair from the composer: Settings lists the rows
+DLP-005 Pass AC-006/REQ-004: the root model is retired mid-run; delegation that needs the inherited layer fails in the conversation with today's text and adds nothing, an outside message is not found; an own usable default still works
+DLP-006 Pass AC-009/QR-002: runs saved before this change (stripped while the backend is down, as after an upgrade) reopen: Settings shows "Source not recorded" and Team values; a copy member starts on the Team value
+SSR-001 Pass AC-001/004/005/006 stopped parent -> gear -> Agent copy + a second Agent copy Save, repeat, cancel and reopen
+Summary: 5 Pass, 0 Fail

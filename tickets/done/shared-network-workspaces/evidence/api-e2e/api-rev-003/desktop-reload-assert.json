@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "63E82A998089CC78CC6976AF907DBE03",
+    "--script",
+    "async () => {const a=await __abDemo.waitFor({text:\"desktop-remote.txt\"},{timeoutMs:10000});if(!a.ok)throw Error(JSON.stringify(a));return {result:\"Pass\",freshTree:document.querySelector(\".file-explorer-content\")?.innerText};}"
+  ],
+  "rc": 0,
+  "stdout": "{\"schema_version\":\"1\",\"ok\":true,\"command\":\"run-script\",\"result\":{\"tab_id\":\"63E82A998089CC78CC6976AF907DBE03\",\"url\":\"file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat\",\"output_mode\":\"inline\",\"result\":{\"result\":\"Pass\",\"freshTree\":\"assets\\ndiagram one.png\\napi003-lock.txt\\ndesktop-remote.txt\\nindex.html\"}}}\n",
+  "stderr": ""
+}

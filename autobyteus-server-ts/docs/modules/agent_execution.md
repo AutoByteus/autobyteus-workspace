@@ -70,8 +70,8 @@ AutoByteus then resolves its exact absolute workspace and calls
 `composeNativeAutoByteusPrompt(...)`; Codex and Claude call
 `composeSharedCarpenterPrompt(...)` and retain ownership of their provider
 working-directory fields. A team run supplies its validated `MemberTeamContext`
-so every composition includes the exact selected Team instruction, canonical
-member address, and the same AgentTeam Addressing/Collaboration guidance. No
+so every composition includes the exact selected Team instruction
+and the collaboration sections for the member's role. No
 flat communication or delegation roster is injected.
 
 The shared semantic order is Agent Identity, optional Team Instruction, and
@@ -159,7 +159,7 @@ logic must treat the whole `agentRunId` as opaque and must not parse the slug or
 assume a runtime-specific prefix.
 
 The same stateless allocation boundary is used for standalone prepared/created
-runs, Team/Org members, collaborators, delegated task Agents, and application
+runs, Team/Org members, delegated task Agents, and application
 scopes. It loads the current definition and generates a fresh UUID; it does not
 scan active runs, saved execution trees, metadata/directories, or reservations
 to check candidate-ID collisions. UUID uniqueness is probabilistic, not a
@@ -199,7 +199,7 @@ kind's capability and catalog. Accepted same-kind evidence can recover inherited
 views without resetting model/configuration/override intent; it does not heal
 different runtimes or discard an explicit failed edit. Missing exact models,
 invalid schemas, required owned references and structural admission still block
-launch. See the [Org configuration contract](../../../autobyteus-web/docs/agent_orgs.md#readiness-and-runtime-catalog-failure).
+launch. See the [Org configuration contract](../../../autobyteus-web/docs/agent_orgs.md#readiness).
 
 ## Activation Publication And Exact Continuation
 
@@ -248,7 +248,7 @@ agent's previous session was still shutting down, so this message couldn't be
 delivered. Please send it again." That code is always retryable and is never a
 quarantine: nothing is cached, a timed-out release keeps running, and the next
 send joins or repeats it. The registry's claim guard raises the same code as the
-last line of defence. A configured Agent execution (Team member, collaborator,
+last line of defence. A configured Agent execution (Team member,
 task copy) keeps the exact previous run and marks the attempt retry-safe when
 its release fails, so the next work retries the same release.
 
@@ -283,7 +283,7 @@ committed attempt rather than being converted into success.
 ### Root Shutdown Fence
 
 When a Team, Org or standalone Agent root stops, every configured Agent
-execution it hosts (`ConfiguredAgentExecutionHandle`: members, collaborators
+execution it hosts (`ConfiguredAgentExecutionHandle`: members
 and task copies; the standalone host stops separately) first calls
 `AgentRun.fenceInputAndInterruptForRootShutdown()`. On the run's serialized
 dispatch lane it fences new input admission and, through `AgentRunTermination`,

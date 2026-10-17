@@ -1,5 +1,4 @@
 import { describe, expect, it, vi } from "vitest";
-import { WORK_REQUEST_EXECUTION_LLM_INSTRUCTION } from "../../../../src/agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
 import { AgentDefinition } from "../../../../src/agent-definition/domain/models.js";
 import {
   composeNativeAutoByteusPrompt,
@@ -7,12 +6,6 @@ import {
 } from "../../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
 import { containAuthoredMarkdownHeadings } from "../../../../src/agent-execution/prompt/markdown-heading-containment.js";
 import { testMemberExecutionContext } from "../../../fixtures/current-team-run-fixtures.js";
-import { MemberCollaborationContext, MemberExecutionContext } from "../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
-import {
-  createAgentRootExecutionIdentity,
-  createRootExecutionIdentity,
-  createCollaborationMemberExecutionIdentity,
-} from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 
 const definition = (input: Partial<ConstructorParameters<typeof AgentDefinition>[0]> = {}) =>
   new AgentDefinition({
@@ -72,7 +65,7 @@ describe("composeNativeAutoByteusPrompt", () => {
     expect(prompt).not.toContain("Ignored role");
     expect(prompt).not.toContain("## Team Instruction");
     expect(prompt).not.toContain("## AgentTeam Addressing");
-    expect(prompt).not.toContain("## AgentTeam Collaboration");
+    expect(prompt).not.toContain("## Working With Other Agents");
     expect(prompt).not.toContain("## Skills");
   });
 
@@ -84,20 +77,22 @@ describe("composeNativeAutoByteusPrompt", () => {
     });
 
     expect(prompt).toContain("## Team Instruction\n\n### Coordination");
-    expect(prompt).toContain("## AgentTeam Addressing\n\nAgentTeams use filesystem-like logical addresses.");
-    expect(prompt).toContain("Your Agent address is:\n\n/worker");
+    expect(prompt).toContain("## AgentTeam Addressing\n\nAgents and agent teams use filesystem-like logical addresses.");
+    expect(prompt).not.toContain("Your Agent address is");
+    expect(prompt).not.toContain("/worker");
     expect(prompt).toContain("Relative addresses, bare names, `../`, backslashes");
-    expect(prompt).toContain("The root AgentTeam is represented by `/`");
+    expect(prompt).toContain("The top level is represented by `/`");
     expect(prompt).toContain("├── /A              (Agent)");
-    expect(prompt).toContain("└── /C              (nested AgentTeam)");
+    expect(prompt).toContain("└── /C              (AgentTeam)");
+    expect(prompt).not.toContain("nested");
     expect(prompt).toContain("The letters in this example are placeholders only.");
     expect(prompt).not.toContain("requirements_engineering");
-    expect(prompt).toContain("## AgentTeam Collaboration\n\n### Work Requests and Outcomes");
+    expect(prompt).toContain("## Working With Other Agents\n\nOn receiving a request");
     expect(prompt.indexOf("## Team Instruction")).toBeLessThan(prompt.indexOf("## AgentTeam Addressing"));
-    expect(prompt.indexOf("## AgentTeam Addressing")).toBeLessThan(prompt.indexOf("## AgentTeam Collaboration"));
-    expect(prompt.indexOf("## AgentTeam Collaboration")).toBeLessThan(prompt.indexOf("## Working Environment"));
+    expect(prompt.indexOf("## AgentTeam Addressing")).toBeLessThan(prompt.indexOf("## Working With Other Agents"));
+    expect(prompt.indexOf("## Working With Other Agents")).toBeLessThan(prompt.indexOf("## Working Environment"));
     expect(prompt.match(/^## AgentTeam Addressing$/gm)).toHaveLength(1);
-    expect(prompt.match(/^## AgentTeam Collaboration$/gm)).toHaveLength(1);
+    expect(prompt.match(/^## Working With Other Agents$/gm)).toHaveLength(1);
     expect(prompt).not.toContain("## Team Runtime");
     expect(prompt).not.toContain("recipient_name");
     expect(prompt).not.toContain("You can message:");
@@ -116,7 +111,7 @@ describe("composeNativeAutoByteusPrompt", () => {
     expect(prompt).not.toContain("### Responsibilities and Boundaries");
     expect(prompt).not.toContain("## Team Instruction");
     expect(prompt).toContain("## AgentTeam Addressing");
-    expect(prompt).toContain("## AgentTeam Collaboration");
+    expect(prompt).toContain("## Working With Other Agents");
     expect(prompt).not.toContain("## Team Runtime");
   });
 
@@ -146,7 +141,7 @@ describe("composeSharedCarpenterPrompt", () => {
     expect(prompt).toContain("## Agent Identity");
     expect(prompt).toContain("## Team Instruction\n\n### Coordination");
     expect(prompt).toContain("## AgentTeam Addressing");
-    expect(prompt).toContain("## AgentTeam Collaboration");
+    expect(prompt).toContain("## Working With Other Agents");
     expect(prompt).not.toContain("## Working Environment");
     expect(prompt).not.toContain("## Bash Operating Practice");
     expect(prompt).not.toContain("## File And Directory Practice");
@@ -222,85 +217,5 @@ describe("containAuthoredMarkdownHeadings", () => {
     expect(containAuthoredMarkdownHeadings("# A\n### B\n###### C", 3)).toBe(
       "#### A\n###### B\n**C**",
     );
-  });
-});
-
-describe("standalone collaboration section (Agent-root host)", () => {
-  const hostContext = () => new MemberExecutionContext({
-    identity: createCollaborationMemberExecutionIdentity({
-      root: createAgentRootExecutionIdentity("daily-assistant-run"),
-      memberAddress: "/daily_assistant",
-      agentRunId: "daily-assistant-run",
-    }),
-    teamScoped: false,
-    collaboration: new MemberCollaborationContext({ deliverLogicalMessage: async () => ({ accepted: true }) }),
-    tasks: {
-      root: createAgentRootExecutionIdentity("daily-assistant-run"),
-      delegateToNewCopy: async () => ({ delegated: false, message: "none" }),
-      assignToExistingCopy: async () => ({ delegated: false, message: "none" }),
-    },
-  });
-
-  it("renders the short standalone section instead of the Team sections for every eligible standalone agent", () => {
-    const prompt = composeSharedCarpenterPrompt({
-      agentDefinition: new AgentDefinition({
-        id: "autobyteus-daily-assistant", name: "Daily Assistant", description: "Helps with everyday tasks.", instructions: "Be helpful.",
-      }),
-      memberExecutionContext: hostContext(),
-    });
-    expect(prompt).toMatchSnapshot();
-    expect(prompt).not.toContain("AgentTeam Addressing");
-    expect(prompt).not.toContain("get_handoff_rules");
-    expect(prompt).toContain("Your address in this run is `/daily_assistant`.");
-  });
-
-  it("keeps a standalone agent without a member context unchanged", () => {
-    const prompt = composeSharedCarpenterPrompt({
-      agentDefinition: new AgentDefinition({ name: "Helper", description: "d", instructions: "i" }),
-      memberExecutionContext: null,
-    });
-    expect(prompt).not.toContain("## Collaboration");
-  });
-});
-
-describe.each([
-  ["shared", composeSharedCarpenterPrompt],
-  ["native", composeNativeAutoByteusPrompt],
-] as const)("%s work-request guidance", (_runtime, compose) => {
-  it.each([
-    ["Team member", "agent_team", "/worker", true],
-    ["Org member", "agent_org", "/engineering/worker", true],
-    ["collaborator Team coordinator", "agent", "/product/coordinator", true],
-    ["standalone host", "agent", "/assistant", false],
-    ["standalone collaborator", "agent", "/researcher", false],
-    ["delegated Agent copy", "agent", "/worker_copy", false],
-  ] as const)("projects one shared paragraph for %s before tool mechanics", (_label, rootSubjectKind, memberAddress, teamScoped) => {
-    const root = createRootExecutionIdentity({ rootSubjectKind, rootRunId: "root-run" });
-    const context = new MemberExecutionContext({
-      identity: createCollaborationMemberExecutionIdentity({ root, memberAddress, agentRunId: "member-run" }),
-      teamScoped,
-      collaboration: new MemberCollaborationContext({ deliverLogicalMessage: async () => ({ accepted: true }) }),
-      tasks: { root, delegateToNewCopy: async () => ({ delegated: false, message: "none" }), assignToExistingCopy: async () => ({ delegated: false, message: "none" }) },
-    });
-    const prompt = compose({
-      agentDefinition: definition(), memberExecutionContext: context, workspaceRootPath: "/tmp/workspace",
-    });
-    expect(prompt.split(WORK_REQUEST_EXECUTION_LLM_INSTRUCTION)).toHaveLength(2);
-    expect(prompt.match(/^### Work Requests and Outcomes$/gm)).toHaveLength(1);
-    expect(prompt.indexOf(WORK_REQUEST_EXECUTION_LLM_INSTRUCTION)).toBeLessThan(
-      prompt.indexOf(teamScoped ? "Choose the collaboration mode" : "- `send_message_to`"),
-    );
-    expect(prompt.includes("get_handoff_rules")).toBe(teamScoped);
-    expect(prompt).toContain("delegate_task");
-    expect(prompt).toContain("target_agent_run_id");
-    expect(prompt).toContain(memberAddress);
-  });
-
-  it("does not add collaboration guidance without a member context", () => {
-    const prompt = compose({
-      agentDefinition: definition(), memberExecutionContext: null, workspaceRootPath: "/tmp/workspace",
-    });
-    expect(prompt).not.toContain(WORK_REQUEST_EXECUTION_LLM_INSTRUCTION);
-    expect(prompt).not.toContain("get_handoff_rules");
   });
 });

@@ -7,7 +7,7 @@
 
     <div class="min-h-0 flex-1 overflow-auto">
       <div class="mx-auto flex w-full max-w-6xl flex-col gap-4 p-4 sm:p-5">
-        <TokenUsageThroughputCard :state="throughput" />
+        <TokenUsageThroughputCard :tps="tps" />
         <section v-if="primarySummary" class="space-y-4" data-test="token-usage-primary">
           <section v-if="hasCurrentPrompt(primarySummary)" class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <div class="flex flex-wrap items-baseline justify-between gap-3">
@@ -250,7 +250,7 @@ const {
 } = createTokenUsageFormatter(t);
 
 const {
-  throughput,
+  tps,
   isTeamContext,
   primaryError,
   primaryLoading,

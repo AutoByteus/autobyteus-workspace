@@ -1,0 +1,12 @@
+Started actual current launcher first ordinary node
+actual current launcher first ordinary node: Pass
+Started real server health before NFS selection
+real server health before NFS selection: Pass
+Started actual current launcher second unselected node
+actual current launcher second unselected node: Pass
+Started seed synthetic private auth/data/browser sentinel bytes
+seed synthetic private auth/data/browser sentinel bytes: Pass
+Started ordinary custom network alias setup
+ordinary custom network alias setup: Pass
+Two exact current launcher nodes prepared; selected running/unselected stopped, loopback ports and synthetic private bytes recorded
+{"result": "Ready", "error": null}

@@ -1,5 +1,5 @@
 <template>
-  <!-- Like a running run's Stop: red when available, muted while stopping a copy or collaborator. -->
+  <!-- Like a running run's Stop: red when available, muted while stopping a copy. -->
   <button
     v-if="visible"
     type="button"
@@ -24,7 +24,7 @@ import { useDelegatedLaunchDraftStore } from '~/stores/delegatedLaunchDraftStore
 import { isDelegatedCopyLive } from '~/services/runConfigEditing/delegatedCopyLiveness'
 import type { DelegatedReference, DelegatedRoot } from '~/services/runConfigEditing/delegatedLaunchSelectionClient'
 
-/** DS-002: stops one delegated copy or collaborator (and the copies it started) of a live run; it stays restorable. */
+/** DS-002: stops one delegated copy (and the copies it started) of a live run; it stays restorable. */
 const props = defineProps<{ root: DelegatedRoot; reference: DelegatedReference; name: string }>()
 
 const { t } = useLocalization()

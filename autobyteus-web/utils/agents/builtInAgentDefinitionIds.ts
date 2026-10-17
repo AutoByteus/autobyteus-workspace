@@ -6,7 +6,7 @@ import { DEFAULT_CHAT_AGENT_DEFINITION_ID } from '~/utils/chat/chatDefaults'
  *
  * Mirrors `BUILT_IN_AGENT_DEFINITIONS` in
  * `autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts`. Keep the two in sync: the
- * server never admits a built-in as an `@` collaborator.
+ * server never admits a built-in as an `@` candidate.
  */
 export const BUILT_IN_AGENT_DEFINITION_IDS: ReadonlySet<string> = new Set([
   'autobyteus-retrospective-skill-improver',

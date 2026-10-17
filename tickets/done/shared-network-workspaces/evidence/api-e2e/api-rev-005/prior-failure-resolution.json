@@ -1,0 +1,67 @@
+{
+  "prior": "API-F004 / API004 healthy committed-read latency failure",
+  "scope": "Independent current public Linux-native and Linux-Docker storage; real native and managed node HTTP clients; Mac/physical/complete-runtime matrix NOT implied",
+  "result": "Resolved within executed Linux scope",
+  "modes": [
+    {
+      "evidence": "visibility-result.json",
+      "fixtures": 20,
+      "kindCounts": {
+        "inplace": 12,
+        "atomic": 4,
+        "new": 4
+      },
+      "readerChecks": 40,
+      "maxSeconds": {
+        "native": 0.9279331459999867,
+        "http": 0.9349140159999934
+      },
+      "source": "/home/admin/ab-nfs-api005-linux-618f79bb-native-source",
+      "connection": {
+        "storageId": "4e42e117-1978-48cd-a77f-468aed63f2ef",
+        "endpoint": "192.168.64.4",
+        "export": "/autobyteus/4e42e117-1978-48cd-a77f-468aed63f2ef",
+        "protocol": "4.1",
+        "mountRoot": "/Volumes/autobyteus-shared"
+      },
+      "binary": {
+        "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api005-s1d2nqng/autobyteus-nfs-linux-arm64",
+        "sha256": "32772499817bccc6dc8c8bd01b15a457457848e17321af6053544adf53803a64",
+        "size": 11046973
+      },
+      "metadataSourceHash": "a6ef7dee582e9b4ba0edd7449bac4d292acfb944073502f0fb63bd8356653342"
+    },
+    {
+      "evidence": "docker-visibility-result.json",
+      "fixtures": 20,
+      "kindCounts": {
+        "inplace": 12,
+        "atomic": 4,
+        "new": 4
+      },
+      "readerChecks": 40,
+      "maxSeconds": {
+        "native": 0.8274980019999703,
+        "http": 0.8391053779999993
+      },
+      "source": "/home/admin/ab-nfs-api005-linux-618f79bb-native-source",
+      "connection": {
+        "storageId": "4e42e117-1978-48cd-a77f-468aed63f2ef",
+        "endpoint": "192.168.64.4",
+        "export": "/autobyteus/4e42e117-1978-48cd-a77f-468aed63f2ef",
+        "protocol": "4.1",
+        "mountRoot": "/Volumes/autobyteus-shared"
+      },
+      "binary": {
+        "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api005-s1d2nqng/autobyteus-nfs-docker-linux-arm64",
+        "sha256": "d9ba0370c10d1fb7c39ae70970e5407563d6cf5595afc718de601b5bf771ed6f",
+        "size": 11046989
+      },
+      "metadataSourceHash": "a6ef7dee582e9b4ba0edd7449bac4d292acfb944073502f0fb63bd8356653342"
+    }
+  ],
+  "totalReaderChecks": 80,
+  "priorF001": "Resolved first-use nativeMac scope, fresh API005 create passes; new normal-reboot API-F005 separate",
+  "priorF002": "Resolved fresh nativeUbuntu public scope, API005 no-preinstall selectedcreate passes",
+  "priorF003": "Resolved Linux Docker-storage selected-client scope; API005 two-reboots/normal-stop/policy-veto/node-upgrade/detach regressions Pass"
+}

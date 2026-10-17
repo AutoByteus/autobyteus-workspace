@@ -98,7 +98,7 @@ const configuredOf = (rootKind: DelegatedLaunchRootKind, patches: readonly Deleg
 const message = (error: unknown): string => error instanceof Error ? error.message : String(error);
 
 /**
- * DS-001 / DS-002: the user Stop of a delegated copy or collaborator and the user model choice of
+ * DS-001 / DS-002: the user Stop of a delegated copy and the user model choice of
  * stopped ones, for Agent, Team and AgentOrg runs; plus their model options.
  */
 @Resolver()

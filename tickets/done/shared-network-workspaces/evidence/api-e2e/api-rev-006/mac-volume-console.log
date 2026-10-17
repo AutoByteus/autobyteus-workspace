@@ -1,0 +1,25 @@
+Started create actual original APFS volume
+create actual original APFS volume: Pass
+Started public APFS volume source create
+public APFS volume source create: Pass
+Started actual APFS volume mounted nonroot RW
+actual APFS volume mounted nonroot RW: Pass
+Started create different actual APFS volume
+create different actual APFS volume: Pass
+Started original image absent after reboot
+original image absent after reboot: Pass
+Started different volume identical marker and bytes at same source path
+different volume identical marker and bytes at same source path: Pass
+Started public reconnect refuses actual different APFS UUID
+public reconnect refuses actual different APFS UUID: Pass
+Started restore exact original APFS image public reconnect
+restore exact original APFS image public reconnect: Pass
+Started restored actual volume nonroot mounted RW
+restored actual volume nonroot mounted RW: Pass
+Started public drained detach original APFS volume
+public drained detach original APFS volume: Pass
+Started detached original preserved no mount job attachment
+detached original preserved no mount job attachment: Pass
+Started detach only owned disk image
+detach only owned disk image: Pass
+{"result": "Pass", "fatal": null}

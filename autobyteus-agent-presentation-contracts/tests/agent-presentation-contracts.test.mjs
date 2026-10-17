@@ -76,7 +76,7 @@ const tokenPayload = (overrides = {}) => {
     usage_scope: "per_call", input_token_semantic: "base_excludes_cache", cache_state: "positive",
     api_cost_status: "price_missing", missing_price_dimensions: [],
     latest_prompt_tokens: 7062, effective_context_window_tokens: 200000, context_window_usage_percent: 3.531,
-    context_compaction_threshold_tokens: 167000, reports_model_call: true,
+    context_compaction_threshold_tokens: 167000, reports_model_call: true, output_throughput: null,
     run_summary_after_event: runSummary(), quality_flags: [],
     ...overrides,
   };
@@ -97,4 +97,17 @@ test("live token event carries the model-call fact, compaction threshold and sum
   assert.throws(() => agentPresentationMessageSchema.parse({ type: "TOKEN_USAGE_UPDATED",
     payload: tokenPayload({ run_summary_after_event: summaryWithoutRevision }) }));
   assert.throws(() => agentPresentationMessageSchema.parse({ type: "TOKEN_USAGE_UPDATED", payload: tokenPayload({ unexpected: 1 }) }));
+});
+
+test("live token event carries one model call's TPS or null", () => {
+  const reading = { method: "generation", output_tokens: 1762, duration_ms: 16940 };
+  const parsed = agentPresentationMessageSchema.parse({ type: "TOKEN_USAGE_UPDATED", payload: tokenPayload({ output_throughput: reading }) });
+  assert.deepEqual(parsed.payload.output_throughput, reading);
+  assert.equal(agentPresentationMessageSchema.parse({ type: "TOKEN_USAGE_UPDATED", payload: tokenPayload() }).payload.output_throughput, null);
+  for (const invalid of [{ ...reading, method: "report_interval" }, { ...reading, duration_ms: 2673.724 },
+    { ...reading, output_tokens: -1 }, { ...reading, tokens_per_second: 104 }]) {
+    assert.throws(() => agentPresentationMessageSchema.parse({ type: "TOKEN_USAGE_UPDATED", payload: tokenPayload({ output_throughput: invalid }) }));
+  }
+  const { output_throughput: _tps, ...withoutTps } = tokenPayload();
+  assert.throws(() => agentPresentationMessageSchema.parse({ type: "TOKEN_USAGE_UPDATED", payload: withoutTps }));
 });

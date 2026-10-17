@@ -1,0 +1,1601 @@
+{
+  "inputHead": "d963097b6e3d0cf80e3bf4e86d900173b671fd26",
+  "trackedCount": 63095,
+  "trackedChanged": [
+    "tickets/in-progress/shared-network-workspaces/api-e2e-coverage-investigation.md",
+    "tickets/in-progress/shared-network-workspaces/api-e2e-execution-coverage-report.md",
+    "tickets/in-progress/shared-network-workspaces/api-e2e-revision-record.md",
+    "tickets/in-progress/shared-network-workspaces/api-e2e-test-case-ledger.md"
+  ],
+  "incomingCount": 1122,
+  "incomingChanged": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/api-e2e-coverage-investigation.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/api-e2e-execution-coverage-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/api-e2e-revision-record.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/api-e2e-test-case-ledger.md"
+  ],
+  "retainedFiles": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/README.txt",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/autobyteus-nfs-linux-arm64",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/COPYRIGHT",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/SHA256SUMS",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/autobyteus-nfs-ganesha-source-4.3-8ubuntu1+autobyteus1-arm64.tar.gz",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/engine-build-arm64.txt",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/engine-manifest.json",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/nfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/nfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/engine-manifest.json",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/release.json",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir007-local-candidate/README.txt",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir007-local-candidate/autobyteus-nfs-darwin-arm64",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir007-local-candidate/autobyteus-nfs-linux-arm64",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir007-local-candidate/release.json",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir008-local-candidate/README.txt",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir008-local-candidate/autobyteus-nfs-darwin-arm64",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir008-local-candidate/autobyteus-nfs-linux-arm64",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir008-local-candidate/release.json",
+      "exists": true,
+      "unchanged": true
+    }
+  ],
+  "priorDistFiles": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/applications/brief-studio/dist/importable-package/README.md",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/researcher/agent-config.json",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/researcher/agent.md",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/writer/agent-config.json",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/writer/agent.md",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/team-config.json",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/team.md",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/applications/brief-studio/dist/importable-package/applications/brief-studio/application.json",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/applications/brief-studio/dist/importable-package/applications/brief-studio/backend/bundle.json",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/entry.mjs",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/applications/brief-studio/dist/importable-package/applications/brief-studio/backend/migrations/001_create_brief_tables.sql",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/applications/brief-studio/dist/importable-package/applications/brief-studio/backend/migrations/002_artifact_publication_model.sql",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/applications/brief-studio/dist/importable-package/applications/brief-studio/backend/migrations/003_application_owned_orchestration.sql",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/applications/brief-studio/dist/importable-package/applications/brief-studio/backend/migrations/004_pending_launch_requests.sql",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/applications/brief-studio/dist/importable-package/applications/brief-studio/backend/migrations/005_published_artifact_reconciliation.sql",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/app.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/brief-studio-renderer.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/brief-studio-runtime.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/generated/graphql-client.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/icon.svg",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/index.html",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/applications/brief-studio/dist/importable-package/applications/brief-studio/ui/styles.css",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-backend-sdk/dist/application-agent-target-address.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-backend-sdk/dist/application-agent-target-address.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-backend-sdk/dist/application-agent-target-address.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-backend-sdk/dist/application-agent-target-address.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-backend-sdk/dist/index.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-backend-sdk/dist/index.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-backend-sdk/dist/index.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-backend-sdk/dist/index.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-backend-sdk/dist/launch-profile.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-backend-sdk/dist/launch-profile.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-backend-sdk/dist/launch-profile.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-backend-sdk/dist/launch-profile.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/cli.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/cli.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/cli.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/cli.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/commands/command-options.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/commands/command-options.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/commands/command-options.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/commands/command-options.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/commands/create.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/commands/create.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/commands/create.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/commands/create.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/commands/dev.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/commands/dev.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/commands/dev.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/commands/dev.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/commands/pack.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/commands/pack.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/commands/pack.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/commands/pack.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/commands/start.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/commands/start.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/commands/start.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/commands/start.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/commands/validate.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/commands/validate.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/commands/validate.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/commands/validate.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/config/application-devkit-config.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/config/application-devkit-config.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/config/application-devkit-config.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/config/application-devkit-config.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/config/load-application-devkit-config.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/config/load-application-devkit-config.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/config/load-application-devkit-config.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/config/load-application-devkit-config.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/application-development-project-state.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/application-development-project-state.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/application-development-project-state.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/application-development-project-state.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/application-project-watch.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/application-project-watch.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/application-project-watch.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/application-project-watch.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/atomic-application-pack.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/atomic-application-pack.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/atomic-application-pack.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/atomic-application-pack.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/development-browser-session.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/development-browser-session.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/development-browser-session.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/development-browser-session.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/development-process-lifetime.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/development-process-lifetime.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/development-process-lifetime.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/development-process-lifetime.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/standalone-development-session.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/standalone-development-session.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/standalone-development-session.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/standalone-development-session.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/studio-application-client.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/studio-application-client.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/studio-application-client.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/studio-application-client.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/studio-development-session.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/studio-development-session.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/studio-development-session.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/development/studio-development-session.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/index.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/index.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/index.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/index.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/package/backend-builder.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/package/backend-builder.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/package/backend-builder.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/package/backend-builder.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/package/backend-bundle-manifest-writer.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/package/backend-bundle-manifest-writer.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/package/backend-bundle-manifest-writer.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/package/backend-bundle-manifest-writer.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/package/frontend-builder.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/package/frontend-builder.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/package/frontend-builder.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/package/frontend-builder.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/package/package-assembler.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/package/package-assembler.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/package/package-assembler.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/package/package-assembler.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/package/resource-copier.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/package/resource-copier.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/package/resource-copier.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/package/resource-copier.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/paths/application-project-paths.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/paths/application-project-paths.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/paths/application-project-paths.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/paths/application-project-paths.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/template/template-materializer.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/template/template-materializer.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/template/template-materializer.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/template/template-materializer.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/application-root-validator.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/application-root-validator.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/application-root-validator.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/application-root-validator.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/backend-manifest-validator.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/backend-manifest-validator.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/backend-manifest-validator.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/backend-manifest-validator.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/local-application-id.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/local-application-id.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/local-application-id.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/local-application-id.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/manifest-paths.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/manifest-paths.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/manifest-paths.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/manifest-paths.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/package-validator.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/package-validator.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/package-validator.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/package-validator.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/validation-helpers.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/validation-helpers.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/validation-helpers.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/validation-helpers.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/validation-result.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/validation-result.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/validation-result.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-devkit/dist/validation/validation-result.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-agent-connection-transport.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-agent-connection-transport.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-agent-connection-transport.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-agent-connection-transport.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-agent-connection.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-agent-connection.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-agent-connection.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-agent-connection.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-agent-event-validator.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-agent-event-validator.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-agent-event-validator.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-agent-event-validator.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-agent-server-frame-parser.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-agent-server-frame-parser.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-agent-server-frame-parser.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-agent-server-frame-parser.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-backend-websocket-connection.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-backend-websocket-connection.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-backend-websocket-connection.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-backend-websocket-connection.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-backend-websocket-transport.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-backend-websocket-transport.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-backend-websocket-transport.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-backend-websocket-transport.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-client-transport.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-client-transport.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-client-transport.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-client-transport.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-client.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-client.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-client.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-client.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/application-bootstrap-provider.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/application-bootstrap-provider.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/application-bootstrap-provider.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/application-bootstrap-provider.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/application-startup-coordinator.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/application-startup-coordinator.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/application-startup-coordinator.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/application-startup-coordinator.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/application-startup-types.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/application-startup-types.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/application-startup-types.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/application-startup-types.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/default-application-startup-screen.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/default-application-startup-screen.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/default-application-startup-screen.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/default-application-startup-screen.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/resolve-application-bootstrap-provider.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/resolve-application-bootstrap-provider.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/resolve-application-bootstrap-provider.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/resolve-application-bootstrap-provider.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/standalone-same-origin-bootstrap-provider.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/standalone-same-origin-bootstrap-provider.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/standalone-same-origin-bootstrap-provider.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/standalone-same-origin-bootstrap-provider.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/studio-iframe-bootstrap-provider.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/studio-iframe-bootstrap-provider.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/studio-iframe-bootstrap-provider.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-startup/studio-iframe-bootstrap-provider.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-websocket-url.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-websocket-url.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-websocket-url.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/application-websocket-url.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/create-application-backend-mount-transport.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/create-application-backend-mount-transport.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/create-application-backend-mount-transport.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/create-application-backend-mount-transport.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/index.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/index.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/index.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-frontend-sdk/dist/index.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-agent-bindings.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-agent-bindings.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-agent-bindings.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-agent-bindings.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-agent-communication.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-agent-communication.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-agent-communication.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-agent-communication.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-agent-events.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-agent-events.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-agent-events.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-agent-events.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-agent-member-address.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-agent-member-address.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-agent-member-address.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-agent-member-address.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-agent-target-url.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-agent-target-url.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-agent-target-url.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-agent-target-url.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-agent-tools.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-agent-tools.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-agent-tools.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-agent-tools.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-iframe-contract.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-iframe-contract.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-websockets.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-websockets.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-websockets.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/application-websockets.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/execution-resources.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/execution-resources.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/execution-resources.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/execution-resources.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/index.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/index.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/index.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/index.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/manifests.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/manifests.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/manifests.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/manifests.js.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts.map",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js.map",
+      "exists": true,
+      "unchanged": true
+    }
+  ],
+  "unexpectedTracked": [],
+  "unexpectedIncoming": [],
+  "newPythonSyntax": {
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/run-docker-detach.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/diagnose-mac-reboot.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/run-mounted-lock.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/start-guest-loopback-tunnel.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/prepare-mac-peer.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/finalize-docs.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/build-docker-variant.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/confirm-mac-volume-boot.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/run-narrow-checks.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/build-server-image-v2.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/cleanup-owned.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/run-selected-create.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/run-policy-veto.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/run-file-operations.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/desktop-browser.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/run-docker-selected-create.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/confirm-docker-selected-create.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/prepare-managed-client-image.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/start-linux.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/guest-visibility.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/common.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/prepare-candidate.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/common-docker.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/run-lifecycle-sequence.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/run-normal-stop.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/run-mac-detach.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/run-mac-native.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/confirm-mac-reboot.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/run-first-sequence.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/finalize-package.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/prepare-managed-nodes.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/summarize-mac-failure.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/run-docker-sequence.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/audit-artifacts.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/start-isolated-desktop.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/run-native-detach.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/prepare-linux-resource.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/run-visibility.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/prepare-linux-docker.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/prepare-docker.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/run-docker-visibility.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/prepare-preview-fixtures.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/cleanup-mac.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/run-two-reboots.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/run-mounted-api.py": "Pass",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-005/run-node-upgrade.py": "Pass"
+  },
+  "jsonCount": 58,
+  "revisionPrefixPreserved": true,
+  "retainedAllUnchanged": true,
+  "priorDistChanged": [],
+  "result": "Pass"
+}

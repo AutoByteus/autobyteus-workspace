@@ -1,0 +1,8 @@
+{
+  "initialResult": "Fail",
+  "origin": "Temporary test assertion",
+  "actualCreate": "Pass",
+  "cause": "Docker Mounts observation reordered identical non-overlapping destinations; harness incorrectly compared array order",
+  "correction": "Compare all prior mount Type/Name/Source/Destination/RW/Propagation by unique destination, while preserving opaque Config/HostConfig, image, aliases, ports and private-byte assertions",
+  "sourceUnchanged": true
+}

@@ -1,5 +1,4 @@
 import {
-  applyDelegatedLaunchSelectionsToCollaborators,
   applyDelegatedLaunchSelectionsToTaskExecutions,
   type DelegatedLaunchForest,
   type DelegatedLaunchSelections,
@@ -11,30 +10,19 @@ import type {
 } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
 import type { TaskExecutionHostIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type {
-  CollaboratorEntry,
   TaskExecution,
   TaskTeamExecution,
   TaskTeamMemberExecution,
   TaskTeamNestedTeamExecution,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
-import { mapCollaboratorEntries } from "../../run-history/domain/collaborator-entry-tree-mapping.js";
 import { validateStandaloneRootTreePayload } from "../persistence/standalone-root-tree-schema.js";
 import type { StandaloneRootTreeSnapshot } from "../domain/standalone-root-tree.js";
 
 const revalidate = (tree: StandaloneRootTreeSnapshot): StandaloneRootTreeSnapshot =>
   validateStandaloneRootTreePayload(tree, tree.host.agentRunId);
 
-export const addStandaloneRootCollaborators = (input: {
-  tree: StandaloneRootTreeSnapshot;
-  collaborators: readonly CollaboratorEntry[];
-}): StandaloneRootTreeSnapshot => revalidate({
-  ...input.tree,
-  collaborators: [...input.tree.collaborators, ...input.collaborators],
-});
-
 /**
- * Appends a task execution to its host: the root, a task Team, or a collaborator Team (which
- * hosts its members' delegations).
+ * Appends a task execution to its host: the root or a task Team.
  */
 export const addStandaloneRootTaskExecution = (input: {
   tree: StandaloneRootTreeSnapshot;
@@ -63,16 +51,8 @@ export const addStandaloneRootTaskExecution = (input: {
   };
   const task = (value: TaskExecution): TaskExecution => "agentRunId" in value ? value : team(value);
   const taskExecutions = input.tree.taskExecutions.map(task);
-  const collaborators = input.tree.collaborators.map((entry) => {
-    if (entry.kind === "agent") return entry;
-    if (entry.teamRunId === input.host.hostRunId) {
-      found = true;
-      return append(entry);
-    }
-    return { ...entry, taskExecutions: entry.taskExecutions.map(task) };
-  });
   if (!found) throw new Error(`Task host TeamRun '${input.host.hostRunId}' was not found in the Agent root.`);
-  return revalidate({ ...input.tree, taskExecutions, collaborators });
+  return revalidate({ ...input.tree, taskExecutions });
 };
 
 type AgentNode = Readonly<{ agentRunId: string; address: string; platformAgentRunId: string | null }>;
@@ -90,7 +70,6 @@ const mapAgents = (
   return {
     ...tree,
     taskExecutions: tree.taskExecutions.map(task),
-    collaborators: mapCollaboratorEntries(tree.collaborators, { agent, task }),
   };
 };
 
@@ -141,18 +120,16 @@ export const replaceStandaloneRootPlatformBindingWithoutConversation = (input: {
   return revalidate(next);
 };
 
-/** The tree's delegated copies and collaborators, for the user model choice and Stop (DS-001, DS-002). */
+/** The tree's delegated copies, for the user model choice and Stop (DS-001, DS-002). */
 export const standaloneDelegatedLaunchForest = (tree: StandaloneRootTreeSnapshot): DelegatedLaunchForest => Object.freeze({
-  collaborators: tree.collaborators,
-  taskExecutionLists: taskExecutionListsOf({ taskExecutions: tree.taskExecutions, collaborators: tree.collaborators }),
+  taskExecutionLists: taskExecutionListsOf({ taskExecutions: tree.taskExecutions }),
 });
 
-/** Records user model choices on the tree's copies and collaborators; started values are untouched. */
+/** Records user model choices on the tree's copies; started values are untouched. */
 export const applyStandaloneDelegatedLaunchSelections = (
   tree: StandaloneRootTreeSnapshot,
   selections: DelegatedLaunchSelections,
 ): StandaloneRootTreeSnapshot => revalidate({
   ...tree,
-  collaborators: applyDelegatedLaunchSelectionsToCollaborators(tree.collaborators, selections),
   taskExecutions: applyDelegatedLaunchSelectionsToTaskExecutions(tree.taskExecutions, selections),
 });

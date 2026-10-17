@@ -31,8 +31,9 @@ const deferred = <T = any>() => {
 }
 const nativeView = () => {
   const view = agentRootView()
-  for (const entry of view.execution_tree.collaborators) {
-    const launch = entry.kind === 'agent' ? entry.launchConfiguration : entry.defaultLaunchConfiguration
+  for (const entry of view.execution_tree.taskExecutions) {
+    const launch = entry.source?.kind === 'agent' ? entry.source.launchConfiguration : entry.source?.defaultLaunchConfiguration
+    if (!launch) continue
     launch.runtimeKind = 'autobyteus'
     launch.workspaceRootPath = null
   }

@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "63E82A998089CC78CC6976AF907DBE03",
+    "--script",
+    "() => {const r=window.__api003Render?.at(-1);if(!r||r.heading!==\"API003 mounted HTML\"||!r.complete||r.width!==1||r.height!==1||!r.imageURL.endsWith(\"/assets/diagram%20one.png\"))throw Error(JSON.stringify({receipts:window.__api003Render}));return {result:\"Pass\",renderReceipt:r,proof:\"actual iframe fixture load/image decode, no renderer mocking\"};}"
+  ],
+  "rc": 0,
+  "stdout": "{\"schema_version\":\"1\",\"ok\":true,\"command\":\"run-script\",\"result\":{\"tab_id\":\"63E82A998089CC78CC6976AF907DBE03\",\"url\":\"file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat\",\"output_mode\":\"inline\",\"result\":{\"result\":\"Pass\",\"renderReceipt\":{\"origin\":\"http://127.0.0.1:59278\",\"kind\":\"API003_RENDERED\",\"heading\":\"API003 mounted HTML\",\"imageURL\":\"http://127.0.0.1:59278/rest/workspaces/agent_ws_49a8721c7fadf351e28d59eec0601bb05deb303d6c8eb6c880dc1f83c32ce54b/static/assets/diagram%20one.png\",\"complete\":true,\"width\":1,\"height\":1},\"proof\":\"actual iframe fixture load/image decode, no renderer mocking\"}}}\n",
+  "stderr": ""
+}

@@ -1,0 +1,212 @@
+{
+  "vm": "ab-nfs-api008-linux-0c05c8d7",
+  "source": "/home/admin/ab-nfs-api008-linux-0c05c8d7-native-source",
+  "mountRoot": "/Volumes/autobyteus-shared",
+  "binary": {
+    "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api008-0frlwk0o/autobyteus-nfs-linux-arm64",
+    "sha256": "3944a3f0696f006ac658475ea335fcc5dd8c9bfc1195c2301ab92608de446b38",
+    "size": 11049466
+  },
+  "metadata": {
+    "version": "v1.5.3-beta.2",
+    "sourceHash": "f0d71675d3d9b70d89969a8071b8de03287cff0676669ddab295f14568041c88",
+    "ubuntuPackages": {
+      "nfs-common": "1:2.6.4-3ubuntu5.1"
+    },
+    "engineImage": "",
+    "qualifiedTargets": [],
+    "engine": {
+      "source": {
+        "version": "4.3-8ubuntu1",
+        "files": [
+          {
+            "file": "nfs-ganesha_4.3-8ubuntu1.dsc",
+            "sha256": "ffa76c26b12d23b67dcda184d7ec7ae55a42d1d14bf84bb7c0cf0134156ba3ca",
+            "size": 3576
+          },
+          {
+            "file": "nfs-ganesha_4.3.orig.tar.gz",
+            "sha256": "d4efd020edf4dfe65abfd0f0f66eb4390613360f99dce4354467ab297e0e1c0f",
+            "size": 1895017
+          },
+          {
+            "file": "nfs-ganesha_4.3-8ubuntu1.debian.tar.xz",
+            "sha256": "ef35d130e1b37149b156d201b70e6c2804bebbfbee1713c5bd6d938dd433fe03",
+            "size": 19224
+          }
+        ],
+        "patchCommit": "98eb77c4fd94effa6882b214698a77752ec79f6e",
+        "patchSha256": "ba682b5c64e7f800c927f4c90b2a7bfb4b8d2a323ddc48c3d591db3d75799031",
+        "sourceDateEpoch": 1791936000,
+        "recipeSha256": "34e28c622f598487af74a545115fa8dffe94e8f1aa5d85c091515aa187d66e4f",
+        "buildBase": "ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e"
+      },
+      "architectures": {
+        "arm64": {
+          "packages": [
+            {
+              "file": "nfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb",
+              "sha256": "0b5c78911cfc1b299e9894e1f841e74176fbb2cb45b158008e4530713549ebc8",
+              "size": 613976,
+              "name": "nfs-ganesha",
+              "version": "4.3-8ubuntu1+autobyteus1",
+              "architecture": "arm64"
+            },
+            {
+              "file": "nfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb",
+              "sha256": "3bf06769646d93ea85f0277fe0726eb42d0d29a70c0108505706954e5e8d2ac6",
+              "size": 48626,
+              "name": "nfs-ganesha-vfs",
+              "version": "4.3-8ubuntu1+autobyteus1",
+              "architecture": "arm64"
+            }
+          ],
+          "correspondingSource": {
+            "file": "autobyteus-nfs-ganesha-source-4.3-8ubuntu1+autobyteus1-arm64.tar.gz",
+            "sha256": "eed35ab4b732ac05d2afc3531e70cdc27031fb414fdb52a0daf093f33daaec0a",
+            "size": 1930105
+          },
+          "buildInventory": {
+            "file": "engine-build-arm64.txt",
+            "sha256": "56fad63c43f85091d84df347564dfd962a9afaafe519539849860b1807695761",
+            "size": 57836
+          }
+        }
+      }
+    }
+  },
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api008-linux-0c05c8d7",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "set -e; test ! -e /etc/autobyteus-nfs/attachment.json; test ! -e /var/lib/autobyteus-nfs; ! grep -E ' nfs4? ' /proc/mounts; if dpkg-query -W -f='${Status}' nfs-ganesha 2>/dev/null | grep -q 'install ok installed'; then exit 1; fi; cat /etc/os-release; uname -a; findmnt -no SOURCE,FSTYPE /; id"
+      ],
+      "rc": 0,
+      "seconds": 0.581,
+      "stdout": "PRETTY_NAME=\"Ubuntu 24.04.5 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.5 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\nLinux ubuntu 7.0.0-38-generic #38~24.04.4-Ubuntu SMP PREEMPT_DYNAMIC Mon Sep 14 17:12:37 UTC 2 aarch64 aarch64 aarch64 GNU/Linux\n/dev/vda1 ext4\nuid=1000(admin) gid=109(admin) groups=109(admin)\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api008-linux-0c05c8d7",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "set -e; sudo -n apt-get update -qq; sudo -n env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends docker.io; sudo -n systemctl start docker; sudo -n docker version"
+      ],
+      "rc": 0,
+      "seconds": 21.816,
+      "stdout": "Reading package lists...\nBuilding dependency tree...\nReading state information...\nThe following additional packages will be installed:\n  containerd runc\nSuggested packages:\n  aufs-tools cgroupfs-mount | cgroup-lite debootstrap docker-buildx\n  docker-compose-v2 docker-doc rinse zfs-fuse | zfsutils\nRecommended packages:\n  pigz ubuntu-fan\nThe following NEW packages will be installed:\n  containerd docker.io runc\n0 upgraded, 3 newly installed, 0 to remove and 55 not upgraded.\nNeed to get 65.8 MB of archives.\nAfter this operation, 265 MB of additional disk space will be used.\nGet:1 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 runc arm64 1.3.4-0ubuntu1~24.04.1 [8578 kB]\nGet:2 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 containerd arm64 2.2.1-0ubuntu1~24.04.3 [25.2 MB]\nGet:3 http://ports.ubuntu.com/ubuntu-ports noble-updates/universe arm64 docker.io arm64 29.1.3-0ubuntu3~24.04.2 [32.0 MB]\nPreconfiguring packages ...\nFetched 65.8 MB in 7s (9068 kB/s)\nSelecting previously unselected package runc.\r\n(Reading database ... \r(Reading database ... 5%\r(Reading database ... 10%\r(Reading database ... 15%\r(Reading database ... 20%\r(Reading database ... 25%\r(Reading database ... 30%\r(Reading database ... 35%\r(Reading database ... 40%\r(Reading database ... 45%\r(Reading database ... 50%\r(Reading database ... 55%\r(Reading database ... 60%\r(Reading database ... 65%\r(Reading database ... 70%\r(Reading database ... 75%\r(Reading database ... 80%\r(Reading database ... 85%\r(Reading database ... 90%\r(Reading database ... 95%\r(Reading database ... 100%\r(Reading database ... 131560 files and directories currently installed.)\r\nPreparing to unpack .../runc_1.3.4-0ubuntu1~24.04.1_arm64.deb ...\r\nUnpacking runc (1.3.4-0ubuntu1~24.04.1) ...\r\nSelecting previously unselected package containerd.\r\nPreparing to unpack .../containerd_2.2.1-0ubuntu1~24.04.3_arm64.deb ...\r\nUnpacking containerd (2.2.1-0ubuntu1~24.04.3) ...\r\nSelecting previously unselected package docker.io.\r\nPreparing to unpack .../docker.io_29.1.3-0ubuntu3~24.04.2_arm64.deb ...\r\nUnpacking docker.io (29.1.3-0ubuntu3~24.04.2) ...\r\nSetting up runc (1.3.4-0ubuntu1~24.04.1) ...\r\nSetting up containerd (2.2.1-0ubuntu1~24.04.3) ...\r\nCreated symlink /etc/systemd/system/multi-user.target.wants/containerd.service -> /usr/lib/systemd/system/containerd.service.\r\r\nSetting up docker.io (29.1.3-0ubuntu3~24.04.2) ...\r\ninfo: Selecting GID from range 100 to 999 ...\r\ninfo: Adding group `docker' (GID 111) ...\r\nCreated symlink /etc/systemd/system/multi-user.target.wants/docker.service -> /usr/lib/systemd/system/docker.service.\r\r\nCreated symlink /etc/systemd/system/sockets.target.wants/docker.socket -> /usr/lib/systemd/system/docker.socket.\r\r\nProcessing triggers for man-db (2.12.0-4build2) ...\r\nClient:\n Version:           29.1.3\n API version:       1.52\n Go version:        go1.24.4\n Git commit:        29.1.3-0ubuntu3~24.04.2\n Built:             Wed Apr 29 16:41:06 2026\n OS/Arch:           linux/arm64\n Context:           default\n\nServer:\n Engine:\n  Version:          29.1.3\n  API version:      1.52 (minimum version 1.44)\n  Go version:       go1.24.4\n  Git commit:       29.1.3-0ubuntu3~24.04.2\n  Built:            Wed Apr 29 16:41:06 2026\n  OS/Arch:          linux/arm64\n  Experimental:     false\n containerd:\n  Version:          2.2.1\n  GitCommit:        \n runc:\n  Version:          1.3.4-0ubuntu1~24.04.1\n  GitCommit:        \n docker-init:\n  Version:          0.19.0\n  GitCommit:        \n",
+      "stderr": "\nRunning kernel seems to be up-to-date.\n\nNo services need to be restarted.\n\nNo containers need to be restarted.\n\nNo user sessions are running outdated binaries.\n\nNo VM guests are running outdated hypervisor (qemu) binaries on this host.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api008-linux-0c05c8d7",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n docker run -d --name ab-nfs-api008-registry -p 127.0.0.1:5000:5000 registry:2"
+      ],
+      "rc": 0,
+      "seconds": 6.131,
+      "stdout": "40c0e795d74a8d315a92f46180876817f5bfc3c849ebc4bd57681c2d2dcc83e4\n",
+      "stderr": "Unable to find image 'registry:2' locally\n2: Pulling from library/registry\nddcb6d98388d: Pulling fs layer\n8bbaad1488a8: Pulling fs layer\nbd39ca3613a6: Pulling fs layer\n9a6b3f59ebc2: Pulling fs layer\n95459497489f: Pulling fs layer\nddcb6d98388d: Download complete\n8bbaad1488a8: Download complete\nbd39ca3613a6: Download complete\n94a5ce400b19: Download complete\n9a6b3f59ebc2: Download complete\nc4472e68032e: Download complete\n95459497489f: Download complete\n95459497489f: Pull complete\n8bbaad1488a8: Pull complete\n9a6b3f59ebc2: Pull complete\nbd39ca3613a6: Pull complete\nddcb6d98388d: Pull complete\nDigest: sha256:a3d8aaa63ed8681a604f1dea0aa03f100d5895b6a58ace528858a7b332415373\nStatus: Downloaded newer image for registry:2\n"
+    }
+  ],
+  "cases": [
+    {
+      "name": "fresh owned guest has no NFS installation or attachment",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api008-linux-0c05c8d7",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/home/admin",
+          "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "set -e; test ! -e /etc/autobyteus-nfs/attachment.json; test ! -e /var/lib/autobyteus-nfs; ! grep -E ' nfs4? ' /proc/mounts; if dpkg-query -W -f='${Status}' nfs-ganesha 2>/dev/null | grep -q 'install ok installed'; then exit 1; fi; cat /etc/os-release; uname -a; findmnt -no SOURCE,FSTYPE /; id"
+        ],
+        "rc": 0,
+        "seconds": 0.581,
+        "stdout": "PRETTY_NAME=\"Ubuntu 24.04.5 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.5 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\nLinux ubuntu 7.0.0-38-generic #38~24.04.4-Ubuntu SMP PREEMPT_DYNAMIC Mon Sep 14 17:12:37 UTC 2 aarch64 aarch64 aarch64 GNU/Linux\n/dev/vda1 ext4\nuid=1000(admin) gid=109(admin) groups=109(admin)\n",
+        "stderr": ""
+      },
+      "status": "Pass",
+      "seconds": 0.582
+    },
+    {
+      "name": "Docker only prerequisite in own fresh guest",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api008-linux-0c05c8d7",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/home/admin",
+          "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "set -e; sudo -n apt-get update -qq; sudo -n env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends docker.io; sudo -n systemctl start docker; sudo -n docker version"
+        ],
+        "rc": 0,
+        "seconds": 21.816,
+        "stdout": "Reading package lists...\nBuilding dependency tree...\nReading state information...\nThe following additional packages will be installed:\n  containerd runc\nSuggested packages:\n  aufs-tools cgroupfs-mount | cgroup-lite debootstrap docker-buildx\n  docker-compose-v2 docker-doc rinse zfs-fuse | zfsutils\nRecommended packages:\n  pigz ubuntu-fan\nThe following NEW packages will be installed:\n  containerd docker.io runc\n0 upgraded, 3 newly installed, 0 to remove and 55 not upgraded.\nNeed to get 65.8 MB of archives.\nAfter this operation, 265 MB of additional disk space will be used.\nGet:1 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 runc arm64 1.3.4-0ubuntu1~24.04.1 [8578 kB]\nGet:2 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 containerd arm64 2.2.1-0ubuntu1~24.04.3 [25.2 MB]\nGet:3 http://ports.ubuntu.com/ubuntu-ports noble-updates/universe arm64 docker.io arm64 29.1.3-0ubuntu3~24.04.2 [32.0 MB]\nPreconfiguring packages ...\nFetched 65.8 MB in 7s (9068 kB/s)\nSelecting previously unselected package runc.\r\n(Reading database ... \r(Reading database ... 5%\r(Reading database ... 10%\r(Reading database ... 15%\r(Reading database ... 20%\r(Reading database ... 25%\r(Reading database ... 30%\r(Reading database ... 35%\r(Reading database ... 40%\r(Reading database ... 45%\r(Reading database ... 50%\r(Reading database ... 55%\r(Reading database ... 60%\r(Reading database ... 65%\r(Reading database ... 70%\r(Reading database ... 75%\r(Reading database ... 80%\r(Reading database ... 85%\r(Reading database ... 90%\r(Reading database ... 95%\r(Reading database ... 100%\r(Reading database ... 131560 files and directories currently installed.)\r\nPreparing to unpack .../runc_1.3.4-0ubuntu1~24.04.1_arm64.deb ...\r\nUnpacking runc (1.3.4-0ubuntu1~24.04.1) ...\r\nSelecting previously unselected package containerd.\r\nPreparing to unpack .../containerd_2.2.1-0ubuntu1~24.04.3_arm64.deb ...\r\nUnpacking containerd (2.2.1-0ubuntu1~24.04.3) ...\r\nSelecting previously unselected package docker.io.\r\nPreparing to unpack .../docker.io_29.1.3-0ubuntu3~24.04.2_arm64.deb ...\r\nUnpacking docker.io (29.1.3-0ubuntu3~24.04.2) ...\r\nSetting up runc (1.3.4-0ubuntu1~24.04.1) ...\r\nSetting up containerd (2.2.1-0ubuntu1~24.04.3) ...\r\nCreated symlink /etc/systemd/system/multi-user.target.wants/containerd.service -> /usr/lib/systemd/system/containerd.service.\r\r\nSetting up docker.io (29.1.3-0ubuntu3~24.04.2) ...\r\ninfo: Selecting GID from range 100 to 999 ...\r\ninfo: Adding group `docker' (GID 111) ...\r\nCreated symlink /etc/systemd/system/multi-user.target.wants/docker.service -> /usr/lib/systemd/system/docker.service.\r\r\nCreated symlink /etc/systemd/system/sockets.target.wants/docker.socket -> /usr/lib/systemd/system/docker.socket.\r\r\nProcessing triggers for man-db (2.12.0-4build2) ...\r\nClient:\n Version:           29.1.3\n API version:       1.52\n Go version:        go1.24.4\n Git commit:        29.1.3-0ubuntu3~24.04.2\n Built:             Wed Apr 29 16:41:06 2026\n OS/Arch:           linux/arm64\n Context:           default\n\nServer:\n Engine:\n  Version:          29.1.3\n  API version:      1.52 (minimum version 1.44)\n  Go version:       go1.24.4\n  Git commit:       29.1.3-0ubuntu3~24.04.2\n  Built:            Wed Apr 29 16:41:06 2026\n  OS/Arch:          linux/arm64\n  Experimental:     false\n containerd:\n  Version:          2.2.1\n  GitCommit:        \n runc:\n  Version:          1.3.4-0ubuntu1~24.04.1\n  GitCommit:        \n docker-init:\n  Version:          0.19.0\n  GitCommit:        \n",
+        "stderr": "\nRunning kernel seems to be up-to-date.\n\nNo services need to be restarted.\n\nNo containers need to be restarted.\n\nNo user sessions are running outdated binaries.\n\nNo VM guests are running outdated hypervisor (qemu) binaries on this host.\n"
+      },
+      "status": "Pass",
+      "seconds": 21.816
+    },
+    {
+      "name": "private guest loopback registry for current candidate image only",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api008-linux-0c05c8d7",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/home/admin",
+          "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "sudo -n docker run -d --name ab-nfs-api008-registry -p 127.0.0.1:5000:5000 registry:2"
+        ],
+        "rc": 0,
+        "seconds": 6.131,
+        "stdout": "40c0e795d74a8d315a92f46180876817f5bfc3c849ebc4bd57681c2d2dcc83e4\n",
+        "stderr": "Unable to find image 'registry:2' locally\n2: Pulling from library/registry\nddcb6d98388d: Pulling fs layer\n8bbaad1488a8: Pulling fs layer\nbd39ca3613a6: Pulling fs layer\n9a6b3f59ebc2: Pulling fs layer\n95459497489f: Pulling fs layer\nddcb6d98388d: Download complete\n8bbaad1488a8: Download complete\nbd39ca3613a6: Download complete\n94a5ce400b19: Download complete\n9a6b3f59ebc2: Download complete\nc4472e68032e: Download complete\n95459497489f: Download complete\n95459497489f: Pull complete\n8bbaad1488a8: Pull complete\n9a6b3f59ebc2: Pull complete\nbd39ca3613a6: Pull complete\nddcb6d98388d: Pull complete\nDigest: sha256:a3d8aaa63ed8681a604f1dea0aa03f100d5895b6a58ace528858a7b332415373\nStatus: Downloaded newer image for registry:2\n"
+      },
+      "status": "Pass",
+      "seconds": 6.132
+    }
+  ],
+  "result": "Ready"
+}

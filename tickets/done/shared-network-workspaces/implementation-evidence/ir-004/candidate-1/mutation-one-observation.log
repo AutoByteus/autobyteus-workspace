@@ -1,0 +1,5 @@
+--- FAIL: TestAppleColdRPCStartupRechecksNFSAndMountWithoutReactivation (0.00s)
+    apple_startup_test.go:75: Apple NFS startup at 192.168.1.5 (TCP program 100003 v3): RPC client has not reached the server program 0 [/usr/sbin/rpcinfo --timeout 2 -t 192.168.1.5 100003 3]
+FAIL
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/backend	0.326s
+FAIL

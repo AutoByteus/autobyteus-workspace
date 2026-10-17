@@ -1,0 +1,6 @@
+{
+  "classification": "Harness control-channel assumption during reboot",
+  "actual": "15 scoped passes incl owned Docker recreation; Tart exec shutdown command times out25seconds, so harness exits before independently checking new native boot time/mount. No complete reboot-recovery pass claimed.",
+  "cleanup": "Owned system job/helper deleted, main mount detached, VM stopped, Docker resources cleaned. Credential-free stopped clone reused inFR032.",
+  "next": "Treat reboot control transport as indeterminate, require independently changed kern.boottime plus native same-storage identity/one mount/postboot file reads, not merely invocation status."
+}

@@ -1,8 +1,9 @@
+import { reachingAddressOf } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
+import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { CommittedTaskExecution, TaskExecutionPreparationOperation } from "../domain/prepared-task-execution.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { taskExecutionReferenceKey } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { beginRootTaskActivation, type RegisteredTaskActivation, type TaskExecutionActivationPlan, type TaskExecutionActivationOperation,
-  type PreparedTaskExecutionActivation,
   type RootTaskExecutionAdapter,
   type TaskExecutionActivationCommitResult,
   type TaskExecutionActivationPreparation,
@@ -18,6 +19,7 @@ import { restoreTaskAgentNode, restoreTaskTeamNode } from "../../agent-collabora
 import {
   createCollaborationMemberExecutionIdentity,
   createTeamRootExecutionIdentity,
+  type CollaborationMemberExecutionIdentity,
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
 import { getAgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
@@ -30,7 +32,6 @@ import {
   createTeamAgentStatusSnapshot,
 } from "../domain/team-agent-status.js";
 import type { IndexedTaskExecution } from "../services/team-execution-index.js";
-import { resolveTaskCopyHost } from "../../agent-collaboration/execution/task/task-copy-host.js";
 import { addTaskExecutionToTree, adoptAgentPlatformBindingInTree } from "../services/team-run-execution-tree-mutator.js";
 import { TeamRunPersistenceFinalizationIndeterminateError } from "../services/team-run-persistence-contract.js";
 import type { TeamDelegationPlacement } from "../services/resolved-team-recipient.js";
@@ -57,7 +58,7 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
   constructor(private readonly options: TeamTaskExecutionServiceOptions) {
     this.tokenUsageReadiness = options.tokenUsageMigrationReadiness ?? new TokenUsageMigrationReadiness();
     this.memoryLocator = options.memoryLocator ?? new RootedAgentMemoryLocator();
-    this.sources = new TeamTaskSourceResolver({ config: options.config, getIndex: () => options.getIndex() });
+    this.sources = new TeamTaskSourceResolver({ config: options.config });
   }
 
   isOpen(): boolean { return this.options.isRootOpen(); }
@@ -65,7 +66,8 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
   assertCurrentSchemaReady(): void { this.tokenUsageReadiness.assertCurrentSchemaReady(); }
 
   async planActivation(input: TaskExecutionActivationPreparation<TeamDelegationPlacement>): Promise<TaskExecutionActivationPlan<TeamDelegationPlacement>> {
-    const hostTeamRunId = this.copyHostTeamRunId(input.identity.agentRunId, input.placement.address);
+    // CM-1 refuses every target inside the delegator's own Team, so a new copy is always hosted by the root TeamRun.
+    const hostTeamRunId = this.options.rootTeamRunId;
     let execution: TaskExecutionReference;
     let ingressAgentRunId: string;
     let ownedAgentRunIds: readonly string[];
@@ -132,13 +134,6 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
     return chain.length ? chain : [...this.registrations.values()]
       .filter(entry => entry.ownedAgentRunIds.includes(agentRunId)).map(entry => entry.target.execution);
   }
-  taskExecutionAt(address: string, among: readonly TaskExecutionReference[]) {
-    for (const reference of among) {
-      const entry = this.options.getIndex().getTaskExecution(reference);
-      if (entry?.address === address) return Object.freeze({ root: this.root, execution: reference, ingressAgentRunId: this.ingressOf(entry).agentRunId });
-    }
-    return null;
-  }
   taskExecutionTargetOf(reference: TaskExecutionReference) {
     // The index is keyed by run ID alone: the copy must also be of the requested kind.
     const entry = this.options.getIndex().getTaskExecution(reference);
@@ -159,15 +154,12 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
     this.options.teamRunResolver.getManaged(entry.ownerTeamRunId)?.discardReleasedDirectTaskExecution(reference);
     if ("teamRunId" in reference) this.options.teamRunResolver.retireTerminated(reference.teamRunId);
   }
+  reachingAddressOf(agent: CollaborationMemberExecutionIdentity): AgentTeamAddress | null {
+    return reachingAddressOf(this.options.getIndex(), null, agent);
+  }
   taskExecutionWithIngress(agentRunId: string): TaskExecutionReference | null {
     const innermost = this.options.getIndex().listTaskExecutionChainForAgent(agentRunId)[0];
     return innermost && this.ingressOf(innermost).agentRunId === agentRunId ? referenceOf(innermost) : null;
-  }
-
-  /** REQ-012: the shared copy placement; the root placement is the root TeamRun. */
-  private copyHostTeamRunId(delegatorAgentRunId: string, address: TeamDelegationPlacement["address"]): string {
-    const host = resolveTaskCopyHost(this.options.getIndex(), delegatorAgentRunId, address);
-    return host.hostKind === "team" ? host.hostRunId : this.options.rootTeamRunId;
   }
 
   containsTaskExecution(reference: TaskExecutionReference): boolean { return this.options.getIndex().getTaskExecution(reference) !== null; }
@@ -283,7 +275,7 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
     if (indexed.kind === "agent") return Object.freeze({ agentRunId: indexed.agentRunId, scopeTeamRunId: indexed.ownerTeamRunId });
     const source = this.sources.resolve(indexed.address, indexed.source.source);
     if (!source || source.kind !== "agent_team") {
-      throw new TaskDelegationError("TASK_EXECUTION_CONTEXT_UNAVAILABLE", `AgentTeam '${indexed.address}' is not configured or a collaborator of this run.`);
+      throw new TaskDelegationError("TASK_EXECUTION_CONTEXT_UNAVAILABLE", `AgentTeam '${indexed.address}' is not configured in this run.`);
     }
     const coordinatorAddress = source.node.coordinatorAddress;
     const coordinator = indexed.source.members.find((member) =>
@@ -308,8 +300,6 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
     let nextTreeAtCommit: TeamRunExecutionTreeSnapshot | null = null;
     const result = await this.options.commitTaskActivation({
       prepareAgainstCurrent: () => {
-        const expectedHostTeamRunId = this.copyHostTeamRunId(input.input.identity.agentRunId, input.input.placement.address);
-        if (expectedHostTeamRunId !== input.hostTeamRunId) throw new Error("Task host changed before activation commit.");
         let nextTree = addTaskExecutionToTree({
           tree: this.options.getTree(),
           ownerTeamRunId: input.hostTeamRunId,

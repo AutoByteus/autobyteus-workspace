@@ -1,0 +1,84 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.3-beta.2 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts components/fileExplorer/__tests__/FileExplorerTabs.spec.ts --run --maxWorkers=2
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web
+
+stderr | components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/__tests__/FileExplorerTabs.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/__tests__/FileExplorerTabs.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.spec.ts (2 tests) 18ms
+ ❯ components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts (2 tests | 1 failed) 36ms
+   ✓ FileExplorerTabs unsaved content during peer modification (AC-010) > retains the editor draft for Save, peer modify=false 15ms
+   × FileExplorerTabs unsaved content during peer modification (AC-010) > retains the editor draft for Save, peer modify=true 21ms
+     → expected "wrappedAction" to be called with arguments: [ 'unsaved-workspace', …(2) ]
+
+Received: 
+
+  1st wrappedAction call:
+
+  [
+    "unsaved-workspace",
+    "notes.txt",
+-   "local unsaved draft",
++   "peer committed bytes",
+  ]
+
+
+Number of calls: 1
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts > FileExplorerTabs unsaved content during peer modification (AC-010) > retains the editor draft for Save, peer modify=true
+AssertionError: expected "wrappedAction" to be called with arguments: [ 'unsaved-workspace', …(2) ]
+
+Received: 
+
+  1st wrappedAction call:
+
+  [
+    "unsaved-workspace",
+    "notes.txt",
+-   "local unsaved draft",
++   "peer committed bytes",
+  ]
+
+
+Number of calls: 1
+
+ ❯ components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts:51:20
+     49|       wrapper.findComponent({ name: 'FileViewer' }).vm.$emit('save')
+     50|       await flushPromises()
+     51|       expect(save).toHaveBeenCalledWith(workspaceId, node.path, 'local…
+       |                    ^
+     52|     } finally {
+     53|       wrapper.unmount()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 3 passed (4)
+   Start at  16:35:02
+   Duration  6.36s (transform 3.54s, setup 11.25s, collect 341ms, tests 55ms, environment 485ms, prepare 268ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

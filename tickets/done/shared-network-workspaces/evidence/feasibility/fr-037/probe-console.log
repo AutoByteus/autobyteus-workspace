@@ -1,0 +1,4 @@
+PASS fresh native macOS nfsd serves a selected nonempty local APFS folder with exact peer allowlist
+FAIL native Mac mounts its selected APFS source through actual NFSv3 before Linux-client negotiation RuntimeError("owned VM command failed ('exec', 'ab-sf-fr037-macos', '/usr/bin/sudo'): rpcinfo: can't contact portmapper: rpcinfo: RPC: Timed out\n")
+PROBE FAILURE RuntimeError("owned VM command failed ('exec', 'ab-sf-fr037-macos', '/usr/bin/sudo'): rpcinfo: can't contact portmapper: rpcinfo: RPC: Timed out\n")
+{"run": "ab-sf-fr037-a54f2fa1", "passes": 1, "fatal": "RuntimeError(\"owned VM command failed ('exec', 'ab-sf-fr037-macos', '/usr/bin/sudo'): rpcinfo: can't contact portmapper: rpcinfo: RPC: Timed out\\n\")"}

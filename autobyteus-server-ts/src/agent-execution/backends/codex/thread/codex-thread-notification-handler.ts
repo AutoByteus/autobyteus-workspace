@@ -46,6 +46,7 @@ export const handleAppServerNotification = (
   let eventParams = params;
   const item = asObject(params.item);
   const itemType = asString(item?.type)?.replace(/[_-]/g, "").toLowerCase();
+  codexThread.modelCallTiming.observe(eventMethod, itemType ?? null, params);
   if (eventMethod === CodexThreadEventName.TURN_STARTED) {
     const turn = asObject(params.turn);
     codexThread.markTurnStarted(asString(turn?.id));
@@ -133,6 +134,8 @@ export const handleAppServerNotification = (
           turnId,
           threadId: codexThread.threadId,
           model: codexThread.model,
+          takeModelCallThroughput: (lastOutputTokens) =>
+            codexThread.modelCallTiming.takeForModelCallUsage(lastOutputTokens),
         })
       : null;
     if (!turnId) {

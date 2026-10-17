@@ -1,0 +1,20 @@
+{
+  "at": "2026-10-15T16:55:25.718523+00:00",
+  "preexistingDistTrees": [
+    "applications/brief-studio/dist",
+    "autobyteus-application-backend-sdk/dist",
+    "autobyteus-application-devkit/dist",
+    "autobyteus-application-frontend-sdk/dist",
+    "autobyteus-application-sdk-contracts/dist"
+  ],
+  "fileCount": 286,
+  "aggregateSha256": "0b228f5710ad00e0957faa97592fc2bb3524bffea7cf008aa5f4727417380895",
+  "worktreeRemoval": "Not required: unsafe to remove preexisting unowned untracked/ignored assets, including build output, engine assets and local runtime directories. Retain detached final receipt checkout; no forced clean/removal.",
+  "localTicketAndFinalizeBranches": "Completed: both safely deleted with git branch -d after target push and detach.",
+  "remoteTicketBranch": "Retain published review/checkpoint reference; deletion not required by guide.",
+  "deliveryRuntimeResources": "None started.",
+  "verifiedAfterFinalization": "2026-10-15T16:59:15.315921+00:00",
+  "preexistingDistUnchanged": true,
+  "worktreeState": "Retained detached at finalized state; deletion unsafe/not required; no prune required.",
+  "safeCleanupStatus": "Completed / Not required as scoped; no blocker"
+}

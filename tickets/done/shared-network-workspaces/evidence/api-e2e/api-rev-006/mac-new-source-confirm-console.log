@@ -1,0 +1,9 @@
+Started actual new source owner-private mode and nonroot mounted RW
+actual new source owner-private mode and nonroot mounted RW: Pass
+Started newsource public reconnect
+newsource public reconnect: Pass
+Started safe public detach does not require live source path
+safe public detach does not require live source path: Pass
+Started new source retained no attachment/job/mount
+new source retained no attachment/job/mount: Pass
+{"result": "Pass", "fatal": null}

@@ -14,7 +14,6 @@ import { TokenUsageRunStore } from "../../token-usage/providers/token-usage-run-
 import type { TokenUsageRunSummaryPayload } from "../../agent-execution/domain/agent-run-token-usage.js";
 import {
   catalogCopyExecutionSource,
-  collaboratorExecutionSource,
   taskExecutionListsOf,
 } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
 
@@ -119,22 +118,20 @@ export class AgentOrgMemberRunViewProjectionService {
       throw new Error(`AgentRun '${run}' at '${address}' was not found in AgentOrg '${root}'.`);
     }
     if (!location.configuredPlacement && !childSourceOf(location)) {
-      throw new Error(`AgentRun '${run}' has no configured AgentOrg launch placement, collaborator or catalog source.`);
+      throw new Error(`AgentRun '${run}' has no configured AgentOrg launch placement or catalog source.`);
     }
     return location;
   }
 }
 
 const childSourceOf = (location: LocatedAgentOrgAgentExecution) =>
-  collaboratorExecutionSource(location.tree.rootOrg.collaborators, location.memberAddress)
-  ?? catalogCopyExecutionSource(taskExecutionListsOf({
+  catalogCopyExecutionSource(taskExecutionListsOf({
     taskExecutions: location.tree.rootOrg.taskExecutions,
     teams: location.tree.rootOrg.members.flatMap((member) => "teamRunId" in member ? [member] : []),
-    collaborators: location.tree.rootOrg.collaborators,
   }), location.agentRunId);
 
 const metadataFor = (location: LocatedAgentOrgAgentExecution): AgentRunMetadata => {
-  // A collaborator or catalog-copy run has no configured placement: its entry or recorded source supplies it.
+  // A catalog-copy run has no configured placement: its recorded source supplies it.
   const source = location.configuredPlacement ?? childSourceOf(location)!;
   const launch = source.launchConfiguration;
   return {

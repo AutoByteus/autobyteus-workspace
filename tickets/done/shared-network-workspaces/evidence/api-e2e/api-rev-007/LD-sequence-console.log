@@ -1,0 +1,10 @@
+Starting prepare-linux-docker.py []
+linux-docker-prepare-result.json:Ready
+Starting build-docker-variant.py []
+build-docker-result.json:Ready
+Starting run-docker-selected-create.py []
+docker-selected-create-result.json:Fail
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/run-docker-sequence.py", line 9, in <module>
+    assert p.returncode==0 and d['result']==expected,(script,d.get('fatal'),d.get('error'))
+AssertionError: ('run-docker-selected-create.py', "AssertionError({'configChangedKeys': ['Labels']})", None)

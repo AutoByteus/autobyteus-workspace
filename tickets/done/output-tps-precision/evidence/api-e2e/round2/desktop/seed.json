@@ -1,0 +1,11 @@
+{
+  "runtimeKind": "autobyteus",
+  "model": "deepseek-v4-flash",
+  "writer": "tps-writer",
+  "coordinator": "tps-coordinator",
+  "worker": "tps-worker",
+  "team": "tps-desktop-team-2",
+  "runA": "tps_writer_f969116344614b7d9c310aeb1848509f",
+  "runB": "tps_writer_ad877c347d6f473691093165f8c74a66",
+  "teamRunId": "tps_desktop_team_846351a36c52424996cac7bda3d5fda1"
+}

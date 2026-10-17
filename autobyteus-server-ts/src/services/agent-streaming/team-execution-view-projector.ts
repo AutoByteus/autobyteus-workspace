@@ -1,7 +1,6 @@
 import {
   parseTeamStreamServerMessage,
   type AgentLaunchConfigurationDto,
-  type CollaboratorEntryDto,
   type ConfiguredMemberExecutionDto,
   type LaunchConfigurationSourceDto,
   type TaskExecutionDto,
@@ -14,11 +13,9 @@ import {
   type UserLaunchSelectionDto,
 } from "@autobyteus/team-stream-contracts";
 import type { RootTeamRun, RootTeamRunPackageSnapshot } from "../../agent-team-execution/domain/root-team-run.js";
-import { isCollaboratorTeamEntry, type RecordedMemberLaunch, type UserLaunchSelection } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import type { RecordedMemberLaunch, UserLaunchSelection } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type {
-  CollaboratorEntry,
-  CollaboratorTeamEntry,
   ConfiguredExecutionNode,
   RootConfiguredTeamExecutionNode,
   TaskExecution,
@@ -101,11 +98,6 @@ export const projectSequencedTeamRunEvent = (
         change_sequence: changeSequence,
         task_executions: event.taskExecutions.map(projectTaskExecutionReference),
       } });
-    case TeamRunEventSourceType.COLLABORATOR:
-      return parseTeamStreamServerMessage({ type: "COLLABORATOR_ADDED", payload: {
-        change_sequence: changeSequence,
-        collaborator: projectCollaboratorEntry(event.payload.collaborator),
-      } });
     case TeamRunEventSourceType.DELEGATED_LAUNCH_SELECTIONS:
       return parseTeamStreamServerMessage({ type: "DELEGATED_LAUNCH_SELECTIONS_CHANGED", payload: {
         change_sequence: changeSequence,
@@ -162,7 +154,6 @@ export const projectExecutionTree = (tree: TeamRunExecutionTreeSnapshot): TeamRu
     coordinator_address: tree.rootTeam.coordinatorAddress,
     default_launch_configuration: projectLaunchConfiguration(tree.rootTeam.defaultLaunchConfiguration),
     members: tree.rootTeam.members.map(projectConfiguredMember),
-    collaborators: tree.rootTeam.collaborators.map(projectCollaboratorEntry),
     task_executions: tree.rootTeam.taskExecutions.map(projectTaskExecution),
   },
 });
@@ -188,31 +179,6 @@ const optionalSelection = <K extends "user_launch_selection" | "user_team_launch
   } } : {}) as Partial<Record<K, UserLaunchSelectionDto>>;
 const optionalSource = <K extends string>(key: K, source: LaunchConfigurationSource | undefined) =>
   (source ? { [key]: projectLaunchSource(source) } : {}) as Partial<Record<K, LaunchConfigurationSourceDto>>;
-
-export const projectCollaboratorEntry = (entry: CollaboratorEntry): CollaboratorEntryDto => entry.kind === "agent"
-  ? {
-      kind: "agent", address: entry.address, agent_definition_id: entry.agentDefinitionId,
-      agent_run_id: entry.agentRunId, platform_agent_run_id: entry.platformAgentRunId,
-      launch_configuration: projectLaunchConfiguration(entry.launchConfiguration),
-      ...optionalSource("launch_source", entry.launchSource),
-      added_at: entry.addedAt, added_via_agent_run_id: entry.addedViaAgentRunId,
-      ...optionalSelection("user_launch_selection", entry.userLaunchSelection),
-    }
-  : {
-      kind: "agent_team", address: entry.address, team_definition_id: entry.teamDefinitionId,
-      team_run_id: entry.teamRunId, coordinator_address: entry.coordinatorAddress,
-      members: entry.members.map((member) => ({
-        address: member.address, agent_definition_id: member.agentDefinitionId,
-        agent_run_id: member.agentRunId, platform_agent_run_id: member.platformAgentRunId, ...projectMemberLaunch(member),
-        ...optionalSelection("user_launch_selection", member.userLaunchSelection),
-      })),
-      handoffs: entry.handoffs.map((handoff) => ({ from: handoff.from, to: handoff.to, rules: [...handoff.rules] })),
-      default_launch_configuration: projectLaunchConfiguration(entry.defaultLaunchConfiguration),
-      ...optionalSource("default_launch_source", entry.defaultLaunchSource),
-      task_executions: entry.taskExecutions.map(projectTaskExecution),
-      added_at: entry.addedAt, added_via_agent_run_id: entry.addedViaAgentRunId,
-      ...optionalSelection("user_team_launch_selection", entry.userTeamLaunchSelection),
-    };
 
 const projectConfiguredMember = (member: ConfiguredExecutionNode): ConfiguredMemberExecutionDto => {
   return {
@@ -284,14 +250,14 @@ const findTaskExecution = (
   reference: TaskExecutionReference,
 ): { parentTeamRunId: string; execution: TaskExecution } | null => {
   const visit = (
-    team: RootConfiguredTeamExecutionNode | TaskTeamExecution | TaskTeamNestedTeamExecution | CollaboratorTeamEntry,
+    team: RootConfiguredTeamExecutionNode | TaskTeamExecution | TaskTeamNestedTeamExecution,
   ): { parentTeamRunId: string; execution: TaskExecution } | null => {
     const own = team.taskExecutions.find((execution) =>
       "agentRunId" in reference
         ? "agentRunId" in execution && execution.agentRunId === reference.agentRunId
         : "teamRunId" in execution && execution.teamRunId === reference.teamRunId);
     if (own) return { parentTeamRunId: team.teamRunId, execution: own };
-    if (!("teamDefinitionName" in team) && !("kind" in team)) for (const member of team.members) {
+    if (!("teamDefinitionName" in team)) for (const member of team.members) {
       if (!("teamRunId" in member)) continue;
       const nested = visit(member);
       if (nested) return nested;
@@ -304,10 +270,5 @@ const findTaskExecution = (
     }
     return null;
   };
-  // A collaborator Team hosts its members' delegations.
-  for (const team of [tree.rootTeam, ...tree.rootTeam.collaborators.filter(isCollaboratorTeamEntry)]) {
-    const found = visit(team);
-    if (found) return found;
-  }
-  return null;
+  return visit(tree.rootTeam);
 };

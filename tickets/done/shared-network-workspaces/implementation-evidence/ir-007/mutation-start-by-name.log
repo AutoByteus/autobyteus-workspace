@@ -1,0 +1,5 @@
+--- FAIL: TestFailedStartSameIDProofAndConsumption (0.04s)
+    start_recovery_test.go:140: unexpected operation (no names/recreate/pull/stop/config allowed): POST http://docker/v1.47/containers/%2Fnode-one/start
+FAIL
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/docker	0.381s
+FAIL

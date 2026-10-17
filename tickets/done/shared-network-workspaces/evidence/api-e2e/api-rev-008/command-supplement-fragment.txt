@@ -1,0 +1,40 @@
+ def shell(who,script,check=True):
+  a=['sudo','-n','docker','exec','--user','1000:109',['ab-nfs-api008-cmd-a','ab-nfs-api008-cmd-b'][who],'env','-i','HOME=/tmp/api008-test-home','PATH=/usr/local/bin:/usr/bin:/bin','sh','-ec',script]
+  p=sp.run(a,capture_output=True,text=True,timeout=45);z={'actor':who,'argv':a,'rc':p.returncode,'stdout':p.stdout,'stderr':p.stderr};out['commands'].append(z);save()
+  if check:assert p.returncode==0,z
+  return z
+ def shell_operations():
+  rows=[]
+  for a in [0,1]:
+   p=pj(a,'/shell-'+str(a));qp=shlex.quote(p)
+   rows.append(shell(a,'mkdir '+qp+'; cd '+qp+"; printf 'first\\nsecond\\n' > '雪 space.txt'; cat '雪 space.txt'; sha256sum '雪 space.txt'; printf 'third\\n' >> '雪 space.txt'; sed -i 's/second/changed/' '雪 space.txt'; printf 'first\\nchanged\\nthird\\n' > expected; cmp '雪 space.txt' expected; truncate -s 5 '雪 space.txt'; printf first > expected; cmp '雪 space.txt' expected; wc -c '雪 space.txt'; cp '雪 space.txt' temporary; mv temporary published; mkdir nested; touch nested/file; if rmdir nested 2>rmdir-error; then exit 20; fi; grep -q 'not empty' rmdir-error; stat -c '%s:%a' published"))
+   rows.append(shell(1-a,'cd '+qp+"; printf first > peer-expected; cmp published peer-expected; cmp '雪 space.txt' peer-expected; cat published; sha256sum published; find nested -type f; rm nested/file; rmdir nested; rm published; test ! -e published"))
+  return rows
+ case('FS03-FS04-FS05 shell updates names truncate nonempty-directory',shell_operations)
+ def atomic_reader():
+  rows=[]
+  for writer,reader in [(0,1),(1,0)]:
+   path=pj(writer,'/atomic-reader-'+str(writer));commit(writer,path,"b'A'*1048576")
+   code="""import pathlib,hashlib,time,json
+p=pathlib.Path(PATH);allowed={hashlib.sha256(b'A'*1048576).hexdigest(),hashlib.sha256(b'B'*1048576).hexdigest()};counts={};print('READY',flush=True);start=time.monotonic()
+while time.monotonic()-start<3:
+ b=p.read_bytes();h=hashlib.sha256(b).hexdigest();assert h in allowed and len(b)==1048576,(len(b),h);counts[h]=counts.get(h,0)+1
+print(json.dumps({'start':start,'end':time.monotonic(),'counts':counts,'reads':sum(counts.values())}),flush=True)
+""".replace('PATH',repr(path))
+   p=sp.Popen(argv(reader,code),stdout=sp.PIPE,stderr=sp.PIPE,text=True);assert p.stdout.readline().strip()=='READY'
+   try:
+    w=jrun(writer,"import pathlib,os,time,json;p=pathlib.Path("+repr(path)+");start=time.monotonic();\nfor i in range(100):\n q=p.with_name(p.name+'.tmp');f=q.open('wb');f.write((b'B' if i%2==0 else b'A')*1048576);f.flush();os.fsync(f.fileno());f.close();os.replace(q,p);time.sleep(.01)\nprint(json.dumps({'start':start,'end':time.monotonic(),'replacements':100}))")
+    so,se=p.communicate(timeout=10);assert p.returncode==0,(so,se);v=json.loads(so);assert v['reads']>1 and len(v['counts'])==2 and v['start']<w['end'] and w['start']<v['end'];rows.append({'writer':writer,'reader':reader,'write':w,'read':v,'readerCode':code})
+   finally:
+    if p.poll() is None:p.terminate();p.wait(timeout=10)
+  return rows
+ case('FS08 atomic replacement concurrent complete-reader',atomic_reader)
+ def git_index_lock():
+  p=pj(0,'/git');q=shlex.quote(p);prefix='git -c safe.directory='+q+' -C '+q
+  a=shell(0,'printf HELD > '+q+'/.git/index.lock')
+  try:
+   b=shell(1,prefix+' add shared.txt',check=False);assert b['rc']!=0 and 'index.lock' in b['stderr'] and ('exists' in b['stderr'] or 'another git process' in b['stderr'].lower()),b
+  finally:shell(0,'rm '+q+'/.git/index.lock')
+  c=shell(1,prefix+' add shared.txt; '+prefix+' status --porcelain');assert c['stdout']==''
+  return [a,b,c]
+ case('FS12 Git index-lock refusal and after-release success',git_index_lock)

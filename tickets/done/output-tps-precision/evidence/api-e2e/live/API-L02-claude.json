@@ -1,0 +1,130 @@
+{
+  "caseId": "API-L02-claude",
+  "runtimeKind": "claude_agent_sdk",
+  "model": "haiku",
+  "runId": "tps_live_claude_agent_sdk_77d668e5_8957_40f7_816_d251b02173714d58a389b21b3089c3c7",
+  "sentAtMs": 1791965187235,
+  "turnCompletedAtMsSinceSend": 5110,
+  "modelCallCount": 1,
+  "text": "Rivers shape valleys through a combination of erosion, transport, and deposition. As water flows downhill, it carries sediment and rock fragments that grind against the riverbed and banks, gradually deepening the channel through a process called downcutting. Over long periods, this vertical cutting creates steep-walled V-shaped valleys in young landscapes, where the river has the energy to remove material faster than the surrounding slopes can weather. Meanwhile, lateral erosion widens the valley as the river swings back and forth across its floodplain, undercutting banks and causing them to collapse. Hydraulic action, abrasion, and chemical dissolution all contribute to this work. Sediment deposited during floods builds fertile floodplains and terraces, which record past positions of the river. Over time, a mature river may carve a broad, gently sloping valley with meanders and oxbow lakes. The overall shape of a valley therefore reflects the river's energy, the volume of water and load it carries, the hardness of the underlying rock, and the tectonic uplift that drives renewed incision.",
+  "contentWindow": {
+    "frames": 1,
+    "firstAtMsSinceSend": 5024,
+    "lastAtMsSinceSend": 5024
+  },
+  "timeline": [
+    {
+      "atMsSinceSend": 16,
+      "type": "AGENT_STATUS"
+    },
+    {
+      "atMsSinceSend": 16,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 16,
+      "type": "AGENT_STATUS"
+    },
+    {
+      "atMsSinceSend": 16,
+      "type": "TURN_STARTED"
+    },
+    {
+      "atMsSinceSend": 16,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 16,
+      "type": "AGENT_COMMAND_ACK"
+    },
+    {
+      "atMsSinceSend": 16,
+      "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+    },
+    {
+      "atMsSinceSend": 16,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 16,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 5024,
+      "type": "SEGMENT_START"
+    },
+    {
+      "atMsSinceSend": 5024,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 5024,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 5024,
+      "type": "SEGMENT_END"
+    },
+    {
+      "atMsSinceSend": 5024,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 5092,
+      "type": "TOKEN_USAGE_UPDATED",
+      "call_sequence": null,
+      "reports_model_call": true,
+      "model_identifier": "claude-haiku-5-5",
+      "reported_output_tokens": 348,
+      "reasoning_output_tokens": 0,
+      "output_throughput": {
+        "method": "generation",
+        "output_tokens": 348,
+        "duration_ms": 2003
+      },
+      "raw_usage_json": null
+    },
+    {
+      "atMsSinceSend": 5092,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 5110,
+      "type": "TOKEN_USAGE_UPDATED",
+      "call_sequence": null,
+      "reports_model_call": false,
+      "model_identifier": "claude-haiku-5-5",
+      "reported_output_tokens": 14,
+      "reasoning_output_tokens": null,
+      "output_throughput": null,
+      "raw_usage_json": null
+    },
+    {
+      "atMsSinceSend": 5110,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 5110,
+      "type": "TURN_COMPLETED"
+    },
+    {
+      "atMsSinceSend": 5110,
+      "type": "AGENT_STATUS"
+    },
+    {
+      "atMsSinceSend": 5110,
+      "type": "AGENT_INPUT_STATE"
+    }
+  ],
+  "readings": [
+    {
+      "method": "generation",
+      "output_tokens": 348,
+      "duration_ms": 2003,
+      "tokensPerSecond": 173.7,
+      "receivedAtMsSinceSend": 5092,
+      "call_sequence": null,
+      "model": "claude-haiku-5-5"
+    }
+  ]
+}

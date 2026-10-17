@@ -37,7 +37,6 @@ const agentOrgDefinitionGroup = (): AgentOrgHistoryDefinitionGroup => {
         applicationBinding: null,
         handoffs: [],
         rootOrg: {
-          collaborators: [],
           address: '/', orgDefinitionId: 'org-definition', orgDefinitionName: 'Delivery Org', orgRunId: 'org-run',
           defaultLaunchConfiguration: launch, taskExecutions: [],
           members: [{

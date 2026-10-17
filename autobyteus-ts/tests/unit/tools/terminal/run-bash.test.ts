@@ -208,3 +208,19 @@ describe('runBash', () => {
   });
 
 });
+
+describe('host-supplied terminal child environment', () => {
+  it('passes per-execution values to the child without changing process.env', async () => {
+    const root = createTempWorkspace();
+    const before = process.env.AUTOBYTEUS_TEST_CHILD_ONLY;
+    const context = {
+      workspaceRootPath: root,
+      customData: { terminalChildEnvironment: () => ({ PATH: process.env.PATH, AUTOBYTEUS_TEST_CHILD_ONLY: 'private-project' }) },
+    };
+    const result = await runBash(context, 'printf "%s" "$AUTOBYTEUS_TEST_CHILD_ONLY"', root);
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toBe('private-project');
+    expect(process.env.AUTOBYTEUS_TEST_CHILD_ONLY).toBe(before);
+    expect(JSON.stringify(context.customData)).not.toContain('private-project');
+  });
+});

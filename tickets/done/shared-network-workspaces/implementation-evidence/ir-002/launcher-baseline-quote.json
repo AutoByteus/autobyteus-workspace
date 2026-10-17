@@ -1,0 +1,7 @@
+{
+  "shell": "/bin/bash (macOS system Bash)",
+  "input": "/tmp/install bin's",
+  "baseline": "'/tmp/install bin\\'\\\\'\\'s'",
+  "expected": "'/tmp/install bin'\\''s'",
+  "fixed": "'/tmp/install bin'\\''s'"
+}

@@ -47,9 +47,15 @@ export class LlmResponseStreamCollector {
   get usage(): LlmTokenUsageObservation | null { return this.responseUsage; }
   get finish(): LlmResponseFinish | null { return this.responseFinish; }
 
-  async consume(stream: AsyncIterable<ChunkResponse>, scope: TurnExecutionScope): Promise<void> {
+  /** `observeChunk` sees every chunk after the chunk fence, before it is accumulated (call timing). */
+  async consume(
+    stream: AsyncIterable<ChunkResponse>,
+    scope: TurnExecutionScope,
+    observeChunk?: (chunk: ChunkResponse) => void,
+  ): Promise<void> {
     for await (const chunk of scope.iterateAbortable({ kind: 'llm_stream' }, stream)) {
       scope.throwIfAborted({ kind: 'llm_stream_chunk' });
+      observeChunk?.(chunk);
       this.accumulate(chunk);
       if (chunk.reasoning) this.emitReasoning(chunk.reasoning);
       this.handler.feed(chunk);

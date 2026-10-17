@@ -80,13 +80,14 @@ const createFakeAdapter = (overrides: Partial<RootTaskExecutionAdapter<string>> 
     isOpen: () => true,
     authorize: () => undefined,
     assertCurrentSchemaReady: () => undefined,
+    reachingAddressOf: vi.fn(() => null),
     root: caller.root,
     planActivation: vi.fn(async input => ({ ...input, ownedAgentRunIds: ["child-run"],
       target: { root: caller.root, execution: { agentRunId: "child-run" }, ingressAgentRunId: "child-run" } })),
     beginActivation: vi.fn(() => ({ prepare: async () => ({ targetAgentRunId: "child-run",
       commit: async () => ({ committed: true }), acceptSeed: async guard => { guard(); return { accepted: true }; } }),
       cancel: vi.fn(), release: vi.fn(async () => ({ accepted: true })), })),
-    registrationFor: () => null, taskExecutionAt: () => null, taskExecutionTargetOf: () => null,
+    registrationFor: () => null, taskExecutionTargetOf: () => null,
     ownershipChainFor: (agentRunId) => state.chains.get(agentRunId) ?? [],
     cancelOwnedExecution: vi.fn(), releaseOwnedExecution: vi.fn(async () => ({ accepted: false, code: "UNAVAILABLE" })),
     taskExecutionChainFor: (agentRunId) => state.chains.get(agentRunId) ?? [],
@@ -170,13 +171,34 @@ describe("RootTaskExecutionLifecycle delegation result", () => {
       .resolves.toEqual({ delegated: false, message: "Agent '/missing' was not found." });
   });
 
-  it("builds the first message with the delegator address and run ID", async () => {
+  it("builds the first message with the delegator's sender run id only when its address does not reach it (wording §7.1, SR-015)", async () => {
     const { lifecycle, adapter } = setup();
     await lifecycle.delegateToNewCopy({ identity: caller }, { recipient_address: "/worker", description: "Review the plan" }, "placement");
     const packet = vi.mocked(adapter.planActivation).mock.calls[0]![0].workPacket as AgentInputUserMessage;
-    expect(packet.content).toContain("Task delegator address: /coordinator");
-    expect(packet.content).toContain("Task delegator AgentRun ID: coordinator-run");
+    expect(packet.content).toBe([
+      'You have a new task from the agent with sender run id "coordinator-run".',
+      "When you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id set to that sender run id.",
+      "",
+      "Description:",
+      "Review the plan",
+    ].join("\n"));
+    expect(packet.content).not.toContain("/coordinator");
     expect(packet.content).toContain("Review the plan");
+  });
+
+  it("gives the delegator's sender address with its run id when that address reaches it run-wide (design T-5)", async () => {
+    const { lifecycle, adapter } = setup();
+    vi.mocked(adapter.reachingAddressOf).mockReturnValue("/coordinator" as never);
+    await lifecycle.delegateToNewCopy({ identity: caller }, { recipient_address: "/worker", description: "Review the plan" }, "placement");
+    expect(adapter.reachingAddressOf).toHaveBeenCalledWith(caller);
+    const packet = vi.mocked(adapter.planActivation).mock.calls[0]![0].workPacket as AgentInputUserMessage;
+    expect(packet.content).toBe([
+      'You have a new task from the agent with sender address "/coordinator" and sender run id "coordinator-run".',
+      "When you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both).",
+      "",
+      "Description:",
+      "Review the plan",
+    ].join("\n"));
   });
 });
 
@@ -488,6 +510,7 @@ describe("RootTaskExecutionLifecycle wake leases", () => {
     state.restoreFailure = new Error("provider session unavailable");
     await expect(lifecycle.acquireLiveLease("nested-run")).rejects.toMatchObject({
       code: "TASK_EXECUTION_RESTORE_FAILED",
+      message: "The task agent nested-run could not continue with its conversation: provider session unavailable",
     });
     expect(state.live.has("team:task-team-run")).toBe(true);
     expect(timers.pendingCount()).toBe(1);
@@ -511,10 +534,6 @@ describe("RootTaskExecutionLifecycle launch notes (DS-003, DS-004 b; REQ-008)", 
         const id = `run-${++next}`;
         return { ...input, ownedAgentRunIds: [id], target: { root: caller.root, execution: { agentRunId: id }, ingressAgentRunId: id } };
       }),
-      taskExecutionAt: (address, among) => {
-        const found = address === "/helper" ? among.find((reference) => "agentRunId" in reference && reference.agentRunId !== "run-1") : undefined;
-        return found && "agentRunId" in found ? { root: caller.root, execution: found, ingressAgentRunId: found.agentRunId } : null;
-      },
     });
     return fake;
   };
@@ -526,21 +545,6 @@ describe("RootTaskExecutionLifecycle launch notes (DS-003, DS-004 b; REQ-008)", 
       .resolves.toEqual({ delegated: true, copy: { kind: "agent", agentRunId: "run-1" }, taskId: "ad_hoc_task_1", launchNotes: ["worker: fell back"] });
     await expect(lifecycle.delegateToNewCopy({ identity: caller }, { recipient_address: "/worker", description: "Again" }, { launchNotes: [] }))
       .resolves.toEqual({ delegated: true, copy: { kind: "agent", agentRunId: "run-2" }, taskId: "ad_hoc_task_2" });
-  });
-
-  it("a Task helper returns notes only from the dispatch that started it (or the attempt it joined); a reused helper has none", async () => {
-    const { lifecycle, state } = notesSetup();
-    await lifecycle.delegateToNewCopy({ identity: caller }, { recipient_address: "/worker", description: "Do it" }, {});
-    state.chains.set("run-1", [{ agentRunId: "run-1" }]);
-    const placement = { launchNotes: ["helper: its agent default could not be used"] };
-    const [first, joined] = await Promise.all([
-      lifecycle.ensureTaskHelper({ identity: worker }, "/helper", placement),
-      lifecycle.ensureTaskHelper({ identity: worker }, "/helper", placement),
-    ]);
-    expect(first).toEqual({ target: { root: caller.root, execution: { agentRunId: "run-2" }, ingressAgentRunId: "run-2" }, launchNotes: placement.launchNotes });
-    expect(joined).toEqual(first);
-    const reused = await lifecycle.ensureTaskHelper({ identity: worker }, "/helper", placement);
-    expect(reused).toEqual({ target: { root: caller.root, execution: { agentRunId: "run-2" }, ingressAgentRunId: "run-2" } });
   });
 });
 
@@ -614,7 +618,7 @@ describe("RootTaskExecutionLifecycle user Stop (SR-006, DS-002)", () => {
     const stop = lifecycle.stopForUser([child]);
     await flush();
     await expect(lifecycle.withLiveLease("child-run", async () => ({ accepted: true as const })))
-      .resolves.toEqual({ accepted: false, code: "TASK_EXECUTION_STOPPING", message: "This copy is being stopped by the user." });
+      .resolves.toEqual({ accepted: false, code: "TASK_EXECUTION_STOPPING", message: "The user is stopping this task agent." });
     await expect(lifecycle.acquireLiveLease("child-run")).rejects.toMatchObject({ code: "TASK_EXECUTION_STOPPING" });
     finishStop();
     await stop;

@@ -1,0 +1,166 @@
+{
+  "result": "Complete",
+  "resources": [
+    {
+      "name": "ab-nfs-api006-mac-a0000f39",
+      "pid": 9045,
+      "home": "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/driver-home",
+      "tartHome": "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tart-state",
+      "os": "mac",
+      "guestFinal": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api006-mac-a0000f39",
+          "/bin/sh",
+          "-c",
+          "set -e; sudo -n test ! -e \"/Library/Application Support/AutoByteusNFS/attachment.json\"; test ! -e /Library/LaunchDaemons/com.autobyteus.nfs.plist; ! /sbin/mount | grep \" on /Volumes/autobyteus-shared \"; cat /Users/admin/ab-nfs-api006-mac-a0000f39-source/project/preexisting.txt; cat /Users/admin/ab-nfs-api006-mac-a0000f39-source/.autobyteus-nfs/storage.json; stat -f \"%i:%u:%g:%Lp\" /Users/admin/ab-nfs-api006-mac-a0000f39-source /Users/admin/ab-nfs-api006-mac-a0000f39-source-new; /usr/bin/hdiutil info"
+        ],
+        "rc": 0,
+        "stdout": "ORIGINAL_API006_MAC{\"storageId\":\"4ff085b0-3304-4023-a5c2-9834e38aec72\"}\n507558:501:20:755\n519378:501:20:700\nframework       : 683.160.3\ndriver          : 683.160.3\nimages          : 2\n================================================\nimage-path      : /System/Library/AssetsV2/com_apple_MobileAsset_UAF_Siri_Understanding/purpose_auto/c10eb90af2d4996616c3cd0f6bac0833eb4925fa.asset/AssetData/Restore/UC_SIRI_ASR_ASSISTANT_EN_US_EN_US_MACVM_Cryptex.dmg\nimage-alias     : /System/Library/AssetsV2/com_apple_MobileAsset_UAF_Siri_Understanding/purpose_auto/c10eb90af2d4996616c3cd0f6bac0833eb4925fa.asset/AssetData/Restore/UC_SIRI_ASR_ASSISTANT_EN_US_EN_US_MACVM_Cryptex.dmg\nshadow-path     : <none>\nicon-path       : <none>\nimage-type      : <unknown>\nsystem-image    : false\nblockcount      : 1064960\nblocksize       : 512\nwriteable       : false\nautodiskmount   : false\nremovable       : TRUE\nimage-encrypted : <false>\nmounting user   : root\nmounting mode   : <unknown>\nprocess ID      : <in-kernel>\nframework name  : DiskImages\n/dev/disk3\t\t\n/dev/disk4\tEF57347C-0000-11AA-AA11-00306543ECAC\t\n/dev/disk4s1\t41504653-0000-11AA-AA11-00306543ECAC\t/System/Library/AssetsV2/com_apple_MobileAsset_UAF_Siri_Understanding/purpose_auto/c10eb90af2d4996616c3cd0f6bac0833eb4925fa.asset/.AssetData\n================================================\nimage-path      : /System/Library/AssetsV2/com_apple_MobileAsset_PKITrustStore/purpose_auto/6dd55b0d06633a00de6f57ccb910a66a5ba2409a.asset/AssetData/Restore/SECUREPKITRUSTSTOREASSETS_SECUREPKITRUSTSTORE_Cryptex.dmg\nimage-alias     : /System/Library/AssetsV2/com_apple_MobileAsset_PKITrustStore/purpose_auto/6dd55b0d06633a00de6f57ccb910a66a5ba2409a.asset/AssetData/Restore/SECUREPKITRUSTSTOREASSETS_SECUREPKITRUSTSTORE_Cryptex.dmg\nshadow-path     : <none>\nicon-path       : <none>\nimage-type      : <unknown>\nsystem-image    : false\nblockcount      : 8192\nblocksize       : 512\nwriteable       : false\nautodiskmount   : false\nremovable       : TRUE\nimage-encrypted : <false>\nmounting user   : root\nmounting mode   : <unknown>\nprocess ID      : <in-kernel>\nframework name  : DiskImages\n/dev/disk5\t\t\n/dev/disk6\tEF57347C-0000-11AA-AA11-00306543ECAC\t\n/dev/disk6s1\t41504653-0000-11AA-AA11-00306543ECAC\t/System/Library/AssetsV2/com_apple_MobileAsset_PKITrustStore/purpose_auto/6dd55b0d06633a00de6f57ccb910a66a5ba2409a.asset/.AssetData\n",
+        "stderr": ""
+      },
+      "processAbsent": true,
+      "cloneAbsent": true
+    },
+    {
+      "name": "ab-nfs-api006-linux-4fdb190d",
+      "pid": 87810,
+      "home": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api006-mvw23zqb/home",
+      "tartHome": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api006-mvw23zqb/linux-tart-state",
+      "os": "linux",
+      "guestFinal": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api006-linux-4fdb190d",
+          "/bin/sh",
+          "-c",
+          "set -e; sudo -n test ! -e /var/lib/autobyteus-nfs/attachment.json; test ! -e /etc/systemd/system/autobyteus-nfs.service; ! findmnt -n -t nfs,nfs4 /Volumes/autobyteus-shared; cat /home/admin/ab-nfs-api006-linux-4fdb190d-native-source/project/preexisting.txt; cat /home/admin/ab-nfs-api006-linux-4fdb190d-native-source/.autobyteus-nfs/storage.json; stat -c \"%d:%i:%u:%g:%a\" /home/admin/ab-nfs-api006-linux-4fdb190d-native-source /home/admin/ab-nfs-api006-linux-4fdb190d-native-source-new"
+        ],
+        "rc": 0,
+        "stdout": "ORIGINAL_API006{\"storageId\":\"79e3b34c-9133-4d59-99e0-f5cf0cfab07b\"}\n64769:786445:1000:109:755\n64769:786458:1000:109:750\n",
+        "stderr": ""
+      },
+      "processAbsent": true,
+      "cloneAbsent": true
+    }
+  ],
+  "scope": "Only exact owned API006 VMs and own scratch; source bytes/marker/modes proved before disposable fixtures retired. No host mount/service/app/node or public cache changes.",
+  "commands": [
+    {
+      "argv": [
+        "/bin/ps",
+        "-p",
+        "9045",
+        "-o",
+        "command="
+      ],
+      "rc": 0,
+      "stdout": "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart run ab-nfs-api006-mac-a0000f39 --no-graphics --no-audio --no-clipboard --no-usb-accessories\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-mac-a0000f39",
+        "/bin/sh",
+        "-c",
+        "set -e; sudo -n test ! -e \"/Library/Application Support/AutoByteusNFS/attachment.json\"; test ! -e /Library/LaunchDaemons/com.autobyteus.nfs.plist; ! /sbin/mount | grep \" on /Volumes/autobyteus-shared \"; cat /Users/admin/ab-nfs-api006-mac-a0000f39-source/project/preexisting.txt; cat /Users/admin/ab-nfs-api006-mac-a0000f39-source/.autobyteus-nfs/storage.json; stat -f \"%i:%u:%g:%Lp\" /Users/admin/ab-nfs-api006-mac-a0000f39-source /Users/admin/ab-nfs-api006-mac-a0000f39-source-new; /usr/bin/hdiutil info"
+      ],
+      "rc": 0,
+      "stdout": "ORIGINAL_API006_MAC{\"storageId\":\"4ff085b0-3304-4023-a5c2-9834e38aec72\"}\n507558:501:20:755\n519378:501:20:700\nframework       : 683.160.3\ndriver          : 683.160.3\nimages          : 2\n================================================\nimage-path      : /System/Library/AssetsV2/com_apple_MobileAsset_UAF_Siri_Understanding/purpose_auto/c10eb90af2d4996616c3cd0f6bac0833eb4925fa.asset/AssetData/Restore/UC_SIRI_ASR_ASSISTANT_EN_US_EN_US_MACVM_Cryptex.dmg\nimage-alias     : /System/Library/AssetsV2/com_apple_MobileAsset_UAF_Siri_Understanding/purpose_auto/c10eb90af2d4996616c3cd0f6bac0833eb4925fa.asset/AssetData/Restore/UC_SIRI_ASR_ASSISTANT_EN_US_EN_US_MACVM_Cryptex.dmg\nshadow-path     : <none>\nicon-path       : <none>\nimage-type      : <unknown>\nsystem-image    : false\nblockcount      : 1064960\nblocksize       : 512\nwriteable       : false\nautodiskmount   : false\nremovable       : TRUE\nimage-encrypted : <false>\nmounting user   : root\nmounting mode   : <unknown>\nprocess ID      : <in-kernel>\nframework name  : DiskImages\n/dev/disk3\t\t\n/dev/disk4\tEF57347C-0000-11AA-AA11-00306543ECAC\t\n/dev/disk4s1\t41504653-0000-11AA-AA11-00306543ECAC\t/System/Library/AssetsV2/com_apple_MobileAsset_UAF_Siri_Understanding/purpose_auto/c10eb90af2d4996616c3cd0f6bac0833eb4925fa.asset/.AssetData\n================================================\nimage-path      : /System/Library/AssetsV2/com_apple_MobileAsset_PKITrustStore/purpose_auto/6dd55b0d06633a00de6f57ccb910a66a5ba2409a.asset/AssetData/Restore/SECUREPKITRUSTSTOREASSETS_SECUREPKITRUSTSTORE_Cryptex.dmg\nimage-alias     : /System/Library/AssetsV2/com_apple_MobileAsset_PKITrustStore/purpose_auto/6dd55b0d06633a00de6f57ccb910a66a5ba2409a.asset/AssetData/Restore/SECUREPKITRUSTSTOREASSETS_SECUREPKITRUSTSTORE_Cryptex.dmg\nshadow-path     : <none>\nicon-path       : <none>\nimage-type      : <unknown>\nsystem-image    : false\nblockcount      : 8192\nblocksize       : 512\nwriteable       : false\nautodiskmount   : false\nremovable       : TRUE\nimage-encrypted : <false>\nmounting user   : root\nmounting mode   : <unknown>\nprocess ID      : <in-kernel>\nframework name  : DiskImages\n/dev/disk5\t\t\n/dev/disk6\tEF57347C-0000-11AA-AA11-00306543ECAC\t\n/dev/disk6s1\t41504653-0000-11AA-AA11-00306543ECAC\t/System/Library/AssetsV2/com_apple_MobileAsset_PKITrustStore/purpose_auto/6dd55b0d06633a00de6f57ccb910a66a5ba2409a.asset/.AssetData\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "stop",
+        "ab-nfs-api006-mac-a0000f39",
+        "--timeout",
+        "15"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "delete",
+        "ab-nfs-api006-mac-a0000f39"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "list"
+      ],
+      "rc": 0,
+      "stdout": "Source Name                                                                                                        Disk  Size  Accessed       State  \nOCI    ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377 50\u00a0GB 33\u00a0GB vor 15 Minuten stopped\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/bin/ps",
+        "-p",
+        "87810",
+        "-o",
+        "command="
+      ],
+      "rc": 0,
+      "stdout": "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart run ab-nfs-api006-linux-4fdb190d --no-graphics --no-audio --no-clipboard --no-usb-accessories\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-linux-4fdb190d",
+        "/bin/sh",
+        "-c",
+        "set -e; sudo -n test ! -e /var/lib/autobyteus-nfs/attachment.json; test ! -e /etc/systemd/system/autobyteus-nfs.service; ! findmnt -n -t nfs,nfs4 /Volumes/autobyteus-shared; cat /home/admin/ab-nfs-api006-linux-4fdb190d-native-source/project/preexisting.txt; cat /home/admin/ab-nfs-api006-linux-4fdb190d-native-source/.autobyteus-nfs/storage.json; stat -c \"%d:%i:%u:%g:%a\" /home/admin/ab-nfs-api006-linux-4fdb190d-native-source /home/admin/ab-nfs-api006-linux-4fdb190d-native-source-new"
+      ],
+      "rc": 0,
+      "stdout": "ORIGINAL_API006{\"storageId\":\"79e3b34c-9133-4d59-99e0-f5cf0cfab07b\"}\n64769:786445:1000:109:755\n64769:786458:1000:109:750\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "stop",
+        "ab-nfs-api006-linux-4fdb190d",
+        "--timeout",
+        "15"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "delete",
+        "ab-nfs-api006-linux-4fdb190d"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "list"
+      ],
+      "rc": 0,
+      "stdout": "Source Name                                                                                              Disk  Size Accessed      State  \nOCI    ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e 20\u00a0GB 5\u00a0GB vor 7 Minuten stopped\n",
+      "stderr": ""
+    }
+  ],
+  "scratchAbsent": true,
+  "publicCacheRetained": true
+}

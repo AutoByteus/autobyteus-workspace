@@ -1,0 +1,42 @@
+{
+  "metadataCommand": [
+    "python3",
+    "autobyteus-nfs/packaging/release.py",
+    "--tag",
+    "v1.5.3-beta.2",
+    "--output",
+    "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api002-5861wgnv/nfs-candidate/cmd/autobyteus-nfs/release.json"
+  ],
+  "metadata": {
+    "version": "v1.5.3-beta.2",
+    "sourceHash": "497efd6abb0c2cfa4c740a87f005c529cbf026a6fa218b3acd345826f4a923da",
+    "ubuntuPackages": {
+      "nfs-common": "1:2.6.4-3ubuntu5.1",
+      "nfs-ganesha": "4.3-8ubuntu1",
+      "nfs-ganesha-vfs": "4.3-8ubuntu1"
+    },
+    "engineImage": "",
+    "qualifiedTargets": []
+  },
+  "buildCommand": [
+    "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api002-5861wgnv/go/bin/go",
+    "build",
+    "-trimpath",
+    "-o",
+    "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api002-5861wgnv/autobyteus-nfs-linux",
+    "./cmd/autobyteus-nfs"
+  ],
+  "buildCwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api002-5861wgnv/nfs-candidate",
+  "rc": 0,
+  "seconds": 4.787,
+  "stdout": "",
+  "stderr": "",
+  "copiedTreeDelta": [
+    "cmd/autobyteus-nfs/release.json"
+  ],
+  "qualification": "Local build-only candidate metadata from reference pins; no release tag created/publication/qualification/source patch. Mirrors documented release.py generation in disposable source copy.",
+  "binary": {
+    "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api002-5861wgnv/autobyteus-nfs-linux",
+    "sha256": "9aae4944c680e3be1331f760f2c07794695a2dbea6327858ca87007b77111fd3"
+  }
+}

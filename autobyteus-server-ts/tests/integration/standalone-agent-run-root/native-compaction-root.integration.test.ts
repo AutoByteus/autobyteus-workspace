@@ -12,7 +12,7 @@ import { projectAgentCollaborationView } from '../../../src/services/agent-strea
 import { eventually, summary } from '../../unit/agent-execution/recovery-native-fixture.js';
 import { createNativeRootFixture, HOST } from './native-compaction-root-fixture.js';
 
-describe('native recovery through admitted Agent-root collaborators', () => {
+describe('native recovery through stopped delegated copies of an Agent root', () => {
   for (const kind of ['agent', 'agent_team'] as const) {
     it.each([false, true])(`${kind}: reconnect preserves live input identity without replay (postResponse=%s)`, async postResponse => {
       const f = await createNativeRootFixture(kind, postResponse);
@@ -88,7 +88,7 @@ describe('native Agent-root inspection and stop boundaries', () => {
         const stored = await query();
         expect(stored.is_active).toBe(false);
         expect(stored.agent_input_states).toEqual([]);
-        expect(stored.execution_tree.collaborators).toEqual(dormant.execution_tree.collaborators);
+        expect(stored.execution_tree.taskExecutions).toEqual(dormant.execution_tree.taskExecutions);
         expect(f.prepare).not.toHaveBeenCalled();
         expect(f.restoreHost).not.toHaveBeenCalled();
         expect(f.parent.requests).toHaveLength(3); // test-only seed setup, no read-triggered work

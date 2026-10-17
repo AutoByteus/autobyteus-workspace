@@ -1,0 +1,111 @@
+{
+  "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/arm64/autobyteus-nfs-ganesha-source-4.3-8ubuntu1+autobyteus1-arm64.tar.gz",
+  "sha256": "eed35ab4b732ac05d2afc3531e70cdc27031fb414fdb52a0daf093f33daaec0a",
+  "files": [
+    {
+      "member": "nfs-ganesha-4.3/src/include/nfs_exports.h",
+      "sha256": "ff1a6cdb48983e310c1f9862e8ef3d54b8f300ee16ebc02e6d2694b5235a9268",
+      "excerpts": [
+        {
+          "start": 181,
+          "end": 188,
+          "text": "#define EXPORT_OPTION_AUTH_DEFAULTS   (EXPORT_OPTION_AUTH_NONE\t     | \\\n\t\t\t\t       EXPORT_OPTION_AUTH_UNIX)\n\n#define EXPORT_OPTION_EXPIRE_SET 0x00080000\t/*< Inode expire was set */\n#define EXPORT_DEFAULT_CACHE_EXPIRY 60\t/*< Default cache expiry */\n\n/* Protocol flags */\n#define EXPORT_OPTION_NFSV3 0x00100000\t/*< NFSv3 operations are supported */"
+        }
+      ]
+    },
+    {
+      "member": "nfs-ganesha-4.3/src/support/exports.c",
+      "sha256": "fc6d23515e7fff9165ff7c0dea593490c73afc03aecc299eae82e65dc8574e11",
+      "excerpts": [
+        {
+          "start": 65,
+          "end": 73,
+          "text": "\n#define GLOBAL_EXPORT_PERMS_INITIALIZER\t\t\t\t\\\n\t.def.anonymous_uid = ANON_UID,\t\t\t\t\\\n\t.def.anonymous_gid = ANON_GID,\t\t\t\t\\\n\t.def.expire_time_attr = EXPORT_DEFAULT_CACHE_EXPIRY,\t\\\n\t/* Note: Access_Type defaults to None on purpose     */\t\\\n\t/*       And no PROTO is included - that is filled   */\t\\\n\t/*       from nfs_param.core_param.core_options.     */ \\\n\t.def.options = EXPORT_OPTION_ROOT_SQUASH |\t\t\\"
+        },
+        {
+          "start": 1999,
+          "end": 2010,
+          "text": "\nstatic struct config_item export_defaults_params[] = {\n\tCONF_EXPORT_PERMS(global_export_perms, conf),\n\tCONF_ITEM_I32_SET(\"Attr_Expiration_Time\", -1, INT32_MAX,\n\t\t       EXPORT_DEFAULT_CACHE_EXPIRY,\n\t\t       global_export_perms, conf.expire_time_attr,\n\t\t       EXPORT_OPTION_EXPIRE_SET, conf.set),\n\tCONFIG_EOL\n};\n\n/**\n * @brief Table of FSAL sub-block parameters"
+        },
+        {
+          "start": 2074,
+          "end": 2085,
+          "text": "\nstatic struct config_item export_params[] = {\n\tCONF_EXPORT_PARAMS(gsh_export),\n\tCONF_EXPORT_PERMS(gsh_export, export_perms),\n\tCONF_ITEM_I32_SET(\"Attr_Expiration_Time\", -1, INT32_MAX,\n\t\t       EXPORT_DEFAULT_CACHE_EXPIRY,\n\t\t       gsh_export, export_perms.expire_time_attr,\n\t\t       EXPORT_OPTION_EXPIRE_SET, export_perms.set),\n\n\t/* NOTE: the Client and FSAL sub-blocks must be the *last*\n\t * two entries in the list.  This is so all other\n\t * parameters have been processed before these sub-blocks"
+        },
+        {
+          "start": 3385,
+          "end": 3414,
+          "text": "\t    (export_opt.conf.set & EXPORT_OPTION_ANON_GID_SET) != 0)\n\t\top_ctx->export_perms.anonymous_gid =\n\t\t\t\t\texport_opt.conf.anonymous_gid;\n\n\tif ((op_ctx->export_perms.set & EXPORT_OPTION_EXPIRE_SET) == 0 &&\n\t    (export_opt.conf.set & EXPORT_OPTION_EXPIRE_SET) != 0)\n\t\top_ctx->export_perms.expire_time_attr =\n\t\t\texport_opt.conf.expire_time_attr;\n\n\top_ctx->export_perms.set |= export_opt.conf.set;\n\n\t/* And finally take any options not yet set from global defaults */\n\top_ctx->export_perms.options |= export_opt.def.options &\n\t\t\t\t\t  ~op_ctx->export_perms.set;\n\n\tif ((op_ctx->export_perms.set & EXPORT_OPTION_ANON_UID_SET) == 0)\n\t\top_ctx->export_perms.anonymous_uid =\n\t\t\t\t\texport_opt.def.anonymous_uid;\n\n\tif ((op_ctx->export_perms.set & EXPORT_OPTION_ANON_GID_SET) == 0)\n\t\top_ctx->export_perms.anonymous_gid =\n\t\t\t\t\texport_opt.def.anonymous_gid;\n\n\tif ((op_ctx->export_perms.set & EXPORT_OPTION_EXPIRE_SET) == 0)\n\t\top_ctx->export_perms.expire_time_attr =\n\t\t\t\t\texport_opt.def.expire_time_attr;\n\n\top_ctx->export_perms.set |= export_opt.def.set;\n\n\tif (isMidDebug(COMPONENT_EXPORT)) {"
+        }
+      ]
+    },
+    {
+      "member": "nfs-ganesha-4.3/src/FSAL/Stackable_FSALs/FSAL_MDCACHE/mdcache_helpers.c",
+      "sha256": "e969895a19d0ef69f2f481a53154853ad415dce25170f26fe7f27392d3dbec9a",
+      "excerpts": [
+        {
+          "start": 815,
+          "end": 830,
+          "text": "\t\tfsal_copy_attrs(attrs_out, attrs_in, false);\n\n\t/* Use the attrs_in request_mask because it will know if ACL was\n\t * requested or not (anyone calling mdcache_new_entry will have\n\t * requested all supported attributes including ACL).\n\t */\n\tnentry->attrs.request_mask = attrs_in->request_mask;\n\tfsal_copy_attrs(&nentry->attrs, attrs_in, true);\n\n\tif (nentry->attrs.expire_time_attr == 0) {\n\t\tnentry->attrs.expire_time_attr =\n\t\t    op_ctx->export_perms.expire_time_attr;\n\t}\n\n\t/* Validate the attributes we just set. */\n\tmdc_fixup_md(nentry, &nentry->attrs);"
+        },
+        {
+          "start": 3560,
+          "end": 3577,
+          "text": "\t\tentry->attrs.sec_label.slai_data.slai_data_val = NULL;\n\t} else if (attrs->sec_label.slai_data.slai_data_val != NULL) {\n\t\tentry->attrs.request_mask |= ATTR4_SEC_LABEL;\n\t}\n\n\tif (attrs->expire_time_attr == 0) {\n\t\t/* FSAL did not set this, retain what was in the entry. */\n\t\tattrs->expire_time_attr = entry->attrs.expire_time_attr;\n\t}\n\n\t/* Now move the new attributes into the entry. */\n\tfsal_copy_attrs(&entry->attrs, attrs, true);\n\n\t/* Note that we use &entry->attrs here in case attrs.request_mask was\n\t * modified by the FSAL. entry->attrs.request_mask reflects the\n\t * attributes we requested, and was updated to \"request\" ACL if the\n\t * FSAL provided one for us gratis.\n\t */"
+        }
+      ]
+    },
+    {
+      "member": "nfs-ganesha-4.3/src/FSAL/Stackable_FSALs/FSAL_MDCACHE/mdcache_int.h",
+      "sha256": "ad8e25c6672f19d217e3568e1c8f10a6796d6a50688beed869b081985848f1b4",
+      "excerpts": [
+        {
+          "start": 788,
+          "end": 825,
+          "text": "\t\treturn;\n\t}\n\n\tif (attrs->request_mask & ATTR4_FS_LOCATIONS &&\n\t\tattrs->fs_locations != NULL) {\n\t\tflags |= MDCACHE_TRUST_FS_LOCATIONS;\n\t}\n\n\tif (attrs->request_mask & ATTR4_SEC_LABEL &&\n\t\tattrs->sec_label.slai_data.slai_data_val != NULL) {\n\t\tflags |= MDCACHE_TRUST_SEC_LABEL;\n\t}\n\n\ttime_t cur_time = time(NULL);\n\n\t/* Set the refresh time for the cache entry */\n\tif (flags & MDCACHE_TRUST_ACL) {\n\t\tif (entry->attrs.expire_time_attr > 0)\n\t\t\tentry->acl_time = cur_time;\n\t\telse\n\t\t\tentry->acl_time = 0;\n\t}\n\n\tif (flags & MDCACHE_TRUST_ATTRS) {\n\t\tif (entry->attrs.expire_time_attr > 0)\n\t\t\tentry->attr_time = cur_time;\n\t\telse\n\t\t\tentry->attr_time = 0;\n\t}\n\n\tif (flags & MDCACHE_TRUST_FS_LOCATIONS) {\n\t\tif (entry->attrs.expire_time_attr > 0)\n\t\t\tentry->fs_locations_time = cur_time;\n\t\telse\n\t\t\tentry->fs_locations_time = 0;\n\t}\n\n\t/* We have just loaded the attributes from the FSAL. */"
+        },
+        {
+          "start": 865,
+          "end": 916,
+          "text": "static inline bool\nmdcache_is_attrs_valid(mdcache_entry_t *entry, attrmask_t mask)\n{\n\tbool file_deleg = false;\n\tattrmask_t orig_mask = mask;\n\n\tif (!mdcache_test_attrs_trust(entry, mask))\n\t\treturn false;\n\n\tif (entry->attrs.valid_mask == ATTR_RDATTR_ERR)\n\t\treturn false;\n\n\tif (entry->obj_handle.type == DIRECTORY\n\t    && mdcache_param.getattr_dir_invalidation)\n\t\treturn false;\n\n\tfile_deleg = (entry->obj_handle.state_hdl &&\n\t  entry->obj_handle.state_hdl->file.fdeleg_stats.fds_curr_delegations);\n\n\tif (file_deleg) {\n\t\t/* If the file is delegated, then we can trust\n\t\t * the attributes already fetched (i.e, which\n\t\t * are in entry->attrs.valid_mask), unless\n\t\t * expire_time_attr is set to '0'.\n\t\t */\n\t\tmask = (mask & ~entry->attrs.valid_mask);\n\t}\n\n\tif ((orig_mask & ~ATTR_ACL) != 0 && entry->attrs.expire_time_attr == 0)\n\t\treturn false;\n\n\tif ((mask & ~ATTR_ACL) != 0 && entry->attrs.expire_time_attr > 0) {\n\t\ttime_t current_time = time(NULL);\n\n\t\tif (current_time - entry->attr_time >\n\t\t    entry->attrs.expire_time_attr)\n\t\t\treturn false;\n\t}\n\n\tif ((orig_mask & ATTR_ACL) != 0 && entry->attrs.expire_time_attr == 0)\n\t\treturn false;\n\n\tif ((mask & ATTR_ACL) != 0 && entry->attrs.expire_time_attr > 0) {\n\t\ttime_t current_time = time(NULL);\n\n\t\tif (current_time - entry->acl_time >\n\t\t    entry->attrs.expire_time_attr)\n\t\t\treturn false;\n\t}\n\n\treturn true;\n}"
+        }
+      ]
+    },
+    {
+      "member": "nfs-ganesha-4.3/src/FSAL/Stackable_FSALs/FSAL_MDCACHE/mdcache_handle.c",
+      "sha256": "28851cc43990a17deb57adc3ae3425bd51eae813a59c00c8ac54f80307c6c35b",
+      "excerpts": [
+        {
+          "start": 915,
+          "end": 1035,
+          "text": "\t}\n\n\tLogAttrlist(COMPONENT_CACHE_INODE, NIV_FULL_DEBUG,\n\t\t    \"attrs \", &entry->attrs, true);\n\n\tif (invalidate && entry->obj_handle.type == DIRECTORY &&\n\t    gsh_time_cmp(&oldmtime, &entry->attrs.mtime) != 0) {\n\n\t\tPTHREAD_RWLOCK_wrlock(&entry->content_lock);\n\t\tmdcache_dirent_invalidate_all(entry);\n\t\tPTHREAD_RWLOCK_unlock(&entry->content_lock);\n\t}\n\n\treturn status;\n}\n\n/**\n * @brief Get the attributes for an object\n *\n * If the attribute cache is valid, just return them.  Otherwise, resfresh the\n * cache.\n *\n * @param[in]     obj_hdl   Object to get attributes from\n * @param[in,out] attrs_out Attributes fetched\n * @return FSAL status\n */\nstatic fsal_status_t mdcache_getattrs(struct fsal_obj_handle *obj_hdl,\n\t\t\t\t      struct fsal_attrlist *attrs_out)\n{\n\tmdcache_entry_t *entry =\n\t\tcontainer_of(obj_hdl, mdcache_entry_t, obj_handle);\n\tfsal_status_t status = {0, 0};\n\n\tPTHREAD_RWLOCK_rdlock(&entry->attr_lock);\n\n\tif (mdcache_is_attrs_valid(entry, attrs_out->request_mask)) {\n\t\t/* Up-to-date */\n\t\tgoto unlock;\n\t}\n\n\t/* Promote to write lock */\n\tPTHREAD_RWLOCK_unlock(&entry->attr_lock);\n\tPTHREAD_RWLOCK_wrlock(&entry->attr_lock);\n\n\tif (mdcache_is_attrs_valid(entry, attrs_out->request_mask)) {\n\t\t/* Someone beat us to it */\n\t\tgoto unlock;\n\t}\n\n\tstatus = mdcache_refresh_attrs(\n\t\t\tentry, (attrs_out->request_mask & ATTR_ACL) != 0,\n\t\t\t(attrs_out->request_mask & ATTR4_FS_LOCATIONS) != 0,\n\t\t\t(attrs_out->request_mask & ATTR4_SEC_LABEL) != 0,\n\t\t\ttrue);\n\n\tif (FSAL_IS_ERROR(status)) {\n\t\t/* We failed to fetch any attributes. Pass that fact back to\n\t\t * the caller. We do not change the validity of the current\n\t\t * entry attributes.\n\t\t */\n\t\tif (attrs_out->request_mask & ATTR_RDATTR_ERR)\n\t\t\tattrs_out->valid_mask = ATTR_RDATTR_ERR;\n\t\tgoto unlock_no_attrs;\n\t}\n\nunlock:\n\n\t/* Struct copy */\n\tfsal_copy_attrs(attrs_out, &entry->attrs, false);\n\nunlock_no_attrs:\n\n\tPTHREAD_RWLOCK_unlock(&entry->attr_lock);\n\n\tif (FSAL_IS_ERROR(status) && (status.major == ERR_FSAL_STALE))\n\t\tmdcache_kill_entry(entry);\n\n\tLogAttrlist(COMPONENT_CACHE_INODE, NIV_FULL_DEBUG,\n\t\t    \"attrs \", attrs_out, true);\n\n\treturn status;\n}\n\n/**\n * @brief Set attributes on an object (new style)\n *\n * @param[in] obj_hdl\tObject owning state\n * @param[in] state\tOpen file state to set attributes on\n * @param[in] attrs\tAttributes to set\n * @return FSAL status\n */\nstatic fsal_status_t mdcache_setattr2(struct fsal_obj_handle *obj_hdl,\n\t\t\t\t      bool bypass,\n\t\t\t\t      struct state_t *state,\n\t\t\t\t      struct fsal_attrlist *attrs)\n{\n\tmdcache_entry_t *entry =\n\t\tcontainer_of(obj_hdl, mdcache_entry_t, obj_handle);\n\tfsal_status_t status, status2;\n\tuint64_t change;\n\tbool need_acl = false, kill_entry = false;\n\n\n\tchange = entry->attrs.change;\n\n\tsubcall(\n\t\tstatus = entry->sub_handle->obj_ops->setattr2(\n\t\t\tentry->sub_handle, bypass, state, attrs)\n\t       );\n\n\tif (FSAL_IS_ERROR(status)) {\n\t\tif (status.major == ERR_FSAL_STALE)\n\t\t\tkill_entry = true;\n\t\tgoto out;\n\t}\n\n\t/* In case of ACL enabled, any of the below attribute changes\n\t * result in change of ACL set as well.\n\t */\n\tif (!op_ctx_export_has_option(EXPORT_OPTION_DISABLE_ACL) &&\n\t    (FSAL_TEST_MASK(attrs->valid_mask,"
+        }
+      ]
+    },
+    {
+      "member": "nfs-ganesha-4.3/src/doc/man/ganesha-export-config.rst",
+      "sha256": "8eac6acae21e9f664046dd31fe4380c85db6d00d705e7408525f3339bd0e4ae9",
+      "excerpts": [
+        {
+          "start": 64,
+          "end": 74,
+          "text": "\nDelegations(enum, default None)\n    Possible values:\n        None, read, write, readwrite, r, w, rw\n\n**Attr_Expiration_Time(int32, range -1 to INT32_MAX, default 60)**\n\nEXPORT {}\n--------------------------------------------------------------------------------\nAll options below are dynamically changeable with config update unless specified\nbelow."
+        }
+      ]
+    }
+  ],
+  "primary": [
+    {
+      "url": "https://raw.githubusercontent.com/nfs-ganesha/nfs-ganesha/V4.3/src/doc/man/ganesha-export-config.rst",
+      "file": "export-contract.txt",
+      "sha256": "8eac6acae21e9f664046dd31fe4380c85db6d00d705e7408525f3339bd0e4ae9"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nfs-ganesha/nfs-ganesha/V4.3/src/FSAL/Stackable_FSALs/FSAL_MDCACHE/mdcache_int.h",
+      "file": "cache-validity.txt",
+      "sha256": "ad8e25c6672f19d217e3568e1c8f10a6796d6a50688beed869b081985848f1b4"
+    }
+  ],
+  "originalSHA256": "d4efd020edf4dfe65abfd0f0f66eb4390613360f99dce4354467ab297e0e1c0f",
+  "scope": "Personal read-only re-audit of exact retained source members and versioned primary contracts; no engine rebuild or live-cache instrumentation"
+}

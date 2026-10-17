@@ -1,0 +1,11 @@
+[1013/084449.555979:ERROR:electron/shell/common/mac/codesign_util.cc:79] task_name_for_pid: (os/kern) failure (5)
+Platform detection: Windows=false
+App root directory: /Users/admin/.ab-sf-ab-sf-fr024-3a208da7/AutoByteus.app/Contents/Resources/server
+App data directory: /Users/admin/.ab-sf-ab-sf-fr024-3a208da7/data
+Config file path: /Users/admin/.ab-sf-ab-sf-fr024-3a208da7/data/.env
+Loading environment from: /Users/admin/.ab-sf-ab-sf-fr024-3a208da7/data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../data/.env -- tip: ⚙️  enable debug logging with { debug: true }
+Environment variables loaded successfully
+CRITICAL: The 'AUTOBYTEUS_SERVER_HOST' environment variable is not set. This variable is mandatory and must be provided by the environment that launches the server (e.g., Docker Compose, Electron app, or a developer's .env file) to ensure correct URL generation for clients. The server cannot start without it.
+Failed to initialize AppConfig: AppConfigError: CRITICAL: The 'AUTOBYTEUS_SERVER_HOST' environment variable is not set. This variable is mandatory and must be provided by the environment that launches the server (e.g., Docker Compose, Electron app, or a developer's .env file) to ensure correct URL generation for clients. The server cannot start without it.
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_CONFIG_INITIALIZATION_FAILED","summary":"Failed to initialize AppConfig: AppConfigError: CRITICAL: The 'AUTOBYTEUS_SERVER_HOST' environment variable is not set. This variable is mandatory and must be provided by the environment that launches the server (e.g., Docker Compose, Electron app, or a developer's .env file) to ensure correct URL generation for clients. The server cannot start without it.","logPath":null}

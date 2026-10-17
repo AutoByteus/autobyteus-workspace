@@ -19,15 +19,17 @@
 //   DLP-001 (AC-011, AC-013, DEC-009, AR-003) New chat for the Build team: seeded rows, unusable-default note, root changes
 //           keep seeded rows (also when equal to the root), member edit, reset; Run → the team run has what was shown.
 //   DLP-002 (AC-012) Org launch page seeds the placed team and agents; Run → readback.
-//   DLP-003 (AC-001, AC-003..AC-005, AC-007, AC-010; DS-004 b) Manager chat started from the UI. From its composer: the
-//           Squad copy (five notes: team default + four reasons), the Pair brought in (note), the Writer brought in (no
-//           note), an extra copy at the Pair address (no note). From the copy lead's own conversation: a teammate
-//           delegation (no note), a helper brought in (note once, then none), a message to the Grok engineer (its Grok
-//           reply shows). Settings lists every row read-only; the run's own settings stay editable.
-//   DLP-004 (AC-010) A Team run (New chat) and an Org run (Org launch page) whose manager delegates the Squad and brings
-//           in the Pair from the composer: their Settings list the rows.
-//   DLP-005 (AC-006, REQ-004) Manager chat on a model that is then retired: delegation and bring-in of agents that need
-//           the inherited layer fail in the conversation with today's text and add nothing; an own usable default works.
+//   DLP-003 (AC-001, AC-003..AC-005, AC-010; DS-004 b) Manager chat started from the UI. From its composer: the Squad
+//           copy (five notes: team default + four reasons), the Pair delegated (note), the Writer delegated (no note), a
+//           second Pair copy (the same note: each copy is resolved on its own), an outside send_message_to (not found). From
+//           the copy lead's own conversation: a teammate delegation (refused, collaboration-model-contract), a helper copy
+//           (its note, again on the second copy), a message to the Grok engineer (its Grok reply shows). Settings lists every
+//           row read-only; the run's own settings stay editable.
+//   DLP-004 (AC-010) A Team run (New chat) and an Org run (Org launch page) whose manager delegates the Squad and the Pair
+//           from the composer: their Settings list the rows.
+//   DLP-005 (AC-006, REQ-004) Manager chat on a model that is then retired: a delegation that needs the inherited layer
+//           fails in the conversation with today's text and adds nothing, an outside message is not found; an own usable
+//           default works.
 //   DLP-006 (AC-009, QR-002) Agent and Team runs whose saved trees are given the pre-change shape (no sources, no member
 //           launches) while the backend is down, as after an upgrade: Settings shows "Source not recorded" and the Team
 //           values; a copy member then starts on the Team value.
@@ -239,7 +241,6 @@ const teamTree = async (teamRunId) => (await gql('query($id:String!){getTeamRunR
 const orgTree = async (orgRunId) => (await gql('query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}', { id: orgRunId })).getAgentOrgRootHistory.org
 const teamCopies = (tree, key) => objectsIn(tree).filter((r) => pick(r, 'teamRunId') && pick(r, 'startedAt') && Array.isArray(r.members) && r.address === address(key))
 const membersOf = (copy) => Object.fromEntries(copy.members.map((m) => [String(m.address).split('/').pop(), pick(m, 'agentRunId')]))
-const collaboratorAt = (tree, key) => objectsIn(tree).find((r) => pick(r, 'addedViaAgentRunId') && r.address === address(key))
 const teamRunIds = async (teamDefinitionId) => {
   const h = await gql('{ listWorkspaceRunHistory(limitPerAgent: 50) { teamDefinitions { teamDefinitionId runs { teamRunId } } } }')
   return h.listWorkspaceRunHistory.flatMap((w) => w.teamDefinitions).filter((t) => t.teamDefinitionId === teamDefinitionId).flatMap((t) => t.runs.map((x) => x.teamRunId))
@@ -435,10 +436,10 @@ const assertSquadRows = (rows, label) => {
   assert(own(m.badsettings, /settings are invalid/), `${label}: badsettings row (settings invalid)`, m.badsettings)
   assert(own(m.incomplete, /names no model/), `${label}: incomplete row (incomplete default)`, m.incomplete)
 }
-const assertPairCollaboratorRows = (rows, label) => {
+const assertPairCopyRows = (rows, label) => {
   const pair = address('pair')
-  const team = rowsAt(rows, pair).find((row) => row.badge === 'Collaborator')
-  assert(team && team.source === 'team_default' && team.launch.includes(ALT_LABEL) && team.fallbacks.length === 0, `${label}: Pair collaborator Team row`, { team, rows })
+  const team = rowsAt(rows, pair).find((row) => !row.member && row.badge === 'Delegated copy')
+  assert(team && team.source === 'team_default' && team.launch.includes(ALT_LABEL) && team.fallbacks.length === 0, `${label}: Pair delegated Team row`, { team, rows })
   const engineer = rowsAt(rows, `${pair}/engineer`).find((row) => row.source === 'agent_default')
   const unoffered = rowsAt(rows, `${pair}/unoffered`).find((row) => row.source === 'team_default')
   assert(engineer && /grok/i.test(engineer.launch), `${label}: Pair engineer row`, engineer)
@@ -538,7 +539,7 @@ const startManagerChat = async (page, model, firstMessage) => {
   return runId
 }
 
-defineCase('DLP-003', 'AC-001/003/004/005/007/010: Manager chat from the UI; copy, bring-ins and extra copy from its composer; teammate, helper and Grok engineer from the copy lead\'s conversation; Settings rows', async (page) => {
+defineCase('DLP-003', 'AC-001/003/004/005/010: Manager chat from the UI; copies and a second Pair copy from its composer; teammate refusal, helper copy and Grok engineer from the copy lead\'s conversation; Settings rows', async (page) => {
   const r = {}
   r.runId = await startManagerChat(page, MODEL, 'Hello. Marker DLP-003.')
   await waitFor('manager answered', async () => /DLP-003[\s\S]*OK/.test(await conversationText(page)), 60000)
@@ -547,16 +548,19 @@ defineCase('DLP-003', 'AC-001/003/004/005/007/010: Manager chat from the UI; cop
   r.squadNotesShown = squadNotes().map((note) => r.squadCall.includes(note))
   assert(r.squadCall.includes('"delegated":true') && r.squadNotesShown.every(Boolean), 'delegation result in the conversation lacks a note', { call: r.squadCall, expected: squadNotes() })
   await shot(page, 'DLP-003-conversation-squad-notes-1280', 1280)
-  // Bring-ins: the Pair (its unoffered member falls back to the team default) and the Writer (usable default, no note).
-  r.pairCall = await callFromComposer(page, 'bring in Pair', 'send_message_to', { recipient_address: address('pair'), content: 'Pair work.' })
+  // Agent copies: the Pair (its unoffered member falls back to the team default) and the Writer (usable default, no note).
+  r.pairCall = await callFromComposer(page, 'delegate Pair', 'delegate_task', { recipient_address: address('pair'), description: 'Pair work.' })
   const pairNote = noteText({ name: 'unoffered', layer: 'agent', runtime: AGY, model: NOT_OFFERED, detail: `The model '${NOT_OFFERED}' is not available on ${AGY}.`, runsOn: `${AGY} / ${ALT}`, origin: 'its team default' })
-  assert(r.pairCall.includes('"accepted":true') && r.pairCall.includes('Launch configuration notes:') && r.pairCall.includes(pairNote), 'Pair bring-in note not shown', { call: r.pairCall, pairNote })
-  r.writerCall = await callFromComposer(page, 'bring in Writer', 'send_message_to', { recipient_address: address('writer'), content: 'Write.' })
-  assert(r.writerCall.includes('"accepted":true') && !r.writerCall.includes('Launch configuration notes'), 'Writer bring-in should carry no note', r.writerCall)
-  // AC-007: an extra copy at the Pair address reuses its record; no note.
-  r.extraCall = await callFromComposer(page, 'extra Pair copy', 'delegate_task', { recipient_address: address('pair'), description: 'Extra Pair work.' })
-  assert(r.extraCall.includes('"delegated":true') && !r.extraCall.includes('launch_notes'), 'extra copy should carry no note', r.extraCall)
-  await shot(page, 'DLP-003-conversation-bring-ins-1280', 1280)
+  assert(r.pairCall.includes('"delegated":true') && r.pairCall.includes(pairNote), 'Pair delegation note not shown', { call: r.pairCall, pairNote })
+  r.writerCall = await callFromComposer(page, 'delegate Writer', 'delegate_task', { recipient_address: address('writer'), description: 'Write.' })
+  assert(r.writerCall.includes('"delegated":true') && !r.writerCall.includes('launch_notes'), 'Writer delegation should carry no note', r.writerCall)
+  // A second copy at the Pair address is resolved on its own again (collaboration-model-contract: each copy records its own snapshot): same note.
+  r.extraCall = await callFromComposer(page, 'second Pair copy', 'delegate_task', { recipient_address: address('pair'), description: 'Second Pair work.' })
+  assert(r.extraCall.includes('"delegated":true') && r.extraCall.includes(pairNote), 'second Pair copy should carry the same note', r.extraCall)
+  // A message to an outside address is not found: messaging never brings anyone in.
+  r.outsideCall = await callFromComposer(page, 'message an outside address', 'send_message_to', { recipient_address: address('badsettings'), content: 'Hi.' })
+  assert(r.outsideCall.includes('COLLABORATION_TARGET_NOT_FOUND'), 'an outside message should be not found', r.outsideCall)
+  await shot(page, 'DLP-003-conversation-copies-1280', 1280)
 
   // From the copy lead's own conversation (a copy member the user opens in the sidebar).
   const tree = await agentTree(r.runId)
@@ -564,12 +568,12 @@ defineCase('DLP-003', 'AC-001/003/004/005/007/010: Manager chat from the UI; cop
   r.squadMembers = squad
   await openSidebarAgent(page, squad.lead)
   r.teammateCall = await callFromComposer(page, 'teammate delegation', 'delegate_task', { recipient_address: `${address('squad')}/unoffered`, description: 'Teammate work.' })
-  assert(r.teammateCall.includes('"delegated":true') && !r.teammateCall.includes('launch_notes'), 'teammate delegation should repeat no note (AR-002)', r.teammateCall)
-  r.helperCall = await callFromComposer(page, 'helper bring-in', 'send_message_to', { recipient_address: address('badsettings'), content: 'Helper work.' })
+  assert(r.teammateCall.includes('COLLABORATION_SELF_TARGET_REJECTED') && !r.teammateCall.includes('"delegated":true'), 'a teammate is refused, not delegated', r.teammateCall)
+  r.helperCall = await callFromComposer(page, 'helper delegation', 'delegate_task', { recipient_address: address('badsettings'), description: 'Helper work.' })
   const helperNote = noteText({ name: names.badsettings, layer: 'agent', runtime: AGY, model: MODEL, detail: 'Its model settings are invalid: This model has no adjustable settings.', runsOn: `${AGY} / ${MODEL}`, origin: 'inherited from the run' })
-  assert(r.helperCall.includes('"accepted":true') && r.helperCall.includes(helperNote), 'helper bring-in note not shown', { call: r.helperCall, helperNote })
-  r.helperAgainCall = await callFromComposer(page, 'helper again', 'send_message_to', { recipient_address: address('badsettings'), content: 'More helper work.' })
-  assert(r.helperAgainCall.includes('"accepted":true') && !r.helperAgainCall.includes('Launch configuration notes'), 'reused helper should carry no note', r.helperAgainCall)
+  assert(r.helperCall.includes('"delegated":true') && r.helperCall.includes(helperNote), 'helper delegation note not shown', { call: r.helperCall, helperNote })
+  r.helperAgainCall = await callFromComposer(page, 'helper again', 'delegate_task', { recipient_address: address('badsettings'), description: 'More helper work.' })
+  assert(r.helperAgainCall.includes('"delegated":true') && r.helperAgainCall.includes(helperNote), 'each helper copy carries its note', r.helperAgainCall)
   r.engineerCall = await callFromComposer(page, 'message the Grok engineer', 'send_message_to', { recipient_address: `${address('squad')}/engineer`, content: 'Please list the directory.' })
   assert(r.engineerCall.includes('"accepted":true'), 'message to the engineer not accepted', r.engineerCall)
   await shot(page, 'DLP-003-copy-lead-conversation-1280', 1280)
@@ -593,14 +597,15 @@ defineCase('DLP-003', 'AC-001/003/004/005/007/010: Manager chat from the UI; cop
   r.rows = await delegatedRows(page)
   assert(r.rootEditable === 1, 'the run root card is still shown', r)
   assertSquadRows(r.rows, 'Agent run')
-  assertPairCollaboratorRows(r.rows, 'Agent run')
+  assertPairCopyRows(r.rows, 'Agent run')
   const writer = rowsAt(r.rows, address('writer'))[0]
-  assert(writer && writer.badge === 'Collaborator' && writer.source === 'agent_default' && writer.launch.includes(ALT_LABEL), 'Writer collaborator row', writer)
-  const extra = rowsAt(r.rows, address('pair')).find((row) => row.badge === 'Delegated copy')
-  const extraEngineer = rowsAt(r.rows, `${address('pair')}/engineer`).filter((row) => row.source === 'configured')
-  assert(extra && extra.source === 'configured' && extraEngineer.length === 1 && /grok/i.test(extraEngineer[0].launch), 'extra Pair copy rows (as configured; engineer on Grok)', { extra, extraEngineer })
-  const teammateRow = rowsAt(r.rows, `${address('squad')}/unoffered`).find((row) => !row.member && row.badge === 'Delegated copy')
-  assert(teammateRow && teammateRow.launch.includes(MODEL_LABEL), 'teammate copy row on its recorded (inherited) value', { teammateRow, rows: r.rows })
+  assert(writer && writer.badge === 'Delegated copy' && writer.source === 'agent_default' && writer.launch.includes(ALT_LABEL), 'Writer delegated copy row', writer)
+  // Two Pair copies, each with its own recorded values (team default; the engineer on Grok).
+  const pairTeams = rowsAt(r.rows, address('pair')).filter((row) => !row.member && row.badge === 'Delegated copy')
+  const pairEngineers = rowsAt(r.rows, `${address('pair')}/engineer`).filter((row) => row.source === 'agent_default')
+  assert(pairTeams.length === 2 && pairTeams.every((row) => row.source === 'team_default' && row.launch.includes(ALT_LABEL)) && pairEngineers.length === 2 && pairEngineers.every((row) => /grok/i.test(row.launch)),
+    'two Pair copy rows, each on its recorded values', { pairTeams, pairEngineers })
+  assert(rowsAt(r.rows, `${address('squad')}/unoffered`).filter((row) => !row.member).length === 0, 'a refused teammate delegation left no copy row', r.rows)
   // Rows only open and close: no reset, no model menu, no input; every opened card's model is locked.
   const inSection = (selector) => `${sel('run-delegated-launches')} ${selector}`
   r.readOnly = await page.locator([sel('run-member-reset'), sel('run-setting-reset'), sel('chat-model-trigger'), 'input', 'select'].map(inSection).join(', ')).count()
@@ -612,7 +617,7 @@ defineCase('DLP-003', 'AC-001/003/004/005/007/010: Manager chat from the UI; cop
   return r
 })
 
-defineCase('DLP-004', 'AC-010: Team run (New chat) and Org run (Org launch page) whose manager delegates the Squad and brings in the Pair from the composer: Settings lists the rows', async (page) => {
+defineCase('DLP-004', 'AC-010: Team run (New chat) and Org run (Org launch page) whose manager delegates the Squad and the Pair from the composer: Settings lists the rows', async (page) => {
   const r = {}
   await newChatFor(page, '/agent-teams', names.home)
   await chooseModel(page, page.locator(sel('chat-composer')), AGY, MODEL)
@@ -622,13 +627,13 @@ defineCase('DLP-004', 'AC-010: Team run (New chat) and Org run (Org launch page)
   r.teamRunId = await waitFor('new team run', async () => (await teamRunIds(ids.home)).find((id) => !before.has(id)), 60000)
   await waitFor('Squad copy in the team run', async () => teamCopies(await teamTree(r.teamRunId), 'squad').length === 1, 120000, 1500)
   await settle(page, 1500)
-  r.teamPairCall = await callFromComposer(page, 'team: bring in Pair', 'send_message_to', { recipient_address: address('pair'), content: 'Pair work.' })
-  assert(r.teamPairCall.includes('"accepted":true') && r.teamPairCall.includes('Launch configuration notes:'), 'team root: Pair bring-in note not shown', r.teamPairCall)
+  r.teamPairCall = await callFromComposer(page, 'team: delegate Pair', 'delegate_task', { recipient_address: address('pair'), description: 'Pair work.' })
+  assert(r.teamPairCall.includes('"delegated":true') && r.teamPairCall.includes('launch_notes'), 'team root: Pair delegation note not shown', r.teamPairCall)
   await openTeamRun(page, r.teamRunId, ids.home)
   await openSettings(page)
   r.teamRows = await delegatedRows(page)
   assertSquadRows(r.teamRows, 'Team run')
-  assertPairCollaboratorRows(r.teamRows, 'Team run')
+  assertPairCopyRows(r.teamRows, 'Team run')
   await shot(page, 'DLP-004-team-run-settings-880', 880)
 
   await page.goto(`${frontUrl}/agent-orgs`, { waitUntil: 'domcontentloaded' }); await settle(page, 1500)
@@ -642,17 +647,17 @@ defineCase('DLP-004', 'AC-010: Team run (New chat) and Org run (Org launch page)
   await page.locator('[data-test^="agent-org-agent-row-"]').filter({ hasText: /manager/i }).first().click(); await settle(page, 2500)
   r.orgSquadCall = await callFromComposer(page, 'org: delegate Squad', 'delegate_task', { recipient_address: address('squad'), description: 'Squad work.' })
   assert(r.orgSquadCall.includes('"delegated":true') && squadNotes().every((note) => r.orgSquadCall.includes(note)), 'org root: Squad notes not shown', r.orgSquadCall)
-  r.orgPairCall = await callFromComposer(page, 'org: bring in Pair', 'send_message_to', { recipient_address: address('pair'), content: 'Pair work.' })
-  assert(r.orgPairCall.includes('"accepted":true') && r.orgPairCall.includes('Launch configuration notes:'), 'org root: Pair bring-in note not shown', r.orgPairCall)
+  r.orgPairCall = await callFromComposer(page, 'org: delegate Pair', 'delegate_task', { recipient_address: address('pair'), description: 'Pair work.' })
+  assert(r.orgPairCall.includes('"delegated":true') && r.orgPairCall.includes('launch_notes'), 'org root: Pair delegation note not shown', r.orgPairCall)
   await openSettings(page)
   r.orgRows = await delegatedRows(page)
   assertSquadRows(r.orgRows, 'Org run')
-  assertPairCollaboratorRows(r.orgRows, 'Org run')
+  assertPairCopyRows(r.orgRows, 'Org run')
   await shot(page, 'DLP-004-org-run-settings-880', 880)
   return r
 })
 
-defineCase('DLP-005', 'AC-006/REQ-004: the root model is retired mid-run; delegation and bring-in that need the inherited layer fail in the conversation with today\'s text and add nothing; an own usable default still works', async (page) => {
+defineCase('DLP-005', 'AC-006/REQ-004: the root model is retired mid-run; delegation that needs the inherited layer fails in the conversation with today\'s text and adds nothing, an outside message is not found; an own usable default still works', async (page) => {
   const r = {}
   await offerAgyModels([MODEL, ALT, RETIRING])
   r.runId = await startManagerChat(page, RETIRING, 'Hello. Marker DLP-005.')
@@ -663,10 +668,10 @@ defineCase('DLP-005', 'AC-006/REQ-004: the root model is retired mid-run; delega
   assert(!r.plainCall.includes('"delegated":true') && r.plainCall.includes(`${names.plain} cannot be delegated to: ${reason}`), 'delegation failure text', { call: r.plainCall, reason })
   r.squadCall = await callFromComposer(page, 'delegate Squad', 'delegate_task', { recipient_address: address('squad'), description: 'Squad work.' })
   assert(!r.squadCall.includes('"delegated":true') && r.squadCall.includes(`${names.squad} cannot be delegated to: ${reason}`), 'team delegation failure text', r.squadCall)
-  r.bringCall = await callFromComposer(page, 'bring in Unoffered', 'send_message_to', { recipient_address: address('unoffered'), content: 'Help.' })
-  assert(r.bringCall.includes('"accepted":false') && r.bringCall.includes('COLLABORATOR_ADD_FAILED') && r.bringCall.includes(reason), 'bring-in failure text', r.bringCall)
+  r.bringCall = await callFromComposer(page, 'message Unoffered', 'send_message_to', { recipient_address: address('unoffered'), content: 'Help.' })
+  assert(r.bringCall.includes('"accepted":false') && r.bringCall.includes('COLLABORATION_TARGET_NOT_FOUND') && r.bringCall.includes('delegate_task'), 'outside message is not found', r.bringCall)
   const tree = await agentTree(r.runId)
-  assert(teamCopies(tree, 'squad').length === 0 && !collaboratorAt(tree, 'unoffered') && !objectsIn(tree).some((x) => x.address === address('plain')), 'a failed delegation or bring-in added something', tree)
+  assert(teamCopies(tree, 'squad').length === 0 && !objectsIn(tree).some((x) => x.address === address('unoffered')) && !objectsIn(tree).some((x) => x.address === address('plain')), 'a failed delegation or message added something', tree)
   r.ownCall = await callFromComposer(page, 'delegate Reviewer', 'delegate_task', { recipient_address: address('reviewer'), description: 'Review work.' })
   assert(r.ownCall.includes('"delegated":true'), 'an own usable default should still delegate', r.ownCall)
   await shot(page, 'DLP-005-conversation-failures-1280', 1280)
@@ -709,7 +714,8 @@ defineCase('DLP-006', 'AC-009/QR-002: runs saved before this change (stripped wh
   const r = {}
   r.runId = await startManagerChat(page, MODEL, callTool('delegate_task', { recipient_address: address('squad'), description: 'Squad work.' }))
   await waitFor('Squad copy', async () => teamCopies(await agentTree(r.runId), 'squad').length === 1, 120000, 1500)
-  r.pairCall = await callFromComposer(page, 'bring in Pair', 'send_message_to', { recipient_address: address('pair'), content: 'Pair work.' })
+  r.pairCall = await callFromComposer(page, 'delegate Pair', 'delegate_task', { recipient_address: address('pair'), description: 'Pair work.' })
+  await waitFor('Pair copy', async () => teamCopies(await agentTree(r.runId), 'pair').length === 1, 120000, 1500)
   await newChatFor(page, '/agent-teams', names.home)
   await chooseModel(page, page.locator(sel('chat-composer')), AGY, MODEL)
   const before = new Set(await teamRunIds(ids.home))
@@ -719,7 +725,7 @@ defineCase('DLP-006', 'AC-009/QR-002: runs saved before this change (stripped wh
   await waitFor('Squad copy in the team run', async () => teamCopies(await teamTree(r.teamRunId), 'squad').length === 1, 120000, 1500)
   const agentRun = await agentTree(r.runId)
   const agentCopy = teamCopies(agentRun, 'squad')[0]
-  const pair = collaboratorAt(agentRun, 'pair')
+  const pair = teamCopies(agentRun, 'pair')[0]
   const teamCopy = teamCopies(await teamTree(r.teamRunId), 'squad')[0]
   r.copies = { agentCopy: pick(agentCopy, 'teamRunId'), pair: pick(pair, 'teamRunId'), teamCopy: pick(teamCopy, 'teamRunId') }
   r.agentCopyMembers = membersOf(agentCopy)
@@ -1492,7 +1498,7 @@ defineCase('DCP-005', 'delegated-copy-model-change REQ-001 (any member), AC-010 
 
 // Focused stopped-parent regression shares the existing public fixture/runtime/UI helpers.
 if (onlyCases?.some(id => id.startsWith('SSR-'))) registerSavedRefreshCases({ defineCase, assert, waitFor, delay, sel, startManagerChat, callFromComposer, address,
-  agentTree, objectsIn, pick, teamCopies, membersOf, collaboratorAt, openSettings, backToConversation,
+  agentTree, objectsIn, pick, teamCopies, membersOf, openSettings, backToConversation,
   openMember, chooseCopyModel, saveSettings, saveBarText, shot, agyLaunchDetailsOf, MODEL, ALT, MODEL_LABEL, ALT_LABEL,
   modelLocked, conversationText, typeAndSend })
 const desktopSurface = desktopAdapter({ webDir, outDir, chromium, assert, waitFor })

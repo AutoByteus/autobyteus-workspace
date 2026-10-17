@@ -4,6 +4,7 @@ import { EventType } from '../../events/event-types.js';
 import { AgentStatus } from '../status/status-enum.js';
 import type { CompleteResponse } from '../../llm/utils/response-types.js';
 import type { LlmTokenUsageObservation } from '../../llm/utils/llm-token-usage-observation.js';
+import type { LlmCallThroughput } from '../loop/llm-call-throughput.js';
 
 const ENV_VERBOSE_AGENT_EVENT_LOGS = 'AUTOBYTEUS_VERBOSE_AGENT_EVENT_LOGS';
 
@@ -162,6 +163,7 @@ export class AgentExternalEventNotifier extends EventEmitter {
     effective_context_window_tokens?: number | null;
     context_window_usage_percent?: number | null;
     context_compaction_threshold_tokens?: number | null;
+    output_throughput?: LlmCallThroughput | null;
     raw_event_json?: Record<string, unknown> | null;
   }): void {
     this.emitEvent(EventType.AGENT_TOKEN_USAGE_UPDATED, payload);

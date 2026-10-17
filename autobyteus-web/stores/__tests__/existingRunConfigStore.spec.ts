@@ -107,7 +107,6 @@ const teamPayload = ({
     application_binding: null,
     handoffs: [],
     root_team: {
-      collaborators: [],
       address: '/',
       team_definition_id: 'team-def',
       team_definition_name: 'Team',
@@ -589,7 +588,7 @@ describe('existingRunConfigStore', () => {
     expect(store.draft).toMatchObject({ isActive: true, editability: { editable: false } })
     expect(mocks.teamResumeConfigByTeamRunId['team-1']).toMatchObject({
       isActive: true,
-      executionTree: { root_team: { collaborators: [], default_launch_configuration: { llm_config: { effort: 'medium' } } } },
+      executionTree: { root_team: { default_launch_configuration: { llm_config: { effort: 'medium' } } } },
     })
   })
 })
@@ -770,7 +769,7 @@ describe('Org destination request guards', () => {
 
 
 describe('stopped Agent canonical collaboration snapshot', () => {
-  const snapshot = () => ({ execution_tree: { collaborators: [], taskExecutions: [] }, closed_task_executions: [] })
+  const snapshot = () => ({ execution_tree: { taskExecutions: [] }, closed_task_executions: [] })
   beforeEach(() => {
     setActivePinia(createPinia())
     mocks.readCollaboration.mockReset().mockResolvedValue(null)

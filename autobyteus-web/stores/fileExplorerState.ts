@@ -24,6 +24,8 @@ export interface OpenFileState {
   mode: FileOpenMode
   accessIntent?: FilePreviewAccessIntent | null
   content: string | null
+  // Session-only editor state; committed refreshes never replace a draft.
+  editorDraft?: { content: string }
   url: string | null
   relativeResourceContext: FileRelativeResourceContext | null
   isLoading: boolean

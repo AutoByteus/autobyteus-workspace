@@ -1,6 +1,6 @@
 import type { AgentTeamAddress } from "../domain/agent-team-address.js";
 import { CollaborationContractError } from "../domain/collaboration-contract-error.js";
-import type { CollaboratorAdmissionResult } from "./collaborator-admission.js";
+import { messageTargetNotFoundMessage } from "./collaborator-errors.js";
 
 /** One message target: the receiving Agent of an Agent address, or a Team's coordinator. */
 export type CollaborationMessagePlacement = Readonly<{
@@ -19,10 +19,10 @@ export const messagePlacement = (
   receiver: Object.freeze({ agentRunId: receiver.agentRunId, address: receiver.address as AgentTeamAddress }),
 });
 
-/** One concrete team instance (configured, collaborator, task copy) containing a sender. */
+/** One concrete team instance (configured placement or task copy) containing a sender. */
 export type SenderTeamInstance = Readonly<{ teamRunId: string; address: AgentTeamAddress }>;
 
-/** The index facts every root supplies for message resolution. */
+/** The index facts every root supplies for message resolution and for the own-Team delegation rule. */
 export interface MessageRecipientIndexPort {
   /** The team instances containing the sender, deepest first; never the structural root `/`. */
   teamInstancesOf(senderAgentRunId: string): readonly SenderTeamInstance[];
@@ -31,89 +31,75 @@ export interface MessageRecipientIndexPort {
    * at `address` (never a task copy hosted by the instance). Null when the instance has none.
    */
   memberOfInstance(teamRunId: string, address: AgentTeamAddress): CollaborationMessagePlacement | null;
-  /** Run-wide: a configured placement, a collaborator, or a collaborator-Team member. */
+  /** Run-wide: a configured placement, or the run's own agent (Agent roots). */
   getMessagePlacement(address: AgentTeamAddress): CollaborationMessagePlacement | null;
+  /**
+   * CM-1 membership test (DEC-008): true when `address` is the sender's own address, or lies
+   * inside (or is) a Team instance that contains the sender, at any depth; in a Team root also
+   * when the sender is a configured member and `address` is a configured placement of the root Team.
+   */
+  isOwnTeamAddress(senderAgentRunId: string, address: AgentTeamAddress): boolean;
 }
 
-const isWithin = (address: AgentTeamAddress, instance: SenderTeamInstance): boolean =>
+/** Whether `address` is the instance's own address or lies inside it, at any depth. */
+export const isWithinTeamInstance = (address: string, instance: SenderTeamInstance): boolean =>
   address === instance.address || address.startsWith(`${instance.address}/`);
 
-/** Step 3: the root's catalog bring-in, under the gate the caller already holds. */
-export type CatalogBringInPort = Readonly<{
-  /**
-   * Serialized per root: brings the eligible catalog definition at `address` in with
-   * `CollaboratorAdmission.ensure`; null when `address` is no catalog address (anymore: a
-   * concurrent first message may have brought it in meanwhile).
-   */
-  bringIn(address: AgentTeamAddress): Promise<CollaboratorAdmissionResult | null>;
-}>;
+/** Shared part of every index's `isOwnTeamAddress`: the sender's own address and its containing instances. */
+export const isInsideSenderTeamInstances = (
+  instances: readonly SenderTeamInstance[],
+  senderAddress: string,
+  address: string,
+): boolean => address === senderAddress || instances.some((instance) => isWithinTeamInstance(address, instance));
 
 /**
- * `launchNotes` are present only when this resolution brought the recipient in (a catalog bring-in or a
- * new Task helper) and a configured launch layer was skipped (REQ-008); delivery appends them.
- */
-export type MessageRecipientResult =
-  | Readonly<{ resolved: true; placement: CollaborationMessagePlacement; launchNotes?: readonly string[] }>
-  | Readonly<{ resolved: false; code: "COLLABORATOR_ADD_FAILED"; message: string }>;
-
-/**
- * The one `send_message_to(address)` resolution (DS-002), called inside the root gate.
+ * The one `send_message_to(address)` resolution (DS-002), called inside the root gate. Messaging
+ * only resolves; it never creates a run (CM-4).
  * (1) The sender's own team instances, deepest first: an address inside an instance resolves
  * only within that instance (AR-003, no fall-through), so parallel copies never cross.
- * (2) For a Task-owned sender, its Task's open helper at the address. (3) Run-wide; an owned
- * sender never borrows a Task-owned run. (4) A Task-owned sender brings in a new Task helper;
- * otherwise a listed catalog definition that is not in the run is brought in with the same
- * admission as `@` and the address resolves again to the new instance. A failed add returns
- * `COLLABORATOR_ADD_FAILED` (nothing was added); any other miss is the normal not found.
- * Bring-ins are serialized per root, so of two concurrent first messages the second finds the
- * instance the first one added.
+ * (2) Run-wide standing placements. Anything else is `COLLABORATION_TARGET_NOT_FOUND` with
+ * guidance to use `delegate_task` for an outside Agent or Team.
  */
-export const resolveMessageRecipient = async (input: Readonly<{
+export const resolveMessageRecipient = (input: Readonly<{
   port: () => MessageRecipientIndexPort;
   senderAgentRunId: string;
   address: AgentTeamAddress;
-  catalog: CatalogBringInPort;
-  taskScope?: Readonly<{
-    /** Opaque owning Task of the copy containing the agent; `null` when the agent is not Task-owned. */
-    taskOwnerOf(agentRunId: string): Readonly<{ taskId: string }> | null;
-    helper(taskId: string, address: AgentTeamAddress): CollaborationMessagePlacement | null;
-    bringIn(address: AgentTeamAddress): Promise<Readonly<{ placement: CollaborationMessagePlacement; launchNotes?: readonly string[] }> | null>;
-  }>;
-  notFoundMessage(address: AgentTeamAddress): string;
-}>): Promise<MessageRecipientResult> => {
+}>): CollaborationMessagePlacement => {
   const port = input.port();
-  const owner = input.taskScope?.taskOwnerOf(input.senderAgentRunId) ?? null;
   // Own-instance misses cannot fall through to an identically addressed parallel copy.
   for (const instance of port.teamInstancesOf(input.senderAgentRunId)) {
-    if (!isWithin(input.address, instance)) continue;
+    if (!isWithinTeamInstance(input.address, instance)) continue;
     const placement = port.memberOfInstance(instance.teamRunId, input.address);
-    if (placement) return { resolved: true, placement };
+    if (placement) return placement;
     throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", `Collaboration target '${input.address}' is not a member of your team instance '${instance.address}'.`);
   }
-  if (owner) {
-    const helper = input.taskScope!.helper(owner.taskId, input.address);
-    if (helper) return { resolved: true, placement: helper };
-  }
   const outside = port.getMessagePlacement(input.address);
-  if (outside && (!owner || !input.taskScope?.taskOwnerOf(outside.receiver.agentRunId))) {
-    return { resolved: true, placement: outside };
-  }
-  if (owner) {
-    const helper = await input.taskScope!.bringIn(input.address);
-    if (helper) return { resolved: true, placement: helper.placement, ...withNotes(helper.launchNotes) };
-    throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", input.notFoundMessage(input.address));
-  }
-  const admission = await input.catalog.bringIn(input.address);
-  if (admission && !admission.admitted) {
-    return Object.freeze({
-      resolved: false,
-      code: admission.code,
-      message: `${admission.collaboratorName} could not be added: ${admission.message}`,
-    });
-  }
-  const placement = input.port().getMessagePlacement(input.address);
-  if (placement) return Object.freeze({ resolved: true, placement, ...withNotes(admission?.launchNotes) });
-  throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", input.notFoundMessage(input.address));
+  if (outside) return outside;
+  throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", messageTargetNotFoundMessage(input.address));
 };
 
-const withNotes = (launchNotes: readonly string[] | undefined) => launchNotes?.length ? { launchNotes } : {};
+/**
+ * T-5: the address to give for `agent` in a message `viewerAgentRunId` receives (or, with `null`,
+ * in a new task agent's first message): the agent's own address only when `send_message_to` with
+ * it reaches exactly that agent, from the viewer's position (its own team instances, then the run's
+ * standing placements) or run-wide for `null`. A task agent, or a member of a task agent team seen
+ * from outside its team, gets `null`: its address would reach someone else or no one.
+ */
+export const reachingAddressOf = (
+  port: MessageRecipientIndexPort,
+  viewerAgentRunId: string | null,
+  agent: Readonly<{ memberAddress: AgentTeamAddress; agentRunId: string }>,
+): AgentTeamAddress | null => {
+  let placement: CollaborationMessagePlacement | null;
+  if (viewerAgentRunId === null) {
+    placement = port.getMessagePlacement(agent.memberAddress);
+  } else {
+    try {
+      placement = resolveMessageRecipient({ port: () => port, senderAgentRunId: viewerAgentRunId, address: agent.memberAddress });
+    } catch (error) {
+      if (error instanceof CollaborationContractError && error.code === "COLLABORATION_TARGET_NOT_FOUND") return null;
+      throw error;
+    }
+  }
+  return placement?.kind === "agent" && placement.receiver.agentRunId === agent.agentRunId ? agent.memberAddress : null;
+};

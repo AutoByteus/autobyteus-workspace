@@ -1,0 +1,34 @@
+{
+  "goTopPass": 70,
+  "goDirectSubcasesPass": 212,
+  "goSkipped": [
+    "TestInstallerDirectoryModeChild (0.00s)"
+  ],
+  "python": {
+    "enumerated": 53,
+    "passed": 50,
+    "skippedLines": [
+      "test_directory_modes_with_go_fixture (scripts.tests.test_nfs_installer_fixture.NfsInstallerFixtureTest) ... skipped 'invoked by Go platform bootstrap regression'",
+      "test_powershell_launcher_parses_when_pwsh_is_available (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... skipped 'pwsh is not installed'",
+      "test_preferred_port_collision_falls_back_for_that_service (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... skipped 'port 8001 is not available for collision test setup'"
+    ]
+  },
+  "application": {
+    "server-targeted": [
+      "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m4 passed\u001b[39m\u001b[22m\u001b[90m (4)\u001b[39m",
+      "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m23 passed\u001b[39m\u001b[22m\u001b[90m (23)\u001b[39m"
+    ],
+    "public-contracts": [
+      "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m2 passed\u001b[39m\u001b[22m\u001b[90m (2)\u001b[39m",
+      "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m12 passed\u001b[39m\u001b[22m\u001b[90m (12)\u001b[39m"
+    ],
+    "guide-unit": [
+      "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m3 passed\u001b[39m\u001b[22m\u001b[90m (3)\u001b[39m",
+      "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m21 passed\u001b[39m\u001b[22m\u001b[90m (21)\u001b[39m"
+    ],
+    "terminal-unit": [
+      "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m17 passed\u001b[39m\u001b[22m\u001b[90m (17)\u001b[39m",
+      "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m109 passed\u001b[39m\u001b[22m\u001b[90m (109)\u001b[39m"
+    ]
+  }
+}

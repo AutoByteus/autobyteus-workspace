@@ -12,7 +12,7 @@ vi.mock('~/composables/chat/useChatModelCatalog', () => ({ useChatModelCatalog: 
 }) }))
 
 /**
- * REQ-007 / AC-010 refined by SR-006: Settings shows collaborators and delegated copies with the
+ * REQ-007 / AC-010 refined by SR-006: Settings shows delegated copies with the
  * read-only member rows, collapsed until opened, the same for a running and a stopped run.
  */
 const created = '2026-10-12T00:00:00.000Z'
@@ -22,11 +22,11 @@ const tree: TeamRunExecutionTreeDto = {
   created_at: created, archived_at: null, application_binding: null, handoffs: [],
   root_team: {
     address: '/', team_definition_id: 'pm', team_definition_name: 'PM', team_run_id: 'root', coordinator_address: '/pm',
-    default_launch_configuration: claude, members: [], collaborators: [{
-      kind: 'agent', address: '/writer', agent_definition_id: 'writer', agent_run_id: 'writer-run', platform_agent_run_id: null,
-      launch_configuration: codex, launch_source: { origin: 'agent_default', fallbacks: [] }, added_at: created, added_via_agent_run_id: 'pm-run',
-    }],
+    default_launch_configuration: claude, members: [],
     task_executions: [{
+      kind: 'task_agent', address: '/writer', agent_run_id: 'writer-run', platform_agent_run_id: null, delegator_agent_run_id: 'pm-run', started_at: created,
+      source: { kind: 'agent', agent_definition_id: 'writer', launch_configuration: codex, launch_source: { origin: 'agent_default', fallbacks: [] } },
+    }, {
       kind: 'task_team', address: '/se', team_run_id: 'se-copy', delegator_agent_run_id: 'pm-run', started_at: created, task_executions: [],
       members: [
         { kind: 'task_team_agent', address: '/se/lead', agent_run_id: 'lead-run', platform_agent_run_id: null },
@@ -57,8 +57,8 @@ let wrapper: VueWrapper | null = null
 beforeEach(() => setActivePinia(createPinia()))
 afterEach(() => { wrapper?.unmount(); wrapper = null })
 
-describe('Settings: collaborators and delegated copies (SR-006)', () => {
-  it('lists one collapsed row per collaborator and copy, with its badge, source and a note count on a collapsed Team', () => {
+describe('Settings: delegated copies (SR-006)', () => {
+  it('lists one collapsed row per copy, with its badge, source and a note count on a collapsed Team', () => {
     wrapper = settings(false)
     expect(section(wrapper).findAll('[data-test="run-member-detail"]')).toHaveLength(0)
     const writer = row(wrapper, '/writer@writer-run')

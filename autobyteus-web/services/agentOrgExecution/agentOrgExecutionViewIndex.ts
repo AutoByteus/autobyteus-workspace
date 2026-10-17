@@ -4,9 +4,6 @@ import {
   catalogAgentSourceAt,
   catalogTeamSourceAt,
   collaborationTaskExecutionLists,
-  collaboratorAgentSourceAt,
-  collaboratorExecutionNodes,
-  collaboratorTeamSourceAt,
   collaborationInstanceSource,
   type CollaborationAgentSource,
   type CollaborationInstances,
@@ -26,7 +23,7 @@ export type OrgWorkspaceSelection =
   | Readonly<{ kind: 'agent_execution'; agentRunId: string }>
   | Readonly<{ kind: 'configured_team'; teamRunId: string }>
 export type OrgExecutionHost = Readonly<{ kind: 'root' | 'team'; runId: string }>
-/** A configured member, or the collaborator entry a task execution at its address was started from. */
+/** A configured member, or the catalog source a delegated copy was started from. */
 export type OrgAgentSource = CollaborationAgentSource
 export type OrgTeamSource = CollaborationTeamSource
 /** Membership in a delegated child: its execution run ID and the AgentRun that started it. */
@@ -79,9 +76,7 @@ export class AgentOrgExecutionViewIndex {
       if ('agentRunId' in member) this.addAgent(member, rootHost, null, true, 'configured')
       else this.addTeam(member, null, true)
     }
-    // Collaborators are hosted by the root and shown with the delegated-child rows.
-    ;[...collaboratorExecutionNodes(root.collaborators ?? []) as OrgTaskExecution[], ...root.taskExecutions]
-      .forEach((task) => this.addTask(task, rootHost, true))
+    root.taskExecutions.forEach((task) => this.addTask(task, rootHost, true))
     for (const identity of [...this.agents.values(), ...this.teams.values()]) {
       const delegator = identity.delegation?.delegatorAgentRunId
       if (delegator && !this.agents.has(delegator)) {
@@ -127,10 +122,9 @@ export class AgentOrgExecutionViewIndex {
   private catalogTasks() {
     return collaborationTaskExecutionLists(this.view.execution_tree.rootOrg)
   }
-  /** The root's copies and collaborators: what each of their agents runs with (its user choice, DS-003). */
+  /** The root's copies: what each of their agents runs with (its user choice, DS-003). */
   private instances(): CollaborationInstances {
     return {
-      collaborators: this.view.execution_tree.rootOrg.collaborators ?? [],
       taskExecutions: this.catalogTasks(),
       configuredTeamLaunchAt: (address) => {
         const team = this.configured.get(address as AgentTeamAddress)
@@ -148,8 +142,7 @@ export class AgentOrgExecutionViewIndex {
     const configured = this.configured.get(execution.address)
     const source = configured
       ? ('agentRunId' in configured ? configured : null)
-      : collaboratorAgentSourceAt(this.view.execution_tree.rootOrg.collaborators ?? [], execution.address)
-        ?? catalogAgentSourceAt(this.catalogTasks(), execution.address)
+      : catalogAgentSourceAt(this.catalogTasks(), execution.address)
     if (!source) throw new Error(`No captured Agent source at '${execution.address}'.`)
     this.agentsById.set(execution.agentRunId, Object.freeze({ agentRunId: execution.agentRunId,
       address: parseAgentTeamAddress(execution.address), source: collaborationInstanceSource(this.instances(), execution.agentRunId, source),
@@ -160,8 +153,7 @@ export class AgentOrgExecutionViewIndex {
     const configured = this.configured.get(execution.address)
     const source = configured
       ? ('teamRunId' in configured ? configured : null)
-      : collaboratorTeamSourceAt(this.view.execution_tree.rootOrg.collaborators ?? [], execution.address)
-        ?? catalogTeamSourceAt(this.catalogTasks(), execution.address)
+      : catalogTeamSourceAt(this.catalogTasks(), execution.address)
     if (!source) throw new Error(`No captured Team source at '${execution.address}'.`)
     this.teamsById.set(execution.teamRunId, Object.freeze({ teamRunId: execution.teamRunId,
       address: parseAgentTeamAddress(execution.address), source, execution, delegation, live }))

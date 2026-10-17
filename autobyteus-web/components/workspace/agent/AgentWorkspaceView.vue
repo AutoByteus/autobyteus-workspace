@@ -29,7 +29,7 @@ import { useLocalization } from '~/composables/useLocalization'
 
 /**
  * The standalone agent run view (the chat run view, D-17): the product run header with ⚙ and ＋,
- * the conversation, and the product box with `/` skill tags. A collaborator of the run (F-04)
+ * the conversation, and the product box with `/` skill tags. A delegated copy of the run (F-04)
  * has the same header controls and a box that names it.
  */
 const { t } = useLocalization()
@@ -59,14 +59,14 @@ const skillTagging = computed<SkillTaggingCapability | null>(() => {
   }
 })
 
-/** F-04: a collaborator view names its agent in the box, like the Org's delegated-Agent view. */
+/** F-04: a delegated copy view names its agent in the box, like the Org's delegated-Agent view. */
 const childPlaceholder = computed(() => {
   const config = target.value?.context.config
   return config && !isHost.value ? t('chat.run.placeholderAgent', { agent: config.agentDefinitionName || '' }) : null
 })
 
 /**
- * ＋ opens New chat for the agent on screen (the run's agent or an `@` collaborator) with its
+ * ＋ opens New chat for the agent on screen (the run's agent or a delegated copy) with its
  * workspace, approval and model config (REQ-013, CR-001).
  */
 const startNewChatForRun = async () => {

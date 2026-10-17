@@ -1,0 +1,72 @@
+{
+  "environmentKeys": [
+    "CI",
+    "HOME",
+    "LANG",
+    "NO_COLOR",
+    "PATH",
+    "TMPDIR"
+  ],
+  "scratch": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-crr015-check-_ya6tov2",
+  "checks": [
+    {
+      "name": "adjacent-regression",
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "test:nuxt",
+        "components/fileExplorer/__tests__",
+        "components/fileExplorer/viewers/__tests__",
+        "stores/__tests__/fileExplorerStore.spec.ts",
+        "stores/__tests__/fileExplorerNodeRouting.spec.ts",
+        "utils/fileExplorer/__tests__",
+        "--run",
+        "--maxWorkers=2"
+      ],
+      "exitCode": 0,
+      "seconds": 28.37
+    },
+    {
+      "name": "web-boundary",
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "guard:web-boundary"
+      ],
+      "exitCode": 0,
+      "seconds": 0.47
+    },
+    {
+      "name": "localization-boundary",
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "guard:localization-boundary"
+      ],
+      "exitCode": 0,
+      "seconds": 0.37
+    },
+    {
+      "name": "pending-save-probe",
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "test:nuxt",
+        "components/fileExplorer/__tests__/FileExplorerTabs.crr015-probe.spec.ts",
+        "--run",
+        "--maxWorkers=2"
+      ],
+      "exitCode": 1,
+      "seconds": 8.88
+    }
+  ],
+  "probeRemoved": true,
+  "scratchRemoved": true,
+  "inputsUnchanged": true,
+  "oldDistUnchanged": true,
+  "oldDistCount": 286
+}

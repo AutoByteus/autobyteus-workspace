@@ -1,0 +1,6 @@
+PASS pinned UNFS3 starts nonroot and directly reads chosen Mac host source without Linux file handles
+PASS two independent Linux daemon mounts share same Mac-bound storage identity at agreed path
+PASS ordinary Mac host-folder write is exact in both Linux NFS clients within five seconds
+PASS Linux mounted append reaches original Mac source and peer without copying
+PASS cross-client rename relative symlink executable exclusive-create and existing-source preservation
+{"run": "ab-sf-fr040-9d5e9ba0", "passes": 5, "fatal": null}

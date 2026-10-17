@@ -1,0 +1,113 @@
+=== RUN   TestReplacementPreservesSelectedSettingsAndPrivateVolumes
+--- PASS: TestReplacementPreservesSelectedSettingsAndPrivateVolumes (0.00s)
+=== RUN   TestUnsupportedConfigurationRejectedBeforeStop
+--- PASS: TestUnsupportedConfigurationRejectedBeforeStop (0.00s)
+=== RUN   TestRecreationNeverRollsBackAfterStartMayAcceptWork
+--- PASS: TestRecreationNeverRollsBackAfterStartMayAcceptWork (0.00s)
+=== RUN   TestChangedNodeAfterConsentHasNoMutation
+--- PASS: TestChangedNodeAfterConsentHasNoMutation (0.00s)
+=== RUN   TestPreStartFailureRestoresExactOriginalAndDoesNotDeleteVolumes
+--- PASS: TestPreStartFailureRestoresExactOriginalAndDoesNotDeleteVolumes (0.00s)
+=== RUN   TestNestedMountCannotHideSharedBytesAfterPriorAttachment
+--- PASS: TestNestedMountCannotHideSharedBytesAfterPriorAttachment (0.00s)
+=== RUN   TestEngineOnlyUsesChosenSourceAndNarrowCapabilities
+--- PASS: TestEngineOnlyUsesChosenSourceAndNarrowCapabilities (0.00s)
+=== RUN   TestChangedDaemonRefusesRecreationBeforeAnyContainerOperation
+--- PASS: TestChangedDaemonRefusesRecreationBeforeAnyContainerOperation (0.00s)
+=== RUN   TestFailedStartSameIDProofAndConsumption
+--- PASS: TestFailedStartSameIDProofAndConsumption (0.09s)
+=== RUN   TestFailedStartAmbiguityDedupAndConfirmedRetry
+--- PASS: TestFailedStartAmbiguityDedupAndConfirmedRetry (0.08s)
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/normal_stop
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/unknown_policy
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/paused
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/foreign_volume
+    start_recovery_test.go:247: {incomplete owned NFS volume changed after probe} 0 1
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/wrong_options
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/mountpoint
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/not_selected
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/time_reversed
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/dead
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/oom
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/policy_no
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/wrong_driver
+    start_recovery_test.go:247: {incomplete owned NFS volume changed after probe} 0 1
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/bad_time
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/pid
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/wrong_endpoint
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/wrong_export
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/missing_volume
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/pending_recreation
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/removing
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/foreign_error
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/soft_error
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/restarting
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/absent_policy
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/unknown_error
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/wrong_daemon
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/attachment_missing
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/never_started
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/on_failure
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/extra_suffix
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/descriptor_writable
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/malformed_attempt
+=== RUN   TestFailedStartRefusalsNeverProbeOrStart/different_errno
+--- FAIL: TestFailedStartRefusalsNeverProbeOrStart (0.12s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/normal_stop (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/unknown_policy (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/paused (0.00s)
+    --- FAIL: TestFailedStartRefusalsNeverProbeOrStart/foreign_volume (0.02s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/wrong_options (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/mountpoint (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/not_selected (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/time_reversed (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/dead (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/oom (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/policy_no (0.00s)
+    --- FAIL: TestFailedStartRefusalsNeverProbeOrStart/wrong_driver (0.02s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/bad_time (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/pid (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/wrong_endpoint (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/wrong_export (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/missing_volume (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/pending_recreation (0.01s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/removing (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/foreign_error (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/soft_error (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/restarting (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/absent_policy (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/unknown_error (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/wrong_daemon (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/attachment_missing (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/never_started (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/on_failure (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/extra_suffix (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/descriptor_writable (0.00s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/malformed_attempt (0.01s)
+    --- PASS: TestFailedStartRefusalsNeverProbeOrStart/different_errno (0.00s)
+=== RUN   TestFailedStartReinspectionAndProbeRefusals
+=== RUN   TestFailedStartReinspectionAndProbeRefusals/policy
+=== RUN   TestFailedStartReinspectionAndProbeRefusals/config
+=== RUN   TestFailedStartReinspectionAndProbeRefusals/image
+=== RUN   TestFailedStartReinspectionAndProbeRefusals/id
+=== RUN   TestFailedStartReinspectionAndProbeRefusals/state
+=== RUN   TestFailedStartReinspectionAndProbeRefusals/volume
+=== RUN   TestFailedStartReinspectionAndProbeRefusals/daemon
+=== RUN   TestFailedStartReinspectionAndProbeRefusals/already-running
+--- PASS: TestFailedStartReinspectionAndProbeRefusals (0.25s)
+    --- PASS: TestFailedStartReinspectionAndProbeRefusals/policy (0.02s)
+    --- PASS: TestFailedStartReinspectionAndProbeRefusals/config (0.03s)
+    --- PASS: TestFailedStartReinspectionAndProbeRefusals/image (0.02s)
+    --- PASS: TestFailedStartReinspectionAndProbeRefusals/id (0.03s)
+    --- PASS: TestFailedStartReinspectionAndProbeRefusals/state (0.04s)
+    --- PASS: TestFailedStartReinspectionAndProbeRefusals/volume (0.03s)
+    --- PASS: TestFailedStartReinspectionAndProbeRefusals/daemon (0.03s)
+    --- PASS: TestFailedStartReinspectionAndProbeRefusals/already-running (0.02s)
+=== RUN   TestFailedStart304AndVerificationFailure
+--- PASS: TestFailedStart304AndVerificationFailure (20.14s)
+=== RUN   TestFailedStartObservationIsNonMutatingAndDetachRemovesOnlyAttempt
+--- PASS: TestFailedStartObservationIsNonMutatingAndDetachRemovesOnlyAttempt (0.08s)
+FAIL
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/docker	21.231s
+FAIL

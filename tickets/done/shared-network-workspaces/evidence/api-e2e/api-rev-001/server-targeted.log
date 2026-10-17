@@ -1,0 +1,235 @@
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces
+command=["pnpm", "-C", "autobyteus-server-ts", "exec", "vitest", "run", "tests/unit/workspaces/shared-workspace-binding.test.ts", "tests/unit/agent-execution/backends/shared", "tests/unit/agent-execution/agent-run-manager.test.ts", "tests/unit/agent-execution/backends/claude/session/claude-session-cleanup.test.ts", "tests/unit/runtime-management/codex/client/codex-app-server-client-manager.test.ts", "tests/unit/runtime-management/shared/scoped-project-git-environment.test.ts", "tests/unit/skills/github/private-profile-source-lifecycle.test.ts", "tests/unit/agent-execution/backends/antigravity/agy-configured-skill-linker.test.ts", "tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts", "tests/unit/api/rest/workspaces.test.ts", "tests/unit/api/rest/run-file-changes.test.ts", "--no-watch", "--maxWorkers=2"]
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+ [32m✓[39m tests/unit/agent-execution/backends/antigravity/agy-configured-skill-linker.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 194[2mms[22m[39m
+[90mstdout[2m | tests/unit/skills/github/private-profile-source-lifecycle.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/unit/skills/github/private-profile-source-lifecycle.test.ts[2m > [22m[2mSR019 source publication is independent of private runtime profiles[2m > [22m[2mclaude peer-stop preserves sources; real Update/Remove retire bytes without waiting
+[22m[39mclaude private configured skill 'writer': source unavailable.
+
+[90mstderr[2m | tests/unit/skills/github/private-profile-source-lifecycle.test.ts[2m > [22m[2mSR019 source publication is independent of private runtime profiles[2m > [22m[2mcodex peer-stop preserves sources; real Update/Remove retire bytes without waiting
+[22m[39mcodex private configured skill 'writer': source unavailable.
+
+[90mstderr[2m | tests/unit/skills/github/private-profile-source-lifecycle.test.ts[2m > [22m[2mSR019 source publication is independent of private runtime profiles[2m > [22m[2mgrok peer-stop preserves sources; real Update/Remove retire bytes without waiting
+[22m[39mgrok private configured skill 'writer': source unavailable.
+
+ [32m✓[39m tests/unit/skills/github/private-profile-source-lifecycle.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 227[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mkeeps a new run private until synchronous candidate publication
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mclaims the run id before the first backend await and rejects overlapping preparation
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mallows retry only after candidate abort confirms inactivity
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mquarantines an uncertain candidate cleanup and rejects same-process replacement
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mstrictly restores codex_app_server from the exact provider identity
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mstrictly restores claude_agent_sdk from the exact provider identity
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2maborts a mismatched platform restore privately and leaves confirmed cleanup retryable
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mrolls back already-attached run resources when a later attachment fails
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mdeactivates exactly once when a post-activation backend identity mismatch fails before attachment
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mquarantines attachment rollback when exact-run session deactivation fails
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mdeactivates pre-attachment sessions after a post-activation create failure
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mdeactivates pre-attachment sessions after a post-activation restore failure
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mquarantines with primary then deactivation cleanup evidence
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mrejects another candidate after publication without replacing the active run
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mdetaches run resources and invokes exact-run MCP cleanup after accepted termination
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mallows only one non-waiting quiescence preparation attempt per exact run
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mcancels through the exact run without releasing it and permits a fresh preparation
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mretries only after a rejected finish and releases once after acceptance
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mcoalesces one committed finish attempt and caches successful finalization
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mretains accepted-but-active failure without removing the exact run
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mretries exact retained component cleanup after physical release without stopping twice
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mtreats exact-current removal not_found as terminal without resource cleanup
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mtreats exact-current removal identity_mismatch as terminal without resource cleanup
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mrejects a missing or different exact instance before lower-level preparation
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mreleaseRetiredRun[2m > [22m[2mdoes nothing for an unknown id or a live published run
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mreleaseRetiredRun[2m > [22m[2mexact-releases a run that went offline so its replacement can be claimed (AC-003)
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mreleaseRetiredRun[2m > [22m[2mkeeps the release owed and retryable when the previous runtime's stop throws (AC-008)
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mreleaseRetiredRun[2m > [22m[2mkeeps the release owed and retryable when the previous runtime's stop is not accepted (AC-008)
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mreleaseRetiredRun[2m > [22m[2mjoins an in-flight release instead of stopping the previous runtime twice (AC-005)
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mroutes stop-all active runs through the managed prepared boundary
+[22m[39mAgentRunManager initialized.
+
+ [32m✓[39m tests/unit/agent-execution/agent-run-manager.test.ts [2m([22m[2m30 tests[22m[2m)[22m[32m 81[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts [2m([22m[2m16 tests[22m[2m)[22m[32m 53[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/shared/workspace-skill-materializer.test.ts [2m([22m[2m16 tests[22m[2m)[22m[32m 43[2mms[22m[39m
+[90mstderr[2m | tests/unit/api/rest/workspaces.test.ts[2m > [22m[2mREST workspaces routes[2m > [22m[2mreturns 404 when workspace is missing
+[22m[39mAttempted to access non-existent workspace: missing
+
+[90mstderr[2m | tests/unit/api/rest/workspaces.test.ts[2m > [22m[2mREST workspaces routes[2m > [22m[2mreturns 400 for workspace path violations
+[22m[39mSecurity error accessing path ../secret.txt in workspace ws1: Access denied: Path resolves outside the workspace boundary.
+
+[90mstderr[2m | tests/unit/api/rest/workspaces.test.ts[2m > [22m[2mpreserves healthy media bytes, encoded paths, HTML and relative static assets
+[22m[39mFile not found in workspace ws1: deleted.png
+
+ [32m✓[39m tests/unit/api/rest/workspaces.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 36[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/shared/runtime-skill-profile.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 31[2mms[22m[39m
+ [32m✓[39m tests/unit/api/rest/run-file-changes.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/shared/workspace-skill-materializer-collision-policy.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/shared/private-skill-discovery.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+ [32m✓[39m tests/unit/workspaces/shared-workspace-binding.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 19[2mms[22m[39m
+ [32m✓[39m tests/unit/runtime-management/codex/client/codex-app-server-client-manager.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/shared/prepare-private-runtime-skills.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-session-cleanup.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 4[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/backends/shared/shared-workspace-resolvers.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/backends/shared/shared-workspace-resolvers.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/runtime-management/shared/scoped-project-git-environment.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m16 passed[39m[22m[90m (16)[39m
+[2m      Tests [22m [1m[32m133 passed[39m[22m[90m (133)[39m
+[2m   Start at [22m 21:20:35
+[2m   Duration [22m 8.58s[2m (transform 2.65s, setup 142ms, import 5.87s, tests 779ms, environment 1ms)[22m

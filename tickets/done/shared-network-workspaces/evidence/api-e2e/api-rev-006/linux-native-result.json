@@ -1,0 +1,708 @@
+{
+  "vm": "ab-nfs-api006-linux-4fdb190d",
+  "source": "/home/admin/ab-nfs-api006-linux-4fdb190d-native-source",
+  "mountRoot": "/Volumes/autobyteus-shared",
+  "binary": {
+    "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api006-mvw23zqb/autobyteus-nfs-linux-arm64",
+    "sha256": "3944a3f0696f006ac658475ea335fcc5dd8c9bfc1195c2301ab92608de446b38",
+    "size": 11049466
+  },
+  "metadata": {
+    "version": "v1.5.3-beta.2",
+    "sourceHash": "f0d71675d3d9b70d89969a8071b8de03287cff0676669ddab295f14568041c88",
+    "ubuntuPackages": {
+      "nfs-common": "1:2.6.4-3ubuntu5.1"
+    },
+    "engineImage": "",
+    "qualifiedTargets": [],
+    "engine": {
+      "source": {
+        "version": "4.3-8ubuntu1",
+        "files": [
+          {
+            "file": "nfs-ganesha_4.3-8ubuntu1.dsc",
+            "sha256": "ffa76c26b12d23b67dcda184d7ec7ae55a42d1d14bf84bb7c0cf0134156ba3ca",
+            "size": 3576
+          },
+          {
+            "file": "nfs-ganesha_4.3.orig.tar.gz",
+            "sha256": "d4efd020edf4dfe65abfd0f0f66eb4390613360f99dce4354467ab297e0e1c0f",
+            "size": 1895017
+          },
+          {
+            "file": "nfs-ganesha_4.3-8ubuntu1.debian.tar.xz",
+            "sha256": "ef35d130e1b37149b156d201b70e6c2804bebbfbee1713c5bd6d938dd433fe03",
+            "size": 19224
+          }
+        ],
+        "patchCommit": "98eb77c4fd94effa6882b214698a77752ec79f6e",
+        "patchSha256": "ba682b5c64e7f800c927f4c90b2a7bfb4b8d2a323ddc48c3d591db3d75799031",
+        "sourceDateEpoch": 1791936000,
+        "recipeSha256": "34e28c622f598487af74a545115fa8dffe94e8f1aa5d85c091515aa187d66e4f",
+        "buildBase": "ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e"
+      },
+      "architectures": {
+        "arm64": {
+          "packages": [
+            {
+              "file": "nfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb",
+              "sha256": "0b5c78911cfc1b299e9894e1f841e74176fbb2cb45b158008e4530713549ebc8",
+              "size": 613976,
+              "name": "nfs-ganesha",
+              "version": "4.3-8ubuntu1+autobyteus1",
+              "architecture": "arm64"
+            },
+            {
+              "file": "nfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb",
+              "sha256": "3bf06769646d93ea85f0277fe0726eb42d0d29a70c0108505706954e5e8d2ac6",
+              "size": 48626,
+              "name": "nfs-ganesha-vfs",
+              "version": "4.3-8ubuntu1+autobyteus1",
+              "architecture": "arm64"
+            }
+          ],
+          "correspondingSource": {
+            "file": "autobyteus-nfs-ganesha-source-4.3-8ubuntu1+autobyteus1-arm64.tar.gz",
+            "sha256": "eed35ab4b732ac05d2afc3531e70cdc27031fb414fdb52a0daf093f33daaec0a",
+            "size": 1930105
+          },
+          "buildInventory": {
+            "file": "engine-build-arm64.txt",
+            "sha256": "56fad63c43f85091d84df347564dfd962a9afaafe519539849860b1807695761",
+            "size": 57836
+          }
+        }
+      }
+    }
+  },
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-linux-4fdb190d",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "set -e; test \"$(id -u)\" = 1000; test ! -e /var/lib/autobyteus-nfs; test ! -e /etc/autobyteus-nfs; test ! -e /Volumes/autobyteus-shared; ! dpkg-query -W nfs-ganesha; mkdir -m 755 /home/admin/ab-nfs-api006-linux-4fdb190d-native-source; mkdir -m 755 /home/admin/ab-nfs-api006-linux-4fdb190d-native-source/project; printf ORIGINAL_API006 > /home/admin/ab-nfs-api006-linux-4fdb190d-native-source/project/preexisting.txt; uname -a; findmnt -no SOURCE,FSTYPE /"
+      ],
+      "rc": 0,
+      "seconds": 0.193,
+      "stdout": "Linux ubuntu 7.0.0-38-generic #38~24.04.4-Ubuntu SMP PREEMPT_DYNAMIC Mon Sep 14 17:12:37 UTC 2 aarch64 aarch64 aarch64 GNU/Linux\n/dev/vda1 ext4\n",
+      "stderr": "dpkg-query: no packages found matching nfs-ganesha\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-linux-4fdb190d",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "stat -c \"%d:%i:%u:%g:%a\" /home/admin/ab-nfs-api006-linux-4fdb190d-native-source"
+      ],
+      "rc": 0,
+      "seconds": 0.035,
+      "stdout": "64769:786445:1000:109:755\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-linux-4fdb190d",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "ip -4 -j addr show scope global"
+      ],
+      "rc": 0,
+      "seconds": 0.035,
+      "stdout": "[{\"ifindex\":2,\"ifname\":\"enp0s1\",\"flags\":[\"BROADCAST\",\"MULTICAST\",\"UP\",\"LOWER_UP\"],\"mtu\":1500,\"qdisc\":\"fq_codel\",\"operstate\":\"UP\",\"group\":\"default\",\"txqlen\":1000,\"addr_info\":[{\"family\":\"inet\",\"local\":\"192.168.64.4\",\"prefixlen\":24,\"metric\":100,\"broadcast\":\"192.168.64.255\",\"scope\":\"global\",\"dynamic\":true,\"label\":\"enp0s1\",\"valid_life_time\":3417,\"preferred_life_time\":3417}]}]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "-i",
+        "ab-nfs-api006-linux-4fdb190d",
+        "/bin/sh",
+        "-c",
+        "umask 077; cat > /home/admin/ab-nfs-api006-linux-4fdb190d-binary; chmod 755 /home/admin/ab-nfs-api006-linux-4fdb190d-binary"
+      ],
+      "rc": 0,
+      "seconds": 0.19,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-linux-4fdb190d",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sha256sum /home/admin/ab-nfs-api006-linux-4fdb190d-binary"
+      ],
+      "rc": 0,
+      "seconds": 0.17,
+      "stdout": "3944a3f0696f006ac658475ea335fcc5dd8c9bfc1195c2301ab92608de446b38  /home/admin/ab-nfs-api006-linux-4fdb190d-binary\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-linux-4fdb190d",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c 'umask 077; exec /home/admin/ab-nfs-api006-linux-4fdb190d-binary create --source /home/admin/ab-nfs-api006-linux-4fdb190d-native-source --backend ganesha-native --endpoint 192.168.64.4 --allow 192.168.64.4 --nodes none --yes --json'"
+      ],
+      "rc": 0,
+      "seconds": 20.894,
+      "stdout": "{\n  \"connection\": {\n    \"storageId\": \"79e3b34c-9133-4d59-99e0-f5cf0cfab07b\",\n    \"endpoint\": \"192.168.64.4\",\n    \"export\": \"/autobyteus/79e3b34c-9133-4d59-99e0-f5cf0cfab07b\",\n    \"protocol\": \"4.1\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\"\n  },\n  \"status\": {\n    \"storageId\": \"79e3b34c-9133-4d59-99e0-f5cf0cfab07b\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\",\n    \"hostReady\": true,\n    \"nodes\": {},\n    \"limitation\": \"Hard NFS checks may stall; no outage deadline or local substitute\"\n  }\n}\n",
+      "stderr": "Detected private addresses: 192.168.64.4\nNo reachable local Docker daemon; no Docker nodes will be attached.\nAutoByteus NFS plan:\n - Ganesha NFSv4.1 TCP2049 only; persistent private recovery state\n - Export chosen source in place: /home/admin/ab-nfs-api006-linux-4fdb190d-native-source\n - Map ALL clients to nonroot 1000:109; no recursive ownership change\n - Trust private hosts/subnets: 192.168.64.4\n - Attach 192.168.64.4:/autobyteus/79e3b34c-9133-4d59-99e0-f5cf0cfab07b at /Volumes/autobyteus-shared\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\n - Install exact Ubuntu NFS package versions from this release, if needed\nChecking actual host and selected-node readiness; this may wait for storage.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-linux-4fdb190d",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n cat /var/lib/autobyteus-nfs/hosted-filesystem.json"
+      ],
+      "rc": 0,
+      "seconds": 0.459,
+      "stdout": "{\n  \"installationId\": \"8e014d08-10ec-4a32-a27d-72bb60b12d93\",\n  \"storageId\": \"79e3b34c-9133-4d59-99e0-f5cf0cfab07b\",\n  \"source\": \"/home/admin/ab-nfs-api006-linux-4fdb190d-native-source\",\n  \"identity\": {\n    \"device\": 64769,\n    \"inode\": 786445\n  },\n  \"backend\": \"ganesha-native\",\n  \"dataUid\": 1000,\n  \"dataGid\": 109,\n  \"allowlist\": [\n    \"192.168.64.4\"\n  ]\n}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-linux-4fdb190d",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c 'python3 -c '\"'\"'import os,json,hashlib,stat\nfrom pathlib import Path\np=Path('\"'\"'\"'\"'\"'\"'\"'\"'/home/admin/ab-nfs-api006-linux-4fdb190d-native-source'\"'\"'\"'\"'\"'\"'\"'\"');s=p.stat()\ndef h(p):return hashlib.sha256(p.read_bytes()).hexdigest()\nr={'\"'\"'\"'\"'\"'\"'\"'\"'sourceIdentity'\"'\"'\"'\"'\"'\"'\"'\"':[s.st_dev,s.st_ino,s.st_uid,s.st_gid,stat.S_IMODE(s.st_mode)],'\"'\"'\"'\"'\"'\"'\"'\"'sourceHash'\"'\"'\"'\"'\"'\"'\"'\"':h(p/'\"'\"'\"'\"'\"'\"'\"'\"'project/preexisting.txt'\"'\"'\"'\"'\"'\"'\"'\"'),'\"'\"'\"'\"'\"'\"'\"'\"'sourceMarker'\"'\"'\"'\"'\"'\"'\"'\"':json.loads((p/'\"'\"'\"'\"'\"'\"'\"'\"'.autobyteus-nfs/storage.json'\"'\"'\"'\"'\"'\"'\"'\"').read_text()),'\"'\"'\"'\"'\"'\"'\"'\"'mountedHash'\"'\"'\"'\"'\"'\"'\"'\"':h(Path('\"'\"'\"'\"'\"'\"'\"'\"'/Volumes/autobyteus-shared'\"'\"'\"'\"'\"'\"'\"'\"')/'\"'\"'\"'\"'\"'\"'\"'\"'project/preexisting.txt'\"'\"'\"'\"'\"'\"'\"'\"'),'\"'\"'\"'\"'\"'\"'\"'\"'mountedMarker'\"'\"'\"'\"'\"'\"'\"'\"':json.loads((Path('\"'\"'\"'\"'\"'\"'\"'\"'/Volumes/autobyteus-shared'\"'\"'\"'\"'\"'\"'\"'\"')/'\"'\"'\"'\"'\"'\"'\"'\"'.autobyteus-nfs/storage.json'\"'\"'\"'\"'\"'\"'\"'\"').read_text()),'\"'\"'\"'\"'\"'\"'\"'\"'directoryDelegations'\"'\"'\"'\"'\"'\"'\"'\"':Path('\"'\"'\"'\"'\"'\"'\"'\"'/sys/module/nfsv4/parameters/directory_delegations'\"'\"'\"'\"'\"'\"'\"'\"').read_text().strip(),'\"'\"'\"'\"'\"'\"'\"'\"'uid'\"'\"'\"'\"'\"'\"'\"'\"':os.getuid(),'\"'\"'\"'\"'\"'\"'\"'\"'gid'\"'\"'\"'\"'\"'\"'\"'\"':os.getgid(),'\"'\"'\"'\"'\"'\"'\"'\"'groups'\"'\"'\"'\"'\"'\"'\"'\"':os.getgroups()};print(json.dumps(r))\n'\"'\"''"
+      ],
+      "rc": 0,
+      "seconds": 0.061,
+      "stdout": "{\"sourceIdentity\": [64769, 786445, 1000, 109, 493], \"sourceHash\": \"6d8658af6c62c7f41feef165eab37441dcf6ec5de3a27278bbf4d7c3fe0bccb4\", \"sourceMarker\": {\"storageId\": \"79e3b34c-9133-4d59-99e0-f5cf0cfab07b\"}, \"mountedHash\": \"6d8658af6c62c7f41feef165eab37441dcf6ec5de3a27278bbf4d7c3fe0bccb4\", \"mountedMarker\": {\"storageId\": \"79e3b34c-9133-4d59-99e0-f5cf0cfab07b\"}, \"directoryDelegations\": \"Y\", \"uid\": 1000, \"gid\": 109, \"groups\": []}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-linux-4fdb190d",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c 'set -e; printf first > /Volumes/autobyteus-shared/project/first.txt; sync; test \"$(cat /home/admin/ab-nfs-api006-linux-4fdb190d-native-source/project/first.txt)\" = first'"
+      ],
+      "rc": 0,
+      "seconds": 0.246,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-linux-4fdb190d",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n cat /var/lib/autobyteus-nfs/hosted-filesystem.json"
+      ],
+      "rc": 0,
+      "seconds": 0.144,
+      "stdout": "{\n  \"installationId\": \"8e014d08-10ec-4a32-a27d-72bb60b12d93\",\n  \"storageId\": \"79e3b34c-9133-4d59-99e0-f5cf0cfab07b\",\n  \"source\": \"/home/admin/ab-nfs-api006-linux-4fdb190d-native-source\",\n  \"identity\": {\n    \"device\": 64769,\n    \"inode\": 786445\n  },\n  \"backend\": \"ganesha-native\",\n  \"dataUid\": 1000,\n  \"dataGid\": 109,\n  \"allowlist\": [\n    \"192.168.64.4\"\n  ]\n}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-linux-4fdb190d",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "set -e; sudo -n systemctl is-active autobyteus-nfs.service autobyteus-nfs-ganesha.service; sudo -n test ! -e /var/lib/autobyteus-nfs/pending-setup.json; sudo -n stat -c \"%u:%a:%n\" /var/lib/autobyteus-nfs /var/lib/autobyteus-nfs/attachment.json; sha256sum /usr/libexec/autobyteus-nfs/autobyteus-nfs; dpkg-query -W -f='${Package} ${Status} ${Version} ${Architecture}\\n' nfs-ganesha nfs-ganesha-vfs; findmnt -n -o SOURCE,FSTYPE,OPTIONS /Volumes/autobyteus-shared; sudo -n cat /var/lib/autobyteus-nfs/ganesha/ganesha.conf"
+      ],
+      "rc": 0,
+      "seconds": 0.068,
+      "stdout": "active\nactive\n0:700:/var/lib/autobyteus-nfs\n0:600:/var/lib/autobyteus-nfs/attachment.json\n3944a3f0696f006ac658475ea335fcc5dd8c9bfc1195c2301ab92608de446b38  /usr/libexec/autobyteus-nfs/autobyteus-nfs\nnfs-ganesha install ok installed 4.3-8ubuntu1+autobyteus1 arm64\nnfs-ganesha-vfs install ok installed 4.3-8ubuntu1+autobyteus1 arm64\n192.168.64.4:/autobyteus/79e3b34c-9133-4d59-99e0-f5cf0cfab07b nfs4   rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,fatal_neterrors=none,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=192.168.64.4,local_lock=none,addr=192.168.64.4\nNFS_CORE_PARAM {\n Protocols = 4;\n NFS_Port = 2049;\n Enable_NLM = false;\n Enable_RQUOTA = false;\n Enable_UDP = false;\n}\nNFSv4 {\n Minor_Versions = 1;\n RecoveryBackend = fs;\n RecoveryRoot = \"/var/lib/autobyteus-nfs/ganesha/recovery\";\n}\nEXPORT {\n Export_Id = 1;\n Attr_Expiration_Time = 0;\n Path = \"/home/admin/ab-nfs-api006-linux-4fdb190d-native-source\";\n Pseudo = \"/autobyteus/79e3b34c-9133-4d59-99e0-f5cf0cfab07b\";\n Protocols = 4;\n Transports = TCP;\n SecType = sys;\n Access_Type = None;\n Squash = All_Squash;\n Anonymous_uid = 1000;\n Anonymous_gid = 109;\n CLIENT {\n  Clients = 192.168.64.4;\n  Access_Type = RW;\n  Squash = All_Squash;\n }\n FSAL { Name = VFS; }\n}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-linux-4fdb190d",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "cat /proc/sys/kernel/random/boot_id"
+      ],
+      "rc": 0,
+      "seconds": 0.039,
+      "stdout": "3c216165-53bb-40fb-96af-db651ce30c9f\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-linux-4fdb190d",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n reboot"
+      ],
+      "rc": 0,
+      "seconds": 0.051,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-linux-4fdb190d",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "cat /proc/sys/kernel/random/boot_id"
+      ],
+      "timeout": 5,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-linux-4fdb190d",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "cat /proc/sys/kernel/random/boot_id"
+      ],
+      "timeout": 5,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-linux-4fdb190d",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "cat /proc/sys/kernel/random/boot_id"
+      ],
+      "timeout": 5,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-linux-4fdb190d",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "cat /proc/sys/kernel/random/boot_id"
+      ],
+      "timeout": 5,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-linux-4fdb190d",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "cat /proc/sys/kernel/random/boot_id"
+      ],
+      "timeout": 5,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-linux-4fdb190d",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "cat /proc/sys/kernel/random/boot_id"
+      ],
+      "rc": 0,
+      "seconds": 0.258,
+      "stdout": "b5c85604-850f-47b4-be9b-475f210a431e\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-linux-4fdb190d",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c 'findmnt -n -t nfs,nfs4 /Volumes/autobyteus-shared >/dev/null && test \"$(cat /Volumes/autobyteus-shared/project/preexisting.txt)\" = ORIGINAL_API006'"
+      ],
+      "rc": 0,
+      "seconds": 6.515,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-linux-4fdb190d",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c 'python3 -c '\"'\"'import os,json,hashlib,stat\nfrom pathlib import Path\np=Path('\"'\"'\"'\"'\"'\"'\"'\"'/home/admin/ab-nfs-api006-linux-4fdb190d-native-source'\"'\"'\"'\"'\"'\"'\"'\"');s=p.stat()\ndef h(p):return hashlib.sha256(p.read_bytes()).hexdigest()\nr={'\"'\"'\"'\"'\"'\"'\"'\"'sourceIdentity'\"'\"'\"'\"'\"'\"'\"'\"':[s.st_dev,s.st_ino,s.st_uid,s.st_gid,stat.S_IMODE(s.st_mode)],'\"'\"'\"'\"'\"'\"'\"'\"'sourceHash'\"'\"'\"'\"'\"'\"'\"'\"':h(p/'\"'\"'\"'\"'\"'\"'\"'\"'project/preexisting.txt'\"'\"'\"'\"'\"'\"'\"'\"'),'\"'\"'\"'\"'\"'\"'\"'\"'sourceMarker'\"'\"'\"'\"'\"'\"'\"'\"':json.loads((p/'\"'\"'\"'\"'\"'\"'\"'\"'.autobyteus-nfs/storage.json'\"'\"'\"'\"'\"'\"'\"'\"').read_text()),'\"'\"'\"'\"'\"'\"'\"'\"'mountedHash'\"'\"'\"'\"'\"'\"'\"'\"':h(Path('\"'\"'\"'\"'\"'\"'\"'\"'/Volumes/autobyteus-shared'\"'\"'\"'\"'\"'\"'\"'\"')/'\"'\"'\"'\"'\"'\"'\"'\"'project/preexisting.txt'\"'\"'\"'\"'\"'\"'\"'\"'),'\"'\"'\"'\"'\"'\"'\"'\"'mountedMarker'\"'\"'\"'\"'\"'\"'\"'\"':json.loads((Path('\"'\"'\"'\"'\"'\"'\"'\"'/Volumes/autobyteus-shared'\"'\"'\"'\"'\"'\"'\"'\"')/'\"'\"'\"'\"'\"'\"'\"'\"'.autobyteus-nfs/storage.json'\"'\"'\"'\"'\"'\"'\"'\"').read_text()),'\"'\"'\"'\"'\"'\"'\"'\"'directoryDelegations'\"'\"'\"'\"'\"'\"'\"'\"':Path('\"'\"'\"'\"'\"'\"'\"'\"'/sys/module/nfsv4/parameters/directory_delegations'\"'\"'\"'\"'\"'\"'\"'\"').read_text().strip(),'\"'\"'\"'\"'\"'\"'\"'\"'uid'\"'\"'\"'\"'\"'\"'\"'\"':os.getuid(),'\"'\"'\"'\"'\"'\"'\"'\"'gid'\"'\"'\"'\"'\"'\"'\"'\"':os.getgid(),'\"'\"'\"'\"'\"'\"'\"'\"'groups'\"'\"'\"'\"'\"'\"'\"'\"':os.getgroups()};print(json.dumps(r))\n'\"'\"''"
+      ],
+      "rc": 0,
+      "seconds": 0.856,
+      "stdout": "{\"sourceIdentity\": [64769, 786445, 1000, 109, 493], \"sourceHash\": \"6d8658af6c62c7f41feef165eab37441dcf6ec5de3a27278bbf4d7c3fe0bccb4\", \"sourceMarker\": {\"storageId\": \"79e3b34c-9133-4d59-99e0-f5cf0cfab07b\"}, \"mountedHash\": \"6d8658af6c62c7f41feef165eab37441dcf6ec5de3a27278bbf4d7c3fe0bccb4\", \"mountedMarker\": {\"storageId\": \"79e3b34c-9133-4d59-99e0-f5cf0cfab07b\"}, \"directoryDelegations\": \"Y\", \"uid\": 1000, \"gid\": 109, \"groups\": []}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-linux-4fdb190d",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c 'set -e; printf boot > /Volumes/autobyteus-shared/project/boot.txt; sync; test \"$(cat /home/admin/ab-nfs-api006-linux-4fdb190d-native-source/project/boot.txt)\" = boot'"
+      ],
+      "rc": 0,
+      "seconds": 0.124,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-linux-4fdb190d",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n cat /var/lib/autobyteus-nfs/hosted-filesystem.json"
+      ],
+      "rc": 0,
+      "seconds": 0.101,
+      "stdout": "{\n  \"installationId\": \"8e014d08-10ec-4a32-a27d-72bb60b12d93\",\n  \"storageId\": \"79e3b34c-9133-4d59-99e0-f5cf0cfab07b\",\n  \"source\": \"/home/admin/ab-nfs-api006-linux-4fdb190d-native-source\",\n  \"identity\": {\n    \"device\": 64769,\n    \"inode\": 786445\n  },\n  \"backend\": \"ganesha-native\",\n  \"dataUid\": 1000,\n  \"dataGid\": 109,\n  \"allowlist\": [\n    \"192.168.64.4\"\n  ]\n}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-linux-4fdb190d",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c '/home/admin/ab-nfs-api006-linux-4fdb190d-binary reconnect --yes --json'"
+      ],
+      "rc": 1,
+      "seconds": 0.078,
+      "stdout": "",
+      "stderr": "AutoByteus NFS incomplete: another administrative operation is checking/incomplete; restore storage and wait: resource temporarily unavailable\nAutoByteus NFS incomplete: exit status 1\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-linux-4fdb190d",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "findmnt -t nfs,nfs4; sudo -n systemctl status autobyteus-nfs.service autobyteus-nfs-ganesha.service --no-pager; sudo -n ls -l /var/lib/autobyteus-nfs"
+      ],
+      "rc": 0,
+      "seconds": 0.051,
+      "stdout": "TARGET                     SOURCE                                                        FSTYPE OPTIONS\n/Volumes/autobyteus-shared 192.168.64.4:/autobyteus/79e3b34c-9133-4d59-99e0-f5cf0cfab07b nfs4   rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,fatal_neterrors=none,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=192.168.64.4,local_lock=none,addr=192.168.64.4\n* autobyteus-nfs.service - AutoByteus NFS attachment service\n     Loaded: loaded (/etc/systemd/system/autobyteus-nfs.service; enabled; preset: enabled)\n     Active: active (running) since Thu 2026-10-15 12:18:17 UTC; 13s ago\n   Main PID: 681 (autobyteus-nfs)\n      Tasks: 11 (limit: 6326)\n     Memory: 15.8M (peak: 16.5M)\n        CPU: 21ms\n     CGroup: /system.slice/autobyteus-nfs.service\n             |-681 /usr/libexec/autobyteus-nfs/autobyteus-nfs service\n             `-883 /usr/libexec/autobyteus-nfs/autobyteus-nfs internal-probe /Volumes/autobyteus-shared 79e3b34c-9133-4d59-99e0-f5cf0cfab07b\n\nOct 15 12:18:17 ubuntu systemd[1]: Started autobyteus-nfs.service - AutoByteus NFS attachment service.\n\n* autobyteus-nfs-ganesha.service - AutoByteus private Ganesha NFS engine\n     Loaded: loaded (/etc/systemd/system/autobyteus-nfs-ganesha.service; enabled; preset: enabled)\n     Active: active (running) since Thu 2026-10-15 12:18:17 UTC; 13s ago\n   Main PID: 680 (ganesha.nfsd)\n      Tasks: 20 (limit: 6326)\n     Memory: 30.5M (peak: 30.5M)\n        CPU: 34ms\n     CGroup: /system.slice/autobyteus-nfs-ganesha.service\n             `-680 /usr/bin/ganesha.nfsd -F -f /var/lib/autobyteus-nfs/ganesha/ganesha.conf -L /var/lib/autobyteus-nfs/ganesha/engine.log -p /var/lib/autobyteus-nfs/ganesha/ganesha.pid\n\nOct 15 12:18:17 ubuntu systemd[1]: Started autobyteus-nfs-ganesha.service - AutoByteus private Ganesha NFS engine.\nOct 15 12:18:17 ubuntu ganesha.nfsd[680]: libnfsidmap: Unable to determine the NFSv4 domain; Using 'localdomain' as the NFSv4 domain which means UIDs will be mapped to the 'Nobody-User' user defined in /etc/idmapd.conf\ntotal 16\n-rw------- 1 root root  332 Oct 15 12:17 attachment.json\n-rw------- 1 root root   19 Oct 15 12:17 docker-endpoint.json\ndrwx------ 3 root root 4096 Oct 15 12:18 ganesha\n-rw------- 1 root root  359 Oct 15 12:17 hosted-filesystem.json\n-rw------- 1 root root    0 Oct 15 12:17 operation.lock\n",
+      "stderr": ""
+    }
+  ],
+  "cases": [
+    {
+      "name": "fresh nonempty owned source and native prerequisites",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api006-linux-4fdb190d",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/home/admin",
+          "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "set -e; test \"$(id -u)\" = 1000; test ! -e /var/lib/autobyteus-nfs; test ! -e /etc/autobyteus-nfs; test ! -e /Volumes/autobyteus-shared; ! dpkg-query -W nfs-ganesha; mkdir -m 755 /home/admin/ab-nfs-api006-linux-4fdb190d-native-source; mkdir -m 755 /home/admin/ab-nfs-api006-linux-4fdb190d-native-source/project; printf ORIGINAL_API006 > /home/admin/ab-nfs-api006-linux-4fdb190d-native-source/project/preexisting.txt; uname -a; findmnt -no SOURCE,FSTYPE /"
+        ],
+        "rc": 0,
+        "seconds": 0.193,
+        "stdout": "Linux ubuntu 7.0.0-38-generic #38~24.04.4-Ubuntu SMP PREEMPT_DYNAMIC Mon Sep 14 17:12:37 UTC 2 aarch64 aarch64 aarch64 GNU/Linux\n/dev/vda1 ext4\n",
+        "stderr": "dpkg-query: no packages found matching nfs-ganesha\n"
+      },
+      "status": "Pass",
+      "seconds": 0.193
+    },
+    {
+      "name": "public native create under077 nonroot clear-groups",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api006-linux-4fdb190d",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/home/admin",
+          "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c 'umask 077; exec /home/admin/ab-nfs-api006-linux-4fdb190d-binary create --source /home/admin/ab-nfs-api006-linux-4fdb190d-native-source --backend ganesha-native --endpoint 192.168.64.4 --allow 192.168.64.4 --nodes none --yes --json'"
+        ],
+        "rc": 0,
+        "seconds": 20.894,
+        "stdout": "{\n  \"connection\": {\n    \"storageId\": \"79e3b34c-9133-4d59-99e0-f5cf0cfab07b\",\n    \"endpoint\": \"192.168.64.4\",\n    \"export\": \"/autobyteus/79e3b34c-9133-4d59-99e0-f5cf0cfab07b\",\n    \"protocol\": \"4.1\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\"\n  },\n  \"status\": {\n    \"storageId\": \"79e3b34c-9133-4d59-99e0-f5cf0cfab07b\",\n    \"mountRoot\": \"/Volumes/autobyteus-shared\",\n    \"hostReady\": true,\n    \"nodes\": {},\n    \"limitation\": \"Hard NFS checks may stall; no outage deadline or local substitute\"\n  }\n}\n",
+        "stderr": "Detected private addresses: 192.168.64.4\nNo reachable local Docker daemon; no Docker nodes will be attached.\nAutoByteus NFS plan:\n - Ganesha NFSv4.1 TCP2049 only; persistent private recovery state\n - Export chosen source in place: /home/admin/ab-nfs-api006-linux-4fdb190d-native-source\n - Map ALL clients to nonroot 1000:109; no recursive ownership change\n - Trust private hosts/subnets: 192.168.64.4\n - Attach 192.168.64.4:/autobyteus/79e3b34c-9133-4d59-99e0-f5cf0cfab07b at /Volumes/autobyteus-shared\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\n - Install exact Ubuntu NFS package versions from this release, if needed\nChecking actual host and selected-node readiness; this may wait for storage.\n"
+      },
+      "status": "Pass",
+      "seconds": 20.895
+    },
+    {
+      "name": "native mounted bytes UUID source identity and nonroot RW",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api006-linux-4fdb190d",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/home/admin",
+          "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c 'python3 -c '\"'\"'import os,json,hashlib,stat\nfrom pathlib import Path\np=Path('\"'\"'\"'\"'\"'\"'\"'\"'/home/admin/ab-nfs-api006-linux-4fdb190d-native-source'\"'\"'\"'\"'\"'\"'\"'\"');s=p.stat()\ndef h(p):return hashlib.sha256(p.read_bytes()).hexdigest()\nr={'\"'\"'\"'\"'\"'\"'\"'\"'sourceIdentity'\"'\"'\"'\"'\"'\"'\"'\"':[s.st_dev,s.st_ino,s.st_uid,s.st_gid,stat.S_IMODE(s.st_mode)],'\"'\"'\"'\"'\"'\"'\"'\"'sourceHash'\"'\"'\"'\"'\"'\"'\"'\"':h(p/'\"'\"'\"'\"'\"'\"'\"'\"'project/preexisting.txt'\"'\"'\"'\"'\"'\"'\"'\"'),'\"'\"'\"'\"'\"'\"'\"'\"'sourceMarker'\"'\"'\"'\"'\"'\"'\"'\"':json.loads((p/'\"'\"'\"'\"'\"'\"'\"'\"'.autobyteus-nfs/storage.json'\"'\"'\"'\"'\"'\"'\"'\"').read_text()),'\"'\"'\"'\"'\"'\"'\"'\"'mountedHash'\"'\"'\"'\"'\"'\"'\"'\"':h(Path('\"'\"'\"'\"'\"'\"'\"'\"'/Volumes/autobyteus-shared'\"'\"'\"'\"'\"'\"'\"'\"')/'\"'\"'\"'\"'\"'\"'\"'\"'project/preexisting.txt'\"'\"'\"'\"'\"'\"'\"'\"'),'\"'\"'\"'\"'\"'\"'\"'\"'mountedMarker'\"'\"'\"'\"'\"'\"'\"'\"':json.loads((Path('\"'\"'\"'\"'\"'\"'\"'\"'/Volumes/autobyteus-shared'\"'\"'\"'\"'\"'\"'\"'\"')/'\"'\"'\"'\"'\"'\"'\"'\"'.autobyteus-nfs/storage.json'\"'\"'\"'\"'\"'\"'\"'\"').read_text()),'\"'\"'\"'\"'\"'\"'\"'\"'directoryDelegations'\"'\"'\"'\"'\"'\"'\"'\"':Path('\"'\"'\"'\"'\"'\"'\"'\"'/sys/module/nfsv4/parameters/directory_delegations'\"'\"'\"'\"'\"'\"'\"'\"').read_text().strip(),'\"'\"'\"'\"'\"'\"'\"'\"'uid'\"'\"'\"'\"'\"'\"'\"'\"':os.getuid(),'\"'\"'\"'\"'\"'\"'\"'\"'gid'\"'\"'\"'\"'\"'\"'\"'\"':os.getgid(),'\"'\"'\"'\"'\"'\"'\"'\"'groups'\"'\"'\"'\"'\"'\"'\"'\"':os.getgroups()};print(json.dumps(r))\n'\"'\"''"
+        ],
+        "rc": 0,
+        "seconds": 0.061,
+        "stdout": "{\"sourceIdentity\": [64769, 786445, 1000, 109, 493], \"sourceHash\": \"6d8658af6c62c7f41feef165eab37441dcf6ec5de3a27278bbf4d7c3fe0bccb4\", \"sourceMarker\": {\"storageId\": \"79e3b34c-9133-4d59-99e0-f5cf0cfab07b\"}, \"mountedHash\": \"6d8658af6c62c7f41feef165eab37441dcf6ec5de3a27278bbf4d7c3fe0bccb4\", \"mountedMarker\": {\"storageId\": \"79e3b34c-9133-4d59-99e0-f5cf0cfab07b\"}, \"directoryDelegations\": \"Y\", \"uid\": 1000, \"gid\": 109, \"groups\": []}\n",
+        "stderr": ""
+      },
+      "status": "Pass",
+      "seconds": 0.453
+    },
+    {
+      "name": "actual installed engine jobs private modes manifest and client policy",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api006-linux-4fdb190d",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/home/admin",
+          "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "set -e; sudo -n systemctl is-active autobyteus-nfs.service autobyteus-nfs-ganesha.service; sudo -n test ! -e /var/lib/autobyteus-nfs/pending-setup.json; sudo -n stat -c \"%u:%a:%n\" /var/lib/autobyteus-nfs /var/lib/autobyteus-nfs/attachment.json; sha256sum /usr/libexec/autobyteus-nfs/autobyteus-nfs; dpkg-query -W -f='${Package} ${Status} ${Version} ${Architecture}\\n' nfs-ganesha nfs-ganesha-vfs; findmnt -n -o SOURCE,FSTYPE,OPTIONS /Volumes/autobyteus-shared; sudo -n cat /var/lib/autobyteus-nfs/ganesha/ganesha.conf"
+        ],
+        "rc": 0,
+        "seconds": 0.068,
+        "stdout": "active\nactive\n0:700:/var/lib/autobyteus-nfs\n0:600:/var/lib/autobyteus-nfs/attachment.json\n3944a3f0696f006ac658475ea335fcc5dd8c9bfc1195c2301ab92608de446b38  /usr/libexec/autobyteus-nfs/autobyteus-nfs\nnfs-ganesha install ok installed 4.3-8ubuntu1+autobyteus1 arm64\nnfs-ganesha-vfs install ok installed 4.3-8ubuntu1+autobyteus1 arm64\n192.168.64.4:/autobyteus/79e3b34c-9133-4d59-99e0-f5cf0cfab07b nfs4   rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,fatal_neterrors=none,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=192.168.64.4,local_lock=none,addr=192.168.64.4\nNFS_CORE_PARAM {\n Protocols = 4;\n NFS_Port = 2049;\n Enable_NLM = false;\n Enable_RQUOTA = false;\n Enable_UDP = false;\n}\nNFSv4 {\n Minor_Versions = 1;\n RecoveryBackend = fs;\n RecoveryRoot = \"/var/lib/autobyteus-nfs/ganesha/recovery\";\n}\nEXPORT {\n Export_Id = 1;\n Attr_Expiration_Time = 0;\n Path = \"/home/admin/ab-nfs-api006-linux-4fdb190d-native-source\";\n Pseudo = \"/autobyteus/79e3b34c-9133-4d59-99e0-f5cf0cfab07b\";\n Protocols = 4;\n Transports = TCP;\n SecType = sys;\n Access_Type = None;\n Squash = All_Squash;\n Anonymous_uid = 1000;\n Anonymous_gid = 109;\n CLIENT {\n  Clients = 192.168.64.4;\n  Access_Type = RW;\n  Squash = All_Squash;\n }\n FSAL { Name = VFS; }\n}\n",
+        "stderr": ""
+      },
+      "status": "Pass",
+      "seconds": 0.069
+    },
+    {
+      "name": "ordinary boot automatic mounted nonroot RW before manual reconnect",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api006-linux-4fdb190d",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/home/admin",
+          "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c 'python3 -c '\"'\"'import os,json,hashlib,stat\nfrom pathlib import Path\np=Path('\"'\"'\"'\"'\"'\"'\"'\"'/home/admin/ab-nfs-api006-linux-4fdb190d-native-source'\"'\"'\"'\"'\"'\"'\"'\"');s=p.stat()\ndef h(p):return hashlib.sha256(p.read_bytes()).hexdigest()\nr={'\"'\"'\"'\"'\"'\"'\"'\"'sourceIdentity'\"'\"'\"'\"'\"'\"'\"'\"':[s.st_dev,s.st_ino,s.st_uid,s.st_gid,stat.S_IMODE(s.st_mode)],'\"'\"'\"'\"'\"'\"'\"'\"'sourceHash'\"'\"'\"'\"'\"'\"'\"'\"':h(p/'\"'\"'\"'\"'\"'\"'\"'\"'project/preexisting.txt'\"'\"'\"'\"'\"'\"'\"'\"'),'\"'\"'\"'\"'\"'\"'\"'\"'sourceMarker'\"'\"'\"'\"'\"'\"'\"'\"':json.loads((p/'\"'\"'\"'\"'\"'\"'\"'\"'.autobyteus-nfs/storage.json'\"'\"'\"'\"'\"'\"'\"'\"').read_text()),'\"'\"'\"'\"'\"'\"'\"'\"'mountedHash'\"'\"'\"'\"'\"'\"'\"'\"':h(Path('\"'\"'\"'\"'\"'\"'\"'\"'/Volumes/autobyteus-shared'\"'\"'\"'\"'\"'\"'\"'\"')/'\"'\"'\"'\"'\"'\"'\"'\"'project/preexisting.txt'\"'\"'\"'\"'\"'\"'\"'\"'),'\"'\"'\"'\"'\"'\"'\"'\"'mountedMarker'\"'\"'\"'\"'\"'\"'\"'\"':json.loads((Path('\"'\"'\"'\"'\"'\"'\"'\"'/Volumes/autobyteus-shared'\"'\"'\"'\"'\"'\"'\"'\"')/'\"'\"'\"'\"'\"'\"'\"'\"'.autobyteus-nfs/storage.json'\"'\"'\"'\"'\"'\"'\"'\"').read_text()),'\"'\"'\"'\"'\"'\"'\"'\"'directoryDelegations'\"'\"'\"'\"'\"'\"'\"'\"':Path('\"'\"'\"'\"'\"'\"'\"'\"'/sys/module/nfsv4/parameters/directory_delegations'\"'\"'\"'\"'\"'\"'\"'\"').read_text().strip(),'\"'\"'\"'\"'\"'\"'\"'\"'uid'\"'\"'\"'\"'\"'\"'\"'\"':os.getuid(),'\"'\"'\"'\"'\"'\"'\"'\"'gid'\"'\"'\"'\"'\"'\"'\"'\"':os.getgid(),'\"'\"'\"'\"'\"'\"'\"'\"'groups'\"'\"'\"'\"'\"'\"'\"'\"':os.getgroups()};print(json.dumps(r))\n'\"'\"''"
+        ],
+        "rc": 0,
+        "seconds": 0.856,
+        "stdout": "{\"sourceIdentity\": [64769, 786445, 1000, 109, 493], \"sourceHash\": \"6d8658af6c62c7f41feef165eab37441dcf6ec5de3a27278bbf4d7c3fe0bccb4\", \"sourceMarker\": {\"storageId\": \"79e3b34c-9133-4d59-99e0-f5cf0cfab07b\"}, \"mountedHash\": \"6d8658af6c62c7f41feef165eab37441dcf6ec5de3a27278bbf4d7c3fe0bccb4\", \"mountedMarker\": {\"storageId\": \"79e3b34c-9133-4d59-99e0-f5cf0cfab07b\"}, \"directoryDelegations\": \"Y\", \"uid\": 1000, \"gid\": 109, \"groups\": []}\n",
+        "stderr": ""
+      },
+      "status": "Pass",
+      "seconds": 1.084
+    },
+    {
+      "name": "separate explicit public reconnect",
+      "status": "Fail",
+      "error": "RuntimeError('AutoByteus NFS incomplete: another administrative operation is checking/incomplete; restore storage and wait: resource temporarily unavailable\\nAutoByteus NFS incomplete: exit status 1\\n')",
+      "seconds": 0.079
+    }
+  ],
+  "result": "Fail",
+  "sourceIdentityBefore": "64769:786445:1000:109:755",
+  "endpoint": "192.168.64.4",
+  "connection": {
+    "storageId": "79e3b34c-9133-4d59-99e0-f5cf0cfab07b",
+    "endpoint": "192.168.64.4",
+    "export": "/autobyteus/79e3b34c-9133-4d59-99e0-f5cf0cfab07b",
+    "protocol": "4.1",
+    "mountRoot": "/Volumes/autobyteus-shared"
+  },
+  "bindingBytes": "{\n  \"installationId\": \"8e014d08-10ec-4a32-a27d-72bb60b12d93\",\n  \"storageId\": \"79e3b34c-9133-4d59-99e0-f5cf0cfab07b\",\n  \"source\": \"/home/admin/ab-nfs-api006-linux-4fdb190d-native-source\",\n  \"identity\": {\n    \"device\": 64769,\n    \"inode\": 786445\n  },\n  \"backend\": \"ganesha-native\",\n  \"dataUid\": 1000,\n  \"dataGid\": 109,\n  \"allowlist\": [\n    \"192.168.64.4\"\n  ]\n}\n",
+  "bootBefore": "3c216165-53bb-40fb-96af-db651ce30c9f",
+  "bootAfter": "b5c85604-850f-47b4-be9b-475f210a431e",
+  "bootObservedSeconds": 46.829654541,
+  "fatal": "RuntimeError('AutoByteus NFS incomplete: another administrative operation is checking/incomplete; restore storage and wait: resource temporarily unavailable\\nAutoByteus NFS incomplete: exit status 1\\n')",
+  "diagnostics": {
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-api006-linux-4fdb190d",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/home/admin",
+      "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "findmnt -t nfs,nfs4; sudo -n systemctl status autobyteus-nfs.service autobyteus-nfs-ganesha.service --no-pager; sudo -n ls -l /var/lib/autobyteus-nfs"
+    ],
+    "rc": 0,
+    "seconds": 0.051,
+    "stdout": "TARGET                     SOURCE                                                        FSTYPE OPTIONS\n/Volumes/autobyteus-shared 192.168.64.4:/autobyteus/79e3b34c-9133-4d59-99e0-f5cf0cfab07b nfs4   rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,fatal_neterrors=none,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=192.168.64.4,local_lock=none,addr=192.168.64.4\n* autobyteus-nfs.service - AutoByteus NFS attachment service\n     Loaded: loaded (/etc/systemd/system/autobyteus-nfs.service; enabled; preset: enabled)\n     Active: active (running) since Thu 2026-10-15 12:18:17 UTC; 13s ago\n   Main PID: 681 (autobyteus-nfs)\n      Tasks: 11 (limit: 6326)\n     Memory: 15.8M (peak: 16.5M)\n        CPU: 21ms\n     CGroup: /system.slice/autobyteus-nfs.service\n             |-681 /usr/libexec/autobyteus-nfs/autobyteus-nfs service\n             `-883 /usr/libexec/autobyteus-nfs/autobyteus-nfs internal-probe /Volumes/autobyteus-shared 79e3b34c-9133-4d59-99e0-f5cf0cfab07b\n\nOct 15 12:18:17 ubuntu systemd[1]: Started autobyteus-nfs.service - AutoByteus NFS attachment service.\n\n* autobyteus-nfs-ganesha.service - AutoByteus private Ganesha NFS engine\n     Loaded: loaded (/etc/systemd/system/autobyteus-nfs-ganesha.service; enabled; preset: enabled)\n     Active: active (running) since Thu 2026-10-15 12:18:17 UTC; 13s ago\n   Main PID: 680 (ganesha.nfsd)\n      Tasks: 20 (limit: 6326)\n     Memory: 30.5M (peak: 30.5M)\n        CPU: 34ms\n     CGroup: /system.slice/autobyteus-nfs-ganesha.service\n             `-680 /usr/bin/ganesha.nfsd -F -f /var/lib/autobyteus-nfs/ganesha/ganesha.conf -L /var/lib/autobyteus-nfs/ganesha/engine.log -p /var/lib/autobyteus-nfs/ganesha/ganesha.pid\n\nOct 15 12:18:17 ubuntu systemd[1]: Started autobyteus-nfs-ganesha.service - AutoByteus private Ganesha NFS engine.\nOct 15 12:18:17 ubuntu ganesha.nfsd[680]: libnfsidmap: Unable to determine the NFSv4 domain; Using 'localdomain' as the NFSv4 domain which means UIDs will be mapped to the 'Nobody-User' user defined in /etc/idmapd.conf\ntotal 16\n-rw------- 1 root root  332 Oct 15 12:17 attachment.json\n-rw------- 1 root root   19 Oct 15 12:17 docker-endpoint.json\ndrwx------ 3 root root 4096 Oct 15 12:18 ganesha\n-rw------- 1 root root  359 Oct 15 12:17 hosted-filesystem.json\n-rw------- 1 root root    0 Oct 15 12:17 operation.lock\n",
+    "stderr": ""
+  }
+}

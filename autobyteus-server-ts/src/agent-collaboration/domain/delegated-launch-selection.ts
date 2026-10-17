@@ -2,10 +2,6 @@ import { isDeepStrictEqual } from "node:util";
 import type { AgentLaunchConfiguration, TeamRunAgentTeamNode, TeamRunNode } from "../../agent-team-execution/domain/team-run-config.js";
 import {
   effectiveCopyAgentLaunch,
-  effectiveMemberLaunchConfiguration,
-  memberFollowsTeam,
-  type CollaboratorEntry,
-  type CollaboratorTeamEntry,
   type TaskExecution,
   type TaskExecutionSource,
   type TaskTeamExecution,
@@ -15,12 +11,12 @@ import {
 import type { AgentTeamAddress } from "./agent-team-address.js";
 
 /**
- * Pure policy of the per-instance user model choice on delegated copies and collaborators
+ * Pure policy of the per-instance user model choice on delegated copies
  * (DS-001): which records a change addresses, what each must have stopped, the launch it is
  * validated against, and the tree mutation. Roots supply their tree's lists and source reader.
  */
 
-/** A copy's or collaborator's run identity: exactly one of the two. */
+/** A copy's run identity: exactly one of the two. */
 export type DelegatedRunReference = Readonly<{ agentRunId: string }> | Readonly<{ teamRunId: string }>;
 
 export type DelegatedLaunchSelectionValue = Readonly<{
@@ -35,10 +31,9 @@ export type DelegatedLaunchChange = Readonly<{
   selection: DelegatedLaunchSelectionValue;
 }>;
 
-/** Every place a tree records delegated copies and collaborators. */
+/** Every place a tree records delegated copies. */
 export type DelegatedLaunchForest = Readonly<{
-  collaborators: readonly CollaboratorEntry[];
-  /** Every task-execution list of the tree (root, mounted Teams, collaborator Teams), as `taskExecutionListsOf`. */
+  /** Every task-execution list of the tree (root and mounted Teams), as `taskExecutionListsOf`. */
   taskExecutionLists: readonly (readonly TaskExecution[])[];
 }>;
 
@@ -52,12 +47,9 @@ export type DelegatedTaskSourceReader = (
 
 /**
  * What must be stopped (offline) for a change to be saved (AR-001): a task copy is one unit (a
- * member of a Team copy is editable only while the whole copy is stopped); a collaborator is its
- * agents' handles.
+ * member of a Team copy is editable only while the whole copy is stopped).
  */
-export type DelegatedStopUnit =
-  | Readonly<{ kind: "task_execution"; reference: DelegatedRunReference }>
-  | Readonly<{ kind: "collaborator"; address: AgentTeamAddress; agentRunIds: readonly string[] }>;
+export type DelegatedStopUnit = Readonly<{ kind: "task_execution"; reference: DelegatedRunReference }>;
 
 export type DelegatedLaunchTarget = Readonly<{
   /** Index of the change in the request. */
@@ -131,13 +123,10 @@ const teamCopyAgents = (team: TaskTeamExecution): readonly Readonly<{ agentRunId
   return agents;
 };
 
-const collaboratorAgentRunIds = (entry: CollaboratorEntry): readonly string[] =>
-  entry.kind === "agent" ? [entry.agentRunId] : entry.members.map((member) => member.agentRunId);
-
 /**
- * Resolves each change to exactly one open copy or collaborator record of the forest, its stop
+ * Resolves each change to exactly one open copy record of the forest, its stop
  * unit and its current effective launch. Throws `DelegatedLaunchTargetError` for a change that
- * names no delegated copy or collaborator (a configured member or the root, an unknown or closed
+ * names no delegated copy (a configured member or the root, an unknown or closed
  * run), names both or neither identity, names a nested Team (no Team-level choice), or repeats a target.
  */
 export const resolveDelegatedLaunchTargets = (input: Readonly<{
@@ -161,9 +150,9 @@ export const resolveDelegatedLaunchTargets = (input: Readonly<{
       ? resolveAgentTarget(input, agentRunId)
       : resolveTeamTarget(input, teamRunId!);
     if (!target) {
-      throw new DelegatedLaunchTargetError(index, `'${agentRunId ?? teamRunId}' is not an open delegated copy or collaborator of this run.`);
+      throw new DelegatedLaunchTargetError(index, `'${agentRunId ?? teamRunId}' is not an open delegated copy of this run.`);
     }
-    if (target.stopUnit.kind === "task_execution" && input.isClosed?.(target.stopUnit.reference)) {
+    if (input.isClosed?.(target.stopUnit.reference)) {
       throw new DelegatedLaunchTargetError(index, `'${agentRunId ?? teamRunId}' belongs to closed Task work.`);
     }
     return Object.freeze({ ...target, index, selection: change.selection });
@@ -176,25 +165,6 @@ const resolveAgentTarget = (
   input: Parameters<typeof resolveDelegatedLaunchTargets>[0],
   agentRunId: string,
 ): ResolvedTarget | null => {
-  for (const entry of input.forest.collaborators) {
-    const stopUnit: DelegatedStopUnit = { kind: "collaborator", address: entry.address, agentRunIds: collaboratorAgentRunIds(entry) };
-    if (entry.kind === "agent" && entry.agentRunId === agentRunId) {
-      return { scope: "agent", runId: agentRunId, address: entry.address, stopUnit,
-        current: effectiveCopyAgentLaunch({ started: entry.launchConfiguration, agentSelection: entry.userLaunchSelection }).launch };
-    }
-    if (entry.kind === "agent_team") {
-      const member = entry.members.find((candidate) => candidate.agentRunId === agentRunId);
-      if (member) {
-        return { scope: "agent", runId: agentRunId, address: member.address, stopUnit,
-          current: effectiveCopyAgentLaunch({
-            started: effectiveMemberLaunchConfiguration(entry, member),
-            followsTeam: memberFollowsTeam({ kind: "recorded", member }),
-            teamSelection: entry.userTeamLaunchSelection,
-            agentSelection: member.userLaunchSelection,
-          }).launch };
-      }
-    }
-  }
   let found: ResolvedTarget | null = null;
   visitTaskExecutions(input.forest, (task) => {
     if (found) return;
@@ -228,13 +198,6 @@ const resolveTeamTarget = (
   input: Parameters<typeof resolveDelegatedLaunchTargets>[0],
   teamRunId: string,
 ): ResolvedTarget | null => {
-  const entry = input.forest.collaborators.find((candidate): candidate is CollaboratorTeamEntry =>
-    candidate.kind === "agent_team" && candidate.teamRunId === teamRunId);
-  if (entry) {
-    return { scope: "team", runId: teamRunId, address: entry.address,
-      stopUnit: { kind: "collaborator", address: entry.address, agentRunIds: collaboratorAgentRunIds(entry) },
-      current: effectiveCopyAgentLaunch({ started: entry.defaultLaunchConfiguration, followsTeam: true, teamSelection: entry.userTeamLaunchSelection }).launch };
-  }
   let found: ResolvedTarget | null = null;
   visitTaskExecutions(input.forest, (task) => {
     if (found || !("teamRunId" in task) || task.teamRunId !== teamRunId) return;
@@ -272,7 +235,7 @@ export const delegatedLaunchSelections = (
 
 /**
  * Records the selections on a task-execution list (any depth). Only the selection fields change;
- * the started values (`source`, entry launches) are never touched. A selection equal to the
+ * the started values (`source`) are never touched. A selection equal to the
  * recorded one (model and settings) keeps the record unchanged.
  */
 export const applyDelegatedLaunchSelectionsToTaskExecutions = (
@@ -292,18 +255,6 @@ export const applyDelegatedLaunchSelectionsToTaskExecutions = (
   }, "userTeamLaunchSelection", selections.teams.get(task.teamRunId));
 });
 
-/** Records the selections on collaborator entries, their members and the copies their Teams host. */
-export const applyDelegatedLaunchSelectionsToCollaborators = (
-  collaborators: readonly CollaboratorEntry[],
-  selections: DelegatedLaunchSelections,
-): CollaboratorEntry[] => collaborators.map((entry): CollaboratorEntry => entry.kind === "agent"
-  ? withSelection(entry, "userLaunchSelection", selections.agents.get(entry.agentRunId))
-  : withSelection({
-    ...entry,
-    members: entry.members.map((member) => withSelection(member, "userLaunchSelection", selections.agents.get(member.agentRunId))),
-    taskExecutions: applyDelegatedLaunchSelectionsToTaskExecutions(entry.taskExecutions, selections),
-  }, "userTeamLaunchSelection", selections.teams.get(entry.teamRunId)));
-
 const sameChoice = (left: UserLaunchSelection | undefined, right: UserLaunchSelection): boolean =>
   left !== undefined && left.llmModelIdentifier === right.llmModelIdentifier
   && isDeepStrictEqual(left.llmConfig, right.llmConfig);
@@ -318,12 +269,12 @@ const withSelection = <T extends object, K extends "userLaunchSelection" | "user
   return sameChoice(current, selection) ? record : { ...record, [key]: selection };
 };
 
-/** One saved choice as recorded on its copy or collaborator record, for the live view (DS-001). */
+/** One saved choice as recorded on its copy record, for the live view (DS-001). */
 export type DelegatedLaunchSelectionRecord = Readonly<{ reference: DelegatedRunReference; selection: UserLaunchSelection }>;
 
 /**
  * The choices of these selections' run IDs as the forest now records them (a selection equal to
- * the recorded one kept the earlier record), in collaborator-then-copy order.
+ * the recorded one kept the earlier record), in copy order.
  */
 export const recordedDelegatedLaunchSelections = (
   forest: DelegatedLaunchForest,
@@ -336,11 +287,6 @@ export const recordedDelegatedLaunchSelections = (
   const team = (teamRunId: string, selection: UserLaunchSelection | undefined): void => {
     if (selection && selections.teams.has(teamRunId)) records.push({ reference: { teamRunId }, selection });
   };
-  for (const entry of forest.collaborators) {
-    if (entry.kind === "agent") { agent(entry.agentRunId, entry.userLaunchSelection); continue; }
-    team(entry.teamRunId, entry.userTeamLaunchSelection);
-    entry.members.forEach((member) => agent(member.agentRunId, member.userLaunchSelection));
-  }
   visitTaskExecutions(forest, (task) => {
     if ("agentRunId" in task) { agent(task.agentRunId, task.userLaunchSelection); return; }
     team(task.teamRunId, task.userTeamLaunchSelection);
@@ -350,7 +296,7 @@ export const recordedDelegatedLaunchSelections = (
 };
 
 /**
- * Every editable copy or collaborator of the forest (agent-level and Team-level) with its current
+ * Every editable copy of the forest (agent-level and Team-level) with its current
  * effective launch, for the options query. Closed copies and records whose source cannot be read are left out.
  */
 export const listDelegatedLaunchTargets = (input: Readonly<{
@@ -359,13 +305,6 @@ export const listDelegatedLaunchTargets = (input: Readonly<{
   isClosed?: (reference: DelegatedRunReference) => boolean;
 }>): readonly Omit<DelegatedLaunchTarget, "index" | "selection">[] => {
   const references: DelegatedRunReference[] = [];
-  for (const entry of input.forest.collaborators) {
-    if (entry.kind === "agent") references.push({ agentRunId: entry.agentRunId });
-    else {
-      references.push({ teamRunId: entry.teamRunId });
-      entry.members.forEach((member) => references.push({ agentRunId: member.agentRunId }));
-    }
-  }
   visitTaskExecutions(input.forest, (task) => {
     if ("agentRunId" in task) { references.push({ agentRunId: task.agentRunId }); return; }
     references.push({ teamRunId: task.teamRunId });

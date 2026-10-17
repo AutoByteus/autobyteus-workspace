@@ -8,11 +8,11 @@ import type {
   ExistingRunModelSelection,
 } from '~/types/agent/ExistingRunModelConfigDraft'
 
-/** The root a delegated copy or collaborator belongs to, as the server names its kind. */
+/** The root a delegated copy belongs to, as the server names its kind. */
 export type DelegatedRootKind = 'AGENT' | 'AGENT_TEAM' | 'AGENT_ORG'
 export type DelegatedRoot = Readonly<{ rootKind: DelegatedRootKind; rootRunId: string }>
 
-/** One copy or collaborator: an agent (`agentRunId`) or a Team (`teamRunId`). */
+/** One copy: an agent (`agentRunId`) or a Team (`teamRunId`). */
 export type DelegatedReference = Readonly<{ agentRunId: string }> | Readonly<{ teamRunId: string }>
 /** Where a user model choice is recorded: an agent's own, or a Team's (its followers resolve to it). */
 export type DelegatedTargetKey = `agent:${string}` | `team:${string}`
@@ -77,7 +77,7 @@ export const updateDelegatedLaunchSelections = async (input: DelegatedRoot & Rea
 
 type OptionsRow = ExistingRunModelOptions & Readonly<{ scope: 'agent' | 'team'; agentRunId: string | null; teamRunId: string | null }>
 
-/** Options of every editable copy and collaborator of the run, keyed by where its choice is recorded. */
+/** Options of every editable copy of the run, keyed by where its choice is recorded. */
 export const loadDelegatedLaunchModelOptions = async (root: DelegatedRoot): Promise<Record<DelegatedTargetKey, ExistingRunModelOptionsState>> => {
   const { data, errors } = await getApolloClient().query<{ delegatedLaunchModelOptions?: OptionsRow[] }>({
     query: DelegatedLaunchModelOptions, variables: root, fetchPolicy: 'network-only',

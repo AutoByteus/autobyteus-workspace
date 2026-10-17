@@ -140,7 +140,7 @@ const seed = async () => {
   const names = ['Solution Designer', 'Architecture Reviewer', 'Implementation Engineer', 'Code Reviewer', 'API E2E Engineer', 'Delivery Engineer'];
   const ids = [];
   for (const name of names) ids.push(await agent(name, []));
-  const managerId = await agent('Project Task Manager Probe', ['list_projects', 'list_project_tasks', 'create_or_update_task']);
+  const managerId = await agent('Project Task Manager Probe', ['list_projects', 'list_project_tasks', 'create_task', 'update_task']);
   const createTeam = async (name) => (await gql('mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}', { input: {
     name, description: name, instructions: 'Do the assigned task.', coordinatorMemberName: 'solution_designer',
     nodes: names.map((n, i) => ({ memberName: segment(n), ref: ids[i], refScope: 'SHARED' })) } })).createAgentTeamDefinition.id;
@@ -168,7 +168,7 @@ const seed = async () => {
   sendOther(callTool('delegate_task', { recipient_address: '/software_engineering_team_probe', task_id: otherTaskId }));
   await until('other host task assigned', async () => (await tasksFor(projectId)).find(t => t.taskId === otherTaskId)?.root?.start === 'started', 90000);
   const initial = await viewFor(hostId);
-  const teams = [...initial.execution_tree.collaborators.filter(c => c.kind === 'agent_team'), ...initial.execution_tree.taskExecutions.filter(t => t.teamRunId)];
+  const teams = initial.execution_tree.taskExecutions.filter(t => t.teamRunId);
   assert(teams.length === 7, 'Representative workload must be seven six-member Teams', teams);
   assert(teams.every(t => t.members.length === 6), 'Expected six members per Team');
   for (const copy of [2, 3]) {
@@ -414,7 +414,7 @@ try {
       assert(mutations.length === 0 && commands.length === sent, 'Disclosure sent a mutation/stream command', { mutations, commands: commands.slice(sent) });
       return { mutations: 0, streamCommands: 0, tasks: beforeTasks.map(t => ({ id: t.taskId, status: t.status })), conversationEntries: beforeConversation.length };
     });
-    await runCase('B-005', 'Real live Task checkpoint, added hosted Team, reconnect and closure preserve choices/status/conversation', async () => {
+    await runCase('B-005', 'Real live Task checkpoint, a late delegated Team, reconnect and closure preserve choices/status/conversation', async () => {
       const send = await inputFor(setup.hostId);
       send('Continue managing these Tasks.');
       await runRow().click();
@@ -424,7 +424,8 @@ try {
       await until('new Task assigned', async () => (await tasksFor(setup.projectId)).find(t => t.taskId === lateTask)?.root?.start === 'started', 90000);
       await untilRows(page, 14);
       assert((await storeState(page)).teams.filter(t => t.expanded).length === 1, 'New task opened or old choice lost');
-      send(callTool('send_message_to', { recipient_address: '/late_engineering_team_probe', content: 'Join this collaboration.' }));
+      // collaboration-model-contract: a Team is added to the run by delegating it (messaging never brings anyone in).
+      send(callTool('delegate_task', { recipient_address: '/late_engineering_team_probe', description: 'Join this collaboration.' }));
       await until('new hosted Team appears', async () => (await teamsOf(page).count()) === 9, 60000);
       const beforeReconnect = await storeState(page);
       await page.evaluate(id => window.__probeSockets.filter(s => s.url.includes(`/agent-collaboration/${id}`)).forEach(s => s.close()), setup.hostId);
@@ -438,10 +439,10 @@ try {
         return state.target === member && ['idle', 'running'].includes(state.children?.find(c => c.id === member)?.status) && text.includes('Live exact-copy continuity marker');
       }, 60000);
       const liveMember = await storeState(page);
-      send(callTool('create_or_update_task', { task_id: task.taskId, status: 'DONE' }));
+      send(callTool('update_task', { task_id: task.taskId, status: 'DONE' }));
       await until('closed Task absent and host target restored', async () => (await teamsOf(page).count()) === 8 && (await storeState(page)).child === null, 60000);
       assert((await tasksFor(setup.projectId)).find(t => t.taskId === task.taskId).status === 'DONE', 'Real Task not closed');
-      assert(frames.some(f => f.kind === 'task_execution_started') && frames.some(f => f.kind === 'collaborator_added') && frames.some(f => f.kind === 'task_executions_closed'), 'Missing production WS lifecycle events', frames);
+      assert(frames.filter(f => f.kind === 'task_execution_started').length >= 2 && frames.some(f => f.kind === 'task_executions_closed'), 'Missing production WS lifecycle events', frames);
       await shot('live-closure'); return { beforeReconnect, liveMember, afterClosure: await storeState(page), events: frames.filter(f => f.kind) };
     });
   }

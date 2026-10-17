@@ -1,0 +1,663 @@
+{
+  "node": "ab-sf-fr014-c4570f6f-app-b",
+  "prompt": "Resume capability check: invoke native Skill autobyteus-fixture:read-proof and freshly read proof.txt from the currently loaded private plugin, not a remembered previous path. Create resumed-proof.txt in cwd containing the newly read proof token followed by exactly one newline. Include the newline in Write content. New content is not supplied here.",
+  "receipt": {
+    "event": "TURN_COMPLETED",
+    "label": "b-resumed-new-bundle",
+    "events": [
+      {
+        "type": "system",
+        "subtype": "init",
+        "cwd": "/home/autobyteus/shared/project",
+        "session_id": "81298d0c-4198-437f-ad75-2f032f027f74",
+        "tools": [
+          "Edit",
+          "Read",
+          "Skill",
+          "Write",
+          "mcp__claude_ai_Claude_Docs__batch",
+          "mcp__claude_ai_Claude_Docs__create",
+          "mcp__claude_ai_Claude_Docs__delete",
+          "mcp__claude_ai_Claude_Docs__export",
+          "mcp__claude_ai_Claude_Docs__guide",
+          "mcp__claude_ai_Claude_Docs__query",
+          "mcp__claude_ai_Claude_Docs__read",
+          "mcp__claude_ai_Claude_Docs__update"
+        ],
+        "mcp_servers": [
+          {
+            "name": "claude.ai Claude Docs",
+            "status": "connected",
+            "source": "claudeai"
+          }
+        ],
+        "model": "claude-haiku-5-5",
+        "permissionMode": "default",
+        "slash_commands": [
+          "workspace-owned",
+          "deep-research",
+          "autobyteus-fixture:read-proof",
+          "design",
+          "design-sync",
+          "dataviz",
+          "update-config",
+          "verify",
+          "debug",
+          "code-review",
+          "simplify",
+          "batch",
+          "fewer-permission-prompts",
+          "doctor",
+          "loop",
+          "schedule",
+          "claude-api",
+          "workflow-authoring",
+          "run",
+          "run-skill-generator",
+          "plugin-authoring",
+          "advisor",
+          "agents",
+          "auto-mode-setup",
+          "autocompact",
+          "clear",
+          "color",
+          "compact",
+          "config",
+          "output-style",
+          "context",
+          "effort",
+          "fast",
+          "focus",
+          "heapdump",
+          "init",
+          "mcp",
+          "import",
+          "model",
+          "__remote-workflow",
+          "workflow-launch-exec",
+          "reload-plugins",
+          "reload-skills",
+          "rename",
+          "ultrareview",
+          "security-review",
+          "usage-credits",
+          "extra-usage",
+          "usage",
+          "insights",
+          "recap",
+          "skill-doctor",
+          "goal",
+          "design-consent",
+          "design-revoke",
+          "list-agents",
+          "team-onboarding",
+          "anthropic-skills:built-in-browser",
+          "anthropic-skills:chrome-browser",
+          "anthropic-skills:computer-use",
+          "anthropic-skills:deep-research",
+          "anthropic-skills:docs",
+          "anthropic-skills:docx",
+          "anthropic-skills:google-workspace",
+          "anthropic-skills:import-memory",
+          "anthropic-skills:morning",
+          "anthropic-skills:pdf",
+          "anthropic-skills:pptx",
+          "anthropic-skills:skill-creator",
+          "anthropic-skills:xlsx"
+        ],
+        "terminal_slash_commands": [
+          "doctor",
+          "color",
+          "focus",
+          "reload-plugins"
+        ],
+        "apiKeySource": "none",
+        "claude_code_version": "2.1.296",
+        "output_style": "default",
+        "agents": [
+          "claude",
+          "Explore",
+          "general-purpose",
+          "Plan",
+          "statusline-setup"
+        ],
+        "skills": [
+          "workspace-owned",
+          "deep-research",
+          "autobyteus-fixture:read-proof",
+          "design",
+          "design-sync",
+          "dataviz",
+          "update-config",
+          "verify",
+          "debug",
+          "code-review",
+          "simplify",
+          "batch",
+          "fewer-permission-prompts",
+          "doctor",
+          "loop",
+          "schedule",
+          "claude-api",
+          "workflow-authoring",
+          "run",
+          "run-skill-generator",
+          "plugin-authoring",
+          "anthropic-skills:built-in-browser",
+          "anthropic-skills:chrome-browser",
+          "anthropic-skills:computer-use",
+          "anthropic-skills:deep-research",
+          "anthropic-skills:docs",
+          "anthropic-skills:docx",
+          "anthropic-skills:google-workspace",
+          "anthropic-skills:import-memory",
+          "anthropic-skills:morning",
+          "anthropic-skills:pdf",
+          "anthropic-skills:pptx",
+          "anthropic-skills:skill-creator",
+          "anthropic-skills:xlsx"
+        ],
+        "plugins": [
+          {
+            "name": "autobyteus-fixture",
+            "path": "/root/.claude/task-fixtures/b-resumed",
+            "source": "autobyteus-fixture@inline",
+            "version": "0.0.1"
+          },
+          {
+            "name": "cc-plugin-agents-md",
+            "path": "builtin",
+            "source": "cc-plugin-agents-md@builtin"
+          },
+          {
+            "name": "cc-plugin-telemetry",
+            "path": "builtin",
+            "source": "cc-plugin-telemetry@builtin"
+          },
+          {
+            "name": "cc-plugin-plugin-authoring",
+            "path": "builtin",
+            "source": "cc-plugin-plugin-authoring@builtin"
+          }
+        ],
+        "capabilities": [
+          "interrupt_receipt_v1",
+          "interrupt_cancel_queued_v1",
+          "interrupt_send_now_v1",
+          "msg_lifecycle_v1",
+          "request_marker_lists_v1",
+          "sdk_mcp_tools_list_changed",
+          "sdk_mcp_manifests",
+          "mcp_read_resource_v1",
+          "mcp_tool_ui_meta_v1",
+          "ui_surface_v1"
+        ],
+        "analytics_disabled": false,
+        "product_feedback_disabled": false,
+        "uuid": "1d059441-5ee9-48fb-873a-d6bbf6a31581",
+        "memory_paths": {
+          "auto": "/root/.claude/projects/-home-autobyteus-shared-project/memory/"
+        },
+        "messaging_socket_path": "/tmp/cc-socks-0/893.sock",
+        "fast_mode_state": "off",
+        "fast_mode_disabled_reason": "sdk_opt_in_required",
+        "per_turn_effort_active": true,
+        "view_mode": "default"
+      },
+      {
+        "type": "assistant",
+        "message": {
+          "model": "claude-haiku-5-5",
+          "id": "msg_011CfyivZAcNtMdXjaUr2KdW",
+          "type": "message",
+          "role": "assistant",
+          "content": [
+            {
+              "type": "thinking",
+              "thinking": "",
+              "signature": "CAQSuwkKEAgSGAI4AUIIdGhpbmtpbmcSDCcnzlEVRHYkVeoMFxoMkoGub0D5DJpj6GuIIjAmELLbXwe6i0ndZclJzeSbvJVBXXhhIDUdaNFNTV0tPiHuq2YmcN6IPno3lgAn9mUq2AgfCQmg20A9nAL4kh9uRjyvDKSbMTvdaVNfU2DDySYyEStyDE5bajTThPQw5QG72bXwGh0zQZX5tHxa8mJcJ0C4Liy7yljg5qkZsfkwXqAXgtPNMwohoI786sF0ro3ykFrKqkovmGLKfmSDixm2ct5+dejbSwOu4fyUNDQj4moxmk7RWaJYqUrAd/GFs3gTnsnGVcMc/GZ2M4enJK5VZtMUTGAYRQthTeNC3twoVn2n+Cq/DjHWhTiS+OBtFEidEviDeJst3F1qvLiJhO48xj316VPBr0sXdn70cLKFdjuFRHg3MCzfwuASOPnZv8qRsmknTdW2oPWgluqhTOIdvJhLwCr5w46k8UCpqNqpdRjx5F4F+l1aYmrm40oxMCbH6TZlhyBjHun3QN+WIrwYKFoi+hCgUn6YubOy/3xBeks1KcxJDOrBURiMzYcq63ztYg+WNYFgi0fnoSsxo1sh8AdaooU3K2ATMfWG46YDxYwF0sHFQ8BYeC5KKTVBSNbMgGOJvawHaAvvHXXPsDgvst9vm+Go687LSpxqw2a48wG0TWprs1pZeJx3AybPez2LOet/+J/dTqdQutxEe7NiJR1cT9dx2CMHFMak2SjGaUprJ+Yibz1VFGHlzsDTWIIMdXS9xg0hN21mimUctuuUkSTABseWSV5UwiIzYXx6eryTsKEf4daRfIPBtNXxUK5Y+CXQAi5w/v/acCkmjFgbv6aP1lBYl9/8f5Avr6vwBnat2JPz/ineEy20/FwaRglk4UACYEUwSZkdi/ElIrlZHislJj/My87X5XuGWN3Wqlvzny17aqmSprWi7B87DvFfVVcbLcu9gzir5dU5ZeqIWhMjIPK8KoGUiT3j9jb+YX++41r+vHfE7Yw5AKQxanLZP+WP3sjzc1iOXGubOcBLxLU7pK1oIMtDKS9MXo3H5HdpvLwkLSVK23yn0v/T0+9gh2on/EZfANEKU7YF/5hqqUdfI+N/bpnVE8fntjs6TG3rdhNTKPOtawo7bWKPNHa6OouhMAZtP6D/klVU9wIZYC8eLI/r1Xqq4oQSTX8Gsnea2Sws2mpnaeYElk9QJy4y0p5E1OX3uKRuvLQcKneIeDabG5ZCivkoOWoC+UH5uIP3l9YteA2y2O0n7oMaSE9LqWKE0T0kDPBwS+yb74jidIQhxq954ZODewSjfkU+6f9g29JWXqX+OvyrFKQzInHYEfx5Vd1AOMBFurOawOPsCmQJunyuunWGpuBiji7uV3MKNiNK1rZsdBkKRofCGUTTpcvpqohDN//WVR/JkvT6Fv2EaZsNz6QHb3MTgZiRs7Ohk7Iv12IPxJFxAdOcSiFtWTIXlgzThwvywl2bT0CQ+Pdy1CIdiEgG1g6J0mhz20A7QhcC/EWzeQTDmGu0dkH8x74lEsEyXY3TB73YKU5Qqg7338C4bEF7wA0zIPG6TnxwvA3S55hvC5Cp8glYZdv4tcuGzEpFRN8bpxgB"
+            }
+          ],
+          "container": null,
+          "stop_reason": null,
+          "stop_sequence": null,
+          "stop_details": null,
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 351,
+            "cache_read_input_tokens": 15426,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 351
+            },
+            "output_tokens": 10,
+            "service_tier": "standard",
+            "inference_geo": "global"
+          },
+          "input_transformations": [],
+          "diagnostics": null,
+          "context_management": null
+        },
+        "parent_tool_use_id": null,
+        "session_id": "81298d0c-4198-437f-ad75-2f032f027f74",
+        "uuid": "d3eb0066-45e8-4e11-b8c5-6123c86db3c6",
+        "timestamp": "2026-10-13T05:58:29.342Z",
+        "request_id": "req_011CfyivYviQoNqDA9RZgVLw",
+        "thinking_duration_ms": 660,
+        "thinking_display": "updates"
+      },
+      {
+        "type": "assistant",
+        "message": {
+          "model": "claude-haiku-5-5",
+          "id": "msg_011CfyivZAcNtMdXjaUr2KdW",
+          "type": "message",
+          "role": "assistant",
+          "content": [
+            {
+              "type": "tool_use",
+              "id": "toolu_011BYfTkAEGsaoTreCD8Mmag",
+              "name": "Skill",
+              "input": {
+                "skill": "autobyteus-fixture:read-proof"
+              },
+              "caller": {
+                "type": "direct"
+              }
+            }
+          ],
+          "container": null,
+          "stop_reason": null,
+          "stop_sequence": null,
+          "stop_details": null,
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 351,
+            "cache_read_input_tokens": 15426,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 351
+            },
+            "output_tokens": 10,
+            "service_tier": "standard",
+            "inference_geo": "global"
+          },
+          "input_transformations": [],
+          "diagnostics": null,
+          "context_management": null
+        },
+        "parent_tool_use_id": null,
+        "session_id": "81298d0c-4198-437f-ad75-2f032f027f74",
+        "uuid": "47c0ca67-68d3-4e24-a7b8-14a76fa093b6",
+        "timestamp": "2026-10-13T05:58:29.468Z",
+        "request_id": "req_011CfyivYviQoNqDA9RZgVLw",
+        "wire_tool_inputs": {
+          "toolu_011BYfTkAEGsaoTreCD8Mmag": {
+            "skill": "autobyteus-fixture:read-proof"
+          }
+        }
+      },
+      {
+        "type": "user",
+        "message": {
+          "role": "user",
+          "content": [
+            {
+              "type": "tool_result",
+              "tool_use_id": "toolu_011BYfTkAEGsaoTreCD8Mmag",
+              "content": "Launching skill: autobyteus-fixture:read-proof"
+            }
+          ]
+        },
+        "parent_tool_use_id": null,
+        "session_id": "81298d0c-4198-437f-ad75-2f032f027f74",
+        "uuid": "7ca503ac-99e4-4398-920e-1a3ba98381ef",
+        "timestamp": "2026-10-13T05:58:29.483Z",
+        "tool_use_result": {
+          "success": true,
+          "commandName": "autobyteus-fixture:read-proof"
+        },
+        "tool_result_meta": [
+          {
+            "id": "toolu_011BYfTkAEGsaoTreCD8Mmag",
+            "permission_decision": {
+              "decision": "accept",
+              "source": "config"
+            }
+          }
+        ]
+      },
+      {
+        "type": "user",
+        "message": {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "Base directory for this skill: /root/.claude/task-fixtures/b-resumed/skills/read-proof\n\n# Private proof skill\nUse native Read to freshly read proof.txt in /root/.claude/task-fixtures/b-resumed/skills/read-proof, not a shared link.\nWhen asked for the after-stop proof, freshly read after-stop.txt instead.\nUse native Write/Edit to publish the exact requested proof text to the requested file inside the selected working directory.\nAll proof assets contain exactly one text line followed by exactly one newline. Every publication must include that terminal newline in the native Write/Edit content. Do not strip it.\nDo not read other home files or run commands. Preserve existing project content unless explicitly asked to append.\n\n"
+            }
+          ]
+        },
+        "parent_tool_use_id": null,
+        "session_id": "81298d0c-4198-437f-ad75-2f032f027f74",
+        "uuid": "2267ae09-97d3-4502-95db-4fb5a5fefd5c",
+        "timestamp": "2026-10-13T05:58:29.480Z",
+        "isSynthetic": true
+      },
+      {
+        "type": "assistant",
+        "message": {
+          "model": "claude-haiku-5-5",
+          "id": "msg_011CfyivgAYJ2jxdX99vDtdh",
+          "type": "message",
+          "role": "assistant",
+          "content": [
+            {
+              "type": "tool_use",
+              "id": "toolu_01TWwdBFQ5BQpJFKSchPgCru",
+              "name": "Read",
+              "input": {
+                "file_path": "/root/.claude/task-fixtures/b-resumed/skills/read-proof/proof.txt"
+              },
+              "caller": {
+                "type": "direct"
+              }
+            }
+          ],
+          "container": null,
+          "stop_reason": null,
+          "stop_sequence": null,
+          "stop_details": null,
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 488,
+            "cache_read_input_tokens": 15777,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 488
+            },
+            "output_tokens": 16,
+            "service_tier": "standard",
+            "inference_geo": "global"
+          },
+          "input_transformations": [],
+          "diagnostics": null,
+          "context_management": null
+        },
+        "parent_tool_use_id": null,
+        "session_id": "81298d0c-4198-437f-ad75-2f032f027f74",
+        "uuid": "3d8e6540-9382-4873-9f33-3125cb41b36f",
+        "timestamp": "2026-10-13T05:58:31.301Z",
+        "request_id": "req_011Cfyivfuud4yFtPHNZw2u8",
+        "wire_tool_inputs": {
+          "toolu_01TWwdBFQ5BQpJFKSchPgCru": {
+            "file_path": "/root/.claude/task-fixtures/b-resumed/skills/read-proof/proof.txt"
+          }
+        }
+      },
+      {
+        "type": "user",
+        "message": {
+          "role": "user",
+          "content": [
+            {
+              "tool_use_id": "toolu_01TWwdBFQ5BQpJFKSchPgCru",
+              "type": "tool_result",
+              "content": "1\tRESUMED_27c3a4ff5c6d4d0f85379dbf6c412f43\n2\t"
+            }
+          ]
+        },
+        "parent_tool_use_id": null,
+        "session_id": "81298d0c-4198-437f-ad75-2f032f027f74",
+        "uuid": "a3909d9f-2917-4a21-a345-9eb948abd546",
+        "timestamp": "2026-10-13T05:58:31.320Z",
+        "tool_use_result": {
+          "type": "text",
+          "file": {
+            "filePath": "/root/.claude/task-fixtures/b-resumed/skills/read-proof/proof.txt",
+            "content": "RESUMED_27c3a4ff5c6d4d0f85379dbf6c412f43\n",
+            "numLines": 2,
+            "startLine": 1,
+            "totalLines": 2
+          }
+        },
+        "tool_result_meta": [
+          {
+            "id": "toolu_01TWwdBFQ5BQpJFKSchPgCru",
+            "permission_decision": {
+              "decision": "accept",
+              "source": "user_temporary"
+            }
+          }
+        ]
+      },
+      {
+        "type": "assistant",
+        "message": {
+          "model": "claude-haiku-5-5",
+          "id": "msg_011Cfyivp5nd8TPttRRRzRDZ",
+          "type": "message",
+          "role": "assistant",
+          "content": [
+            {
+              "type": "tool_use",
+              "id": "toolu_01SYZY7PwwFaWE5etz2834qC",
+              "name": "Write",
+              "input": {
+                "file_path": "/home/autobyteus/shared/project/resumed-proof.txt",
+                "content": "RESUMED_27c3a4ff5c6d4d0f85379dbf6c412f43\n"
+              },
+              "caller": {
+                "type": "direct"
+              }
+            }
+          ],
+          "container": null,
+          "stop_reason": null,
+          "stop_sequence": null,
+          "stop_details": null,
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 145,
+            "cache_read_input_tokens": 16265,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 145
+            },
+            "output_tokens": 16,
+            "service_tier": "standard",
+            "inference_geo": "global"
+          },
+          "input_transformations": [],
+          "diagnostics": null,
+          "context_management": null
+        },
+        "parent_tool_use_id": null,
+        "session_id": "81298d0c-4198-437f-ad75-2f032f027f74",
+        "uuid": "bc78b3d1-bb07-480f-99ee-29e728b49230",
+        "timestamp": "2026-10-13T05:58:32.402Z",
+        "request_id": "req_011CfyivomgV1eo9Rpx1YFui",
+        "wire_tool_inputs": {
+          "toolu_01SYZY7PwwFaWE5etz2834qC": {
+            "file_path": "/home/autobyteus/shared/project/resumed-proof.txt",
+            "content": "RESUMED_27c3a4ff5c6d4d0f85379dbf6c412f43\n"
+          }
+        }
+      },
+      {
+        "type": "user",
+        "message": {
+          "role": "user",
+          "content": [
+            {
+              "tool_use_id": "toolu_01SYZY7PwwFaWE5etz2834qC",
+              "type": "tool_result",
+              "content": "File created successfully at: /home/autobyteus/shared/project/resumed-proof.txt (file state is current in your context \u2014 no need to Read it back)"
+            }
+          ]
+        },
+        "parent_tool_use_id": null,
+        "session_id": "81298d0c-4198-437f-ad75-2f032f027f74",
+        "uuid": "27f0f59a-ce70-4ca1-b327-fcca050b78e8",
+        "timestamp": "2026-10-13T05:58:32.433Z",
+        "tool_use_result": {
+          "type": "create",
+          "filePath": "/home/autobyteus/shared/project/resumed-proof.txt",
+          "content": "RESUMED_27c3a4ff5c6d4d0f85379dbf6c412f43\n",
+          "structuredPatch": [],
+          "originalFile": null,
+          "userModified": false
+        },
+        "tool_result_meta": [
+          {
+            "id": "toolu_01SYZY7PwwFaWE5etz2834qC",
+            "permission_decision": {
+              "decision": "accept",
+              "source": "user_temporary"
+            }
+          }
+        ]
+      },
+      {
+        "type": "assistant",
+        "message": {
+          "model": "claude-haiku-5-5",
+          "id": "msg_011CfyivtrXnms6cipjN5YgF",
+          "type": "message",
+          "role": "assistant",
+          "content": [
+            {
+              "type": "text",
+              "text": "I created `/home/autobyteus/shared/project/resumed-proof.txt` containing the newly read proof token and one terminating newline.\n\n- **Proof read:** I freshly read `/root/.claude/task-fixtures/b-resumed/skills/read-proof/proof.txt`, the path the reloaded skill reported as its base directory. It contains `RESUMED_27c3a4ff5c6d4d0f85379dbf6c412f43` followed by a newline.\n- **Written file:** `resumed-proof.txt` contains `RESUMED_27c3a4ff5c6d4d0f85379dbf6c412f43` and a single trailing newline, written with native Write.\n\nThe skill's base directory changed from the earlier `.../task-fixtures/b/...` path to `.../task-fixtures/b-resumed/...`, so this token is from the resumed plugin location and differs from the earlier proof token."
+            }
+          ],
+          "container": null,
+          "stop_reason": null,
+          "stop_sequence": null,
+          "stop_details": null,
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 198,
+            "cache_read_input_tokens": 16410,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 198
+            },
+            "output_tokens": 4,
+            "service_tier": "standard",
+            "inference_geo": "global"
+          },
+          "input_transformations": [],
+          "diagnostics": null,
+          "context_management": null
+        },
+        "parent_tool_use_id": null,
+        "session_id": "81298d0c-4198-437f-ad75-2f032f027f74",
+        "uuid": "38fb91b1-685c-4733-91ca-39f421834ea6",
+        "timestamp": "2026-10-13T05:58:34.236Z",
+        "request_id": "req_011CfyivtaR7A69xGhTkdnBJ"
+      },
+      {
+        "duration_api_ms": 28564,
+        "stop_reason": "end_turn",
+        "session_id": "81298d0c-4198-437f-ad75-2f032f027f74",
+        "total_cost_usd": 0.006238810000000001,
+        "usage": {
+          "input_tokens": 8,
+          "cache_creation_input_tokens": 1182,
+          "cache_read_input_tokens": 63878,
+          "output_tokens": 695,
+          "output_tokens_details": {
+            "thinking_tokens": 131
+          },
+          "server_tool_use": {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0
+          },
+          "service_tier": "standard",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 1182,
+            "ephemeral_5m_input_tokens": 0
+          },
+          "inference_geo": "global",
+          "iterations": [
+            {
+              "input_tokens": 2,
+              "output_tokens": 300,
+              "cache_read_input_tokens": 16410,
+              "cache_creation_input_tokens": 198,
+              "cache_creation": {
+                "ephemeral_5m_input_tokens": 0,
+                "ephemeral_1h_input_tokens": 198
+              },
+              "type": "message"
+            }
+          ],
+          "speed": "standard",
+          "fallback_credit": null
+        },
+        "modelUsage": {
+          "claude-haiku-5-5": {
+            "inputTokens": 1244,
+            "outputTokens": 3663,
+            "thinkingTokens": 1550,
+            "cacheReadInputTokens": 188671,
+            "cacheCreationInputTokens": 11981,
+            "webSearchRequests": 0,
+            "costUSD": 0.006238810000000001,
+            "contextWindow": 1000000,
+            "maxOutputTokens": 128000,
+            "canonicalModel": "claude-haiku-5-5",
+            "provider": "firstParty",
+            "costBasis": "list"
+          }
+        },
+        "permission_denials": [],
+        "terminal_reason": "completed",
+        "fast_mode_state": "off",
+        "fast_mode_disabled_reason": "sdk_opt_in_required",
+        "subagent_stats": {
+          "spawned": 0,
+          "requested": {
+            "background": 0,
+            "foreground": 0,
+            "unset": 0
+          },
+          "started_in_background": 0,
+          "max_depth": 0,
+          "spawned_by_subagents": 0,
+          "completed": 0,
+          "failed": 0,
+          "killed": {
+            "parent": 0,
+            "user": 0,
+            "system": 0
+          },
+          "refused": {
+            "depth_limit": 0,
+            "concurrency_limit": 0,
+            "budget": 0
+          },
+          "by_type": {}
+        },
+        "safety_stops": 0,
+        "is_error": false,
+        "num_turns": 5,
+        "subtype": "success",
+        "api_error_status": null,
+        "result": "I created `/home/autobyteus/shared/project/resumed-proof.txt` containing the newly read proof token and one terminating newline.\n\n- **Proof read:** I freshly read `/root/.claude/task-fixtures/b-resumed/skills/read-proof/proof.txt`, the path the reloaded skill reported as its base directory. It contains `RESUMED_27c3a4ff5c6d4d0f85379dbf6c412f43` followed by a newline.\n- **Written file:** `resumed-proof.txt` contains `RESUMED_27c3a4ff5c6d4d0f85379dbf6c412f43` and a single trailing newline, written with native Write.\n\nThe skill's base directory changed from the earlier `.../task-fixtures/b/...` path to `.../task-fixtures/b-resumed/...`, so this token is from the resumed plugin location and differs from the earlier proof token.",
+        "ttft_ms": 1563,
+        "type": "result",
+        "duration_ms": 6483,
+        "uuid": "f851a628-3933-497e-8bce-f783cf8178a2",
+        "ttft_stream_ms": 902,
+        "time_to_request_ms": 62,
+        "first_content_frame_ms": 903,
+        "queued_turn_count": 0,
+        "result_index": 0
+      }
+    ],
+    "permissions": "default with task-owned allow callback",
+    "resultError": false
+  }
+}

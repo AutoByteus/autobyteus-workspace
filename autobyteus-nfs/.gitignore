@@ -1,0 +1,3 @@
+/internal/backend/engine-assets/*.deb
+/out/
+/packaging/engine/__pycache__/

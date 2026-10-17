@@ -293,4 +293,16 @@ describe('NodeManager', () => {
 
     expect(nodeStoreMock.removeRemoteNode).toHaveBeenCalledWith('remote-1');
   });
+  it('opens NFS Guide from the route and retains accessible keyboard navigation', async () => {
+    routeMock.query = { nodeTab: 'nfsGuide' };
+    const wrapper = mount(NodeManager);
+    expect(wrapper.get('[data-testid="node-manager-tab-nfsGuide"]').attributes('aria-selected')).toBe('true');
+    expect(wrapper.find('[data-testid="node-manager-panel-nfsGuide"]').exists()).toBe(true);
+    await wrapper.get('[data-testid="node-manager-tab-nfsGuide"]').trigger('keydown', { key: 'ArrowLeft' });
+    expect(wrapper.get('[data-testid="node-manager-tab-dockerGuide"]').attributes('aria-selected')).toBe('true');
+    await wrapper.get('[data-testid="node-manager-tab-dockerGuide"]').trigger('keydown', { key: 'End' });
+    expect(wrapper.find('[data-testid="node-manager-panel-nfsGuide"]').exists()).toBe(true);
+    wrapper.unmount();
+  });
+
 });

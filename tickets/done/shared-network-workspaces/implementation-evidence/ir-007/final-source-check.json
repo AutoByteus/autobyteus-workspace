@@ -1,0 +1,12 @@
+{
+  "sourceCommit": "d318bd9db935affdf16d141ef4e88a6c0e4939b5",
+  "sourceDeltasVerified": 15,
+  "priorPackagePathsVerified": 1350,
+  "retainedCandidateFilesVerified": 15,
+  "originalIR006HandoffSnapshotVerified": true,
+  "whitespace": "",
+  "classification": {
+    "task_size": "Large",
+    "architectural_risk": "High"
+  }
+}

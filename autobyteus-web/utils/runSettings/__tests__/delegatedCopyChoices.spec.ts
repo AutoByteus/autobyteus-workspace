@@ -8,7 +8,7 @@ import {
 } from '../delegatedLaunchRows'
 
 /**
- * DS-004 (SR-007): copy and collaborator rows show what they run with by the single launch rule,
+ * DS-004 (SR-007): copy rows show what they run with by the single launch rule,
  * with this edit's choices applied; a row with a choice shows no origin; a stopped copy's model and
  * settings are editable, a running one is locked and carries the stop target on the copy itself.
  */
@@ -25,12 +25,11 @@ const tree = (): TeamRunExecutionTreeDto => ({
     address: '/', team_definition_id: 'pm', team_definition_name: 'PM', team_run_id: 'root', coordinator_address: '/pm',
     default_launch_configuration: claude,
     members: [{ kind: 'configured_agent', address: '/pm', agent_definition_id: 'pm', role: null, description: null, agent_run_id: 'pm-run', platform_agent_run_id: null, launch_configuration: claude }],
-    collaborators: [{
-      kind: 'agent', address: '/writer', agent_definition_id: 'writer', agent_run_id: 'writer-run', platform_agent_run_id: null,
-      launch_configuration: claude, launch_source: { origin: 'agent_default', fallbacks: [] }, added_at: at, added_via_agent_run_id: 'pm-run',
-      user_launch_selection: haiku,
-    }],
     task_executions: [{
+      kind: 'task_agent', address: '/writer', agent_run_id: 'writer-run', platform_agent_run_id: null, delegator_agent_run_id: 'pm-run', started_at: at,
+      user_launch_selection: haiku,
+      source: { kind: 'agent', agent_definition_id: 'writer', launch_configuration: claude, launch_source: { origin: 'agent_default', fallbacks: [] } },
+    }, {
       kind: 'task_team', address: '/se', team_run_id: 'se-copy', delegator_agent_run_id: 'pm-run', started_at: at, task_executions: [],
       user_team_launch_selection: sonnet,
       members: [
@@ -56,7 +55,7 @@ const control = (overrides: Partial<DelegatedRowControl> = {}): DelegatedRowCont
 })
 const rows = (input: Partial<DelegatedRowControl> = {}) => delegatedRowsByKey(teamDelegatedLaunchNodes(tree(), [], deps, control(input)))
 
-describe('copy and collaborator rows with user choices (SR-007)', () => {
+describe('copy rows with user choices (SR-007)', () => {
   it('show each row on its own choice, else its Team\'s when it follows the Team, else its started value', () => {
     const map = rows()
     expect(map.get('/writer@writer-run')).toMatchObject({ values: { llmModelIdentifier: 'haiku' },
@@ -101,7 +100,6 @@ describe('copy and collaborator rows with user choices (SR-007)', () => {
     const team = { runtimeKind: 'claude_agent_sdk' as const, llmModelIdentifier: 'opus', llmConfig: null, autoExecuteTools: false, workspaceRootPath: '/w' }
     const own = { ...team, llmModelIdentifier: 'opus-own' }
     const nodes = delegatedRowsByKey(collaborationDelegatedLaunchNodes({
-      collaborators: [],
       taskExecutions: [{ address: '/target', teamRunId: 'copy', startedAt: at, taskExecutions: [], userTeamLaunchSelection: { llmModelIdentifier: 'sonnet', llmConfig: null, selectedAt: at },
         members: [{ address: '/target/lead', agentRunId: 'l', platformAgentRunId: null }, { address: '/target/writer', agentRunId: 'w', platformAgentRunId: null }] }],
       launchAt: (address) => address === '/target' || address === '/target/lead' ? team : address === '/target/writer' ? own : null,

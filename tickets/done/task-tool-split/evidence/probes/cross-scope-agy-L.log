@@ -1,0 +1,8 @@
+
+> autobyteus@1.5.4 test:e2e:cross-scope-agent-mentions /Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split/autobyteus-web
+> node tests/e2e/cross-scope-agent-mentions-live-probe.mjs --runtime antigravity_cli --cases L01,L02 --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/task-tool-split/tickets/in-progress/task-tool-split/evidence/probes/cross-scope-agy-L
+
+L01 Fail Host crash keeps the root and its delegated child; the child still answers; the host wakes on a send; after another crash Delete ends the root first and removes the run — Timed out waiting for focused agent idle
+L02 Fail Host crash without delegated copies: Archive succeeds and the lingering root is ended — Timed out waiting for focused agent idle
+Summary: 0 Pass, 2 Fail, 0 Not Applicable
+ ELIFECYCLE  Command failed with exit code 1.

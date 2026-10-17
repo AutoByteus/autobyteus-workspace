@@ -1,0 +1,5 @@
+PASS native macOS VM boots and accepts agent-issued commands without user commands
+PASS guest is actual Darwin arm64, not Linux container emulation
+PASS separate native guest write and read operate on private VM disk
+PASS native guest NFS client and disposable guest admin capability available
+{"run": "ab-sf-fr019-macos", "passes": 4, "fatal": null, "cleanup": [{"ownedGuestProofRemoved": true, "path": "/Users/admin/.ab-sf-fr019-629c08651615440a9b5ebaa6f6a9bd3e"}, {"exactVmStopRc": 0}, {"hostVmProcessExited": true, "exit": 0}]}

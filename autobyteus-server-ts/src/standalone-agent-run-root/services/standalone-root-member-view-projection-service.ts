@@ -4,7 +4,6 @@ import { resolveInterAgentSenderAddresses } from "../../run-history/projection/r
 import { StandaloneRootExecutionIndex } from "./standalone-root-execution-index.js";
 import {
   catalogCopyExecutionSource,
-  collaboratorExecutionSource,
   taskExecutionListsOf,
 } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
 import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
@@ -84,16 +83,15 @@ export class StandaloneRootMemberViewProjectionService {
     const location = await this.locations.findAgent({ rootRunId: root, memberAddress: address, agentRunId: run });
     if (!location || location.rootRunId !== root || location.memberAddress !== address
       || !childSourceOf(location)) {
-      throw new Error(`AgentRun '${run}' at '${address}' was not found in the collaborators or catalog copies of Agent run '${root}'.`);
+      throw new Error(`AgentRun '${run}' at '${address}' was not found among the delegated copies of Agent run '${root}'.`);
     }
     return location;
   }
 }
 
-/** A collaborator (or its extra copy) from its entry; a catalog copy from its recorded source. */
+/** A delegated copy's definition and launch, from its recorded catalog source. */
 const childSourceOf = (location: LocatedStandaloneRootAgentExecution) =>
-  collaboratorExecutionSource(location.tree.collaborators, location.memberAddress)
-  ?? catalogCopyExecutionSource(taskExecutionListsOf(location.tree), location.agentRunId);
+  catalogCopyExecutionSource(taskExecutionListsOf(location.tree), location.agentRunId);
 
 const metadataFor = (location: LocatedStandaloneRootAgentExecution): AgentRunMetadata => {
   const source = childSourceOf(location)!;

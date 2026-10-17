@@ -22,6 +22,7 @@ import { extractProviderErrorEvidence } from '../../llm/errors/provider-error.js
 import type { LlmResponseFinish } from '../../llm/utils/llm-response-finish.js';
 import { resolveRequestMaxOutputTokens } from '../../llm/utils/max-output-tokens.js';
 import { OUTPUT_LIMIT_DISCARDED_TOOL_CALL_ERROR } from './output-limit-recovery.js';
+import { LlmCallTiming } from './llm-call-throughput.js';
 
 export type LlmPhaseOutcome =
   | { kind: 'compaction_blocked' }
@@ -71,6 +72,8 @@ type LlmCall = {
   systemPrompt: string | null;
   /** The request's recovery snapshot was committed or restored. */
   recoverySettled: boolean;
+  /** The call's output-speed timing: started with the stream, fed every chunk. */
+  timing: LlmCallTiming;
 };
 
 type LlmCallSettlement =
@@ -97,7 +100,7 @@ export class LlmPhase {
     const collector = new LlmResponseStreamCollector({ turnId: turn.turnId, notifier, toolCallsEnabled: call.toolCallsEnabled });
     let settlement: LlmCallSettlement;
     try {
-      await collector.consume(this.startStream(call, request), turn.executionScope);
+      await collector.consume(this.startStream(call, request), turn.executionScope, (chunk) => call.timing.observeChunk(chunk));
       settlement = this.settle(call, request, collector);
     } catch (error) {
       if (isAgentInterruptionError(error)) {
@@ -178,6 +181,7 @@ export class LlmPhase {
       assembler,
       systemPrompt: context.state.processedSystemPrompt ?? llm.config.systemMessage ?? null,
       recoverySettled: false,
+      timing: new LlmCallTiming(),
     };
   }
 
@@ -214,6 +218,7 @@ export class LlmPhase {
     const scope = call.turn.executionScope;
     scope.throwIfAborted({ kind: 'llm_request_assembly' });
     scope.throwIfAborted({ kind: 'llm_stream_start' });
+    call.timing.start();
     return call.llm.streamMessages(
       request.outboundMessages,
       conversationRequestKwargs(call.agentId, request.tools),
@@ -396,7 +401,8 @@ export class LlmPhase {
       effective_context_window_tokens: call.requestCapacity?.effectiveContextCapacity ?? null,
       context_window_usage_percent: percentOf(latestPromptTokens, call.requestCapacity?.effectiveContextCapacity),
       // The prompt size at which this agent's automatic compaction triggers; null when it is off.
-      context_compaction_threshold_tokens: call.compaction?.triggerThresholdTokens ?? null
+      context_compaction_threshold_tokens: call.compaction?.triggerThresholdTokens ?? null,
+      output_throughput: call.timing.throughput(tokenUsage)
     });
   }
 }

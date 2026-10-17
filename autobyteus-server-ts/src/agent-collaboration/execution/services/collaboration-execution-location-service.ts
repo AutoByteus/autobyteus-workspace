@@ -15,7 +15,7 @@ export type LocatedCollaborationAgentExecution =
 type Input = { rootSubjectKind?: RootSubjectKind | null; rootRunId?: string | null; agentRunId?: string | null; memberAddress?: string | null; containingTeamRunId?: string | null };
 type Family = "findAgent" | "findAgentSync" | "listAgents";
 
-/** The launch settings an execution runs with: its configured placement, else its collaborator snapshot. */
+/** The launch settings an execution runs with: its configured placement, else a delegated copy's recorded launch. */
 export const locatedLaunchConfiguration = (location: LocatedCollaborationAgentExecution): AgentLaunchConfiguration | null => {
   switch (location.rootSubjectKind) {
     case "agent_team":

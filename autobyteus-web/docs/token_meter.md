@@ -1,87 +1,86 @@
-# Token Meter: Output TPS
+# Token Meter: TPS
 
 Select an agent (including Project Task Manager, a Team/Org member, or a
-delegated/collaborator copy) and open the workspace's **Token** tab. **Output
-TPS** describes that exact AgentRun, not its Team or the collaborators included
-in its usage/cost totals. The card shows the sample's reported runtime/model,
-observation time, output count and elapsed interval.
+delegated copy) and open the workspace's **Token** tab. The **TPS**
+card shows how fast that exact AgentRun's latest model call generated output:
+the value in tokens/s and the model that call reported. It never describes a
+Team or the delegated copies included in the usage/cost totals below it.
 
-## What the estimate measures
+## What the number measures
 
-For two consecutive usable model-call reports in the same run, turn, runtime
-and model:
+Each model call is timed on the server by the runtime integration that runs it,
+and the call's own usage event carries its TPS:
 
 ```text
-Output TPS = later report's normalized output tokens
-             / seconds between the two server observation timestamps
+TPS = the call's reported output tokens / the call's measured duration in seconds
 ```
 
-The first report establishes a baseline; its output is not counted in the
-rate. For reports at 10:00:00, 10:00:10 (200 output tokens) and 10:00:15
-(150 output tokens), the readings are Collecting, 20.0 and then 30.0 tokens/s.
-Input tokens are excluded. Reasoning is counted only as already included in
-reported output, never added again.
+The output count is the one the platform already accounts. Reasoning counts
+only as already included in reported output, never added again. Two methods
+exist, and every reading is labelled with one:
 
-This is **estimated report-interval output throughput**, not model-inference
-speed or an instantaneous per-token counter. Tools, waits, prompt processing,
-compaction, batching and reporting delays inside the interval affect it.
-Updates arrive with usage reports; no timer extrapolates or decays the number.
-It is not a cross-model benchmark.
+- **Generation speed** (default; no label): from the call's first streamed
+  response event to its end. Used only when that first event provably precedes
+  all of the call's generation, hidden reasoning included. It excludes the wait
+  for the first token and all tool time.
+- **End-to-end call speed** (labelled "incl. time to first token"): from the
+  call's request, or a provider-reported call duration, to its end. It includes
+  queueing, prompt processing and the wait for the first token, so it reads
+  lower than generation speed, but it never inflates.
 
-## Reading the states
+A turn with a single model call gets a reading. Calls with fewer than 20 output
+tokens or a duration under 0.25 s carry no TPS and leave the shown value
+unchanged; this skips tool-call-only and "OK" calls. A call whose runtime gives
+no usable timing or count also carries none. The browser computes no rate and
+no method; it only divides the server's tokens by the server's duration for
+display.
 
-- **Collecting:** waiting for enough matching reports. A first or only report
-  in a turn cannot provide a rate.
-- **Estimated · Last reported:** the fixed last observation, including while
-  waiting, offline or idle. The timestamp and model belong to that sample,
-  not to a newly configured model. Switching runs switches the card's scope
-  immediately, independently of loading usage totals.
-- **Unavailable:** missing/invalid count, identity, interval or telemetry;
-  saved totals alone cannot establish timing. This is not zero. A genuine
-  zero-output report over a valid positive interval can display 0.0 tokens/s.
+## Reading the card
 
-Turn/runtime/model changes and known report-continuity gaps restart collection.
-Duplicate or stale revisions do not alter the reading. Context-only readings
-and turn-end reconciliation are not model calls and cannot supply a numerator.
-Samples exist only in the renderer session: reloading loses them; reopening
-saved history does not reconstruct them from lifetime totals. The expandable
-explanation is keyboard-accessible and available in English and Simplified
-Chinese, as are the card's states and units.
+- **Value + model:** the newest TPS received for the selected run. It stays
+  until a newer qualifying call arrives: no decay, no timer, including while
+  idle or offline.
+- **"—":** no reading has been received for this run in this browser session.
+  This includes after a page reload and for history runs: TPS is real time and
+  is not stored anywhere.
+- **How TPS is measured** (collapsed, keyboard accessible): the reading's method
+  in plain words with its output tokens and seconds.
 
-## Runtime sources and limits
+Switching the selected run switches the card immediately. Duplicate or replayed
+usage reports never create or change a reading. The card and help are available
+in English and Simplified Chinese.
 
-All sources require two compatible, usable reports within one turn; a provider
-or runtime that omits telemetry may never produce a numeric reading. There is
-no model allowlist or promise of continuous reports.
+## Methods per runtime
 
-| Runtime | Source consumed through existing server normalization | Limitation |
-| --- | --- | --- |
-| `autobyteus` | Native completed LLM-call usage | Counts/identity depend on the provider |
-| `codex_app_server` | Server-folded output delta from thread usage | Cumulative snapshots are normalized on the server; context-only updates do not count |
-| `claude_agent_sdk` | Paired main-loop call usage | Excludes turn-end/subagent reconciliation; reported raw model may differ from configured alias |
-| `antigravity_cli` | Completed `DONE` agent-response step usage | Delayed until the usage report; a step without usable usage cannot supply TPS |
-| `grok_build` | Completed-response per-call usage | Depends on the extension/runtime providing the call report |
+| Runtime | Method | Start → end, as the server observes it | Limits |
+| --- | --- | --- | --- |
+| `autobyteus` | Generation when the first streamed chunk carried reasoning, or the call reports 0/no reasoning tokens; otherwise end to end | First chunk with content, reasoning or tool-call data → final chunk; end to end: request sent → final chunk | A provider that hides reasoning **without** reporting a reasoning count would read high. A response delivered as one chunk, or a generation window under 0.25 s, uses end to end |
+| `claude_agent_sdk` | Generation | Main-loop `message_start` → `message_delta` receipt (before the SDK context read) | No reading without a paired `message_start`; subagent frames are ignored |
+| `codex_app_server` | End to end | The call's request boundary (turn start, the previous call's end, any completed item such as user input, compaction or a tool, or the server's approval reply) → the call's `rawResponse/completed` | Codex does not prove when hidden reasoning starts, so generation speed is never claimed. A tool-ending call's usage update arrives only after the tool, so the reading is paired with that update (matching output count) and shows when it arrives; its value excludes tool and approval time. Compaction updates carry no TPS |
+| `antigravity_cli` | Generation when AGY reports `thinking_tokens` = 0; otherwise end to end | First `text_delta` of the step → step `DONE`; end to end: AGY's own step `duration_seconds` | A burst-delivered or single-update step uses the provider duration. AGY's reported output already includes its thinking tokens (observed live), so thinking is not added again |
+| `grok_build` (and other ACP runtimes) | End to end | Prompt sent, the previous call's usage, or a finished tool → the call's usage report | Chunks arrive in bursts, so chunk times are not used. The first call of a session may include CLI setup time |
 
-These are source semantics, not a claim that every runtime/model combination
-has been exercised live. The [delivery evidence](../../tickets/done/token-meter-tps/api-e2e-execution-coverage-report.md)
-separates adapter/fold tests, scripted transport and actual desktop rendering
-from live provider inference. No paid inference was used for that validation.
+These are the methods the integrations implement, not a claim that every
+runtime/model combination has been exercised live.
 
 ## Ownership and maintenance
 
-`tokenUsageMeterStore` observes advancing, identity-validated live exact-run
-summaries through its existing standalone and Team intake methods. Its private
-`tokenUsageThroughput.ts` helper holds a bounded baseline/reading per run;
-revision tracking prevents Team's two effects from observing the same report
-twice. It trusts canonical `meter_delta_output_tokens` and `observed_at`, not
-transcripts, aggregate totals or client receipt time. Fetched summaries never
-seed samples; known later unsaved calls break the sampling chain.
+Each runtime integration reports `output_throughput { method, output_tokens,
+duration_ms }` with its call's usage. The server's run-side
+`acceptModelCallThroughput` (`agent-execution/domain/model-call-throughput.ts`)
+is the only validity and minimum-sample check; it runs when the run's canonical
+usage event is created, before and independent of accounting, which never reads
+the field. The existing standalone, Team, Org and collaboration streams carry the
+field to the exact run.
 
-`useTokenUsageWorkspaceScope` projects `getRunThroughput` for the selected
-target's exact `context.state.runId`. `TokenUsageThroughputCard` only formats
-that state and appears outside the panel's totals-available gate. Existing
-accounting, cost roll-ups, context and compaction behavior stay unchanged. No
-new API, database field, history polling or provider request is needed.
+`tokenUsageMeterStore` records the newest TPS per run in both live intakes right
+after the seen-key de-duplication, independent of the run summary (so TPS still
+shows when persistence fails). Its private `tokenUsageThroughput.ts` holds that
+session-local map. `useTokenUsageWorkspaceScope` reads `getRunTps` for the
+selected target's exact `context.state.runId`, and `TokenUsageThroughputCard`
+only formats it, outside the panel's totals-available gate. Accounting, cost
+roll-ups, context, compaction and persisted data are unchanged. No new API,
+database field, history polling or provider request is involved.
 
 See [execution architecture](agent_execution_architecture.md) and the
 [server accounting contract](../../autobyteus-server-ts/docs/modules/token_usage.md).

@@ -1,0 +1,22 @@
+{
+  "delivery": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to /project_task_manager.",
+    "target_agent_run_id": "project_task_manager_a5f6d9d306e54970bafdad895bdf731d"
+  },
+  "task_id": "project_task_a4f90984-add2-4300-983d-de54ded3032b",
+  "title": "Preserve later File Explorer edits when a pending Save completes",
+  "status": "TODO",
+  "assigned": false,
+  "dispatched": false,
+  "custodian": "/project_task_manager",
+  "custodyEvidence": "Incoming confirmed Project Task Manager message in this conversation; no duplicate found; four artifacts attached durably.",
+  "attachments": [
+    "ctx_b3b6cee445b9__editor-follow-up.md",
+    "ctx_42f5ac0dd8da__pending-save-probe.spec.ts.txt",
+    "ctx_65177eb5c779__pending-save-probe.log.txt",
+    "ctx_dc567b3b0fae__checks-result.json"
+  ],
+  "scope": "Additional pending-Save draft bug remains unresolved but nonblocking by explicit user direction. Keep IR010 original peer-refresh fix. Not technical approval or parent completion."
+}

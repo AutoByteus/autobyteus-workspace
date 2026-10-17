@@ -434,11 +434,6 @@ onBeforeUnmount(() => {
   if (relativeTimeTimer !== null) clearInterval(relativeTimeTimer);
 });
 
-const opensOnAppear = (team: TeamTreeNode, rowKey: string): boolean => {
-  const row = team.executionRows.find((candidate) => candidate.rowKey === rowKey);
-  return row?.kind === 'transient_execution' && row.opensOnAppear === true;
-};
-
 const isTeamDisplayRowExpanded = (
   team: TeamTreeNode,
   rowKey: string,
@@ -446,7 +441,6 @@ const isTeamDisplayRowExpanded = (
   workspacePresentationId.value,
   team.teamRunId,
   rowKey,
-  opensOnAppear(team, rowKey),
 );
 
 const toggleTeamDisplayRow = (
@@ -456,7 +450,6 @@ const toggleTeamDisplayRow = (
   workspacePresentationId.value,
   team.teamRunId,
   row.rowKey,
-  opensOnAppear(team, row.rowKey),
 );
 
 const selectTeamDisplayRow = (

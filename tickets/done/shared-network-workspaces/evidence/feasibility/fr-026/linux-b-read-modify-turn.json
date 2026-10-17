@@ -1,0 +1,3317 @@
+{
+  "node": {
+    "name": "ab-sf-fr026-6af2e9d4-app-a",
+    "port": 54146,
+    "nfs_volume": "ab-sf-fr026-6af2e9d4-nfs-a",
+    "workspace": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106"
+  },
+  "actorRunId": "ab_sf_fr026_6af2e9d4_codex_app_server_41fa6_0a28cb9fd5f544a0ad9ba600cc31e36d",
+  "runtime": "codex_app_server",
+  "receipt": {
+    "url": "ws://127.0.0.1:54146/ws/agent/ab_sf_fr026_6af2e9d4_codex_app_server_41fa6_0a28cb9fd5f544a0ad9ba600cc31e36d",
+    "commandId": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+    "prompt": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+    "seconds": 7.275,
+    "tools": 2,
+    "succeeded": 2,
+    "events": [
+      {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "idle",
+          "recoverableBlock": null,
+          "agent_id": "ab_sf_fr026_6af2e9d4_codex_app_server_41fa6_0a28cb9fd5f544a0ad9ba600cc31e36d"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 1,
+          "entries": [],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "initializing",
+          "recoverableBlock": null,
+          "agent_id": "ab_sf_fr026_6af2e9d4_codex_app_server_41fa6_0a28cb9fd5f544a0ad9ba600cc31e36d"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 2,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": null,
+              "state": "queued",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+        "payload": {
+          "trace_id": "rt_1791882601552_e2001372-18b2-4a0d-b044-5ef9b8fc0bd4",
+          "content": "## Agent Identity\n\n- Name: ab-sf-fr026-6af2e9d4-codex_app_server-41fa6\n- Description: Owned cross-OS native filesystem feasibility\n\n### Responsibilities and Boundaries\n\nUse real native terminal/Bash/read/write tools for the requested ordinary project file. Never simulate. Work only in selected workspace, never read home/config/credentials or environment, never call network/delegation or MCP filesystem/sharing tools. Print pwd and actual file contents when requested.\n\n## Collaboration\n\n### Work Requests and Outcomes\n\nOn receiving a work request, follow your own agent instructions and applicable skills. Do not send acknowledgements or promises to work. Use `send_message_to` only at a workflow-defined handoff point or when blocked and needing external input. Follow applicable handoff rules; otherwise, return the result or specific blocker to the requesting agent.\n\nYou can work with other agents and agent teams: the ones the user brings into this run, and any available agent or team.\n\n- A user message may end with a `[Mentioned collaborators]` note that lists each mentioned Agent or Agent Team with its address. Each one is already in the run.\n- `send_message_to` with an exact address as `recipient_address` reaches the one instance at that address; an available agent or team that is not yet in the run is brought in on first use and keeps its conversation. A message to an Agent Team goes to its coordinator.\n- `delegate_task` with an address spawns a new, separate copy with your work description as its first message; copies can work in parallel. It returns the copy's IDs: `target_agent_run_id` for an Agent copy, or `target_team_run_id` and `target_team_coordinator_agent_run_id` for a Team copy. Message a copy with `send_message_to` and its agent run ID (a Team copy's coordinator). To give a copy a follow-up Task once its current Task is DONE or CANCELLED, call `delegate_task` with its `target_team_run_id` or `target_agent_run_id` and the new `task_id`.\n- If you have `list_available_agents`, it lists the available agents and teams with their addresses.\n- Do not claim that a message or delegation succeeded unless the tool confirms it.\n\nYour address in this run is `/ab_sf_fr026_6af2e9d4_codex_app_server_41fa6`.",
+          "ts": 1791882601.552
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 2,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": null,
+              "state": "queued",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "AGENT_COMMAND_ACK",
+        "payload": {
+          "command_type": "SEND_MESSAGE",
+          "run_id": "ab_sf_fr026_6af2e9d4_codex_app_server_41fa6_0a28cb9fd5f544a0ad9ba600cc31e36d",
+          "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+          "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+          "state": "accepted",
+          "accepted": true,
+          "duplicate": false,
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "ab_sf_fr026_6af2e9d4_codex_app_server_41fa6_0a28cb9fd5f544a0ad9ba600cc31e36d"
+          }
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "running",
+          "recoverableBlock": null,
+          "agent_id": "ab_sf_fr026_6af2e9d4_codex_app_server_41fa6_0a28cb9fd5f544a0ad9ba600cc31e36d"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "TURN_STARTED",
+        "payload": {
+          "turnId": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_START",
+        "payload": {
+          "id": "reasoning-block:99ec9a0d-94d1-4a36-b897-1472e6408529:1",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "reasoning",
+          "metadata": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "reasoning-block:99ec9a0d-94d1-4a36-b897-1472e6408529:1",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "reasoning",
+          "delta": "**Planning terminal commands with fsync**"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_END",
+        "payload": {
+          "id": "reasoning-block:99ec9a0d-94d1-4a36-b897-1472e6408529:1",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "metadata": null,
+          "interrupted": false,
+          "reason": null,
+          "failed": false,
+          "error": null
+        }
+      },
+      {
+        "type": "SEGMENT_START",
+        "payload": {
+          "id": "exec-86aad5ba-02d1-400f-af06-62b76691dc03",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "run_bash",
+          "metadata": {
+            "tool_name": "run_bash",
+            "command": "/bin/bash -lc \"pwd && printf '%s\\\\n' '---FILE---' && cat -- mac-linux-agents-aaca0a6d.txt\""
+          }
+        }
+      },
+      {
+        "type": "TOOL_EXECUTION_STARTED",
+        "payload": {
+          "item": {
+            "type": "commandExecution",
+            "id": "exec-86aad5ba-02d1-400f-af06-62b76691dc03",
+            "pluginId": null,
+            "scriptPath": null,
+            "command": "/bin/bash -lc \"pwd && printf '%s\\\\n' '---FILE---' && cat -- mac-linux-agents-aaca0a6d.txt\"",
+            "cwd": "/Volumes/autobyteus-shared/project",
+            "processId": "27596",
+            "source": "unifiedExecStartup",
+            "status": "inProgress",
+            "commandActions": [
+              {
+                "type": "unknown",
+                "command": "pwd && printf '%s\\n' '---FILE---' && cat -- mac-linux-agents-aaca0a6d.txt"
+              }
+            ],
+            "aggregatedOutput": null,
+            "exitCode": null,
+            "durationMs": null
+          },
+          "threadId": "01a13486-a462-7c20-ac57-f3e46aa1a4d4",
+          "turnId": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "startedAtMs": 1791882619612,
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "invocation_id": "exec-86aad5ba-02d1-400f-af06-62b76691dc03",
+          "tool_name": "run_bash",
+          "arguments": {
+            "command": "/bin/bash -lc \"pwd && printf '%s\\\\n' '---FILE---' && cat -- mac-linux-agents-aaca0a6d.txt\"",
+            "cwd": "/Volumes/autobyteus-shared/project"
+          }
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "TOOL_EXECUTION_SUCCEEDED",
+        "payload": {
+          "item": {
+            "type": "commandExecution",
+            "id": "exec-86aad5ba-02d1-400f-af06-62b76691dc03",
+            "pluginId": null,
+            "scriptPath": null,
+            "command": "/bin/bash -lc \"pwd && printf '%s\\\\n' '---FILE---' && cat -- mac-linux-agents-aaca0a6d.txt\"",
+            "cwd": "/Volumes/autobyteus-shared/project",
+            "processId": "27596",
+            "source": "unifiedExecStartup",
+            "status": "completed",
+            "commandActions": [
+              {
+                "type": "unknown",
+                "command": "pwd && printf '%s\\n' '---FILE---' && cat -- mac-linux-agents-aaca0a6d.txt"
+              }
+            ],
+            "aggregatedOutput": "/Volumes/autobyteus-shared/project\n---FILE---\nMAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\n",
+            "exitCode": 0,
+            "durationMs": 0
+          },
+          "threadId": "01a13486-a462-7c20-ac57-f3e46aa1a4d4",
+          "turnId": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "completedAtMs": 1791882619613,
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "invocation_id": "exec-86aad5ba-02d1-400f-af06-62b76691dc03",
+          "tool_name": "run_bash",
+          "arguments": {
+            "command": "/bin/bash -lc \"pwd && printf '%s\\\\n' '---FILE---' && cat -- mac-linux-agents-aaca0a6d.txt\"",
+            "cwd": "/Volumes/autobyteus-shared/project"
+          },
+          "result": "/Volumes/autobyteus-shared/project\n---FILE---\nMAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\n"
+        }
+      },
+      {
+        "type": "SEGMENT_END",
+        "payload": {
+          "id": "exec-86aad5ba-02d1-400f-af06-62b76691dc03",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "metadata": {
+            "tool_name": "run_bash",
+            "command": "/bin/bash -lc \"pwd && printf '%s\\\\n' '---FILE---' && cat -- mac-linux-agents-aaca0a6d.txt\""
+          },
+          "interrupted": false,
+          "reason": null,
+          "failed": false,
+          "error": null
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "usage_event_id": "49637cd1-5deb-47eb-b538-3c92a9e3d5de",
+          "idempotency_key": "codex_token_usage:ab_sf_fr026_6af2e9d4_codex_app_server_41fa6_0a28cb9fd5f544a0ad9ba600cc31e36d:01a13486-a462-7c20-ac57-f3e46aa1a4d4:01a13486-e0f0-7a32-b2c3-c5a8d62a67a5:cumulative_snapshot:10014:5888:125:45:10139:10139",
+          "observed_at": "2026-10-13T09:10:19.626Z",
+          "run_id": "ab_sf_fr026_6af2e9d4_codex_app_server_41fa6_0a28cb9fd5f544a0ad9ba600cc31e36d",
+          "root_team_run_id": null,
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "llm_call_id": null,
+          "call_sequence": null,
+          "agent_definition_id": "ab-sf-fr026-6af2e9d4-codex-app-server-41fa6",
+          "workspace_id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+          "task_id": null,
+          "team_name": null,
+          "agent_name": "ab-sf-fr026-6af2e9d4-codex_app_server-41fa6",
+          "run_summary": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact exi...",
+          "run_created_at": "2026-10-13T09:10:01.265Z",
+          "member_display_name": null,
+          "runtime_kind": "codex_app_server",
+          "model_provider": "OPENAI",
+          "provider_name": null,
+          "model_identifier": "gpt-5.6-luna",
+          "model_value": "gpt-5.6-luna",
+          "selected_match_state": null,
+          "selected_model_value": null,
+          "selected_resolved_raw_model_id": null,
+          "claude_sdk_model_usage": [],
+          "claude_sdk_session_id": null,
+          "claude_sdk_query_kind": null,
+          "ingestion_kind": "codex_thread_token_usage",
+          "usage_scope": "cumulative_snapshot",
+          "reports_model_call": true,
+          "snapshot_series_key": "codex_thread:01a13486-a462-7c20-ac57-f3e46aa1a4d4",
+          "previous_snapshot_event_id": null,
+          "input_token_semantic": "gross_includes_cache",
+          "reported_input_tokens": 10014,
+          "reported_output_tokens": 125,
+          "reported_total_tokens": 10139,
+          "accounting_input_tokens": 10014,
+          "accounting_output_tokens": 125,
+          "accounting_total_tokens": 10139,
+          "standard_input_tokens": 4126,
+          "cache_miss_input_tokens": 4126,
+          "cache_read_input_tokens": 5888,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 45,
+          "billable_input_tokens": 10014,
+          "billable_output_tokens": 125,
+          "cost_basis": "api_price_estimate",
+          "currency": "USD",
+          "input_price_per_million": 0.2,
+          "output_price_per_million": 1.2,
+          "cached_input_read_price_per_million": 0.02,
+          "cached_input_write_price_per_million": 0.25,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "pricing_source": "autobyteus_model_catalog",
+          "pricing_status": "trusted",
+          "pricing_missing_reason": null,
+          "pricing_snapshot_json": {
+            "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "price_config_id": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "model_provider": "OPENAI",
+            "model_identifier": "gpt-5.6-luna",
+            "model_value": "gpt-5.6-luna",
+            "canonical_name": "gpt-5.6-luna",
+            "currency": "USD",
+            "input_price_per_million": 0.2,
+            "output_price_per_million": 1.2,
+            "cached_input_read_price_per_million": 0.02,
+            "cached_input_write_price_per_million": 0.25,
+            "cached_input_write_5m_price_per_million": null,
+            "cached_input_write_1h_price_per_million": null,
+            "input_price_tiers": [
+              {
+                "tier_id": "standard_le_272k",
+                "max_input_tokens": 272000,
+                "input_price_per_million": 0.2,
+                "output_price_per_million": 1.2,
+                "cached_input_read_price_per_million": 0.02,
+                "cached_input_write_price_per_million": 0.25,
+                "cached_input_write_5m_price_per_million": null,
+                "cached_input_write_1h_price_per_million": null,
+                "trusted_dimensions": {
+                  "input": true,
+                  "output": true,
+                  "cached_input_read": true,
+                  "cached_input_write": true,
+                  "cached_input_write_5m": false,
+                  "cached_input_write_1h": false
+                }
+              },
+              {
+                "tier_id": "long_context_gt_272k",
+                "max_input_tokens": null,
+                "input_price_per_million": 0.4,
+                "output_price_per_million": 1.8,
+                "cached_input_read_price_per_million": 0.04,
+                "cached_input_write_price_per_million": 0.5,
+                "cached_input_write_5m_price_per_million": null,
+                "cached_input_write_1h_price_per_million": null,
+                "trusted_dimensions": {
+                  "input": true,
+                  "output": true,
+                  "cached_input_read": true,
+                  "cached_input_write": true,
+                  "cached_input_write_5m": false,
+                  "cached_input_write_1h": false
+                }
+              }
+            ],
+            "pricing_status": "trusted",
+            "trusted_dimensions": {
+              "input": true,
+              "output": true,
+              "cached_input_read": true,
+              "cached_input_write": true,
+              "cached_input_write_5m": false,
+              "cached_input_write_1h": false
+            },
+            "missing_reason": null,
+            "source": "autobyteus_model_catalog",
+            "effective_from": null,
+            "effective_to": null,
+            "version": null,
+            "pricing_schedule_id": null,
+            "pricing_schedule_period_id": null,
+            "pricing_schedule_effective_from": null,
+            "pricing_schedule_window_timezone": null,
+            "pricing_schedule_peak_days": null,
+            "pricing_schedule_peak_days_timezone": null,
+            "selected_tier_id": "standard_le_272k"
+          },
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "selected_pricing_tier_id": "standard_le_272k",
+          "missing_price_dimensions": [],
+          "estimated_api_input_cost": 0.0009429600000000001,
+          "estimated_api_standard_input_cost": 0.0008252000000000001,
+          "estimated_api_cache_read_input_cost": 0.00011776,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.00015,
+          "estimated_api_reasoning_output_cost": 5.4000000000000005e-05,
+          "estimated_api_total_cost": 0.00109296,
+          "api_cost_status": "estimated",
+          "meter_delta_input_tokens": 10014,
+          "meter_delta_output_tokens": 125,
+          "meter_delta_total_tokens": 10139,
+          "run_summary_after_event": {
+            "run_id": "ab_sf_fr026_6af2e9d4_codex_app_server_41fa6_0a28cb9fd5f544a0ad9ba600cc31e36d",
+            "root_team_run_id": null,
+            "agent_definition_id": "ab-sf-fr026-6af2e9d4-codex-app-server-41fa6",
+            "workspace_id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+            "gross_input_tokens": 10014,
+            "standard_input_tokens": 4126,
+            "cache_miss_input_tokens": 4126,
+            "cache_read_input_tokens": 5888,
+            "cache_creation_input_tokens": 0,
+            "cache_creation_5m_input_tokens": 0,
+            "cache_creation_1h_input_tokens": 0,
+            "output_tokens": 125,
+            "reasoning_output_tokens": 45,
+            "billable_output_tokens": 125,
+            "total_tokens": 10139,
+            "cache_read_input_token_rate": 0.5879768324345915,
+            "standard_input_token_rate": 0.4120231675654084,
+            "cache_creation_input_token_rate": 0,
+            "cache_state": "positive",
+            "estimated_api_input_cost": 0.0009429600000000001,
+            "estimated_api_standard_input_cost": 0.0008252000000000001,
+            "estimated_api_cache_read_input_cost": 0.00011776,
+            "estimated_api_cache_creation_input_cost": null,
+            "estimated_api_cache_creation_5m_input_cost": null,
+            "estimated_api_cache_creation_1h_input_cost": null,
+            "estimated_api_output_cost": 0.00015,
+            "estimated_api_reasoning_output_cost": 5.4e-05,
+            "estimated_api_total_cost": 0.00109296,
+            "currency": "USD",
+            "api_cost_status": "estimated",
+            "missing_price_dimensions": [],
+            "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "selected_pricing_tier_id": "standard_le_272k",
+            "unit_prices": {
+              "standard_input": {
+                "status": "single",
+                "price_per_million": 0.2
+              },
+              "cache_read_input": {
+                "status": "single",
+                "price_per_million": 0.02
+              },
+              "cache_creation_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_5m_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_1h_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "output": {
+                "status": "single",
+                "price_per_million": 1.2
+              },
+              "reasoning_output": {
+                "status": "single",
+                "price_per_million": 1.2
+              }
+            },
+            "usage_report_count": 1,
+            "revision": 1,
+            "updated_at": "2026-10-13T09:10:19.626Z",
+            "latest_prompt_tokens": 10139,
+            "effective_context_window_tokens": 258400,
+            "context_window_usage_percent": 3.923761609907121,
+            "context_compaction_threshold_tokens": null,
+            "latest_model_provider": "OPENAI",
+            "latest_model_identifier": "gpt-5.6-luna",
+            "latest_runtime_kind": "codex_app_server",
+            "latest_selected_raw_model_id": null,
+            "has_cache_write_rate_assumption": false
+          },
+          "latest_prompt_tokens": 10139,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 3.9237616099071206,
+          "context_compaction_threshold_tokens": null,
+          "raw_usage_json": {
+            "totalTokens": 10139,
+            "inputTokens": 10014,
+            "cachedInputTokens": 5888,
+            "cacheWriteInputTokens": 0,
+            "outputTokens": 125,
+            "reasoningOutputTokens": 45
+          },
+          "raw_event_json": {
+            "threadId": "01a13486-a462-7c20-ac57-f3e46aa1a4d4",
+            "turnId": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+            "tokenUsage": {
+              "total": {
+                "totalTokens": 10139,
+                "inputTokens": 10014,
+                "cachedInputTokens": 5888,
+                "cacheWriteInputTokens": 0,
+                "outputTokens": 125,
+                "reasoningOutputTokens": 45
+              },
+              "last": {
+                "totalTokens": 10139,
+                "inputTokens": 10014,
+                "cachedInputTokens": 5888,
+                "cacheWriteInputTokens": 0,
+                "outputTokens": 125,
+                "reasoningOutputTokens": 45
+              },
+              "modelContextWindow": 258400
+            },
+            "autobyteus_cumulative_snapshot_provider_delta_tokens": {
+              "reported_input_tokens": 10014,
+              "reported_output_tokens": 125,
+              "reported_total_tokens": 10139,
+              "accounting_input_tokens": null,
+              "accounting_output_tokens": null,
+              "accounting_total_tokens": null,
+              "standard_input_tokens": null,
+              "cache_miss_input_tokens": null,
+              "cache_read_input_tokens": 5888,
+              "cache_creation_input_tokens": null,
+              "cache_creation_5m_input_tokens": null,
+              "cache_creation_1h_input_tokens": null,
+              "reasoning_output_tokens": 45,
+              "billable_input_tokens": null,
+              "billable_output_tokens": null
+            },
+            "autobyteus_cumulative_snapshot_source_tokens": {
+              "reported_input_tokens": 10014,
+              "reported_output_tokens": 125,
+              "reported_total_tokens": 10139,
+              "accounting_input_tokens": 10014,
+              "accounting_output_tokens": 125,
+              "accounting_total_tokens": 10139,
+              "standard_input_tokens": 4126,
+              "cache_miss_input_tokens": 4126,
+              "cache_read_input_tokens": 5888,
+              "cache_creation_input_tokens": null,
+              "cache_creation_5m_input_tokens": null,
+              "cache_creation_1h_input_tokens": null,
+              "reasoning_output_tokens": 45,
+              "billable_input_tokens": 10014,
+              "billable_output_tokens": 125
+            }
+          },
+          "quality_flags": [
+            "first_cumulative_snapshot_baselined_from_provider_delta"
+          ]
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_START",
+        "payload": {
+          "id": "reasoning-block:99ec9a0d-94d1-4a36-b897-1472e6408529:2",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "reasoning",
+          "metadata": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "reasoning-block:99ec9a0d-94d1-4a36-b897-1472e6408529:2",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "reasoning",
+          "delta": "**Implementing fsync file append in Python**"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_END",
+        "payload": {
+          "id": "reasoning-block:99ec9a0d-94d1-4a36-b897-1472e6408529:2",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "metadata": null,
+          "interrupted": false,
+          "reason": null,
+          "failed": false,
+          "error": null
+        }
+      },
+      {
+        "type": "SEGMENT_START",
+        "payload": {
+          "id": "exec-f8f15b55-6167-4c4c-bc45-fda2b8bbf286",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "run_bash",
+          "metadata": {
+            "tool_name": "run_bash",
+            "command": "/bin/bash -lc \"python3 - <<'PY'\nimport os\npath = 'mac-linux-agents-aaca0a6d.txt'\nfd = os.open(path, os.O_WRONLY | os.O_APPEND)\ntry:\n    os.write(fd, b'LINUX_B_f8a27d180fe3433490a70b6f22bdca4f\\\\n')\n    os.fsync(fd)\nfinally:\n    os.close(fd)\nPY\nprintf '%s\\\\n' '---FILE-AFTER---'\ncat -- mac-linux-agents-aaca0a6d.txt\""
+          }
+        }
+      },
+      {
+        "type": "TOOL_EXECUTION_STARTED",
+        "payload": {
+          "item": {
+            "type": "commandExecution",
+            "id": "exec-f8f15b55-6167-4c4c-bc45-fda2b8bbf286",
+            "pluginId": null,
+            "scriptPath": null,
+            "command": "/bin/bash -lc \"python3 - <<'PY'\nimport os\npath = 'mac-linux-agents-aaca0a6d.txt'\nfd = os.open(path, os.O_WRONLY | os.O_APPEND)\ntry:\n    os.write(fd, b'LINUX_B_f8a27d180fe3433490a70b6f22bdca4f\\\\n')\n    os.fsync(fd)\nfinally:\n    os.close(fd)\nPY\nprintf '%s\\\\n' '---FILE-AFTER---'\ncat -- mac-linux-agents-aaca0a6d.txt\"",
+            "cwd": "/Volumes/autobyteus-shared/project",
+            "processId": "32373",
+            "source": "unifiedExecStartup",
+            "status": "inProgress",
+            "commandActions": [
+              {
+                "type": "unknown",
+                "command": "python3 - <<'PY'\nimport os\npath = 'mac-linux-agents-aaca0a6d.txt'\nfd = os.open(path, os.O_WRONLY | os.O_APPEND)\ntry:\n    os.write(fd, b'LINUX_B_f8a27d180fe3433490a70b6f22bdca4f\\n')\n    os.fsync(fd)\nfinally:\n    os.close(fd)\nPY\nprintf '%s\\n' '---FILE-AFTER---'\ncat -- mac-linux-agents-aaca0a6d.txt"
+              }
+            ],
+            "aggregatedOutput": null,
+            "exitCode": null,
+            "durationMs": null
+          },
+          "threadId": "01a13486-a462-7c20-ac57-f3e46aa1a4d4",
+          "turnId": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "startedAtMs": 1791882622365,
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "invocation_id": "exec-f8f15b55-6167-4c4c-bc45-fda2b8bbf286",
+          "tool_name": "run_bash",
+          "arguments": {
+            "command": "/bin/bash -lc \"python3 - <<'PY'\nimport os\npath = 'mac-linux-agents-aaca0a6d.txt'\nfd = os.open(path, os.O_WRONLY | os.O_APPEND)\ntry:\n    os.write(fd, b'LINUX_B_f8a27d180fe3433490a70b6f22bdca4f\\\\n')\n    os.fsync(fd)\nfinally:\n    os.close(fd)\nPY\nprintf '%s\\\\n' '---FILE-AFTER---'\ncat -- mac-linux-agents-aaca0a6d.txt\"",
+            "cwd": "/Volumes/autobyteus-shared/project"
+          }
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "TOOL_EXECUTION_SUCCEEDED",
+        "payload": {
+          "item": {
+            "type": "commandExecution",
+            "id": "exec-f8f15b55-6167-4c4c-bc45-fda2b8bbf286",
+            "pluginId": null,
+            "scriptPath": null,
+            "command": "/bin/bash -lc \"python3 - <<'PY'\nimport os\npath = 'mac-linux-agents-aaca0a6d.txt'\nfd = os.open(path, os.O_WRONLY | os.O_APPEND)\ntry:\n    os.write(fd, b'LINUX_B_f8a27d180fe3433490a70b6f22bdca4f\\\\n')\n    os.fsync(fd)\nfinally:\n    os.close(fd)\nPY\nprintf '%s\\\\n' '---FILE-AFTER---'\ncat -- mac-linux-agents-aaca0a6d.txt\"",
+            "cwd": "/Volumes/autobyteus-shared/project",
+            "processId": "32373",
+            "source": "unifiedExecStartup",
+            "status": "completed",
+            "commandActions": [
+              {
+                "type": "unknown",
+                "command": "python3 - <<'PY'\nimport os\npath = 'mac-linux-agents-aaca0a6d.txt'\nfd = os.open(path, os.O_WRONLY | os.O_APPEND)\ntry:\n    os.write(fd, b'LINUX_B_f8a27d180fe3433490a70b6f22bdca4f\\n')\n    os.fsync(fd)\nfinally:\n    os.close(fd)\nPY\nprintf '%s\\n' '---FILE-AFTER---'\ncat -- mac-linux-agents-aaca0a6d.txt"
+              }
+            ],
+            "aggregatedOutput": "---FILE-AFTER---\nMAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\nLINUX_B_f8a27d180fe3433490a70b6f22bdca4f\n",
+            "exitCode": 0,
+            "durationMs": 0
+          },
+          "threadId": "01a13486-a462-7c20-ac57-f3e46aa1a4d4",
+          "turnId": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "completedAtMs": 1791882622366,
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "invocation_id": "exec-f8f15b55-6167-4c4c-bc45-fda2b8bbf286",
+          "tool_name": "run_bash",
+          "arguments": {
+            "command": "/bin/bash -lc \"python3 - <<'PY'\nimport os\npath = 'mac-linux-agents-aaca0a6d.txt'\nfd = os.open(path, os.O_WRONLY | os.O_APPEND)\ntry:\n    os.write(fd, b'LINUX_B_f8a27d180fe3433490a70b6f22bdca4f\\\\n')\n    os.fsync(fd)\nfinally:\n    os.close(fd)\nPY\nprintf '%s\\\\n' '---FILE-AFTER---'\ncat -- mac-linux-agents-aaca0a6d.txt\"",
+            "cwd": "/Volumes/autobyteus-shared/project"
+          },
+          "result": "---FILE-AFTER---\nMAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\nLINUX_B_f8a27d180fe3433490a70b6f22bdca4f\n"
+        }
+      },
+      {
+        "type": "SEGMENT_END",
+        "payload": {
+          "id": "exec-f8f15b55-6167-4c4c-bc45-fda2b8bbf286",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "metadata": {
+            "tool_name": "run_bash",
+            "command": "/bin/bash -lc \"python3 - <<'PY'\nimport os\npath = 'mac-linux-agents-aaca0a6d.txt'\nfd = os.open(path, os.O_WRONLY | os.O_APPEND)\ntry:\n    os.write(fd, b'LINUX_B_f8a27d180fe3433490a70b6f22bdca4f\\\\n')\n    os.fsync(fd)\nfinally:\n    os.close(fd)\nPY\nprintf '%s\\\\n' '---FILE-AFTER---'\ncat -- mac-linux-agents-aaca0a6d.txt\""
+          },
+          "interrupted": false,
+          "reason": null,
+          "failed": false,
+          "error": null
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "usage_event_id": "f648ccf6-6c96-472a-86e5-9fdf411fc3c7",
+          "idempotency_key": "codex_token_usage:ab_sf_fr026_6af2e9d4_codex_app_server_41fa6_0a28cb9fd5f544a0ad9ba600cc31e36d:01a13486-a462-7c20-ac57-f3e46aa1a4d4:01a13486-e0f0-7a32-b2c3-c5a8d62a67a5:cumulative_snapshot:20211:14848:366:106:20577:10438",
+          "observed_at": "2026-10-13T09:10:22.374Z",
+          "run_id": "ab_sf_fr026_6af2e9d4_codex_app_server_41fa6_0a28cb9fd5f544a0ad9ba600cc31e36d",
+          "root_team_run_id": null,
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "llm_call_id": null,
+          "call_sequence": null,
+          "agent_definition_id": "ab-sf-fr026-6af2e9d4-codex-app-server-41fa6",
+          "workspace_id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+          "task_id": null,
+          "team_name": null,
+          "agent_name": "ab-sf-fr026-6af2e9d4-codex_app_server-41fa6",
+          "run_summary": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact exi...",
+          "run_created_at": "2026-10-13T09:10:01.265Z",
+          "member_display_name": null,
+          "runtime_kind": "codex_app_server",
+          "model_provider": "OPENAI",
+          "provider_name": null,
+          "model_identifier": "gpt-5.6-luna",
+          "model_value": "gpt-5.6-luna",
+          "selected_match_state": null,
+          "selected_model_value": null,
+          "selected_resolved_raw_model_id": null,
+          "claude_sdk_model_usage": [],
+          "claude_sdk_session_id": null,
+          "claude_sdk_query_kind": null,
+          "ingestion_kind": "codex_thread_token_usage",
+          "usage_scope": "cumulative_snapshot",
+          "reports_model_call": true,
+          "snapshot_series_key": "codex_thread:01a13486-a462-7c20-ac57-f3e46aa1a4d4",
+          "previous_snapshot_event_id": null,
+          "input_token_semantic": "gross_includes_cache",
+          "reported_input_tokens": 10197,
+          "reported_output_tokens": 241,
+          "reported_total_tokens": 10438,
+          "accounting_input_tokens": 10197,
+          "accounting_output_tokens": 241,
+          "accounting_total_tokens": 10438,
+          "standard_input_tokens": 1237,
+          "cache_miss_input_tokens": 1237,
+          "cache_read_input_tokens": 8960,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 61,
+          "billable_input_tokens": 10197,
+          "billable_output_tokens": 241,
+          "cost_basis": "api_price_estimate",
+          "currency": "USD",
+          "input_price_per_million": 0.2,
+          "output_price_per_million": 1.2,
+          "cached_input_read_price_per_million": 0.02,
+          "cached_input_write_price_per_million": 0.25,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "pricing_source": "autobyteus_model_catalog",
+          "pricing_status": "trusted",
+          "pricing_missing_reason": null,
+          "pricing_snapshot_json": {
+            "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "price_config_id": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "model_provider": "OPENAI",
+            "model_identifier": "gpt-5.6-luna",
+            "model_value": "gpt-5.6-luna",
+            "canonical_name": "gpt-5.6-luna",
+            "currency": "USD",
+            "input_price_per_million": 0.2,
+            "output_price_per_million": 1.2,
+            "cached_input_read_price_per_million": 0.02,
+            "cached_input_write_price_per_million": 0.25,
+            "cached_input_write_5m_price_per_million": null,
+            "cached_input_write_1h_price_per_million": null,
+            "input_price_tiers": [
+              {
+                "tier_id": "standard_le_272k",
+                "max_input_tokens": 272000,
+                "input_price_per_million": 0.2,
+                "output_price_per_million": 1.2,
+                "cached_input_read_price_per_million": 0.02,
+                "cached_input_write_price_per_million": 0.25,
+                "cached_input_write_5m_price_per_million": null,
+                "cached_input_write_1h_price_per_million": null,
+                "trusted_dimensions": {
+                  "input": true,
+                  "output": true,
+                  "cached_input_read": true,
+                  "cached_input_write": true,
+                  "cached_input_write_5m": false,
+                  "cached_input_write_1h": false
+                }
+              },
+              {
+                "tier_id": "long_context_gt_272k",
+                "max_input_tokens": null,
+                "input_price_per_million": 0.4,
+                "output_price_per_million": 1.8,
+                "cached_input_read_price_per_million": 0.04,
+                "cached_input_write_price_per_million": 0.5,
+                "cached_input_write_5m_price_per_million": null,
+                "cached_input_write_1h_price_per_million": null,
+                "trusted_dimensions": {
+                  "input": true,
+                  "output": true,
+                  "cached_input_read": true,
+                  "cached_input_write": true,
+                  "cached_input_write_5m": false,
+                  "cached_input_write_1h": false
+                }
+              }
+            ],
+            "pricing_status": "trusted",
+            "trusted_dimensions": {
+              "input": true,
+              "output": true,
+              "cached_input_read": true,
+              "cached_input_write": true,
+              "cached_input_write_5m": false,
+              "cached_input_write_1h": false
+            },
+            "missing_reason": null,
+            "source": "autobyteus_model_catalog",
+            "effective_from": null,
+            "effective_to": null,
+            "version": null,
+            "pricing_schedule_id": null,
+            "pricing_schedule_period_id": null,
+            "pricing_schedule_effective_from": null,
+            "pricing_schedule_window_timezone": null,
+            "pricing_schedule_peak_days": null,
+            "pricing_schedule_peak_days_timezone": null,
+            "selected_tier_id": "standard_le_272k"
+          },
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "selected_pricing_tier_id": "standard_le_272k",
+          "missing_price_dimensions": [],
+          "estimated_api_input_cost": 0.00042659999999999996,
+          "estimated_api_standard_input_cost": 0.0002474,
+          "estimated_api_cache_read_input_cost": 0.0001792,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.0002892,
+          "estimated_api_reasoning_output_cost": 7.319999999999999e-05,
+          "estimated_api_total_cost": 0.0007157999999999999,
+          "api_cost_status": "estimated",
+          "meter_delta_input_tokens": 10197,
+          "meter_delta_output_tokens": 241,
+          "meter_delta_total_tokens": 10438,
+          "run_summary_after_event": {
+            "run_id": "ab_sf_fr026_6af2e9d4_codex_app_server_41fa6_0a28cb9fd5f544a0ad9ba600cc31e36d",
+            "root_team_run_id": null,
+            "agent_definition_id": "ab-sf-fr026-6af2e9d4-codex-app-server-41fa6",
+            "workspace_id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+            "gross_input_tokens": 20211,
+            "standard_input_tokens": 5363,
+            "cache_miss_input_tokens": 5363,
+            "cache_read_input_tokens": 14848,
+            "cache_creation_input_tokens": 0,
+            "cache_creation_5m_input_tokens": 0,
+            "cache_creation_1h_input_tokens": 0,
+            "output_tokens": 366,
+            "reasoning_output_tokens": 106,
+            "billable_output_tokens": 366,
+            "total_tokens": 20577,
+            "cache_read_input_token_rate": 0.7346494483202216,
+            "standard_input_token_rate": 0.26535055167977833,
+            "cache_creation_input_token_rate": 0,
+            "cache_state": "positive",
+            "estimated_api_input_cost": 0.00136956,
+            "estimated_api_standard_input_cost": 0.0010726,
+            "estimated_api_cache_read_input_cost": 0.00029696,
+            "estimated_api_cache_creation_input_cost": null,
+            "estimated_api_cache_creation_5m_input_cost": null,
+            "estimated_api_cache_creation_1h_input_cost": null,
+            "estimated_api_output_cost": 0.0004391999999999999,
+            "estimated_api_reasoning_output_cost": 0.0001272,
+            "estimated_api_total_cost": 0.00180876,
+            "currency": "USD",
+            "api_cost_status": "estimated",
+            "missing_price_dimensions": [],
+            "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "selected_pricing_tier_id": "standard_le_272k",
+            "unit_prices": {
+              "standard_input": {
+                "status": "single",
+                "price_per_million": 0.2
+              },
+              "cache_read_input": {
+                "status": "single",
+                "price_per_million": 0.02
+              },
+              "cache_creation_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_5m_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_1h_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "output": {
+                "status": "single",
+                "price_per_million": 1.2
+              },
+              "reasoning_output": {
+                "status": "single",
+                "price_per_million": 1.2
+              }
+            },
+            "usage_report_count": 2,
+            "revision": 2,
+            "updated_at": "2026-10-13T09:10:22.374Z",
+            "latest_prompt_tokens": 10438,
+            "effective_context_window_tokens": 258400,
+            "context_window_usage_percent": 4.039473684210526,
+            "context_compaction_threshold_tokens": null,
+            "latest_model_provider": "OPENAI",
+            "latest_model_identifier": "gpt-5.6-luna",
+            "latest_runtime_kind": "codex_app_server",
+            "latest_selected_raw_model_id": null,
+            "has_cache_write_rate_assumption": false
+          },
+          "latest_prompt_tokens": 10438,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 4.039473684210526,
+          "context_compaction_threshold_tokens": null,
+          "raw_usage_json": {
+            "totalTokens": 20577,
+            "inputTokens": 20211,
+            "cachedInputTokens": 14848,
+            "cacheWriteInputTokens": 0,
+            "outputTokens": 366,
+            "reasoningOutputTokens": 106
+          },
+          "raw_event_json": {
+            "threadId": "01a13486-a462-7c20-ac57-f3e46aa1a4d4",
+            "turnId": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+            "tokenUsage": {
+              "total": {
+                "totalTokens": 20577,
+                "inputTokens": 20211,
+                "cachedInputTokens": 14848,
+                "cacheWriteInputTokens": 0,
+                "outputTokens": 366,
+                "reasoningOutputTokens": 106
+              },
+              "last": {
+                "totalTokens": 10438,
+                "inputTokens": 10197,
+                "cachedInputTokens": 8960,
+                "cacheWriteInputTokens": 0,
+                "outputTokens": 241,
+                "reasoningOutputTokens": 61
+              },
+              "modelContextWindow": 258400
+            },
+            "autobyteus_cumulative_snapshot_provider_delta_tokens": {
+              "reported_input_tokens": 10197,
+              "reported_output_tokens": 241,
+              "reported_total_tokens": 10438,
+              "accounting_input_tokens": null,
+              "accounting_output_tokens": null,
+              "accounting_total_tokens": null,
+              "standard_input_tokens": null,
+              "cache_miss_input_tokens": null,
+              "cache_read_input_tokens": 8960,
+              "cache_creation_input_tokens": null,
+              "cache_creation_5m_input_tokens": null,
+              "cache_creation_1h_input_tokens": null,
+              "reasoning_output_tokens": 61,
+              "billable_input_tokens": null,
+              "billable_output_tokens": null
+            },
+            "autobyteus_cumulative_snapshot_source_tokens": {
+              "reported_input_tokens": 20211,
+              "reported_output_tokens": 366,
+              "reported_total_tokens": 20577,
+              "accounting_input_tokens": 20211,
+              "accounting_output_tokens": 366,
+              "accounting_total_tokens": 20577,
+              "standard_input_tokens": 5363,
+              "cache_miss_input_tokens": 5363,
+              "cache_read_input_tokens": 14848,
+              "cache_creation_input_tokens": null,
+              "cache_creation_5m_input_tokens": null,
+              "cache_creation_1h_input_tokens": null,
+              "reasoning_output_tokens": 106,
+              "billable_input_tokens": 20211,
+              "billable_output_tokens": 366
+            }
+          },
+          "quality_flags": []
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_START",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "metadata": null
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "pwd"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": ":"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": " `/"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "Volumes"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "/aut"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "oby"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "te"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "us"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "-sh"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "ared"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "/project"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "`\n\n"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "Existing"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": " content"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": ":\n"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "```"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "text"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "\n"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "MAC"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "_AGENT"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "_"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "3"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "c"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "0"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "bb"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "43"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "a"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "347"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "74"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "df"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "ab"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "341"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "d"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "42"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "f"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "122"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "f"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "96"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "d"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "9"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "\n"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "``"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "`\n\n"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "App"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "ended"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": " the"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": " requested"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": " line"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": ","
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": " fs"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "yn"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "ced"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": ","
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": " and"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": " closed"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": " the"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": " file"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "segment_type": "text",
+          "delta": "."
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_END",
+        "payload": {
+          "id": "msg_0f3a56b08bdb2798016acdf57f6b388191a04648b9cf6f4657",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "metadata": null,
+          "interrupted": false,
+          "reason": null,
+          "failed": false,
+          "error": null
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "usage_event_id": "9fb2f4f2-7202-46bd-85dd-3ced111dacf0",
+          "idempotency_key": "codex_token_usage:ab_sf_fr026_6af2e9d4_codex_app_server_41fa6_0a28cb9fd5f544a0ad9ba600cc31e36d:01a13486-a462-7c20-ac57-f3e46aa1a4d4:01a13486-e0f0-7a32-b2c3-c5a8d62a67a5:cumulative_snapshot:30725:24832:428:106:31153:10576",
+          "observed_at": "2026-10-13T09:10:23.807Z",
+          "run_id": "ab_sf_fr026_6af2e9d4_codex_app_server_41fa6_0a28cb9fd5f544a0ad9ba600cc31e36d",
+          "root_team_run_id": null,
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "llm_call_id": null,
+          "call_sequence": null,
+          "agent_definition_id": "ab-sf-fr026-6af2e9d4-codex-app-server-41fa6",
+          "workspace_id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+          "task_id": null,
+          "team_name": null,
+          "agent_name": "ab-sf-fr026-6af2e9d4-codex_app_server-41fa6",
+          "run_summary": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact exi...",
+          "run_created_at": "2026-10-13T09:10:01.265Z",
+          "member_display_name": null,
+          "runtime_kind": "codex_app_server",
+          "model_provider": "OPENAI",
+          "provider_name": null,
+          "model_identifier": "gpt-5.6-luna",
+          "model_value": "gpt-5.6-luna",
+          "selected_match_state": null,
+          "selected_model_value": null,
+          "selected_resolved_raw_model_id": null,
+          "claude_sdk_model_usage": [],
+          "claude_sdk_session_id": null,
+          "claude_sdk_query_kind": null,
+          "ingestion_kind": "codex_thread_token_usage",
+          "usage_scope": "cumulative_snapshot",
+          "reports_model_call": true,
+          "snapshot_series_key": "codex_thread:01a13486-a462-7c20-ac57-f3e46aa1a4d4",
+          "previous_snapshot_event_id": null,
+          "input_token_semantic": "gross_includes_cache",
+          "reported_input_tokens": 10514,
+          "reported_output_tokens": 62,
+          "reported_total_tokens": 10576,
+          "accounting_input_tokens": 10514,
+          "accounting_output_tokens": 62,
+          "accounting_total_tokens": 10576,
+          "standard_input_tokens": 530,
+          "cache_miss_input_tokens": 530,
+          "cache_read_input_tokens": 9984,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 0,
+          "billable_input_tokens": 10514,
+          "billable_output_tokens": 62,
+          "cost_basis": "api_price_estimate",
+          "currency": "USD",
+          "input_price_per_million": 0.2,
+          "output_price_per_million": 1.2,
+          "cached_input_read_price_per_million": 0.02,
+          "cached_input_write_price_per_million": 0.25,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "pricing_source": "autobyteus_model_catalog",
+          "pricing_status": "trusted",
+          "pricing_missing_reason": null,
+          "pricing_snapshot_json": {
+            "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "price_config_id": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "model_provider": "OPENAI",
+            "model_identifier": "gpt-5.6-luna",
+            "model_value": "gpt-5.6-luna",
+            "canonical_name": "gpt-5.6-luna",
+            "currency": "USD",
+            "input_price_per_million": 0.2,
+            "output_price_per_million": 1.2,
+            "cached_input_read_price_per_million": 0.02,
+            "cached_input_write_price_per_million": 0.25,
+            "cached_input_write_5m_price_per_million": null,
+            "cached_input_write_1h_price_per_million": null,
+            "input_price_tiers": [
+              {
+                "tier_id": "standard_le_272k",
+                "max_input_tokens": 272000,
+                "input_price_per_million": 0.2,
+                "output_price_per_million": 1.2,
+                "cached_input_read_price_per_million": 0.02,
+                "cached_input_write_price_per_million": 0.25,
+                "cached_input_write_5m_price_per_million": null,
+                "cached_input_write_1h_price_per_million": null,
+                "trusted_dimensions": {
+                  "input": true,
+                  "output": true,
+                  "cached_input_read": true,
+                  "cached_input_write": true,
+                  "cached_input_write_5m": false,
+                  "cached_input_write_1h": false
+                }
+              },
+              {
+                "tier_id": "long_context_gt_272k",
+                "max_input_tokens": null,
+                "input_price_per_million": 0.4,
+                "output_price_per_million": 1.8,
+                "cached_input_read_price_per_million": 0.04,
+                "cached_input_write_price_per_million": 0.5,
+                "cached_input_write_5m_price_per_million": null,
+                "cached_input_write_1h_price_per_million": null,
+                "trusted_dimensions": {
+                  "input": true,
+                  "output": true,
+                  "cached_input_read": true,
+                  "cached_input_write": true,
+                  "cached_input_write_5m": false,
+                  "cached_input_write_1h": false
+                }
+              }
+            ],
+            "pricing_status": "trusted",
+            "trusted_dimensions": {
+              "input": true,
+              "output": true,
+              "cached_input_read": true,
+              "cached_input_write": true,
+              "cached_input_write_5m": false,
+              "cached_input_write_1h": false
+            },
+            "missing_reason": null,
+            "source": "autobyteus_model_catalog",
+            "effective_from": null,
+            "effective_to": null,
+            "version": null,
+            "pricing_schedule_id": null,
+            "pricing_schedule_period_id": null,
+            "pricing_schedule_effective_from": null,
+            "pricing_schedule_window_timezone": null,
+            "pricing_schedule_peak_days": null,
+            "pricing_schedule_peak_days_timezone": null,
+            "selected_tier_id": "standard_le_272k"
+          },
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "selected_pricing_tier_id": "standard_le_272k",
+          "missing_price_dimensions": [],
+          "estimated_api_input_cost": 0.00030568,
+          "estimated_api_standard_input_cost": 0.000106,
+          "estimated_api_cache_read_input_cost": 0.00019968,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 7.44e-05,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": 0.00038008000000000003,
+          "api_cost_status": "estimated",
+          "meter_delta_input_tokens": 10514,
+          "meter_delta_output_tokens": 62,
+          "meter_delta_total_tokens": 10576,
+          "run_summary_after_event": {
+            "run_id": "ab_sf_fr026_6af2e9d4_codex_app_server_41fa6_0a28cb9fd5f544a0ad9ba600cc31e36d",
+            "root_team_run_id": null,
+            "agent_definition_id": "ab-sf-fr026-6af2e9d4-codex-app-server-41fa6",
+            "workspace_id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+            "gross_input_tokens": 30725,
+            "standard_input_tokens": 5893,
+            "cache_miss_input_tokens": 5893,
+            "cache_read_input_tokens": 24832,
+            "cache_creation_input_tokens": 0,
+            "cache_creation_5m_input_tokens": 0,
+            "cache_creation_1h_input_tokens": 0,
+            "output_tokens": 428,
+            "reasoning_output_tokens": 106,
+            "billable_output_tokens": 428,
+            "total_tokens": 31153,
+            "cache_read_input_token_rate": 0.8082017900732302,
+            "standard_input_token_rate": 0.19179820992676974,
+            "cache_creation_input_token_rate": 0,
+            "cache_state": "positive",
+            "estimated_api_input_cost": 0.00167524,
+            "estimated_api_standard_input_cost": 0.0011786,
+            "estimated_api_cache_read_input_cost": 0.00049664,
+            "estimated_api_cache_creation_input_cost": null,
+            "estimated_api_cache_creation_5m_input_cost": null,
+            "estimated_api_cache_creation_1h_input_cost": null,
+            "estimated_api_output_cost": 0.0005135999999999999,
+            "estimated_api_reasoning_output_cost": 0.0001272,
+            "estimated_api_total_cost": 0.00218884,
+            "currency": "USD",
+            "api_cost_status": "estimated",
+            "missing_price_dimensions": [],
+            "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "selected_pricing_tier_id": "standard_le_272k",
+            "unit_prices": {
+              "standard_input": {
+                "status": "single",
+                "price_per_million": 0.2
+              },
+              "cache_read_input": {
+                "status": "single",
+                "price_per_million": 0.02
+              },
+              "cache_creation_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_5m_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_1h_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "output": {
+                "status": "single",
+                "price_per_million": 1.2
+              },
+              "reasoning_output": {
+                "status": "single",
+                "price_per_million": 1.2
+              }
+            },
+            "usage_report_count": 3,
+            "revision": 3,
+            "updated_at": "2026-10-13T09:10:23.807Z",
+            "latest_prompt_tokens": 10576,
+            "effective_context_window_tokens": 258400,
+            "context_window_usage_percent": 4.092879256965944,
+            "context_compaction_threshold_tokens": null,
+            "latest_model_provider": "OPENAI",
+            "latest_model_identifier": "gpt-5.6-luna",
+            "latest_runtime_kind": "codex_app_server",
+            "latest_selected_raw_model_id": null,
+            "has_cache_write_rate_assumption": false
+          },
+          "latest_prompt_tokens": 10576,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 4.0928792569659445,
+          "context_compaction_threshold_tokens": null,
+          "raw_usage_json": {
+            "totalTokens": 31153,
+            "inputTokens": 30725,
+            "cachedInputTokens": 24832,
+            "cacheWriteInputTokens": 0,
+            "outputTokens": 428,
+            "reasoningOutputTokens": 106
+          },
+          "raw_event_json": {
+            "threadId": "01a13486-a462-7c20-ac57-f3e46aa1a4d4",
+            "turnId": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+            "tokenUsage": {
+              "total": {
+                "totalTokens": 31153,
+                "inputTokens": 30725,
+                "cachedInputTokens": 24832,
+                "cacheWriteInputTokens": 0,
+                "outputTokens": 428,
+                "reasoningOutputTokens": 106
+              },
+              "last": {
+                "totalTokens": 10576,
+                "inputTokens": 10514,
+                "cachedInputTokens": 9984,
+                "cacheWriteInputTokens": 0,
+                "outputTokens": 62,
+                "reasoningOutputTokens": 0
+              },
+              "modelContextWindow": 258400
+            },
+            "autobyteus_cumulative_snapshot_provider_delta_tokens": {
+              "reported_input_tokens": 10514,
+              "reported_output_tokens": 62,
+              "reported_total_tokens": 10576,
+              "accounting_input_tokens": null,
+              "accounting_output_tokens": null,
+              "accounting_total_tokens": null,
+              "standard_input_tokens": null,
+              "cache_miss_input_tokens": null,
+              "cache_read_input_tokens": 9984,
+              "cache_creation_input_tokens": null,
+              "cache_creation_5m_input_tokens": null,
+              "cache_creation_1h_input_tokens": null,
+              "reasoning_output_tokens": 0,
+              "billable_input_tokens": null,
+              "billable_output_tokens": null
+            },
+            "autobyteus_cumulative_snapshot_source_tokens": {
+              "reported_input_tokens": 30725,
+              "reported_output_tokens": 428,
+              "reported_total_tokens": 31153,
+              "accounting_input_tokens": 30725,
+              "accounting_output_tokens": 428,
+              "accounting_total_tokens": 31153,
+              "standard_input_tokens": 5893,
+              "cache_miss_input_tokens": 5893,
+              "cache_read_input_tokens": 24832,
+              "cache_creation_input_tokens": null,
+              "cache_creation_5m_input_tokens": null,
+              "cache_creation_1h_input_tokens": null,
+              "reasoning_output_tokens": 106,
+              "billable_input_tokens": 30725,
+              "billable_output_tokens": 428
+            }
+          },
+          "quality_flags": []
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 3,
+          "entries": [
+            {
+              "sequence": 1,
+              "message_id": "ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-linux-b-read-modify",
+              "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+              "state": "forwarded",
+              "content": "Print pwd and freshly read mac-linux-agents-aaca0a6d.txt using native tools; report the exact existing content, which is not supplied here. Append exactly LINUX_B_f8a27d180fe3433490a70b6f22bdca4f followed by one LF newline, preserving previous bytes, fsync and close. Do not copy another prompt or use a sharing API.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "TURN_COMPLETED",
+        "payload": {
+          "turnId": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5",
+          "turn_id": "01a13486-e0f0-7a32-b2c3-c5a8d62a67a5"
+        }
+      },
+      {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "idle",
+          "recoverableBlock": null,
+          "agent_id": "ab_sf_fr026_6af2e9d4_codex_app_server_41fa6_0a28cb9fd5f544a0ad9ba600cc31e36d"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "6a634649-9bc3-430b-ab8d-bef385368af2",
+          "revision": 4,
+          "entries": [],
+          "recoverableBlock": null
+        }
+      }
+    ],
+    "error": null
+  }
+}

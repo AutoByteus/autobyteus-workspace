@@ -140,7 +140,7 @@ export const buildTokenUsageRunSummaryFromRecords = (input: {
 
 /**
  * A standalone run's roll-up (REQ-006): the totals cover every given record (the host and its
- * collaborators, collaborator-Team members and task copies), while the latest prompt, context
+ * delegated copies, including converted collaborators), while the latest prompt, context
  * window, model and run identity stay those of the run's own agent (the host record), so the
  * context meter keeps describing the agent the user is talking to.
  */

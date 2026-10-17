@@ -1,0 +1,121 @@
+{
+  "checkedAtUTC": "2026-10-14T06:25:10.736623+00:00",
+  "source": ".github/workflows/release-nfs.yml",
+  "basis": "supported permitted publication after completed qualification, not a live release authorization",
+  "scenario": "workflow_dispatch publish=true plus valid tag, candidate_run_id and completed release gates",
+  "jobs": [
+    {
+      "job": "prepare",
+      "needs": [],
+      "if": "<implicit success()>",
+      "ancestors": []
+    },
+    {
+      "job": "engine-packages",
+      "needs": "prepare",
+      "if": "needs.prepare.outputs.publish != 'true'",
+      "ancestors": [
+        "prepare"
+      ]
+    },
+    {
+      "job": "engine-inputs",
+      "needs": [
+        "prepare",
+        "engine-packages"
+      ],
+      "if": "${{ always() && needs.prepare.result == 'success' && (needs.engine-packages.result == 'success' || needs.prepare.outputs.publish == 'true') }}",
+      "ancestors": [
+        "engine-packages",
+        "prepare"
+      ]
+    },
+    {
+      "job": "engine",
+      "needs": [
+        "prepare",
+        "engine-inputs"
+      ],
+      "if": "<implicit success()>",
+      "ancestors": [
+        "engine-inputs",
+        "engine-packages",
+        "prepare"
+      ]
+    },
+    {
+      "job": "binaries",
+      "needs": [
+        "prepare",
+        "engine-inputs",
+        "engine"
+      ],
+      "if": "<implicit success()>",
+      "ancestors": [
+        "engine",
+        "engine-inputs",
+        "engine-packages",
+        "prepare"
+      ]
+    },
+    {
+      "job": "publish",
+      "needs": [
+        "prepare",
+        "engine-inputs",
+        "engine",
+        "binaries"
+      ],
+      "if": "needs.prepare.outputs.publish == 'true'",
+      "ancestors": [
+        "binaries",
+        "engine",
+        "engine-inputs",
+        "engine-packages",
+        "prepare"
+      ]
+    }
+  ],
+  "normalPublicationPath": [
+    {
+      "job": "prepare",
+      "result": "success (precondition)"
+    },
+    {
+      "job": "engine-packages",
+      "result": "skipped by publish=true condition"
+    },
+    {
+      "job": "engine-inputs",
+      "result": "explicit always permits validated prior candidate (assume success)"
+    },
+    {
+      "job": "engine",
+      "result": "implicit success; skipped ancestor still in transitive dependency chain"
+    },
+    {
+      "job": "binaries",
+      "result": "also implicit success and depends on engine"
+    },
+    {
+      "job": "publish",
+      "result": "ordinary boolean if does not replace default success check"
+    }
+  ],
+  "consequence": "intentionally skipped rebuild prevents downstream authorized publication; build-only does not have that skipped ancestor",
+  "evidenceKind": "static production graph plus primary documented scheduler contract, NOT hosted workflow execution",
+  "primaryContracts": [
+    {
+      "url": "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idneeds",
+      "summary": "Failure/skip propagates along needs chains; an explicit status-aware job condition is required to continue across it."
+    },
+    {
+      "url": "https://github.com/actions/runner/issues/2205",
+      "title": "Jobs skipped when NEEDS job ran successfully",
+      "state": "open",
+      "updatedAt": "2025-09-03T20:43:28Z",
+      "summary": "Publisher repository reproduction reports a successful always-conditioned bridge after a skipped job does not restore implicit success for the next dependent job."
+    }
+  ],
+  "nonclaim": "No GitHub run, tag, artifact upload, signature, credential use or publication occurred. No claim that missing current qualification is itself a defect."
+}

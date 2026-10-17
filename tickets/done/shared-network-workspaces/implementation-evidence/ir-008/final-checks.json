@@ -1,0 +1,18 @@
+{
+  "round": "IR-008",
+  "sourceCommit": "d65aeda24fc4b9a534a3941b194dd4a55b88c00c",
+  "sourceWhitespaceRC": 0,
+  "localCommandsExpected": 18,
+  "goPackages": 7,
+  "goTopLevelPass": 56,
+  "goFirstLevelSubcasePass": 140,
+  "mutationControls": 7,
+  "currentCanonicalHandoff": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-handoff.md",
+  "currentRevisionRecord": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-revision-record.md",
+  "upstreamVerdictsUnchanged": true,
+  "codeReviewRequired": true,
+  "apiFreshnessNotExecuted": true,
+  "cleanupVerified": true,
+  "rawDiagnosticWhitespaceLinesPreserved": 10,
+  "artifactOnlyWhitespaceExemption": "blank-at-eol; source check unchanged"
+}

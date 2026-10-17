@@ -1,0 +1,9 @@
+Started actual activated Docker storage config image process and package identity
+actual activated Docker storage config image process and package identity: Pass
+Started API-F004 docker-fresh-public-create warmed 1KiB/1MiB + atomic/new native and HTTP
+API-F004 docker-fresh-public-create warmed 1KiB/1MiB + atomic/new native and HTTP: Pass
+Started public Docker-storage reconnect without config or cache manipulation
+public Docker-storage reconnect without config or cache manipulation: Pass
+Started API-F004 docker-public-reconnect warmed 1KiB/1MiB + atomic/new native and HTTP
+API-F004 docker-public-reconnect warmed 1KiB/1MiB + atomic/new native and HTTP: Pass
+API-F004 Docker-storage public create/reconnect scope Pass; broader bothOS/physical matrix NOT implied

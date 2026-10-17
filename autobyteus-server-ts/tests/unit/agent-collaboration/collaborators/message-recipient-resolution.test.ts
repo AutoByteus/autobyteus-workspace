@@ -1,10 +1,13 @@
 import { describe, expect, it, vi } from "vitest";
 import {
+  isInsideSenderTeamInstances,
   messagePlacement,
+  reachingAddressOf,
   resolveMessageRecipient,
   type MessageRecipientIndexPort,
   type SenderTeamInstance,
 } from "../../../../src/agent-collaboration/collaborators/message-recipient-resolution.js";
+import { mentionViewerOf, mentionViewerRelation } from "../../../../src/agent-collaboration/collaborators/mention-viewer.js";
 import { resolveDelegationPlacement } from "../../../../src/agent-collaboration/collaborators/catalog-delegation.js";
 import { CollaboratorAddError } from "../../../../src/agent-collaboration/collaborators/collaborator-errors.js";
 import { CollaborationContractError } from "../../../../src/agent-collaboration/domain/collaboration-contract-error.js";
@@ -14,7 +17,7 @@ import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enu
 
 const a = (value: string) => value as AgentTeamAddress;
 
-/** Two parallel copies of `/team` (copy-1, copy-2) and a run-wide `/team` collaborator. */
+/** Two parallel copies of `/team` (copy-1, copy-2) and run-wide standing instances `/pm` and `/team/writer`. */
 const port = (overrides: Partial<MessageRecipientIndexPort> = {}): MessageRecipientIndexPort => {
   const instances: Record<string, SenderTeamInstance[]> = {
     "copy-1-lead": [{ teamRunId: "copy-1", address: a("/team") }],
@@ -33,84 +36,132 @@ const port = (overrides: Partial<MessageRecipientIndexPort> = {}): MessageRecipi
     getMessagePlacement: (address) => ["/team/writer", "/pm"].includes(address)
       ? messagePlacement("agent", address, { agentRunId: `wide${address.replaceAll("/", "-")}`, address })
       : null,
+    isOwnTeamAddress: () => false,
     ...overrides,
   };
 };
 
-describe("MessageRecipientResolution (DS-002)", () => {
+describe("MessageRecipientResolution (DS-002, CM-4)", () => {
   const resolve = (sender: string, address: string) => resolveMessageRecipient({
-    port: () => port(), senderAgentRunId: sender, address: a(address), catalog: { bringIn: vi.fn() }, notFoundMessage: () => "nf",
+    port: () => port(), senderAgentRunId: sender, address: a(address),
   });
 
-  it("resolves inside the sender's own instance first, so parallel copies never cross (REQ-007)", async () => {
-    await expect(resolve("copy-1-lead", "/team/writer"))
-      .resolves.toMatchObject({ resolved: true, placement: { receiver: { agentRunId: "copy-1-writer" } } });
-    await expect(resolve("copy-1-lead", "/team"))
-      .resolves.toMatchObject({ resolved: true, placement: { kind: "agent_team", receiver: { agentRunId: "copy-1-lead" } } });
+  it("resolves inside the sender's own instance first, so parallel copies never cross (REQ-007)", () => {
+    expect(resolve("copy-1-lead", "/team/writer")).toMatchObject({ receiver: { agentRunId: "copy-1-writer" } });
+    expect(resolve("copy-1-lead", "/team")).toMatchObject({ kind: "agent_team", receiver: { agentRunId: "copy-1-lead" } });
   });
 
-  it("never falls through inside the instance prefix (AR-003)", async () => {
+  it("never falls through inside the instance prefix (AR-003)", () => {
     // copy-2 has no writer: the run-wide `/team/writer` must not be reached.
-    const catalog = { bringIn: vi.fn() };
-    await expect(resolveMessageRecipient({
-      port: () => port(), senderAgentRunId: "copy-2-lead", address: a("/team/writer"), catalog, notFoundMessage: () => "nf",
-    })).rejects.toMatchObject({ code: "COLLABORATION_TARGET_NOT_FOUND" });
-    expect(catalog.bringIn).not.toHaveBeenCalled();
+    expect(() => resolve("copy-2-lead", "/team/writer")).toThrow(expect.objectContaining({ code: "COLLABORATION_TARGET_NOT_FOUND" }));
   });
 
-  it("resolves addresses outside every instance run-wide", async () => {
-    await expect(resolve("copy-1-lead", "/pm"))
-      .resolves.toMatchObject({ resolved: true, placement: { receiver: { agentRunId: "wide-pm" } } });
-    await expect(resolve("pm", "/team/writer"))
-      .resolves.toMatchObject({ resolved: true, placement: { receiver: { agentRunId: "wide-team-writer" } } });
+  it("resolves addresses outside every instance run-wide", () => {
+    expect(resolve("copy-1-lead", "/pm")).toMatchObject({ receiver: { agentRunId: "wide-pm" } });
+    expect(resolve("pm", "/team/writer")).toMatchObject({ receiver: { agentRunId: "wide-team-writer" } });
   });
 
-  it("brings in a catalog definition, then resolves the address to the new instance (REQ-004)", async () => {
-    let added = false;
-    const indexed = () => port({
-      getMessagePlacement: (address) => added && address === "/product_team"
-        ? messagePlacement("agent_team", address, { agentRunId: "product-lead", address: "/product_team/lead" })
-        : null,
-    });
-    const bringIn = vi.fn(async () => { added = true; return { admitted: true as const, launchNotes: [], collaborators: [] }; });
-    const result = await resolveMessageRecipient({
-      port: indexed, senderAgentRunId: "pm", address: a("/product_team"), catalog: { bringIn }, notFoundMessage: () => "nf",
-    });
-    expect(bringIn).toHaveBeenCalledWith("/product_team");
-    expect(result).toMatchObject({ resolved: true, placement: { receiver: { agentRunId: "product-lead" } } });
-    // A concurrent first message that finds the address already in the run (bringIn → null) reaches it.
-    await expect(resolveMessageRecipient({
-      port: indexed, senderAgentRunId: "pm", address: a("/product_team"), catalog: { bringIn: async () => null }, notFoundMessage: () => "nf",
-    })).resolves.toMatchObject({ resolved: true, placement: { receiver: { agentRunId: "product-lead" } } });
-  });
-
-  it("returns COLLABORATOR_ADD_FAILED with the reason when the add fails; unknown addresses are not found", async () => {
-    const failed = await resolveMessageRecipient({
-      port: () => port(), senderAgentRunId: "pm", address: a("/product_team"),
-      catalog: {
-        bringIn: async () => ({ admitted: false, code: "COLLABORATOR_ADD_FAILED", collaboratorName: "Product Team", message: "no model" }),
-      },
-      notFoundMessage: () => "nf",
-    });
-    expect(failed).toEqual({ resolved: false, code: "COLLABORATOR_ADD_FAILED", message: "Product Team could not be added: no model" });
-    await expect(resolveMessageRecipient({
-      port: () => port(), senderAgentRunId: "pm", address: a("/no_such_team"),
-      catalog: { bringIn: async () => null }, notFoundMessage: (address) => `${address} nf`,
-    })).rejects.toThrow("/no_such_team nf");
+  it("an address that is not a standing instance is not found with delegate_task guidance; nothing is created (AC-005)", () => {
+    const attempt = () => resolve("pm", "/product_team");
+    expect(attempt).toThrow(CollaborationContractError);
+    expect(attempt).toThrow(
+      "No agent or agent team you can talk with has the address /product_team. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run id. To have a task done by a new agent, use delegate_task.",
+    );
+    expect(attempt).toThrow(expect.objectContaining({ code: "COLLABORATION_TARGET_NOT_FOUND" }));
   });
 });
 
-describe("catalog delegation placement (DS-003)", () => {
+describe("reachingAddressOf (design T-5, SR-015)", () => {
+  const agent = (memberAddress: string, agentRunId: string) => ({ memberAddress: a(memberAddress), agentRunId });
+
+  it("gives a configured agent's address when it reaches exactly that agent, run-wide (task message) and from a viewer (header)", () => {
+    expect(reachingAddressOf(port(), null, agent("/pm", "wide-pm"))).toBe("/pm");
+    expect(reachingAddressOf(port(), "copy-1-lead", agent("/pm", "wide-pm"))).toBe("/pm");
+  });
+
+  it("gives no address for a task agent at a configured address: the address reaches the configured agent, not it", () => {
+    expect(reachingAddressOf(port(), null, agent("/pm", "pm-task-agent"))).toBeNull();
+  });
+
+  it("gives a team member's address to a teammate, but not run-wide or from outside its team", () => {
+    expect(reachingAddressOf(port(), "copy-1-lead", agent("/team/writer", "copy-1-writer"))).toBe("/team/writer");
+    // Run-wide `/team/writer` is another agent; from copy-2 there is no writer at all.
+    expect(reachingAddressOf(port(), null, agent("/team/writer", "copy-1-writer"))).toBeNull();
+    expect(reachingAddressOf(port(), "copy-2-lead", agent("/team/writer", "copy-1-writer"))).toBeNull();
+    expect(reachingAddressOf(port(), "pm", agent("/team/lead", "copy-1-lead"))).toBeNull();
+  });
+});
+
+describe("own-Team membership test (CM-1, DEC-008)", () => {
+  const instances: SenderTeamInstance[] = [{ teamRunId: "t", address: a("/team") }];
+  it("is the sender's own address, the instance's own address, and every address inside it at any depth", () => {
+    expect(isInsideSenderTeamInstances(instances, "/team/lead", "/team/lead")).toBe(true);
+    expect(isInsideSenderTeamInstances(instances, "/team/lead", "/team")).toBe(true);
+    expect(isInsideSenderTeamInstances(instances, "/team/lead", "/team/writer")).toBe(true);
+    expect(isInsideSenderTeamInstances(instances, "/team/lead", "/team/sub/deep/x")).toBe(true);
+  });
+  it("is not a sibling unit or a similarly named prefix", () => {
+    expect(isInsideSenderTeamInstances(instances, "/team/lead", "/team_b")).toBe(false);
+    expect(isInsideSenderTeamInstances(instances, "/team/lead", "/other/x")).toBe(false);
+    expect(isInsideSenderTeamInstances([], "/pm", "/team")).toBe(false);
+    expect(isInsideSenderTeamInstances([], "/pm", "/pm")).toBe(true);
+  });
+});
+
+describe("mention viewer relation (REQ-008)", () => {
+  const placements = new Map<string, unknown>([
+    ["/pm", { kind: "agent", receiver: { agentRunId: "run-pm" } }],
+    ["/pm/helper", { kind: "agent", receiver: { agentRunId: "run-helper" } }],
+  ]);
+  const index = {
+    getMessagePlacement: (address: string) => (placements.get(address) ?? null) as never,
+    isOwnTeamAddress: (_sender: string, address: string) => address === "/pm" || address === "/pm/helper" || address === "/team",
+  };
+  it("is self by the viewer's own placement identity, own_team for its own team, and other otherwise", () => {
+    const relation = mentionViewerRelation(index, "run-pm");
+    expect(relation(a("/pm"))).toBe("self");
+    expect(relation(a("/pm/helper"))).toBe("own_team");
+    expect(relation(a("/team"))).toBe("own_team");
+    expect(relation(a("/catalog_unit"))).toBe("other");
+  });
+  it("does not treat a task agent running at a configured address as that agent (identity, not address)", () => {
+    expect(mentionViewerRelation(index, "run-task-agent")(a("/pm"))).toBe("own_team");
+  });
+});
+
+describe("mention viewer facts (SR-011)", () => {
+  const index = {
+    getMessagePlacement: () => null,
+    isOwnTeamAddress: () => true,
+    teamInstancesOf: (agentRunId: string) => agentRunId === "run-designer" ? [{ teamRunId: "team-1", address: a("/software_team") }] : [],
+    instanceDefinitionsOf: (teamRunId: string) => teamRunId === "team-1"
+      ? { teamDefinitionId: "software-team", members: [{ address: a("/software_team/designer"), definitionId: "designer" }, { address: a("/software_team/reviewer"), definitionId: "reviewer" }] }
+      : null,
+    agentAddressOf: (agentRunId: string) => agentRunId === "run-designer" ? a("/software_team/designer") : null,
+  };
+  it("carries the focused agent's own team instance by definition", () => {
+    expect(mentionViewerOf(index, "run-designer").ownTeam).toEqual({
+      selfAddress: "/software_team/designer", teamAddress: "/software_team", teamDefinitionId: "software-team",
+      members: [{ address: "/software_team/designer", definitionId: "designer" }, { address: "/software_team/reviewer", definitionId: "reviewer" }],
+    });
+  });
+  it("has no own team for an agent outside any team instance, or an instance that recorded no definitions", () => {
+    expect(mentionViewerOf(index, "run-host").ownTeam).toBeNull();
+    expect(mentionViewerOf({ ...index, instanceDefinitionsOf: () => null }, "run-designer").ownTeam).toBeNull();
+  });
+});
+
+describe("catalog delegation placement (DS-001)", () => {
   const launch = { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "m", llmConfig: null, autoExecuteTools: false, workspaceRootPath: null };
+  const skipped = { origin: "inherited" as const, fallbacks: [{
+    layer: "agent_default" as const, runtimeKind: "codex_app_server", llmModelIdentifier: "sol-6.1", reason: "runtime_unavailable" as const, detail: "no codex",
+  }] };
   const snapshot: TaskTeamExecutionSource = {
     kind: "agent_team", teamDefinitionId: "product", coordinatorAddress: a("/product_team/lead"),
-    members: [{ address: a("/product_team/lead"), agentDefinitionId: "lead" }, { address: a("/product_team/designer"), agentDefinitionId: "designer" }],
+    members: [{ address: a("/product_team/lead"), agentDefinitionId: "lead" }, { address: a("/product_team/designer"), agentDefinitionId: "designer", launchSource: skipped }],
     handoffs: [], defaultLaunchConfiguration: launch,
   };
-  const delegationPort = {
-    teamInstancesOf: (sender: string) => sender === "copy-lead" ? [{ teamRunId: "copy", address: a("/product_team") }] : [],
-    instanceCatalogSource: (teamRunId: string) => teamRunId === "copy" ? snapshot : null,
-  };
+  const delegationPort = { isOwnTeamAddress: (sender: string, address: string) => sender === "copy-lead" && address.startsWith("/product_team") };
   const notFound = () => { throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", "not in run"); };
 
   it("in-run placements win; a catalog address gets a sourced placement; no source means not found", async () => {
@@ -120,17 +171,25 @@ describe("catalog delegation placement (DS-003)", () => {
     })).toEqual({ kind: "agent", address: "/writer" });
     expect(await resolveDelegationPlacement({
       port: delegationPort, senderAgentRunId: "pm", address: a("/product_team"), resolveInRun: notFound,
-      catalogSource: async () => ({ name: "Product Team", source: snapshot }),
+      catalogSource: async () => ({ name: "Product Team", source: snapshot, launchNotes: [] }),
     })).toEqual({ kind: "agent_team", address: "/product_team", coordinatorAddress: "/product_team/lead", source: snapshot });
     await expect(resolveDelegationPlacement({
       port: delegationPort, senderAgentRunId: "pm", address: a("/nobody"), resolveInRun: notFound, catalogSource: async () => null,
     })).rejects.toThrow("not in run");
   });
 
-  it("a teammate inside a catalog Team copy comes from the copy's snapshot (REQ-007)", async () => {
-    expect(await resolveDelegationPlacement({
-      port: delegationPort, senderAgentRunId: "copy-lead", address: a("/product_team/designer"), resolveInRun: notFound, catalogSource: vi.fn(),
-    })).toEqual({ kind: "agent", address: "/product_team/designer", source: { kind: "agent", agentDefinitionId: "designer", launchConfiguration: launch } });
+  it("refuses the sender's own Team before any placement or catalog lookup (CM-1, AC-001..003)", async () => {
+    const resolveInRun = vi.fn(notFound);
+    const catalogSource = vi.fn(async () => null);
+    const attempt = resolveDelegationPlacement({
+      port: delegationPort, senderAgentRunId: "copy-lead", address: a("/product_team/designer"), resolveInRun, catalogSource,
+    });
+    await expect(attempt).rejects.toMatchObject({
+      code: "COLLABORATION_SELF_TARGET_REJECTED",
+      message: "/product_team/designer is in your own team; you can't delegate to it. Talk with it using send_message_to.",
+    });
+    expect(resolveInRun).not.toHaveBeenCalled();
+    expect(catalogSource).not.toHaveBeenCalled();
   });
 
   it("a catalog definition that cannot run is a not-found delegation with its reason", async () => {
@@ -139,26 +198,8 @@ describe("catalog delegation placement (DS-003)", () => {
       catalogSource: async () => { throw new CollaboratorAddError("Product Team", "no model"); },
     })).rejects.toMatchObject({ code: "COLLABORATION_TARGET_NOT_FOUND", message: "Product Team cannot be delegated to: no model" });
   });
-});
 
-describe("launch notes come only from a fresh admission (REQ-008, AR-002)", () => {
-  const launch = { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "m", llmConfig: null, autoExecuteTools: false, workspaceRootPath: null };
-  const skipped = { origin: "inherited" as const, fallbacks: [{
-    layer: "agent_default" as const, runtimeKind: "codex_app_server", llmModelIdentifier: "sol-6.1", reason: "runtime_unavailable" as const, detail: "no codex",
-  }] };
-  // The copy's snapshot records that the designer fell back when the copy started.
-  const snapshot: TaskTeamExecutionSource = {
-    kind: "agent_team", teamDefinitionId: "product", coordinatorAddress: a("/product_team/lead"),
-    members: [{ address: a("/product_team/lead"), agentDefinitionId: "lead" }, { address: a("/product_team/designer"), agentDefinitionId: "designer", launchSource: skipped }],
-    handoffs: [], defaultLaunchConfiguration: launch,
-  };
-  const delegationPort = {
-    teamInstancesOf: (sender: string) => sender === "copy-lead" ? [{ teamRunId: "copy", address: a("/product_team") }] : [],
-    instanceCatalogSource: (teamRunId: string) => teamRunId === "copy" ? snapshot : null,
-  };
-  const notFound = () => { throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", "not in run"); };
-
-  it("a catalog copy's placement carries its admission's notes; empty notes add no key", async () => {
+  it("a catalog copy's placement carries its admission's launch notes; empty notes add no key (REQ-008, AR-002)", async () => {
     expect(await resolveDelegationPlacement({
       port: delegationPort, senderAgentRunId: "pm", address: a("/product_team"), resolveInRun: notFound,
       catalogSource: async () => ({ name: "Product Team", source: snapshot, launchNotes: ["designer: fell back"] }),
@@ -168,38 +209,5 @@ describe("launch notes come only from a fresh admission (REQ-008, AR-002)", () =
       catalogSource: async () => ({ name: "Product Team", source: snapshot, launchNotes: [] }),
     });
     expect("launchNotes" in quiet).toBe(false);
-  });
-
-  it("a teammate re-projected from a copy's snapshot carries no notes, even when its recorded source has a fallback", async () => {
-    const catalogSource = vi.fn();
-    const placement = await resolveDelegationPlacement({
-      port: delegationPort, senderAgentRunId: "copy-lead", address: a("/product_team/designer"), resolveInRun: notFound, catalogSource,
-    });
-    expect(placement).toEqual({ kind: "agent", address: "/product_team/designer", source: { kind: "agent", agentDefinitionId: "designer", launchConfiguration: launch } });
-    expect(catalogSource).not.toHaveBeenCalled();
-  });
-
-  it("a send that brought the recipient in carries the notes; a Task helper's bring-in too; an existing recipient none", async () => {
-    let added = false;
-    const indexed = () => port({
-      getMessagePlacement: (address) => added && address === "/writer"
-        ? messagePlacement("agent", address, { agentRunId: "writer-run", address }) : null,
-    });
-    await expect(resolveMessageRecipient({
-      port: indexed, senderAgentRunId: "pm", address: a("/writer"), notFoundMessage: () => "nf",
-      catalog: { bringIn: async () => { added = true; return { admitted: true as const, launchNotes: ["writer: fell back"], collaborators: [] }; } },
-    })).resolves.toMatchObject({ resolved: true, launchNotes: ["writer: fell back"] });
-    const existing = await resolveMessageRecipient({
-      port: indexed, senderAgentRunId: "pm", address: a("/writer"), notFoundMessage: () => "nf", catalog: { bringIn: vi.fn() },
-    });
-    expect("launchNotes" in existing).toBe(false);
-    const helperPlacement = messagePlacement("agent", "/helper", { agentRunId: "helper-run", address: "/helper" });
-    await expect(resolveMessageRecipient({
-      port: () => port(), senderAgentRunId: "worker", address: a("/helper"), notFoundMessage: () => "nf", catalog: { bringIn: vi.fn() },
-      taskScope: {
-        taskOwnerOf: () => ({ taskId: "t1" }), helper: () => null,
-        bringIn: async () => ({ placement: helperPlacement, launchNotes: ["helper: fell back"] }),
-      },
-    })).resolves.toEqual({ resolved: true, placement: helperPlacement, launchNotes: ["helper: fell back"] });
   });
 });

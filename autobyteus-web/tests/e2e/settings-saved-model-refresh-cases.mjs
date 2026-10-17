@@ -3,13 +3,13 @@
 // Builds current isolated Electron; uses its real remote-node UI to select a private real backend.
 // Prerequisites: installed deps, current server build, graphical macOS, no credentials. --skip-build only for
 // verified-current worktree bundle. --ledger-file appends each result. External AGY CLI is scripted, not inference.
-// SSR-001 stopped Agent/collaborator repeated Save/cancel/reopen, SSR-002 Team inheritance/isolation,
+// SSR-001 stopped Agent/second-copy repeated Save/cancel/reopen, SSR-002 Team inheritance/isolation,
 // SSR-003 explicit network failures/read-only recovery. AGY has no model-specific settings: thinking/fast
 // are not attributed to AGY. SSR-004 exercises real Grok catalog/schema reasoning with the same scripted backend.
 // Fast mode remains covered by the mounted configurable-schema regression (not offered by these CLIs).
 export function registerSavedRefreshCases(h) {
   const { defineCase, assert, waitFor, delay, sel, startManagerChat, callFromComposer, address,
-    agentTree, objectsIn, pick, teamCopies, membersOf, collaboratorAt, openSettings, backToConversation,
+    agentTree, objectsIn, pick, teamCopies, membersOf, openSettings, backToConversation,
     openMember, chooseCopyModel, saveSettings, saveBarText, shot, agyLaunchDetailsOf, MODEL, ALT, MODEL_LABEL, ALT_LABEL,
     modelLocked, conversationText } = h
   const sectionOf = p => p.locator(sel('run-delegated-launches'))
@@ -65,13 +65,13 @@ export function registerSavedRefreshCases(h) {
   }
   const mutationCount = records => records.filter(r => /mutation UpdateDelegatedLaunchSelections/.test(r.query)).length
 
-  defineCase('SSR-001', 'AC-001/004/005/006 stopped parent -> gear -> Agent copy + collaborator Save, repeat, cancel and reopen', async p => {
+  defineCase('SSR-001', 'AC-001/004/005/006 stopped parent -> gear -> Agent copy + a second Agent copy Save, repeat, cancel and reopen', async p => {
     const r = {}, trace = wire(p)
     try {
       r.runId = await start(p, 'SSR-001')
       r.copyId = await copy(p, 'writer'); r.neighborId = await copy(p, 'writer')
-      await callFromComposer(p, 'bring in plain collaborator', 'send_message_to', { recipient_address: address('plain'), content: 'Fixture collaborator.' })
-      r.collaboratorId = await waitFor('collaborator identity', async () => pick(collaboratorAt(await agentTree(r.runId), 'plain'), 'agentRunId'))
+      // collaboration-model-contract: there are no collaborators; a third Agent copy (of Plain) is changed the same way.
+      r.collaboratorId = await copy(p, 'plain')
       const copyKey = `${address('writer')}@${r.copyId}`, collabKey = `${address('plain')}@${r.collaboratorId}`
       await stopParent(p)
       const beforeTree = await agentTree(r.runId)

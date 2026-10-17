@@ -1,0 +1,2505 @@
+{
+  "run": "ab-sf-fr013-2842d860",
+  "scope": "task-owned unmodified Claude SDK/private-plugin capability, two fresh image nodes; NOT integrated AutoByteus agent/current source/UI/Mac/LAN/setup proof",
+  "application_image": "sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a",
+  "commands": [
+    {
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a",
+        "--format",
+        "{\"id\":{{json .Id}},\"repo_digests\":{{json .RepoDigests}},\"created\":{{json .Created}},\"entrypoint\":{{json .Config.Entrypoint}}}"
+      ],
+      "rc": 0,
+      "seconds": 0.076,
+      "stdout": "{\"id\":\"sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a\",\"repo_digests\":[\"autobyteus/autobyteus-server@sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a\"],\"created\":\"2026-10-12T13:24:35.302109183Z\",\"entrypoint\":[\"/usr/local/bin/entrypoint.sh\"]}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "build",
+        "--pull=false",
+        "-t",
+        "autobyteus-shared-feasibility:fr-013",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-013"
+      ],
+      "rc": 0,
+      "seconds": 1.844,
+      "stdout": "",
+      "stderr": "#0 building with \"desktop-linux\" instance using docker driver\n\n#1 [internal] load build definition from Dockerfile\n#1 transferring dockerfile: 522B done\n#1 DONE 0.0s\n\n#2 [internal] load metadata for docker.io/library/ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55\n#2 DONE 0.0s\n\n#3 [internal] load .dockerignore\n#3 transferring context: 2B done\n#3 DONE 0.0s\n\n#4 [1/2] FROM docker.io/library/ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55\n#4 resolve docker.io/library/ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55 0.0s done\n#4 DONE 0.0s\n\n#5 [2/2] RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends nfs-ganesha nfs-ganesha-vfs nfs-common rpcbind python3 git procps iproute2 ca-certificates && rm -rf /var/lib/apt/lists/*\n#5 CACHED\n\n#6 exporting to image\n#6 exporting layers done\n#6 exporting manifest sha256:41a45f6f041f76ea40ec4b3bafce004ffc45789d14a3937b4d6d23fc2eba445f done\n#6 exporting config sha256:4b54c0f57e9d9039af4adf90fe69b4742116a2e62cf5e87ca6c35ef03db22101 done\n#6 exporting attestation manifest sha256:69627eff24f6c424ae7794309cb25e431014a454554353c50c1b1736a67a4150 done\n#6 exporting manifest list sha256:9017eccc747ce22f95efe6a15eef155cf429c980fb302c1e56f86bdfe165862f done\n#6 naming to docker.io/library/autobyteus-shared-feasibility:fr-013 done\n#6 unpacking to docker.io/library/autobyteus-shared-feasibility:fr-013\n#6 unpacking to docker.io/library/autobyteus-shared-feasibility:fr-013 0.7s done\n#6 DONE 0.7s\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "autobyteus-shared-feasibility:fr-013"
+      ],
+      "rc": 0,
+      "seconds": 0.033,
+      "stdout": "[\n    {\n        \"Id\": \"sha256:9017eccc747ce22f95efe6a15eef155cf429c980fb302c1e56f86bdfe165862f\",\n        \"RepoTags\": [\n            \"autobyteus-shared-feasibility:fr-013\"\n        ],\n        \"RepoDigests\": [\n            \"autobyteus-shared-feasibility@sha256:9017eccc747ce22f95efe6a15eef155cf429c980fb302c1e56f86bdfe165862f\"\n        ],\n        \"Comment\": \"buildkit.dockerfile.v0\",\n        \"Created\": \"2026-10-13T04:11:06.431830875Z\",\n        \"Config\": {\n            \"Env\": [\n                \"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\"\n            ],\n            \"Cmd\": [\n                \"sleep\",\n                \"infinity\"\n            ],\n            \"Labels\": {\n                \"org.autobyteus.probe\": \"fr-013\",\n                \"org.autobyteus.task\": \"shared-network-workspaces\",\n                \"org.opencontainers.image.version\": \"24.04\"\n            },\n            \"ArgsEscaped\": true\n        },\n        \"Architecture\": \"arm64\",\n        \"Os\": \"linux\",\n        \"Size\": 71450870,\n        \"RootFS\": {\n            \"Type\": \"layers\",\n            \"Layers\": [\n                \"sha256:1e9178dc90058fa454a60803300219ee8c17e515be8718817ed824b96fa1207b\",\n                \"sha256:4b7b4f4b9f12ef90a8ac84b36ab00f9fea058f64c04ff2ac84a499f86f2ff408\"\n            ]\n        },\n        \"Metadata\": {\n            \"LastTagTime\": \"2026-10-13T05:56:17.710776963Z\"\n        },\n        \"Descriptor\": {\n            \"mediaType\": \"application/vnd.oci.image.index.v1+json\",\n            \"digest\": \"sha256:9017eccc747ce22f95efe6a15eef155cf429c980fb302c1e56f86bdfe165862f\",\n            \"size\": 855\n        }\n    }\n]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "create",
+        "--label",
+        "org.autobyteus.probe=fr-013",
+        "ab-sf-fr013-2842d860-net"
+      ],
+      "rc": 0,
+      "seconds": 0.041,
+      "stdout": "9418cd12268c17a857933dedd6105dcdd57bc12fb49bb9a918d500d77a112c0f\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "inspect",
+        "ab-sf-fr013-2842d860-net"
+      ],
+      "rc": 0,
+      "seconds": 0.026,
+      "stdout": "[\n    {\n        \"Name\": \"ab-sf-fr013-2842d860-net\",\n        \"Id\": \"9418cd12268c17a857933dedd6105dcdd57bc12fb49bb9a918d500d77a112c0f\",\n        \"Created\": \"2026-10-13T05:56:18.566227589Z\",\n        \"Scope\": \"local\",\n        \"Driver\": \"bridge\",\n        \"EnableIPv4\": true,\n        \"EnableIPv6\": false,\n        \"IPAM\": {\n            \"Driver\": \"default\",\n            \"Options\": {},\n            \"Config\": [\n                {\n                    \"Subnet\": \"172.29.0.0/16\",\n                    \"IPRange\": \"\",\n                    \"Gateway\": \"172.29.0.1\"\n                }\n            ]\n        },\n        \"Internal\": false,\n        \"Attachable\": false,\n        \"Ingress\": false,\n        \"ConfigFrom\": {\n            \"Network\": \"\"\n        },\n        \"ConfigOnly\": false,\n        \"Options\": {\n            \"com.docker.network.enable_ipv4\": \"true\",\n            \"com.docker.network.enable_ipv6\": \"false\"\n        },\n        \"Labels\": {\n            \"org.autobyteus.probe\": \"fr-013\"\n        },\n        \"Containers\": {},\n        \"Status\": {\n            \"IPAM\": {\n                \"Subnets\": {\n                    \"172.29.0.0/16\": {\n                        \"IPsInUse\": 3,\n                        \"DynamicIPsAvailable\": 65533\n                    }\n                }\n            }\n        }\n    }\n]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-013",
+        "ab-sf-fr013-2842d860-storage"
+      ],
+      "rc": 0,
+      "seconds": 0.023,
+      "stdout": "ab-sf-fr013-2842d860-storage\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr013-2842d860-storage-server",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-013",
+        "--network",
+        "ab-sf-fr013-2842d860-net",
+        "--cap-add",
+        "DAC_READ_SEARCH",
+        "--mount",
+        "type=volume,src=ab-sf-fr013-2842d860-storage,dst=/export",
+        "--mount",
+        "type=bind,src=/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-013/ganesha.conf,dst=/etc/ganesha/ganesha.conf,readonly",
+        "sha256:9017eccc747ce22f95efe6a15eef155cf429c980fb302c1e56f86bdfe165862f"
+      ],
+      "rc": 0,
+      "seconds": 0.321,
+      "stdout": "c2200d1a867c0fc7c4ef97e72501af9df660505cdfe25c5c17b746bfe27c9345\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr013-2842d860-storage-server",
+        "sh",
+        "-c",
+        "chown 10001:10001 /export; chmod 0770 /export; mkdir -p /run/ganesha /var/lib/nfs/ganesha /run/dbus; rpcbind -w; dbus-daemon --system --fork; ganesha.nfsd -F -L /tmp/ganesha.log -f /etc/ganesha/ganesha.conf >/tmp/ganesha-console.log 2>&1 &"
+      ],
+      "rc": 0,
+      "seconds": 0.088,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "inspect",
+        "ab-sf-fr013-2842d860-storage-server"
+      ],
+      "rc": 0,
+      "seconds": 0.022,
+      "stdout": "[\n    {\n        \"Id\": \"c2200d1a867c0fc7c4ef97e72501af9df660505cdfe25c5c17b746bfe27c9345\",\n        \"Created\": \"2026-10-13T05:56:18.674386131Z\",\n        \"Path\": \"sleep\",\n        \"Args\": [\n            \"infinity\"\n        ],\n        \"State\": {\n            \"Status\": \"running\",\n            \"Running\": true,\n            \"Paused\": false,\n            \"Restarting\": false,\n            \"OOMKilled\": false,\n            \"Dead\": false,\n            \"Pid\": 40664,\n            \"ExitCode\": 0,\n            \"Error\": \"\",\n            \"StartedAt\": \"2026-10-13T05:56:18.845717089Z\",\n            \"FinishedAt\": \"0001-01-01T00:00:00Z\"\n        },\n        \"Image\": \"sha256:9017eccc747ce22f95efe6a15eef155cf429c980fb302c1e56f86bdfe165862f\",\n        \"ResolvConfPath\": \"/var/lib/docker/containers/c2200d1a867c0fc7c4ef97e72501af9df660505cdfe25c5c17b746bfe27c9345/resolv.conf\",\n        \"HostnamePath\": \"/var/lib/docker/containers/c2200d1a867c0fc7c4ef97e72501af9df660505cdfe25c5c17b746bfe27c9345/hostname\",\n        \"HostsPath\": \"/var/lib/docker/containers/c2200d1a867c0fc7c4ef97e72501af9df660505cdfe25c5c17b746bfe27c9345/hosts\",\n        \"LogPath\": \"/var/lib/docker/containers/c2200d1a867c0fc7c4ef97e72501af9df660505cdfe25c5c17b746bfe27c9345/c2200d1a867c0fc7c4ef97e72501af9df660505cdfe25c5c17b746bfe27c9345-json.log\",\n        \"Name\": \"/ab-sf-fr013-2842d860-storage-server\",\n        \"RestartCount\": 0,\n        \"Driver\": \"overlayfs\",\n        \"Platform\": \"linux\",\n        \"MountLabel\": \"\",\n        \"ProcessLabel\": \"\",\n        \"AppArmorProfile\": \"\",\n        \"ExecIDs\": null,\n        \"HostConfig\": {\n            \"Binds\": null,\n            \"ContainerIDFile\": \"\",\n            \"LogConfig\": {\n                \"Type\": \"json-file\",\n                \"Config\": {}\n            },\n            \"NetworkMode\": \"ab-sf-fr013-2842d860-net\",\n            \"PortBindings\": {},\n            \"RestartPolicy\": {\n                \"Name\": \"no\",\n                \"MaximumRetryCount\": 0\n            },\n            \"AutoRemove\": false,\n            \"VolumeDriver\": \"\",\n            \"VolumesFrom\": null,\n            \"ConsoleSize\": [\n                0,\n                0\n            ],\n            \"CapAdd\": [\n                \"CAP_DAC_READ_SEARCH\"\n            ],\n            \"CapDrop\": null,\n            \"CgroupnsMode\": \"private\",\n            \"Dns\": null,\n            \"DnsOptions\": [],\n            \"DnsSearch\": [],\n            \"ExtraHosts\": null,\n            \"GroupAdd\": null,\n            \"IpcMode\": \"private\",\n            \"Cgroup\": \"\",\n            \"Links\": null,\n            \"OomScoreAdj\": 0,\n            \"PidMode\": \"\",\n            \"Privileged\": false,\n            \"PublishAllPorts\": false,\n            \"ReadonlyRootfs\": false,\n            \"SecurityOpt\": null,\n            \"UTSMode\": \"\",\n            \"UsernsMode\": \"\",\n            \"ShmSize\": 67108864,\n            \"Runtime\": \"runc\",\n            \"Isolation\": \"\",\n            \"CpuShares\": 0,\n            \"Memory\": 0,\n            \"NanoCpus\": 0,\n            \"CgroupParent\": \"\",\n            \"BlkioWeight\": 0,\n            \"BlkioWeightDevice\": [],\n            \"BlkioDeviceReadBps\": [],\n            \"BlkioDeviceWriteBps\": [],\n            \"BlkioDeviceReadIOps\": [],\n            \"BlkioDeviceWriteIOps\": [],\n            \"CpuPeriod\": 0,\n            \"CpuQuota\": 0,\n            \"CpuRealtimePeriod\": 0,\n            \"CpuRealtimeRuntime\": 0,\n            \"CpusetCpus\": \"\",\n            \"CpusetMems\": \"\",\n            \"Devices\": [],\n            \"DeviceCgroupRules\": null,\n            \"DeviceRequests\": null,\n            \"MemoryReservation\": 0,\n            \"MemorySwap\": 0,\n            \"MemorySwappiness\": null,\n            \"OomKillDisable\": null,\n            \"PidsLimit\": null,\n            \"Ulimits\": [],\n            \"CpuCount\": 0,\n            \"CpuPercent\": 0,\n            \"IOMaximumIOps\": 0,\n            \"IOMaximumBandwidth\": 0,\n            \"Mounts\": [\n                {\n                    \"Type\": \"volume\",\n                    \"Source\": \"ab-sf-fr013-2842d860-storage\",\n                    \"Target\": \"/export\"\n                },\n                {\n                    \"Type\": \"bind\",\n                    \"Source\": \"/host_mnt/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-013/ganesha.conf\",\n                    \"Target\": \"/etc/ganesha/ganesha.conf\",\n                    \"ReadOnly\": true\n                }\n            ],\n            \"MaskedPaths\": [\n                \"/proc/acpi\",\n                \"/proc/asound\",\n                \"/proc/interrupts\",\n                \"/proc/kcore\",\n                \"/proc/keys\",\n                \"/proc/latency_stats\",\n                \"/proc/sched_debug\",\n                \"/proc/scsi\",\n                \"/proc/timer_list\",\n                \"/proc/timer_stats\",\n                \"/sys/devices/virtual/powercap\",\n                \"/sys/firmware\"\n            ],\n            \"ReadonlyPaths\": [\n                \"/proc/bus\",\n                \"/proc/fs\",\n                \"/proc/irq\",\n                \"/proc/sys\",\n                \"/proc/sysrq-trigger\"\n            ]\n        },\n        \"GraphDriver\": {\n            \"Data\": null,\n            \"Name\": \"\"\n        },\n        \"Mounts\": [\n            {\n                \"Type\": \"volume\",\n                \"Name\": \"ab-sf-fr013-2842d860-storage\",\n                \"Source\": \"/var/lib/docker/volumes/ab-sf-fr013-2842d860-storage/_data\",\n                \"Destination\": \"/export\",\n                \"Driver\": \"local\",\n                \"Mode\": \"z\",\n                \"RW\": true,\n                \"Propagation\": \"\"\n            },\n            {\n                \"Type\": \"bind\",\n                \"Source\": \"/host_mnt/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-013/ganesha.conf\",\n                \"Destination\": \"/etc/ganesha/ganesha.conf\",\n                \"Mode\": \"\",\n                \"RW\": false,\n                \"Propagation\": \"rprivate\"\n            }\n        ],\n        \"Config\": {\n            \"Hostname\": \"c2200d1a867c\",\n            \"Domainname\": \"\",\n            \"User\": \"\",\n            \"AttachStdin\": false,\n            \"AttachStdout\": false,\n            \"AttachStderr\": false,\n            \"Tty\": false,\n            \"OpenStdin\": false,\n            \"StdinOnce\": false,\n            \"Env\": [\n                \"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\"\n            ],\n            \"Cmd\": [\n                \"sleep\",\n                \"infinity\"\n            ],\n            \"Image\": \"sha256:9017eccc747ce22f95efe6a15eef155cf429c980fb302c1e56f86bdfe165862f\",\n            \"Volumes\": null,\n            \"WorkingDir\": \"\",\n            \"Entrypoint\": null,\n            \"OnBuild\": null,\n            \"Labels\": {\n                \"org.autobyteus.probe\": \"fr-013\",\n                \"org.autobyteus.task\": \"shared-network-workspaces\",\n                \"org.opencontainers.image.version\": \"24.04\"\n            },\n            \"StopTimeout\": 1\n        },\n        \"NetworkSettings\": {\n            \"Bridge\": \"\",\n            \"SandboxID\": \"160eca83705aaa4dbb5d0c3c53a65cb2b200cf4df0924e5ed4735fd8b0922f56\",\n            \"SandboxKey\": \"/var/run/docker/netns/160eca83705a\",\n            \"Ports\": {},\n            \"HairpinMode\": false,\n            \"LinkLocalIPv6Address\": \"\",\n            \"LinkLocalIPv6PrefixLen\": 0,\n            \"SecondaryIPAddresses\": null,\n            \"SecondaryIPv6Addresses\": null,\n            \"EndpointID\": \"\",\n            \"Gateway\": \"\",\n            \"GlobalIPv6Address\": \"\",\n            \"GlobalIPv6PrefixLen\": 0,\n            \"IPAddress\": \"\",\n            \"IPPrefixLen\": 0,\n            \"IPv6Gateway\": \"\",\n            \"MacAddress\": \"\",\n            \"Networks\": {\n                \"ab-sf-fr013-2842d860-net\": {\n                    \"IPAMConfig\": null,\n                    \"Links\": null,\n                    \"Aliases\": null,\n                    \"MacAddress\": \"a6:ab:67:7a:7c:b7\",\n                    \"DriverOpts\": null,\n                    \"GwPriority\": 0,\n                    \"NetworkID\": \"9418cd12268c17a857933dedd6105dcdd57bc12fb49bb9a918d500d77a112c0f\",\n                    \"EndpointID\": \"63dcacabf88195406379a51e31692ec4bb6503f41c9cd9687ea742e6f55495a0\",\n                    \"Gateway\": \"172.29.0.1\",\n                    \"IPAddress\": \"172.29.0.2\",\n                    \"IPPrefixLen\": 16,\n                    \"IPv6Gateway\": \"\",\n                    \"GlobalIPv6Address\": \"\",\n                    \"GlobalIPv6PrefixLen\": 0,\n                    \"DNSNames\": [\n                        \"ab-sf-fr013-2842d860-storage-server\",\n                        \"c2200d1a867c\"\n                    ]\n                }\n            }\n        },\n        \"ImageManifestDescriptor\": {\n            \"mediaType\": \"application/vnd.oci.image.manifest.v1+json\",\n            \"digest\": \"sha256:41a45f6f041f76ea40ec4b3bafce004ffc45789d14a3937b4d6d23fc2eba445f\",\n            \"size\": 675,\n            \"platform\": {\n                \"architecture\": \"arm64\",\n                \"os\": \"linux\"\n            }\n        }\n    }\n]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-013",
+        "--driver",
+        "local",
+        "--opt",
+        "type=nfs",
+        "--opt",
+        "device=:/ab-sf-fr013-2842d860",
+        "--opt",
+        "o=addr=172.29.0.2,rw,nfsvers=4.1,proto=tcp,hard,timeo=50,retrans=2,actimeo=1,nosharecache",
+        "ab-sf-fr013-2842d860-nfs-a"
+      ],
+      "rc": 0,
+      "seconds": 0.026,
+      "stdout": "ab-sf-fr013-2842d860-nfs-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-013",
+        "ab-sf-fr013-2842d860-a-data"
+      ],
+      "rc": 0,
+      "seconds": 0.023,
+      "stdout": "ab-sf-fr013-2842d860-a-data\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-013",
+        "ab-sf-fr013-2842d860-a-root-home"
+      ],
+      "rc": 0,
+      "seconds": 0.024,
+      "stdout": "ab-sf-fr013-2842d860-a-root-home\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-013",
+        "ab-sf-fr013-2842d860-a-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.023,
+      "stdout": "ab-sf-fr013-2842d860-a-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-013",
+        "ab-sf-fr013-2842d860-a-legacy-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.025,
+      "stdout": "ab-sf-fr013-2842d860-a-legacy-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-013",
+        "ab-sf-fr013-2842d860-a-chromium"
+      ],
+      "rc": 0,
+      "seconds": 0.024,
+      "stdout": "ab-sf-fr013-2842d860-a-chromium\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr013-2842d860-app-a",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-013",
+        "--network",
+        "ab-sf-fr013-2842d860-net",
+        "--cap-add",
+        "SYS_ADMIN",
+        "--security-opt",
+        "seccomp=unconfined",
+        "-p",
+        "127.0.0.1:57140:8000",
+        "-e",
+        "AUTOBYTEUS_WORKSPACE_ROOT=/app",
+        "-e",
+        "AUTOBYTEUS_DATA_DIR=/home/autobyteus/data",
+        "-e",
+        "AUTOBYTEUS_BIND_HOST=0.0.0.0",
+        "-e",
+        "AUTOBYTEUS_SERVER_PORT=8000",
+        "-e",
+        "APP_ENV=production",
+        "-e",
+        "DB_TYPE=sqlite",
+        "-e",
+        "LOG_LEVEL=INFO",
+        "-e",
+        "AUTOBYTEUS_SKIP_SYNC=1",
+        "-e",
+        "AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace",
+        "--mount",
+        "type=volume,src=ab-sf-fr013-2842d860-nfs-a,dst=/home/autobyteus/shared,volume-nocopy",
+        "--mount",
+        "type=volume,src=ab-sf-fr013-2842d860-a-data,dst=/home/autobyteus/data",
+        "--mount",
+        "type=volume,src=ab-sf-fr013-2842d860-a-root-home,dst=/root",
+        "--mount",
+        "type=volume,src=ab-sf-fr013-2842d860-a-workspace,dst=/home/autobyteus/workspace",
+        "--mount",
+        "type=volume,src=ab-sf-fr013-2842d860-a-legacy-workspace,dst=/app/autobyteus-server-ts/workspace",
+        "--mount",
+        "type=volume,src=ab-sf-fr013-2842d860-a-chromium,dst=/home/autobyteus/.config/chromium",
+        "sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a"
+      ],
+      "rc": 0,
+      "seconds": 0.959,
+      "stdout": "ca4a9e9e4855c1e9e85b98d66fb679342c192c690ed5de2638ed7682d478783d\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-013",
+        "--driver",
+        "local",
+        "--opt",
+        "type=nfs",
+        "--opt",
+        "device=:/ab-sf-fr013-2842d860",
+        "--opt",
+        "o=addr=172.29.0.2,rw,nfsvers=4.1,proto=tcp,hard,timeo=50,retrans=2,actimeo=1,nosharecache",
+        "ab-sf-fr013-2842d860-nfs-b"
+      ],
+      "rc": 0,
+      "seconds": 0.029,
+      "stdout": "ab-sf-fr013-2842d860-nfs-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-013",
+        "ab-sf-fr013-2842d860-b-data"
+      ],
+      "rc": 0,
+      "seconds": 0.029,
+      "stdout": "ab-sf-fr013-2842d860-b-data\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-013",
+        "ab-sf-fr013-2842d860-b-root-home"
+      ],
+      "rc": 0,
+      "seconds": 0.023,
+      "stdout": "ab-sf-fr013-2842d860-b-root-home\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-013",
+        "ab-sf-fr013-2842d860-b-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.023,
+      "stdout": "ab-sf-fr013-2842d860-b-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-013",
+        "ab-sf-fr013-2842d860-b-legacy-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.023,
+      "stdout": "ab-sf-fr013-2842d860-b-legacy-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-013",
+        "ab-sf-fr013-2842d860-b-chromium"
+      ],
+      "rc": 0,
+      "seconds": 0.022,
+      "stdout": "ab-sf-fr013-2842d860-b-chromium\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr013-2842d860-app-b",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-013",
+        "--network",
+        "ab-sf-fr013-2842d860-net",
+        "--cap-add",
+        "SYS_ADMIN",
+        "--security-opt",
+        "seccomp=unconfined",
+        "-p",
+        "127.0.0.1:57143:8000",
+        "-e",
+        "AUTOBYTEUS_WORKSPACE_ROOT=/app",
+        "-e",
+        "AUTOBYTEUS_DATA_DIR=/home/autobyteus/data",
+        "-e",
+        "AUTOBYTEUS_BIND_HOST=0.0.0.0",
+        "-e",
+        "AUTOBYTEUS_SERVER_PORT=8000",
+        "-e",
+        "APP_ENV=production",
+        "-e",
+        "DB_TYPE=sqlite",
+        "-e",
+        "LOG_LEVEL=INFO",
+        "-e",
+        "AUTOBYTEUS_SKIP_SYNC=1",
+        "-e",
+        "AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace",
+        "--mount",
+        "type=volume,src=ab-sf-fr013-2842d860-nfs-b,dst=/home/autobyteus/shared,volume-nocopy",
+        "--mount",
+        "type=volume,src=ab-sf-fr013-2842d860-b-data,dst=/home/autobyteus/data",
+        "--mount",
+        "type=volume,src=ab-sf-fr013-2842d860-b-root-home,dst=/root",
+        "--mount",
+        "type=volume,src=ab-sf-fr013-2842d860-b-workspace,dst=/home/autobyteus/workspace",
+        "--mount",
+        "type=volume,src=ab-sf-fr013-2842d860-b-legacy-workspace,dst=/app/autobyteus-server-ts/workspace",
+        "--mount",
+        "type=volume,src=ab-sf-fr013-2842d860-b-chromium,dst=/home/autobyteus/.config/chromium",
+        "sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a"
+      ],
+      "rc": 0,
+      "seconds": 0.869,
+      "stdout": "2fe066567ecfd63b24ec089cc8ef672160a65dd4858129bbae455e52707491af\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr013-2842d860-app-a",
+        "sh",
+        "-c",
+        "grep \" /home/autobyteus/shared \" /proc/mounts; id; grep CapEff /proc/self/status"
+      ],
+      "rc": 0,
+      "seconds": 0.088,
+      "stdout": ":/ab-sf-fr013-2842d860 /home/autobyteus/shared nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,nosharecache,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=172.29.0.1,local_lock=none,addr=172.29.0.2 0 0\nuid=0(root) gid=0(root) groups=0(root)\nCapEff:\t00000000a82425fb\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr013-2842d860-app-a",
+        "node",
+        "-e",
+        "console.log(require('./package.json').version)"
+      ],
+      "rc": 0,
+      "seconds": 0.086,
+      "stdout": "0.1.1\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr013-2842d860-app-a",
+        "sh",
+        "-c",
+        "for f in /root/.codex/auth.json /root/.claude/.credentials.json; do test ! -f \"$f\" || exit 1; done; echo no-user-cli-credentials"
+      ],
+      "rc": 0,
+      "seconds": 0.064,
+      "stdout": "no-user-cli-credentials\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr013-2842d860-app-b",
+        "sh",
+        "-c",
+        "grep \" /home/autobyteus/shared \" /proc/mounts; id; grep CapEff /proc/self/status"
+      ],
+      "rc": 0,
+      "seconds": 0.062,
+      "stdout": ":/ab-sf-fr013-2842d860 /home/autobyteus/shared nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,nosharecache,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=172.29.0.1,local_lock=none,addr=172.29.0.2 0 0\nuid=0(root) gid=0(root) groups=0(root)\nCapEff:\t00000000a82425fb\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr013-2842d860-app-b",
+        "node",
+        "-e",
+        "console.log(require('./package.json').version)"
+      ],
+      "rc": 0,
+      "seconds": 0.076,
+      "stdout": "0.1.1\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr013-2842d860-app-b",
+        "sh",
+        "-c",
+        "for f in /root/.codex/auth.json /root/.claude/.credentials.json; do test ! -f \"$f\" || exit 1; done; echo no-user-cli-credentials"
+      ],
+      "rc": 0,
+      "seconds": 0.063,
+      "stdout": "no-user-cli-credentials\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr013-2842d860-app-a",
+        "node",
+        "-e",
+        "const f=require('fs');f.mkdirSync(\"/home/autobyteus/shared/project\",{recursive:true})"
+      ],
+      "rc": 0,
+      "seconds": 0.075,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr013-2842d860-app-a",
+        "node",
+        "-e",
+        "const f=require('fs'),p=require('path');f.mkdirSync(p.dirname(\"/home/autobyteus/shared/project/.claude/skills/workspace-owned/SKILL.md\"),{recursive:true});f.writeFileSync(\"/home/autobyteus/shared/project/.claude/skills/workspace-owned/SKILL.md\",\"---\\nname: workspace-owned\\ndescription: Task-owned stand-in for a user project skill. Do not alter it.\\n---\\nOWNED_6ae9a8a6add8456ebd2e893c0ba9ac9d\\n\")"
+      ],
+      "rc": 0,
+      "seconds": 0.099,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr013-2842d860-app-a",
+        "node",
+        "-e",
+        "const f=require('fs'),p=require('path');\nconst source=\"/home/autobyteus/data/skills/read-proof\",target=\"/home/autobyteus/data/feasibility-runtime/a\";\nf.writeFileSync(p.join(source,'proof.txt'),\"PRIVATE_ab-sf-fr013-2842d860-app-a_200bf24ae7024bf799c824ccd64f37c7\"+'\\n');\nf.writeFileSync(p.join(source,'after-stop.txt'),\"AFTER_STOP_27b333fe0d8b444fbad9ea6b03f253f0\"+'\\n');\nf.mkdirSync(p.join(target,'.claude-plugin'),{recursive:true});\nf.writeFileSync(p.join(target,'.claude-plugin/plugin.json'),JSON.stringify({name:\"autobyteus-fixture\",version:'0.0.1'}));\nf.mkdirSync(p.join(target,'skills'),{recursive:true});\nf.cpSync(source,p.join(target,'skills',\"read-proof\"),{recursive:true,dereference:true});\nconsole.log(JSON.stringify({privatePlugin:target,sourceRoot:source,sharedRoot:\"/home/autobyteus/shared/project\",sourceManifestExists:f.existsSync(p.join(source,'SKILL.md'))}));"
+      ],
+      "rc": 0,
+      "seconds": 0.088,
+      "stdout": "{\"privatePlugin\":\"/home/autobyteus/data/feasibility-runtime/a\",\"sourceRoot\":\"/home/autobyteus/data/skills/read-proof\",\"sharedRoot\":\"/home/autobyteus/shared/project\",\"sourceManifestExists\":true}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "cp",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-013/private-plugin-worker.mjs",
+        "ab-sf-fr013-2842d860-app-a:/app/autobyteus-server-ts/private-plugin-worker.mjs"
+      ],
+      "rc": 0,
+      "seconds": 0.058,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr013-2842d860-app-a",
+        "sh",
+        "-c",
+        "command -v claude"
+      ],
+      "rc": 0,
+      "seconds": 0.06,
+      "stdout": "/usr/bin/claude\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr013-2842d860-app-a",
+        "node",
+        "-e",
+        "const f=require('fs'),p=require('path'),c=require('crypto'); const d=p.dirname(require.resolve('@anthropic-ai/claude-agent-sdk'));console.log(JSON.stringify({version:JSON.parse(f.readFileSync(p.join(d,'package.json'))).version,typesHash:c.createHash('sha256').update(f.readFileSync(p.join(d,'sdk.d.ts'))).digest('hex')}))"
+      ],
+      "rc": 0,
+      "seconds": 0.086,
+      "stdout": "{\"version\":\"0.3.280\",\"typesHash\":\"b7ac9c0ed0db5c1792a5394e72c75d69d85f4ce9edc0279487ec55d32eabfa76\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr013-2842d860-app-b",
+        "node",
+        "-e",
+        "const f=require('fs'),p=require('path');\nconst source=\"/home/autobyteus/data/skills/read-proof\",target=\"/root/.claude/task-fixtures/b\";\nf.writeFileSync(p.join(source,'proof.txt'),\"PRIVATE_ab-sf-fr013-2842d860-app-b_5c99f8c762c5412883f6c9dea58cdd10\"+'\\n');\nf.writeFileSync(p.join(source,'after-stop.txt'),\"AFTER_STOP_50fec50cc4714b55a8678c6905149469\"+'\\n');\nf.mkdirSync(p.join(target,'.claude-plugin'),{recursive:true});\nf.writeFileSync(p.join(target,'.claude-plugin/plugin.json'),JSON.stringify({name:\"autobyteus-fixture\",version:'0.0.1'}));\nf.mkdirSync(p.join(target,'skills'),{recursive:true});\nf.cpSync(source,p.join(target,'skills',\"read-proof\"),{recursive:true,dereference:true});\nconsole.log(JSON.stringify({privatePlugin:target,sourceRoot:source,sharedRoot:\"/home/autobyteus/shared/project\",sourceManifestExists:f.existsSync(p.join(source,'SKILL.md'))}));"
+      ],
+      "rc": 0,
+      "seconds": 0.085,
+      "stdout": "{\"privatePlugin\":\"/root/.claude/task-fixtures/b\",\"sourceRoot\":\"/home/autobyteus/data/skills/read-proof\",\"sharedRoot\":\"/home/autobyteus/shared/project\",\"sourceManifestExists\":true}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "cp",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-013/private-plugin-worker.mjs",
+        "ab-sf-fr013-2842d860-app-b:/app/autobyteus-server-ts/private-plugin-worker.mjs"
+      ],
+      "rc": 0,
+      "seconds": 0.033,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr013-2842d860-app-b",
+        "sh",
+        "-c",
+        "command -v claude"
+      ],
+      "rc": 0,
+      "seconds": 0.051,
+      "stdout": "/usr/bin/claude\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr013-2842d860-app-b",
+        "node",
+        "-e",
+        "const f=require('fs'),p=require('path'),c=require('crypto'); const d=p.dirname(require.resolve('@anthropic-ai/claude-agent-sdk'));console.log(JSON.stringify({version:JSON.parse(f.readFileSync(p.join(d,'package.json'))).version,typesHash:c.createHash('sha256').update(f.readFileSync(p.join(d,'sdk.d.ts'))).digest('hex')}))"
+      ],
+      "rc": 0,
+      "seconds": 0.094,
+      "stdout": "{\"version\":\"0.3.280\",\"typesHash\":\"b7ac9c0ed0db5c1792a5394e72c75d69d85f4ce9edc0279487ec55d32eabfa76\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr013-2842d860-app-a",
+        "node",
+        "-e",
+        "const f=require('fs');console.log(JSON.stringify(f.readFileSync(\"/home/autobyteus/shared/project/native-private-roundtrip.txt\",'utf8')))"
+      ],
+      "rc": 0,
+      "seconds": 0.096,
+      "stdout": "\"PRIVATE_ab-sf-fr013-2842d860-app-a_200bf24ae7024bf799c824ccd64f37c7\"\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "logs",
+        "--tail",
+        "160",
+        "ab-sf-fr013-2842d860-app-a"
+      ],
+      "rc": 0,
+      "seconds": 0.03,
+      "stdout": "2026-10-13 05:56:34,238 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'write_file'\n\n2026-10-13 05:56:34,238 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'edit_file'\n\n2026-10-13 05:56:34,238 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'run_bash'\n\n2026-10-13 05:56:34,238 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'start_background_process'\n\n2026-10-13 05:56:34,238 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'get_background_processes'\n\n2026-10-13 05:56:34,238 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'get_process_output'\n\n2026-10-13 05:56:34,238 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'stop_background_process'\n\n2026-10-13 05:56:34,239 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'search_web'\n\n2026-10-13 05:56:34,239 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'read_media_file'\nSuccessfully registered tool definition: 'download_media'\n\n2026-10-13 05:56:34,239 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'read_url'\n\n2026-10-13 05:56:34,239 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Core Tools\n\n2026-10-13 05:56:34,248 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'delegate_task'\n\n2026-10-13 05:56:34,248 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'list_available_agents'\n\n2026-10-13 05:56:34,248 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'generate_image'\n\n2026-10-13 05:56:34,248 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'edit_image'\n\n2026-10-13 05:56:34,248 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'generate_speech'\n\n2026-10-13 05:56:34,248 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'generate_video'\n\n2026-10-13 05:56:34,249 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Task Delegation Tools\n\n2026-10-13 05:56:34,249 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Agent Discovery Tools\nRegistered required tool unit: Media Tools\n\n2026-10-13 05:56:34,265 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Browser Tools\n\n2026-10-13 05:56:34,265 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'publish_artifacts'\nRegistered required tool unit: Published Artifact Tools\n\n2026-10-13 05:56:34,265 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'send_message_to'\n\n2026-10-13 05:56:34,265 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'get_handoff_rules'\nRegistered required tool unit: Agent Communication Tools\n\n2026-10-13 05:56:34,265 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'list_projects'\nSuccessfully registered tool definition: 'list_project_tasks'\n\n2026-10-13 05:56:34,265 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'create_or_update_project'\nSuccessfully registered tool definition: 'create_or_update_task'\n\n2026-10-13 05:56:34,266 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Project Task Tools\n\n2026-10-13 05:56:34,270 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'search_web'\nRegistered required tool unit: Search Tools\n\n2026-10-13 05:56:34,271 DEBG 'autobyteus_server' stderr output:\nOverwriting existing tool definition for name: 'search_web'\n\n2026-10-13 05:56:34,288 DEBG 'autobyteus_server' stdout output:\nServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated\nInitialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.\n\n2026-10-13 05:56:34,295 DEBG 'autobyteus_server' stdout output:\n{\"level\":30,\"time\":1791870994295,\"pid\":63,\"hostname\":\"ca4a9e9e4855\",\"msg\":\"Server listening at http://127.0.0.1:40811\"}\n\n2026-10-13 05:56:34,330 DEBG 'autobyteus_server' stdout output:\n{\"level\":30,\"time\":1791870994330,\"pid\":63,\"hostname\":\"ca4a9e9e4855\",\"msg\":\"Server listening at http://0.0.0.0:8000\"}\n\n2026-10-13 05:56:34,330 DEBG 'autobyteus_server' stdout output:\n[2026-10-13T05:56:34.330Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000\n\n2026-10-13 05:56:34,331 DEBG 'autobyteus_server' stdout output:\nScheduling Studio-only non-critical startup tasks...\n\n2026-10-13 05:56:34,337 DEBG 'autobyteus_server' stdout output:\nBackground cache pre-loading process has started.\n\n2026-10-13 05:56:34,338 DEBG 'autobyteus_server' stdout output:\nCachedMcpServerConfigProvider initialized with a full in-memory cache strategy.\nPopulating MCP server config cache for the first time...\n\n2026-10-13 05:56:34,338 DEBG 'autobyteus_server' stdout output:\nRunning MCP tool registration background task...\n\n2026-10-13 05:56:34,338 DEBG 'autobyteus_server' stdout output:\nLoading and registering all MCP server configurations from file...\n\n2026-10-13 05:56:34,338 DEBG 'autobyteus_server' stdout output:\nBackground task 'Memory Sync Worker' completed successfully.\n\n2026-10-13 05:56:34,339 DEBG 'autobyteus_server' stdout output:\nMCP server config cache populated with 0 items.\n\n2026-10-13 05:56:34,340 DEBG 'autobyteus_server' stdout output:\nFound 0 total MCP server configs.\nSynchronized cached configurations with the core MCP config service.\n\n2026-10-13 05:56:34,340 DEBG 'autobyteus_server' stdout output:\nPre-loaded 0 MCP server configs into cache.\n\n2026-10-13 05:56:34,340 DEBG 'autobyteus_server' stdout output:\nFinished loading and registering all MCP server configurations.\n\n2026-10-13 05:56:34,341 DEBG 'autobyteus_server' stdout output:\nBackground task 'MCP Tool Registration' completed successfully.\n\n2026-10-13 05:56:34,341 DEBG 'autobyteus_server' stdout output:\nPre-loaded 35 LLM models into cache.\nPre-loaded 7 image models into cache.\n\n2026-10-13 05:56:34,341 DEBG 'autobyteus_server' stdout output:\nPre-loaded 3 audio models into cache.\nBackground application cache pre-loading completed.\nBackground task 'Cache Pre-loading' completed successfully.\n\n2026-10-13 05:56:35,343 INFO reaped unknown pid 594 (exit status 0)\n2026-10-13 05:56:35,343 DEBG received SIGCHLD indicating a child quit\n2026-10-13 05:56:35,816 DEBG 'autobyteus_server' stdout output:\nGraphQL mutation to create workspace metadata\n\n2026-10-13 05:56:35,816 DEBG 'autobyteus_server' stdout output:\nCreating new workspace for rootPath: /home/autobyteus/shared/project\nCreated metadata-only FileSystemWorkspace at /home/autobyteus/shared/project.\n\n2026-10-13 05:56:35,818 DEBG 'autobyteus_server' stdout output:\nCreated and registered workspace ID: agent_ws_af838221fa7f5c1dbb93dc33418fe47a0bb8e2fcde6c53e15c9ba3806ede659c\n\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr013-2842d860-app-a",
+        "sh",
+        "-c",
+        "tail -120 /var/log/supervisor/autobyteus_server.log /var/log/supervisor/autobyteus_server.err.log 2>/dev/null"
+      ],
+      "rc": 1,
+      "seconds": 0.072,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "logs",
+        "--tail",
+        "160",
+        "ab-sf-fr013-2842d860-app-b"
+      ],
+      "rc": 0,
+      "seconds": 0.024,
+      "stdout": "Registered LLM response processor 'MediaUrlTransformerProcessor'.\nAgent customization processor registration complete.\nSuccessfully registered tool definition: 'read_file'\n\n2026-10-13 05:56:34,245 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'write_file'\n\n2026-10-13 05:56:34,245 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'edit_file'\n\n2026-10-13 05:56:34,245 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'run_bash'\n\n2026-10-13 05:56:34,245 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'start_background_process'\n\n2026-10-13 05:56:34,245 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'get_background_processes'\nSuccessfully registered tool definition: 'get_process_output'\n\n2026-10-13 05:56:34,245 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'stop_background_process'\n\n2026-10-13 05:56:34,245 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'search_web'\n\n2026-10-13 05:56:34,245 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'read_media_file'\n\n2026-10-13 05:56:34,245 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'download_media'\n\n2026-10-13 05:56:34,245 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'read_url'\nRegistered required tool unit: Core Tools\n\n2026-10-13 05:56:34,250 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'delegate_task'\n\n2026-10-13 05:56:34,250 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'list_available_agents'\n\n2026-10-13 05:56:34,251 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'generate_image'\n\n2026-10-13 05:56:34,251 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'edit_image'\nSuccessfully registered tool definition: 'generate_speech'\nSuccessfully registered tool definition: 'generate_video'\n\n2026-10-13 05:56:34,251 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Task Delegation Tools\n\n2026-10-13 05:56:34,251 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Agent Discovery Tools\n\n2026-10-13 05:56:34,251 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Media Tools\n\n2026-10-13 05:56:34,265 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Browser Tools\n\n2026-10-13 05:56:34,265 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'publish_artifacts'\nRegistered required tool unit: Published Artifact Tools\n\n2026-10-13 05:56:34,266 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'send_message_to'\n\n2026-10-13 05:56:34,266 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'get_handoff_rules'\nRegistered required tool unit: Agent Communication Tools\nSuccessfully registered tool definition: 'list_projects'\n\n2026-10-13 05:56:34,266 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'list_project_tasks'\nSuccessfully registered tool definition: 'create_or_update_project'\n\n2026-10-13 05:56:34,266 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'create_or_update_task'\nRegistered required tool unit: Project Task Tools\n\n2026-10-13 05:56:34,270 DEBG 'autobyteus_server' stderr output:\nOverwriting existing tool definition for name: 'search_web'\n\n2026-10-13 05:56:34,270 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'search_web'\nRegistered required tool unit: Search Tools\n\n2026-10-13 05:56:34,288 DEBG 'autobyteus_server' stdout output:\nServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated\nInitialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.\n\n2026-10-13 05:56:34,295 DEBG 'autobyteus_server' stdout output:\n{\"level\":30,\"time\":1791870994294,\"pid\":53,\"hostname\":\"2fe066567ecf\",\"msg\":\"Server listening at http://127.0.0.1:34943\"}\n\n2026-10-13 05:56:34,330 DEBG 'autobyteus_server' stdout output:\n{\"level\":30,\"time\":1791870994330,\"pid\":53,\"hostname\":\"2fe066567ecf\",\"msg\":\"Server listening at http://0.0.0.0:8000\"}\n\n2026-10-13 05:56:34,330 INFO success: dbus entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)\n2026-10-13 05:56:34,330 INFO success: copyq entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)\n2026-10-13 05:56:34,330 DEBG 'autobyteus_server' stdout output:\n[2026-10-13T05:56:34.330Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000\n\n2026-10-13 05:56:34,331 DEBG 'autobyteus_server' stdout output:\nScheduling Studio-only non-critical startup tasks...\n\n2026-10-13 05:56:34,337 DEBG 'autobyteus_server' stdout output:\nBackground cache pre-loading process has started.\n\n2026-10-13 05:56:34,337 DEBG 'autobyteus_server' stdout output:\nCachedMcpServerConfigProvider initialized with a full in-memory cache strategy.\nPopulating MCP server config cache for the first time...\n\n2026-10-13 05:56:34,338 DEBG 'autobyteus_server' stdout output:\nRunning MCP tool registration background task...\nLoading and registering all MCP server configurations from file...\n\n2026-10-13 05:56:34,338 DEBG 'autobyteus_server' stdout output:\nBackground task 'Memory Sync Worker' completed successfully.\n\n2026-10-13 05:56:34,338 DEBG 'autobyteus_server' stdout output:\nMCP server config cache populated with 0 items.\n\n2026-10-13 05:56:34,338 DEBG 'autobyteus_server' stdout output:\nFound 0 total MCP server configs.\nSynchronized cached configurations with the core MCP config service.\n\n2026-10-13 05:56:34,338 DEBG 'autobyteus_server' stdout output:\nPre-loaded 0 MCP server configs into cache.\n\n2026-10-13 05:56:34,339 DEBG 'autobyteus_server' stdout output:\nFinished loading and registering all MCP server configurations.\n\n2026-10-13 05:56:34,340 DEBG 'autobyteus_server' stdout output:\nBackground task 'MCP Tool Registration' completed successfully.\n\n2026-10-13 05:56:34,340 DEBG 'autobyteus_server' stdout output:\nPre-loaded 35 LLM models into cache.\n\n2026-10-13 05:56:34,340 DEBG 'autobyteus_server' stdout output:\nPre-loaded 7 image models into cache.\nPre-loaded 3 audio models into cache.\nBackground application cache pre-loading completed.\nBackground task 'Cache Pre-loading' completed successfully.\n\n2026-10-13 05:56:35,342 INFO reaped unknown pid 597 (exit status 0)\n2026-10-13 05:56:35,342 DEBG received SIGCHLD indicating a child quit\n2026-10-13 05:56:35,824 DEBG 'autobyteus_server' stdout output:\nGraphQL mutation to create workspace metadata\n\n2026-10-13 05:56:35,824 DEBG 'autobyteus_server' stdout output:\nCreating new workspace for rootPath: /home/autobyteus/shared/project\n\n2026-10-13 05:56:35,824 DEBG 'autobyteus_server' stdout output:\nCreated metadata-only FileSystemWorkspace at /home/autobyteus/shared/project.\n\n2026-10-13 05:56:35,825 DEBG 'autobyteus_server' stdout output:\nCreated and registered workspace ID: agent_ws_af838221fa7f5c1dbb93dc33418fe47a0bb8e2fcde6c53e15c9ba3806ede659c\n\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr013-2842d860-app-b",
+        "sh",
+        "-c",
+        "tail -120 /var/log/supervisor/autobyteus_server.log /var/log/supervisor/autobyteus_server.err.log 2>/dev/null"
+      ],
+      "rc": 1,
+      "seconds": 0.059,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr013-2842d860-storage-server",
+        "cat",
+        "/tmp/ganesha.log"
+      ],
+      "rc": 0,
+      "seconds": 0.069,
+      "stdout": "13/10/2026 05:56:19 : epoch 6acdc803 : c2200d1a867c : nfs-ganesha-19[main] main :MAIN :EVENT :nfs-ganesha Starting: Ganesha Version 4.3\n13/10/2026 05:56:19 : epoch 6acdc803 : c2200d1a867c : nfs-ganesha-19[main] load_rados_config :CONFIG :WARN :Missing RADOS URLs backend library\n13/10/2026 05:56:19 : epoch 6acdc803 : c2200d1a867c : nfs-ganesha-19[main] nfs_set_param_from_conf :NFS STARTUP :EVENT :Configuration file successfully parsed\n13/10/2026 05:56:19 : epoch 6acdc803 : c2200d1a867c : nfs-ganesha-19[main] init_fds_limit :INODE LRU :EVENT :Setting the system-imposed limit on FDs to 1048576.\n13/10/2026 05:56:19 : epoch 6acdc803 : c2200d1a867c : nfs-ganesha-19[main] init_server_pkgs :NFS STARTUP :EVENT :Initializing ID Mapper.\n13/10/2026 05:56:19 : epoch 6acdc803 : c2200d1a867c : nfs-ganesha-19[main] init_server_pkgs :NFS STARTUP :EVENT :ID Mapper successfully initialized.\n13/10/2026 05:56:19 : epoch 6acdc803 : c2200d1a867c : nfs-ganesha-19[main] nfs_start_grace :STATE :EVENT :NFS Server Now IN GRACE, duration 30\n13/10/2026 05:56:19 : epoch 6acdc803 : c2200d1a867c : nfs-ganesha-19[main] nfs_start_grace :STATE :EVENT :grace reload client info completed from backend\n13/10/2026 05:56:19 : epoch 6acdc803 : c2200d1a867c : nfs-ganesha-19[main] nfs_try_lift_grace :STATE :EVENT :check grace:reclaim complete(0) clid count(0)\n13/10/2026 05:56:19 : epoch 6acdc803 : c2200d1a867c : nfs-ganesha-19[main] nfs_lift_grace_locked :STATE :EVENT :NFS Server Now NOT IN GRACE\n13/10/2026 05:56:19 : epoch 6acdc803 : c2200d1a867c : nfs-ganesha-19[main] lower_my_caps :NFS STARTUP :EVENT :CAP_SYS_RESOURCE was successfully removed for proper quota management in FSAL\n13/10/2026 05:56:19 : epoch 6acdc803 : c2200d1a867c : nfs-ganesha-19[main] lower_my_caps :NFS STARTUP :EVENT :currently set capabilities are: cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap=ep\n13/10/2026 05:56:19 : epoch 6acdc803 : c2200d1a867c : nfs-ganesha-19[main] nfs_Init_svc :DISP :CRIT :Cannot acquire credentials for principal nfs\n13/10/2026 05:56:19 : epoch 6acdc803 : c2200d1a867c : nfs-ganesha-19[main] nfs_Init_admin_thread :NFS CB :EVENT :Admin thread initialized\n13/10/2026 05:56:19 : epoch 6acdc803 : c2200d1a867c : nfs-ganesha-19[main] nfs_rpc_cb_init_ccache :NFS STARTUP :EVENT :Callback creds directory (/var/run/ganesha) already exists\n13/10/2026 05:56:19 : epoch 6acdc803 : c2200d1a867c : nfs-ganesha-19[main] find_keytab_entry :NFS CB :WARN :Configuration file does not specify default realm while getting default realm name\n13/10/2026 05:56:19 : epoch 6acdc803 : c2200d1a867c : nfs-ganesha-19[main] gssd_refresh_krb5_machine_credential :NFS CB :CRIT :ERROR: gssd_refresh_krb5_machine_credential: no usable keytab entry found in keytab /etc/krb5.keytab for connection with host localhost\n13/10/2026 05:56:19 : epoch 6acdc803 : c2200d1a867c : nfs-ganesha-19[main] nfs_rpc_cb_init_ccache :NFS STARTUP :WARN :gssd_refresh_krb5_machine_credential failed (-1765328160:2)\n13/10/2026 05:56:19 : epoch 6acdc803 : c2200d1a867c : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :Starting delayed executor.\n13/10/2026 05:56:19 : epoch 6acdc803 : c2200d1a867c : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :gsh_dbusthread was started successfully\n13/10/2026 05:56:19 : epoch 6acdc803 : c2200d1a867c : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :admin thread was started successfully\n13/10/2026 05:56:19 : epoch 6acdc803 : c2200d1a867c : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :reaper thread was started successfully\n13/10/2026 05:56:19 : epoch 6acdc803 : c2200d1a867c : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :General fridge was started successfully\n13/10/2026 05:56:19 : epoch 6acdc803 : c2200d1a867c : nfs-ganesha-19[main] nfs_start :NFS STARTUP :EVENT :-------------------------------------------------\n13/10/2026 05:56:19 : epoch 6acdc803 : c2200d1a867c : nfs-ganesha-19[main] nfs_start :NFS STARTUP :EVENT :             NFS SERVER INITIALIZED\n13/10/2026 05:56:19 : epoch 6acdc803 : c2200d1a867c : nfs-ganesha-19[main] nfs_start :NFS STARTUP :EVENT :-------------------------------------------------\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr013-2842d860-app-b"
+      ],
+      "rc": 0,
+      "seconds": 0.414,
+      "stdout": "ab-sf-fr013-2842d860-app-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr013-2842d860-app-a"
+      ],
+      "rc": 0,
+      "seconds": 0.384,
+      "stdout": "ab-sf-fr013-2842d860-app-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr013-2842d860-nfs-b"
+      ],
+      "rc": 0,
+      "seconds": 0.029,
+      "stdout": "ab-sf-fr013-2842d860-nfs-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr013-2842d860-nfs-a"
+      ],
+      "rc": 0,
+      "seconds": 0.11,
+      "stdout": "ab-sf-fr013-2842d860-nfs-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr013-2842d860-storage-server"
+      ],
+      "rc": 0,
+      "seconds": 0.246,
+      "stdout": "ab-sf-fr013-2842d860-storage-server\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr013-2842d860-b-chromium"
+      ],
+      "rc": 0,
+      "seconds": 0.027,
+      "stdout": "ab-sf-fr013-2842d860-b-chromium\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr013-2842d860-b-legacy-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.038,
+      "stdout": "ab-sf-fr013-2842d860-b-legacy-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr013-2842d860-b-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.025,
+      "stdout": "ab-sf-fr013-2842d860-b-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr013-2842d860-b-root-home"
+      ],
+      "rc": 0,
+      "seconds": 0.079,
+      "stdout": "ab-sf-fr013-2842d860-b-root-home\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr013-2842d860-b-data"
+      ],
+      "rc": 0,
+      "seconds": 0.034,
+      "stdout": "ab-sf-fr013-2842d860-b-data\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr013-2842d860-a-chromium"
+      ],
+      "rc": 0,
+      "seconds": 0.022,
+      "stdout": "ab-sf-fr013-2842d860-a-chromium\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr013-2842d860-a-legacy-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.023,
+      "stdout": "ab-sf-fr013-2842d860-a-legacy-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr013-2842d860-a-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.021,
+      "stdout": "ab-sf-fr013-2842d860-a-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr013-2842d860-a-root-home"
+      ],
+      "rc": 0,
+      "seconds": 0.044,
+      "stdout": "ab-sf-fr013-2842d860-a-root-home\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr013-2842d860-a-data"
+      ],
+      "rc": 0,
+      "seconds": 0.022,
+      "stdout": "ab-sf-fr013-2842d860-a-data\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr013-2842d860-storage"
+      ],
+      "rc": 0,
+      "seconds": 0.02,
+      "stdout": "ab-sf-fr013-2842d860-storage\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "rm",
+        "ab-sf-fr013-2842d860-net"
+      ],
+      "rc": 0,
+      "seconds": 0.255,
+      "stdout": "ab-sf-fr013-2842d860-net\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr013-2842d860-storage-server"
+      ],
+      "rc": 1,
+      "seconds": 0.022,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr013-2842d860-storage-server\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr013-2842d860-app-a"
+      ],
+      "rc": 1,
+      "seconds": 0.023,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr013-2842d860-app-a\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr013-2842d860-app-b"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr013-2842d860-app-b\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr013-2842d860-storage"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr013-2842d860-storage: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr013-2842d860-nfs-a"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr013-2842d860-nfs-a: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr013-2842d860-a-data"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr013-2842d860-a-data: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr013-2842d860-a-root-home"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr013-2842d860-a-root-home: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr013-2842d860-a-workspace"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr013-2842d860-a-workspace: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr013-2842d860-a-legacy-workspace"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr013-2842d860-a-legacy-workspace: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr013-2842d860-a-chromium"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr013-2842d860-a-chromium: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr013-2842d860-nfs-b"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr013-2842d860-nfs-b: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr013-2842d860-b-data"
+      ],
+      "rc": 1,
+      "seconds": 0.02,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr013-2842d860-b-data: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr013-2842d860-b-root-home"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr013-2842d860-b-root-home: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr013-2842d860-b-workspace"
+      ],
+      "rc": 1,
+      "seconds": 0.022,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr013-2842d860-b-workspace: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr013-2842d860-b-legacy-workspace"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr013-2842d860-b-legacy-workspace: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr013-2842d860-b-chromium"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr013-2842d860-b-chromium: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "inspect",
+        "ab-sf-fr013-2842d860-net"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: network ab-sf-fr013-2842d860-net not found\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "autobyteus-shared-feasibility:fr-013",
+        "--format",
+        "{{.Id}}"
+      ],
+      "rc": 0,
+      "seconds": 0.036,
+      "stdout": "sha256:9017eccc747ce22f95efe6a15eef155cf429c980fb302c1e56f86bdfe165862f\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "image",
+        "rm",
+        "autobyteus-shared-feasibility:fr-013"
+      ],
+      "rc": 0,
+      "seconds": 0.107,
+      "stdout": "Untagged: autobyteus-shared-feasibility:fr-013\nDeleted: sha256:9017eccc747ce22f95efe6a15eef155cf429c980fb302c1e56f86bdfe165862f\n",
+      "stderr": ""
+    }
+  ],
+  "api": [
+    {
+      "port": 57140,
+      "query": "{__typename}",
+      "variables": null,
+      "result": {
+        "data": {
+          "__typename": "Query"
+        }
+      },
+      "seconds": 0.015
+    },
+    {
+      "port": 57143,
+      "query": "{__typename}",
+      "variables": null,
+      "result": {
+        "data": {
+          "__typename": "Query"
+        }
+      },
+      "seconds": 0.011
+    },
+    {
+      "port": 57140,
+      "query": "mutation($root:String!){createWorkspace(input:{rootPath:$root}){workspaceId workspaceRootPath kind isTemp}}",
+      "variables": {
+        "root": "/home/autobyteus/shared/project"
+      },
+      "result": {
+        "data": {
+          "createWorkspace": {
+            "workspaceId": "agent_ws_af838221fa7f5c1dbb93dc33418fe47a0bb8e2fcde6c53e15c9ba3806ede659c",
+            "workspaceRootPath": "/home/autobyteus/shared/project",
+            "kind": "filesystem",
+            "isTemp": false
+          }
+        }
+      },
+      "seconds": 0.008
+    },
+    {
+      "port": 57143,
+      "query": "mutation($root:String!){createWorkspace(input:{rootPath:$root}){workspaceId workspaceRootPath kind isTemp}}",
+      "variables": {
+        "root": "/home/autobyteus/shared/project"
+      },
+      "result": {
+        "data": {
+          "createWorkspace": {
+            "workspaceId": "agent_ws_af838221fa7f5c1dbb93dc33418fe47a0bb8e2fcde6c53e15c9ba3806ede659c",
+            "workspaceRootPath": "/home/autobyteus/shared/project",
+            "kind": "filesystem",
+            "isTemp": false
+          }
+        }
+      },
+      "seconds": 0.007
+    },
+    {
+      "port": 57140,
+      "query": "mutation($i:CreateSkillInput!){createSkill(input:$i){name rootPath content}}",
+      "variables": {
+        "i": {
+          "name": "read-proof",
+          "description": "Use this private fixture skill only for the shared-filesystem capability experiment.",
+          "content": "# Private proof skill\nUse native Read to freshly read proof.txt in ${CLAUDE_SKILL_DIR}, not a shared link.\nWhen asked for the after-stop proof, freshly read after-stop.txt instead.\nUse native Write/Edit to publish the exact requested proof text to the requested file inside the selected working directory.\nDo not read other home files or run commands. Preserve existing project content unless explicitly asked to append.\n"
+        }
+      },
+      "result": {
+        "data": {
+          "createSkill": {
+            "name": "read-proof",
+            "rootPath": "/home/autobyteus/data/skills/read-proof",
+            "content": "# Private proof skill\nUse native Read to freshly read proof.txt in ${CLAUDE_SKILL_DIR}, not a shared link.\nWhen asked for the after-stop proof, freshly read after-stop.txt instead.\nUse native Write/Edit to publish the exact requested proof text to the requested file inside the selected working directory.\nDo not read other home files or run commands. Preserve existing project content unless explicitly asked to append."
+          }
+        }
+      },
+      "seconds": 0.006
+    },
+    {
+      "port": 57143,
+      "query": "mutation($i:CreateSkillInput!){createSkill(input:$i){name rootPath content}}",
+      "variables": {
+        "i": {
+          "name": "read-proof",
+          "description": "Use this private fixture skill only for the shared-filesystem capability experiment.",
+          "content": "# Private proof skill\nUse native Read to freshly read proof.txt in ${CLAUDE_SKILL_DIR}, not a shared link.\nWhen asked for the after-stop proof, freshly read after-stop.txt instead.\nUse native Write/Edit to publish the exact requested proof text to the requested file inside the selected working directory.\nDo not read other home files or run commands. Preserve existing project content unless explicitly asked to append.\n"
+        }
+      },
+      "result": {
+        "data": {
+          "createSkill": {
+            "name": "read-proof",
+            "rootPath": "/home/autobyteus/data/skills/read-proof",
+            "content": "# Private proof skill\nUse native Read to freshly read proof.txt in ${CLAUDE_SKILL_DIR}, not a shared link.\nWhen asked for the after-stop proof, freshly read after-stop.txt instead.\nUse native Write/Edit to publish the exact requested proof text to the requested file inside the selected working directory.\nDo not read other home files or run commands. Preserve existing project content unless explicitly asked to append."
+          }
+        }
+      },
+      "seconds": 0.007
+    }
+  ],
+  "cases": [
+    {
+      "name": "two fresh real application-image nodes serve independent GraphQL endpoints",
+      "status": "PASS",
+      "result": [
+        {
+          "name": "ab-sf-fr013-2842d860-app-a",
+          "seconds": 7.065,
+          "graphql": {
+            "__typename": "Query"
+          }
+        },
+        {
+          "name": "ab-sf-fr013-2842d860-app-b",
+          "seconds": 0.012,
+          "graphql": {
+            "__typename": "Query"
+          }
+        }
+      ],
+      "seconds": 7.078
+    },
+    {
+      "name": "daemon mounts one export into both application nodes; private state and credentials isolated",
+      "status": "PASS",
+      "result": [
+        {
+          "node": "ab-sf-fr013-2842d860-app-a",
+          "mount": ":/ab-sf-fr013-2842d860 /home/autobyteus/shared nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,nosharecache,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=172.29.0.1,local_lock=none,addr=172.29.0.2 0 0\nuid=0(root) gid=0(root) groups=0(root)\nCapEff:\t00000000a82425fb\n",
+          "image_version": "0.1.1",
+          "cli_home": "no-user-cli-credentials\n"
+        },
+        {
+          "node": "ab-sf-fr013-2842d860-app-b",
+          "mount": ":/ab-sf-fr013-2842d860 /home/autobyteus/shared nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,nosharecache,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=172.29.0.1,local_lock=none,addr=172.29.0.2 0 0\nuid=0(root) gid=0(root) groups=0(root)\nCapEff:\t00000000a82425fb\n",
+          "image_version": "0.1.1",
+          "cli_home": "no-user-cli-credentials\n"
+        }
+      ],
+      "seconds": 0.446
+    },
+    {
+      "name": "each application registers the ordinary mounted project through its public workspace API",
+      "status": "PASS",
+      "result": [
+        {
+          "name": "ab-sf-fr013-2842d860-app-a",
+          "port": 57140,
+          "nfs_volume": "ab-sf-fr013-2842d860-nfs-a",
+          "workspace": "agent_ws_af838221fa7f5c1dbb93dc33418fe47a0bb8e2fcde6c53e15c9ba3806ede659c",
+          "sourceRoot": "/home/autobyteus/data/skills/read-proof",
+          "proof": "PRIVATE_ab-sf-fr013-2842d860-app-a_200bf24ae7024bf799c824ccd64f37c7",
+          "afterStop": "AFTER_STOP_27b333fe0d8b444fbad9ea6b03f253f0",
+          "pluginRoot": "/home/autobyteus/data/feasibility-runtime/a",
+          "publication": {
+            "privatePlugin": "/home/autobyteus/data/feasibility-runtime/a",
+            "sourceRoot": "/home/autobyteus/data/skills/read-proof",
+            "sharedRoot": "/home/autobyteus/shared/project",
+            "sourceManifestExists": true
+          },
+          "executable": "/usr/bin/claude",
+          "sdk_metadata": {
+            "version": "0.3.280",
+            "typesHash": "b7ac9c0ed0db5c1792a5394e72c75d69d85f4ce9edc0279487ec55d32eabfa76"
+          },
+          "nativeInitChecked": true,
+          "sessionId": "5ad46f28-dbfa-4f63-86bf-bcf91ec669d4"
+        },
+        {
+          "name": "ab-sf-fr013-2842d860-app-b",
+          "port": 57143,
+          "nfs_volume": "ab-sf-fr013-2842d860-nfs-b",
+          "workspace": "agent_ws_af838221fa7f5c1dbb93dc33418fe47a0bb8e2fcde6c53e15c9ba3806ede659c",
+          "sourceRoot": "/home/autobyteus/data/skills/read-proof",
+          "proof": "PRIVATE_ab-sf-fr013-2842d860-app-b_5c99f8c762c5412883f6c9dea58cdd10",
+          "afterStop": "AFTER_STOP_50fec50cc4714b55a8678c6905149469",
+          "pluginRoot": "/root/.claude/task-fixtures/b",
+          "publication": {
+            "privatePlugin": "/root/.claude/task-fixtures/b",
+            "sourceRoot": "/home/autobyteus/data/skills/read-proof",
+            "sharedRoot": "/home/autobyteus/shared/project",
+            "sourceManifestExists": true
+          },
+          "executable": "/usr/bin/claude",
+          "sdk_metadata": {
+            "version": "0.3.280",
+            "typesHash": "b7ac9c0ed0db5c1792a5394e72c75d69d85f4ce9edc0279487ec55d32eabfa76"
+          },
+          "nativeInitChecked": false,
+          "sessionId": "ff759a26-0b50-4598-b65e-e30f9a8115ea"
+        }
+      ],
+      "seconds": 0.016
+    },
+    {
+      "name": "native Claude login streamed only into fresh private homes, no source edit",
+      "status": "PASS",
+      "result": [
+        {
+          "node": "ab-sf-fr013-2842d860-app-a",
+          "source": "exact Mac Claude Code-credentials Keychain item, read-only",
+          "expiresAt": 1791889403417,
+          "tokens_logged": false,
+          "host_secret_file_created": false
+        },
+        {
+          "node": "ab-sf-fr013-2842d860-app-b",
+          "source": "exact Mac Claude Code-credentials Keychain item, read-only",
+          "expiresAt": 1791889403417,
+          "tokens_logged": false,
+          "host_secret_file_created": false
+        }
+      ],
+      "seconds": 0.234
+    },
+    {
+      "name": "both native sessions discover different private plugin paths and preserved workspace skill",
+      "status": "PASS",
+      "result": [
+        {
+          "node": "ab-sf-fr013-2842d860-app-a",
+          "init": {
+            "event": "READY",
+            "sessionId": "5ad46f28-dbfa-4f63-86bf-bcf91ec669d4",
+            "cwdRequested": "/home/autobyteus/shared/project",
+            "configuredPlugins": [
+              {
+                "name": "autobyteus-fixture",
+                "path": "/home/autobyteus/data/feasibility-runtime/a"
+              }
+            ],
+            "commands": [
+              {
+                "name": "workspace-owned",
+                "description": "Task-owned stand-in for a user project skill. Do not alter it. (project)",
+                "argumentHint": ""
+              },
+              {
+                "name": "deep-research",
+                "description": "Deep research harness \u2014 fan-out web searches, fetch sources, adversarially verify claims, synthesize a cited report. (dynamic workflow)",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "autobyteus-fixture:read-proof",
+                "description": "(autobyteus-fixture) Use this private fixture skill only for the shared-filesystem capability experiment.",
+                "argumentHint": "",
+                "aliases": [
+                  "read-proof"
+                ]
+              },
+              {
+                "name": "design",
+                "description": "Grant or revoke Claude agent access to your Design projects",
+                "argumentHint": "consent | revoke",
+                "builtin": true
+              },
+              {
+                "name": "design-sync",
+                "description": "Push a React design system to claude.ai/design. This runs a converter that bundles the real component code (from Storybook or a bare package) and uploads it. Use when the user runs /design-sync or says \"sync my design system to Claude Design\".",
+                "argumentHint": "[<project hint, e.g. \"Acme DS\">]",
+                "builtin": true
+              },
+              {
+                "name": "dataviz",
+                "description": "Use this skill whenever you are about to create ANY chart, graph, plot, dashboard, or data visualization, in ANY output medium \u2014 an HTML or React artifact, inline SVG, plotting code in any library (matplotlib, plotly, d3, Recharts, \u2026), an image/PNG you will render and upload, or a chart shared into Slack. Read it BEFORE writing the first line of chart code, choosing chart colors, building a stat tile / meter / KPI row, or laying out a dashboard. When the destination is a first-party document connector (host-designated, never self-described) that renders live charts, hand it the rows (inline, or as an uploaded data file the chart cites) rather than a rendered PNG/SVG \u2014 a picture of a chart loses hover, data inspection and per-value comments. Produces visualizations that read as one system \u2014 elegant, accessible, consistent in light and dark \u2014 using a brand-neutral placeholder palette you swap for your own. Teaches a design-system-agnostic method: a form heuristic, a color formula with a runnable validator, mark specs, and interaction rules. A validated default palette is documented in `references/palette.md` \u2014 swap that file's values for your brand's. Triggers on: \"chart\", \"graph\", \"plot\", \"data viz\", \"visualization\", \"dashboard\", \"analytics\", \"visualize data\", \"categorical colors\", \"sequential / diverging palette\", \"stat tile\", \"sparkline\", \"heatmap\", \"legend\", \"axis\", \"tooltip\", \"chart colors\", \"color by series\".",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "update-config",
+                "description": "Use this skill to configure the Claude Code harness via settings.json. Automated behaviors (\"from now on when X\", \"each time X\", \"whenever X\", \"before/after X\") require hooks configured in settings.json - the harness executes these, not Claude, so memory/preferences cannot fulfill them. Also use for: permissions (\"allow X\", \"add permission\", \"move permission to\"), env vars (\"set X=Y\"), hook troubleshooting, or any changes to settings.json/settings.local.json files. Examples: \"allow npm commands\", \"add bq permission to global settings\", \"move permission to user settings\", \"set DEBUG=true\", \"when claude stops show X\". For simple settings like theme/model, suggest the /config command.",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "verify",
+                "description": "Verify that a code change actually does what it's supposed to by exercising it end-to-end and observing behavior \u2014 drive the affected flow, not just tests or typecheck. Run before committing nontrivial changes; bootstraps this repo's project verify skill if none exists yet. Don't invoke it on a diff that only touches tests, docs, or other code with no runtime surface to drive (a change to product source always has one) \u2014 there's nothing to observe.",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "debug",
+                "description": "Enable debug logging for this session and help diagnose issues",
+                "argumentHint": "[issue description]",
+                "builtin": true
+              },
+              {
+                "name": "code-review",
+                "description": "Review the current diff, or a PR number/branch/path target, for correctness bugs (plus reuse/simplification/efficiency cleanups where the model's review recipe covers them) at the given effort level (low|medium|high|xhigh|max: from few high-confidence findings up to many, some of them uncertain; ultra: deep multi-agent review in the cloud); with no level given, it reuses the level you typed last. Pass --comment to post findings as inline PR comments, or --fix to apply the findings to the working tree after the review. Pass --max-findings <n> to report up to n findings, or --max-findings all for every finding. The choice stays until you pass --max-findings default. For ultra on a GitHub.com PR target, --post asks to post the finished review\u2019s findings to the PR as a single comment from the user\u2019s GitHub account (not a review; the launch dialog still confirms in interactive sessions, while non-interactive mode posts on the flag alone) and --no-post hides that option.",
+                "argumentHint": "[low|medium|high|xhigh|max|ultra] [--fix] [--comment] [<pr#>|<branch>|<path>] [--max-findings <n>|all]",
+                "aliases": [
+                  "review"
+                ],
+                "builtin": true
+              },
+              {
+                "name": "simplify",
+                "description": "Review the changed code for reuse, simplification, efficiency, and altitude cleanups, then apply the fixes. Quality only \u2014 it does not hunt for bugs; use /code-review for that.",
+                "argumentHint": "[<target>]",
+                "builtin": true
+              },
+              {
+                "name": "batch",
+                "description": "Research and plan a large-scale change, then execute it in parallel across 5\u201330 isolated worktree agents that each open a PR.",
+                "argumentHint": "<instruction>",
+                "builtin": true
+              },
+              {
+                "name": "fewer-permission-prompts",
+                "description": "Scan your transcripts for common read-only Bash and MCP tool calls, then add a prioritized allowlist to project .claude/settings.json to reduce permission prompts.",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "doctor",
+                "description": "Health-check the user's Claude Code setup and fix issues: diagnose installation health \u2014 what the `claude doctor` terminal diagnostics cover \u2014 from local data (duplicate or leftover installs, PATH, unparseable settings files, broken or colliding agent definitions, skills whose frontmatter fails to parse); find unused skills, MCP servers, and plugins versus their context cost and disable dead weight; deduplicate local CLAUDE.md files against checked-in ones; trim checked-in CLAUDE.md files by cutting content a session could derive from the codebase (directory layouts, tech-stack lists, architecture overviews) while keeping gotchas, rationale, and non-standard conventions; migrate always-loaded CLAUDE.md guidance into lazy skills and nested CLAUDE.md files; flag slow hooks and context-heavy extensions; check the installed version is current; make auto mode the default permission mode; and pre-approve frequently denied read-only commands. Use when the user asks for a doctor run, checkup, audit, tune-up, or cleanup of their Claude Code setup or configuration.",
+                "argumentHint": "[prompt-audit [<path>]]",
+                "aliases": [
+                  "checkup"
+                ],
+                "builtin": true
+              },
+              {
+                "name": "loop",
+                "description": "Run a prompt or slash command on a recurring interval (e.g. /loop 5m /foo). Omit the interval to let the model self-pace.",
+                "argumentHint": "[interval] [prompt]",
+                "aliases": [
+                  "proactive"
+                ],
+                "builtin": true
+              },
+              {
+                "name": "schedule",
+                "description": "Create, update, list, or run scheduled cloud agents (routines) that execute on a cron schedule.",
+                "argumentHint": "",
+                "aliases": [
+                  "routines"
+                ],
+                "builtin": true
+              },
+              {
+                "name": "claude-api",
+                "description": "Reference for the Claude API / Anthropic SDK \u2014 model ids, pricing, params, streaming, tool use, MCP, agents, caching, token counting, model migration.\nTRIGGER \u2014 read BEFORE opening the target file; don't skip because it \"looks like a one-liner\" \u2014 whenever: the prompt names Claude/Anthropic in any form (Claude, Anthropic, Fable, Opus, Sonnet, Haiku, `anthropic`, `@anthropic-ai`, `claude-*`, `us.anthropic.*`, `[1m]`); the user asks about an LLM (pricing/model choice/limits/caching) \u2014 never answer from memory; OR the task is LLM-shaped with provider unstated (agent/MCP/tool-definition/multi-agent/RAG/LLM-judge/computer-use; generate/summarize/extract/classify/rewrite/converse over NL; debugging refusals/cutoffs/streaming/tool-calls/tokens).\nSKIP only when another provider is being worked on (overrides all triggers): OpenAI/GPT/Gemini/Llama/Mistral/Cohere/Ollama named in the query; OR `grep -rE 'openai|langchain_openai|google.generativeai|genai|mistralai|cohere|ollama'` over the project hits (run this grep FIRST if no provider named \u2014 don't Read the file).",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "workflow-authoring",
+                "description": "Reference for writing a Workflow tool script (script API and gotchas, resume, quality patterns, worked examples). Load before authoring a script for a workflow the user already opted into; it does not itself authorize running one.",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "run",
+                "description": "Launch and drive this project's app to see a change working. Use when asked to run, start, or screenshot the app, or to confirm a change works in the real app (not just tests). First looks for a project skill that already covers launching the app; otherwise falls back to built-in patterns per project type (CLI, server, TUI, Electron, browser-driven, library).",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "run-skill-generator",
+                "description": "Author or improve the run-<unit> skill - a per-project skill that tells agents how to build, launch, and drive this project's app. Use when the user asks to set up the project, get it running, write run instructions, or verify build/run steps work from a clean environment.",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "plugin-authoring",
+                "description": "Make a mod: a change to Claude's own interface or behaviour, such as a live pane or panel, a band above the prompt, a status line, a toast, a slash command, or a hook on tool calls or prompts. Use to make, change or debug a mod or its hooks module.",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "advisor",
+                "description": "Let Claude consult a stronger model at key moments",
+                "argumentHint": "[fable|opus|sonnet|off]",
+                "builtin": true
+              },
+              {
+                "name": "agents",
+                "description": "(removed) Ask Claude to create/manage subagents, or edit .claude/agents/",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "auto-mode-setup",
+                "description": "Teach auto mode about your environment, plus optional rule tweaks",
+                "argumentHint": "[--request-id <uuid>] (--wizard posture=\u2026 scope=\u2026 depth=\u2026 --propose | --expect-sha256 <64-hex> --apply-file <path>)",
+                "builtin": true
+              },
+              {
+                "name": "autocompact",
+                "description": "Configure the auto-compact window size",
+                "argumentHint": "[auto|<tokens>]",
+                "builtin": true
+              },
+              {
+                "name": "clear",
+                "description": "Start a new session with empty context; previous session stays on disk (resumable with /resume)",
+                "argumentHint": "[name]",
+                "aliases": [
+                  "reset",
+                  "new"
+                ],
+                "builtin": true
+              },
+              {
+                "name": "color",
+                "description": "Set the prompt bar color for this session",
+                "argumentHint": "[red|blue|green|yellow|purple|orange|pink|cyan|default]",
+                "builtin": true
+              },
+              {
+                "name": "compact",
+                "description": "Free up context by summarizing the conversation so far",
+                "argumentHint": "<optional custom summarization instructions>",
+                "builtin": true
+              },
+              {
+                "name": "config",
+                "description": "Set a setting by key",
+                "argumentHint": "key=value",
+                "aliases": [
+                  "settings"
+                ],
+                "builtin": true
+              },
+              {
+                "name": "output-style",
+                "description": "List output styles or switch to one",
+                "argumentHint": "[style]",
+                "builtin": true
+              },
+              {
+                "name": "context",
+                "description": "Show current context usage",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "effort",
+                "description": "Set effort level for model usage",
+                "argumentHint": "<low|medium|high|xhigh|max|auto|ultracode [on|off]>",
+                "builtin": true
+              },
+              {
+                "name": "fast",
+                "description": "Toggle fast mode (Opus 5.5)",
+                "argumentHint": "[on|off]",
+                "builtin": true
+              },
+              {
+                "name": "focus",
+                "description": "Toggle focus view: just your prompt, summary, and response",
+                "argumentHint": "[on|off]",
+                "builtin": true
+              },
+              {
+                "name": "heapdump",
+                "description": "Dump the JS heap to the Desktop; on Linux with no Desktop folder, the home directory",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "init",
+                "description": "Initialize a new CLAUDE.md file with codebase documentation",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "mcp",
+                "description": "Manage MCP servers",
+                "argumentHint": "[reconnect|enable|disable [<server>|all]]",
+                "builtin": true
+              },
+              {
+                "name": "import",
+                "description": "Import config from another AI coding agent",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "model",
+                "description": "Set the AI model for Claude Code",
+                "argumentHint": "<model>",
+                "builtin": true
+              },
+              {
+                "name": "__remote-workflow",
+                "description": "Run the workflow script delivered in this session environment (server-launched sessions only)",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "workflow-launch-exec",
+                "description": "Execute a server-launched workflow handoff (workflow_launch event sessions only)",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "reload-plugins",
+                "description": "Activate pending plugin changes in the current session",
+                "argumentHint": "[--force]",
+                "builtin": true
+              },
+              {
+                "name": "reload-skills",
+                "description": "Pick up skills added or changed on disk during this session",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "rename",
+                "description": "Rename the current conversation",
+                "argumentHint": "[name]",
+                "aliases": [
+                  "name"
+                ],
+                "builtin": true
+              },
+              {
+                "name": "ultrareview",
+                "description": "Start a cloud agent that finds and verifies bugs in your branch (~15-25 min, $5-$25 USD) \u00b7 Runs in a cloud session. See https://code.claude.com/docs/en/claude-code-on-the-web",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "security-review",
+                "description": "Complete a security review of the pending changes on the current branch",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "usage-credits",
+                "description": "Configure usage credits or request them from your admin when you hit a limit",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "extra-usage",
+                "description": "Renamed to /usage-credits",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "usage",
+                "description": "Show session cost, plan usage, and what's contributing to your limits",
+                "argumentHint": "",
+                "aliases": [
+                  "cost",
+                  "stats"
+                ],
+                "builtin": true
+              },
+              {
+                "name": "insights",
+                "description": "Generate a report analyzing your Claude Code sessions",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "recap",
+                "description": "Generate a one-line session recap now",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "skill-doctor",
+                "description": "Show which loaded skills are unused and costing context",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "goal",
+                "description": "Set a goal \u2014 keep working until the condition is met",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "design-consent",
+                "description": "Grant Claude agent access to your Design projects",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "design-revoke",
+                "description": "Revoke Claude agent access to your Design projects",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "list-agents",
+                "description": "List subagents, teammates, and other Claude sessions you can message",
+                "argumentHint": "",
+                "aliases": [
+                  "peers"
+                ],
+                "builtin": true
+              },
+              {
+                "name": "team-onboarding",
+                "description": "Help teammates ramp on Claude Code with a guide from your usage",
+                "argumentHint": "",
+                "builtin": true
+              }
+            ],
+            "publicInitializationKeys": [
+              "commands",
+              "agents",
+              "output_style",
+              "available_output_styles",
+              "user_output_styles_dir",
+              "models",
+              "account",
+              "pid",
+              "claude_code_version",
+              "current_permission_mode",
+              "feedback_mode",
+              "analytics_disabled",
+              "remote_control_auto_enable",
+              "remote_control_auto_connect_default",
+              "remote_control_available",
+              "remote_control_auto_on_by_default",
+              "ide_rc_auto_enable_gate",
+              "fast_mode_state",
+              "fast_mode_disabled_reason",
+              "session_state",
+              "capabilities"
+            ],
+            "readinessEvidence": "public SDK control initialization + discovered commands; native system/init checked on first turn"
+          },
+          "sdk": {
+            "version": "0.3.280",
+            "typesHash": "b7ac9c0ed0db5c1792a5394e72c75d69d85f4ce9edc0279487ec55d32eabfa76"
+          }
+        },
+        {
+          "node": "ab-sf-fr013-2842d860-app-b",
+          "init": {
+            "event": "READY",
+            "sessionId": "ff759a26-0b50-4598-b65e-e30f9a8115ea",
+            "cwdRequested": "/home/autobyteus/shared/project",
+            "configuredPlugins": [
+              {
+                "name": "autobyteus-fixture",
+                "path": "/root/.claude/task-fixtures/b"
+              }
+            ],
+            "commands": [
+              {
+                "name": "workspace-owned",
+                "description": "Task-owned stand-in for a user project skill. Do not alter it. (project)",
+                "argumentHint": ""
+              },
+              {
+                "name": "deep-research",
+                "description": "Deep research harness \u2014 fan-out web searches, fetch sources, adversarially verify claims, synthesize a cited report. (dynamic workflow)",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "autobyteus-fixture:read-proof",
+                "description": "(autobyteus-fixture) Use this private fixture skill only for the shared-filesystem capability experiment.",
+                "argumentHint": "",
+                "aliases": [
+                  "read-proof"
+                ]
+              },
+              {
+                "name": "design",
+                "description": "Grant or revoke Claude agent access to your Design projects",
+                "argumentHint": "consent | revoke",
+                "builtin": true
+              },
+              {
+                "name": "design-sync",
+                "description": "Push a React design system to claude.ai/design. This runs a converter that bundles the real component code (from Storybook or a bare package) and uploads it. Use when the user runs /design-sync or says \"sync my design system to Claude Design\".",
+                "argumentHint": "[<project hint, e.g. \"Acme DS\">]",
+                "builtin": true
+              },
+              {
+                "name": "dataviz",
+                "description": "Use this skill whenever you are about to create ANY chart, graph, plot, dashboard, or data visualization, in ANY output medium \u2014 an HTML or React artifact, inline SVG, plotting code in any library (matplotlib, plotly, d3, Recharts, \u2026), an image/PNG you will render and upload, or a chart shared into Slack. Read it BEFORE writing the first line of chart code, choosing chart colors, building a stat tile / meter / KPI row, or laying out a dashboard. When the destination is a first-party document connector (host-designated, never self-described) that renders live charts, hand it the rows (inline, or as an uploaded data file the chart cites) rather than a rendered PNG/SVG \u2014 a picture of a chart loses hover, data inspection and per-value comments. Produces visualizations that read as one system \u2014 elegant, accessible, consistent in light and dark \u2014 using a brand-neutral placeholder palette you swap for your own. Teaches a design-system-agnostic method: a form heuristic, a color formula with a runnable validator, mark specs, and interaction rules. A validated default palette is documented in `references/palette.md` \u2014 swap that file's values for your brand's. Triggers on: \"chart\", \"graph\", \"plot\", \"data viz\", \"visualization\", \"dashboard\", \"analytics\", \"visualize data\", \"categorical colors\", \"sequential / diverging palette\", \"stat tile\", \"sparkline\", \"heatmap\", \"legend\", \"axis\", \"tooltip\", \"chart colors\", \"color by series\".",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "update-config",
+                "description": "Use this skill to configure the Claude Code harness via settings.json. Automated behaviors (\"from now on when X\", \"each time X\", \"whenever X\", \"before/after X\") require hooks configured in settings.json - the harness executes these, not Claude, so memory/preferences cannot fulfill them. Also use for: permissions (\"allow X\", \"add permission\", \"move permission to\"), env vars (\"set X=Y\"), hook troubleshooting, or any changes to settings.json/settings.local.json files. Examples: \"allow npm commands\", \"add bq permission to global settings\", \"move permission to user settings\", \"set DEBUG=true\", \"when claude stops show X\". For simple settings like theme/model, suggest the /config command.",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "verify",
+                "description": "Verify that a code change actually does what it's supposed to by exercising it end-to-end and observing behavior \u2014 drive the affected flow, not just tests or typecheck. Run before committing nontrivial changes; bootstraps this repo's project verify skill if none exists yet. Don't invoke it on a diff that only touches tests, docs, or other code with no runtime surface to drive (a change to product source always has one) \u2014 there's nothing to observe.",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "debug",
+                "description": "Enable debug logging for this session and help diagnose issues",
+                "argumentHint": "[issue description]",
+                "builtin": true
+              },
+              {
+                "name": "code-review",
+                "description": "Review the current diff, or a PR number/branch/path target, for correctness bugs (plus reuse/simplification/efficiency cleanups where the model's review recipe covers them) at the given effort level (low|medium|high|xhigh|max: from few high-confidence findings up to many, some of them uncertain; ultra: deep multi-agent review in the cloud); with no level given, it reuses the level you typed last. Pass --comment to post findings as inline PR comments, or --fix to apply the findings to the working tree after the review. Pass --max-findings <n> to report up to n findings, or --max-findings all for every finding. The choice stays until you pass --max-findings default. For ultra on a GitHub.com PR target, --post asks to post the finished review\u2019s findings to the PR as a single comment from the user\u2019s GitHub account (not a review; the launch dialog still confirms in interactive sessions, while non-interactive mode posts on the flag alone) and --no-post hides that option.",
+                "argumentHint": "[low|medium|high|xhigh|max|ultra] [--fix] [--comment] [<pr#>|<branch>|<path>] [--max-findings <n>|all]",
+                "aliases": [
+                  "review"
+                ],
+                "builtin": true
+              },
+              {
+                "name": "simplify",
+                "description": "Review the changed code for reuse, simplification, efficiency, and altitude cleanups, then apply the fixes. Quality only \u2014 it does not hunt for bugs; use /code-review for that.",
+                "argumentHint": "[<target>]",
+                "builtin": true
+              },
+              {
+                "name": "batch",
+                "description": "Research and plan a large-scale change, then execute it in parallel across 5\u201330 isolated worktree agents that each open a PR.",
+                "argumentHint": "<instruction>",
+                "builtin": true
+              },
+              {
+                "name": "fewer-permission-prompts",
+                "description": "Scan your transcripts for common read-only Bash and MCP tool calls, then add a prioritized allowlist to project .claude/settings.json to reduce permission prompts.",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "doctor",
+                "description": "Health-check the user's Claude Code setup and fix issues: diagnose installation health \u2014 what the `claude doctor` terminal diagnostics cover \u2014 from local data (duplicate or leftover installs, PATH, unparseable settings files, broken or colliding agent definitions, skills whose frontmatter fails to parse); find unused skills, MCP servers, and plugins versus their context cost and disable dead weight; deduplicate local CLAUDE.md files against checked-in ones; trim checked-in CLAUDE.md files by cutting content a session could derive from the codebase (directory layouts, tech-stack lists, architecture overviews) while keeping gotchas, rationale, and non-standard conventions; migrate always-loaded CLAUDE.md guidance into lazy skills and nested CLAUDE.md files; flag slow hooks and context-heavy extensions; check the installed version is current; make auto mode the default permission mode; and pre-approve frequently denied read-only commands. Use when the user asks for a doctor run, checkup, audit, tune-up, or cleanup of their Claude Code setup or configuration.",
+                "argumentHint": "[prompt-audit [<path>]]",
+                "aliases": [
+                  "checkup"
+                ],
+                "builtin": true
+              },
+              {
+                "name": "loop",
+                "description": "Run a prompt or slash command on a recurring interval (e.g. /loop 5m /foo). Omit the interval to let the model self-pace.",
+                "argumentHint": "[interval] [prompt]",
+                "aliases": [
+                  "proactive"
+                ],
+                "builtin": true
+              },
+              {
+                "name": "schedule",
+                "description": "Create, update, list, or run scheduled cloud agents (routines) that execute on a cron schedule.",
+                "argumentHint": "",
+                "aliases": [
+                  "routines"
+                ],
+                "builtin": true
+              },
+              {
+                "name": "claude-api",
+                "description": "Reference for the Claude API / Anthropic SDK \u2014 model ids, pricing, params, streaming, tool use, MCP, agents, caching, token counting, model migration.\nTRIGGER \u2014 read BEFORE opening the target file; don't skip because it \"looks like a one-liner\" \u2014 whenever: the prompt names Claude/Anthropic in any form (Claude, Anthropic, Fable, Opus, Sonnet, Haiku, `anthropic`, `@anthropic-ai`, `claude-*`, `us.anthropic.*`, `[1m]`); the user asks about an LLM (pricing/model choice/limits/caching) \u2014 never answer from memory; OR the task is LLM-shaped with provider unstated (agent/MCP/tool-definition/multi-agent/RAG/LLM-judge/computer-use; generate/summarize/extract/classify/rewrite/converse over NL; debugging refusals/cutoffs/streaming/tool-calls/tokens).\nSKIP only when another provider is being worked on (overrides all triggers): OpenAI/GPT/Gemini/Llama/Mistral/Cohere/Ollama named in the query; OR `grep -rE 'openai|langchain_openai|google.generativeai|genai|mistralai|cohere|ollama'` over the project hits (run this grep FIRST if no provider named \u2014 don't Read the file).",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "workflow-authoring",
+                "description": "Reference for writing a Workflow tool script (script API and gotchas, resume, quality patterns, worked examples). Load before authoring a script for a workflow the user already opted into; it does not itself authorize running one.",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "run",
+                "description": "Launch and drive this project's app to see a change working. Use when asked to run, start, or screenshot the app, or to confirm a change works in the real app (not just tests). First looks for a project skill that already covers launching the app; otherwise falls back to built-in patterns per project type (CLI, server, TUI, Electron, browser-driven, library).",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "run-skill-generator",
+                "description": "Author or improve the run-<unit> skill - a per-project skill that tells agents how to build, launch, and drive this project's app. Use when the user asks to set up the project, get it running, write run instructions, or verify build/run steps work from a clean environment.",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "plugin-authoring",
+                "description": "Make a mod: a change to Claude's own interface or behaviour, such as a live pane or panel, a band above the prompt, a status line, a toast, a slash command, or a hook on tool calls or prompts. Use to make, change or debug a mod or its hooks module.",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "advisor",
+                "description": "Let Claude consult a stronger model at key moments",
+                "argumentHint": "[fable|opus|sonnet|off]",
+                "builtin": true
+              },
+              {
+                "name": "agents",
+                "description": "(removed) Ask Claude to create/manage subagents, or edit .claude/agents/",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "auto-mode-setup",
+                "description": "Teach auto mode about your environment, plus optional rule tweaks",
+                "argumentHint": "[--request-id <uuid>] (--wizard posture=\u2026 scope=\u2026 depth=\u2026 --propose | --expect-sha256 <64-hex> --apply-file <path>)",
+                "builtin": true
+              },
+              {
+                "name": "autocompact",
+                "description": "Configure the auto-compact window size",
+                "argumentHint": "[auto|<tokens>]",
+                "builtin": true
+              },
+              {
+                "name": "clear",
+                "description": "Start a new session with empty context; previous session stays on disk (resumable with /resume)",
+                "argumentHint": "[name]",
+                "aliases": [
+                  "reset",
+                  "new"
+                ],
+                "builtin": true
+              },
+              {
+                "name": "color",
+                "description": "Set the prompt bar color for this session",
+                "argumentHint": "[red|blue|green|yellow|purple|orange|pink|cyan|default]",
+                "builtin": true
+              },
+              {
+                "name": "compact",
+                "description": "Free up context by summarizing the conversation so far",
+                "argumentHint": "<optional custom summarization instructions>",
+                "builtin": true
+              },
+              {
+                "name": "config",
+                "description": "Set a setting by key",
+                "argumentHint": "key=value",
+                "aliases": [
+                  "settings"
+                ],
+                "builtin": true
+              },
+              {
+                "name": "output-style",
+                "description": "List output styles or switch to one",
+                "argumentHint": "[style]",
+                "builtin": true
+              },
+              {
+                "name": "context",
+                "description": "Show current context usage",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "effort",
+                "description": "Set effort level for model usage",
+                "argumentHint": "<low|medium|high|xhigh|max|auto|ultracode [on|off]>",
+                "builtin": true
+              },
+              {
+                "name": "fast",
+                "description": "Toggle fast mode (Opus 5.5)",
+                "argumentHint": "[on|off]",
+                "builtin": true
+              },
+              {
+                "name": "focus",
+                "description": "Toggle focus view: just your prompt, summary, and response",
+                "argumentHint": "[on|off]",
+                "builtin": true
+              },
+              {
+                "name": "heapdump",
+                "description": "Dump the JS heap to the Desktop; on Linux with no Desktop folder, the home directory",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "init",
+                "description": "Initialize a new CLAUDE.md file with codebase documentation",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "mcp",
+                "description": "Manage MCP servers",
+                "argumentHint": "[reconnect|enable|disable [<server>|all]]",
+                "builtin": true
+              },
+              {
+                "name": "import",
+                "description": "Import config from another AI coding agent",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "model",
+                "description": "Set the AI model for Claude Code",
+                "argumentHint": "<model>",
+                "builtin": true
+              },
+              {
+                "name": "__remote-workflow",
+                "description": "Run the workflow script delivered in this session environment (server-launched sessions only)",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "workflow-launch-exec",
+                "description": "Execute a server-launched workflow handoff (workflow_launch event sessions only)",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "reload-plugins",
+                "description": "Activate pending plugin changes in the current session",
+                "argumentHint": "[--force]",
+                "builtin": true
+              },
+              {
+                "name": "reload-skills",
+                "description": "Pick up skills added or changed on disk during this session",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "rename",
+                "description": "Rename the current conversation",
+                "argumentHint": "[name]",
+                "aliases": [
+                  "name"
+                ],
+                "builtin": true
+              },
+              {
+                "name": "ultrareview",
+                "description": "Start a cloud agent that finds and verifies bugs in your branch (~15-25 min, $5-$25 USD) \u00b7 Runs in a cloud session. See https://code.claude.com/docs/en/claude-code-on-the-web",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "security-review",
+                "description": "Complete a security review of the pending changes on the current branch",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "usage-credits",
+                "description": "Configure usage credits or request them from your admin when you hit a limit",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "extra-usage",
+                "description": "Renamed to /usage-credits",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "usage",
+                "description": "Show session cost, plan usage, and what's contributing to your limits",
+                "argumentHint": "",
+                "aliases": [
+                  "cost",
+                  "stats"
+                ],
+                "builtin": true
+              },
+              {
+                "name": "insights",
+                "description": "Generate a report analyzing your Claude Code sessions",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "recap",
+                "description": "Generate a one-line session recap now",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "skill-doctor",
+                "description": "Show which loaded skills are unused and costing context",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "goal",
+                "description": "Set a goal \u2014 keep working until the condition is met",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "design-consent",
+                "description": "Grant Claude agent access to your Design projects",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "design-revoke",
+                "description": "Revoke Claude agent access to your Design projects",
+                "argumentHint": "",
+                "builtin": true
+              },
+              {
+                "name": "list-agents",
+                "description": "List subagents, teammates, and other Claude sessions you can message",
+                "argumentHint": "",
+                "aliases": [
+                  "peers"
+                ],
+                "builtin": true
+              },
+              {
+                "name": "team-onboarding",
+                "description": "Help teammates ramp on Claude Code with a guide from your usage",
+                "argumentHint": "",
+                "builtin": true
+              }
+            ],
+            "publicInitializationKeys": [
+              "commands",
+              "agents",
+              "output_style",
+              "available_output_styles",
+              "user_output_styles_dir",
+              "models",
+              "account",
+              "pid",
+              "claude_code_version",
+              "current_permission_mode",
+              "feedback_mode",
+              "analytics_disabled",
+              "remote_control_auto_enable",
+              "remote_control_auto_connect_default",
+              "remote_control_available",
+              "remote_control_auto_on_by_default",
+              "ide_rc_auto_enable_gate",
+              "fast_mode_state",
+              "fast_mode_disabled_reason",
+              "session_state",
+              "capabilities"
+            ],
+            "readinessEvidence": "public SDK control initialization + discovered commands; native system/init checked on first turn"
+          },
+          "sdk": {
+            "version": "0.3.280",
+            "typesHash": "b7ac9c0ed0db5c1792a5394e72c75d69d85f4ce9edc0279487ec55d32eabfa76"
+          }
+        }
+      ],
+      "seconds": 2.118
+    },
+    {
+      "name": "A invokes private native Skill and publishes actual helper content to common project",
+      "status": "FAIL",
+      "error": "AssertionError(('ab-sf-fr013-2842d860-app-a', 'PRIVATE_ab-sf-fr013-2842d860-app-a_200bf24ae7024bf799c824ccd64f37c7', 'PRIVATE_ab-sf-fr013-2842d860-app-a_200bf24ae7024bf799c824ccd64f37c7\\n'))",
+      "seconds": 5.073
+    }
+  ],
+  "cleanup": [
+    {
+      "container": "ab-sf-fr013-2842d860-app-b",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr013-2842d860-app-a",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr013-2842d860-nfs-b",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr013-2842d860-nfs-a",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr013-2842d860-storage-server",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr013-2842d860-b-chromium",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr013-2842d860-b-legacy-workspace",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr013-2842d860-b-workspace",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr013-2842d860-b-root-home",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr013-2842d860-b-data",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr013-2842d860-a-chromium",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr013-2842d860-a-legacy-workspace",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr013-2842d860-a-workspace",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr013-2842d860-a-root-home",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr013-2842d860-a-data",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr013-2842d860-storage",
+      "rc": 0
+    },
+    {
+      "network": "ab-sf-fr013-2842d860-net",
+      "rc": 0
+    },
+    {
+      "absence_kind": "container",
+      "name": "ab-sf-fr013-2842d860-storage-server",
+      "absent": true
+    },
+    {
+      "absence_kind": "container",
+      "name": "ab-sf-fr013-2842d860-app-a",
+      "absent": true
+    },
+    {
+      "absence_kind": "container",
+      "name": "ab-sf-fr013-2842d860-app-b",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr013-2842d860-storage",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr013-2842d860-nfs-a",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr013-2842d860-a-data",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr013-2842d860-a-root-home",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr013-2842d860-a-workspace",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr013-2842d860-a-legacy-workspace",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr013-2842d860-a-chromium",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr013-2842d860-nfs-b",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr013-2842d860-b-data",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr013-2842d860-b-root-home",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr013-2842d860-b-workspace",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr013-2842d860-b-legacy-workspace",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr013-2842d860-b-chromium",
+      "absent": true
+    },
+    {
+      "absence_kind": "network",
+      "name": "ab-sf-fr013-2842d860-net",
+      "absent": true
+    },
+    {
+      "image_tag": "autobyteus-shared-feasibility:fr-013",
+      "expected_id": "sha256:9017eccc747ce22f95efe6a15eef155cf429c980fb302c1e56f86bdfe165862f",
+      "rc": 0
+    }
+  ],
+  "application_metadata": {
+    "id": "sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a",
+    "repo_digests": [
+      "autobyteus/autobyteus-server@sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a"
+    ],
+    "created": "2026-10-12T13:24:35.302109183Z",
+    "entrypoint": [
+      "/usr/local/bin/entrypoint.sh"
+    ]
+  },
+  "service_image": "sha256:9017eccc747ce22f95efe6a15eef155cf429c980fb302c1e56f86bdfe165862f",
+  "network": {
+    "Subnet": "172.29.0.0/16",
+    "IPRange": "",
+    "Gateway": "172.29.0.1"
+  },
+  "storage_server_ip": "172.29.0.2",
+  "nodes": [
+    {
+      "name": "ab-sf-fr013-2842d860-app-a",
+      "port": 57140,
+      "nfs_volume": "ab-sf-fr013-2842d860-nfs-a",
+      "workspace": "agent_ws_af838221fa7f5c1dbb93dc33418fe47a0bb8e2fcde6c53e15c9ba3806ede659c",
+      "sourceRoot": "/home/autobyteus/data/skills/read-proof",
+      "proof": "PRIVATE_ab-sf-fr013-2842d860-app-a_200bf24ae7024bf799c824ccd64f37c7",
+      "afterStop": "AFTER_STOP_27b333fe0d8b444fbad9ea6b03f253f0",
+      "pluginRoot": "/home/autobyteus/data/feasibility-runtime/a",
+      "publication": {
+        "privatePlugin": "/home/autobyteus/data/feasibility-runtime/a",
+        "sourceRoot": "/home/autobyteus/data/skills/read-proof",
+        "sharedRoot": "/home/autobyteus/shared/project",
+        "sourceManifestExists": true
+      },
+      "executable": "/usr/bin/claude",
+      "sdk_metadata": {
+        "version": "0.3.280",
+        "typesHash": "b7ac9c0ed0db5c1792a5394e72c75d69d85f4ce9edc0279487ec55d32eabfa76"
+      },
+      "nativeInitChecked": true,
+      "sessionId": "5ad46f28-dbfa-4f63-86bf-bcf91ec669d4"
+    },
+    {
+      "name": "ab-sf-fr013-2842d860-app-b",
+      "port": 57143,
+      "nfs_volume": "ab-sf-fr013-2842d860-nfs-b",
+      "workspace": "agent_ws_af838221fa7f5c1dbb93dc33418fe47a0bb8e2fcde6c53e15c9ba3806ede659c",
+      "sourceRoot": "/home/autobyteus/data/skills/read-proof",
+      "proof": "PRIVATE_ab-sf-fr013-2842d860-app-b_5c99f8c762c5412883f6c9dea58cdd10",
+      "afterStop": "AFTER_STOP_50fec50cc4714b55a8678c6905149469",
+      "pluginRoot": "/root/.claude/task-fixtures/b",
+      "publication": {
+        "privatePlugin": "/root/.claude/task-fixtures/b",
+        "sourceRoot": "/home/autobyteus/data/skills/read-proof",
+        "sharedRoot": "/home/autobyteus/shared/project",
+        "sourceManifestExists": true
+      },
+      "executable": "/usr/bin/claude",
+      "sdk_metadata": {
+        "version": "0.3.280",
+        "typesHash": "b7ac9c0ed0db5c1792a5394e72c75d69d85f4ce9edc0279487ec55d32eabfa76"
+      },
+      "nativeInitChecked": false,
+      "sessionId": "ff759a26-0b50-4598-b65e-e30f9a8115ea"
+    }
+  ],
+  "fatal": "AssertionError(('ab-sf-fr013-2842d860-app-a', 'PRIVATE_ab-sf-fr013-2842d860-app-a_200bf24ae7024bf799c824ccd64f37c7', 'PRIVATE_ab-sf-fr013-2842d860-app-a_200bf24ae7024bf799c824ccd64f37c7\\n'))"
+}

@@ -1,0 +1,10 @@
+pulling manifest...
+pulling disk (26.9 GB compressed)...
+0%
+[1A[J1%
+[1A[J2%
+[1A[J3%
+[1A[J4%
+[1A[J5%
+[1A[J6%
+failed to decompress disk: The operation couldn’t be completed. (Compression.FilterError error 1.)

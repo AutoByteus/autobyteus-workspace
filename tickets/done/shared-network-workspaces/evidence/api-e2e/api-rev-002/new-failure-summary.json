@@ -1,0 +1,37 @@
+{
+  "id": "API-F002",
+  "result": "Fail",
+  "classification": "Unclear",
+  "criticalAC": [
+    "AC012",
+    "AC018",
+    "AC019"
+  ],
+  "priorFailure": "API-F001 independently resolved before this finding",
+  "primaryEvidence": [
+    "linux-native-result.json",
+    "linux-native-repro-result.json"
+  ],
+  "createCommandSeconds": [
+    17.258,
+    16.252
+  ],
+  "publicReconnect": "Fail on both",
+  "ordinaryMountedRead": "Pass on both",
+  "diagnostic": {
+    "valid": "linux-native-trace-corrected.json",
+    "sourceProbeRC": 0,
+    "mountedProbeRC": 1,
+    "error": "openat directory returns EREMOTEIO",
+    "invalidInitialPath": "linux-native-trace.json; no probe executed at guessed /usr/local/bin path"
+  },
+  "sourceHash": "497efd6abb0c2cfa4c740a87f005c529cbf026a6fa218b3acd345826f4a923da",
+  "kernel": "7.0.0-38-generic",
+  "notClaimed": [
+    "root cause",
+    "all ordinary reads fail",
+    "physical qualification",
+    "whole suite green",
+    "released installer"
+  ]
+}

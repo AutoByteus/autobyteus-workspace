@@ -106,8 +106,8 @@ describe("existing-copy assignment on the Task side", () => {
   });
 
   it.each([
-    ["the copy's current Task is still open (AC-006)", async (f: { a: string }) => { await setStatus(f.a, "IN_PROGRESS"); await tasks.reopenAssignment({ execution: team, requestedBy: "manager" }); }, "manager", "TASK_AGENT_RESOURCE_CONFLICT", "This copy still works on Task"],
-    ["another run assigns it (AC-007, QR-002)", async () => undefined, "intruder", "TASK_AGENT_RESOURCE_CONFLICT", "Only the run that made this copy's most recent assignment"],
+    ["the copy's current Task is still open (AC-006)", async (f: { a: string }) => { await setStatus(f.a, "IN_PROGRESS"); await tasks.reopenAssignment({ execution: team, requestedBy: "manager" }); }, "manager", "TASK_AGENT_RESOURCE_CONFLICT", "This task agent still works on Task"],
+    ["another run assigns it (AC-007, QR-002)", async () => undefined, "intruder", "TASK_AGENT_RESOURCE_CONFLICT", "Only the agent that gave this task agent its most recent Task"],
     ["Task B is DONE (AC-009)", async (f: { b: string }) => { await setStatus(f.b, "DONE"); }, "manager", "TASK_AGENT_RESOURCE_CLOSED", "The Task is DONE"],
     ["Task B is CANCELLED (AC-009)", async (f: { b: string }) => { await setStatus(f.b, "CANCELLED"); }, "manager", "TASK_AGENT_RESOURCE_CLOSED", "The Task is CANCELLED"],
   ] as const)("refuses when %s; nothing is written", async (_case, arrange, requestedBy, code, message) => {
@@ -125,7 +125,7 @@ describe("existing-copy assignment on the Task side", () => {
     await setStatus(a, "IN_PROGRESS");
     await tasks.reopenAssignment({ execution: team, requestedBy: "manager" });
     await expect(tasks.assertAssignable({ execution: team, requestedBy: "manager", taskId: b })).rejects.toMatchObject({
-      message: `This copy still works on Task ${a} (IN_PROGRESS). Mark it DONE or CANCELLED first, or delegate Task ${b} to a new copy with recipient_address.` });
+      message: `This task agent still works on Task ${a} (IN_PROGRESS). Set it to DONE or CANCELLED first, or delegate Task ${b} to a new task agent with recipient_address.` });
   });
 
   it("refuses unknown and ambiguous Tasks, a copy whose latest assignment is already B, a never-started copy, and sub-work (AC-008/009)", async () => {
@@ -134,14 +134,14 @@ describe("existing-copy assignment on the Task side", () => {
     await expect(tasks.assertAssignable({ execution: team, requestedBy: "manager", taskId: a })).rejects.toMatchObject({ code: "TASK_AGENT_RESOURCE_CLOSED" });
     await setStatus(a, "TODO");
     await expect(tasks.assertAssignable({ execution: team, requestedBy: "manager", taskId: a })).rejects.toMatchObject({
-      code: "TASK_AGENT_RESOURCE_CONFLICT", message: expect.stringContaining(`This copy's most recent assignment is already Task ${a}. To continue it, move Task ${a} to TODO or IN_PROGRESS`) });
+      code: "TASK_AGENT_RESOURCE_CONFLICT", message: expect.stringContaining(`This task agent already has Task ${a}. To continue it, set Task ${a} to TODO or IN_PROGRESS, then message the task agent's run id`) });
     // A copy that never started (its only start failed) has no conversation to resume.
     const c = (await tasks.createTask({ projectId, description: "C" })).taskId;
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: c, assignedBy: "manager", recipientAddress: "/w", hostRoot, execution: worker });
     await tasks.markFailed(worker, { code: "TASK_DISPATCH_FAILED", message: "start failed" });
     await setStatus(c, "CANCELLED");
     await expect(tasks.assertAssignable({ execution: worker, requestedBy: "manager", taskId: b })).rejects.toMatchObject({
-      code: "TASK_REACTIVATION_UNAVAILABLE", message: expect.stringContaining("This copy never started") });
+      code: "TASK_REACTIVATION_UNAVAILABLE", message: expect.stringContaining("This task agent never started") });
     // Sub-work of a Task worker is not an assignment.
     await setStatus(a, "IN_PROGRESS");
     await tasks.reopenAssignment({ execution: team, requestedBy: "manager" });
@@ -149,7 +149,7 @@ describe("existing-copy assignment on the Task side", () => {
     await tasks.markStarted(subWork);
     await setStatus(a, "DONE");
     await expect(tasks.assertAssignable({ execution: subWork, requestedBy: "manager", taskId: b })).rejects.toMatchObject({
-      message: expect.stringContaining("sub-work or a helper of a Task worker") });
+      message: expect.stringContaining("works on part of another agent's Task, so you can't give it a Task") });
   });
 
   it("refuses while any Task's data is unreadable (REQ-005, AR-004)", async () => {
@@ -198,7 +198,7 @@ describe("existing-copy assignment on the Task side", () => {
     await assign(b); await tasks.markStarted(team);
     await setStatus(b, "DONE");
     await setStatus(a, "TODO");
-    const hint = `This copy's current Task is ${b} (DONE); reopening Task ${a} does not reach it. To have this copy continue Task ${a}, `
+    const hint = `This task agent's current Task is ${b} (DONE); setting Task ${a} to TODO or IN_PROGRESS does not reach it. To have this task agent continue Task ${a}, `
       + `call delegate_task with target_team_run_id "review-team" and task_id "${a}".`;
     await expect(tasks.assertReopenable({ execution: team, requestedBy: "manager" })).rejects.toMatchObject({ code: "TASK_AGENT_RESOURCE_CLOSED", message: hint });
     await expect(tasks.reopenAssignment({ execution: team, requestedBy: "manager" })).rejects.toMatchObject({ message: hint });

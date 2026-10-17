@@ -1,0 +1,87 @@
+diff --cc autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts
+index 6ccfd9cf33,3b5ce88caf..0000000000
+--- a/autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts
+@@@ -55,63 -32,27 +55,82 @@@ describe("workspace content REST bounda
+    });
+
+    afterEach(async () => {
+++<<<<<<< HEAD
+ +    try {
+ +      for (const workspace of workspaceManager.getAllWorkspaces()) {
+ +        if (!initialIds.has(workspace.workspaceId)) {
+ +          const removal = await workspaceManager.removeRegisteredWorkspace(workspace.workspaceId);
+ +          expect(removal).toMatchObject({
+ +            success: true,
+ +            workspaceId: workspace.workspaceId,
+ +            workspaceRootPath: workspace.getBasePath(),
+ +          });
+++=======
++     await app.close();
++     try {
++       for (const workspace of workspaceManager.getAllWorkspaces()) {
++         if (!initialIds.has(workspace.workspaceId)) {
++           // This route-only harness does not bootstrap the process run supervisor.
++           // Teardown closes only owned fixtures, not the product removal use case.
++           await workspace.close();
++           const ownedManager = workspaceManager as unknown as {
++             activeWorkspaces: Map<string, unknown>;
++             workspaceRegistryStore: { deleteEntry: (id: string) => Promise<unknown> };
++           };
++           ownedManager.activeWorkspaces.delete(workspace.workspaceId);
++           await ownedManager.workspaceRegistryStore.deleteEntry(workspace.workspaceId);
+++>>>>>>> origin/personal
+          }
+        }
+      } finally {
+        fs.rmSync(tempRoot, { recursive: true, force: true });
+      }
+++<<<<<<< HEAD
+ +  });
+ +
+ +  it("reopens HTML and relative media over HTTP after external replacement and deletion", async () => {
+ +    // Local ordinary filesystem contract, not NFS visibility or browser rendering.
+ +    const html = '<html><body><img src="assets/diagram%20one.png"></body></html>';
+ +    const docs = path.join(workspaceRoot, "docs");
+ +    fs.mkdirSync(path.join(docs, "assets"), { recursive: true });
+ +    fs.writeFileSync(path.join(docs, "index.html"), html);
+ +    const imagePath = path.join(docs, "assets", "diagram one.png");
+ +    fs.writeFileSync(imagePath, PNG_BYTES);
+ +    const creation = await fetch(new URL("/graphql", baseUrl), {
+ +      method: "POST",
+ +      headers: { "content-type": "application/json" },
+ +      body: JSON.stringify({
+ +        query: "mutation($input: CreateWorkspaceInput!) { createWorkspace(input: $input) { workspaceId } }",
+ +        variables: { input: { rootPath: workspaceRoot } },
+ +      }),
+ +    });
+ +    expect(creation.status).toBe(200);
+ +    const created = await creation.json();
+ +    expect(created.errors).toBeUndefined();
+ +    const id = encodeURIComponent(created.data.createWorkspace.workspaceId);
+ +    const pageUrl = new URL(`/rest/workspaces/${id}/static/docs/index.html`, baseUrl);
+ +    const page = await fetch(pageUrl);
+ +    expect(page.status).toBe(200);
+ +    expect(page.headers.get("content-type")).toContain("text/html");
+ +    expect(await page.text()).toBe(html);
+ +    const assetUrl = new URL("assets/diagram%20one.png", pageUrl);
+ +    const asset = await fetch(assetUrl);
+ +    expect(asset.status).toBe(200);
+ +    expect(asset.headers.get("content-type")).toContain("image/png");
+ +    expect(Buffer.from(await asset.arrayBuffer())).toEqual(PNG_BYTES);
+ +
+ +    const updated = html.replace("<body>", "<body><p>remote edit</p>");
+ +    fs.writeFileSync(path.join(docs, "replacement.html"), updated);
+ +    fs.renameSync(path.join(docs, "replacement.html"), path.join(docs, "index.html"));
+ +    const reopened = await fetch(pageUrl);
+ +    expect(reopened.status).toBe(200);
+ +    expect(await reopened.text()).toBe(updated);
+ +    fs.unlinkSync(imagePath);
+ +    const deleted = await fetch(assetUrl);
+ +    expect(deleted.status).toBe(404);
+ +    expect(await deleted.json()).toEqual({ detail: "File not found in workspace" });
+++=======
+++>>>>>>> origin/personal
+    });
+
+    it("serves encoded image paths through a real FileSystemWorkspace", async () => {

@@ -1,0 +1,18 @@
+--- FAIL: TestSourceCaptureCorrelationAndClosure (0.00s)
+    --- FAIL: TestSourceCaptureCorrelationAndClosure/success (0.00s)
+        source_darwin_test.go:103: source descriptor leaked 4
+    --- FAIL: TestSourceCaptureCorrelationAndClosure/command-error (0.00s)
+        source_darwin_test.go:103: source descriptor leaked 5
+    --- FAIL: TestSourceCaptureCorrelationAndClosure/bad-plist (0.00s)
+        source_darwin_test.go:103: source descriptor leaked 6
+    --- FAIL: TestSourceCaptureCorrelationAndClosure/wrong-mapping (0.00s)
+        source_darwin_test.go:103: source descriptor leaked 7
+    --- FAIL: TestSourceCaptureCorrelationAndClosure/directory-replaced (0.00s)
+        source_darwin_test.go:103: source descriptor leaked 8
+    --- FAIL: TestSourceCaptureCorrelationAndClosure/symlink-replaced (0.00s)
+        source_darwin_test.go:103: source descriptor leaked 9
+    --- FAIL: TestSourceCaptureCorrelationAndClosure/ancestor-replaced (0.00s)
+        source_darwin_test.go:103: source descriptor leaked 10
+FAIL
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/platform	0.368s
+FAIL

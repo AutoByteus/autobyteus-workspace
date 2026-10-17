@@ -1,0 +1,6 @@
+branch deepseek run 1 exit 1
+branch deepseek run 2 exit 0
+branch deepseek run 3 exit 0
+branch deepseek run 4 exit 1
+branch deepseek run 5 exit 0
+done

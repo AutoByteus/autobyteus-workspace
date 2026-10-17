@@ -2,8 +2,8 @@ import { CollaborationContractError } from "../../domain/collaboration-contract-
 import type { TaskDelegationOutcome } from "./task-delegation-command.js";
 
 /**
- * Resolves a delegation target, then delegates. A target that is neither mounted nor a
- * collaborator of the run starts nothing and returns its reason (no copy) instead of
+ * Resolves a delegation target, then delegates. A target that is neither mounted nor an
+ * available catalog definition starts nothing and returns its reason (no copy) instead of
  * failing the tool call; every other resolution error still throws.
  */
 export const delegateToResolvedTarget = async <TPlacement>(

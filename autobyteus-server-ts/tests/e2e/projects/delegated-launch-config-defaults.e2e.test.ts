@@ -15,9 +15,9 @@ import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 import { grokAcpFixturePath } from "../helpers/grok-fake-cli.js";
 
-// Delegated copies and collaborators honor agent and team launch defaults (delegated-launch-config-defaults SR-002:
+// Delegated copies honor agent and team launch defaults (delegated-launch-config-defaults SR-002:
 // REQ-001..REQ-008, AC-001..AC-009, AC-015 shape) through the real Studio HTTP/GraphQL/WebSocket server, scoped MCP
-// agent tools, collaborator admission, the real runtime availability and model-catalog probes, run history and root
+// agent tools, the real runtime availability and model-catalog probes, run history and root
 // restore, in the standalone Agent, Agent Team and Agent Org roots. Only external CLIs are scripted, no inference:
 // - AGY: tests/fixtures/agy-failure-cli.mjs (`linked_skills`): `CALL_TOOL:{...}` makes the agent call the actual tool;
 //   `AGY_FAKE_EXTRA_MODELS` offers a second model (ALT) and, for AC-006, the retiring root model;
@@ -27,16 +27,17 @@ import { grokAcpFixturePath } from "../helpers/grok-fake-cli.js";
 // (Codex), unoffered (AGY model not offered), badsettings (AGY model + settings it has none of), incomplete (runtime only),
 // Squad team default AGY with a model not offered. Pair = lead (none), engineer (Grok), unoffered; Pair team default ALT.
 // Cases (each root): DLC-001 catalog Team copy: recorded per-member launch/source, five notes in `launch_notes`;
-// DLC-002 members start on their resolved runtime/model (Grok session; AGY argv `--model`); DLC-003 agent copy and
-// agent bring-in (`send_message_to` message carries notes); DLC-004 Team bring-in with notes, then an extra copy at its
-// address reuses the recorded per-member values without notes; DLC-005 teammate delegation inside the copy reuses the
-// recorded value without notes; a copy member's helper bring-in carries its note once. The extra copy records no snapshot,
-// so its per-member values are proven at the runtime (Grok session, AGY `--model`).
-// Agent root only: DLC-006 the root's model is retired: a delegation/bring-in that needs the inherited layer fails with
-// today's text and adds nothing; an agent with a usable default still starts; a user `@` mention only resolves.
+// DLC-002 members start on their resolved runtime/model (Grok session; AGY argv `--model`); DLC-003 agent copies, with and
+// without a usable default (the result's `launch_notes` carry the fallback); DLC-004 a catalog Team with a team default is
+// delegated twice, each copy resolved on its own with the same notes; DLC-005 delegating to a teammate inside the copy is
+// refused (collaboration-model-contract) while an outside catalog Agent is delegated with its note, and a message to an
+// outside address is not found. The second Pair copy's per-member values are proven at the runtime (Grok session, AGY `--model`).
+// Agent root only: DLC-006 the root's model is retired: a delegation that needs the inherited layer fails with today's
+// text and adds nothing; an outside `send_message_to` is not found; an agent with a usable default still starts; a user `@`
+// mention only resolves.
 // Agent and Team roots: DLC-007 a definition default edited after a copy started: the copy keeps its recorded values
 // through root stop/restore; a new copy uses the new default; DLC-008 the saved tree is given the pre-change shape
-// (no sources, no member launches) for a copy and a collaborator Team: restore loads, sources read "not recorded" and
+// (no sources, no member launches) for two Team copies: restore loads, sources read "not recorded" and
 // members run on the Team value.
 // About 30 seconds. `DELEGATED_LAUNCH_DEFAULTS_E2E_EVIDENCE_DIR` keeps a JSON receipt.
 // Run: env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
@@ -86,12 +87,9 @@ const objectsIn = (value: unknown): Rec[] => {
 /** Task executions (delegated copies) of a tree: records with a run ID, a start time and a recorded `source`. */
 const taskExecutions = (tree: unknown) => objectsIn(tree).filter((record) => f(record, "startedAt") && f(record, "source")
   && (f(record, "teamRunId") || f(record, "agentRunId")));
-/** A Team copy by its coordinator run ID. A copy re-projected from a collaborator entry records no `source`. */
+/** A Team copy by its coordinator run ID. */
 const teamCopyOf = (tree: unknown, coordinatorRunId: string) => objectsIn(tree).find((record) => f(record, "teamRunId") && f(record, "startedAt")
   && (record.members as Rec[] | undefined)?.some((member) => f(member, "agentRunId") === coordinatorRunId));
-/** Collaborator entries of a tree (one per brought-in definition). */
-const collaborators = (tree: unknown) => objectsIn(tree).filter((record) => f(record, "addedViaAgentRunId") && f(record, "addedAt")
-  && !f(record, "startedAt"));
 const calledResults = (conversation: unknown): string[] => (Array.isArray(conversation) ? conversation : []).flatMap((entry) => {
   const strings = objectsIn(entry).flatMap((record) => Object.values(record)).filter((value): value is string =>
     typeof value === "string" && value.includes("CALLED:"));
@@ -114,7 +112,7 @@ const noteText = (input: { name: string; layer: "agent" | "team"; runtime: strin
   + `${input.model ?? "(no model)"} could not be used (${input.detail.replace(/\.$/, "")}); `
   + `${input.team ? "its members without their own default run on" : "it runs on"} ${input.runsOn} (${input.origin}).`;
 
-suite("Delegated copies and collaborators honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)", () => {
+suite("Delegated copies honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok)", () => {
   let dataDir = "", workspace = "", argvLog = "", grokLog = "", grokDir = "", missingCodex = "", app: FastifyInstance | undefined, url!: URL;
   const sockets: WebSocket[] = [];
   const active: Array<{ kind: Kind; rootId: string }> = [];
@@ -212,7 +210,7 @@ suite("Delegated copies and collaborators honor agent and team launch defaults i
     appConfigProvider.config.setCustomAppDataDir(dataDir);
     const started = await startStudioE2eRuntimeServer();
     app = started.fastify; url = started.mainUrl;
-    await agentDefinition("manager", ["create_or_update_task"], null);
+    await agentDefinition("manager", ["create_task", "update_task"], null);
     await agentDefinition("worker", [], null);
     await agentDefinition("plain", [], null);
     await agentDefinition("engineer", [], { runtimeKind: GROK, llmModelIdentifier: GROK_MODEL });
@@ -417,32 +415,32 @@ suite("Delegated copies and collaborators honor agent and team launch defaults i
     expect(await launchesAfter(agyFrom, squad.members.engineer!.agentRunId), `${kind}: engineer never ran on AGY`).toEqual([]);
     record.mixedRuntime = { grokSessions: (await grokSessions()).slice(grokFrom), agyLaunches: (await agyLaunches()).slice(agyFrom) };
 
-    // DLC-005 (AC-007, AR-002): a teammate delegated inside the copy runs on its recorded value; no repeated note.
-    const teammate = await root.agentCalls(squad.members.lead!, callTool("delegate_task", { recipient_address: squad.members.unoffered!.address,
-      description: "Teammate work." }));
-    expect(teammate, JSON.stringify(teammate)).toMatchObject({ delegated: true, target_kind: "agent" });
-    expect(teammate).not.toHaveProperty("launch_notes");
-    const teammateGrok = await root.agentCalls(squad.members.lead!, callTool("delegate_task", { recipient_address: squad.members.engineer!.address,
-      description: "Teammate work on Grok." }));
-    expect(teammateGrok, JSON.stringify(teammateGrok)).toMatchObject({ delegated: true, target_kind: "agent" });
-    expect(teammateGrok).not.toHaveProperty("launch_notes");
-    let teammateCopies: Rec[] = [];
-    await until(async () => (teammateCopies = taskExecutions(await root.liveTree()).filter((entry) =>
-      [teammate.target_agent_run_id, teammateGrok.target_agent_run_id].includes(f(entry, "agentRunId")))).length === 2, `${kind}: teammate copies`, 60_000);
-    const teammateLaunch = (runId: string) => launchOf(f(f(teammateCopies.find((entry) => f(entry, "agentRunId") === runId), "source"), "launchConfiguration"));
-    expect(teammateLaunch(teammate.target_agent_run_id)).toEqual(inheritedLaunch());
-    expect(teammateLaunch(teammateGrok.target_agent_run_id)).toEqual(ownLaunch(GROK, GROK_MODEL));
-    // DS-004 (b): the copy's lead brings in a helper (an available agent) whose default is unusable: the note once, then none.
+    // DLC-005 (collaboration-model-contract): inside the copy, delegating to a teammate is refused with guidance (no teammate
+    // copy, so no launch values to resolve); the lead messages its teammates instead.
+    const treeBeforeRefusal = taskExecutions(await root.liveTree()).length;
+    for (const mate of ["unoffered", "engineer"] as const) {
+      const refused = await root.agentCalls(squad.members.lead!, callTool("delegate_task", { recipient_address: squad.members[mate]!.address,
+        description: "Teammate work." }));
+      expect(JSON.stringify(refused), JSON.stringify(refused)).toContain("COLLABORATION_SELF_TARGET_REJECTED");
+      expect(refused).not.toHaveProperty("launch_notes");
+    }
+    expect(taskExecutions(await root.liveTree()).length, "the refusals start nothing").toBe(treeBeforeRefusal);
+    // The copy's lead delegates to an outside catalog Agent whose default is unusable: each copy is resolved on its own, so
+    // each result carries the note, and the copy runs on the inherited value.
     const helperAddress = `/${segment(names.badsettings!)}`;
-    const helper = await root.agentCalls(squad.members.lead!, callTool("send_message_to", { recipient_address: helperAddress, content: "Helper work." }));
-    expect(helper, JSON.stringify(helper)).toMatchObject({ accepted: true });
-    expect(helper.message).toContain(`\nLaunch configuration notes:\n- ${agentNote(names.badsettings!, reasons.badsettings, runsOnRoot, "inherited from the run")}`);
-    const helperAgain = await root.agentCalls(squad.members.lead!, callTool("send_message_to", { recipient_address: helperAddress, content: "More helper work." }));
-    expect(helperAgain, JSON.stringify(helperAgain)).toMatchObject({ accepted: true });
-    expect(helperAgain.message ?? "").not.toContain("Launch configuration notes");
-    record.teammates = { teammate, teammateGrok, helper, helperAgain };
+    const helper = await root.agentCalls(squad.members.lead!, callTool("delegate_task", { recipient_address: helperAddress, description: "Helper work." }));
+    expect(helper, JSON.stringify(helper)).toMatchObject({ delegated: true, target_kind: "agent" });
+    expect(helper.launch_notes).toEqual([agentNote(names.badsettings!, reasons.badsettings, runsOnRoot, "inherited from the run")]);
+    const helperAgain = await root.agentCalls(squad.members.lead!, callTool("delegate_task", { recipient_address: helperAddress, description: "More helper work." }));
+    expect(helperAgain, JSON.stringify(helperAgain)).toMatchObject({ delegated: true, target_kind: "agent" });
+    expect(helperAgain.target_agent_run_id).not.toBe(helper.target_agent_run_id);
+    expect(helperAgain.launch_notes).toEqual(helper.launch_notes);
+    // A message to the same outside address is not found: messaging never brings anyone in.
+    const helperMessage = await root.agentCalls(squad.members.lead!, callTool("send_message_to", { recipient_address: helperAddress, content: "Hi." }));
+    expect(helperMessage, JSON.stringify(helperMessage)).toMatchObject({ accepted: false, code: "COLLABORATION_TARGET_NOT_FOUND" });
+    record.teammates = { helper, helperAgain, helperMessage };
 
-    // DLC-003 (AC-003, AC-004, AC-005): an agent copy on its own default; agent bring-ins with and without a usable default.
+    // DLC-003 (AC-003, AC-004, AC-005): agent copies on their own default, with and without a usable default.
     const agentCopy = await root.managerCalls(callTool("delegate_task", { recipient_address: `/${segment(names.engineer!)}`, description: "Grok work." }));
     expect(agentCopy, JSON.stringify(agentCopy)).toMatchObject({ delegated: true, target_kind: "agent" });
     expect(agentCopy).not.toHaveProperty("launch_notes");
@@ -456,46 +454,45 @@ suite("Delegated copies and collaborators honor agent and team launch defaults i
     expect(sourceOf(f(copySource(agentCopy.target_agent_run_id), "launchSource"))).toEqual({ origin: "agent_default", fallbacks: [] });
     expect(launchOf(f(copySource(plainCopy.target_agent_run_id), "launchConfiguration"))).toEqual(inheritedLaunch());
     expect(sourceOf(f(copySource(plainCopy.target_agent_run_id), "launchSource"))).toEqual({ origin: "inherited", fallbacks: [] });
-    const usable = await root.managerCalls(callTool("send_message_to", { recipient_address: `/${segment(names.reviewer!)}`, content: "Review this." }));
-    expect(usable, JSON.stringify(usable)).toMatchObject({ accepted: true });
-    expect(usable.message ?? "").not.toContain("Launch configuration notes");
-    const unusable = await root.managerCalls(callTool("send_message_to", { recipient_address: `/${segment(names.unoffered!)}`, content: "Help here." }));
-    expect(unusable, JSON.stringify(unusable)).toMatchObject({ accepted: true });
-    expect(unusable.message).toContain(`\nLaunch configuration notes:\n- ${agentNote(names.unoffered!, reasons.unoffered, runsOnRoot, "inherited from the run")}`);
-    const entries = collaborators(await root.liveTree());
-    const entryAt = (key: string) => entries.find((entry) => entry.address === `/${segment(names[key]!)}`);
-    expect(launchOf(f(entryAt("reviewer"), "launchConfiguration"))).toEqual(ownLaunch(AGY, ALT));
-    expect(sourceOf(f(entryAt("reviewer"), "launchSource"))).toEqual({ origin: "agent_default", fallbacks: [] });
-    expect(launchOf(f(entryAt("unoffered"), "launchConfiguration"))).toEqual(inheritedLaunch());
-    expect(sourceOf(f(entryAt("unoffered"), "launchSource"))).toEqual({ origin: "inherited", fallbacks: [reasons.unoffered] });
+    const usable = await root.managerCalls(callTool("delegate_task", { recipient_address: `/${segment(names.reviewer!)}`, description: "Review this." }));
+    expect(usable, JSON.stringify(usable)).toMatchObject({ delegated: true, target_kind: "agent" });
+    expect(usable).not.toHaveProperty("launch_notes");
+    const unusable = await root.managerCalls(callTool("delegate_task", { recipient_address: `/${segment(names.unoffered!)}`, description: "Help here." }));
+    expect(unusable, JSON.stringify(unusable)).toMatchObject({ delegated: true, target_kind: "agent" });
+    expect(unusable.launch_notes).toEqual([agentNote(names.unoffered!, reasons.unoffered, runsOnRoot, "inherited from the run")]);
+    let entries: Rec[] = [];
+    await until(async () => (entries = taskExecutions(await root.liveTree()).filter((entry) =>
+      [usable.target_agent_run_id, unusable.target_agent_run_id].includes(f(entry, "agentRunId")))).length === 2, `${kind}: usable and unusable copies`, 60_000);
+    const entryOf = (runId: string) => f(entries.find((entry) => f(entry, "agentRunId") === runId), "source");
+    expect(launchOf(f(entryOf(usable.target_agent_run_id), "launchConfiguration"))).toEqual(ownLaunch(AGY, ALT));
+    expect(sourceOf(f(entryOf(usable.target_agent_run_id), "launchSource"))).toEqual({ origin: "agent_default", fallbacks: [] });
+    expect(launchOf(f(entryOf(unusable.target_agent_run_id), "launchConfiguration"))).toEqual(inheritedLaunch());
+    expect(sourceOf(f(entryOf(unusable.target_agent_run_id), "launchSource"))).toEqual({ origin: "inherited", fallbacks: [reasons.unoffered] });
     record.agents = { agentCopy, plainCopy, usable, unusable };
 
-    // DLC-004 (AC-004, AC-002 team layer, AC-007): a Team brought in, then an extra copy at its address reuses its record.
-    const pairAddress = `/${segment(names.pair!)}`;
-    const pairIn = await root.managerCalls(callTool("send_message_to", { recipient_address: pairAddress, content: "Pair work." }));
-    expect(pairIn, JSON.stringify(pairIn)).toMatchObject({ accepted: true });
+    // DLC-004 (AC-004, AC-002 team layer): a catalog Team with a team default is delegated; a second copy at its address is
+    // resolved on its own again (each copy records its own snapshot), with the same notes.
     const pairFallback = squadFallbacks().unoffered;
-    expect(pairIn.message).toContain(`\nLaunch configuration notes:\n- ${agentNote("unoffered", pairFallback, `${AGY} / ${ALT}`, "its team default")}`);
-    const pair = collaborators(await root.liveTree()).find((entry) => entry.address === pairAddress)!;
-    expect(launchOf(f(pair, "defaultLaunchConfiguration"))).toEqual(ownLaunch(AGY, ALT));
-    expect(sourceOf(f(pair, "defaultLaunchSource"))).toEqual({ origin: "team_default", fallbacks: [] });
-    expect(memberSources(pair)).toEqual({
+    const pairDelegation = await delegateTeam(root, "pair");
+    expect(JSON.stringify(pairDelegation.result.launch_notes)).toContain(agentNote("unoffered", pairFallback, `${AGY} / ${ALT}`, "its team default"));
+    const pairSource = f(pairDelegation.copy, "source");
+    expect(launchOf(f(pairSource, "defaultLaunchConfiguration"))).toEqual(ownLaunch(AGY, ALT));
+    expect(sourceOf(f(pairSource, "defaultLaunchSource"))).toEqual({ origin: "team_default", fallbacks: [] });
+    expect(memberSources(pairSource)).toEqual({
       lead: { launch: null, source: null },
       engineer: { launch: ownLaunch(GROK, GROK_MODEL), source: { origin: "agent_default", fallbacks: [] } },
       unoffered: { launch: null, source: { origin: "team_default", fallbacks: [pairFallback] } },
     });
-    const pairLead = (pair.members as Rec[]).find((member) => String(member.address).endsWith("/lead"))!;
-    await until(async () => (await agyLaunches()).some((entry) => entry.runId === f(pairLead, "agentRunId")), `${kind}: pair lead started`, 60_000);
-    expect((await agyLaunches()).filter((entry) => entry.runId === f(pairLead, "agentRunId")).map((entry) => entry.model)).toEqual([ALT]);
-    const extra = await root.managerCalls(callTool("delegate_task", { recipient_address: pairAddress, description: "Extra Pair work." }));
-    expect(extra, JSON.stringify(extra)).toMatchObject({ delegated: true, target_kind: "team" });
-    expect(extra).not.toHaveProperty("launch_notes");
-    let extraCopy: Rec | undefined;
-    await until(async () => Boolean(extraCopy = teamCopyOf(await root.liveTree(), extra.target_team_coordinator_agent_run_id)), `${kind}: extra Pair copy`, 60_000);
-    // The extra copy records no definition snapshot (it is re-projected from the collaborator entry), so its members'
-    // launches are proven where they matter: each starts on the collaborator's recorded per-member value.
-    const extraMembers = Object.fromEntries((extraCopy!.members as Rec[]).map((member) => [String(member.address).split("/").pop(),
-      { address: member.address as string, agentRunId: f(member, "agentRunId") as string }]));
+    await until(async () => (await agyLaunches()).some((entry) => entry.runId === pairDelegation.members.lead!.agentRunId), `${kind}: pair lead started`, 60_000);
+    expect((await agyLaunches()).filter((entry) => entry.runId === pairDelegation.members.lead!.agentRunId).map((entry) => entry.model)).toEqual([ALT]);
+    const pairIn = pairDelegation.result;
+    const pair = pairDelegation.copy;
+    const extraDelegation = await delegateTeam(root, "pair");
+    expect(extraDelegation.result.launch_notes).toEqual(pairDelegation.result.launch_notes);
+    const extra = extraDelegation.result;
+    const extraCopy = extraDelegation.copy;
+    // The second copy's members' launches are proven where they matter: each starts on its recorded per-member value.
+    const extraMembers = extraDelegation.members;
     const extraAgyFrom = (await agyLaunches()).length;
     const extraGrokFrom = (await grokSessions()).length;
     await until(async () => (await agyLaunches()).some((entry) => entry.runId === extraMembers.lead!.agentRunId), `${kind}: extra copy lead started`, 60_000);
@@ -518,13 +515,13 @@ suite("Delegated copies and collaborators honor agent and team launch defaults i
     return record;
   };
 
-  it("in every root, catalog copies and collaborators run each agent on its own usable default, fall back with notes, and reuse recorded values", async () => {
+  it("in every root, catalog copies run each agent on its own usable default, fall back with notes, and reuse recorded values", async () => {
     const settled = await Promise.allSettled((["agent", "team", "org"] as const).map(rootScenario));
     const failures = settled.flatMap((result, index) => result.status === "rejected" ? [`${["agent", "team", "org"][index]}: ${String(result.reason?.stack ?? result.reason)}`] : []);
     expect(failures).toEqual([]);
   }, 600_000);
 
-  it("Agent root: with the root's model retired, an agent that needs the inherited layer cannot be delegated or brought in (today's text, nothing added); a usable own default still starts; a user `@` mention admits nothing (AC-006)", async () => {
+  it("Agent root: with the root's model retired, an agent that needs the inherited layer cannot be delegated (today's text, nothing added), and an outside message is not found; a usable own default still starts; a user `@` mention admits nothing (AC-006)", async () => {
     process.env["AGY_FAKE_EXTRA_MODELS"] = `${ALT},${RETIRING}`;
     const root = await startRoot("agent", RETIRING);
     // The root's AGY session starts on the retiring model, then the provider retires it.
@@ -539,12 +536,12 @@ suite("Delegated copies and collaborators honor agent and team launch defaults i
     const team = await root.managerCalls(callTool("delegate_task", { recipient_address: `/${segment(names.squad!)}`, description: "Team work." }));
     expect(team.delegated ?? false, JSON.stringify(team)).toBe(false);
     expect(JSON.stringify(team)).toContain(`${names.squad} cannot be delegated to: ${reason}`);
+    // Messaging never brings anyone in: an outside address is not found whatever the root's model, and nothing is added.
     const brought = await root.managerCalls(callTool("send_message_to", { recipient_address: `/${segment(names.unoffered!)}`, content: "Help." }));
-    expect(brought, JSON.stringify(brought)).toMatchObject({ accepted: false, code: "COLLABORATOR_ADD_FAILED" });
-    expect(brought.message).toContain(reason);
+    expect(brought, JSON.stringify(brought)).toMatchObject({ accepted: false, code: "COLLABORATION_TARGET_NOT_FOUND" });
+    expect(brought.message).toContain("delegate_task");
     const after = await root.liveTree();
     expect(taskExecutions(after)).toEqual(taskExecutions(before));
-    expect(collaborators(after)).toEqual(collaborators(before));
     // REQ-004 fails only an agent with no usable layer: an own usable default is unaffected by the retired root model.
     const own = await root.managerCalls(callTool("delegate_task", { recipient_address: `/${segment(names.reviewer!)}`, description: "Review work." }));
     expect(own, JSON.stringify(own)).toMatchObject({ delegated: true, target_kind: "agent" });
@@ -556,7 +553,7 @@ suite("Delegated copies and collaborators honor agent and team launch defaults i
     root.sendToManager("With a mention. Marker MENTION.", { mentions: [{ kind: "agent", definition_id: ids.incomplete }] });
     await until(async () => /MENTION[\s\S]*OK/.test(await root.conversationText({ address: "/", agentRunId: root.managerRunId })), "mention answered", 60_000);
     expect(JSON.stringify(root.inputFrames())).toContain(`/${segment(names.incomplete!)}`);
-    expect(collaborators(await root.liveTree())).toEqual(collaborators(mentionTree));
+    expect(taskExecutions(await root.liveTree())).toEqual(taskExecutions(mentionTree));
     evidence.inheritedUnusable = { delegated, team, brought, own };
     root.closeChannels();
     await terminate("agent", root.rootId);
@@ -569,8 +566,8 @@ suite("Delegated copies and collaborators honor agent and team launch defaults i
     // DLC-007 (AC-008, DEC-008): copy A starts with the engineer on Grok; then the engineer's default is edited.
     const first = await delegateTeam(root, "squad");
     const pairAddress = `/${segment(names.pair!)}`;
-    expect(await root.managerCalls(callTool("send_message_to", { recipient_address: pairAddress, content: "Pair work." }))).toMatchObject({ accepted: true });
-    return { record, root, first, pairAddress };
+    const pairCopy = await delegateTeam(root, "pair");
+    return { record, root, first, pairAddress, pairCopy };
   };
 
   it("Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)", async () => {
@@ -578,19 +575,18 @@ suite("Delegated copies and collaborators honor agent and team launch defaults i
     const edited = await graphql(`mutation($input:UpdateAgentDefinitionInput!){updateAgentDefinition(input:$input){id defaultLaunchConfig{runtimeKind llmModelIdentifier}}}`,
       { input: { id: ids.engineer, defaultLaunchConfig: { runtimeKind: AGY, llmModelIdentifier: ALT, llmConfig: null } } });
     expect(edited.updateAgentDefinition.defaultLaunchConfig).toEqual({ runtimeKind: AGY, llmModelIdentifier: ALT });
-    const settled = await Promise.allSettled(prepared.map(async ({ record, root, first, pairAddress }) => {
+    const settled = await Promise.allSettled(prepared.map(async ({ record, root, first, pairCopy }) => {
       const kind = root.kind;
       expect(memberSources(f(teamCopyOf(await root.liveTree(), first.members.lead!.agentRunId), "source")).engineer!.launch).toEqual(ownLaunch(GROK, GROK_MODEL));
       const second = await delegateTeam(root, "squad");
       expect(memberSources(f(second.copy, "source")).engineer).toEqual({ launch: ownLaunch(AGY, ALT), source: { origin: "agent_default", fallbacks: [] } });
       record.copies = { first: first.teamRunId, second: second.teamRunId };
 
-      // Root stop. DLC-008 (AC-009): copy B and the Pair collaborator get the pre-change shape (no sources, no member launches).
+      // Root stop. DLC-008 (AC-009): copy B and the Pair copy get the pre-change shape (no sources, no member launches).
       root.closeChannels();
       await terminate(kind, root.rootId);
       await wait(2_000);
-      const pair = collaborators(await root.liveTree()).find((entry) => entry.address === pairAddress)!;
-      const targets = [second.teamRunId, f(pair, "teamRunId") as string];
+      const targets = [second.teamRunId, pairCopy.teamRunId];
       const files = await savedTreeFiles(targets);
       expect(files.length, `${kind}: saved trees`).toBeGreaterThan(0);
       const stripTeam = (team: Rec | undefined) => {
@@ -613,7 +609,7 @@ suite("Delegated copies and collaborators honor agent and team launch defaults i
       const secondSource = f(teamCopyOf(restored, second.members.lead!.agentRunId), "source");
       expect(f(secondSource, "defaultLaunchSource") ?? null).toBeNull();
       expect(memberSources(secondSource).engineer).toEqual({ launch: null, source: null });
-      const restoredPair = collaborators(restored).find((entry) => entry.address === pairAddress)!;
+      const restoredPair = f(teamCopyOf(restored, pairCopy.members.lead!.agentRunId), "source");
       expect(f(restoredPair, "defaultLaunchSource") ?? null).toBeNull();
       expect(memberSources(restoredPair).engineer).toEqual({ launch: null, source: null });
 

@@ -1,0 +1,74 @@
+{
+  "review": "CRR007",
+  "priorFinding": "CR-004/CAND008",
+  "disposition": "Resolved at source/contract boundary",
+  "basis": "Approved SR020 authorized publication with verified prior candidate; no permission to publish now",
+  "jobs": [
+    {
+      "name": "prepare",
+      "needs": [],
+      "condition": "<implicit success()>"
+    },
+    {
+      "name": "engine-packages",
+      "needs": "prepare",
+      "condition": "needs.prepare.outputs.publish != 'true'"
+    },
+    {
+      "name": "engine-inputs",
+      "needs": "[prepare, engine-packages]",
+      "condition": "${{ !cancelled() && needs.prepare.result == 'success' && ((needs.prepare.outputs.publish != 'true' && needs.engine-packages.result == 'success') || (needs.prepare.outputs.publish == 'true' && needs.engine-packages.result == 'skipped')) }}"
+    },
+    {
+      "name": "engine",
+      "needs": "[prepare, engine-inputs]",
+      "condition": "${{ !cancelled() && needs.prepare.result == 'success' && needs.engine-inputs.result == 'success' }}"
+    },
+    {
+      "name": "binaries",
+      "needs": "[prepare, engine-inputs, engine]",
+      "condition": "${{ !cancelled() && needs.prepare.result == 'success' && needs.engine-inputs.result == 'success' && needs.engine.result == 'success' }}"
+    },
+    {
+      "name": "publish",
+      "needs": "[prepare, engine-inputs, engine, binaries]",
+      "condition": "${{ !cancelled() && needs.prepare.outputs.publish == 'true' && needs.prepare.result == 'success' && needs.engine-inputs.result == 'success' && needs.engine.result == 'success' && needs.binaries.result == 'success' }}"
+    }
+  ],
+  "normalBuildOnly": [
+    "prepare success",
+    "engine-packages success",
+    "engine-inputs success",
+    "engine success",
+    "binaries success",
+    "publish skipped"
+  ],
+  "normalPublication": [
+    "prepare success",
+    "engine-packages deliberately skipped",
+    "engine-inputs verifies retained candidate",
+    "engine success",
+    "binaries including signing success",
+    "publish checks qualification again"
+  ],
+  "edgeContract": "Any failed/cancelled/skipped applicable prerequisite denies dependent work; workflow cancellation denies four explicit gates; only exactly skipped rebuild permitted for publish input bridge",
+  "personalEvidence": {
+    "python": "17 enumerated /16pass /1skip",
+    "oldWorkflow": "5methods/10 expected assertion failures",
+    "missingBinaryResult": "5methods/6 expected assertion failures",
+    "actionlint": "1.7.11 Pass (shellcheck/pyflakes disabled)"
+  },
+  "limits": "Static source/primary contract and bounded expression model, not hosted Actions, artifact release or runtime qualification",
+  "primarySources": [
+    {
+      "url": "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idneeds",
+      "checked": "2026-10-14",
+      "supports": "needs chain skip propagation unless explicit conditional continues"
+    },
+    {
+      "url": "https://docs.github.com/en/actions/reference/workflows-and-actions/expressions#status-check-functions",
+      "checked": "2026-10-14",
+      "supports": "status functions override implicit success; cancelled is workflow cancellation"
+    }
+  ]
+}

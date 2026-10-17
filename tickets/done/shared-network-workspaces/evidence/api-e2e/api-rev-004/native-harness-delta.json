@@ -1,0 +1,7 @@
+{
+  "classification": "Local harness quoting correction",
+  "original": "native-peer-result.json",
+  "actualCreateAndReconnect": "Both rc0 and hostReady/no nodes; source identity/defaultY/modes/job asserted",
+  "error": "Unescaped shell variables in dpkg-query format expanded to blank fields, causing version assertion. Original guard also lacked proper format quoting and is not a valid standalone absence proof. No manual host Ganesha install exists in owned sequence; do not claim that defective guard proves absence.",
+  "correction": "Escape format dollars; read-only installed versions verification and remaining peer observation only. No repeated create/production change."
+}

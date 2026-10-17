@@ -238,7 +238,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     expect(openStreamingSession).toHaveBeenCalledWith(
       expect.objectContaining({
         systemPrompt: expect.stringContaining(
-          "Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients.",
+          "Relative addresses, bare names, `../`, backslashes, and `/` itself are not valid recipients.",
         ),
         allowedTools: [
           "get_handoff_rules",
@@ -445,7 +445,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     expect(openStreamingSession).toHaveBeenCalledWith(
       expect.objectContaining({
         systemPrompt: expect.stringContaining(
-          "Use `delegate_task` with `recipient_address` to spawn a new copy of an Agent or",
+          "To get a task done outside your team, use `delegate_task` with the address of an agent or agent team.",
         ),
         allowedTools: [
           "delegate_task",

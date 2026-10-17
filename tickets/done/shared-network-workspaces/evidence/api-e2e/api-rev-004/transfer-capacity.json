@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+    "exec",
+    "ab-nfs-api004-linux-9591ce1a",
+    "/bin/sh",
+    "-c",
+    "df -h / /var/lib/docker; sudo -n docker image ls --format \"{{.Repository}} {{.Size}}\"; ps -eo pid,stat,comm | grep -E \"docker|containerd\""
+  ],
+  "rc": 0,
+  "stdout": "Filesystem      Size  Used Avail Use% Mounted on\n/dev/vda1        54G   11G   44G  19% /\n/dev/vda1        54G   11G   44G  19% /\n127.0.0.1:5000/ab-nfs-api004 219MB\nab-nfs-api004 219MB\nab-nfs-api004-server 2.45GB\nubuntu 141MB\nregistry 36.3MB\n   1360 Ssl  containerd\n   1419 Ssl  dockerd\n   2953 Sl   containerd-shim\n   3006 Sl   docker-proxy\n   3070 Sl   docker\n",
+  "stderr": ""
+}

@@ -1,0 +1,14 @@
+{
+  "retrievedUTC": "2026-10-14T04:38:46Z",
+  "result": "Fail",
+  "selectedWhen": "When API/E2E validation fails and the complete failure package requires focused failure-origin review by the code reviewer.",
+  "recipient_address": "/software_engineering_team/code_reviewer",
+  "mode": "send_message_to existing-role handoff; no delegation",
+  "otherRecipients": [],
+  "notSelected": [
+    "Pass Large/High test-code review",
+    "Pass direct-low-risk delivery",
+    "Pre-execution upstream gap designer"
+  ],
+  "request": "Focused failure-origin review of API-F002; API-F001 resolved first; not successful-test review"
+}

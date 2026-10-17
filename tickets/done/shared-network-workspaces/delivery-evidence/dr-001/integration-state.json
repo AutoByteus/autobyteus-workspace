@@ -1,0 +1,34 @@
+{
+  "captured_at": "2026-10-15T16:17:59.912285+00:00",
+  "ticket_branch": "codex/shared-network-workspaces",
+  "received_review_commit": "feb9bc4a2da8351c789f197e956295f3a4f61b2c",
+  "candidate": "673e89fd5012f63e8500f444b118967e26973450",
+  "original_head": "673e89fd5012f63e8500f444b118967e26973450",
+  "latest_base": "5096011674c7db6ec0e92e522ea37f32f8f4ea40",
+  "merge_base": "f13bdd0eb79aacc63dffa5995b9c86f359001468",
+  "divergence_ticket_base": "111\t261",
+  "merge_command": "git merge --no-edit origin/personal",
+  "merge_exit": 1,
+  "unmerged_paths": [
+    "autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts"
+  ],
+  "base_test_change": [
+    "4c3734952c4e1219687b71df20ff4f4d00572958 test(file-explorer): baseline fix route-owned fixture cleanup"
+  ],
+  "source_changed_by_delivery": false,
+  "preexisting_untracked_trees": [
+    "applications/brief-studio/dist/",
+    "autobyteus-application-backend-sdk/dist/",
+    "autobyteus-application-devkit/dist/",
+    "autobyteus-application-frontend-sdk/dist/",
+    "autobyteus-application-sdk-contracts/dist/"
+  ],
+  "recovery": {
+    "command": "git merge --abort",
+    "exit": 0,
+    "restored_head": "673e89fd5012f63e8500f444b118967e26973450",
+    "tracked_clean": true,
+    "review_receipt_commit_preserved": true
+  },
+  "conflict_capture_note": "Combined git diff for inspection, trailing whitespace normalized only; not a patch to apply."
+}

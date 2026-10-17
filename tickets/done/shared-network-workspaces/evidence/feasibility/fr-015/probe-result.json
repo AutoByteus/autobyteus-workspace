@@ -1,0 +1,2298 @@
+{
+  "run": "ab-sf-fr015-68c77fbb",
+  "scope": "task-owned unmodified Codex app-server/private-skill capability, two fresh image nodes; NOT integrated AutoByteus agent/current source/UI/Mac/LAN/setup proof",
+  "application_image": "sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a",
+  "commands": [
+    {
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a",
+        "--format",
+        "{\"id\":{{json .Id}},\"repo_digests\":{{json .RepoDigests}},\"created\":{{json .Created}},\"entrypoint\":{{json .Config.Entrypoint}}}"
+      ],
+      "rc": 0,
+      "seconds": 0.079,
+      "stdout": "{\"id\":\"sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a\",\"repo_digests\":[\"autobyteus/autobyteus-server@sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a\"],\"created\":\"2026-10-12T13:24:35.302109183Z\",\"entrypoint\":[\"/usr/local/bin/entrypoint.sh\"]}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "build",
+        "--pull=false",
+        "-t",
+        "autobyteus-shared-feasibility:fr-015",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-015"
+      ],
+      "rc": 0,
+      "seconds": 3.657,
+      "stdout": "",
+      "stderr": "#0 building with \"desktop-linux\" instance using docker driver\n\n#1 [internal] load build definition from Dockerfile\n#1 transferring dockerfile: 522B done\n#1 DONE 0.0s\n\n#2 [internal] load metadata for docker.io/library/ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55\n#2 ...\n\n#3 [auth] library/ubuntu:pull token for registry-1.docker.io\n#3 DONE 0.0s\n\n#2 [internal] load metadata for docker.io/library/ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55\n#2 DONE 1.8s\n\n#4 [internal] load .dockerignore\n#4 transferring context: 2B done\n#4 DONE 0.0s\n\n#5 [1/2] FROM docker.io/library/ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55\n#5 resolve docker.io/library/ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55 0.0s done\n#5 DONE 0.0s\n\n#6 [2/2] RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends nfs-ganesha nfs-ganesha-vfs nfs-common rpcbind python3 git procps iproute2 ca-certificates && rm -rf /var/lib/apt/lists/*\n#6 CACHED\n\n#7 exporting to image\n#7 exporting layers done\n#7 exporting manifest sha256:314534885aa58c16b0247fa67f3879e3c3571f1ffc8a80dcb81907d495cae015 done\n#7 exporting config sha256:e9680a531a4a741881fa2ef7592d6ba08e4eaf2b7740793c3b34fc978f0223f0 done\n#7 exporting attestation manifest sha256:1b695b8dc746a8f61c2deae62e17b19d76f5478da9435332fee383e567271ed6 0.0s done\n#7 exporting manifest list sha256:f237ebffed2e9e16755c99de6e6720d43bce840d0350a9efa66676eb3123388a done\n#7 naming to docker.io/library/autobyteus-shared-feasibility:fr-015 done\n#7 unpacking to docker.io/library/autobyteus-shared-feasibility:fr-015\n#7 unpacking to docker.io/library/autobyteus-shared-feasibility:fr-015 1.1s done\n#7 DONE 1.2s\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "autobyteus-shared-feasibility:fr-015"
+      ],
+      "rc": 0,
+      "seconds": 0.09,
+      "stdout": "[\n    {\n        \"Id\": \"sha256:f237ebffed2e9e16755c99de6e6720d43bce840d0350a9efa66676eb3123388a\",\n        \"RepoTags\": [\n            \"autobyteus-shared-feasibility:fr-015\"\n        ],\n        \"RepoDigests\": [\n            \"autobyteus-shared-feasibility@sha256:f237ebffed2e9e16755c99de6e6720d43bce840d0350a9efa66676eb3123388a\"\n        ],\n        \"Comment\": \"buildkit.dockerfile.v0\",\n        \"Created\": \"2026-10-13T04:11:06.431830875Z\",\n        \"Config\": {\n            \"Env\": [\n                \"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\"\n            ],\n            \"Cmd\": [\n                \"sleep\",\n                \"infinity\"\n            ],\n            \"Labels\": {\n                \"org.autobyteus.probe\": \"fr-015\",\n                \"org.autobyteus.task\": \"shared-network-workspaces\",\n                \"org.opencontainers.image.version\": \"24.04\"\n            },\n            \"ArgsEscaped\": true\n        },\n        \"Architecture\": \"arm64\",\n        \"Os\": \"linux\",\n        \"Size\": 71450870,\n        \"RootFS\": {\n            \"Type\": \"layers\",\n            \"Layers\": [\n                \"sha256:1e9178dc90058fa454a60803300219ee8c17e515be8718817ed824b96fa1207b\",\n                \"sha256:4b7b4f4b9f12ef90a8ac84b36ab00f9fea058f64c04ff2ac84a499f86f2ff408\"\n            ]\n        },\n        \"Metadata\": {\n            \"LastTagTime\": \"2026-10-13T06:21:37.120295417Z\"\n        },\n        \"Descriptor\": {\n            \"mediaType\": \"application/vnd.oci.image.index.v1+json\",\n            \"digest\": \"sha256:f237ebffed2e9e16755c99de6e6720d43bce840d0350a9efa66676eb3123388a\",\n            \"size\": 855\n        }\n    }\n]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "create",
+        "--label",
+        "org.autobyteus.probe=fr-015",
+        "ab-sf-fr015-68c77fbb-net"
+      ],
+      "rc": 0,
+      "seconds": 0.132,
+      "stdout": "4630f6942316497e3d8491e5b4df067541db6005fc857c5d38ef63f8ce7527ca\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "inspect",
+        "ab-sf-fr015-68c77fbb-net"
+      ],
+      "rc": 0,
+      "seconds": 0.028,
+      "stdout": "[\n    {\n        \"Name\": \"ab-sf-fr015-68c77fbb-net\",\n        \"Id\": \"4630f6942316497e3d8491e5b4df067541db6005fc857c5d38ef63f8ce7527ca\",\n        \"Created\": \"2026-10-13T06:21:38.425906417Z\",\n        \"Scope\": \"local\",\n        \"Driver\": \"bridge\",\n        \"EnableIPv4\": true,\n        \"EnableIPv6\": false,\n        \"IPAM\": {\n            \"Driver\": \"default\",\n            \"Options\": {},\n            \"Config\": [\n                {\n                    \"Subnet\": \"172.29.0.0/16\",\n                    \"IPRange\": \"\",\n                    \"Gateway\": \"172.29.0.1\"\n                }\n            ]\n        },\n        \"Internal\": false,\n        \"Attachable\": false,\n        \"Ingress\": false,\n        \"ConfigFrom\": {\n            \"Network\": \"\"\n        },\n        \"ConfigOnly\": false,\n        \"Options\": {\n            \"com.docker.network.enable_ipv4\": \"true\",\n            \"com.docker.network.enable_ipv6\": \"false\"\n        },\n        \"Labels\": {\n            \"org.autobyteus.probe\": \"fr-015\"\n        },\n        \"Containers\": {},\n        \"Status\": {\n            \"IPAM\": {\n                \"Subnets\": {\n                    \"172.29.0.0/16\": {\n                        \"IPsInUse\": 3,\n                        \"DynamicIPsAvailable\": 65533\n                    }\n                }\n            }\n        }\n    }\n]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-015",
+        "ab-sf-fr015-68c77fbb-storage"
+      ],
+      "rc": 0,
+      "seconds": 0.029,
+      "stdout": "ab-sf-fr015-68c77fbb-storage\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr015-68c77fbb-storage-server",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-015",
+        "--network",
+        "ab-sf-fr015-68c77fbb-net",
+        "--cap-add",
+        "DAC_READ_SEARCH",
+        "--mount",
+        "type=volume,src=ab-sf-fr015-68c77fbb-storage,dst=/export",
+        "--mount",
+        "type=bind,src=/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-015/ganesha.conf,dst=/etc/ganesha/ganesha.conf,readonly",
+        "sha256:f237ebffed2e9e16755c99de6e6720d43bce840d0350a9efa66676eb3123388a"
+      ],
+      "rc": 0,
+      "seconds": 0.497,
+      "stdout": "c4688309256e4fcade8f62c35793e4579116a9f0d811d0db7934abc16e10cd48\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr015-68c77fbb-storage-server",
+        "sh",
+        "-c",
+        "chown 10001:10001 /export; chmod 0770 /export; mkdir -p /run/ganesha /var/lib/nfs/ganesha /run/dbus; rpcbind -w; dbus-daemon --system --fork; ganesha.nfsd -F -L /tmp/ganesha.log -f /etc/ganesha/ganesha.conf >/tmp/ganesha-console.log 2>&1 &"
+      ],
+      "rc": 0,
+      "seconds": 0.136,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "inspect",
+        "ab-sf-fr015-68c77fbb-storage-server"
+      ],
+      "rc": 0,
+      "seconds": 0.023,
+      "stdout": "[\n    {\n        \"Id\": \"c4688309256e4fcade8f62c35793e4579116a9f0d811d0db7934abc16e10cd48\",\n        \"Created\": \"2026-10-13T06:21:38.646899376Z\",\n        \"Path\": \"sleep\",\n        \"Args\": [\n            \"infinity\"\n        ],\n        \"State\": {\n            \"Status\": \"running\",\n            \"Running\": true,\n            \"Paused\": false,\n            \"Restarting\": false,\n            \"OOMKilled\": false,\n            \"Dead\": false,\n            \"Pid\": 55640,\n            \"ExitCode\": 0,\n            \"Error\": \"\",\n            \"StartedAt\": \"2026-10-13T06:21:38.924693042Z\",\n            \"FinishedAt\": \"0001-01-01T00:00:00Z\"\n        },\n        \"Image\": \"sha256:f237ebffed2e9e16755c99de6e6720d43bce840d0350a9efa66676eb3123388a\",\n        \"ResolvConfPath\": \"/var/lib/docker/containers/c4688309256e4fcade8f62c35793e4579116a9f0d811d0db7934abc16e10cd48/resolv.conf\",\n        \"HostnamePath\": \"/var/lib/docker/containers/c4688309256e4fcade8f62c35793e4579116a9f0d811d0db7934abc16e10cd48/hostname\",\n        \"HostsPath\": \"/var/lib/docker/containers/c4688309256e4fcade8f62c35793e4579116a9f0d811d0db7934abc16e10cd48/hosts\",\n        \"LogPath\": \"/var/lib/docker/containers/c4688309256e4fcade8f62c35793e4579116a9f0d811d0db7934abc16e10cd48/c4688309256e4fcade8f62c35793e4579116a9f0d811d0db7934abc16e10cd48-json.log\",\n        \"Name\": \"/ab-sf-fr015-68c77fbb-storage-server\",\n        \"RestartCount\": 0,\n        \"Driver\": \"overlayfs\",\n        \"Platform\": \"linux\",\n        \"MountLabel\": \"\",\n        \"ProcessLabel\": \"\",\n        \"AppArmorProfile\": \"\",\n        \"ExecIDs\": null,\n        \"HostConfig\": {\n            \"Binds\": null,\n            \"ContainerIDFile\": \"\",\n            \"LogConfig\": {\n                \"Type\": \"json-file\",\n                \"Config\": {}\n            },\n            \"NetworkMode\": \"ab-sf-fr015-68c77fbb-net\",\n            \"PortBindings\": {},\n            \"RestartPolicy\": {\n                \"Name\": \"no\",\n                \"MaximumRetryCount\": 0\n            },\n            \"AutoRemove\": false,\n            \"VolumeDriver\": \"\",\n            \"VolumesFrom\": null,\n            \"ConsoleSize\": [\n                0,\n                0\n            ],\n            \"CapAdd\": [\n                \"CAP_DAC_READ_SEARCH\"\n            ],\n            \"CapDrop\": null,\n            \"CgroupnsMode\": \"private\",\n            \"Dns\": null,\n            \"DnsOptions\": [],\n            \"DnsSearch\": [],\n            \"ExtraHosts\": null,\n            \"GroupAdd\": null,\n            \"IpcMode\": \"private\",\n            \"Cgroup\": \"\",\n            \"Links\": null,\n            \"OomScoreAdj\": 0,\n            \"PidMode\": \"\",\n            \"Privileged\": false,\n            \"PublishAllPorts\": false,\n            \"ReadonlyRootfs\": false,\n            \"SecurityOpt\": null,\n            \"UTSMode\": \"\",\n            \"UsernsMode\": \"\",\n            \"ShmSize\": 67108864,\n            \"Runtime\": \"runc\",\n            \"Isolation\": \"\",\n            \"CpuShares\": 0,\n            \"Memory\": 0,\n            \"NanoCpus\": 0,\n            \"CgroupParent\": \"\",\n            \"BlkioWeight\": 0,\n            \"BlkioWeightDevice\": [],\n            \"BlkioDeviceReadBps\": [],\n            \"BlkioDeviceWriteBps\": [],\n            \"BlkioDeviceReadIOps\": [],\n            \"BlkioDeviceWriteIOps\": [],\n            \"CpuPeriod\": 0,\n            \"CpuQuota\": 0,\n            \"CpuRealtimePeriod\": 0,\n            \"CpuRealtimeRuntime\": 0,\n            \"CpusetCpus\": \"\",\n            \"CpusetMems\": \"\",\n            \"Devices\": [],\n            \"DeviceCgroupRules\": null,\n            \"DeviceRequests\": null,\n            \"MemoryReservation\": 0,\n            \"MemorySwap\": 0,\n            \"MemorySwappiness\": null,\n            \"OomKillDisable\": null,\n            \"PidsLimit\": null,\n            \"Ulimits\": [],\n            \"CpuCount\": 0,\n            \"CpuPercent\": 0,\n            \"IOMaximumIOps\": 0,\n            \"IOMaximumBandwidth\": 0,\n            \"Mounts\": [\n                {\n                    \"Type\": \"volume\",\n                    \"Source\": \"ab-sf-fr015-68c77fbb-storage\",\n                    \"Target\": \"/export\"\n                },\n                {\n                    \"Type\": \"bind\",\n                    \"Source\": \"/host_mnt/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-015/ganesha.conf\",\n                    \"Target\": \"/etc/ganesha/ganesha.conf\",\n                    \"ReadOnly\": true\n                }\n            ],\n            \"MaskedPaths\": [\n                \"/proc/acpi\",\n                \"/proc/asound\",\n                \"/proc/interrupts\",\n                \"/proc/kcore\",\n                \"/proc/keys\",\n                \"/proc/latency_stats\",\n                \"/proc/sched_debug\",\n                \"/proc/scsi\",\n                \"/proc/timer_list\",\n                \"/proc/timer_stats\",\n                \"/sys/devices/virtual/powercap\",\n                \"/sys/firmware\"\n            ],\n            \"ReadonlyPaths\": [\n                \"/proc/bus\",\n                \"/proc/fs\",\n                \"/proc/irq\",\n                \"/proc/sys\",\n                \"/proc/sysrq-trigger\"\n            ]\n        },\n        \"GraphDriver\": {\n            \"Data\": null,\n            \"Name\": \"\"\n        },\n        \"Mounts\": [\n            {\n                \"Type\": \"volume\",\n                \"Name\": \"ab-sf-fr015-68c77fbb-storage\",\n                \"Source\": \"/var/lib/docker/volumes/ab-sf-fr015-68c77fbb-storage/_data\",\n                \"Destination\": \"/export\",\n                \"Driver\": \"local\",\n                \"Mode\": \"z\",\n                \"RW\": true,\n                \"Propagation\": \"\"\n            },\n            {\n                \"Type\": \"bind\",\n                \"Source\": \"/host_mnt/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-015/ganesha.conf\",\n                \"Destination\": \"/etc/ganesha/ganesha.conf\",\n                \"Mode\": \"\",\n                \"RW\": false,\n                \"Propagation\": \"rprivate\"\n            }\n        ],\n        \"Config\": {\n            \"Hostname\": \"c4688309256e\",\n            \"Domainname\": \"\",\n            \"User\": \"\",\n            \"AttachStdin\": false,\n            \"AttachStdout\": false,\n            \"AttachStderr\": false,\n            \"Tty\": false,\n            \"OpenStdin\": false,\n            \"StdinOnce\": false,\n            \"Env\": [\n                \"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\"\n            ],\n            \"Cmd\": [\n                \"sleep\",\n                \"infinity\"\n            ],\n            \"Image\": \"sha256:f237ebffed2e9e16755c99de6e6720d43bce840d0350a9efa66676eb3123388a\",\n            \"Volumes\": null,\n            \"WorkingDir\": \"\",\n            \"Entrypoint\": null,\n            \"OnBuild\": null,\n            \"Labels\": {\n                \"org.autobyteus.probe\": \"fr-015\",\n                \"org.autobyteus.task\": \"shared-network-workspaces\",\n                \"org.opencontainers.image.version\": \"24.04\"\n            },\n            \"StopTimeout\": 1\n        },\n        \"NetworkSettings\": {\n            \"Bridge\": \"\",\n            \"SandboxID\": \"fce0365ccb79c9c07eaaab872e013ac292566073f6a545a16362e15d8cdd250c\",\n            \"SandboxKey\": \"/var/run/docker/netns/fce0365ccb79\",\n            \"Ports\": {},\n            \"HairpinMode\": false,\n            \"LinkLocalIPv6Address\": \"\",\n            \"LinkLocalIPv6PrefixLen\": 0,\n            \"SecondaryIPAddresses\": null,\n            \"SecondaryIPv6Addresses\": null,\n            \"EndpointID\": \"\",\n            \"Gateway\": \"\",\n            \"GlobalIPv6Address\": \"\",\n            \"GlobalIPv6PrefixLen\": 0,\n            \"IPAddress\": \"\",\n            \"IPPrefixLen\": 0,\n            \"IPv6Gateway\": \"\",\n            \"MacAddress\": \"\",\n            \"Networks\": {\n                \"ab-sf-fr015-68c77fbb-net\": {\n                    \"IPAMConfig\": null,\n                    \"Links\": null,\n                    \"Aliases\": null,\n                    \"MacAddress\": \"06:0a:f8:46:7f:73\",\n                    \"DriverOpts\": null,\n                    \"GwPriority\": 0,\n                    \"NetworkID\": \"4630f6942316497e3d8491e5b4df067541db6005fc857c5d38ef63f8ce7527ca\",\n                    \"EndpointID\": \"939480ca401ff2427da48ac7fa246474f348e82a90faaf5f5eebae83e0aeabe1\",\n                    \"Gateway\": \"172.29.0.1\",\n                    \"IPAddress\": \"172.29.0.2\",\n                    \"IPPrefixLen\": 16,\n                    \"IPv6Gateway\": \"\",\n                    \"GlobalIPv6Address\": \"\",\n                    \"GlobalIPv6PrefixLen\": 0,\n                    \"DNSNames\": [\n                        \"ab-sf-fr015-68c77fbb-storage-server\",\n                        \"c4688309256e\"\n                    ]\n                }\n            }\n        },\n        \"ImageManifestDescriptor\": {\n            \"mediaType\": \"application/vnd.oci.image.manifest.v1+json\",\n            \"digest\": \"sha256:314534885aa58c16b0247fa67f3879e3c3571f1ffc8a80dcb81907d495cae015\",\n            \"size\": 675,\n            \"platform\": {\n                \"architecture\": \"arm64\",\n                \"os\": \"linux\"\n            }\n        }\n    }\n]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-015",
+        "--driver",
+        "local",
+        "--opt",
+        "type=nfs",
+        "--opt",
+        "device=:/ab-sf-fr015-68c77fbb",
+        "--opt",
+        "o=addr=172.29.0.2,rw,nfsvers=4.1,proto=tcp,hard,timeo=50,retrans=2,actimeo=1,nosharecache",
+        "ab-sf-fr015-68c77fbb-nfs-a"
+      ],
+      "rc": 0,
+      "seconds": 0.027,
+      "stdout": "ab-sf-fr015-68c77fbb-nfs-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-015",
+        "ab-sf-fr015-68c77fbb-a-data"
+      ],
+      "rc": 0,
+      "seconds": 0.027,
+      "stdout": "ab-sf-fr015-68c77fbb-a-data\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-015",
+        "ab-sf-fr015-68c77fbb-a-root-home"
+      ],
+      "rc": 0,
+      "seconds": 0.032,
+      "stdout": "ab-sf-fr015-68c77fbb-a-root-home\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-015",
+        "ab-sf-fr015-68c77fbb-a-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.027,
+      "stdout": "ab-sf-fr015-68c77fbb-a-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-015",
+        "ab-sf-fr015-68c77fbb-a-legacy-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.031,
+      "stdout": "ab-sf-fr015-68c77fbb-a-legacy-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-015",
+        "ab-sf-fr015-68c77fbb-a-chromium"
+      ],
+      "rc": 0,
+      "seconds": 0.026,
+      "stdout": "ab-sf-fr015-68c77fbb-a-chromium\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr015-68c77fbb-app-a",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-015",
+        "--network",
+        "ab-sf-fr015-68c77fbb-net",
+        "--cap-add",
+        "SYS_ADMIN",
+        "--security-opt",
+        "seccomp=unconfined",
+        "-p",
+        "127.0.0.1:59852:8000",
+        "-e",
+        "AUTOBYTEUS_WORKSPACE_ROOT=/app",
+        "-e",
+        "AUTOBYTEUS_DATA_DIR=/home/autobyteus/data",
+        "-e",
+        "AUTOBYTEUS_BIND_HOST=0.0.0.0",
+        "-e",
+        "AUTOBYTEUS_SERVER_PORT=8000",
+        "-e",
+        "APP_ENV=production",
+        "-e",
+        "DB_TYPE=sqlite",
+        "-e",
+        "LOG_LEVEL=INFO",
+        "-e",
+        "AUTOBYTEUS_SKIP_SYNC=1",
+        "-e",
+        "AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace",
+        "--mount",
+        "type=volume,src=ab-sf-fr015-68c77fbb-nfs-a,dst=/home/autobyteus/shared,volume-nocopy",
+        "--mount",
+        "type=volume,src=ab-sf-fr015-68c77fbb-a-data,dst=/home/autobyteus/data",
+        "--mount",
+        "type=volume,src=ab-sf-fr015-68c77fbb-a-root-home,dst=/root",
+        "--mount",
+        "type=volume,src=ab-sf-fr015-68c77fbb-a-workspace,dst=/home/autobyteus/workspace",
+        "--mount",
+        "type=volume,src=ab-sf-fr015-68c77fbb-a-legacy-workspace,dst=/app/autobyteus-server-ts/workspace",
+        "--mount",
+        "type=volume,src=ab-sf-fr015-68c77fbb-a-chromium,dst=/home/autobyteus/.config/chromium",
+        "sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a"
+      ],
+      "rc": 0,
+      "seconds": 1.774,
+      "stdout": "33f9a2f80cb2895819635052917632fdb45e4212b745f6deee870c85cc04b80c\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-015",
+        "--driver",
+        "local",
+        "--opt",
+        "type=nfs",
+        "--opt",
+        "device=:/ab-sf-fr015-68c77fbb",
+        "--opt",
+        "o=addr=172.29.0.2,rw,nfsvers=4.1,proto=tcp,hard,timeo=50,retrans=2,actimeo=1,nosharecache",
+        "ab-sf-fr015-68c77fbb-nfs-b"
+      ],
+      "rc": 0,
+      "seconds": 0.04,
+      "stdout": "ab-sf-fr015-68c77fbb-nfs-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-015",
+        "ab-sf-fr015-68c77fbb-b-data"
+      ],
+      "rc": 0,
+      "seconds": 0.04,
+      "stdout": "ab-sf-fr015-68c77fbb-b-data\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-015",
+        "ab-sf-fr015-68c77fbb-b-root-home"
+      ],
+      "rc": 0,
+      "seconds": 0.028,
+      "stdout": "ab-sf-fr015-68c77fbb-b-root-home\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-015",
+        "ab-sf-fr015-68c77fbb-b-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.032,
+      "stdout": "ab-sf-fr015-68c77fbb-b-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-015",
+        "ab-sf-fr015-68c77fbb-b-legacy-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.037,
+      "stdout": "ab-sf-fr015-68c77fbb-b-legacy-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-015",
+        "ab-sf-fr015-68c77fbb-b-chromium"
+      ],
+      "rc": 0,
+      "seconds": 0.029,
+      "stdout": "ab-sf-fr015-68c77fbb-b-chromium\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr015-68c77fbb-app-b",
+        "--label",
+        "org.autobyteus.task=shared-network-workspaces",
+        "--label",
+        "org.autobyteus.probe=fr-015",
+        "--network",
+        "ab-sf-fr015-68c77fbb-net",
+        "--cap-add",
+        "SYS_ADMIN",
+        "--security-opt",
+        "seccomp=unconfined",
+        "-p",
+        "127.0.0.1:59854:8000",
+        "-e",
+        "AUTOBYTEUS_WORKSPACE_ROOT=/app",
+        "-e",
+        "AUTOBYTEUS_DATA_DIR=/home/autobyteus/data",
+        "-e",
+        "AUTOBYTEUS_BIND_HOST=0.0.0.0",
+        "-e",
+        "AUTOBYTEUS_SERVER_PORT=8000",
+        "-e",
+        "APP_ENV=production",
+        "-e",
+        "DB_TYPE=sqlite",
+        "-e",
+        "LOG_LEVEL=INFO",
+        "-e",
+        "AUTOBYTEUS_SKIP_SYNC=1",
+        "-e",
+        "AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace",
+        "--mount",
+        "type=volume,src=ab-sf-fr015-68c77fbb-nfs-b,dst=/home/autobyteus/shared,volume-nocopy",
+        "--mount",
+        "type=volume,src=ab-sf-fr015-68c77fbb-b-data,dst=/home/autobyteus/data",
+        "--mount",
+        "type=volume,src=ab-sf-fr015-68c77fbb-b-root-home,dst=/root",
+        "--mount",
+        "type=volume,src=ab-sf-fr015-68c77fbb-b-workspace,dst=/home/autobyteus/workspace",
+        "--mount",
+        "type=volume,src=ab-sf-fr015-68c77fbb-b-legacy-workspace,dst=/app/autobyteus-server-ts/workspace",
+        "--mount",
+        "type=volume,src=ab-sf-fr015-68c77fbb-b-chromium,dst=/home/autobyteus/.config/chromium",
+        "sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a"
+      ],
+      "rc": 0,
+      "seconds": 0.956,
+      "stdout": "a1355a03e40e03187fa5fb9f079698c41153ffd77d54687358a4379d268c4619\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr015-68c77fbb-app-a",
+        "sh",
+        "-c",
+        "grep \" /home/autobyteus/shared \" /proc/mounts; id; grep CapEff /proc/self/status"
+      ],
+      "rc": 0,
+      "seconds": 0.083,
+      "stdout": ":/ab-sf-fr015-68c77fbb /home/autobyteus/shared nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,nosharecache,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=172.29.0.1,local_lock=none,addr=172.29.0.2 0 0\nuid=0(root) gid=0(root) groups=0(root)\nCapEff:\t00000000a82425fb\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr015-68c77fbb-app-a",
+        "node",
+        "-e",
+        "console.log(require('./package.json').version)"
+      ],
+      "rc": 0,
+      "seconds": 0.091,
+      "stdout": "0.1.1\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr015-68c77fbb-app-a",
+        "sh",
+        "-c",
+        "for f in /root/.codex/auth.json /root/.claude/.credentials.json; do test ! -f \"$f\" || exit 1; done; echo no-user-cli-credentials"
+      ],
+      "rc": 0,
+      "seconds": 0.088,
+      "stdout": "no-user-cli-credentials\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr015-68c77fbb-app-b",
+        "sh",
+        "-c",
+        "grep \" /home/autobyteus/shared \" /proc/mounts; id; grep CapEff /proc/self/status"
+      ],
+      "rc": 0,
+      "seconds": 0.068,
+      "stdout": ":/ab-sf-fr015-68c77fbb /home/autobyteus/shared nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,nosharecache,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=172.29.0.1,local_lock=none,addr=172.29.0.2 0 0\nuid=0(root) gid=0(root) groups=0(root)\nCapEff:\t00000000a82425fb\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr015-68c77fbb-app-b",
+        "node",
+        "-e",
+        "console.log(require('./package.json').version)"
+      ],
+      "rc": 0,
+      "seconds": 0.08,
+      "stdout": "0.1.1\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr015-68c77fbb-app-b",
+        "sh",
+        "-c",
+        "for f in /root/.codex/auth.json /root/.claude/.credentials.json; do test ! -f \"$f\" || exit 1; done; echo no-user-cli-credentials"
+      ],
+      "rc": 0,
+      "seconds": 0.062,
+      "stdout": "no-user-cli-credentials\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr015-68c77fbb-app-a",
+        "node",
+        "-e",
+        "const f=require('fs');f.mkdirSync(\"/home/autobyteus/shared/project\",{recursive:true})"
+      ],
+      "rc": 0,
+      "seconds": 0.092,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr015-68c77fbb-app-a",
+        "node",
+        "-e",
+        "const f=require('fs'),p=require('path');const s=\"/home/autobyteus/data/skills/read-proof\",d=\"/home/autobyteus/data/native-fixtures/a/read-proof\";f.writeFileSync(p.join(s,'proof.txt'),\"CODEX_PRIVATE_1769f473b4e14d909001d05c64a23de2\\n\");f.writeFileSync(p.join(s,'after-stop.txt'),\"CODEX_AFTER_STOP_665d323d44f4407a8caeca804984247c\\n\");f.mkdirSync(p.dirname(d),{recursive:true});f.cpSync(s,d,{recursive:true})"
+      ],
+      "rc": 0,
+      "seconds": 0.102,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "cp",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-015/codex-private-worker.mjs",
+        "ab-sf-fr015-68c77fbb-app-a:/app/autobyteus-server-ts/codex-private-worker.mjs"
+      ],
+      "rc": 0,
+      "seconds": 0.076,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr015-68c77fbb-app-b",
+        "node",
+        "-e",
+        "const f=require('fs'),p=require('path');const s=\"/home/autobyteus/data/skills/read-proof\",d=\"/home/autobyteus/data/native-fixtures/b/read-proof\";f.writeFileSync(p.join(s,'proof.txt'),\"CODEX_PRIVATE_e3111a666037418e9e4e88db6d763c60\\n\");f.writeFileSync(p.join(s,'after-stop.txt'),\"CODEX_AFTER_STOP_2d8322a8b64b485d840378820b3f217f\\n\");f.mkdirSync(p.dirname(d),{recursive:true});f.cpSync(s,d,{recursive:true})"
+      ],
+      "rc": 0,
+      "seconds": 0.099,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "cp",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/fr-015/codex-private-worker.mjs",
+        "ab-sf-fr015-68c77fbb-app-b:/app/autobyteus-server-ts/codex-private-worker.mjs"
+      ],
+      "rc": 0,
+      "seconds": 0.036,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr015-68c77fbb-app-a",
+        "sh",
+        "-c",
+        "chmod 0600 /root/.codex/auth.json; codex --version"
+      ],
+      "rc": 0,
+      "seconds": 0.155,
+      "stdout": "codex-cli 0.162.1\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr015-68c77fbb-app-b",
+        "sh",
+        "-c",
+        "chmod 0600 /root/.codex/auth.json; codex --version"
+      ],
+      "rc": 0,
+      "seconds": 0.089,
+      "stdout": "codex-cli 0.162.1\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr015-68c77fbb-app-a",
+        "node",
+        "-e",
+        "console.log(JSON.stringify(require('fs').readFileSync(\"/home/autobyteus/shared/project/codex-private-roundtrip.txt\",'utf8')))"
+      ],
+      "rc": 0,
+      "seconds": 0.156,
+      "stdout": "\"CODEX_PRIVATE_1769f473b4e14d909001d05c64a23de2\\n\"\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr015-68c77fbb-app-b",
+        "node",
+        "-e",
+        "console.log(JSON.stringify(require('fs').readFileSync(\"/home/autobyteus/shared/project/codex-private-roundtrip.txt\",'utf8')))"
+      ],
+      "rc": 0,
+      "seconds": 0.101,
+      "stdout": "\"CODEX_PRIVATE_1769f473b4e14d909001d05c64a23de2\\n\"\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr015-68c77fbb-storage-server",
+        "python3",
+        "-c",
+        "from pathlib import Path;import json;print(json.dumps(Path('/export/project/codex-private-roundtrip.txt').read_text()))"
+      ],
+      "rc": 0,
+      "seconds": 0.182,
+      "stdout": "\"CODEX_PRIVATE_1769f473b4e14d909001d05c64a23de2\\n\"\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr015-68c77fbb-app-a",
+        "node",
+        "-e",
+        "const f=require('fs');console.log(JSON.stringify(['.claude','.codex','.agents'].map(p=>({path:p,exists:f.existsSync(\"/home/autobyteus/shared/project\"+'/'+p)}))))"
+      ],
+      "rc": 0,
+      "seconds": 0.159,
+      "stdout": "[{\"path\":\".claude\",\"exists\":false},{\"path\":\".codex\",\"exists\":false},{\"path\":\".agents\",\"exists\":false}]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr015-68c77fbb-app-b",
+        "node",
+        "-e",
+        "const f=require('fs');console.log(JSON.stringify(['.claude','.codex','.agents'].map(p=>({path:p,exists:f.existsSync(\"/home/autobyteus/shared/project\"+'/'+p)}))))"
+      ],
+      "rc": 0,
+      "seconds": 0.104,
+      "stdout": "[{\"path\":\".claude\",\"exists\":false},{\"path\":\".codex\",\"exists\":false},{\"path\":\".agents\",\"exists\":false}]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr015-68c77fbb-app-a",
+        "node",
+        "-e",
+        "console.log(JSON.stringify(require('fs').readFileSync(\"/home/autobyteus/shared/project/codex-private-roundtrip.txt\",'utf8')))"
+      ],
+      "rc": 0,
+      "seconds": 0.359,
+      "stdout": "\"CODEX_PRIVATE_1769f473b4e14d909001d05c64a23de2\\nCODEX_PRIVATE_e3111a666037418e9e4e88db6d763c60\\n\"\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr015-68c77fbb-app-b",
+        "node",
+        "-e",
+        "console.log(JSON.stringify(require('fs').readFileSync(\"/home/autobyteus/shared/project/codex-private-roundtrip.txt\",'utf8')))"
+      ],
+      "rc": 0,
+      "seconds": 0.132,
+      "stdout": "\"CODEX_PRIVATE_1769f473b4e14d909001d05c64a23de2\\nCODEX_PRIVATE_e3111a666037418e9e4e88db6d763c60\\n\"\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr015-68c77fbb-storage-server",
+        "python3",
+        "-c",
+        "from pathlib import Path;import json;print(json.dumps(Path('/export/project/codex-private-roundtrip.txt').read_text()))"
+      ],
+      "rc": 0,
+      "seconds": 0.221,
+      "stdout": "\"CODEX_PRIVATE_1769f473b4e14d909001d05c64a23de2\\nCODEX_PRIVATE_e3111a666037418e9e4e88db6d763c60\\n\"\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr015-68c77fbb-app-a",
+        "node",
+        "-e",
+        "const f=require('fs');console.log(JSON.stringify(['.claude','.codex','.agents'].map(p=>({path:p,exists:f.existsSync(\"/home/autobyteus/shared/project\"+'/'+p)}))))"
+      ],
+      "rc": 0,
+      "seconds": 0.284,
+      "stdout": "[{\"path\":\".claude\",\"exists\":false},{\"path\":\".codex\",\"exists\":false},{\"path\":\".agents\",\"exists\":false}]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr015-68c77fbb-app-b",
+        "node",
+        "-e",
+        "const f=require('fs');console.log(JSON.stringify(['.claude','.codex','.agents'].map(p=>({path:p,exists:f.existsSync(\"/home/autobyteus/shared/project\"+'/'+p)}))))"
+      ],
+      "rc": 0,
+      "seconds": 0.11,
+      "stdout": "[{\"path\":\".claude\",\"exists\":false},{\"path\":\".codex\",\"exists\":false},{\"path\":\".agents\",\"exists\":false}]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr015-68c77fbb-app-a",
+        "node",
+        "-e",
+        "console.log(JSON.stringify(require('fs').readFileSync(\"/home/autobyteus/shared/project/codex-private-roundtrip.txt\",'utf8')))"
+      ],
+      "rc": 0,
+      "seconds": 0.103,
+      "stdout": "\"CODEX_PRIVATE_1769f473b4e14d909001d05c64a23de2\\nCODEX_PRIVATE_e3111a666037418e9e4e88db6d763c60\\n\"\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr015-68c77fbb-app-b",
+        "node",
+        "-e",
+        "console.log(JSON.stringify(require('fs').readFileSync(\"/home/autobyteus/shared/project/codex-private-roundtrip.txt\",'utf8')))"
+      ],
+      "rc": 0,
+      "seconds": 0.108,
+      "stdout": "\"CODEX_PRIVATE_1769f473b4e14d909001d05c64a23de2\\nCODEX_PRIVATE_e3111a666037418e9e4e88db6d763c60\\n\"\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr015-68c77fbb-storage-server",
+        "python3",
+        "-c",
+        "from pathlib import Path;import json;print(json.dumps(Path('/export/project/codex-private-roundtrip.txt').read_text()))"
+      ],
+      "rc": 0,
+      "seconds": 0.095,
+      "stdout": "\"CODEX_PRIVATE_1769f473b4e14d909001d05c64a23de2\\nCODEX_PRIVATE_e3111a666037418e9e4e88db6d763c60\\n\"\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr015-68c77fbb-app-a",
+        "node",
+        "-e",
+        "require('fs').rmSync(\"/home/autobyteus/data/native-fixtures/a\",{recursive:true})"
+      ],
+      "rc": 0,
+      "seconds": 0.103,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr015-68c77fbb-app-a",
+        "node",
+        "-e",
+        "const f=require('fs');console.log(JSON.stringify(['.claude','.codex','.agents'].map(p=>({path:p,exists:f.existsSync(\"/home/autobyteus/shared/project\"+'/'+p)}))))"
+      ],
+      "rc": 0,
+      "seconds": 0.109,
+      "stdout": "[{\"path\":\".claude\",\"exists\":false},{\"path\":\".codex\",\"exists\":false},{\"path\":\".agents\",\"exists\":false}]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-w",
+        "/app/autobyteus-server-ts",
+        "ab-sf-fr015-68c77fbb-app-b",
+        "node",
+        "-e",
+        "const f=require('fs');console.log(JSON.stringify(['.claude','.codex','.agents'].map(p=>({path:p,exists:f.existsSync(\"/home/autobyteus/shared/project\"+'/'+p)}))))"
+      ],
+      "rc": 0,
+      "seconds": 0.091,
+      "stdout": "[{\"path\":\".claude\",\"exists\":false},{\"path\":\".codex\",\"exists\":false},{\"path\":\".agents\",\"exists\":false}]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "logs",
+        "--tail",
+        "160",
+        "ab-sf-fr015-68c77fbb-app-a"
+      ],
+      "rc": 0,
+      "seconds": 0.028,
+      "stdout": "2026-10-13 06:21:57,142 DEBG 'autobyteus_server' stdout output:\nLLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.\nRegistered LLM response processor 'MediaUrlTransformerProcessor'.\n\n2026-10-13 06:21:57,142 DEBG 'autobyteus_server' stdout output:\nAgent customization processor registration complete.\n\n2026-10-13 06:21:57,143 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'read_file'\n\n2026-10-13 06:21:57,143 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'write_file'\n\n2026-10-13 06:21:57,143 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'edit_file'\nSuccessfully registered tool definition: 'run_bash'\nSuccessfully registered tool definition: 'start_background_process'\nSuccessfully registered tool definition: 'get_background_processes'\nSuccessfully registered tool definition: 'get_process_output'\n\n2026-10-13 06:21:57,144 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'stop_background_process'\n\n2026-10-13 06:21:57,144 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'search_web'\n\n2026-10-13 06:21:57,144 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'read_media_file'\n\n2026-10-13 06:21:57,144 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'download_media'\n\n2026-10-13 06:21:57,144 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'read_url'\nRegistered required tool unit: Core Tools\n\n2026-10-13 06:21:57,156 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'delegate_task'\n\n2026-10-13 06:21:57,156 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'list_available_agents'\n\n2026-10-13 06:21:57,156 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'generate_image'\n\n2026-10-13 06:21:57,156 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'edit_image'\nSuccessfully registered tool definition: 'generate_speech'\n\n2026-10-13 06:21:57,157 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'generate_video'\nRegistered required tool unit: Task Delegation Tools\nRegistered required tool unit: Agent Discovery Tools\n\n2026-10-13 06:21:57,157 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Media Tools\n\n2026-10-13 06:21:57,178 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Browser Tools\nSuccessfully registered tool definition: 'publish_artifacts'\n\n2026-10-13 06:21:57,178 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Published Artifact Tools\n\n2026-10-13 06:21:57,179 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'send_message_to'\nSuccessfully registered tool definition: 'get_handoff_rules'\n\n2026-10-13 06:21:57,179 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Agent Communication Tools\nSuccessfully registered tool definition: 'list_projects'\nSuccessfully registered tool definition: 'list_project_tasks'\nSuccessfully registered tool definition: 'create_or_update_project'\nSuccessfully registered tool definition: 'create_or_update_task'\nRegistered required tool unit: Project Task Tools\n\n2026-10-13 06:21:57,184 DEBG 'autobyteus_server' stderr output:\nOverwriting existing tool definition for name: 'search_web'\n\n2026-10-13 06:21:57,184 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'search_web'\nRegistered required tool unit: Search Tools\n\n2026-10-13 06:21:57,208 DEBG 'autobyteus_server' stdout output:\nServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated\n\n2026-10-13 06:21:57,208 DEBG 'autobyteus_server' stdout output:\nInitialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.\n\n2026-10-13 06:21:57,217 DEBG 'autobyteus_server' stdout output:\n{\"level\":30,\"time\":1791872517217,\"pid\":55,\"hostname\":\"33f9a2f80cb2\",\"msg\":\"Server listening at http://127.0.0.1:44455\"}\n\n2026-10-13 06:21:57,265 DEBG 'autobyteus_server' stdout output:\n{\"level\":30,\"time\":1791872517265,\"pid\":55,\"hostname\":\"33f9a2f80cb2\",\"msg\":\"Server listening at http://0.0.0.0:8000\"}\n\n2026-10-13 06:21:57,265 DEBG 'autobyteus_server' stdout output:\n[2026-10-13T06:21:57.265Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000\n\n2026-10-13 06:21:57,266 DEBG 'autobyteus_server' stdout output:\nScheduling Studio-only non-critical startup tasks...\n\n2026-10-13 06:21:57,272 DEBG 'autobyteus_server' stdout output:\nBackground cache pre-loading process has started.\n\n2026-10-13 06:21:57,272 DEBG 'autobyteus_server' stdout output:\nCachedMcpServerConfigProvider initialized with a full in-memory cache strategy.\n\n2026-10-13 06:21:57,272 DEBG 'autobyteus_server' stdout output:\nPopulating MCP server config cache for the first time...\n\n2026-10-13 06:21:57,272 DEBG 'autobyteus_server' stdout output:\nRunning MCP tool registration background task...\n\n2026-10-13 06:21:57,272 DEBG 'autobyteus_server' stdout output:\nLoading and registering all MCP server configurations from file...\n\n2026-10-13 06:21:57,273 DEBG 'autobyteus_server' stdout output:\nBackground task 'Memory Sync Worker' completed successfully.\n\n2026-10-13 06:21:57,274 DEBG 'autobyteus_server' stdout output:\nMCP server config cache populated with 0 items.\n\n2026-10-13 06:21:57,275 DEBG 'autobyteus_server' stdout output:\nFound 0 total MCP server configs.\nSynchronized cached configurations with the core MCP config service.\nPre-loaded 0 MCP server configs into cache.\n\n2026-10-13 06:21:57,275 DEBG 'autobyteus_server' stdout output:\nFinished loading and registering all MCP server configurations.\n\n2026-10-13 06:21:57,276 DEBG 'autobyteus_server' stdout output:\nBackground task 'MCP Tool Registration' completed successfully.\n\n2026-10-13 06:21:57,276 DEBG 'autobyteus_server' stdout output:\nPre-loaded 35 LLM models into cache.\n\n2026-10-13 06:21:57,277 DEBG 'autobyteus_server' stdout output:\nPre-loaded 7 image models into cache.\nPre-loaded 3 audio models into cache.\nBackground application cache pre-loading completed.\nBackground task 'Cache Pre-loading' completed successfully.\n\n2026-10-13 06:21:58,063 DEBG 'autobyteus_server' stdout output:\nGraphQL mutation to create workspace metadata\n\n2026-10-13 06:21:58,064 DEBG 'autobyteus_server' stdout output:\nCreating new workspace for rootPath: /home/autobyteus/shared/project\nCreated metadata-only FileSystemWorkspace at /home/autobyteus/shared/project.\n\n2026-10-13 06:21:58,066 DEBG 'autobyteus_server' stdout output:\nCreated and registered workspace ID: agent_ws_af838221fa7f5c1dbb93dc33418fe47a0bb8e2fcde6c53e15c9ba3806ede659c\n\n2026-10-13 06:22:18,553 DEBG 'chrome' stderr output:\n[41:115:1013/062218.553187:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT\n\n2026-10-13 06:23:04,980 DEBG 'chrome' stderr output:\n[41:115:1013/062304.980051:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT\n\n2026-10-13 06:23:11,993 INFO reaped unknown pid 832 (terminated by SIGKILL)\n2026-10-13 06:23:11,994 DEBG received SIGCHLD indicating a child quit\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr015-68c77fbb-app-a",
+        "sh",
+        "-c",
+        "tail -120 /var/log/supervisor/autobyteus_server.log /var/log/supervisor/autobyteus_server.err.log 2>/dev/null"
+      ],
+      "rc": 1,
+      "seconds": 0.07,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "logs",
+        "--tail",
+        "160",
+        "ab-sf-fr015-68c77fbb-app-b"
+      ],
+      "rc": 0,
+      "seconds": 0.03,
+      "stdout": "2026-10-13 06:21:57,151 DEBG 'autobyteus_server' stdout output:\nAgent customization processor registration complete.\n\n2026-10-13 06:21:57,152 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'read_file'\n\n2026-10-13 06:21:57,152 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'write_file'\n\n2026-10-13 06:21:57,153 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'edit_file'\n\n2026-10-13 06:21:57,153 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'run_bash'\n\n2026-10-13 06:21:57,153 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'start_background_process'\n\n2026-10-13 06:21:57,153 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'get_background_processes'\nSuccessfully registered tool definition: 'get_process_output'\nSuccessfully registered tool definition: 'stop_background_process'\n\n2026-10-13 06:21:57,153 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'search_web'\nSuccessfully registered tool definition: 'read_media_file'\n\n2026-10-13 06:21:57,153 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'download_media'\nSuccessfully registered tool definition: 'read_url'\n\n2026-10-13 06:21:57,153 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Core Tools\n\n2026-10-13 06:21:57,161 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'delegate_task'\n\n2026-10-13 06:21:57,161 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'list_available_agents'\n\n2026-10-13 06:21:57,161 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'generate_image'\n\n2026-10-13 06:21:57,162 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'edit_image'\n\n2026-10-13 06:21:57,162 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'generate_speech'\n\n2026-10-13 06:21:57,162 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'generate_video'\n\n2026-10-13 06:21:57,162 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Task Delegation Tools\nRegistered required tool unit: Agent Discovery Tools\n\n2026-10-13 06:21:57,162 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Media Tools\n\n2026-10-13 06:21:57,184 DEBG 'autobyteus_server' stdout output:\nRegistered required tool unit: Browser Tools\n\n2026-10-13 06:21:57,184 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'publish_artifacts'\nRegistered required tool unit: Published Artifact Tools\n\n2026-10-13 06:21:57,184 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'send_message_to'\nSuccessfully registered tool definition: 'get_handoff_rules'\nRegistered required tool unit: Agent Communication Tools\n\n2026-10-13 06:21:57,185 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'list_projects'\nSuccessfully registered tool definition: 'list_project_tasks'\nSuccessfully registered tool definition: 'create_or_update_project'\nSuccessfully registered tool definition: 'create_or_update_task'\nRegistered required tool unit: Project Task Tools\n\n2026-10-13 06:21:57,188 DEBG 'autobyteus_server' stdout output:\nSuccessfully registered tool definition: 'search_web'\nRegistered required tool unit: Search Tools\n\n2026-10-13 06:21:57,188 DEBG 'autobyteus_server' stderr output:\nOverwriting existing tool definition for name: 'search_web'\n\n2026-10-13 06:21:57,210 DEBG 'autobyteus_server' stdout output:\nServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated\nInitialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.\n\n2026-10-13 06:21:57,219 DEBG 'autobyteus_server' stdout output:\n{\"level\":30,\"time\":1791872517219,\"pid\":54,\"hostname\":\"a1355a03e40e\",\"msg\":\"Server listening at http://127.0.0.1:42605\"}\n\n2026-10-13 06:21:57,261 DEBG 'autobyteus_server' stdout output:\n{\"level\":30,\"time\":1791872517261,\"pid\":54,\"hostname\":\"a1355a03e40e\",\"msg\":\"Server listening at http://0.0.0.0:8000\"}\n\n2026-10-13 06:21:57,261 DEBG 'autobyteus_server' stdout output:\n[2026-10-13T06:21:57.261Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000\n\n2026-10-13 06:21:57,262 DEBG 'autobyteus_server' stdout output:\nScheduling Studio-only non-critical startup tasks...\n\n2026-10-13 06:21:57,268 DEBG 'autobyteus_server' stdout output:\nBackground cache pre-loading process has started.\n\n2026-10-13 06:21:57,268 DEBG 'autobyteus_server' stdout output:\nCachedMcpServerConfigProvider initialized with a full in-memory cache strategy.\n\n2026-10-13 06:21:57,269 DEBG 'autobyteus_server' stdout output:\nPopulating MCP server config cache for the first time...\n\n2026-10-13 06:21:57,269 DEBG 'autobyteus_server' stdout output:\nRunning MCP tool registration background task...\n\n2026-10-13 06:21:57,269 DEBG 'autobyteus_server' stdout output:\nLoading and registering all MCP server configurations from file...\n\n2026-10-13 06:21:57,269 DEBG 'autobyteus_server' stdout output:\nBackground task 'Memory Sync Worker' completed successfully.\n\n2026-10-13 06:21:57,271 DEBG 'autobyteus_server' stdout output:\nMCP server config cache populated with 0 items.\n\n2026-10-13 06:21:57,271 DEBG 'autobyteus_server' stdout output:\nFound 0 total MCP server configs.\nSynchronized cached configurations with the core MCP config service.\nPre-loaded 0 MCP server configs into cache.\n\n2026-10-13 06:21:57,272 DEBG 'autobyteus_server' stdout output:\nFinished loading and registering all MCP server configurations.\n\n2026-10-13 06:21:57,272 DEBG 'autobyteus_server' stdout output:\nBackground task 'MCP Tool Registration' completed successfully.\n\n2026-10-13 06:21:57,273 DEBG 'autobyteus_server' stdout output:\nPre-loaded 35 LLM models into cache.\n\n2026-10-13 06:21:57,273 DEBG 'autobyteus_server' stdout output:\nPre-loaded 7 image models into cache.\nPre-loaded 3 audio models into cache.\nBackground application cache pre-loading completed.\nBackground task 'Cache Pre-loading' completed successfully.\n\n2026-10-13 06:21:58,074 DEBG 'autobyteus_server' stdout output:\nGraphQL mutation to create workspace metadata\n\n2026-10-13 06:21:58,074 DEBG 'autobyteus_server' stdout output:\nCreating new workspace for rootPath: /home/autobyteus/shared/project\n\n2026-10-13 06:21:58,074 DEBG 'autobyteus_server' stdout output:\nCreated metadata-only FileSystemWorkspace at /home/autobyteus/shared/project.\n\n2026-10-13 06:21:58,075 DEBG 'autobyteus_server' stdout output:\nCreated and registered workspace ID: agent_ws_af838221fa7f5c1dbb93dc33418fe47a0bb8e2fcde6c53e15c9ba3806ede659c\n\n2026-10-13 06:22:19,720 DEBG 'chrome' stderr output:\n[50:137:1013/062219.720138:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT\n\n2026-10-13 06:23:06,166 DEBG 'chrome' stderr output:\n[50:137:1013/062306.166312:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT\n\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr015-68c77fbb-app-b",
+        "sh",
+        "-c",
+        "tail -120 /var/log/supervisor/autobyteus_server.log /var/log/supervisor/autobyteus_server.err.log 2>/dev/null"
+      ],
+      "rc": 1,
+      "seconds": 0.07,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr015-68c77fbb-storage-server",
+        "cat",
+        "/tmp/ganesha.log"
+      ],
+      "rc": 0,
+      "seconds": 0.069,
+      "stdout": "13/10/2026 06:21:39 : epoch 6acdcdf3 : c4688309256e : nfs-ganesha-19[main] main :MAIN :EVENT :nfs-ganesha Starting: Ganesha Version 4.3\n13/10/2026 06:21:39 : epoch 6acdcdf3 : c4688309256e : nfs-ganesha-19[main] load_rados_config :CONFIG :WARN :Missing RADOS URLs backend library\n13/10/2026 06:21:39 : epoch 6acdcdf3 : c4688309256e : nfs-ganesha-19[main] nfs_set_param_from_conf :NFS STARTUP :EVENT :Configuration file successfully parsed\n13/10/2026 06:21:39 : epoch 6acdcdf3 : c4688309256e : nfs-ganesha-19[main] init_fds_limit :INODE LRU :EVENT :Setting the system-imposed limit on FDs to 1048576.\n13/10/2026 06:21:39 : epoch 6acdcdf3 : c4688309256e : nfs-ganesha-19[main] init_server_pkgs :NFS STARTUP :EVENT :Initializing ID Mapper.\n13/10/2026 06:21:39 : epoch 6acdcdf3 : c4688309256e : nfs-ganesha-19[main] init_server_pkgs :NFS STARTUP :EVENT :ID Mapper successfully initialized.\n13/10/2026 06:21:39 : epoch 6acdcdf3 : c4688309256e : nfs-ganesha-19[main] nfs_start_grace :STATE :EVENT :NFS Server Now IN GRACE, duration 30\n13/10/2026 06:21:39 : epoch 6acdcdf3 : c4688309256e : nfs-ganesha-19[main] nfs_start_grace :STATE :EVENT :grace reload client info completed from backend\n13/10/2026 06:21:39 : epoch 6acdcdf3 : c4688309256e : nfs-ganesha-19[main] nfs_try_lift_grace :STATE :EVENT :check grace:reclaim complete(0) clid count(0)\n13/10/2026 06:21:39 : epoch 6acdcdf3 : c4688309256e : nfs-ganesha-19[main] nfs_lift_grace_locked :STATE :EVENT :NFS Server Now NOT IN GRACE\n13/10/2026 06:21:39 : epoch 6acdcdf3 : c4688309256e : nfs-ganesha-19[main] lower_my_caps :NFS STARTUP :EVENT :CAP_SYS_RESOURCE was successfully removed for proper quota management in FSAL\n13/10/2026 06:21:39 : epoch 6acdcdf3 : c4688309256e : nfs-ganesha-19[main] lower_my_caps :NFS STARTUP :EVENT :currently set capabilities are: cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap=ep\n13/10/2026 06:21:39 : epoch 6acdcdf3 : c4688309256e : nfs-ganesha-19[main] nfs_Init_svc :DISP :CRIT :Cannot acquire credentials for principal nfs\n13/10/2026 06:21:39 : epoch 6acdcdf3 : c4688309256e : nfs-ganesha-19[main] nfs_Init_admin_thread :NFS CB :EVENT :Admin thread initialized\n13/10/2026 06:21:39 : epoch 6acdcdf3 : c4688309256e : nfs-ganesha-19[main] nfs_rpc_cb_init_ccache :NFS STARTUP :EVENT :Callback creds directory (/var/run/ganesha) already exists\n13/10/2026 06:21:39 : epoch 6acdcdf3 : c4688309256e : nfs-ganesha-19[main] find_keytab_entry :NFS CB :WARN :Configuration file does not specify default realm while getting default realm name\n13/10/2026 06:21:39 : epoch 6acdcdf3 : c4688309256e : nfs-ganesha-19[main] gssd_refresh_krb5_machine_credential :NFS CB :CRIT :ERROR: gssd_refresh_krb5_machine_credential: no usable keytab entry found in keytab /etc/krb5.keytab for connection with host localhost\n13/10/2026 06:21:39 : epoch 6acdcdf3 : c4688309256e : nfs-ganesha-19[main] nfs_rpc_cb_init_ccache :NFS STARTUP :WARN :gssd_refresh_krb5_machine_credential failed (-1765328160:2)\n13/10/2026 06:21:39 : epoch 6acdcdf3 : c4688309256e : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :Starting delayed executor.\n13/10/2026 06:21:39 : epoch 6acdcdf3 : c4688309256e : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :gsh_dbusthread was started successfully\n13/10/2026 06:21:39 : epoch 6acdcdf3 : c4688309256e : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :admin thread was started successfully\n13/10/2026 06:21:39 : epoch 6acdcdf3 : c4688309256e : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :reaper thread was started successfully\n13/10/2026 06:21:39 : epoch 6acdcdf3 : c4688309256e : nfs-ganesha-19[main] nfs_Start_threads :THREAD :EVENT :General fridge was started successfully\n13/10/2026 06:21:39 : epoch 6acdcdf3 : c4688309256e : nfs-ganesha-19[main] nfs_start :NFS STARTUP :EVENT :-------------------------------------------------\n13/10/2026 06:21:39 : epoch 6acdcdf3 : c4688309256e : nfs-ganesha-19[main] nfs_start :NFS STARTUP :EVENT :             NFS SERVER INITIALIZED\n13/10/2026 06:21:39 : epoch 6acdcdf3 : c4688309256e : nfs-ganesha-19[main] nfs_start :NFS STARTUP :EVENT :-------------------------------------------------\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr015-68c77fbb-app-b"
+      ],
+      "rc": 0,
+      "seconds": 0.458,
+      "stdout": "ab-sf-fr015-68c77fbb-app-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr015-68c77fbb-app-a"
+      ],
+      "rc": 0,
+      "seconds": 0.418,
+      "stdout": "ab-sf-fr015-68c77fbb-app-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr015-68c77fbb-nfs-b"
+      ],
+      "rc": 0,
+      "seconds": 0.03,
+      "stdout": "ab-sf-fr015-68c77fbb-nfs-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr015-68c77fbb-nfs-a"
+      ],
+      "rc": 0,
+      "seconds": 0.036,
+      "stdout": "ab-sf-fr015-68c77fbb-nfs-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr015-68c77fbb-storage-server"
+      ],
+      "rc": 0,
+      "seconds": 0.245,
+      "stdout": "ab-sf-fr015-68c77fbb-storage-server\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr015-68c77fbb-b-chromium"
+      ],
+      "rc": 0,
+      "seconds": 0.025,
+      "stdout": "ab-sf-fr015-68c77fbb-b-chromium\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr015-68c77fbb-b-legacy-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.031,
+      "stdout": "ab-sf-fr015-68c77fbb-b-legacy-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr015-68c77fbb-b-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.024,
+      "stdout": "ab-sf-fr015-68c77fbb-b-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr015-68c77fbb-b-root-home"
+      ],
+      "rc": 0,
+      "seconds": 0.045,
+      "stdout": "ab-sf-fr015-68c77fbb-b-root-home\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr015-68c77fbb-b-data"
+      ],
+      "rc": 0,
+      "seconds": 0.025,
+      "stdout": "ab-sf-fr015-68c77fbb-b-data\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr015-68c77fbb-a-chromium"
+      ],
+      "rc": 0,
+      "seconds": 0.023,
+      "stdout": "ab-sf-fr015-68c77fbb-a-chromium\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr015-68c77fbb-a-legacy-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.023,
+      "stdout": "ab-sf-fr015-68c77fbb-a-legacy-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr015-68c77fbb-a-workspace"
+      ],
+      "rc": 0,
+      "seconds": 0.025,
+      "stdout": "ab-sf-fr015-68c77fbb-a-workspace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr015-68c77fbb-a-root-home"
+      ],
+      "rc": 0,
+      "seconds": 0.034,
+      "stdout": "ab-sf-fr015-68c77fbb-a-root-home\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr015-68c77fbb-a-data"
+      ],
+      "rc": 0,
+      "seconds": 0.023,
+      "stdout": "ab-sf-fr015-68c77fbb-a-data\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr015-68c77fbb-storage"
+      ],
+      "rc": 0,
+      "seconds": 0.031,
+      "stdout": "ab-sf-fr015-68c77fbb-storage\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "rm",
+        "ab-sf-fr015-68c77fbb-net"
+      ],
+      "rc": 0,
+      "seconds": 0.224,
+      "stdout": "ab-sf-fr015-68c77fbb-net\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr015-68c77fbb-storage-server"
+      ],
+      "rc": 1,
+      "seconds": 0.02,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr015-68c77fbb-storage-server\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr015-68c77fbb-app-a"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr015-68c77fbb-app-a\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr015-68c77fbb-app-b"
+      ],
+      "rc": 1,
+      "seconds": 0.022,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr015-68c77fbb-app-b\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr015-68c77fbb-storage"
+      ],
+      "rc": 1,
+      "seconds": 0.023,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr015-68c77fbb-storage: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr015-68c77fbb-nfs-a"
+      ],
+      "rc": 1,
+      "seconds": 0.022,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr015-68c77fbb-nfs-a: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr015-68c77fbb-a-data"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr015-68c77fbb-a-data: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr015-68c77fbb-a-root-home"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr015-68c77fbb-a-root-home: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr015-68c77fbb-a-workspace"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr015-68c77fbb-a-workspace: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr015-68c77fbb-a-legacy-workspace"
+      ],
+      "rc": 1,
+      "seconds": 0.022,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr015-68c77fbb-a-legacy-workspace: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr015-68c77fbb-a-chromium"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr015-68c77fbb-a-chromium: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr015-68c77fbb-nfs-b"
+      ],
+      "rc": 1,
+      "seconds": 0.024,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr015-68c77fbb-nfs-b: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr015-68c77fbb-b-data"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr015-68c77fbb-b-data: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr015-68c77fbb-b-root-home"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr015-68c77fbb-b-root-home: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr015-68c77fbb-b-workspace"
+      ],
+      "rc": 1,
+      "seconds": 0.023,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr015-68c77fbb-b-workspace: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr015-68c77fbb-b-legacy-workspace"
+      ],
+      "rc": 1,
+      "seconds": 0.022,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr015-68c77fbb-b-legacy-workspace: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr015-68c77fbb-b-chromium"
+      ],
+      "rc": 1,
+      "seconds": 0.02,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr015-68c77fbb-b-chromium: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "inspect",
+        "ab-sf-fr015-68c77fbb-net"
+      ],
+      "rc": 1,
+      "seconds": 0.021,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: network ab-sf-fr015-68c77fbb-net not found\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "autobyteus-shared-feasibility:fr-015",
+        "--format",
+        "{{.Id}}"
+      ],
+      "rc": 0,
+      "seconds": 0.033,
+      "stdout": "sha256:f237ebffed2e9e16755c99de6e6720d43bce840d0350a9efa66676eb3123388a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "image",
+        "rm",
+        "autobyteus-shared-feasibility:fr-015"
+      ],
+      "rc": 0,
+      "seconds": 0.214,
+      "stdout": "Untagged: autobyteus-shared-feasibility:fr-015\nDeleted: sha256:f237ebffed2e9e16755c99de6e6720d43bce840d0350a9efa66676eb3123388a\n",
+      "stderr": ""
+    }
+  ],
+  "api": [
+    {
+      "port": 59852,
+      "query": "{__typename}",
+      "variables": null,
+      "result": {
+        "data": {
+          "__typename": "Query"
+        }
+      },
+      "seconds": 0.031
+    },
+    {
+      "port": 59854,
+      "query": "{__typename}",
+      "variables": null,
+      "result": {
+        "data": {
+          "__typename": "Query"
+        }
+      },
+      "seconds": 0.018
+    },
+    {
+      "port": 59852,
+      "query": "mutation($root:String!){createWorkspace(input:{rootPath:$root}){workspaceId workspaceRootPath kind isTemp}}",
+      "variables": {
+        "root": "/home/autobyteus/shared/project"
+      },
+      "result": {
+        "data": {
+          "createWorkspace": {
+            "workspaceId": "agent_ws_af838221fa7f5c1dbb93dc33418fe47a0bb8e2fcde6c53e15c9ba3806ede659c",
+            "workspaceRootPath": "/home/autobyteus/shared/project",
+            "kind": "filesystem",
+            "isTemp": false
+          }
+        }
+      },
+      "seconds": 0.01
+    },
+    {
+      "port": 59854,
+      "query": "mutation($root:String!){createWorkspace(input:{rootPath:$root}){workspaceId workspaceRootPath kind isTemp}}",
+      "variables": {
+        "root": "/home/autobyteus/shared/project"
+      },
+      "result": {
+        "data": {
+          "createWorkspace": {
+            "workspaceId": "agent_ws_af838221fa7f5c1dbb93dc33418fe47a0bb8e2fcde6c53e15c9ba3806ede659c",
+            "workspaceRootPath": "/home/autobyteus/shared/project",
+            "kind": "filesystem",
+            "isTemp": false
+          }
+        }
+      },
+      "seconds": 0.009
+    },
+    {
+      "port": 59852,
+      "query": "mutation($i:CreateSkillInput!){createSkill(input:$i){name rootPath}}",
+      "variables": {
+        "i": {
+          "name": "read-proof",
+          "description": "Owned private native Codex fixture for shared-workspace capability.",
+          "content": "# Private proof fixture\nUse actual native filesystem commands to read supporting proof.txt (or after-stop.txt when requested) from this skill package, not the shared project. The project cwd does not change when reading the skill.\nCopy the exact file bytes, including the terminal newline, into the explicitly requested file in the project. Append only when asked, preserving all prior bytes. Print pwd and the actual read file contents. Never read any credentials or unrelated private files or access network.\n"
+        }
+      },
+      "result": {
+        "data": {
+          "createSkill": {
+            "name": "read-proof",
+            "rootPath": "/home/autobyteus/data/skills/read-proof"
+          }
+        }
+      },
+      "seconds": 0.009
+    },
+    {
+      "port": 59854,
+      "query": "mutation($i:CreateSkillInput!){createSkill(input:$i){name rootPath}}",
+      "variables": {
+        "i": {
+          "name": "read-proof",
+          "description": "Owned private native Codex fixture for shared-workspace capability.",
+          "content": "# Private proof fixture\nUse actual native filesystem commands to read supporting proof.txt (or after-stop.txt when requested) from this skill package, not the shared project. The project cwd does not change when reading the skill.\nCopy the exact file bytes, including the terminal newline, into the explicitly requested file in the project. Append only when asked, preserving all prior bytes. Print pwd and the actual read file contents. Never read any credentials or unrelated private files or access network.\n"
+        }
+      },
+      "result": {
+        "data": {
+          "createSkill": {
+            "name": "read-proof",
+            "rootPath": "/home/autobyteus/data/skills/read-proof"
+          }
+        }
+      },
+      "seconds": 0.008
+    }
+  ],
+  "cases": [
+    {
+      "name": "two fresh real application-image nodes serve independent GraphQL endpoints",
+      "status": "PASS",
+      "result": [
+        {
+          "name": "ab-sf-fr015-68c77fbb-app-a",
+          "seconds": 8.085,
+          "graphql": {
+            "__typename": "Query"
+          }
+        },
+        {
+          "name": "ab-sf-fr015-68c77fbb-app-b",
+          "seconds": 0.021,
+          "graphql": {
+            "__typename": "Query"
+          }
+        }
+      ],
+      "seconds": 8.106
+    },
+    {
+      "name": "daemon mounts one export into both application nodes; private state and credentials isolated",
+      "status": "PASS",
+      "result": [
+        {
+          "node": "ab-sf-fr015-68c77fbb-app-a",
+          "mount": ":/ab-sf-fr015-68c77fbb /home/autobyteus/shared nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,nosharecache,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=172.29.0.1,local_lock=none,addr=172.29.0.2 0 0\nuid=0(root) gid=0(root) groups=0(root)\nCapEff:\t00000000a82425fb\n",
+          "image_version": "0.1.1",
+          "cli_home": "no-user-cli-credentials\n"
+        },
+        {
+          "node": "ab-sf-fr015-68c77fbb-app-b",
+          "mount": ":/ab-sf-fr015-68c77fbb /home/autobyteus/shared nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=1,acregmax=1,acdirmin=1,acdirmax=1,hard,nosharecache,proto=tcp,timeo=50,retrans=2,sec=sys,clientaddr=172.29.0.1,local_lock=none,addr=172.29.0.2 0 0\nuid=0(root) gid=0(root) groups=0(root)\nCapEff:\t00000000a82425fb\n",
+          "image_version": "0.1.1",
+          "cli_home": "no-user-cli-credentials\n"
+        }
+      ],
+      "seconds": 0.478
+    },
+    {
+      "name": "each application registers the ordinary mounted project through its public workspace API",
+      "status": "PASS",
+      "result": [
+        {
+          "name": "ab-sf-fr015-68c77fbb-app-a",
+          "port": 59852,
+          "nfs_volume": "ab-sf-fr015-68c77fbb-nfs-a",
+          "workspace": "agent_ws_af838221fa7f5c1dbb93dc33418fe47a0bb8e2fcde6c53e15c9ba3806ede659c",
+          "sourceRoot": "/home/autobyteus/data/skills/read-proof",
+          "skillParent": "/home/autobyteus/data/native-fixtures/a",
+          "proof": "CODEX_PRIVATE_1769f473b4e14d909001d05c64a23de2",
+          "afterStop": "CODEX_AFTER_STOP_665d323d44f4407a8caeca804984247c",
+          "threadId": "01a133ec-cf20-7a61-a51b-4587432fc716",
+          "model": "gpt-6.1-sol"
+        },
+        {
+          "name": "ab-sf-fr015-68c77fbb-app-b",
+          "port": 59854,
+          "nfs_volume": "ab-sf-fr015-68c77fbb-nfs-b",
+          "workspace": "agent_ws_af838221fa7f5c1dbb93dc33418fe47a0bb8e2fcde6c53e15c9ba3806ede659c",
+          "sourceRoot": "/home/autobyteus/data/skills/read-proof",
+          "skillParent": "/home/autobyteus/data/native-fixtures/b",
+          "proof": "CODEX_PRIVATE_e3111a666037418e9e4e88db6d763c60",
+          "afterStop": "CODEX_AFTER_STOP_2d8322a8b64b485d840378820b3f217f",
+          "threadId": "01a133ec-d597-7a41-a044-cb9eab4d5c3b",
+          "model": "gpt-6.1-sol"
+        }
+      ],
+      "seconds": 0.02
+    },
+    {
+      "name": "native Codex login streamed into fresh private homes, source unchanged",
+      "status": "PASS",
+      "result": [
+        {
+          "node": "ab-sf-fr015-68c77fbb-app-a",
+          "source": "read-only node-0 Codex auth stream",
+          "host_credential_file": false,
+          "values_logged": false
+        },
+        {
+          "node": "ab-sf-fr015-68c77fbb-app-b",
+          "source": "read-only node-0 Codex auth stream",
+          "host_credential_file": false,
+          "values_logged": false
+        }
+      ],
+      "seconds": 0.408
+    },
+    {
+      "name": "each independent native process discovers its private skill while retaining common project cwd",
+      "status": "PASS",
+      "result": [
+        {
+          "node": "ab-sf-fr015-68c77fbb-app-a",
+          "nativeThreadId": "01a133ec-cf20-7a61-a51b-4587432fc716",
+          "model": "gpt-6.1-sol",
+          "privateSkill": "/home/autobyteus/data/native-fixtures/a/read-proof/SKILL.md",
+          "discovered": {
+            "data": [
+              {
+                "cwd": "/home/autobyteus/shared/project",
+                "skills": [
+                  {
+                    "name": "read-proof",
+                    "description": "Owned private native Codex fixture for shared-workspace capability.",
+                    "path": "/home/autobyteus/data/native-fixtures/a/read-proof/SKILL.md",
+                    "scope": "user",
+                    "enabled": true,
+                    "pluginId": null
+                  },
+                  {
+                    "name": "imagegen",
+                    "description": "Generate or edit raster images when the task benefits from AI-created bitmap visuals such as photos, illustrations, textures, sprites, mockups, or transparent-background cutouts. Use when Codex should create a brand-new image, transform an existing image, or derive visual variants from references, and the output should be a bitmap asset rather than repo-native code or vector. Do not use when the task is better handled by editing existing SVG/vector/code-native assets, extending an established icon or logo system, or building the visual directly in HTML/CSS/canvas.",
+                    "interface": {
+                      "displayName": "Image Gen",
+                      "shortDescription": "Generate or edit images for websites, games, and more",
+                      "iconSmall": "/root/.codex/skills/.system/imagegen/assets/imagegen-small.svg",
+                      "iconLarge": "/root/.codex/skills/.system/imagegen/assets/imagegen.png",
+                      "iconSmallUrl": null,
+                      "iconLargeUrl": null,
+                      "brandColor": null,
+                      "defaultPrompt": "Use $imagegen to make or edit an image for this project."
+                    },
+                    "path": "/root/.codex/skills/.system/imagegen/SKILL.md",
+                    "scope": "system",
+                    "enabled": true,
+                    "pluginId": null
+                  },
+                  {
+                    "name": "openai-docs",
+                    "description": "Use for Codex models/pricing, scheduled tasks, skills, settings, setup, troubleshooting, customization, automations, and self-knowledge\u2014including 'you,' 'your,' 'this app,' or 'this coding agent' when they refer to Codex\u2014and for OpenAI APIs/products and ChatGPT Work. Also use for model choice/migration, prompting, SDKs, Responses, Realtime, agents, evals, and Chat/Work/Codex comparisons. Do not use for generic app/software tasks that merely mention Codex.",
+                    "shortDescription": "Codex models/pricing, scheduled tasks, skills, settings, setup, troubleshooting, and self-knowledge; OpenAI APIs and ChatGPT Work. 'You'/'this app' means Codex only.",
+                    "interface": {
+                      "displayName": "OpenAI Docs",
+                      "shortDescription": "OpenAI and Codex docs for models, skills, tasks, and setup",
+                      "iconSmall": "/root/.codex/skills/.system/openai-docs/assets/openai-small.svg",
+                      "iconLarge": "/root/.codex/skills/.system/openai-docs/assets/openai.png",
+                      "iconSmallUrl": null,
+                      "iconLargeUrl": null,
+                      "brandColor": null,
+                      "defaultPrompt": "Use OpenAI Docs for official docs lookup, questions about Codex itself or Codex surfaces, model selection, model migration, and prompt-upgrade work."
+                    },
+                    "path": "/root/.codex/skills/.system/openai-docs/SKILL.md",
+                    "scope": "system",
+                    "enabled": true,
+                    "pluginId": null
+                  },
+                  {
+                    "name": "review-agent",
+                    "description": "Perform a read-only, defect-first review of a specified code change and return every actionable finding. Use when another agent delegates review of uncommitted changes, a base-branch diff, a commit, or custom review instructions.",
+                    "interface": {
+                      "displayName": "Review Agent",
+                      "shortDescription": "Find actionable bugs in code changes",
+                      "iconSmall": null,
+                      "iconLarge": null,
+                      "iconSmallUrl": null,
+                      "iconLargeUrl": null,
+                      "brandColor": null,
+                      "defaultPrompt": "Use $review-agent to review the requested code changes and return actionable findings."
+                    },
+                    "path": "/root/.codex/skills/.system/review-agent/SKILL.md",
+                    "scope": "system",
+                    "enabled": true,
+                    "pluginId": null
+                  },
+                  {
+                    "name": "skill-creator",
+                    "description": "Create or update a Codex skill with appropriately scoped instructions and any needed supporting resources.",
+                    "shortDescription": "Create or update a skill",
+                    "interface": {
+                      "displayName": "Skill Creator",
+                      "shortDescription": "Create or update a skill",
+                      "iconSmall": "/root/.codex/skills/.system/skill-creator/assets/skill-creator-small.svg",
+                      "iconLarge": "/root/.codex/skills/.system/skill-creator/assets/skill-creator.png",
+                      "iconSmallUrl": null,
+                      "iconLargeUrl": null,
+                      "brandColor": null,
+                      "defaultPrompt": null
+                    },
+                    "path": "/root/.codex/skills/.system/skill-creator/SKILL.md",
+                    "scope": "system",
+                    "enabled": true,
+                    "pluginId": null
+                  },
+                  {
+                    "name": "skill-installer",
+                    "description": "Install Codex skills into $CODEX_HOME/skills from a curated list or a GitHub repo path. Use when a user asks to list installable skills, install a curated skill, or install a skill from another repo (including private repos).",
+                    "shortDescription": "Install curated skills from openai/skills or other repos",
+                    "interface": {
+                      "displayName": "Skill Installer",
+                      "shortDescription": "Install curated skills from openai/skills or other repos",
+                      "iconSmall": "/root/.codex/skills/.system/skill-installer/assets/skill-installer-small.svg",
+                      "iconLarge": "/root/.codex/skills/.system/skill-installer/assets/skill-installer.png",
+                      "iconSmallUrl": null,
+                      "iconLargeUrl": null,
+                      "brandColor": null,
+                      "defaultPrompt": null
+                    },
+                    "path": "/root/.codex/skills/.system/skill-installer/SKILL.md",
+                    "scope": "system",
+                    "enabled": true,
+                    "pluginId": null
+                  }
+                ],
+                "errors": []
+              }
+            ]
+          }
+        },
+        {
+          "node": "ab-sf-fr015-68c77fbb-app-b",
+          "nativeThreadId": "01a133ec-d597-7a41-a044-cb9eab4d5c3b",
+          "model": "gpt-6.1-sol",
+          "privateSkill": "/home/autobyteus/data/native-fixtures/b/read-proof/SKILL.md",
+          "discovered": {
+            "data": [
+              {
+                "cwd": "/home/autobyteus/shared/project",
+                "skills": [
+                  {
+                    "name": "read-proof",
+                    "description": "Owned private native Codex fixture for shared-workspace capability.",
+                    "path": "/home/autobyteus/data/native-fixtures/b/read-proof/SKILL.md",
+                    "scope": "user",
+                    "enabled": true,
+                    "pluginId": null
+                  },
+                  {
+                    "name": "imagegen",
+                    "description": "Generate or edit raster images when the task benefits from AI-created bitmap visuals such as photos, illustrations, textures, sprites, mockups, or transparent-background cutouts. Use when Codex should create a brand-new image, transform an existing image, or derive visual variants from references, and the output should be a bitmap asset rather than repo-native code or vector. Do not use when the task is better handled by editing existing SVG/vector/code-native assets, extending an established icon or logo system, or building the visual directly in HTML/CSS/canvas.",
+                    "interface": {
+                      "displayName": "Image Gen",
+                      "shortDescription": "Generate or edit images for websites, games, and more",
+                      "iconSmall": "/root/.codex/skills/.system/imagegen/assets/imagegen-small.svg",
+                      "iconLarge": "/root/.codex/skills/.system/imagegen/assets/imagegen.png",
+                      "iconSmallUrl": null,
+                      "iconLargeUrl": null,
+                      "brandColor": null,
+                      "defaultPrompt": "Use $imagegen to make or edit an image for this project."
+                    },
+                    "path": "/root/.codex/skills/.system/imagegen/SKILL.md",
+                    "scope": "system",
+                    "enabled": true,
+                    "pluginId": null
+                  },
+                  {
+                    "name": "openai-docs",
+                    "description": "Use for Codex models/pricing, scheduled tasks, skills, settings, setup, troubleshooting, customization, automations, and self-knowledge\u2014including 'you,' 'your,' 'this app,' or 'this coding agent' when they refer to Codex\u2014and for OpenAI APIs/products and ChatGPT Work. Also use for model choice/migration, prompting, SDKs, Responses, Realtime, agents, evals, and Chat/Work/Codex comparisons. Do not use for generic app/software tasks that merely mention Codex.",
+                    "shortDescription": "Codex models/pricing, scheduled tasks, skills, settings, setup, troubleshooting, and self-knowledge; OpenAI APIs and ChatGPT Work. 'You'/'this app' means Codex only.",
+                    "interface": {
+                      "displayName": "OpenAI Docs",
+                      "shortDescription": "OpenAI and Codex docs for models, skills, tasks, and setup",
+                      "iconSmall": "/root/.codex/skills/.system/openai-docs/assets/openai-small.svg",
+                      "iconLarge": "/root/.codex/skills/.system/openai-docs/assets/openai.png",
+                      "iconSmallUrl": null,
+                      "iconLargeUrl": null,
+                      "brandColor": null,
+                      "defaultPrompt": "Use OpenAI Docs for official docs lookup, questions about Codex itself or Codex surfaces, model selection, model migration, and prompt-upgrade work."
+                    },
+                    "path": "/root/.codex/skills/.system/openai-docs/SKILL.md",
+                    "scope": "system",
+                    "enabled": true,
+                    "pluginId": null
+                  },
+                  {
+                    "name": "review-agent",
+                    "description": "Perform a read-only, defect-first review of a specified code change and return every actionable finding. Use when another agent delegates review of uncommitted changes, a base-branch diff, a commit, or custom review instructions.",
+                    "interface": {
+                      "displayName": "Review Agent",
+                      "shortDescription": "Find actionable bugs in code changes",
+                      "iconSmall": null,
+                      "iconLarge": null,
+                      "iconSmallUrl": null,
+                      "iconLargeUrl": null,
+                      "brandColor": null,
+                      "defaultPrompt": "Use $review-agent to review the requested code changes and return actionable findings."
+                    },
+                    "path": "/root/.codex/skills/.system/review-agent/SKILL.md",
+                    "scope": "system",
+                    "enabled": true,
+                    "pluginId": null
+                  },
+                  {
+                    "name": "skill-creator",
+                    "description": "Create or update a Codex skill with appropriately scoped instructions and any needed supporting resources.",
+                    "shortDescription": "Create or update a skill",
+                    "interface": {
+                      "displayName": "Skill Creator",
+                      "shortDescription": "Create or update a skill",
+                      "iconSmall": "/root/.codex/skills/.system/skill-creator/assets/skill-creator-small.svg",
+                      "iconLarge": "/root/.codex/skills/.system/skill-creator/assets/skill-creator.png",
+                      "iconSmallUrl": null,
+                      "iconLargeUrl": null,
+                      "brandColor": null,
+                      "defaultPrompt": null
+                    },
+                    "path": "/root/.codex/skills/.system/skill-creator/SKILL.md",
+                    "scope": "system",
+                    "enabled": true,
+                    "pluginId": null
+                  },
+                  {
+                    "name": "skill-installer",
+                    "description": "Install Codex skills into $CODEX_HOME/skills from a curated list or a GitHub repo path. Use when a user asks to list installable skills, install a curated skill, or install a skill from another repo (including private repos).",
+                    "shortDescription": "Install curated skills from openai/skills or other repos",
+                    "interface": {
+                      "displayName": "Skill Installer",
+                      "shortDescription": "Install curated skills from openai/skills or other repos",
+                      "iconSmall": "/root/.codex/skills/.system/skill-installer/assets/skill-installer-small.svg",
+                      "iconLarge": "/root/.codex/skills/.system/skill-installer/assets/skill-installer.png",
+                      "iconSmallUrl": null,
+                      "iconLargeUrl": null,
+                      "brandColor": null,
+                      "defaultPrompt": null
+                    },
+                    "path": "/root/.codex/skills/.system/skill-installer/SKILL.md",
+                    "scope": "system",
+                    "enabled": true,
+                    "pluginId": null
+                  }
+                ],
+                "errors": []
+              }
+            ]
+          }
+        }
+      ],
+      "seconds": 2.812
+    },
+    {
+      "name": "A private native skill reads supporting asset and writes ordinary shared project file",
+      "status": "PASS",
+      "result": {
+        "native": {
+          "node": "ab-sf-fr015-68c77fbb-app-a",
+          "threadId": "01a133ec-cf20-7a61-a51b-4587432fc716",
+          "nativeCommands": [
+            {
+              "type": "commandExecution",
+              "id": "exec-515f3a3a-e8d8-448f-b5e2-66f7c0b66015",
+              "pluginId": null,
+              "scriptPath": null,
+              "command": "/bin/bash -c 'pwd; cat /home/autobyteus/data/native-fixtures/a/read-proof/SKILL.md; cat /home/autobyteus/data/native-fixtures/a/read-proof/proof.txt; cp /home/autobyteus/data/native-fixtures/a/read-proof/proof.txt ./codex-private-roundtrip.txt'",
+              "cwd": "/home/autobyteus/shared/project",
+              "processId": "70866",
+              "source": "unifiedExecStartup",
+              "status": "completed",
+              "commandActions": [
+                {
+                  "type": "unknown",
+                  "command": "pwd; cat /home/autobyteus/data/native-fixtures/a/read-proof/SKILL.md; cat /home/autobyteus/data/native-fixtures/a/read-proof/proof.txt; cp /home/autobyteus/data/native-fixtures/a/read-proof/proof.txt ./codex-private-roundtrip.txt"
+                }
+              ],
+              "aggregatedOutput": "/home/autobyteus/shared/project\n---\nname: read-proof\ndescription: Owned private native Codex fixture for shared-workspace capability.\n---\n\n# Private proof fixture\nUse actual native filesystem commands to read supporting proof.txt (or after-stop.txt when requested) from this skill package, not the shared project. The project cwd does not change when reading the skill.\nCopy the exact file bytes, including the terminal newline, into the explicitly requested file in the project. Append only when asked, preserving all prior bytes. Print pwd and the actual read file contents. Never read any credentials or unrelated private files or access network.\n\nCODEX_PRIVATE_1769f473b4e14d909001d05c64a23de2\n",
+              "exitCode": 0,
+              "durationMs": 0
+            }
+          ],
+          "receipt": "a-write-turn.json"
+        },
+        "sharedBytes": {
+          "clientNodes": [
+            "ab-sf-fr015-68c77fbb-app-a",
+            "ab-sf-fr015-68c77fbb-app-b"
+          ],
+          "path": "/home/autobyteus/shared/project/codex-private-roundtrip.txt",
+          "backing": "/export/project/codex-private-roundtrip.txt",
+          "exactText": "CODEX_PRIVATE_1769f473b4e14d909001d05c64a23de2\n",
+          "sha256": "c2bf55adf397f646cccd7056ca009e89c324000e3f20d3ee437f630dfe285aad"
+        },
+        "noRuntimeProjectMutation": [
+          {
+            "node": "ab-sf-fr015-68c77fbb-app-a",
+            "runtimeProjectPaths": [
+              {
+                "path": ".claude",
+                "exists": false
+              },
+              {
+                "path": ".codex",
+                "exists": false
+              },
+              {
+                "path": ".agents",
+                "exists": false
+              }
+            ]
+          },
+          {
+            "node": "ab-sf-fr015-68c77fbb-app-b",
+            "runtimeProjectPaths": [
+              {
+                "path": ".claude",
+                "exists": false
+              },
+              {
+                "path": ".codex",
+                "exists": false
+              },
+              {
+                "path": ".agents",
+                "exists": false
+              }
+            ]
+          }
+        ]
+      },
+      "seconds": 19.313
+    },
+    {
+      "name": "B native read sees A data and appends own private skill asset without prompt copying",
+      "status": "PASS",
+      "result": {
+        "native": {
+          "node": "ab-sf-fr015-68c77fbb-app-b",
+          "threadId": "01a133ec-d597-7a41-a044-cb9eab4d5c3b",
+          "nativeCommands": [
+            {
+              "type": "commandExecution",
+              "id": "exec-b519084f-d309-4712-9392-44072ba68b5a",
+              "pluginId": null,
+              "scriptPath": null,
+              "command": "/bin/bash -c 'pwd; cat codex-private-roundtrip.txt; cat /home/autobyteus/data/native-fixtures/b/read-proof/SKILL.md; cat /home/autobyteus/data/native-fixtures/b/read-proof/proof.txt; cat /home/autobyteus/data/native-fixtures/b/read-proof/proof.txt >> codex-private-roundtrip.txt'",
+              "cwd": "/home/autobyteus/shared/project",
+              "processId": "64312",
+              "source": "unifiedExecStartup",
+              "status": "completed",
+              "commandActions": [
+                {
+                  "type": "unknown",
+                  "command": "pwd; cat codex-private-roundtrip.txt; cat /home/autobyteus/data/native-fixtures/b/read-proof/SKILL.md; cat /home/autobyteus/data/native-fixtures/b/read-proof/proof.txt; cat /home/autobyteus/data/native-fixtures/b/read-proof/proof.txt >> codex-private-roundtrip.txt"
+                }
+              ],
+              "aggregatedOutput": "/home/autobyteus/shared/project\nCODEX_PRIVATE_1769f473b4e14d909001d05c64a23de2\n---\nname: read-proof\ndescription: Owned private native Codex fixture for shared-workspace capability.\n---\n\n# Private proof fixture\nUse actual native filesystem commands to read supporting proof.txt (or after-stop.txt when requested) from this skill package, not the shared project. The project cwd does not change when reading the skill.\nCopy the exact file bytes, including the terminal newline, into the explicitly requested file in the project. Append only when asked, preserving all prior bytes. Print pwd and the actual read file contents. Never read any credentials or unrelated private files or access network.\n\nCODEX_PRIVATE_e3111a666037418e9e4e88db6d763c60\n",
+              "exitCode": 0,
+              "durationMs": 0
+            }
+          ],
+          "receipt": "b-read-modify-turn.json"
+        },
+        "sharedBytes": {
+          "clientNodes": [
+            "ab-sf-fr015-68c77fbb-app-a",
+            "ab-sf-fr015-68c77fbb-app-b"
+          ],
+          "path": "/home/autobyteus/shared/project/codex-private-roundtrip.txt",
+          "backing": "/export/project/codex-private-roundtrip.txt",
+          "exactText": "CODEX_PRIVATE_1769f473b4e14d909001d05c64a23de2\nCODEX_PRIVATE_e3111a666037418e9e4e88db6d763c60\n",
+          "sha256": "937499053378a4a082575958d5904c3ba7a61ee5b3c3604989ead128f2607d09"
+        },
+        "noRuntimeProjectMutation": [
+          {
+            "node": "ab-sf-fr015-68c77fbb-app-a",
+            "runtimeProjectPaths": [
+              {
+                "path": ".claude",
+                "exists": false
+              },
+              {
+                "path": ".codex",
+                "exists": false
+              },
+              {
+                "path": ".agents",
+                "exists": false
+              }
+            ]
+          },
+          {
+            "node": "ab-sf-fr015-68c77fbb-app-b",
+            "runtimeProjectPaths": [
+              {
+                "path": ".claude",
+                "exists": false
+              },
+              {
+                "path": ".codex",
+                "exists": false
+              },
+              {
+                "path": ".agents",
+                "exists": false
+              }
+            ]
+          }
+        ]
+      },
+      "seconds": 35.423
+    },
+    {
+      "name": "A native fresh reopen sees B modification",
+      "status": "PASS",
+      "result": {
+        "native": {
+          "node": "ab-sf-fr015-68c77fbb-app-a",
+          "threadId": "01a133ec-cf20-7a61-a51b-4587432fc716",
+          "nativeCommands": [
+            {
+              "type": "commandExecution",
+              "id": "exec-3c3b0bb8-9f9e-41cb-a769-2df978968cf3",
+              "pluginId": null,
+              "scriptPath": null,
+              "command": "/bin/bash -c 'pwd; cat codex-private-roundtrip.txt'",
+              "cwd": "/home/autobyteus/shared/project",
+              "processId": "42082",
+              "source": "unifiedExecStartup",
+              "status": "completed",
+              "commandActions": [
+                {
+                  "type": "unknown",
+                  "command": "pwd; cat codex-private-roundtrip.txt"
+                }
+              ],
+              "aggregatedOutput": "/home/autobyteus/shared/project\nCODEX_PRIVATE_1769f473b4e14d909001d05c64a23de2\nCODEX_PRIVATE_e3111a666037418e9e4e88db6d763c60\n",
+              "exitCode": 0,
+              "durationMs": 0
+            }
+          ],
+          "receipt": "a-reread-turn.json"
+        },
+        "sharedBytes": {
+          "clientNodes": [
+            "ab-sf-fr015-68c77fbb-app-a",
+            "ab-sf-fr015-68c77fbb-app-b"
+          ],
+          "path": "/home/autobyteus/shared/project/codex-private-roundtrip.txt",
+          "backing": "/export/project/codex-private-roundtrip.txt",
+          "exactText": "CODEX_PRIVATE_1769f473b4e14d909001d05c64a23de2\nCODEX_PRIVATE_e3111a666037418e9e4e88db6d763c60\n",
+          "sha256": "937499053378a4a082575958d5904c3ba7a61ee5b3c3604989ead128f2607d09"
+        }
+      },
+      "seconds": 14.704
+    },
+    {
+      "name": "A native process close/private-bundle removal leaves common project unchanged",
+      "status": "PASS",
+      "result": {
+        "closed": {
+          "node": "ab-sf-fr015-68c77fbb-app-a",
+          "threadId": "01a133ec-cf20-7a61-a51b-4587432fc716",
+          "exit": 0
+        },
+        "privateOnlyDeletion": true,
+        "noSharedRuntimePaths": [
+          {
+            "node": "ab-sf-fr015-68c77fbb-app-a",
+            "runtimeProjectPaths": [
+              {
+                "path": ".claude",
+                "exists": false
+              },
+              {
+                "path": ".codex",
+                "exists": false
+              },
+              {
+                "path": ".agents",
+                "exists": false
+              }
+            ]
+          },
+          {
+            "node": "ab-sf-fr015-68c77fbb-app-b",
+            "runtimeProjectPaths": [
+              {
+                "path": ".claude",
+                "exists": false
+              },
+              {
+                "path": ".codex",
+                "exists": false
+              },
+              {
+                "path": ".agents",
+                "exists": false
+              }
+            ]
+          }
+        ]
+      },
+      "seconds": 0.447
+    },
+    {
+      "name": "active B private native skill survives A cleanup and reads previously unread asset",
+      "status": "FAIL",
+      "error": "AssertionError([{'method': 'turn/completed', 'params': {'threadId': '01a133ec-d597-7a41-a044-cb9eab4d5c3b', 'turn': {'id': '01a133ed-e6b1-7882-84fe-5f57e73bca01', 'rootTurnId': '01a133ed-e6b1-7882-84fe-5f57e73bca01', 'items': [], 'itemsView': 'notLoaded', 'status': 'failed', 'error': {'message': 'Selected model is at capacity. Please try a different model.', 'codexErrorInfo': 'serverOverloaded', 'additionalDetails': None, 'misalignment': None}, 'startedAt': 1791872591, 'completedAt': 1791872633, 'durationMs': 41799}}}])",
+      "seconds": 41.826
+    }
+  ],
+  "cleanup": [
+    {
+      "container": "ab-sf-fr015-68c77fbb-app-b",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr015-68c77fbb-app-a",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr015-68c77fbb-nfs-b",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr015-68c77fbb-nfs-a",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr015-68c77fbb-storage-server",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr015-68c77fbb-b-chromium",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr015-68c77fbb-b-legacy-workspace",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr015-68c77fbb-b-workspace",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr015-68c77fbb-b-root-home",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr015-68c77fbb-b-data",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr015-68c77fbb-a-chromium",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr015-68c77fbb-a-legacy-workspace",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr015-68c77fbb-a-workspace",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr015-68c77fbb-a-root-home",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr015-68c77fbb-a-data",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr015-68c77fbb-storage",
+      "rc": 0
+    },
+    {
+      "network": "ab-sf-fr015-68c77fbb-net",
+      "rc": 0
+    },
+    {
+      "absence_kind": "container",
+      "name": "ab-sf-fr015-68c77fbb-storage-server",
+      "absent": true
+    },
+    {
+      "absence_kind": "container",
+      "name": "ab-sf-fr015-68c77fbb-app-a",
+      "absent": true
+    },
+    {
+      "absence_kind": "container",
+      "name": "ab-sf-fr015-68c77fbb-app-b",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr015-68c77fbb-storage",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr015-68c77fbb-nfs-a",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr015-68c77fbb-a-data",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr015-68c77fbb-a-root-home",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr015-68c77fbb-a-workspace",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr015-68c77fbb-a-legacy-workspace",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr015-68c77fbb-a-chromium",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr015-68c77fbb-nfs-b",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr015-68c77fbb-b-data",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr015-68c77fbb-b-root-home",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr015-68c77fbb-b-workspace",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr015-68c77fbb-b-legacy-workspace",
+      "absent": true
+    },
+    {
+      "absence_kind": "volume",
+      "name": "ab-sf-fr015-68c77fbb-b-chromium",
+      "absent": true
+    },
+    {
+      "absence_kind": "network",
+      "name": "ab-sf-fr015-68c77fbb-net",
+      "absent": true
+    },
+    {
+      "image_tag": "autobyteus-shared-feasibility:fr-015",
+      "expected_id": "sha256:f237ebffed2e9e16755c99de6e6720d43bce840d0350a9efa66676eb3123388a",
+      "rc": 0
+    }
+  ],
+  "application_metadata": {
+    "id": "sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a",
+    "repo_digests": [
+      "autobyteus/autobyteus-server@sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a"
+    ],
+    "created": "2026-10-12T13:24:35.302109183Z",
+    "entrypoint": [
+      "/usr/local/bin/entrypoint.sh"
+    ]
+  },
+  "service_image": "sha256:f237ebffed2e9e16755c99de6e6720d43bce840d0350a9efa66676eb3123388a",
+  "network": {
+    "Subnet": "172.29.0.0/16",
+    "IPRange": "",
+    "Gateway": "172.29.0.1"
+  },
+  "storage_server_ip": "172.29.0.2",
+  "nodes": [
+    {
+      "name": "ab-sf-fr015-68c77fbb-app-a",
+      "port": 59852,
+      "nfs_volume": "ab-sf-fr015-68c77fbb-nfs-a",
+      "workspace": "agent_ws_af838221fa7f5c1dbb93dc33418fe47a0bb8e2fcde6c53e15c9ba3806ede659c",
+      "sourceRoot": "/home/autobyteus/data/skills/read-proof",
+      "skillParent": "/home/autobyteus/data/native-fixtures/a",
+      "proof": "CODEX_PRIVATE_1769f473b4e14d909001d05c64a23de2",
+      "afterStop": "CODEX_AFTER_STOP_665d323d44f4407a8caeca804984247c",
+      "threadId": "01a133ec-cf20-7a61-a51b-4587432fc716",
+      "model": "gpt-6.1-sol"
+    },
+    {
+      "name": "ab-sf-fr015-68c77fbb-app-b",
+      "port": 59854,
+      "nfs_volume": "ab-sf-fr015-68c77fbb-nfs-b",
+      "workspace": "agent_ws_af838221fa7f5c1dbb93dc33418fe47a0bb8e2fcde6c53e15c9ba3806ede659c",
+      "sourceRoot": "/home/autobyteus/data/skills/read-proof",
+      "skillParent": "/home/autobyteus/data/native-fixtures/b",
+      "proof": "CODEX_PRIVATE_e3111a666037418e9e4e88db6d763c60",
+      "afterStop": "CODEX_AFTER_STOP_2d8322a8b64b485d840378820b3f217f",
+      "threadId": "01a133ec-d597-7a41-a044-cb9eab4d5c3b",
+      "model": "gpt-6.1-sol"
+    }
+  ],
+  "fatal": "AssertionError([{'method': 'turn/completed', 'params': {'threadId': '01a133ec-d597-7a41-a044-cb9eab4d5c3b', 'turn': {'id': '01a133ed-e6b1-7882-84fe-5f57e73bca01', 'rootTurnId': '01a133ed-e6b1-7882-84fe-5f57e73bca01', 'items': [], 'itemsView': 'notLoaded', 'status': 'failed', 'error': {'message': 'Selected model is at capacity. Please try a different model.', 'codexErrorInfo': 'serverOverloaded', 'additionalDetails': None, 'misalignment': None}, 'startedAt': 1791872591, 'completedAt': 1791872633, 'durationMs': 41799}}}])"
+}

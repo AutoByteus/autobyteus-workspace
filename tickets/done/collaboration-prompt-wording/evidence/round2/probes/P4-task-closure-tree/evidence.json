@@ -1,0 +1,626 @@
+{
+  "startedAt": "2026-10-16T03:02:30.626Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "BR-001": {
+      "result": "Pass",
+      "description": "Agent root live DONE: rows fade, fallback to the run row, focus, Team tab, reopen, Task Team via composer",
+      "details": {
+        "root": {
+          "kind": "agent",
+          "rootId": "manager_bragent_1889_28ee04fa136e4f809a7648f8d6e4f407",
+          "managerRunId": "manager_bragent_1889_28ee04fa136e4f809a7648f8d6e4f407"
+        },
+        "latencyMs": 312,
+        "leave": {
+          "firstHiddenAt": 45,
+          "goneAt": 276,
+          "leaveMs": 231,
+          "midOpacityFrames": 9,
+          "hiddenAndInertAtOnce": true,
+          "moveClassAtLeaveStart": [
+            false,
+            true,
+            true
+          ],
+          "activeAtFirstHidden": "workspace-agent-run-row"
+        },
+        "bLeave": {
+          "firstHiddenAt": 49,
+          "goneAt": 283,
+          "leaveMs": 234,
+          "midOpacityFrames": 9,
+          "hiddenAndInertAtOnce": true,
+          "moveClassAtLeaveStart": [
+            false,
+            false,
+            false
+          ],
+          "activeAtFirstHidden": "TEXTAREA"
+        },
+        "selection": "rgb(238, 242, 255)",
+        "active": "workspace-agent-run-row"
+      }
+    },
+    "BR-002": {
+      "result": "Pass",
+      "description": "Agent Team root live DONE (same journey; fallback to the delegating Manager)",
+      "details": {
+        "root": {
+          "kind": "team",
+          "rootId": "delivery_team_brteam_5ae4_41e8d8aca3c04bbb9944252c6c1df786",
+          "managerRunId": "manager_brteam_5ae4_089d7caebff6436ebc822a31fb49f153"
+        },
+        "latencyMs": 314,
+        "leave": {
+          "firstHiddenAt": 38,
+          "goneAt": 263,
+          "leaveMs": 225,
+          "midOpacityFrames": 9,
+          "hiddenAndInertAtOnce": true,
+          "moveClassAtLeaveStart": [
+            true,
+            true,
+            true
+          ],
+          "activeAtFirstHidden": "workspace-team-row-delivery_team_brteam_5ae4_41e8d8aca3c04bbb9944252c6c1df786"
+        },
+        "bLeave": {
+          "firstHiddenAt": 48,
+          "goneAt": 282,
+          "leaveMs": 234,
+          "midOpacityFrames": 9,
+          "hiddenAndInertAtOnce": true,
+          "moveClassAtLeaveStart": [
+            false,
+            false,
+            false
+          ],
+          "activeAtFirstHidden": "TEXTAREA"
+        },
+        "selection": "true",
+        "active": "workspace-team-row-delivery_team_brteam_5ae4_41e8d8aca3c04bbb9944252c6c1df786"
+      }
+    },
+    "BR-003": {
+      "result": "Pass",
+      "description": "Agent Org root live DONE (same journey; fallback to the delegating Manager)",
+      "details": {
+        "root": {
+          "kind": "org",
+          "rootId": "delivery_org_brorg_92e5_f3fa712ad89c4016beb308831572cb67",
+          "managerRunId": "manager_brorg_92e5_9585831d82a34fbcae2e2bf3e53bbc91"
+        },
+        "latencyMs": 312,
+        "leave": {
+          "firstHiddenAt": 40,
+          "goneAt": 264,
+          "leaveMs": 224,
+          "midOpacityFrames": 9,
+          "hiddenAndInertAtOnce": true,
+          "moveClassAtLeaveStart": [
+            false,
+            false,
+            false
+          ],
+          "activeAtFirstHidden": "agent-org-run-open-delivery_org_brorg_92e5_f3fa712ad89c4016beb308831572cb67"
+        },
+        "bLeave": {
+          "firstHiddenAt": 48,
+          "goneAt": 281,
+          "leaveMs": 233,
+          "midOpacityFrames": 9,
+          "hiddenAndInertAtOnce": true,
+          "moveClassAtLeaveStart": [
+            false,
+            false,
+            false
+          ],
+          "activeAtFirstHidden": "TEXTAREA"
+        },
+        "selection": "true",
+        "active": "agent-org-run-open-delivery_org_brorg_92e5_f3fa712ad89c4016beb308831572cb67"
+      }
+    },
+    "BR-004": {
+      "result": "Pass",
+      "description": "Reduced motion (Agent and Team trees): removed at once; focus to the run row",
+      "details": {
+        "agent": {
+          "root": {
+            "kind": "agent",
+            "rootId": "manager_rmagent_ac55_d911d68922f44f289fbde2c5c4220ac1",
+            "managerRunId": "manager_rmagent_ac55_d911d68922f44f289fbde2c5c4220ac1"
+          },
+          "leave": {
+            "firstHiddenAt": 48,
+            "goneAt": 81,
+            "leaveMs": 33,
+            "midOpacityFrames": 0,
+            "hiddenAndInertAtOnce": true,
+            "moveClassAtLeaveStart": [
+              false,
+              false,
+              false
+            ],
+            "activeAtFirstHidden": "workspace-agent-run-row"
+          },
+          "active": "workspace-agent-run-row"
+        },
+        "team": {
+          "root": {
+            "kind": "team",
+            "rootId": "delivery_team_rmteam_7de7_7b1c0144be5a44a6b744616ee53d8567",
+            "managerRunId": "manager_rmteam_7de7_ff4c1c1a58144113a86d78738451c8c4"
+          },
+          "leave": {
+            "firstHiddenAt": 41,
+            "goneAt": 75,
+            "leaveMs": 34,
+            "midOpacityFrames": 0,
+            "hiddenAndInertAtOnce": true,
+            "moveClassAtLeaveStart": [
+              false,
+              false,
+              false
+            ],
+            "activeAtFirstHidden": "workspace-team-row-delivery_team_rmteam_7de7_7b1c0144be5a44a6b744616ee53d8567"
+          },
+          "active": "workspace-team-row-delivery_team_rmteam_7de7_7b1c0144be5a44a6b744616ee53d8567"
+        }
+      }
+    },
+    "BR-005": {
+      "result": "Pass",
+      "description": "Reload, then real backend restart + reload: closed rows never render",
+      "details": {
+        "reload": {
+          "agent": {
+            "closedIds": 6,
+            "seen": []
+          },
+          "team": {
+            "closedIds": 6,
+            "seen": []
+          },
+          "org": {
+            "closedIds": 6,
+            "seen": []
+          }
+        },
+        "restart": {
+          "before": 46432,
+          "after": 47395,
+          "starts": 2
+        },
+        "afterRestart": {
+          "agent": {
+            "closedIds": 6,
+            "seen": []
+          },
+          "team": {
+            "closedIds": 6,
+            "seen": []
+          },
+          "org": {
+            "closedIds": 6,
+            "seen": []
+          }
+        }
+      }
+    },
+    "BR-006": {
+      "result": "Pass",
+      "description": "CR-001: the last task rows under an Agent run fade; the empty tree then disappears",
+      "details": {
+        "root": {
+          "kind": "agent",
+          "rootId": "manager_lastrows_7deb_5408700321a94383a24a5d9f651f6ae5",
+          "managerRunId": "manager_lastrows_7deb_5408700321a94383a24a5d9f651f6ae5"
+        },
+        "leave": {
+          "firstHiddenAt": 51,
+          "goneAt": 283,
+          "leaveMs": 232,
+          "midOpacityFrames": 9,
+          "hiddenAndInertAtOnce": true,
+          "moveClassAtLeaveStart": [
+            false,
+            true,
+            true
+          ],
+          "activeAtFirstHidden": "workspace-agent-run-row"
+        },
+        "active": "workspace-agent-run-row"
+      }
+    },
+    "BR-007": {
+      "result": "Pass",
+      "description": "SP-3: stopped Org run expanded from history before hydration renders no closed rows",
+      "details": {
+        "closedIds": 6,
+        "seen": [],
+        "historyItemClosed": [
+          {
+            "agentRunId": "release_notes_writer_brorg_92e5_24f7cee3422f4d08aeb4dfb1b317e553"
+          },
+          {
+            "agentRunId": "fact_checker_brorg_92e5_5719cc68c03e47008216929f1dbb3a1e"
+          },
+          {
+            "agentRunId": "researcher_brorg_92e5_0f8293e3eeda4428a283c268f44896dd"
+          },
+          {
+            "teamRunId": "docs_review_team_brorg_92e5_a2082fd3f67f41ddab5f292d5afa6ea8"
+          }
+        ]
+      }
+    },
+    "BR-008": {
+      "result": "Pass",
+      "description": "Agent root reactivation: refused while DONE, status alone shows nothing, worker and Task Team rows return live, helpers stay hidden, reload",
+      "details": {
+        "root": {
+          "kind": "agent",
+          "rootId": "manager_raagent_c3b9_85ed701c588b474baa8f8b4896b53029",
+          "managerRunId": "manager_raagent_c3b9_85ed701c588b474baa8f8b4896b53029"
+        },
+        "worker": {
+          "agentRunId": "release_notes_writer_raagent_c3b9_680fbf3467574c00ae03ec545711652d"
+        },
+        "helperRefs": [
+          {
+            "agentRunId": "fact_checker_raagent_c3b9_824f91880b554ebf82a9cb14d2a9e77b"
+          },
+          {
+            "agentRunId": "researcher_raagent_c3b9_c1af8f1958fd4484a7241ed65b4c6a67"
+          }
+        ],
+        "teamRef": {
+          "teamRunId": "docs_review_team_raagent_c3b9_270012f098574551af6278d6a31a1479"
+        },
+        "coordinator": "release_notes_writer_raagent_c3b9_fece6d8172264f1bac2173ac3b61c405",
+        "reappearMs": 43,
+        "lazyStatuses": {
+          "coordinator": "idle",
+          "unused": "offline"
+        }
+      }
+    },
+    "BR-009": {
+      "result": "Pass",
+      "description": "Agent Team root reactivation (same journey)",
+      "details": {
+        "root": {
+          "kind": "team",
+          "rootId": "delivery_team_rateam_f3dc_961f5abcf0ca4213a661f67e2a2bb6ff",
+          "managerRunId": "manager_rateam_f3dc_71ab99ac73fc44ab86430ac67a14dfcb"
+        },
+        "worker": {
+          "agentRunId": "release_notes_writer_rateam_f3dc_a53461f03bf34158a3168083ed61315d"
+        },
+        "helperRefs": [
+          {
+            "agentRunId": "fact_checker_rateam_f3dc_44e8fdde0e7c44168737b9ecbd1e6acd"
+          },
+          {
+            "agentRunId": "researcher_rateam_f3dc_8d849a8603114a1a82151447926422fd"
+          }
+        ],
+        "teamRef": {
+          "teamRunId": "docs_review_team_rateam_f3dc_3e550a829b934693ba60913768d17126"
+        },
+        "coordinator": "release_notes_writer_rateam_f3dc_fc203824ff0f4f1e945fa40fa858c3d1",
+        "reappearMs": 47,
+        "lazyStatuses": {
+          "coordinator": "idle",
+          "unused": "offline"
+        }
+      }
+    },
+    "BR-010": {
+      "result": "Pass",
+      "description": "Agent Org root reactivation (same journey)",
+      "details": {
+        "root": {
+          "kind": "org",
+          "rootId": "delivery_org_raorg_67fe_86bb66402dd449978ab2cf348511b180",
+          "managerRunId": "manager_raorg_67fe_9c6c563afbbe487c9b075d145567fc15"
+        },
+        "worker": {
+          "agentRunId": "release_notes_writer_raorg_67fe_a36a842e4ee946af9c26f1ee232eba69"
+        },
+        "helperRefs": [
+          {
+            "agentRunId": "fact_checker_raorg_67fe_791e2f75ef1f4a588ba743eee95c58fb"
+          },
+          {
+            "agentRunId": "researcher_raorg_67fe_1cc304da9e37415bb67b2092bfa6a1fe"
+          }
+        ],
+        "teamRef": {
+          "teamRunId": "docs_review_team_raorg_67fe_cfd62da727714e8c885269ffe9cf469b"
+        },
+        "coordinator": "release_notes_writer_raorg_67fe_baaf7994ceef42308b10145319e5e679",
+        "reappearMs": 89,
+        "lazyStatuses": {
+          "coordinator": "idle",
+          "unused": "offline"
+        }
+      }
+    },
+    "BR-011": {
+      "result": "Pass",
+      "description": "Real backend restart: reactivated rows stay; DONE, restart, reopen and message reactivate the worker again",
+      "details": {
+        "firstRestart": {
+          "before": 47395,
+          "after": 48261,
+          "starts": 3
+        },
+        "afterRestart": {
+          "agent": {
+            "workerVisible": true,
+            "teamVisible": true,
+            "helpersSeen": []
+          },
+          "team": {
+            "workerVisible": true,
+            "teamVisible": true,
+            "helpersSeen": []
+          },
+          "org": {
+            "workerVisible": true,
+            "teamVisible": true,
+            "helpersSeen": []
+          }
+        },
+        "secondRestart": {
+          "before": 48261,
+          "after": 48354,
+          "starts": 4
+        },
+        "afterSecond": {
+          "agent": {
+            "reactivated": true,
+            "status": "IN_PROGRESS"
+          },
+          "team": {
+            "reactivated": true,
+            "status": "IN_PROGRESS"
+          },
+          "org": {
+            "reactivated": true,
+            "status": "IN_PROGRESS"
+          }
+        }
+      }
+    },
+    "BR-012": {
+      "result": "Pass",
+      "description": "Agent root follow-up Task to an existing copy: Team and Agent copy rows return live, board roots, repeated close of the earlier Task keeps them",
+      "details": {
+        "root": {
+          "kind": "agent",
+          "rootId": "manager_exagent_1a9a_955c23fb910d4fdb9d686edccf6b4c4b",
+          "managerRunId": "manager_exagent_1a9a_955c23fb910d4fdb9d686edccf6b4c4b"
+        },
+        "teamRef": {
+          "teamRunId": "docs_review_team_exagent_1a9a_a7ba4919daac4f579c79d78f00b67ee4"
+        },
+        "coordinator": "release_notes_writer_exagent_1a9a_c7a4f6c616ea47c1b93a885d5de5c378",
+        "taskB2": "project_task_bbddf3cc-7bf2-4549-b90d-708f80c1c1fd",
+        "taskA2": "project_task_b0d616ee-5d20-4df7-a5f1-c728ea251c91",
+        "reappearMs": 35,
+        "b2Root": {
+          "state": "idle",
+          "name": "docs review team exagent 1a9a"
+        },
+        "bRoot": {
+          "state": "offline",
+          "name": "docs review team exagent 1a9a"
+        }
+      }
+    },
+    "BR-013": {
+      "result": "Pass",
+      "description": "Agent Team root follow-up Task to an existing copy (same journey)",
+      "details": {
+        "root": {
+          "kind": "team",
+          "rootId": "delivery_team_exteam_851e_bb52b692d4324af98dfee3a4782788fd",
+          "managerRunId": "manager_exteam_851e_c95b1c1df93c471e99b97390c56eb6a8"
+        },
+        "teamRef": {
+          "teamRunId": "docs_review_team_exteam_851e_0c1b100f008c4648bf5addb6ae8d653b"
+        },
+        "coordinator": "release_notes_writer_exteam_851e_c24ac58601d34d9ab0cd6a2ad975c1d3",
+        "taskB2": "project_task_c36ea4ef-7c1d-4fcf-8bdd-5d7b3332576e",
+        "taskA2": "project_task_a602bb47-f598-4ebb-9e7f-407a4cf05832",
+        "reappearMs": 46,
+        "b2Root": {
+          "state": "idle",
+          "name": "docs review team exteam 851e"
+        },
+        "bRoot": {
+          "state": "offline",
+          "name": "docs review team exteam 851e"
+        }
+      }
+    },
+    "BR-014": {
+      "result": "Pass",
+      "description": "Agent Org root follow-up Task to an existing copy (same journey)",
+      "details": {
+        "root": {
+          "kind": "org",
+          "rootId": "delivery_org_exorg_b935_7e6315f36dfc43b5bcc0e7e2d26e18a2",
+          "managerRunId": "manager_exorg_b935_73028bb0ca0e487db716bb1d4c37e3b2"
+        },
+        "teamRef": {
+          "teamRunId": "docs_review_team_exorg_b935_ab62cc1c3ff44b98a04ff6d67e506d87"
+        },
+        "coordinator": "release_notes_writer_exorg_b935_179c62a78fac4fa19da7bd588aface0d",
+        "taskB2": "project_task_b8168dbe-3bd7-49a4-9631-d0d8f562cdb6",
+        "taskA2": "project_task_ca88f42d-8c9f-41b8-aaaa-2859bf787f8f",
+        "reappearMs": 79,
+        "b2Root": {
+          "state": "idle",
+          "name": "squad"
+        },
+        "bRoot": {
+          "state": "offline",
+          "name": "squad"
+        }
+      }
+    },
+    "BR-015": {
+      "result": "Pass",
+      "description": "Real backend restart: a stopped copy takes a follow-up Task live with its conversation; the assignment and row persist across another restart",
+      "details": {
+        "firstRestart": {
+          "before": 48354,
+          "after": 49924,
+          "starts": 5
+        },
+        "secondRestart": {
+          "before": 49924,
+          "after": 50036,
+          "starts": 6
+        },
+        "agent": {
+          "taskB3": "project_task_0416c67a-7902-4153-9d91-043bf3c6c3fa",
+          "root": {
+            "kind": "team",
+            "teamRunId": "docs_review_team_exagent_1a9a_a7ba4919daac4f579c79d78f00b67ee4",
+            "ingressAgentRunId": "release_notes_writer_exagent_1a9a_c7a4f6c616ea47c1b93a885d5de5c378",
+            "closed": false,
+            "status": "idle",
+            "start": "started"
+          },
+          "afterSecondRestart": {
+            "root": {
+              "kind": "team",
+              "teamRunId": "docs_review_team_exagent_1a9a_a7ba4919daac4f579c79d78f00b67ee4",
+              "ingressAgentRunId": "release_notes_writer_exagent_1a9a_c7a4f6c616ea47c1b93a885d5de5c378",
+              "closed": false,
+              "status": "offline",
+              "start": "started"
+            },
+            "board": {
+              "b3": {
+                "state": "offline",
+                "name": "docs review team exagent 1a9a"
+              },
+              "b2": {
+                "state": "offline",
+                "name": "docs review team exagent 1a9a"
+              }
+            }
+          }
+        },
+        "team": {
+          "taskB3": "project_task_ae599e72-e67d-4e59-82f1-cbc398baaa50",
+          "root": {
+            "kind": "team",
+            "teamRunId": "docs_review_team_exteam_851e_0c1b100f008c4648bf5addb6ae8d653b",
+            "ingressAgentRunId": "release_notes_writer_exteam_851e_c24ac58601d34d9ab0cd6a2ad975c1d3",
+            "closed": false,
+            "status": "idle",
+            "start": "started"
+          },
+          "afterSecondRestart": {
+            "root": {
+              "kind": "team",
+              "teamRunId": "docs_review_team_exteam_851e_0c1b100f008c4648bf5addb6ae8d653b",
+              "ingressAgentRunId": "release_notes_writer_exteam_851e_c24ac58601d34d9ab0cd6a2ad975c1d3",
+              "closed": false,
+              "status": "offline",
+              "start": "started"
+            },
+            "board": {
+              "b3": {
+                "state": "offline",
+                "name": "docs review team exteam 851e"
+              },
+              "b2": {
+                "state": "offline",
+                "name": "docs review team exteam 851e"
+              }
+            }
+          }
+        },
+        "org": {
+          "taskB3": "project_task_a8c818e9-fa4c-4b4f-a24a-278594fdfda2",
+          "root": {
+            "kind": "team",
+            "teamRunId": "docs_review_team_exorg_b935_ab62cc1c3ff44b98a04ff6d67e506d87",
+            "ingressAgentRunId": "release_notes_writer_exorg_b935_179c62a78fac4fa19da7bd588aface0d",
+            "closed": false,
+            "status": "idle",
+            "start": "started"
+          },
+          "afterSecondRestart": {
+            "root": {
+              "kind": "team",
+              "teamRunId": "docs_review_team_exorg_b935_ab62cc1c3ff44b98a04ff6d67e506d87",
+              "ingressAgentRunId": "release_notes_writer_exorg_b935_179c62a78fac4fa19da7bd588aface0d",
+              "closed": false,
+              "status": "offline",
+              "start": "started"
+            },
+            "board": {
+              "b3": {
+                "state": "offline",
+                "name": "squad"
+              },
+              "b2": {
+                "state": "offline",
+                "name": "squad"
+              }
+            }
+          }
+        }
+      }
+    },
+    "BR-016": {
+      "result": "Pass",
+      "description": "Damaged Task data at load: assignments unavailable, follow-up refused and nothing written; accepted after restore and restart",
+      "details": {
+        "damagedTask": "project_task_d65414fe-f43b-4c31-b3f2-d98602502e1e",
+        "refusal": "CALLED:{\\\"content\\\":[{\\\"type\\\":\\\"text\\\",\\\"text\\\":\\\"{\\\\n  \\\\\\\"delegated\\\\\\\": false,\\\\n  \\\\\\\"message\\\\\\\": \\\\\\\"Agent run resource data could not be read (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-OVFFUk/projects/project_4e0de139-178c-4007-91ec-321d87065ec6/tasks/project_task_d65414fe-f43b-4c31-b3f2-d98602502e1e/agent_run_resources.json: Unexpected end of JSON input). Fix or restore the file and restart the app; other features keep working.\\\\\\\"\\\\n}\\\"}],\\\"structuredContent\\\":{\\\"delegated\\\":false,\\\"message\\\":\\\"Agent run resource data could not be read (/var/folders/7w/9r4_s1",
+        "recovered": {
+          "kind": "agent",
+          "teamRunId": null,
+          "ingressAgentRunId": "release_notes_writer_exagent_1a9a_815cbedc8ed54abc88db5406310b44e3",
+          "closed": false,
+          "status": "idle",
+          "start": "started"
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 46466,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 50117,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:54259",
+    "frontendUrl": "http://127.0.0.1:54260",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-OVFFUk"
+  },
+  "browserVersion": "155.0.8059.84",
+  "result": "Pass",
+  "finishedAt": "2026-10-16T03:06:10.860Z"
+}
