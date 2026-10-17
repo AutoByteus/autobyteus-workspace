@@ -61,7 +61,7 @@ export const useTaskWorkerTaskStore = defineStore('taskWorkerTasks', () => {
         const key = `${answer.workerKind}:${answer.workerRunId}`
         if (!interest.has(key) || !stamps.has(key) || epochs.get(key) !== stamps.get(key)) continue
         next[key] = answer.task && { taskId: answer.task.taskId, projectId: answer.task.projectId ?? null,
-          description: answer.task.description, status: answer.task.status as ProjectTaskStatus }
+          description: answer.task.description, status: answer.task.status as ProjectTaskStatus, taskKey: answer.task.taskKey ?? null }
       }
       answers.value = next
     } catch (error) {

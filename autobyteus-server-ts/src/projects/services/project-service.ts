@@ -17,6 +17,7 @@ import type {
 } from "../domain/models.js";
 import { ProjectError } from "../domain/project-errors.js";
 import { isTerminalTaskStatus } from "../domain/task-status.js";
+import { taskKeyPrefixOf, uniqueTaskKeyPrefix } from "../domain/task-keys.js";
 import { getProjectStore, type ProjectStore } from "../stores/project-store.js";
 import { getProjectChangePublisher, type ProjectChangeMarks } from "../changes/project-change-publisher.js";
 
@@ -81,7 +82,8 @@ const findLinkIndex = (project: Project, workspaceRootPath: string): number => {
 
 /**
  * Governing owner of Project invariants: name normalisation and uniqueness,
- * identity/timestamps, workspace-link validation, and read-time availability.
+ * identity/timestamps, the Task key prefix (reserved once at creation, unique among
+ * current Projects, never changed), workspace-link validation, and read-time availability.
  * Every validation that depends on stored Projects runs inside the store's
  * serialized Project write, so a rejected change never writes.
  */
@@ -133,17 +135,14 @@ export class ProjectService {
     const name = normalizeName(command.name);
     const description = normalizeDescription(command.description);
     const timestamp = this.nowIso();
-    const created: Project = {
-      projectId: this.createProjectId(),
-      name,
-      description,
-      createdAt: timestamp,
-      updatedAt: timestamp,
-      workspaces: [],
-    };
+    const projectId = this.createProjectId();
 
-    const committed = await this.store.createProject(async (records) => {
+    const committed = await this.store.createProject(async (records, retiredPrefixes) => {
       assertNameAvailable(records, name);
+      // Deleted Projects' prefixes stay reserved, so an old key never reaches a new Task.
+      const prefix = uniqueTaskKeyPrefix(taskKeyPrefixOf(name), [...records.map((record) => record.taskKeys.prefix), ...retiredPrefixes]);
+      const created: Project = { projectId, name, description, createdAt: timestamp, updatedAt: timestamp, workspaces: [],
+        taskKeys: { prefix, lastNumber: 0 } };
       created.workspaces = this.resolveWorkspaceLinks(created, command.workspaces ?? [], "clear");
       return created;
     });
@@ -258,7 +257,8 @@ export class ProjectService {
   }
 
   private async toView(project: Project, registeredRoots?: Set<string>): Promise<ProjectView> {
-    const { workspaces: storedLinks, ...fields } = project;
+    // Key allocation state is internal: never part of a view.
+    const { workspaces: storedLinks, taskKeys: _taskKeys, ...fields } = project;
     const tasks = await this.store.listTasks(project.projectId);
     const roots = registeredRoots ?? await this.registeredRootsFor([project]);
     const workspaces: ProjectWorkspaceView[] = storedLinks.map((link) => ({

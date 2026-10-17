@@ -102,12 +102,12 @@ describe('ProjectTaskBoard', () => {
     expect(cardIds(wrapper, 'TODO')).toEqual(['t3', 't1'])
   })
 
-  it('links a contiguous row to the Task detail page', async () => {
-    seed([task('t1', 'a', '2026-09-27T01:00:00.000Z')])
+  it('links a contiguous row to the Task detail page by its key (REQ-022)', async () => {
+    seed([{...task('t1', 'a', '2026-09-27T01:00:00.000Z'), taskKey: 'p1-1', dependsOnTaskIds: []}])
     const wrapper = mountBoard()
     await flushPromises()
 
-    expect(wrapper.get('[data-testid="project-task-row-t1"]').findComponent(RouterLinkStub).props('to')).toBe('/projects/p1/tasks/t1')
+    expect(wrapper.get('[data-testid="project-task-row-t1"]').findComponent(RouterLinkStub).props('to')).toBe('/projects/p1/tasks/p1-1')
   })
 
   it('offers no drag, move or status controls (REQ-003)', async () => {

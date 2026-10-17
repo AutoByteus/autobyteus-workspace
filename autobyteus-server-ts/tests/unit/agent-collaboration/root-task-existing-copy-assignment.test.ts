@@ -155,6 +155,38 @@ describe("assigning a new Task to an existing copy (DS-002)", () => {
     expect(await f.assignTo(worker, "task-B")).toMatchObject({ delegated: true });
   });
 
+  it("a key task_id (any letter case) reaches the stored Task; the work message names the key, never the stored ID (AC-022, AC-023)", async () => {
+    const f = fixture();
+    await f.assign(worker);
+    f.resources.addTask("project_task_b", "Follow-up cleanup", "autobyteus-42");
+    await f.done();
+    expect(await f.assignTo(worker, "AutoByteus-42")).toEqual({ delegated: true, copy: { kind: "agent", agentRunId: "worker" } });
+    expect(f.resources.assignments).toEqual([{ hostRoot: root, execution: worker, taskId: "project_task_b", assignedBy: "manager" }]);
+    expect(f.delivered[0]!.content).toContain("New Task assigned to you: autobyteus-42. Your previous Task is closed");
+    expect(f.delivered[0]!.content).not.toContain("project_task_b");
+  });
+
+  it("an undelivered work message names the Task by key (AC-023)", async () => {
+    const f = fixture();
+    await f.assign(worker);
+    f.resources.addTask("project_task_b", "Follow-up cleanup", "autobyteus-42");
+    await f.done();
+    f.control.deliveryRefusal = { accepted: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: "input closed" };
+    const result = await f.assignTo(worker, "project_task_b");
+    expect(result).toEqual({ delegated: false, message: "Task autobyteus-42 was given to the task agent, but the message with its work was not delivered "
+      + "(input closed). Message the task agent's run id worker, or set Task autobyteus-42 to CANCELLED, or delegate it to a new task agent." });
+  });
+
+  it.each([
+    ["an unknown Task", (f: Fixture) => { f.resources.tasks.delete("task-B"); }, "Task 'task-B' was not found."],
+    ["a DONE Task", (f: Fixture) => { f.resources.tasks.get("task-B")!.done = true; }, "Task is DONE"],
+  ])("the named Task is checked before the copy: a copy outside the tree with %s gets the Task's refusal (REC-005)", async (_case, arrange, message) => {
+    const f = await afterTaskADone(["worker"]);
+    arrange(f);
+    expect(await f.assignTo({ agentRunId: "elsewhere" }, "task-B")).toEqual({ delegated: false, message: expect.stringContaining(message) });
+    unchanged(f);
+  });
+
   it("a delivery not accepted after the commit marks B's entry failed and says the work was not delivered", async () => {
     const f = await afterTaskADone(["worker"]);
     f.control.deliveryRefusal = { accepted: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: "input closed" };

@@ -65,10 +65,11 @@ export const buildTaskAssigneeWorkPacket = (input: Parameters<typeof buildTaskWo
  * reference files (listed by the delivery, not repeated here).
  */
 export const buildExistingCopyTaskMessage = (input: {
-  taskId: string;
+  /** The Task's agent-facing ID (a Project Task's key). */
+  taskReference: string;
   description: string;
 }): string => [
-  `New Task assigned to you: ${input.taskId}. Your previous Task is closed; this is the work to do now.`,
+  `New Task assigned to you: ${input.taskReference}. Your previous Task is closed; this is the work to do now.`,
   "",
   ...taskBodyLines(input.description, []),
 ].join("\n");

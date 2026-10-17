@@ -831,6 +831,7 @@ const assertConvertedPackage = (scenario: Awaited<ReturnType<typeof seedScenario
 const assertLedgerTransition = (
   databasePath: string,
   beforeRows: Array<Record<string, unknown>>,
+  statuses: MigrationStatus[],
 ): Array<Record<string, unknown>> => {
   const database = new DatabaseSync(databasePath, { readOnly: true });
   try {
@@ -846,7 +847,11 @@ const assertLedgerTransition = (
     database.close();
   }
   const afterRows = readMigrationLedger(databasePath);
-  expect(afterRows).toHaveLength(beforeRows.length + 4);
+  // One new ledger row per registered migration this startup ran (not only the four Team migrations below):
+  // every migration registered after the released cohort adds its own row, so the count follows the registry.
+  const beforeIds = new Set(beforeRows.map(({ migration_id }) => migration_id));
+  const ranNow = statuses.filter(({ migrationId, status }) => status !== "NOT_RUN" && !beforeIds.has(migrationId)).map(({ migrationId }) => migrationId);
+  expect(afterRows.slice(beforeRows.length).map(({ migration_id }) => migration_id).sort()).toEqual([...ranNow].sort());
   const transitionedBeforeRows = beforeRows.map((row) => {
     if (typeof row.summary !== "string") return row;
     const legacy = JSON.parse(row.summary) as ExecutionCounts;
@@ -1137,7 +1142,7 @@ describe("TeamRun released-shape production upgrade to current V2 through actual
     expect(first.output()).toContain("Server listening on");
     expect(first.output()).not.toContain(EMBEDDED_SERVER_PLATFORM_FATAL_PROTOCOL);
     assertConvertedPackage(scenario);
-    const ledgerAfterFirst = assertLedgerTransition(target.database.databasePath, ledgerBefore);
+    const ledgerAfterFirst = assertLedgerTransition(target.database.databasePath, ledgerBefore, await migrationStatuses(first.serverUrl));
     expect(readSyntheticTokenRows(target.database.databasePath)).toEqual([]);
     expect(readCurrentSyntheticTokenRows(target.database.databasePath)).toEqual([
       expect.objectContaining({
@@ -1206,7 +1211,7 @@ describe("TeamRun released-shape production upgrade to current V2 through actual
     assertConvertedPackage(scenario);
     expect(fs.readFileSync(scenario.warningEvidence!.path)).toEqual(scenario.warningEvidence!.bytes);
     expect(fs.readFileSync(scenario.warningEvidence!.historyPath)).toEqual(scenario.warningEvidence!.historyBytes);
-    const ledgerAfterFirst = assertLedgerTransition(target.database.databasePath, ledgerBefore);
+    const ledgerAfterFirst = assertLedgerTransition(target.database.databasePath, ledgerBefore, await migrationStatuses(first.serverUrl));
     expect(readSyntheticTokenRows(target.database.databasePath)).toEqual([]);
     expect(readCurrentSyntheticTokenRows(target.database.databasePath)).toHaveLength(tokensBefore.length);
     expect(readCurrentSyntheticTokenRows(target.database.databasePath)).toEqual(expect.arrayContaining([

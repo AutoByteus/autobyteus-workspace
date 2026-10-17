@@ -1,0 +1,16 @@
+5a8168860b2e44f642039048db4078dd129cdeb52b85fc97c60bb92854c37e5e  ./project_4d4c2277-0ae5-44c2-ab85-f37ff50777da/project.json
+cbd2d81eeb4cf3ed9a30f69e60e5600736cfd55f284fc9e5ab16058fc2936a44  ./project_4d4c2277-0ae5-44c2-ab85-f37ff50777da/tasks/project_task_fd64e6bb-76f4-4d62-af80-fd9c1d481002/task.json
+20a1721709ef63c08eefa3c9a3cacc3de196e3ba673e9af2331e972e9bb2b8ff  ./project_8ecfca57-1bc1-475e-8f79-ac4d17d736ce/project.json
+0212259db8ec7f86dcf60bb622ca652e8664b12731789b0ef274ee1608c6ecbe  ./project_8ecfca57-1bc1-475e-8f79-ac4d17d736ce/tasks/project_task_63394d1f-6f46-40d1-9a31-b428fa0d6c8d/task.json
+f54e3e78fdc59e4c05bfd82bd1b8ca863f335699dea6148053f1244f552fae19  ./project_8ecfca57-1bc1-475e-8f79-ac4d17d736ce/tasks/project_task_992c4d51-c65e-428d-b571-f0c18644a6c4/task.json
+79a80cce0a6e2ca28bf6d07fb10a40583ca6e805f5c2f7a718059444eefc42a5  ./project_8ecfca57-1bc1-475e-8f79-ac4d17d736ce/tasks/project_task_b2b4d1ca-2a37-4ac5-954d-e6e36fa81612/task.json
+9efa34e8fd46e781ea9ac1a4ea134c062f16a868d765ebbe32c58cb26391d553  ./project_bf1ec1b4-aea8-49b0-a885-748c2fc3c60f/project.json
+04fae86c5f7e52db4d4e6eb6bc4e02de8c0841a143d2b0629eb4424a90bb36ff  ./project_bf1ec1b4-aea8-49b0-a885-748c2fc3c60f/tasks/project_task_02bc1ceb-7fd7-422c-a487-2d99b7f0fae2/task.json
+e281f24cd30fd9f754d0b6b49a51efa665d02b5575f5a0a64b92971a55eaabf9  ./project_f36d52dc-b80c-42d8-b108-86f31d1950fe/project.json
+569b3898db9afa10fd343e7dd3b83ea98d21a2c8c276dc5a70b582e991953eb6  ./project_f36d52dc-b80c-42d8-b108-86f31d1950fe/tasks/project_task_0d756bee-f162-4b91-9b6f-fbf36bc118a3/task.json
+9c63c08e5e042c625c6446536071f958958f02ce2ee98da889537d38e701f92d  ./project_f36d52dc-b80c-42d8-b108-86f31d1950fe/tasks/project_task_3ef91f2e-b4db-4f9c-a613-d31969718a70/task.json
+d1288ca55d3faf279917afffdb1c621c93d0f49301382c51e5775998ad1cd09f  ./project_f36d52dc-b80c-42d8-b108-86f31d1950fe/tasks/project_task_65606491-6380-4a49-b19d-e1e3680d8e7c/task.json
+e40fd04446b10533835a482430393da3f0f7da400caf3f5d93a18a6752da9d9d  ./project_f36d52dc-b80c-42d8-b108-86f31d1950fe/tasks/project_task_9addd306-9056-4972-a8c6-fd5b51b9e491/task.json
+3e7c5d53d13a91c57c3da8363cc314e0ba6bf3cd9416aca804542ebeef17a966  ./project_f36d52dc-b80c-42d8-b108-86f31d1950fe/tasks/project_task_b3be95df-4b44-4c27-a1aa-4b3aee9fca8e/task.json
+302ac74de7d3d97ee1a489a53284747e495a0056bdac3decce47996d2454a7f0  ./project_f36d52dc-b80c-42d8-b108-86f31d1950fe/tasks/project_task_fd98a97b-225a-45d2-8526-7997e3a8b284/context/ctx_874ae2c9f800__tkd-api-outline.md
+8321d4222cf8035617321b761c0c12c167fcc8fe5810333204b9c2b58e93b5bd  ./project_f36d52dc-b80c-42d8-b108-86f31d1950fe/tasks/project_task_fd98a97b-225a-45d2-8526-7997e3a8b284/task.json

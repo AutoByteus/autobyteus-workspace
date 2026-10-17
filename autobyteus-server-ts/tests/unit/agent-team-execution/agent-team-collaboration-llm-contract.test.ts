@@ -44,7 +44,7 @@ describe("approved collaboration tool descriptions", () => {
       delegateRecipient: "501c11b0aa0cf1eeb1c64e9d9c0b852356c5d55f45e8288ecbb16c4e60d18c7b",
       delegateTeamId: "2a50c7b86ae6fda3c7f5ad890631ad9d191bbd97fb99bf20bd9c7cca0ded0f6b",
       delegateAgentId: "c6da81bc36fb30aa339f71451a2b0559fb251aad28030b305611c4fe3492f970",
-      delegateTaskId: "d0ed960b9714eb20ac0a35c8d4c423ef5131983577b3b02ef5a6fa435afa8c17",
+      delegateTaskId: "758d12d753234f54a47324aee40fbd746044ed150ece92d0d2c69abbd9f83017",
       delegateDescription: "e4b27c311d0bbe3a2a28745f12ecf495e9b4437d4c6ff36f95f7edda99993bb5",
       delegateReferences: "dc26162eff418e5fe6ee52377cc0e89521ac1206cc1a13a1ad3c0ac23a5e4610",
     });

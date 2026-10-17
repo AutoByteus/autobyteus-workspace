@@ -30,7 +30,7 @@ const workerRow = transient('task_agent', 'writer-run')
 const teamCopyRow = transient('task_team', 'review-team')
 const memberRow = transient('task_team_child', 'reviewer-run', 1)
 const collaboratorRow = transient('task_agent', 'collaborator-run')
-const task = (taskId: string): TaskWorkerTask => ({ taskId, projectId: null, description: `Task ${taskId}`, status: 'TODO' })
+const task = (taskId: string): TaskWorkerTask => ({ taskId, projectId: null, taskKey: null, description: `Task ${taskId}`, status: 'TODO' })
 /** The server's answers: workers have a Task; the `@` collaborator is no Task's root (null). */
 const answers: Record<string, TaskWorkerTask | null> = { 'agent:writer-run': task('t-writer'), 'team:review-team': task('t-team'), 'agent:collaborator-run': null }
 

@@ -1,0 +1,1274 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:32910) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory
+============================================================
+Initialized server settings service with 19 predefined settings
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: exc-manager-f89a19
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: exc-worker-f89a19
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: exc-helper-f89a19
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: exc-peer-f89a19
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Team Definition created successfully with ID: exc-squad-f89a19
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Team Definition created successfully with ID: exc-team-f89a19
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mCreated and registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mAGY compaction detection off for run exc_manager_f89a19_f77913f145ad4850864dac4ae372cafa: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mAgent websocket attached for run exc_manager_f89a19_f77913f145ad4850864dac4ae372cafa
+Created agent session b65638a4-6927-48b0-814b-ae0f529074e9 for run exc_manager_f89a19_f77913f145ad4850864dac4ae372cafa
+Agent WebSocket connected: session=b65638a4-6927-48b0-814b-ae0f529074e9, run=exc_manager_f89a19_f77913f145ad4850864dac4ae372cafa
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agents/exc_manager_f89a19_f77913f145ad4850864dac4ae372cafa/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_29e94ee961284466813185506dd4f156: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_e288022893f6432795350eeba4dbd0cd: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mAGY compaction detection off for run exc_helper_f89a19_58dc3d9e67ba4a98b7f463f31efdf37c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_7460e619a54244d8a3572dbd0c57b9fb: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_29e94ee961284466813185506dd4f156: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_29e94ee961284466813185506dd4f156: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_e288022893f6432795350eeba4dbd0cd: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+[22m[39mClosed agent session b65638a4-6927-48b0-814b-ae0f529074e9
+Agent WebSocket disconnected: b65638a4-6927-48b0-814b-ae0f529074e9
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mAgent team websocket attached for team run exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8
+Created agent session d5e9e0dc-6529-4c36-9d00-75c3d6baddae for run exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mAgent Team WebSocket connected: session=d5e9e0dc-6529-4c36-9d00-75c3d6baddae, run=exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_teams/exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8/exc_manager_f89a19_fa20cc9f1f09475ba79f70918ecf2892/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_teams/exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8/exc_manager_f89a19_fa20cc9f1f09475ba79f70918ecf2892/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_teams/exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8/exc_manager_f89a19_fa20cc9f1f09475ba79f70918ecf2892/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mAGY compaction detection off for run exc_manager_f89a19_fa20cc9f1f09475ba79f70918ecf2892: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_teams/exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8/exc_manager_f89a19_fa20cc9f1f09475ba79f70918ecf2892/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_047b8b7119f646a98785654709a46167: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_da42ea0f7f7a44a3818835cd6ceb653c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mAGY compaction detection off for run exc_helper_f89a19_5f03699747c046339b89e5a8875b0dac: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_teams/exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8/exc_peer_f89a19_04acefcab88647e0aef3ab0552c6e27a/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_teams/exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8/exc_peer_f89a19_04acefcab88647e0aef3ab0552c6e27a/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_teams/exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8/exc_peer_f89a19_04acefcab88647e0aef3ab0552c6e27a/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mAGY compaction detection off for run exc_peer_f89a19_04acefcab88647e0aef3ab0552c6e27a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_teams/exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8/exc_peer_f89a19_04acefcab88647e0aef3ab0552c6e27a/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_047b8b7119f646a98785654709a46167: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mAgent team websocket attached for team run exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8
+Created agent session f77db884-0369-499e-b6b6-7a97a166d4e2 for run exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mAgent Team WebSocket connected: session=f77db884-0369-499e-b6b6-7a97a166d4e2, run=exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mClosed agent session f77db884-0369-499e-b6b6-7a97a166d4e2
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mAgent team websocket attached for team run exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8
+Created agent session dc169cff-0884-44e6-88f1-bd0ab56b621d for run exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mAgent Team WebSocket connected: session=dc169cff-0884-44e6-88f1-bd0ab56b621d, run=exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mClosed agent session dc169cff-0884-44e6-88f1-bd0ab56b621d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mAgent team websocket attached for team run exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8
+Created agent session 4c2f2770-41aa-4d27-9b7d-4efcf7da2342 for run exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mAgent Team WebSocket connected: session=4c2f2770-41aa-4d27-9b7d-4efcf7da2342, run=exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mClosed agent session 4c2f2770-41aa-4d27-9b7d-4efcf7da2342
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mAgent team websocket attached for team run exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8
+Created agent session bf72c9aa-96cb-40e3-8bab-c85d55b4d3a5 for run exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mAgent Team WebSocket connected: session=bf72c9aa-96cb-40e3-8bab-c85d55b4d3a5, run=exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mClosed agent session bf72c9aa-96cb-40e3-8bab-c85d55b4d3a5
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mAgent team websocket attached for team run exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8
+Created agent session 83971ec8-743b-45dc-9fef-f6508f5eb81f for run exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mAgent Team WebSocket connected: session=83971ec8-743b-45dc-9fef-f6508f5eb81f, run=exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mClosed agent session 83971ec8-743b-45dc-9fef-f6508f5eb81f
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_047b8b7119f646a98785654709a46167: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_da42ea0f7f7a44a3818835cd6ceb653c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mAgent team websocket attached for team run exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8
+Created agent session a42518b1-6b0e-4091-9d9d-40b034df32fd for run exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mAgent Team WebSocket connected: session=a42518b1-6b0e-4091-9d9d-40b034df32fd, run=exc_team_f89a19_b4f30a66e3a94f84bbca634cba44e8a8
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mClosed agent session a42518b1-6b0e-4091-9d9d-40b034df32fd
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+[22m[39mClosed agent session d5e9e0dc-6529-4c36-9d00-75c3d6baddae
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_orgs/exc_org_f89a19_d1b87a79edfc49708dc263f6c124efa6/exc_manager_f89a19_6d97c3bb95dc48478c6c18908965f92d/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_orgs/exc_org_f89a19_d1b87a79edfc49708dc263f6c124efa6/exc_manager_f89a19_6d97c3bb95dc48478c6c18908965f92d/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_orgs/exc_org_f89a19_d1b87a79edfc49708dc263f6c124efa6/exc_manager_f89a19_6d97c3bb95dc48478c6c18908965f92d/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mAGY compaction detection off for run exc_manager_f89a19_6d97c3bb95dc48478c6c18908965f92d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_orgs/exc_org_f89a19_d1b87a79edfc49708dc263f6c124efa6/exc_manager_f89a19_6d97c3bb95dc48478c6c18908965f92d/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_9a56a20cad77456fbf99ebbe65ebb98b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_e6c1c53be1c244918c319390cf8e3293: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mAGY compaction detection off for run exc_helper_f89a19_15107fff00604bd68a37a34d7a706b8b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_orgs/exc_org_f89a19_d1b87a79edfc49708dc263f6c124efa6/exc_helper_f89a19_c839eb4271b2443ab9ac498f96a2a5d7/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_orgs/exc_org_f89a19_d1b87a79edfc49708dc263f6c124efa6/exc_helper_f89a19_c839eb4271b2443ab9ac498f96a2a5d7/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_orgs/exc_org_f89a19_d1b87a79edfc49708dc263f6c124efa6/exc_helper_f89a19_c839eb4271b2443ab9ac498f96a2a5d7/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mAGY compaction detection off for run exc_helper_f89a19_c839eb4271b2443ab9ac498f96a2a5d7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_orgs/exc_org_f89a19_d1b87a79edfc49708dc263f6c124efa6/exc_helper_f89a19_c839eb4271b2443ab9ac498f96a2a5d7/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_9a56a20cad77456fbf99ebbe65ebb98b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_9a56a20cad77456fbf99ebbe65ebb98b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_e6c1c53be1c244918c319390cf8e3293: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent team websocket attached for team run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+Created agent session a0467f4b-f5e5-4457-bc69-84cf6ad4a6c4 for run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent Team WebSocket connected: session=a0467f4b-f5e5-4457-bc69-84cf6ad4a6c4, run=exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_teams/exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc/exc_manager_f89a19_d52aed1134a24b62ab22d84436abf7f7/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_teams/exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc/exc_manager_f89a19_d52aed1134a24b62ab22d84436abf7f7/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_teams/exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc/exc_manager_f89a19_d52aed1134a24b62ab22d84436abf7f7/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAGY compaction detection off for run exc_manager_f89a19_d52aed1134a24b62ab22d84436abf7f7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_teams/exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc/exc_manager_f89a19_d52aed1134a24b62ab22d84436abf7f7/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_20ff57da52844bb2a9b32fe5b8ddaad9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_20ff57da52844bb2a9b32fe5b8ddaad9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_20ff57da52844bb2a9b32fe5b8ddaad9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_20ff57da52844bb2a9b32fe5b8ddaad9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent team websocket attached for team run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+Created agent session 105a7a42-4b63-47a3-90d4-62c75fb35762 for run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent Team WebSocket connected: session=105a7a42-4b63-47a3-90d4-62c75fb35762, run=exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mClosed agent session 105a7a42-4b63-47a3-90d4-62c75fb35762
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_20ff57da52844bb2a9b32fe5b8ddaad9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent team websocket attached for team run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+Created agent session ad06e203-20c5-43a4-85c9-ef139d3bcc21 for run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent Team WebSocket connected: session=ad06e203-20c5-43a4-85c9-ef139d3bcc21, run=exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mClosed agent session ad06e203-20c5-43a4-85c9-ef139d3bcc21
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_20ff57da52844bb2a9b32fe5b8ddaad9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent team websocket attached for team run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+Created agent session 6ddd2a72-5ae6-414b-8753-6515be98e01d for run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent Team WebSocket connected: session=6ddd2a72-5ae6-414b-8753-6515be98e01d, run=exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mClosed agent session 6ddd2a72-5ae6-414b-8753-6515be98e01d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_20ff57da52844bb2a9b32fe5b8ddaad9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent team websocket attached for team run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+Created agent session 5ab4e443-e441-401f-88d1-3d8ffdb360b2 for run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent Team WebSocket connected: session=5ab4e443-e441-401f-88d1-3d8ffdb360b2, run=exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mClosed agent session 5ab4e443-e441-401f-88d1-3d8ffdb360b2
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_20ff57da52844bb2a9b32fe5b8ddaad9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent team websocket attached for team run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+Created agent session fb8773b7-71dd-4437-9057-858bcb56181a for run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent Team WebSocket connected: session=fb8773b7-71dd-4437-9057-858bcb56181a, run=exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mClosed agent session fb8773b7-71dd-4437-9057-858bcb56181a
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_20ff57da52844bb2a9b32fe5b8ddaad9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent team websocket attached for team run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+Created agent session d57e7f26-9b6e-438f-afc6-7a19b6f1f0c0 for run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent Team WebSocket connected: session=d57e7f26-9b6e-438f-afc6-7a19b6f1f0c0, run=exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mClosed agent session d57e7f26-9b6e-438f-afc6-7a19b6f1f0c0
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_20ff57da52844bb2a9b32fe5b8ddaad9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent team websocket attached for team run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+Created agent session ae0ab047-2ee3-4091-be83-60db54fa2e7e for run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent Team WebSocket connected: session=ae0ab047-2ee3-4091-be83-60db54fa2e7e, run=exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mClosed agent session ae0ab047-2ee3-4091-be83-60db54fa2e7e
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_20ff57da52844bb2a9b32fe5b8ddaad9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent team websocket attached for team run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+Created agent session c85eaf25-7608-41b7-b2b0-4c3c9b116b70 for run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent Team WebSocket connected: session=c85eaf25-7608-41b7-b2b0-4c3c9b116b70, run=exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mClosed agent session c85eaf25-7608-41b7-b2b0-4c3c9b116b70
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_20ff57da52844bb2a9b32fe5b8ddaad9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_20ff57da52844bb2a9b32fe5b8ddaad9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_9538432aba7f487ca39d44021cf46e74: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_9538432aba7f487ca39d44021cf46e74: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_9538432aba7f487ca39d44021cf46e74: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_9538432aba7f487ca39d44021cf46e74: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_9538432aba7f487ca39d44021cf46e74: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent team websocket attached for team run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+Created agent session da0cc8cf-6032-4106-a1ba-09d67991c7e9 for run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent Team WebSocket connected: session=da0cc8cf-6032-4106-a1ba-09d67991c7e9, run=exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mClosed agent session da0cc8cf-6032-4106-a1ba-09d67991c7e9
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_9538432aba7f487ca39d44021cf46e74: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent team websocket attached for team run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+Created agent session a0d7f06d-859d-4516-b348-32bea95146b5 for run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent Team WebSocket connected: session=a0d7f06d-859d-4516-b348-32bea95146b5, run=exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mClosed agent session a0d7f06d-859d-4516-b348-32bea95146b5
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_9538432aba7f487ca39d44021cf46e74: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent team websocket attached for team run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+Created agent session 62f40482-fd76-4680-9566-d83d31a9788c for run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent Team WebSocket connected: session=62f40482-fd76-4680-9566-d83d31a9788c, run=exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mClosed agent session 62f40482-fd76-4680-9566-d83d31a9788c
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_9538432aba7f487ca39d44021cf46e74: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent team websocket attached for team run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+Created agent session 8d493be8-dcdc-4f22-9782-a963afd401a3 for run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent Team WebSocket connected: session=8d493be8-dcdc-4f22-9782-a963afd401a3, run=exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mClosed agent session 8d493be8-dcdc-4f22-9782-a963afd401a3
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_9538432aba7f487ca39d44021cf46e74: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent team websocket attached for team run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+Created agent session 403c7ca8-0407-4105-a3ac-b1dc408ded01 for run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent Team WebSocket connected: session=403c7ca8-0407-4105-a3ac-b1dc408ded01, run=exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mClosed agent session 403c7ca8-0407-4105-a3ac-b1dc408ded01
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_9538432aba7f487ca39d44021cf46e74: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent team websocket attached for team run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+Created agent session f66f9933-7908-4ad7-847d-9dee68a52ac8 for run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent Team WebSocket connected: session=f66f9933-7908-4ad7-847d-9dee68a52ac8, run=exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mClosed agent session f66f9933-7908-4ad7-847d-9dee68a52ac8
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_9538432aba7f487ca39d44021cf46e74: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent team websocket attached for team run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+Created agent session 725959ba-61ab-4147-bff2-217301fe4e4c for run exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAgent Team WebSocket connected: session=725959ba-61ab-4147-bff2-217301fe4e4c, run=exc_team_f89a19_757f4f40339246bf8e6eb4df51c6dcdc
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mClosed agent session 725959ba-61ab-4147-bff2-217301fe4e4c
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_9538432aba7f487ca39d44021cf46e74: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_9538432aba7f487ca39d44021cf46e74: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+[22m[39mClosed agent session a0467f4b-f5e5-4457-bc69-84cf6ad4a6c4
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable
+[22m[39mAgent team websocket attached for team run exc_team_f89a19_947a785e2aad42f4963e8e7e654f2e93
+Created agent session b562150a-507c-4b92-8953-f69f03875313 for run exc_team_f89a19_947a785e2aad42f4963e8e7e654f2e93
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable
+[22m[39mAgent Team WebSocket connected: session=b562150a-507c-4b92-8953-f69f03875313, run=exc_team_f89a19_947a785e2aad42f4963e8e7e654f2e93
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable
+[22m[39mAGY compaction detection off for run exc_manager_f89a19_82d3ff3790fe4ae3a3dd7a391f8e10b6: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable
+[22m[39mAgent websocket attached for run exc_manager_f89a19_82d3ff3790fe4ae3a3dd7a391f8e10b6
+Created agent session 70736b5b-0a41-487a-9c35-b6ddcdbe4d01 for run exc_manager_f89a19_82d3ff3790fe4ae3a3dd7a391f8e10b6
+Agent WebSocket connected: session=70736b5b-0a41-487a-9c35-b6ddcdbe4d01, run=exc_manager_f89a19_82d3ff3790fe4ae3a3dd7a391f8e10b6
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_teams/exc_team_f89a19_947a785e2aad42f4963e8e7e654f2e93/exc_manager_f89a19_df988a6dee7a4e71830e06c4b6d3f16e/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_teams/exc_team_f89a19_947a785e2aad42f4963e8e7e654f2e93/exc_manager_f89a19_df988a6dee7a4e71830e06c4b6d3f16e/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_teams/exc_team_f89a19_947a785e2aad42f4963e8e7e654f2e93/exc_manager_f89a19_df988a6dee7a4e71830e06c4b6d3f16e/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable
+[22m[39mAGY compaction detection off for run exc_manager_f89a19_df988a6dee7a4e71830e06c4b6d3f16e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_teams/exc_team_f89a19_947a785e2aad42f4963e8e7e654f2e93/exc_manager_f89a19_df988a6dee7a4e71830e06c4b6d3f16e/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_1c604a0848f8416387f5519497ae5332: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agents/exc_manager_f89a19_82d3ff3790fe4ae3a3dd7a391f8e10b6/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable
+[22m[39mClosed agent session b562150a-507c-4b92-8953-f69f03875313
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable
+[22m[39mClosed agent session 70736b5b-0a41-487a-9c35-b6ddcdbe4d01
+Agent WebSocket disconnected: 70736b5b-0a41-487a-9c35-b6ddcdbe4d01
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_orgs/exc_org_f89a19_65f9dda9f8d94130988530e453989433/exc_manager_f89a19_bbed80346251442ca2290e6fb0faaeba/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_orgs/exc_org_f89a19_65f9dda9f8d94130988530e453989433/exc_manager_f89a19_bbed80346251442ca2290e6fb0faaeba/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_orgs/exc_org_f89a19_65f9dda9f8d94130988530e453989433/exc_manager_f89a19_bbed80346251442ca2290e6fb0faaeba/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change
+[22m[39mAGY compaction detection off for run exc_manager_f89a19_bbed80346251442ca2290e6fb0faaeba: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agent_orgs/exc_org_f89a19_65f9dda9f8d94130988530e453989433/exc_manager_f89a19_bbed80346251442ca2290e6fb0faaeba/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mEXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change
+[22m[39mAGY compaction detection off for run exc_helper_f89a19_1082046cc75642f5b6167ee89930b9a2: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mTKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mTKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mTKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mTKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mTKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)
+[22m[39mAGY compaction detection off for run exc_manager_f89a19_65ff422b1cad4193a9c37beb6a4752bd: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mTKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)
+[22m[39mAgent websocket attached for run exc_manager_f89a19_65ff422b1cad4193a9c37beb6a4752bd
+Created agent session 6dda531a-3f61-44e2-bd82-49970b375082 for run exc_manager_f89a19_65ff422b1cad4193a9c37beb6a4752bd
+Agent WebSocket connected: session=6dda531a-3f61-44e2-bd82-49970b375082, run=exc_manager_f89a19_65ff422b1cad4193a9c37beb6a4752bd
+
+[90mstderr[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mTKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/memory/agents/exc_manager_f89a19_65ff422b1cad4193a9c37beb6a4752bd/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mTKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mTKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mTKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)
+[22m[39mAGY compaction detection off for run exc_worker_f89a19_ea57603a18594c93a5d8e8e4deffce7b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mTKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mTKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mTKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)
+[22m[39mAGY compaction detection off for run exc_helper_f89a19_afe9a30fff8443b0b39cc7e0e1033800: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mTKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mTKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mTKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)
+[22m[39mAGY compaction detection off for run exc_helper_f89a19_afe9a30fff8443b0b39cc7e0e1033800: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mTKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-ZbvCfS/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mTKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)
+[22m[39mReusing registered workspace ID: agent_ws_cf8a87d5915f85008e0592bd91c2a78d4999498061fdebdc6a46d9d2fb5fb85d
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mTKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)
+[22m[39mAGY compaction detection off for run exc_helper_f89a19_031ccecd82aa4d51b643d993f0c0bcf1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts[2m > [22m[2mFollow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mTKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)
+[22m[39mClosed agent session 6dda531a-3f61-44e2-bd82-49970b375082
+Agent WebSocket disconnected: 6dda531a-3f61-44e2-bd82-49970b375082
+
+ [32m✓[39m tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts [2m([22m[2m9 tests[22m[2m | [22m[33m2 skipped[39m[2m)[22m[33m 156707[2mms[22m[39m
+     [33m[2m✓[22m[39m EXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views [33m 17639[2mms[22m[39m
+     [33m[2m✓[22m[39m EXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner [33m 17273[2mms[22m[39m
+     [33m[2m✓[22m[39m EXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner [33m 17236[2mms[22m[39m
+     [33m[2m✓[22m[39m EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders [33m 99076[2mms[22m[39m
+     [33m[2m✓[22m[39m EXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable [33m 1319[2mms[22m[39m
+     [33m[2m✓[22m[39m EXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change [33m 1070[2mms[22m[39m
+     [33m[2m✓[22m[39m TKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020) [33m 2655[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m7 passed[39m[22m[2m | [22m[33m2 skipped[39m[90m (9)[39m
+[2m   Start at [22m 15:25:53
+[2m   Duration [22m 163.90s[2m (transform 5.02s, setup 20ms, import 6.78s, tests 156.71s, environment 0ms)[22m
+
+npm notice
+npm notice New major version of npm available! 10.9.8 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

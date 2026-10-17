@@ -1,0 +1,238 @@
+{
+  "startedAt": "2026-10-17T07:39:32.229Z",
+  "checks": [
+    {
+      "name": "Claude Agent SDK catalog offers Claude Haiku 5.5",
+      "ok": true,
+      "detail": {
+        "picked": {
+          "modelIdentifier": "haiku",
+          "name": "Haiku 5.5",
+          "description": "Fastest for quick answers"
+        },
+        "offered": [
+          "claude-fable-5 | Fable 5 | Most capable for your hardest and longest-running tasks",
+          "fable | Fable 5.1 | For your toughest challenges",
+          "claude-haiku-4-5-20251001 | Haiku 4.5 | Fastest for quick answers",
+          "haiku | Haiku 5.5 | Fastest for quick answers",
+          "claude-opus-4-6 | Opus 4.6 | Best for everyday, complex tasks",
+          "claude-opus-4-7 | Opus 4.7 | Best for everyday, complex tasks",
+          "claude-opus-4-8 | Opus 4.8 | Best for everyday, complex tasks",
+          "claude-opus-5 | Opus 5 | Best for everyday, complex tasks",
+          "opus | Opus 5.5 | For complex work and everyday tasks",
+          "claude-sonnet-4-6 | Sonnet 4.6 | Efficient for routine tasks",
+          "claude-sonnet-5 | Sonnet 5 | Efficient for routine tasks",
+          "sonnet | Sonnet 5.5 | Most efficient for simpler tasks"
+        ]
+      }
+    },
+    {
+      "name": "Manager run created on claude_agent_sdk",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent run created successfully.",
+        "runId": "live_key_manager_50fc_69baec8e24de4387b0dd52084cc64654"
+      }
+    },
+    {
+      "name": "schema Task set to IN_PROGRESS by the model",
+      "ok": true,
+      "detail": {
+        "taskId": "project_task_0edb6e44-27d7-4cd2-ac07-20ebd022896d",
+        "taskKey": "live-keys-1",
+        "description": "Design the database schema",
+        "status": "IN_PROGRESS",
+        "dependsOnTaskIds": [],
+        "root": null
+      }
+    },
+    {
+      "name": "REST API Task depends on the schema Task (stored as the long ID)",
+      "ok": true,
+      "detail": {
+        "taskId": "project_task_a4f01ec3-626e-4bf4-98be-4c3e4a02774a",
+        "taskKey": "live-keys-2",
+        "description": "Build the REST API",
+        "status": "TODO",
+        "dependsOnTaskIds": [
+          "project_task_0edb6e44-27d7-4cd2-ac07-20ebd022896d"
+        ],
+        "root": {
+          "kind": "agent",
+          "ingressAgentRunId": "live_key_worker_50fc_0fc1635566b34c16a4893d17a597e954",
+          "start": "started"
+        }
+      }
+    },
+    {
+      "name": "new Task got the next key and depends on the REST API Task",
+      "ok": true,
+      "detail": {
+        "taskId": "project_task_4d3c4916-53e0-4036-b60c-778461b38061",
+        "taskKey": "live-keys-4",
+        "description": "Publish the API documentation",
+        "status": "TODO",
+        "dependsOnTaskIds": [
+          "project_task_a4f01ec3-626e-4bf4-98be-4c3e4a02774a"
+        ],
+        "root": null
+      }
+    },
+    {
+      "name": "REST API Task (blocked by an open Task) was delegated",
+      "ok": true,
+      "detail": {
+        "kind": "agent",
+        "ingressAgentRunId": "live_key_worker_50fc_0fc1635566b34c16a4893d17a597e954",
+        "start": "started"
+      }
+    },
+    {
+      "name": "the model never saw or used a long Task ID (tool results and its arguments carry keys)",
+      "ok": true,
+      "detail": {
+        "longIdsFound": []
+      }
+    },
+    {
+      "name": "the model referred to Tasks by key",
+      "ok": true,
+      "detail": null
+    }
+  ],
+  "result": "Pass",
+  "cleanup": {
+    "terminate": {
+      "terminateAgentRun": {
+        "success": true,
+        "message": "Agent run terminated successfully."
+      }
+    },
+    "serverStopped": true,
+    "rootRemoved": true
+  },
+  "catalog": [
+    {
+      "modelIdentifier": "claude-fable-5",
+      "name": "Fable 5",
+      "description": "Most capable for your hardest and longest-running tasks"
+    },
+    {
+      "modelIdentifier": "fable",
+      "name": "Fable 5.1",
+      "description": "For your toughest challenges"
+    },
+    {
+      "modelIdentifier": "claude-haiku-4-5-20251001",
+      "name": "Haiku 4.5",
+      "description": "Fastest for quick answers"
+    },
+    {
+      "modelIdentifier": "haiku",
+      "name": "Haiku 5.5",
+      "description": "Fastest for quick answers"
+    },
+    {
+      "modelIdentifier": "claude-opus-4-6",
+      "name": "Opus 4.6",
+      "description": "Best for everyday, complex tasks"
+    },
+    {
+      "modelIdentifier": "claude-opus-4-7",
+      "name": "Opus 4.7",
+      "description": "Best for everyday, complex tasks"
+    },
+    {
+      "modelIdentifier": "claude-opus-4-8",
+      "name": "Opus 4.8",
+      "description": "Best for everyday, complex tasks"
+    },
+    {
+      "modelIdentifier": "claude-opus-5",
+      "name": "Opus 5",
+      "description": "Best for everyday, complex tasks"
+    },
+    {
+      "modelIdentifier": "opus",
+      "name": "Opus 5.5",
+      "description": "For complex work and everyday tasks"
+    },
+    {
+      "modelIdentifier": "claude-sonnet-4-6",
+      "name": "Sonnet 4.6",
+      "description": "Efficient for routine tasks"
+    },
+    {
+      "modelIdentifier": "claude-sonnet-5",
+      "name": "Sonnet 5",
+      "description": "Efficient for routine tasks"
+    },
+    {
+      "modelIdentifier": "sonnet",
+      "name": "Sonnet 5.5",
+      "description": "Most efficient for simpler tasks"
+    }
+  ],
+  "model": "haiku",
+  "tasks": {
+    "schema": {
+      "taskId": "project_task_0edb6e44-27d7-4cd2-ac07-20ebd022896d",
+      "taskKey": "live-keys-1"
+    },
+    "api": {
+      "taskId": "project_task_a4f01ec3-626e-4bf4-98be-4c3e4a02774a",
+      "taskKey": "live-keys-2"
+    },
+    "notes": {
+      "taskId": "project_task_73034cc0-9087-4b13-a406-00de6effc6b5",
+      "taskKey": "live-keys-3"
+    }
+  },
+  "runId": "live_key_manager_50fc_69baec8e24de4387b0dd52084cc64654",
+  "instruction": "In the Project with project_id \"project_077bfb84-cfa5-41cf-ab66-36c2370789ef\":\n1. List its Tasks.\n2. Set the Task about the database schema to IN_PROGRESS.\n3. Record that the REST API Task depends on the database schema Task.\n4. Create a new Task \"Publish the API documentation\" that depends on the REST API Task.\n5. Delegate the REST API Task to /live_key_worker_50fc.\nFinally, reply with the Task IDs you used for each step.",
+  "finalTasks": [
+    {
+      "taskId": "project_task_4d3c4916-53e0-4036-b60c-778461b38061",
+      "taskKey": "live-keys-4",
+      "description": "Publish the API documentation",
+      "status": "TODO",
+      "dependsOnTaskIds": [
+        "project_task_a4f01ec3-626e-4bf4-98be-4c3e4a02774a"
+      ],
+      "root": null
+    },
+    {
+      "taskId": "project_task_a4f01ec3-626e-4bf4-98be-4c3e4a02774a",
+      "taskKey": "live-keys-2",
+      "description": "Build the REST API",
+      "status": "TODO",
+      "dependsOnTaskIds": [
+        "project_task_0edb6e44-27d7-4cd2-ac07-20ebd022896d"
+      ],
+      "root": {
+        "kind": "agent",
+        "ingressAgentRunId": "live_key_worker_50fc_0fc1635566b34c16a4893d17a597e954",
+        "start": "started"
+      }
+    },
+    {
+      "taskId": "project_task_0edb6e44-27d7-4cd2-ac07-20ebd022896d",
+      "taskKey": "live-keys-1",
+      "description": "Design the database schema",
+      "status": "IN_PROGRESS",
+      "dependsOnTaskIds": [],
+      "root": null
+    },
+    {
+      "taskId": "project_task_73034cc0-9087-4b13-a406-00de6effc6b5",
+      "taskKey": "live-keys-3",
+      "description": "Write the release notes",
+      "status": "TODO",
+      "dependsOnTaskIds": [],
+      "root": null
+    }
+  ],
+  "effectsCompleted": true,
+  "finishedAt": "2026-10-17T07:39:54.971Z"
+}

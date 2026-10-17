@@ -15,7 +15,7 @@ type Entry = { taskId: string; hostRoot: RootExecutionIdentity; execution: TaskE
  */
 export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort {
   readonly entries = new Map<string, Entry>();
-  readonly tasks = new Map<string, { description: string; referenceFiles: string[]; done: boolean; adHoc?: true }>();
+  readonly tasks = new Map<string, { description: string; referenceFiles: string[]; done: boolean; adHoc?: true; taskKey?: string }>();
   readonly damaged = new Set<string>();
   readonly links: NewTaskExecutionLinkInput[] = [];
   /** Every committed existing-copy assignment, in order. */
@@ -26,8 +26,9 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
   beforeLinkCommit?: (input: NewTaskExecutionLinkInput) => Promise<void> | void;
   private adHocCount = 0;
 
-  addTask(taskId: string, description = `saved work for ${taskId}`): void {
-    this.tasks.set(taskId, { description, referenceFiles: [], done: false });
+  /** A saved Project Task; with `taskKey`, agents may also name it by that key (any letter case). */
+  addTask(taskId: string, description = `saved work for ${taskId}`, taskKey?: string): void {
+    this.tasks.set(taskId, { description, referenceFiles: [], done: false, ...(taskKey ? { taskKey } : {}) });
   }
   /** The ad-hoc Tasks (no Project) that links created, in creation order. */
   adHocTaskIds(): string[] { return [...this.tasks.entries()].filter(([, task]) => task.adHoc).map(([taskId]) => taskId); }
@@ -47,13 +48,16 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
   }
   entry(execution: TaskExecutionReference): Entry | undefined { return this.entries.get(taskExecutionReferenceKey(execution)); }
 
-  async resolveAssignment(taskId: string) {
+  /** Like the Projects side: a Project Task by its ID, else by its key; the stored ID and the agent-facing key come back. */
+  async resolveAssignment(reference: string) {
+    const taskId = this.tasks.has(reference) ? reference
+      : [...this.tasks.entries()].find(([, task]) => task.taskKey === reference.toLowerCase())?.[0] ?? reference;
     if (this.damaged.has(taskId)) throw rejection("TASK_AGENT_RESOURCES_UNAVAILABLE", `Task run data could not be read (${taskId}). Fix or restore the file and restart the app; other features keep working.`);
     const task = this.tasks.get(taskId);
     if (!task) throw Object.assign(new Error(`Task '${taskId}' was not found.`), { code: "TASK_NOT_FOUND" });
     if (task.done) throw rejection("TASK_AGENT_RESOURCE_CLOSED", "Task is DONE; reopen it before assigning new work.");
     if (task.adHoc) throw Object.assign(new Error(`Task '${taskId}' was not found.`), { code: "TASK_NOT_FOUND" });
-    return { description: task.description, referenceFiles: task.referenceFiles };
+    return { taskId, taskReference: task.taskKey ?? taskId, description: task.description, referenceFiles: task.referenceFiles };
   }
   async linkNewTaskExecution(input: NewTaskExecutionLinkInput) {
     await this.beforeLinkCommit?.(input);

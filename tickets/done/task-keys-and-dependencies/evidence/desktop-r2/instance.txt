@@ -1,0 +1,1 @@
+iso-54787-85d6 http://127.0.0.1:54787 http://127.0.0.1:54788 /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus

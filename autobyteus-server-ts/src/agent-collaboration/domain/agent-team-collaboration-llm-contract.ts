@@ -40,7 +40,7 @@ export const DELEGATE_TASK_TARGET_AGENT_RUN_ID_DESCRIPTION =
   "One of your task agents, by the target_agent_run_id an earlier delegation returned. Supply only it and task_id. A task agent team's coordinator's run id is refused: use target_team_run_id for a task agent team.";
 
 export const DELEGATE_TASK_ID_DESCRIPTION =
-  "A saved Task's ID on this node; its saved text and files are used. With recipient_address: a new task agent works on the Task. With target_agent_run_id or target_team_run_id: that task agent takes on the Task. Blank, unknown, ambiguous, DONE or CANCELLED Tasks fail.";
+  "A saved Project Task's ID on this node: its key (e.g. autobyteus-42), as list_project_tasks shows it; its saved text and files are used. With recipient_address: a new task agent works on the Task. With target_agent_run_id or target_team_run_id: that task agent takes on the Task. Blank, unknown, ambiguous, DONE or CANCELLED Tasks fail.";
 
 export const DELEGATE_TASK_DESCRIPTION_FIELD_DESCRIPTION =
   "Only with recipient_address and without task_id. A complete, ready-to-work task description: objective, context, scope, constraints, what done looks like, expected output and reference guidance.";

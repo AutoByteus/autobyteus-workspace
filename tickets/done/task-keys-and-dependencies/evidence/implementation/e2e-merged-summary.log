@@ -1,0 +1,10 @@
+load: 15:24  up 9 days, 17:16, 8 users, load averages: 31.74 23.99 19.69
+projects-graphql exit=0  Tests 11 passed (11)
+projects-startup-migration exit=0  Tests 6 passed (6)
+project-task-boundaries exit=0  Tests 14 passed (14)
+project-change-feed exit=0  Tests 7 passed (7)
+project-task-context-files-delegation exit=0  Tests 1 passed (1)
+task-existing-copy-assignment exit=0  Tests 7 passed | 2 skipped (9)
+task-reactivation-root-visibility exit=0  Tests 6 passed | 1 skipped (7)
+team-run-v1-production-upgrade exit=1  Tests 3 failed | 1 passed (4)
+load-after: 15:29  up 9 days, 17:21, 8 users, load averages: 7.52 13.73 16.10

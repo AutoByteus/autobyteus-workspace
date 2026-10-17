@@ -93,6 +93,13 @@ describe("task tool exposure and schemas across runtimes", () => {
             },
             "type": "array",
           },
+          "depends_on": {
+            "description": "taskIds (keys, e.g. autobyteus-39) of Tasks in the same Project that this Task depends on.",
+            "items": {
+              "type": "string",
+            },
+            "type": "array",
+          },
           "description": {
             "description": "Trimmed non-empty Task content.",
             "type": "string",
@@ -119,6 +126,13 @@ describe("task tool exposure and schemas across runtimes", () => {
             },
             "type": "array",
           },
+          "depends_on": {
+            "description": "Project Tasks only: the complete list of taskIds of Tasks in the same Project this Task depends on; replaces the saved list, [] clears it, omit to keep.",
+            "items": {
+              "type": "string",
+            },
+            "type": "array",
+          },
           "description": {
             "description": "Trimmed non-empty Task content; omit to preserve.",
             "type": "string",
@@ -134,7 +148,7 @@ describe("task tool exposure and schemas across runtimes", () => {
             "type": "string",
           },
           "task_id": {
-            "description": "Known Task identity (with or without a Project) to update.",
+            "description": "The Task's ID: a Project Task's key (e.g. autobyteus-42), or the Task ID of a Task with no Project.",
             "type": "string",
           },
         },

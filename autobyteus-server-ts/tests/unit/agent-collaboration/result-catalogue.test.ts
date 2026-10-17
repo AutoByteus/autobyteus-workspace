@@ -53,7 +53,7 @@ const CATALOGUE: readonly (readonly [string, string, string])[] = [
   ["M-40", "delegate_task", "This task agent has no Task; delegate Task <task_id> with recipient_address instead."],
   ["M-41", "delegate_task", "This task agent works on part of another agent's Task, so you can't give it a Task. Delegate Task <task_id> to a new task agent with recipient_address."],
   ["M-42", "delegate_task", "Only the agent that gave this task agent its most recent Task can give it a new one. Delegate Task <task_id> to a new task agent with recipient_address instead."],
-  ["M-43", "delegate_task", "This task agent still works on Task <current task_id> (<status>). Set it to DONE or CANCELLED first, or delegate Task <task_id> to a new task agent with recipient_address."],
+  ["M-43", "delegate_task", "This task agent still works on <current Task: Task and its key, or a deleted Task> (<status>). Set it to DONE or CANCELLED first, or delegate Task <task_id> to a new task agent with recipient_address."],
   ["M-44", "delegate_task", "This task agent already has Task <task_id>. To continue it, set Task <task_id> to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id)."],
   ["M-45", "delegate_task", "This task agent never started, so it has no conversation to continue. Delegate Task <task_id> to a new task agent with recipient_address instead."],
 ];

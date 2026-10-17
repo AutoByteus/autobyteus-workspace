@@ -70,8 +70,10 @@ describe("ProjectTaskService", () => {
       root: null,
       taskId: "project_task_1",
       projectId,
+      taskKey: "autobyteus-1",
       description: "Write release notes for 1.4.87\nInclude Projects and Tasks",
       status: "TODO",
+      dependsOnTaskIds: [],
       contextFiles: [],
       createdAt: expect.any(String),
       updatedAt: task.createdAt,
@@ -80,8 +82,10 @@ describe("ProjectTaskService", () => {
     expect(stored.tasks).toEqual([{
       taskId: "project_task_1",
       projectId,
+      taskKey: "autobyteus-1",
       description: "Write release notes for 1.4.87\nInclude Projects and Tasks",
       status: "TODO",
+      dependsOnTaskIds: [],
       contextFiles: [],
       createdAt: task.createdAt,
       updatedAt: task.createdAt,
@@ -169,7 +173,7 @@ describe("ProjectTaskService", () => {
     expect((await harness.tasks.listTasks(projectId)).map((task) => task.taskId)).toEqual([keep.taskId]);
   });
 
-  it("never changes the Project's own fields or updatedAt", async () => {
+  it("never changes the Project's own fields or updatedAt (only its Task key high-water mark)", async () => {
     const [before] = await harness.readFile();
 
     const task = await harness.tasks.createTask({ projectId, description: "a" });
@@ -178,7 +182,7 @@ describe("ProjectTaskService", () => {
     await harness.tasks.deleteTask({ projectId, taskId: task.taskId });
 
     const [after] = await harness.readFile();
-    expect(after.project).toEqual(before.project);
+    expect(after.project).toEqual({ ...before.project, taskKeys: { prefix: "autobyteus", lastNumber: 2 } });
   });
 
   it("keeps other Projects' Tasks separate", async () => {

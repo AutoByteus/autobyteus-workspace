@@ -34,8 +34,12 @@ export type ExistingTaskExecutionAssignInput = Readonly<{
 }>;
 
 export interface TaskExecutionResourcePort {
-  /** Saved work for a non-owned assignment of a Project Task; unknown, DONE, CANCELLED or unreadable Tasks reject. */
-  resolveAssignment(taskId: string): Promise<Readonly<{ description: string; referenceFiles: string[] }>>;
+  /**
+   * Saved work for a non-owned assignment of a Project Task named by `reference` (the agent's `task_id`: its key
+   * or ID): its `taskId` (the only identity used afterwards), its agent-facing `taskReference` (for texts), and
+   * its description and files. Unknown, DONE, CANCELLED or unreadable Tasks, and Tasks with no Project, reject.
+   */
+  resolveAssignment(reference: string): Promise<Readonly<{ taskId: string; taskReference: string; description: string; referenceFiles: string[] }>>;
   /**
    * Records the agent run `starting` before any of its resources are acquired; returns the Task it
    * joined. An `adHocTask` assignment first creates that Task (no Project) and returns its new ID.

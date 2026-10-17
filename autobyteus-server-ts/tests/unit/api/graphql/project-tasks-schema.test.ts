@@ -31,8 +31,10 @@ import { buildGraphqlSchema } from "../../../../src/api/graphql/schema.js";
 const taskView = {
   taskId: "project_task_1",
   projectId: "project_1",
+  taskKey: "autobyteus-42",
   description: "Write release notes for 1.4.87\nInclude Projects and Tasks",
   status: "TODO",
+  dependsOnTaskIds: ["project_task_0"],
   createdAt: "2026-09-26T00:00:00.000Z",
   updatedAt: "2026-09-26T00:00:00.000Z",
 };
@@ -61,7 +63,12 @@ describe("Project Tasks GraphQL schema", () => {
     expect(mutationFields).toEqual(expect.arrayContaining(["createProjectTask", "updateProjectTask", "deleteProjectTask"]));
     expect(mutationFields.filter((name) => /projecttask/i.test(name) && /status/i.test(name))).toEqual([]);
     const updateInput = schema.getType("UpdateProjectTaskInput") as { getFields(): Record<string, unknown> };
-    expect(Object.keys(updateInput.getFields()).sort()).toEqual(["contextChanges", "description", "projectId", "taskId"]);
+    expect(Object.keys(updateInput.getFields()).sort()).toEqual(["contextChanges", "dependsOnTaskIds", "description", "projectId", "taskId"]);
+    const createInput = schema.getType("CreateProjectTaskInput") as { getFields(): Record<string, unknown> };
+    expect(Object.keys(createInput.getFields()).sort()).toEqual(["contextDraft", "dependsOnTaskIds", "description", "projectId"]);
+    // Key allocation state is never part of the Project type.
+    const projectType = schema.getType("Project") as { getFields(): Record<string, unknown> };
+    expect(Object.keys(projectType.getFields())).not.toContain("taskKeys");
   });
 
   it("names Task types distinctly from delegated tasks (REQ-012)", () => {
@@ -76,7 +83,7 @@ describe("Project Tasks GraphQL schema", () => {
 
     const result = await graphql({
       schema,
-      source: `query { projectTasks(projectId: "project_1") { taskId projectId description status createdAt updatedAt } }`,
+      source: `query { projectTasks(projectId: "project_1") { taskId projectId taskKey description status dependsOnTaskIds createdAt updatedAt } }`,
     });
 
     expect(result.errors).toBeUndefined();
@@ -86,20 +93,20 @@ describe("Project Tasks GraphQL schema", () => {
 
   it("answers taskWorkerTasks from typed agent and team run-ID lists in one service call", async () => {
     mockProjectTaskService.currentTasksOfTaskWorkers.mockResolvedValue([
-      { execution: { agentRunId: "a1" }, task: { taskId: "project_task_1", projectId: "project_1", description: "Ship it", status: "IN_PROGRESS" } },
-      { execution: { teamRunId: "t1" }, task: { taskId: "ad_hoc_task_1", projectId: null, description: "Review it", status: "CANCELLED" } },
+      { execution: { agentRunId: "a1" }, task: { taskId: "project_task_1", projectId: "project_1", taskKey: "autobyteus-1", description: "Ship it", status: "IN_PROGRESS" } },
+      { execution: { teamRunId: "t1" }, task: { taskId: "ad_hoc_task_1", projectId: null, taskKey: null, description: "Review it", status: "CANCELLED" } },
       { execution: { teamRunId: "t2" }, task: null },
     ]);
 
     const result = await graphql({
       schema,
-      source: `query { taskWorkerTasks(agentRunIds: ["a1"], teamRunIds: ["t1", "t2"]) { workerKind workerRunId task { taskId projectId description status } } }`,
+      source: `query { taskWorkerTasks(agentRunIds: ["a1"], teamRunIds: ["t1", "t2"]) { workerKind workerRunId task { taskId projectId taskKey description status } } }`,
     });
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toEqual({ taskWorkerTasks: [
-      { workerKind: "agent", workerRunId: "a1", task: { taskId: "project_task_1", projectId: "project_1", description: "Ship it", status: "IN_PROGRESS" } },
-      { workerKind: "team", workerRunId: "t1", task: { taskId: "ad_hoc_task_1", projectId: null, description: "Review it", status: "CANCELLED" } },
+      { workerKind: "agent", workerRunId: "a1", task: { taskId: "project_task_1", projectId: "project_1", taskKey: "autobyteus-1", description: "Ship it", status: "IN_PROGRESS" } },
+      { workerKind: "team", workerRunId: "t1", task: { taskId: "ad_hoc_task_1", projectId: null, taskKey: null, description: "Review it", status: "CANCELLED" } },
       { workerKind: "team", workerRunId: "t2", task: null },
     ] });
     expect(mockProjectTaskService.currentTasksOfTaskWorkers).toHaveBeenCalledTimes(1);
@@ -114,8 +121,8 @@ describe("Project Tasks GraphQL schema", () => {
     const result = await graphql({
       schema,
       source: `mutation {
-        created: createProjectTask(input: { projectId: "project_1", description: "d" }) { taskId status }
-        updated: updateProjectTask(input: { projectId: "project_1", taskId: "project_task_1", description: "edited" }) { description }
+        created: createProjectTask(input: { projectId: "project_1", description: "d", dependsOnTaskIds: ["project_task_0"] }) { taskId status }
+        updated: updateProjectTask(input: { projectId: "project_1", taskId: "project_task_1", description: "edited", dependsOnTaskIds: [] }) { description }
         deleted: deleteProjectTask(input: { projectId: "project_1", taskId: "project_task_1" })
       }`,
     });
@@ -126,9 +133,9 @@ describe("Project Tasks GraphQL schema", () => {
       updated: { description: "edited" },
       deleted: true,
     });
-    expect(mockProjectTaskService.createTask).toHaveBeenCalledWith(expect.objectContaining({ projectId: "project_1", description: "d" }));
+    expect(mockProjectTaskService.createTask).toHaveBeenCalledWith(expect.objectContaining({ projectId: "project_1", description: "d", dependsOnTaskIds: ["project_task_0"] }));
     expect(mockProjectTaskService.updateTask).toHaveBeenCalledWith(
-      expect.objectContaining({ projectId: "project_1", taskId: "project_task_1", description: "edited" }),
+      expect.objectContaining({ projectId: "project_1", taskId: "project_task_1", description: "edited", dependsOnTaskIds: [] }),
     );
     expect(mockProjectTaskService.deleteTask).toHaveBeenCalledWith(
       expect.objectContaining({ projectId: "project_1", taskId: "project_task_1" }),
@@ -139,6 +146,7 @@ describe("Project Tasks GraphQL schema", () => {
     ["TASK_DESCRIPTION_REQUIRED"],
     ["TASK_NOT_FOUND"],
     ["PROJECT_NOT_FOUND"],
+    ["TASK_DEPENDENCY_INVALID"],
   ] as const)("maps %s into GraphQL error extensions", async (code) => {
     mockProjectTaskService.updateTask.mockRejectedValue(new ProjectError(code, "failed"));
 

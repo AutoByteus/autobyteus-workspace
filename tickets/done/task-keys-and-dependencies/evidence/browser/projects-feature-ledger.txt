@@ -1,0 +1,70 @@
+# projects-feature-probe ledger (API-REV-001)
+
+PT-E2E-001: Pass; Fresh node: Projects always available after Agent Orgs, /projects opens; separate-node API isolation (projects-always-on AC-001); /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-002: Pass; Ordinary New Project validation/focus/Cancel and zero-link save to Tasks; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-003: Pass; Picker/manual share one path; exact entries, no registration/mkdir, unavailable link editing; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-004: Pass; Invalid paths/canonical duplicates and failed transport preserve Project, registry and folders; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-005: Pass; Task ordinary composer validation, search-preserving Cancel, typed/file save clears search; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-006: Pass; Concise detail, HTTP download, edit Cancel then save preserves ID/status/context; inline deletion focus/Escape; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-007: Fail; External native tool commit -> physical non-deduplicated Refresh preserves search/route and moves status; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-008: Pass; Failed Refresh retains prior success and persistent actionable error, then retry; no-match and empty are distinct; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-009: Fail; Continuous divided rows and desktop/narrow container breakpoint, ordinary page wrapping; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-010: Pass; Real backend process restart preserves Tasks, context HTTP bytes and links; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-011: Pass; All-Task Project deletion includes Done; Cancel preserves originals, explicit cascade affects only Project; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-012: Pass; Ordinary route read/Refresh ordering: late old Project response cannot populate another Project; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-013: Pass; 120 current Tasks: complete search/counts/no-match across statuses, no truncation or mutation; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-014: Pass; Task keyboard create/edit/inline-confirmed delete plus unknown Project/Task recovery; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-015: Pass; Upgraded node with the retired flag stored as false: Projects still shown and opens, no Basics switch, the key is an ordinary deletable Advanced setting (projects-always-on AC-002/003); /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-016: Pass; zh-CN ordinary Project/Task forms/board/detail contain localized controls and no raw Project keys; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-017: Fail; Task keys and depends on: key lines, Blocked by / Dependency cancelled badges, key chip copy, Dependencies card links, picker (newest first, loop greyed, keyboard), new Task with a dependency, live clear, delete drops dependents, key URLs (task-keys AC-011–015, 017, 018, 026); /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+# run 2
+
+PT-E2E-001: Pass; Fresh node: Projects always available after Agent Orgs, /projects opens; separate-node API isolation (projects-always-on AC-001); /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-002: Pass; Ordinary New Project validation/focus/Cancel and zero-link save to Tasks; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-003: Pass; Picker/manual share one path; exact entries, no registration/mkdir, unavailable link editing; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-004: Pass; Invalid paths/canonical duplicates and failed transport preserve Project, registry and folders; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-005: Pass; Task ordinary composer validation, search-preserving Cancel, typed/file save clears search; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-006: Pass; Concise detail, HTTP download, edit Cancel then save preserves ID/status/context; inline deletion focus/Escape; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-007: Pass; External native tool commit -> physical non-deduplicated Refresh preserves search/route and moves status; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-008: Pass; Failed Refresh retains prior success and persistent actionable error, then retry; no-match and empty are distinct; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-009: Pass; Continuous divided rows and desktop/narrow container breakpoint, ordinary page wrapping; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-010: Pass; Real backend process restart preserves Tasks, context HTTP bytes and links; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-011: Pass; All-Task Project deletion includes Done; Cancel preserves originals, explicit cascade affects only Project; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-012: Pass; Ordinary route read/Refresh ordering: late old Project response cannot populate another Project; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-013: Pass; 120 current Tasks: complete search/counts/no-match across statuses, no truncation or mutation; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-014: Pass; Task keyboard create/edit/inline-confirmed delete plus unknown Project/Task recovery; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-015: Pass; Upgraded node with the retired flag stored as false: Projects still shown and opens, no Basics switch, the key is an ordinary deletable Advanced setting (projects-always-on AC-002/003); /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-016: Pass; zh-CN ordinary Project/Task forms/board/detail contain localized controls and no raw Project keys; /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json
+
+PT-E2E-017: Pass; Task keys and depends on: key lines, Blocked by / Dependency cancelled badges, key chip copy, Dependencies card links, picker (newest first, loop greyed, keyboard), new Task with a dependency, live clear, delete drops dependents, key URLs (task-keys AC-011–015, 017, 018, 026); /Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/evidence/browser/projects-feature/result.json

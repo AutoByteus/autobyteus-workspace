@@ -40,9 +40,11 @@ const createHarness = async () => {
     await fs.mkdir(path.dirname(file), { recursive: true });
     await fs.writeFile(file, JSON.stringify(value));
   };
-  const writeProject = (value: { projectId: string } & Record<string, unknown>) => writeJson(path.join(layout.root, value.projectId, "project.json"), value);
+  /** Current-shape files: key state and a key are filled in unless the test supplies its own. */
+  const writeProject = (value: { projectId: string } & Record<string, unknown>) =>
+    writeJson(path.join(layout.root, value.projectId, "project.json"), { taskKeys: { prefix: value.projectId, lastNumber: 0 }, ...value });
   const writeTask = (projectId: string, value: { taskId: string } & Record<string, unknown>) =>
-    writeJson(path.join(layout.root, projectId, "tasks", value.taskId, "task.json"), { projectId, ...value });
+    writeJson(path.join(layout.root, projectId, "tasks", value.taskId, "task.json"), { projectId, taskKey: `${projectId}-${value.taskId}`, ...value });
   return { appDataDir, layout, store, registry, workspaceLookup, service, readFile, writeJson, writeProject, writeTask };
 };
 
@@ -206,7 +208,7 @@ describe("ProjectService", () => {
     expect(await Promise.all(protectedFiles.map(file => fs.readFile(file, "utf8")))).toEqual(bytes);
     expect([...harness.registry.entries()]).toEqual(registry);
     const [record] = await harness.readFile();
-    expect(Object.keys(record).sort()).toEqual(["projectId", "name", "description", "workspaces", "createdAt", "updatedAt"].sort());
+    expect(Object.keys(record).sort()).toEqual(["projectId", "name", "description", "workspaces", "createdAt", "updatedAt", "taskKeys"].sort());
   });
 
   it("lists no projects when the store file does not exist", async () => {
@@ -236,6 +238,7 @@ describe("ProjectService", () => {
         description: "AutoByteus product",
         createdAt: "2026-09-26T00:00:00.000Z",
         updatedAt: "2026-09-26T00:00:00.000Z",
+        taskKeys: { prefix: "autobyteus", lastNumber: 0 },
         workspaces: [],
       },
     ]);
