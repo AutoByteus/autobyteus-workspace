@@ -1,0 +1,362 @@
+{
+  "startedAt": "2026-10-17T12:16:46.181Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "TS-005": {
+      "result": "Pass",
+      "description": "Agent run: a task Team delegated by a task Team member; each Team dot = its shown agents, collapsed or expanded; stop → gray",
+      "startedAt": "2026-10-17T12:16:56.653Z",
+      "details": {
+        "kind": "agent",
+        "root": {
+          "kind": "agent",
+          "rootId": "manager_tsnestagent_6be9_6b1fb4c0f8c642e6ae5d7fb4050ab27d",
+          "managerRunId": "manager_tsnestagent_6be9_6b1fb4c0f8c642e6ae5d7fb4050ab27d"
+        },
+        "outer": {
+          "teamRunId": "docs_review_team_tsnestagent_6be9_52459d36cc004e44a53c25f88f85f9ac",
+          "address": "/docs_review_team_tsnestagent_6be9"
+        },
+        "inner": {
+          "teamRunId": "build_crew_tsnestagent_f77d_4958c36fba624286b0efaa91a07c1b17",
+          "address": "/build_crew_tsnestagent_f77d"
+        },
+        "idle": {
+          "dots": {
+            "outer": {
+              "count": 1,
+              "status": "idle",
+              "ariaLabel": "Team status: Idle",
+              "title": "Team status: Idle",
+              "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500",
+              "rowLabel": "Temporary task team, docs review team tsnestagent 6be9, level 1, idle, Started by manager tsnestagent 6be9, /docs_review_team_tsnestagent_6be9, Task: CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/build_crew_tsnestagent_f77d\",\"description\":\"Check…",
+              "beforeIcon": true
+            },
+            "inner": {
+              "count": 1,
+              "status": "idle",
+              "ariaLabel": "Team status: Idle",
+              "title": "Team status: Idle",
+              "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500",
+              "rowLabel": "Temporary task team, build crew tsnestagent f77d, level 1, idle, Started by reviewer, /build_crew_tsnestagent_f77d",
+              "beforeIcon": true
+            }
+          },
+          "shown": {
+            "outer": [
+              "release_notes_writer_tsnestagent_6be9_faeaab4cd1434874abab605e6bf4abcc",
+              "fact_checker_tsnestagent_6be9_d74d9aee725744dba33cb71f4e3968b7"
+            ],
+            "inner": [
+              "release_notes_writer_tsnestagent_6be9_705fd29be2df4905bda748bb7866d35a",
+              "fact_checker_tsnestagent_6be9_32be783ffbb946a687b20ddc839308a8"
+            ]
+          },
+          "expected": {
+            "outer": "idle",
+            "inner": "idle"
+          },
+          "statuses": {
+            "reviewer": "idle",
+            "editor": "offline",
+            "builder": "idle",
+            "checker": "offline"
+          },
+          "placement": "inner Team shown beside the outer Team"
+        },
+        "requestsDuringChange": [
+          "GET http://127.0.0.1:58617/rest/health",
+          "POST http://127.0.0.1:58617/graphql",
+          "POST http://127.0.0.1:58617/graphql"
+        ],
+        "busyCollapsed": {
+          "outer": {
+            "count": 1,
+            "status": "idle",
+            "ariaLabel": "Team status: Idle",
+            "title": "Team status: Idle",
+            "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500",
+            "rowLabel": "Temporary task team, docs review team tsnestagent 6be9, level 1, idle, Started by manager tsnestagent 6be9, /docs_review_team_tsnestagent_6be9, Task: CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/build_crew_tsnestagent_f77d\",\"description\":\"Check…",
+            "beforeIcon": true
+          },
+          "inner": {
+            "count": 1,
+            "status": "running",
+            "ariaLabel": "Team status: Running",
+            "title": "Team status: Running",
+            "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 animate-pulse",
+            "rowLabel": "Temporary task team, build crew tsnestagent f77d, level 1, running, Started by reviewer, /build_crew_tsnestagent_f77d",
+            "beforeIcon": true
+          }
+        },
+        "busyExpanded": {
+          "dots": {
+            "outer": {
+              "count": 1,
+              "status": "idle",
+              "ariaLabel": "Team status: Idle",
+              "title": "Team status: Idle",
+              "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500",
+              "rowLabel": "Temporary task team, docs review team tsnestagent 6be9, level 1, idle, Started by manager tsnestagent 6be9, /docs_review_team_tsnestagent_6be9, Task: CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/build_crew_tsnestagent_f77d\",\"description\":\"Check…",
+              "beforeIcon": true
+            },
+            "inner": {
+              "count": 1,
+              "status": "running",
+              "ariaLabel": "Team status: Running",
+              "title": "Team status: Running",
+              "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 animate-pulse",
+              "rowLabel": "Temporary task team, build crew tsnestagent f77d, level 1, running, Started by reviewer, /build_crew_tsnestagent_f77d",
+              "beforeIcon": true
+            }
+          },
+          "shown": {
+            "outer": [
+              "release_notes_writer_tsnestagent_6be9_faeaab4cd1434874abab605e6bf4abcc",
+              "fact_checker_tsnestagent_6be9_d74d9aee725744dba33cb71f4e3968b7"
+            ],
+            "inner": [
+              "release_notes_writer_tsnestagent_6be9_705fd29be2df4905bda748bb7866d35a",
+              "fact_checker_tsnestagent_6be9_32be783ffbb946a687b20ddc839308a8"
+            ]
+          },
+          "expected": {
+            "outer": "idle",
+            "inner": "running"
+          },
+          "statuses": {
+            "reviewer": "idle",
+            "editor": "offline",
+            "builder": "running",
+            "checker": "offline"
+          },
+          "placement": "inner Team shown beside the outer Team"
+        },
+        "stopped": {
+          "outer": {
+            "count": 1,
+            "status": "offline",
+            "ariaLabel": "Team status: Offline",
+            "title": "Team status: Offline",
+            "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+            "rowLabel": "Temporary task team, docs review team tsnestagent 6be9, level 1, offline, Started by manager tsnestagent 6be9, /docs_review_team_tsnestagent_6be9, Task: CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/build_crew_tsnestagent_f77d\",\"description\":\"Check…",
+            "beforeIcon": true
+          },
+          "inner": {
+            "count": 1,
+            "status": "offline",
+            "ariaLabel": "Team status: Offline",
+            "title": "Team status: Offline",
+            "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+            "rowLabel": "Temporary task team, build crew tsnestagent f77d, level 1, offline, Started by reviewer, /build_crew_tsnestagent_f77d",
+            "beforeIcon": true
+          }
+        }
+      }
+    },
+    "TS-006": {
+      "result": "Fail",
+      "description": "Team run: a task Team delegated by a task Team member; each Team dot = its shown agents; run row counts all; stop → gray",
+      "startedAt": "2026-10-17T12:17:09.404Z",
+      "message": "idle: tree rows overlap",
+      "details": [
+        {
+          "test": "workspace-team-member-delivery_team_tsnestteam_2ebf_c1dc016c9629487caac3999ce59eab41-/manager",
+          "address": "/manager",
+          "agentRunId": null,
+          "depth": 1,
+          "top": 567.5,
+          "bottom": 595.5
+        },
+        {
+          "test": "workspace-team-member-avatar",
+          "address": null,
+          "agentRunId": null,
+          "depth": null,
+          "top": 573.5,
+          "bottom": 589.5
+        }
+      ]
+    },
+    "TS-007": {
+      "result": "Pass",
+      "description": "Org run: a task Team delegated by a member of a delegated Org Team copy; each Team dot = its shown agents; stop → gray",
+      "startedAt": "2026-10-17T12:17:13.879Z",
+      "details": {
+        "kind": "org",
+        "root": {
+          "kind": "org",
+          "rootId": "delivery_org_tsnestorg_50f4_74aca4bae09048579b71bb042b3ea252",
+          "managerRunId": "manager_tsnestorg_50f4_145267bb68df4feab8eb1c791133e6b4"
+        },
+        "outer": {
+          "teamRunId": "docs_review_team_tsnestorg_50f4_7da76f64919548d489f685ca73ef5ee5",
+          "address": "/squad"
+        },
+        "inner": {
+          "teamRunId": "build_crew_tsnestorg_8d9b_42afe96279cb4a9984622fbbfd53f9bb",
+          "address": "/build_crew_tsnestorg_8d9b"
+        },
+        "idle": {
+          "dots": {
+            "outer": {
+              "count": 1,
+              "status": "idle",
+              "ariaLabel": "Team status: Idle",
+              "title": "Team status: Idle",
+              "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500",
+              "rowLabel": "squad. Team status: Idle, Started by manager, /squad, docs_review_team_tsnestorg_50f4_7da76f64919548d489f685ca73ef5ee5",
+              "beforeIcon": true
+            },
+            "inner": {
+              "count": 1,
+              "status": "idle",
+              "ariaLabel": "Team status: Idle",
+              "title": "Team status: Idle",
+              "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500",
+              "rowLabel": "build crew tsnestorg 8d9b. Team status: Idle, Started by reviewer, /build_crew_tsnestorg_8d9b, build_crew_tsnestorg_8d9b_42afe96279cb4a9984622fbbfd53f9bb",
+              "beforeIcon": true
+            }
+          },
+          "shown": {
+            "outer": [
+              "release_notes_writer_tsnestorg_50f4_d61c53a8f85743dab4f7cb80321ed7de",
+              "fact_checker_tsnestorg_50f4_22a40f29adeb4a43aeb28b09759f9e8e"
+            ],
+            "inner": [
+              "release_notes_writer_tsnestorg_50f4_65af66af0699434695b05b24db21cf9b",
+              "fact_checker_tsnestorg_50f4_158632dba5224f45b92b1adf3704db88"
+            ]
+          },
+          "expected": {
+            "outer": "idle",
+            "inner": "idle"
+          },
+          "statuses": {
+            "reviewer": "idle",
+            "editor": "offline",
+            "builder": "idle",
+            "checker": "offline"
+          },
+          "placement": "inner Team shown beside the outer Team"
+        },
+        "requestsDuringChange": [
+          "GET http://127.0.0.1:58617/rest/health",
+          "POST http://127.0.0.1:58617/graphql",
+          "POST http://127.0.0.1:58617/graphql"
+        ],
+        "busyCollapsed": {
+          "outer": {
+            "count": 1,
+            "status": "idle",
+            "ariaLabel": "Team status: Idle",
+            "title": "Team status: Idle",
+            "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500",
+            "rowLabel": "squad. Team status: Idle, Started by manager, /squad, docs_review_team_tsnestorg_50f4_7da76f64919548d489f685ca73ef5ee5",
+            "beforeIcon": true
+          },
+          "inner": {
+            "count": 1,
+            "status": "running",
+            "ariaLabel": "Team status: Running",
+            "title": "Team status: Running",
+            "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 animate-pulse",
+            "rowLabel": "build crew tsnestorg 8d9b. Team status: Running, Started by reviewer, /build_crew_tsnestorg_8d9b, build_crew_tsnestorg_8d9b_42afe96279cb4a9984622fbbfd53f9bb",
+            "beforeIcon": true
+          }
+        },
+        "busyExpanded": {
+          "dots": {
+            "outer": {
+              "count": 1,
+              "status": "idle",
+              "ariaLabel": "Team status: Idle",
+              "title": "Team status: Idle",
+              "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500",
+              "rowLabel": "squad. Team status: Idle, Started by manager, /squad, docs_review_team_tsnestorg_50f4_7da76f64919548d489f685ca73ef5ee5",
+              "beforeIcon": true
+            },
+            "inner": {
+              "count": 1,
+              "status": "running",
+              "ariaLabel": "Team status: Running",
+              "title": "Team status: Running",
+              "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 animate-pulse",
+              "rowLabel": "build crew tsnestorg 8d9b. Team status: Running, Started by reviewer, /build_crew_tsnestorg_8d9b, build_crew_tsnestorg_8d9b_42afe96279cb4a9984622fbbfd53f9bb",
+              "beforeIcon": true
+            }
+          },
+          "shown": {
+            "outer": [
+              "release_notes_writer_tsnestorg_50f4_d61c53a8f85743dab4f7cb80321ed7de",
+              "fact_checker_tsnestorg_50f4_22a40f29adeb4a43aeb28b09759f9e8e"
+            ],
+            "inner": [
+              "release_notes_writer_tsnestorg_50f4_65af66af0699434695b05b24db21cf9b",
+              "fact_checker_tsnestorg_50f4_158632dba5224f45b92b1adf3704db88"
+            ]
+          },
+          "expected": {
+            "outer": "idle",
+            "inner": "running"
+          },
+          "statuses": {
+            "reviewer": "idle",
+            "editor": "offline",
+            "builder": "running",
+            "checker": "offline"
+          },
+          "placement": "inner Team shown beside the outer Team"
+        },
+        "stopped": {
+          "outer": {
+            "count": 1,
+            "status": "offline",
+            "ariaLabel": "Team status: Offline",
+            "title": "Team status: Offline",
+            "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+            "rowLabel": "squad. Team status: Offline, Started by manager, /squad, docs_review_team_tsnestorg_50f4_7da76f64919548d489f685ca73ef5ee5",
+            "beforeIcon": true
+          },
+          "inner": {
+            "count": 1,
+            "status": "offline",
+            "ariaLabel": "Team status: Offline",
+            "title": "Team status: Offline",
+            "dotClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+            "rowLabel": "build crew tsnestorg 8d9b. Team status: Offline, Started by reviewer, /build_crew_tsnestorg_8d9b, build_crew_tsnestorg_8d9b_42afe96279cb4a9984622fbbfd53f9bb",
+            "beforeIcon": true
+          }
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 33235,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 33206,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "TS-006",
+      "message": "idle: tree rows overlap"
+    }
+  ],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:58617",
+    "frontendUrl": "http://127.0.0.1:58618",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-status-live-z9nuuu"
+  },
+  "browserVersion": "155.0.8059.84",
+  "result": "Fail",
+  "finishedAt": "2026-10-17T12:17:42.581Z"
+}

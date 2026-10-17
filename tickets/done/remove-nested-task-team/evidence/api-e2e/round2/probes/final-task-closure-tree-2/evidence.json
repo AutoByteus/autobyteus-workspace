@@ -1,0 +1,25 @@
+{
+  "startedAt": "2026-10-17T12:38:56.147Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {},
+  "cleanup": {
+    "browser": "not-started",
+    "frontend": {
+      "pid": null,
+      "status": "not-running"
+    },
+    "backend": {
+      "pid": null,
+      "status": "not-running"
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "HARNESS",
+      "message": "Refusing to overwrite /Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/tickets/in-progress/remove-nested-task-team/evidence/api-e2e/round2/probes/final-task-closure-tree-2/evidence.json; use a fresh --output-dir"
+    }
+  ],
+  "result": "Fail",
+  "finishedAt": "2026-10-17T12:38:56.148Z"
+}
