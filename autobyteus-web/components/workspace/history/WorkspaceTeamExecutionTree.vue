@@ -16,7 +16,6 @@
         v-if="displayRow.row.kind === 'stable_member'"
         :row="displayRow.row"
         :avatars="avatars"
-        :aggregate-status="teamBranchStatus(displayRow.row)"
         :age="formatRelativeTime(team.lastActivityAt)"
         :is-selected="isSelected(displayRow.row)"
         :has-children="displayRow.hasChildren"
@@ -49,8 +48,6 @@ import { computed } from 'vue';
 import WorkspaceStableExecutionRow from '~/components/workspace/history/WorkspaceStableExecutionRow.vue';
 import WorkspaceTransientExecutionRow from '~/components/workspace/history/WorkspaceTransientExecutionRow.vue';
 import { useLeavingTreeRows } from '~/components/workspace/history/useLeavingTreeRows';
-import { aggregateTeamBranchAgentStatus } from '~/components/workspace/history/workspaceHistoryTeamBranchStatus';
-import { AgentStatus } from '~/types/agent/AgentStatus';
 import { useLocalization } from '~/composables/useLocalization';
 import { useTaskWorkerTasks } from '~/composables/projects/useTaskWorkerTasks';
 import type { TaskWorkerTask } from '~/types/project';
@@ -129,11 +126,6 @@ const isSelected = (row: RunHistoryTeamExecutionRow): boolean =>
   props.isTeamSelected
   && row.agentRunId !== null
   && row.agentRunId === props.team.focusedAgentRunId;
-
-const teamBranchStatus = (row: RunHistoryStableExecutionRow): AgentStatus =>
-  row.memberKind === 'agent_team'
-    ? aggregateTeamBranchAgentStatus(props.team.executionRows, row)
-    : AgentStatus.Offline;
 
 const activateStableRow = (row: RunHistoryStableExecutionRow): void => {
   if (row.hasChildren) emit('toggle', row);

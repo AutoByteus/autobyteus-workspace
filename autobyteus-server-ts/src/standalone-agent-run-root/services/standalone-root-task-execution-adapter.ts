@@ -118,9 +118,9 @@ export class StandaloneRootTaskExecutionAdapter implements RootTaskExecutionAdap
       const materialized = await this.options.taskExecutionIdentity.taskTeams.create({ source: source.node });
       const command = { address: input.placement.address, teamRunId: materialized.teamNode.teamRunId,
         handoffs: source.handoffs, teamNode: materialized.teamNode, message: input.workPacket };
-      const coordinator = command.teamNode.children.find((node) => node.kind === "agent" && node.address === command.teamNode.coordinatorAddress);
-      if (!coordinator || coordinator.kind !== "agent") throw new Error("Planned Team has no exact coordinator ingress.");
-      execution = { teamRunId: command.teamRunId }; ingressAgentRunId = coordinator.agentRunId; ownedAgentRunIds = command.teamNode.children.flatMap(node => node.kind === "agent" ? [node.agentRunId] : []);
+      const coordinator = command.teamNode.children.find((node) => node.address === command.teamNode.coordinatorAddress);
+      if (!coordinator) throw new Error("Planned Team has no exact coordinator ingress.");
+      execution = { teamRunId: command.teamRunId }; ingressAgentRunId = coordinator.agentRunId; ownedAgentRunIds = command.teamNode.children.map((node) => node.agentRunId);
       beginLocal = () => this.options.teams.beginRootTaskTeam({
         task: command, physicalScope: createRootExecutionPhysicalScope({ root: this.root, ancestorTeamRunIds: [command.teamRunId] }),
         callbacks: this.options.callbacks,

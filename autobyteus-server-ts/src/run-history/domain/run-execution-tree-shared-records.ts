@@ -112,20 +112,14 @@ export type TaskTeamAgentExecution = Readonly<{
   platformAgentRunId: string | null;
 }> & RecordedUserLaunchSelection;
 
-export type TaskTeamNestedTeamExecution = Readonly<{
-  address: AgentTeamAddress;
-  teamRunId: string;
-  members: readonly TaskTeamMemberExecution[];
-  taskExecutions: readonly TaskExecution[];
-}>;
-
-export type TaskTeamMemberExecution = TaskTeamAgentExecution | TaskTeamNestedTeamExecution;
-
-/** A delegated child Team. Liveness is runtime-only; `delegatorAgentRunId` and `source` as on `TaskAgentExecution`. */
+/**
+ * A delegated child Team. Teams are flat: its members are agents. Liveness is runtime-only;
+ * `delegatorAgentRunId` and `source` as on `TaskAgentExecution`.
+ */
 export type TaskTeamExecution = Readonly<{
   address: AgentTeamAddress;
   teamRunId: string;
-  members: readonly TaskTeamMemberExecution[];
+  members: readonly TaskTeamAgentExecution[];
   taskExecutions: readonly TaskExecution[];
   delegatorAgentRunId?: string;
   startedAt: IsoTimestamp;
@@ -152,14 +146,6 @@ export const isTaskAgentExecution = (value: TaskExecution): value is TaskAgentEx
 
 export const isTaskTeamExecution = (value: TaskExecution): value is TaskTeamExecution =>
   "teamRunId" in value;
-
-export const isTaskTeamAgentExecution = (
-  value: TaskTeamMemberExecution,
-): value is TaskTeamAgentExecution => "agentRunId" in value;
-
-export const isTaskTeamNestedTeamExecution = (
-  value: TaskTeamMemberExecution,
-): value is TaskTeamNestedTeamExecution => "teamRunId" in value;
 
 /**
  * The launch a recorded Team member runs with: its own, else the Team's (DS-005). Every reader

@@ -2,24 +2,22 @@ import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type {
   AgentOrgConfiguredTeamNode,
   AgentOrgTaskExecutionNode,
-  AgentOrgTaskTeamMember,
 } from '~/types/collaboration/agentOrgExecution';
 import {
   foldTeamAggregateStatus,
   type TeamStatusAuthority,
 } from '~/utils/workspaceTeamAggregateStatus';
 
-type AgentOrgTaskBranchNode = AgentOrgTaskExecutionNode | AgentOrgTaskTeamMember;
-
+/** A delegated child's agents: a task Agent, or a task Team's members (Teams are flat) and its own children. */
 const appendTaskAgentRunIds = (
-  node: AgentOrgTaskBranchNode,
+  node: AgentOrgTaskExecutionNode,
   runIds: string[],
 ): void => {
   if ('agentRunId' in node) {
     runIds.push(node.agentRunId);
     return;
   }
-  for (const member of node.members) appendTaskAgentRunIds(member, runIds);
+  for (const member of node.members) runIds.push(member.agentRunId);
   for (const task of node.taskExecutions) appendTaskAgentRunIds(task, runIds);
 };
 

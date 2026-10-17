@@ -198,14 +198,10 @@ const messages = {
     "Maximize view",
   "workspace.components.workspace.team.TeamCommunicationPanel.restore_view":
     "Restore view",
-  "workspace.components.workspace.team.TeamCommunicationPanel.represents_subteam":
-    "Represents",
   "workspace.components.workspace.team.TeamCommunicationPanel.reference_count_label":
     "{{count}} reference files",
   "workspace.components.workspace.team.TeamCommunicationPanel.show_all_references":
     "Show all {{count}} files",
-  "workspace.components.workspace.team.AgentTeamEventMonitor.focused_subteam":
-    "Focused subteam",
   "workspace.components.workspace.team.AgentTeamEventMonitor.no_activity_yet":
     "No activity yet.",
   "workspace.components.workspace.team.TeamMembersPanel.team_members":
@@ -233,7 +229,6 @@ const messages = {
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_offline":
     "Team status: Offline",
   "workspace.history.hierarchy.tree_label": "{{name}} organization tree",
-  "workspace.history.hierarchy.role.agent_team": "Agent team",
   "workspace.history.hierarchy.role.agent": "Agent",
   "workspace.history.copyTask.locate": "Show Task in Projects: {{title}}",
   "workspace.history.copyTask.accessible": "Task: {{title}}",
@@ -253,10 +248,6 @@ const messages = {
   "workspace.task_monitor.load_error": "Couldn't load activity.",
   "workspace.task_monitor.retry": "Retry",
   "workspace.task_monitor.retry_accessible": "Retry loading activity",
-  "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":
-    "Send a message to this subteam",
-  "workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam":
-    "Send to subteam",
   "workspace.components.workspace.agent.ArtifactContentViewer.content_not_available_yet":
     "Content not available yet",
   "workspace.components.workspace.agent.ArtifactContentViewer.preview_unavailable":

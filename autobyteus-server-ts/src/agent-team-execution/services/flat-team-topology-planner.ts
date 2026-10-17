@@ -37,7 +37,6 @@ export type TeamScopeLaunchInput = Omit<TeamScopeLaunchSettings, "teamAddress"> 
 
 export type FlatTeamTopologyPlan = Readonly<{
   teamDefinitionName: string;
-  hasSubTeams: false;
   config: TeamRunConfig;
   agentLaunchSettings: readonly TeamAgentLaunchSettings[];
 }>;
@@ -86,7 +85,6 @@ export class FlatTeamTopologyPlanner {
     });
     return Object.freeze({
       teamDefinitionName: definition.name,
-      hasSubTeams: false,
       config,
       agentLaunchSettings: Object.freeze(projectAgentLaunchSettings(config.rootTeam)),
     });

@@ -2,7 +2,7 @@ import { onBeforeUnmount, onMounted, watch, type Ref } from 'vue';
 
 /** How long after the panel appears its open run's row may still be brought into view. */
 export const REVEAL_WINDOW_MS = 3000;
-/** Selected rows (Agent run, task child, Team member incl. sub-team, Org row); the last one is the deepest. */
+/** Selected rows (Agent run, task child, Team member incl. a delegated task-Team member, Org row); the last one is the deepest. */
 const SELECTED_ROW_SELECTOR = '[aria-current="true"], [aria-selected="true"]';
 /** The panel's Workspaces section, focused when the panel was opened from the strip's Workspaces icon. */
 const RUN_HISTORY_SECTION_SELECTOR = '[data-test="app-left-panel-run-history"]';

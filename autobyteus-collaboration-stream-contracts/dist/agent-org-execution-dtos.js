@@ -80,10 +80,9 @@ const taskAgent = z.object({
     address: agentAddressSchema, agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText,
     delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp, source: taskAgentSource.optional(), ...agentSelection,
 }).strict();
-const taskTeamMember = z.lazy(() => z.union([
-    z.object({ address: agentAddressSchema, agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText, ...agentSelection }).strict(),
-    z.object({ address: agentAddressSchema, teamRunId: nonEmptyStringSchema, members: z.array(taskTeamMember), taskExecutions: z.array(taskExecution) }).strict(),
-]));
+const taskTeamMember = z.object({
+    address: agentAddressSchema, agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText, ...agentSelection,
+}).strict();
 const taskTeam = z.lazy(() => z.object({
     address: agentAddressSchema, teamRunId: nonEmptyStringSchema, members: z.array(taskTeamMember),
     taskExecutions: z.array(taskExecution), delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp,

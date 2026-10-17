@@ -44,9 +44,6 @@ export class ConfiguredAgentExecutionRegistry implements ConfiguredMemberRegistr
       throw new Error(`Configured member '${context.address}' cannot materialize after TeamRun freeze.`);
     }
     const node = this.options.configResolver.resolve(context);
-    if (context.kind !== "agent" || node.kind !== "agent") {
-      throw new Error(`Flat Team configured member '${context.address}' must be an Agent.`);
-    }
     const handle = new FlatTeamAgentExecutionHandle({
       teamContext: this.options.teamContext,
       context,

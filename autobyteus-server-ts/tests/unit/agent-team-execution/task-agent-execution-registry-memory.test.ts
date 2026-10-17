@@ -77,7 +77,7 @@ describe("TaskAgentDurabilityEventGate", () => {
 });
 
 describe("TaskAgentExecutionRegistry task-agent memory", () => {
-  it("keeps a fresh task Agent as a leaf in its containing nested TeamRun scope and releases work only after commit", async () => {
+  it("keeps a fresh task Agent as a leaf in its containing task TeamRun scope and releases work only after commit", async () => {
     const workerNode = testAgentNode("/review/worker", {
       agentRunId: "worker-template-run",
       agentDefinitionId: "agent-worker",
@@ -94,8 +94,9 @@ describe("TaskAgentExecutionRegistry task-agent memory", () => {
       rootTeamRunId: "owning-team-run",
       rootTeamDefinitionId: "team-def",
       coordinatorAddress: "/lead",
-      children: [testAgentNode("/lead"), reviewTeam],
+      children: [testAgentNode("/lead")],
     });
+    // `/review` is a task team copy delegated by `/lead`: its own TeamRun scope under the owning root.
     const physicalScope = createRootExecutionPhysicalScope({
       root: createTeamRootExecutionIdentity("owning-team-run"),
       ancestorTeamRunIds: [reviewTeam.teamRunId],

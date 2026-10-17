@@ -48,7 +48,9 @@
             "address": "/qa/tester",
             "agentRunId": "task-team-agent-run-tester-001",
             "platformAgentRunId": null
-          },
+          }
+        ],
+        "taskExecutions": [
           {
             "address": "/qa/automation",
             "teamRunId": "task-team-run-automation-001",
@@ -69,13 +71,14 @@
                 "address": "/qa/automation/tester",
                 "agentRunId": "nested-task-agent-run-001",
                 "platformAgentRunId": null,
-                "delegatorAgentRunId": "task-team-agent-run-qa-lead-001",
+                "delegatorAgentRunId": "task-team-agent-run-automation-lead-001",
                 "startedAt": "2026-08-14T10:22:00.000Z"
               }
-            ]
+            ],
+            "delegatorAgentRunId": "task-team-agent-run-qa-lead-001",
+            "startedAt": "2026-08-14T10:21:00.000Z"
           }
         ],
-        "taskExecutions": [],
         "delegatorAgentRunId": "agent-run-product-manager",
         "startedAt": "2026-08-14T10:20:00.000Z"
       }

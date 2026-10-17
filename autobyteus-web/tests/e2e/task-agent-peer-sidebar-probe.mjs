@@ -314,10 +314,10 @@ try {
     await page.evaluate(() => window.__peerSidebarProbe.revealNested());
     await nested.waitFor({ state: 'visible' });
     const current = await state(page);
-    assert(current.ancestors.join('|') === 'team:peer-configured-research|team:peer-task-team', 'Wrong actual Team ancestry', current);
-    assert(await nested.getAttribute('aria-level') === '3', 'Nested task Agent escaped task-Team depth');
+    assert(current.ancestors.join('|') === 'team:peer-task-team', 'Wrong actual Team ancestry', current);
+    assert(await nested.getAttribute('aria-level') === '2', 'Nested task Agent escaped task-Team depth');
     const member = page.locator('[data-transient-kind="task_team_child"][data-member-address="/Research/Analyst"]');
-    assert(await member.getAttribute('aria-level') === '3' && await member.getAttribute('aria-expanded') === null, 'Task-Team member has phantom task child');
+    assert(await member.getAttribute('aria-level') === '2' && await member.getAttribute('aria-expanded') === null, 'Task-Team member has phantom task child');
     const teamRow = page.locator('[data-transient-kind="task_team"]');
     await teamRow.getByRole('button').click();
     assert(await afterLeave(async () => await nested.count() === 0), 'Task-Team collapse does not hide descendants');

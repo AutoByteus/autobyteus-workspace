@@ -290,7 +290,7 @@ describe("TeamMemoryExplorerService execution structure (REQ-012)", () => {
       ownerTeamRunId: "structure-root",
       execution: projectTaskAgentExecution({ address: address("/writer"), agentRunId: "task-writer-run", delegatorAgentRunId: "structure-writer-run", startedAt: "2026-08-15T00:01:00.000Z" }),
     });
-    const tree = addTaskExecutionToTree({
+    const withTaskTeam = addTaskExecutionToTree({
       tree: withTaskAgent,
       ownerTeamRunId: "structure-root",
       execution: projectTaskTeamExecution({
@@ -301,15 +301,23 @@ describe("TeamMemoryExplorerService execution structure (REQ-012)", () => {
           teamRunId: "review-team-run",
           children: [
             testAgentNode("/reviewer/lead", { agentRunId: "reviewer-run" }),
-            testAgentTeamNode({
-              address: "/reviewer/Inner",
-              coordinatorAddress: "/reviewer/Inner/checker",
-              teamRunId: "inner-team-run",
-              children: [testAgentNode("/reviewer/Inner/checker", { agentRunId: "checker-run" })],
-            }),
           ],
         }),
         delegatorAgentRunId: "structure-writer-run", startedAt: "2026-08-15T00:02:00.000Z",
+      }),
+    });
+    // The task team's member delegates another task team in turn (a delegation forest; teams stay flat).
+    const tree = addTaskExecutionToTree({
+      tree: withTaskTeam,
+      ownerTeamRunId: "review-team-run",
+      execution: projectTaskTeamExecution({
+        node: testAgentTeamNode({
+          address: "/reviewer/Inner",
+          coordinatorAddress: "/reviewer/Inner/checker",
+          teamRunId: "inner-team-run",
+          children: [testAgentNode("/reviewer/Inner/checker", { agentRunId: "checker-run" })],
+        }),
+        delegatorAgentRunId: "reviewer-run", startedAt: "2026-08-15T00:03:00.000Z",
       }),
     });
     const packageDir = layout.getTeamDirPath({ rootTeamRunId: "structure-root", ancestorTeamRunIds: [] });
@@ -333,10 +341,10 @@ describe("TeamMemoryExplorerService execution structure (REQ-012)", () => {
     await fs.rm(memoryDir, { recursive: true, force: true });
   });
 
-  it("lists task agents, task-team members and nested-team members with kind, group path and structural order", async () => {
+  it("lists task agents, task-team members and members of a task team delegated by a task team with kind, group path and structural order", async () => {
     const page = await new TeamMemoryExplorerService(memoryDir).listAgentTeamRunsWithMemory("structure-team");
     const reviewSquad = { teamRunId: "review-team-run", address: "/reviewer", displayName: "reviewer", kind: "TASK_TEAM", startedAt: "2026-08-15T00:02:00.000Z" };
-    const inner = { teamRunId: "inner-team-run", address: "/reviewer/Inner", displayName: "Inner", kind: "TASK_TEAM", startedAt: null };
+    const inner = { teamRunId: "inner-team-run", address: "/reviewer/Inner", displayName: "Inner", kind: "TASK_TEAM", startedAt: "2026-08-15T00:03:00.000Z" };
     expect(page.entries[0]?.memberTargets.map((member) => ({
       displayName: member.displayName,
       agentRunId: member.agentRunId,
@@ -352,7 +360,7 @@ describe("TeamMemoryExplorerService execution structure (REQ-012)", () => {
     expect(page.entries[0]).toMatchObject({ lastUpdatedAt: "2026-08-15T04:00:00Z", memory: expect.objectContaining({ hasEpisodic: true }) });
   });
 
-  it("counts every member address and matches search on nested task-team members", async () => {
+  it("counts every member address and matches search on members of a delegated task team inside a task team", async () => {
     const service = new TeamMemoryExplorerService(memoryDir);
     expect((await service.listAgentTeamsWithMemory()).entries[0]).toMatchObject({ teamRunCount: 1, memberMemoryCount: 3 });
     expect((await service.listAgentTeamRunsWithMemory("structure-team", "checker-run")).total).toBe(1);

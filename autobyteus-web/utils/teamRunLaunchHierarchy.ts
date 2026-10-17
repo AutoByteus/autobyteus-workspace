@@ -8,9 +8,8 @@ import type {
   TeamRunConfigurationView,
   TeamScopeConfigOverride,
 } from '~/types/agent/TeamRunConfig'
-import type { TeamDefinitionMemberNode } from '~/utils/teamDefinitionMembers'
+import type { TeamDefinitionAgentNode } from '~/utils/teamDefinitionMembers'
 import {
-  hasMeaningfulLaunchOverride,
   normalizeModelConfig,
   normalizeModelIdentifier,
   normalizeRuntimeKind,
@@ -91,24 +90,17 @@ const inheritedEffectiveConfig = (
 }
 
 export const indexTeamLaunchTopology = (
-  memberTree: readonly TeamDefinitionMemberNode[],
+  memberTree: readonly TeamDefinitionAgentNode[],
 ): TeamLaunchTopologyIndex => {
+  // Teams are flat: the only Team scope is the root.
   const teams = new Set<AgentTeamAddress>(['/'])
-  const agents = new Set<AgentTeamAddress>()
-  const visit = (node: TeamDefinitionMemberNode): void => {
-    if (node.kind === 'agent') agents.add(node.address)
-    else {
-      teams.add(node.address)
-      node.children.forEach(visit)
-    }
-  }
-  memberTree.forEach(visit)
+  const agents = new Set<AgentTeamAddress>(memberTree.map((node) => node.address))
   return Object.freeze({ teams, agents })
 }
 
 export const resolveTeamRunConfiguration = (
   config: Readonly<TeamRunConfig>,
-  memberTree: readonly TeamDefinitionMemberNode[],
+  memberTree: readonly TeamDefinitionAgentNode[],
 ): Readonly<TeamRunConfigurationView> => {
   const teamsByAddress: Record<AgentTeamAddress, ResolvedTeamScopeView> = {}
   const agentsByAddress: Record<AgentTeamAddress, ResolvedAgentLaunchView> = {}
@@ -125,37 +117,17 @@ export const resolveTeamRunConfiguration = (
   })
   teamsByAddress['/'] = root
 
-  const visit = (
-    node: TeamDefinitionMemberNode,
-    containingTeam: Readonly<ResolvedTeamScopeView>,
-  ): void => {
-    if (node.kind === 'agent') {
-      const override = config.agentOverrides[node.address] ?? null
-      agentsByAddress[node.address] = Object.freeze({
-        address: node.address,
-        containingTeamAddress: containingTeam.address,
-        displayName: node.displayName,
-        agentDefinitionId: node.agentDefinitionId,
-        override,
-        effectiveConfig: inheritedEffectiveConfig(containingTeam.effectiveConfig, override),
-      })
-      return
-    }
-    const override = config.teamOverrides[node.address] ?? null
-    const team = Object.freeze<ResolvedTeamScopeView>({
+  for (const node of memberTree) {
+    const override = config.agentOverrides[node.address] ?? null
+    agentsByAddress[node.address] = Object.freeze({
       address: node.address,
-      parentAddress: containingTeam.address,
+      containingTeamAddress: root.address,
       displayName: node.displayName,
-      teamDefinitionId: node.teamDefinitionId,
-      depth: containingTeam.depth + 1,
-      isCustomized: hasMeaningfulLaunchOverride(override),
+      agentDefinitionId: node.agentDefinitionId,
       override,
-      effectiveConfig: inheritedEffectiveConfig(containingTeam.effectiveConfig, override),
+      effectiveConfig: inheritedEffectiveConfig(root.effectiveConfig, override),
     })
-    teamsByAddress[node.address] = team
-    node.children.forEach((child) => visit(child, team))
   }
-  memberTree.forEach((node) => visit(node, root))
 
   return Object.freeze({
     source: 'EDITABLE_INTENT',
@@ -177,7 +149,7 @@ const isExactAddressIn = (value: string, allowed: ReadonlySet<AgentTeamAddress>)
 
 export const reconcileTeamRunConfigTopology = (
   config: Readonly<TeamRunConfig>,
-  memberTree: readonly TeamDefinitionMemberNode[],
+  memberTree: readonly TeamDefinitionAgentNode[],
 ): TeamRunTopologyReconciliation => {
   const topology = indexTeamLaunchTopology(memberTree)
   const repaired = new Set<AgentTeamAddress>()
@@ -207,7 +179,7 @@ const launchFields = (config: Readonly<ResolvedTeamRunLaunchConfig>) => ({
 
 export const projectTeamRunLaunchRecords = (
   config: Readonly<TeamRunConfig>,
-  memberTree: readonly TeamDefinitionMemberNode[],
+  memberTree: readonly TeamDefinitionAgentNode[],
 ): Readonly<{
   teamConfigs: readonly TeamScopeLaunchRecord[]
   memberConfigs: readonly TeamMemberLaunchRecord[]

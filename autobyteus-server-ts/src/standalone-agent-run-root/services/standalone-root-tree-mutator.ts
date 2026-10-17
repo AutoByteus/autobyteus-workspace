@@ -9,12 +9,7 @@ import type {
   CollaborationAgentPlatformBinding,
 } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
 import type { TaskExecutionHostIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import type {
-  TaskExecution,
-  TaskTeamExecution,
-  TaskTeamMemberExecution,
-  TaskTeamNestedTeamExecution,
-} from "../../run-history/domain/run-execution-tree-shared-records.js";
+import type { TaskExecution, TaskTeamExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import { validateStandaloneRootTreePayload } from "../persistence/standalone-root-tree-schema.js";
 import type { StandaloneRootTreeSnapshot } from "../domain/standalone-root-tree.js";
 
@@ -38,16 +33,12 @@ export const addStandaloneRootTaskExecution = (input: {
   };
   if (input.host.hostKind === "root") return revalidate(append(input.tree));
   let found = false;
-  const team = <T extends TaskTeamExecution | TaskTeamNestedTeamExecution>(value: T): T => {
+  const team = (value: TaskTeamExecution): TaskTeamExecution => {
     if (value.teamRunId === input.host.hostRunId) {
       found = true;
       return append(value);
     }
-    return {
-      ...value,
-      members: value.members.map((member) => "agentRunId" in member ? member : team(member)),
-      taskExecutions: value.taskExecutions.map(task),
-    };
+    return { ...value, taskExecutions: value.taskExecutions.map(task) };
   };
   const task = (value: TaskExecution): TaskExecution => "agentRunId" in value ? value : team(value);
   const taskExecutions = input.tree.taskExecutions.map(task);
@@ -61,11 +52,8 @@ const mapAgents = (
   tree: StandaloneRootTreeSnapshot,
   agent: <T extends AgentNode>(value: T) => T,
 ): StandaloneRootTreeSnapshot => {
-  const member = (value: TaskTeamMemberExecution): TaskTeamMemberExecution => "agentRunId" in value ? agent(value) : {
-    ...value, members: value.members.map(member), taskExecutions: value.taskExecutions.map(task),
-  };
   const task = (value: TaskExecution): TaskExecution => "agentRunId" in value ? agent(value) : {
-    ...value, members: value.members.map(member), taskExecutions: value.taskExecutions.map(task),
+    ...value, members: value.members.map(agent), taskExecutions: value.taskExecutions.map(task),
   };
   return {
     ...tree,

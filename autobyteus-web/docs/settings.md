@@ -854,8 +854,8 @@ current expansion state.
   standalone chevron size, shape, and gray color. The row button remains the
   single interaction boundary, and team-run rows expose `aria-expanded` so
   visual, keyboard, and assistive-technology state stay in sync.
-- Manual workspace, agent-group, team-definition-group, team-run, and nested
-  team-member/subteam expansion choices are kept in component-local tree state
+- Manual workspace, agent-group, team-definition-group, team-run, and
+  delegated task-Team row expansion choices are kept in component-local tree state
   and are not reset by quiet history refreshes while the history panel remains
   mounted.
 - Newly added workspaces are explicitly opened after creation so the add flow
@@ -867,11 +867,11 @@ reveal. The reveal expands only the selected run/team's workspace and containing
 agent or team-definition group, and for selected team runs opens the matching
 team-run row. After the selected path has been revealed for the stable selection
 key, later quiet refreshes must not reopen the same path if the user manually
-collapses it. When a user opens/selects a team run that has a focused nested
-member, or selects a nested member row directly,
+collapses it. When a user opens/selects a team run whose focused member is inside
+a delegated task Team, or selects such a member row directly,
 `useWorkspaceHistorySelectionActions(...)` asks
-`useWorkspaceHistoryTreeState(...)` to expand only the subteam ancestors
-needed to keep that nested focus visible.
+`useWorkspaceHistoryTreeState(...)` to expand only the task-Team ancestors
+needed to keep that focus visible.
 
 For Team execution rows, selection state derives from the same exact
 `TeamExecutionViewState` focus used by the workspace and command surfaces; there
@@ -879,17 +879,15 @@ is no separate roster/history visual-focus authority. The current-row predicate
 is scoped to the authoritative selected TeamRun plus the view's focused exact
 AgentRun. Clearing the Team selection or having no valid target leaves no member
 row current. The cached run-history projection mirrors that focus only after
-successful exact inspection. The Workspace history tree renders recursive
-`team.rootTeam.members` structure from the V2 history projection. Nested
-configured-Team member rows appear as
-semibold subteam rows with an unboxed filled user-group icon and their own
-disclosure control; they are collapsed by default and expand children through
-the continuous-rail/right-elbow printed-tree grammar described above.
-Disclosure-bearing configured subteam row-body activation toggles children and
-selects only when that structural row has a concrete Agent run. The explicit
-disclosure control remains visible and toggles children without selecting the
-row or bubbling into the row-body handler. Leaf member rows without children
-remain select-only. Clicking a member or subteam row whose canonical address
+successful exact inspection. The Workspace history tree renders the
+`team.rootTeam.members` Agents from the V2 history projection; Teams are flat,
+so a Team's configured members are Agents. Delegated task-Team rows carry their
+own disclosure control and expand children through the
+continuous-rail/right-elbow printed-tree grammar described above. A member row
+with children toggles them on row-body activation and selects its concrete Agent
+run. The explicit disclosure control remains visible and toggles children
+without selecting the row or bubbling into the row-body handler. Leaf member rows
+without children remain select-only. Clicking a member row whose canonical address
 exists in the Team's V2 tree requests inspection of its exact AgentRun and keeps
 the previous row current until required projection authority succeeds. An
 offline AgentRun may still be focused when its retained projection is

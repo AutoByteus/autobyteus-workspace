@@ -101,10 +101,8 @@ export class TaskTeamExecutionRegistry {
     assertAccepting();
     const root = prepared.teamRun;
     this.preparedTeamRuns.set(teamRunId, root);
-    const coordinator = input.teamNode.children.find((node) =>
-      node.kind === "agent" && node.address === input.teamNode.coordinatorAddress,
-    );
-    if (!coordinator || coordinator.kind !== "agent") throw new Error(`Task TeamRun '${teamRunId}' has no exact coordinator.`);
+    const coordinator = input.teamNode.children.find((node) => node.address === input.teamNode.coordinatorAddress);
+    if (!coordinator) throw new Error(`Task TeamRun '${teamRunId}' has no exact coordinator.`);
     return {
       binding: Object.freeze({
         kind: "team",

@@ -2,23 +2,16 @@ import type {
   TaskAgentExecution,
   TaskAgentExecutionSource,
   TaskTeamExecution,
+  TaskTeamAgentExecution,
   TaskTeamExecutionSource,
-  TaskTeamMemberExecution,
 } from "../../../run-history/domain/run-execution-tree-shared-records.js";
-import type { TeamRunAgentTeamNode, TeamRunNode } from "../../../agent-team-execution/domain/team-run-config.js";
+import type { TeamRunAgentNode, TeamRunAgentTeamNode } from "../../../agent-team-execution/domain/team-run-config.js";
 
-const member = (node: TeamRunNode): TaskTeamMemberExecution => node.kind === "agent"
-  ? Object.freeze({
-      address: node.address,
-      agentRunId: node.agentRunId,
-      platformAgentRunId: node.platformAgentRunId,
-    })
-  : Object.freeze({
-      address: node.address,
-      teamRunId: node.teamRunId,
-      members: Object.freeze(node.children.map(member)),
-      taskExecutions: Object.freeze([]),
-    });
+const member = (node: TeamRunAgentNode): TaskTeamAgentExecution => Object.freeze({
+  address: node.address,
+  agentRunId: node.agentRunId,
+  platformAgentRunId: node.platformAgentRunId,
+});
 
 export const projectTaskAgentExecution = (input: {
   address: TaskAgentExecution["address"];

@@ -17,7 +17,7 @@ import type { StandaloneRootTreeSnapshot } from "../../standalone-agent-run-root
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
 import type {
   ConfiguredAgentExecutionNode, ConfiguredExecutionNode,
-  RecordedMemberLaunch, TaskExecution, TaskTeamMemberExecution, UserLaunchSelection,
+  RecordedMemberLaunch, TaskExecution, TaskTeamAgentExecution, UserLaunchSelection,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
 
 type TaskTeamDto = Extract<CollaborationTaskExecutionDto, { teamRunId: string }>;
@@ -60,12 +60,10 @@ export const projectCollaborationSelectionsChanged = (records: readonly Delegate
   }) })),
 });
 
-const projectTaskMember = (member: TaskTeamMemberExecution): TaskTeamDto["members"][number] =>
-  "agentRunId" in member
-    ? { address: member.address, agentRunId: member.agentRunId, platformAgentRunId: member.platformAgentRunId,
-        ...projectSelection("userLaunchSelection", member.userLaunchSelection) }
-    : { address: member.address, teamRunId: member.teamRunId,
-        members: member.members.map(projectTaskMember), taskExecutions: member.taskExecutions.map(projectCollaborationTaskExecution) };
+const projectTaskMember = (member: TaskTeamAgentExecution): TaskTeamDto["members"][number] => ({
+  address: member.address, agentRunId: member.agentRunId, platformAgentRunId: member.platformAgentRunId,
+  ...projectSelection("userLaunchSelection", member.userLaunchSelection),
+});
 
 export const projectCollaborationTaskExecution = (execution: TaskExecution): CollaborationTaskExecutionDto => {
   const identity = {

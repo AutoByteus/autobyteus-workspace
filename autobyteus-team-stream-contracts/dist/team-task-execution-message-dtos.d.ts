@@ -25,7 +25,7 @@ export declare const teamTaskExecutionStartedPayloadSchema: z.ZodObject<{
         kind: "task_team";
         address: string;
         team_run_id: string;
-        members: readonly import("./team-execution-view-dtos.js").TaskTeamMemberExecutionDto[];
+        members: readonly import("./team-execution-view-dtos.js").TaskTeamAgentExecutionDto[];
         task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
         delegator_agent_run_id: string | null;
         started_at: string;
@@ -35,7 +35,7 @@ export declare const teamTaskExecutionStartedPayloadSchema: z.ZodObject<{
         kind: "task_team";
         address: string;
         team_run_id: string;
-        members: readonly import("./team-execution-view-dtos.js").TaskTeamMemberExecutionDto[];
+        members: readonly import("./team-execution-view-dtos.js").TaskTeamAgentExecutionDto[];
         task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
         delegator_agent_run_id: string | null;
         started_at: string;

@@ -61,7 +61,7 @@ type RecordedTeamDefinitions = Readonly<{
 
 /**
  * The definitions a team instance's tree record carries: a configured team node, or a task team copy's
- * catalog source. A record that carries neither (a nested team of a copy) yields null.
+ * catalog source. A task team recorded without a catalog source yields null.
  */
 export const instanceDefinitionsFromSource = (source: object): InstanceDefinitions | null => {
   const recorded: RecordedTeamDefinitions | null = "coordinatorAddress" in source

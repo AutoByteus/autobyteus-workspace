@@ -48,7 +48,8 @@ export type AgentOrgHistoryDisplayRow = Readonly<{
 }>
 
 type TaskBranchNode = AgentOrgTaskExecutionNode | AgentOrgTaskTeamMember
-type TaskTeamNode = Exclude<TaskBranchNode, { agentRunId: string }>
+/** A delegated Team copy; Teams are flat, so its members are Agents. */
+type TaskTeamNode = Extract<AgentOrgTaskExecutionNode, { teamRunId: string }>
 type StatusSource = Readonly<{
   authority: TeamStatusAuthority
   coordinatorFor(team: TaskTeamNode): Readonly<{ agentRunId: string; address: string }>
@@ -66,16 +67,13 @@ const rootTaskExecutions = (rootOrg: AgentOrgRunHistoryItem['executionTree']['ro
 
 const collectAgentAddresses = (tree: AgentOrgRunHistoryItem['executionTree']): ReadonlyMap<string, string> => {
   const addresses = new Map<string, string>()
-  const visitTaskMembers = (members: readonly AgentOrgTaskTeamMember[]) => {
-    for (const member of members) {
-      if ('agentRunId' in member) addresses.set(member.agentRunId, member.address)
-      else { visitTaskMembers(member.members); visitTasks(member.taskExecutions) }
-    }
-  }
   const visitTasks = (tasks: readonly AgentOrgTaskExecutionNode[]) => {
     for (const task of tasks) {
       if ('agentRunId' in task) addresses.set(task.agentRunId, task.address)
-      else { visitTaskMembers(task.members); visitTasks(task.taskExecutions) }
+      else {
+        task.members.forEach((member) => addresses.set(member.agentRunId, member.address))
+        visitTasks(task.taskExecutions)
+      }
     }
   }
   for (const member of tree.rootOrg.members) {
@@ -121,9 +119,7 @@ const statusSource = (
         ? configured
         : catalogTeamSourceAt(collaborationTaskExecutionLists(rootOrg), team.address)
       if (!source) throw new Error(`Missing captured Team source '${team.address}'.`)
-      const findMembers = (node: TaskTeamNode): { agentRunId: string; address: string }[] => node.members.flatMap((member) =>
-        'agentRunId' in member ? [member] : findMembers(member))
-      const matches = findMembers(team).filter((member) => member.address === source.coordinatorAddress)
+      const matches = team.members.filter((member) => member.address === source.coordinatorAddress)
       if (matches.length !== 1) throw new Error(`Missing exact task coordinator '${team.teamRunId}'.`)
       return matches[0]!
     },
@@ -149,25 +145,22 @@ const flattenTaskTeam = (team: TaskTeamNode, depth: number, source: StatusSource
     teamRunId: team.teamRunId,
     coordinatorAgentRunId: coordinator.agentRunId, coordinatorAddress: coordinator.address,
     depth,
-    // A nested Team inside a task Team is not itself delegated; only the outer task Team row names its starter.
-    delegatedBy: 'delegatorAgentRunId' in team ? source.delegatorFor(team.delegatorAgentRunId) : null,
+    delegatedBy: source.delegatorFor(team.delegatorAgentRunId),
     hasChildren,
     expanded,
   }]
   if (hasChildren && !expanded) return rows
   for (const member of members) {
-    if (isAgentOrgTaskAgentNode(member)) {
-      rows.push({
-        key: `task-team-agent:${member.agentRunId}`,
-        kind: 'task_agent',
-        taskKind: 'team_member',
-        address: member.address,
-        agentRunId: member.agentRunId,
-        status: exactAgentStatus(source, member.agentRunId),
-        depth: depth + 1,
-        delegatedBy: null,
-      })
-    } else rows.push(...flattenTaskTeam(member, depth + 1, source))
+    rows.push({
+      key: `task-team-agent:${member.agentRunId}`,
+      kind: 'task_agent',
+      taskKind: 'team_member',
+      address: member.address,
+      agentRunId: member.agentRunId,
+      status: exactAgentStatus(source, member.agentRunId),
+      depth: depth + 1,
+      delegatedBy: null,
+    })
   }
   for (const task of tasks) rows.push(...flattenTask(task, depth + 1, source))
   return rows

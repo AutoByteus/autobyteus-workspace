@@ -46,7 +46,7 @@ describe("FlatTeamTopologyPlanner", () => {
       memberConfigs: [memberConfig("/Lead"), memberConfig("/Reviewer")],
     });
 
-    expect(plan).toMatchObject({ teamDefinitionName: "Root Team", hasSubTeams: false });
+    expect(plan).toMatchObject({ teamDefinitionName: "Root Team" });
     expect(plan.config.teamBackendKind).toBe(TeamBackendKind.MIXED);
     expect(plan.config.rootTeam).toMatchObject({
       kind: "agent_team",

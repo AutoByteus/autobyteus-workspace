@@ -15,8 +15,6 @@ export type {
   TaskExecution,
   TaskTeamAgentExecution,
   TaskTeamExecution,
-  TaskTeamMemberExecution,
-  TaskTeamNestedTeamExecution,
   TeamRunApplicationBinding,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
 

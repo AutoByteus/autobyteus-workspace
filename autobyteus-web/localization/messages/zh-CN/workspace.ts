@@ -197,14 +197,10 @@ const messages = {
     "最大化查看",
   "workspace.components.workspace.team.TeamCommunicationPanel.restore_view":
     "恢复视图",
-  "workspace.components.workspace.team.TeamCommunicationPanel.represents_subteam":
-    "代表",
   "workspace.components.workspace.team.TeamCommunicationPanel.reference_count_label":
     "{{count}} 个引用文件",
   "workspace.components.workspace.team.TeamCommunicationPanel.show_all_references":
     "显示全部 {{count}} 个文件",
-  "workspace.components.workspace.team.AgentTeamEventMonitor.focused_subteam":
-    "当前聚焦的子团队",
   "workspace.components.workspace.team.AgentTeamEventMonitor.no_activity_yet":
     "还没有活动。",
   "workspace.components.workspace.team.TeamMembersPanel.team_members":
@@ -232,7 +228,6 @@ const messages = {
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_offline":
     "团队状态：离线",
   "workspace.history.hierarchy.tree_label": "{{name}}组织树",
-  "workspace.history.hierarchy.role.agent_team": "智能体团队",
   "workspace.history.hierarchy.role.agent": "智能体",
   "workspace.history.copyTask.locate": "在项目中显示任务：{{title}}",
   "workspace.history.copyTask.accessible": "任务：{{title}}",
@@ -252,10 +247,6 @@ const messages = {
   "workspace.task_monitor.load_error": "无法加载活动。",
   "workspace.task_monitor.retry": "重试",
   "workspace.task_monitor.retry_accessible": "重试加载活动",
-  "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":
-    "向此子团队发送消息",
-  "workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam":
-    "发送给子团队",
   "workspace.components.workspace.agent.ArtifactContentViewer.content_not_available_yet":
     "内容暂不可用",
   "workspace.components.workspace.agent.ArtifactContentViewer.preview_unavailable":

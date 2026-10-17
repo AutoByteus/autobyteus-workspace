@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
-import type { TeamRunAgentTeamNode, TeamRunNode } from "../domain/team-run-config.js";
+import type { TeamRunAgentNode, TeamRunAgentTeamNode } from "../domain/team-run-config.js";
 import { generateTeamRunIdForDefinitionName } from "../domain/team-run-id.js";
 
 export type TaskTeamMaterialization = Readonly<{ teamNode: TeamRunAgentTeamNode }>;
@@ -24,17 +24,15 @@ export class TaskTeamRunIdentityFactory {
     return Object.freeze({
       ...source,
       teamRunId: generateTeamRunIdForDefinitionName(source.teamDefinitionId, this.createToken()),
-      children: Object.freeze(await Promise.all(source.children.map((child) => this.materializeNode(child)))),
+      children: Object.freeze(await Promise.all(source.children.map((child) => this.materializeAgent(child)))),
     });
   }
 
-  private async materializeNode(source: TeamRunNode): Promise<TeamRunNode> {
-    return source.kind === "agent"
-      ? Object.freeze({
-          ...source,
-          agentRunId: await this.agents.allocateForAgentDefinition(source.agentDefinitionId),
-          platformAgentRunId: null,
-        })
-      : this.materializeTeam(source);
+  private async materializeAgent(source: TeamRunAgentNode): Promise<TeamRunAgentNode> {
+    return Object.freeze({
+      ...source,
+      agentRunId: await this.agents.allocateForAgentDefinition(source.agentDefinitionId),
+      platformAgentRunId: null,
+    });
   }
 }

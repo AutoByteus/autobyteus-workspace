@@ -432,7 +432,6 @@ describe("Application context capability integration", () => {
           teamRunId,
           getExecutionTreeSnapshot: () => ({
             rootTeam: {
-              kind: "configured_team",
               address: "/",
               members: memberConfigs.map((memberConfig) => ({
                 kind: "configured_agent",

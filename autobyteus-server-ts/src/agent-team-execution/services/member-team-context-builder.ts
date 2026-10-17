@@ -54,7 +54,7 @@ export class MemberExecutionContextBuilder {
       root: {
         configured: {
           addresses: input.teamContext.teamNode.children.map((child) => child.address),
-          agentRunIds: input.teamContext.teamNode.children.flatMap((child) => "agentRunId" in child ? [child.agentRunId] : []),
+          agentRunIds: input.teamContext.teamNode.children.map((child) => child.agentRunId),
           role: "team_member",
         },
         handoffs: input.teamContext.handoffs,

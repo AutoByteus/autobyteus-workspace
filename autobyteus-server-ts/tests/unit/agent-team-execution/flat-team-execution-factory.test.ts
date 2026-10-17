@@ -57,32 +57,6 @@ describe("FlatTeamExecutionFactory", () => {
     expect(callbacks.buildMemberExecutionContext).not.toHaveBeenCalled();
   });
 
-  it("rejects a configured child Team before any Agent activation", async () => {
-    const root = createTeamRootExecutionIdentity("team-root-run");
-    const teamNode = testAgentTeamNode({
-      address: "/",
-      teamRunId: "team-root-run",
-      coordinatorAddress: "/Lead",
-      children: [
-        testAgentNode("/Lead"),
-        testAgentTeamNode({
-          address: "/Nested",
-          teamRunId: "nested-run",
-          coordinatorAddress: "/Nested/Worker",
-          children: [testAgentNode("/Nested/Worker")],
-        }),
-      ],
-    });
-    await expect(() => new FlatTeamExecutionFactory().beginMaterialization({
-      physicalScope: createRootExecutionPhysicalScope({ root, ancestorTeamRunIds: [] }),
-      teamNode,
-      handoffs: [],
-      activationMode: "fresh",
-      callbacks,
-    })).toThrow("cannot contain a configured Team");
-    expect(callbacks.buildMemberExecutionContext).not.toHaveBeenCalled();
-  });
-
   it("rejects an Org-mounted Team scope that omits its physical TeamRun ancestry", async () => {
     const root = createAgentOrgRootExecutionIdentity("org-root-run");
     await expect(() => new FlatTeamExecutionFactory().beginMaterialization({

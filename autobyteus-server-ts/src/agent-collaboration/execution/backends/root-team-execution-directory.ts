@@ -166,8 +166,8 @@ export class RootTeamExecutionDirectory {
       prepare: async (assertAccepting) => {
     const prepared = await factoryControl.prepare();
     assertAccepting();
-    const coordinator = input.task.teamNode.children.find((child) => child.kind === "agent" && child.address === input.task.teamNode.coordinatorAddress);
-    if (!coordinator || coordinator.kind !== "agent") {
+    const coordinator = input.task.teamNode.children.find((child) => child.address === input.task.teamNode.coordinatorAddress);
+    if (!coordinator) {
       eventGate.abort();
       await prepared.abort();
       throw new Error(`Task TeamRun '${input.task.teamRunId}' has no exact coordinator.`);

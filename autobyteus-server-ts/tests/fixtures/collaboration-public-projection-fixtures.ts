@@ -16,18 +16,17 @@ const taskAgent = (address: string, id: string, linked: boolean, delegatorAgentR
   ...(delegatorAgentRunId ? { delegatorAgentRunId } : {}), ...stamp(linked),
   source: { kind: "agent", agentDefinitionId: `definition-${id}`, launchConfiguration: projectionLaunch },
 });
-// Reader/DTO contract fixture: nested recorded members exercise recursive wire
-// preservation, not real-provider reachability or completion certification.
+// Reader/DTO contract fixture: a delegation forest (a Team copy that delegates a Team copy that
+// delegates an Agent) exercises recursive wire preservation, not real-provider reachability.
 const team = (linked: boolean) => ({
   address: "/packet", teamRunId: "packet-copy", startedAt, delegatorAgentRunId: "manager", ...stamp(linked, "assignment"),
   members: [
     { address: "/packet/lead", agentRunId: "packet-lead", platformAgentRunId: "provider-lead" },
 
   ],
-  taskExecutions: [{ address: "/packet/subteam", teamRunId: "nested-task-team", startedAt, ...stamp(linked),
-    members: [{ address: "/packet/nested", teamRunId: "nested-member",
-      members: [{ address: "/packet/nested/worker", agentRunId: "nested-worker", platformAgentRunId: "provider-nested" }],
-      taskExecutions: [taskAgent("/packet/nested/helper", "nested-helper", linked, "nested-worker")] }], taskExecutions: [] }, taskAgent("/packet/researcher", "follow-on-agent", linked, "packet-lead"), {
+  taskExecutions: [{ address: "/packet/subteam", teamRunId: "delegated-subteam", startedAt, delegatorAgentRunId: "packet-lead", ...stamp(linked),
+    members: [{ address: "/packet/subteam/worker", agentRunId: "subteam-worker", platformAgentRunId: "provider-subteam" }],
+    taskExecutions: [taskAgent("/packet/subteam/helper", "subteam-helper", linked, "subteam-worker")] }, taskAgent("/packet/researcher", "follow-on-agent", linked, "packet-lead"), {
     address: "/packet/review", teamRunId: "follow-on-team", startedAt, ...stamp(linked, "helper"),
     members: [{ address: "/packet/review/lead", agentRunId: "review-lead", platformAgentRunId: null }],
     taskExecutions: [taskAgent("/packet/review/helper", "review-helper", linked, "review-lead")],

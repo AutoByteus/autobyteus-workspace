@@ -72,10 +72,8 @@ const agentSelections = ref(0), teamSelected = ref('');
 const teamExpanded = reactive<Record<string, boolean>>({});
 // Team source projection is separately covered by runHistoryTeamExecutionRows + agentSourceSelectors.
 // These supported public row props exercise the production parent tree, not another renderer copy.
-const stable = { kind: 'agent_team', teamRunId: 'preview-host', teamRunIdForNode: 'stable-team', memberAddress: '/configured', displayName: 'Configured Team', agentRunId: null, children: [] };
 const team = { teamRunId: 'preview-host', lastActivityAt: '2026-10-08T00:00:00Z', focusedAgentRunId: null,
   executionRows: [
-    { kind: 'stable_member', rowKey: 'team:stable', teamRunId: 'preview-host', teamRunIdForNode: 'stable-team', memberAddress: '/configured', agentRunId: null, memberKind: 'agent_team', displayName: 'Configured Team', depth: 0, hasChildren: false, row: stable },
     ...rows.slice(0, 2).flatMap((row, index) => [row, { ...rows[3], rowKey: `child-${index}`, memberAddress: `/preview_${index}/lead`, agentRunId: `lead-${index}`, transientKind: 'task_team_child', depth: 1 }]),
   ],
 } as any;
@@ -102,8 +100,9 @@ const worker: TaskRootView = { kind: 'team', recipientAddress: '/software_engine
 const memory = { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: false, hasRawArchive: false };
 const configured: CollaborationMemoryGroup = { teamRunId: 'configured', address: '/review_team', displayName: 'Review Team', kind: 'CONFIGURED_TEAM', startedAt: null };
 const task: CollaborationMemoryGroup = { ...configured, teamRunId: 'task', kind: 'TASK_TEAM' };
-const nested: CollaborationMemoryGroup = { ...task, teamRunId: 'nested', address: '/review_team/helpers', displayName: 'Helpers' };
+// A task Team that a member of the `task` Team copy delegated in turn (Teams are flat).
+const delegated: CollaborationMemoryGroup = { ...task, teamRunId: 'delegated', address: '/review_team/helpers', displayName: 'Helpers' };
 const memoryRows: CollaborationRunMemoryRow[] = [{ runId: 'preview-memory', summary: 'Configured and delegated Teams', workspaceRootPath: '/test-owned/preview', lastUpdatedAt: null, memory,
-  memberTargets: [[configured], [task], [task, nested]].map((groupPath, index) => ({ memberAddress: `${groupPath.at(-1)!.address}/lead`, displayName: 'Lead', agentRunId: `preview-lead-${index}`, executionKind: index ? 'TASK_TEAM_MEMBER' : 'CONFIGURED', startedAt: null, groupPath, memory })),
+  memberTargets: [[configured], [task], [task, delegated]].map((groupPath, index) => ({ memberAddress: `${groupPath.at(-1)!.address}/lead`, displayName: 'Lead', agentRunId: `preview-lead-${index}`, executionKind: index ? 'TASK_TEAM_MEMBER' : 'CONFIGURED', startedAt: null, groupPath, memory })),
 }];
 </script>

@@ -12,7 +12,7 @@ import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import {
   buildTestTeamContext,
   testAgentNode,
-  testSubTeamNode,
+  testTaskTeamLayout,
   testDelegation,
 } from '~/test-support/currentTeamTestFixtures';
 import { testCollaborationMessagesContextView } from '~/test-support/teamWorkspaceContextView';
@@ -44,20 +44,19 @@ const CollaborationMessagesPanelStub = defineComponent({
 const mountWorkflow = () => {
   setActivePinia(createPinia());
   const teacher = testAgentNode('/Teacher', { agentRunId: 'teacher-persistent-run', displayName: 'Teacher' });
-  const studentOne = testAgentNode('/StudentStudyGroup/student_one', { agentRunId: 'student-one-persistent-run' });
-  const studentTwo = testAgentNode('/StudentStudyGroup/student_two', { agentRunId: 'student-two-persistent-run' });
+  const studentOne = testAgentNode('/student_one', { agentRunId: 'student-one-persistent-run' });
+  const studentTwo = testAgentNode('/student_two', { agentRunId: 'student-two-persistent-run' });
+  const studyGroup = testTaskTeamLayout('/StudentStudyGroup', [
+    testAgentNode('/StudentStudyGroup/student_one', { agentRunId: 'student-one' }),
+    testAgentNode('/StudentStudyGroup/student_two', { agentRunId: 'student-two' }),
+  ]);
   const tasks = [
-    testDelegation({ delegatorAgentRunId: 'teacher-persistent-run', recipientAddress: '/StudentStudyGroup/student_two', target: { agentRunId: 'student-two-task-run' } }),
-    testDelegation({ delegatorAgentRunId: 'teacher-persistent-run', recipientAddress: '/StudentStudyGroup', target: { teamRunId: 'study-group-task-run' } }),
+    testDelegation({ delegatorAgentRunId: 'teacher-persistent-run', recipientAddress: '/student_two', target: { agentRunId: 'student-two-task-run' } }),
+    testDelegation({ delegatorAgentRunId: 'teacher-persistent-run', recipientAddress: '/StudentStudyGroup', target: { teamRunId: 'study-group-task-run', team: studyGroup } }),
   ];
   const teamContext = buildTestTeamContext({
-    teamRunId: 'classroom-root-run', teamDefinitionName: 'Nested Classroom Test Team',
-    rootChildren: [
-      teacher,
-      testSubTeamNode('/StudentStudyGroup', [studentOne, studentTwo], {
-        teamRunId: 'study-group-persistent-run', coordinatorAddress: '/StudentStudyGroup/student_one',
-      }),
-    ],
+    teamRunId: 'classroom-root-run', teamDefinitionName: 'Classroom Test Team',
+    rootChildren: [teacher, studentOne, studentTwo],
     coordinatorAddress: '/Teacher', focusedAgentRunId: 'teacher-persistent-run', delegations: tasks,
   });
   useAgentTeamContextsStore().addTeamContext(teamContext);

@@ -130,17 +130,10 @@ type TaskTeamAgentExecutionDto = Readonly<{
   platformAgentRunId: string | null;
   userLaunchSelection?: UserLaunchSelectionDto;
 }>;
-type TaskTeamNestedExecutionDto = Readonly<{
-  address: string;
-  teamRunId: string;
-  members: readonly TaskTeamMemberExecutionDto[];
-  taskExecutions: readonly TaskExecutionDto[];
-}>;
-type TaskTeamMemberExecutionDto = TaskTeamAgentExecutionDto | TaskTeamNestedExecutionDto;
 type TaskTeamExecutionDto = Readonly<{
   address: string;
   teamRunId: string;
-  members: readonly TaskTeamMemberExecutionDto[];
+  members: readonly TaskTeamAgentExecutionDto[];
   taskExecutions: readonly TaskExecutionDto[];
   /** Absent for children recorded before the delegator was stored. */
   delegatorAgentRunId?: string;
@@ -169,10 +162,9 @@ const taskAgent: z.ZodType<TaskAgentExecutionDto> = z.object({
   address: agentAddressSchema, agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText,
   delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp, source: taskAgentSource.optional(), ...agentSelection,
 }).strict();
-const taskTeamMember: z.ZodType<TaskTeamMemberExecutionDto> = z.lazy(() => z.union([
-  z.object({ address: agentAddressSchema, agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText, ...agentSelection }).strict(),
-  z.object({ address: agentAddressSchema, teamRunId: nonEmptyStringSchema, members: z.array(taskTeamMember), taskExecutions: z.array(taskExecution) }).strict(),
-]));
+const taskTeamMember: z.ZodType<TaskTeamAgentExecutionDto> = z.object({
+  address: agentAddressSchema, agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText, ...agentSelection,
+}).strict();
 const taskTeam: z.ZodType<TaskTeamExecutionDto> = z.lazy(() => z.object({
   address: agentAddressSchema, teamRunId: nonEmptyStringSchema, members: z.array(taskTeamMember),
   taskExecutions: z.array(taskExecution), delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp,

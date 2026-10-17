@@ -273,14 +273,12 @@ try {
     assert(await page.locator('[data-test="workspace-team-transient-execution-row"]').count() === 0, 'Collapsed team leaked transient rows');
     await teamRow.click();
     // Task-Agent leaves are peers of their regular Agent (no disclosure on /worker; baseline fix).
-    await page.locator('[data-test="workspace-team-member-disclosure"][data-member-address="/ReviewTeam"]').click();
     await page.locator('[data-test="workspace-team-transient-disclosure"][data-member-address="/ReviewTeam"]').click();
     const hierarchy = await page.evaluate(() => window.__backgroundContentionProbe.inspectHierarchy());
-    assert(hierarchy.rows.length === 6, 'Exact hierarchy row count mismatch', hierarchy);
+    assert(hierarchy.rows.length === 4, 'Exact hierarchy row count mismatch', hierarchy);
     assert(hierarchy.rows.map((row) => `${row.kind}:${row.memberAddress}:${row.agentRunId || 'team'}:${row.depth}`).join('|') === [
       'stable_member:/worker:rich-worker-run:0', 'transient_execution:/worker:rich-task-agent-run:0',
-      'stable_member:/ReviewTeam:team:0', 'stable_member:/ReviewTeam/reviewer:rich-reviewer-run:1',
-      'transient_execution:/ReviewTeam:team:1', 'transient_execution:/ReviewTeam/reviewer:rich-task-team-child-run:2',
+      'transient_execution:/ReviewTeam:team:0', 'transient_execution:/ReviewTeam/reviewer:rich-task-team-child-run:1',
     ].join('|'), 'Exact hierarchy order/depth mismatch', hierarchy);
     assert(hierarchy.rows.find((row) => row.agentRunId === 'rich-task-agent-run')?.status === 'running', 'Task-agent status mismatch', hierarchy);
     assert(hierarchy.rows.find((row) => row.agentRunId === 'rich-task-team-child-run')?.status === 'running', 'Task-team child status mismatch', hierarchy);

@@ -7,7 +7,7 @@ import { buildTeamRunTemplate, cloneTeamConfig } from '~/composables/useDefiniti
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig'
 import type { MemberLaunchSeed } from '~/utils/runSettings/memberLaunchDefaults'
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
-import { buildTeamMemberTreeFromDefinition, normalizeMemberAddress, type TeamDefinitionMemberNode } from '~/utils/teamDefinitionMembers'
+import { buildTeamMemberTreeFromDefinition, normalizeMemberAddress, type TeamDefinitionAgentNode } from '~/utils/teamDefinitionMembers'
 import {
   createTeamLaunchDraftId,
   type TeamLaunchConfigEdit,
@@ -81,24 +81,24 @@ const assertDraftMutable = (
 ): void => {
   if (preparations.has(id) || inFlight.has(id)) throw new Error(`Team launch draft '${id}' is in flight and cannot ${operation}.`)
 }
-const currentMemberTree = (config: Readonly<TeamRunConfig>): readonly TeamDefinitionMemberNode[] | null => {
+const currentMemberTree = (config: Readonly<TeamRunConfig>): readonly TeamDefinitionAgentNode[] | null => {
   const definitions = useAgentTeamDefinitionStore()
   const definition = definitions.getCatalogAgentTeamDefinitionById(config.teamDefinitionId)
-  return definition ? buildTeamMemberTreeFromDefinition(definition, { getTeamDefinitionById: definitions.getCatalogAgentTeamDefinitionById }) : null
+  return definition ? buildTeamMemberTreeFromDefinition(definition) : null
 }
-const requireMemberTree = (config: Readonly<TeamRunConfig>): readonly TeamDefinitionMemberNode[] => {
+const requireMemberTree = (config: Readonly<TeamRunConfig>): readonly TeamDefinitionAgentNode[] => {
   const tree = currentMemberTree(config)
   if (!tree) throw new Error('The current Team topology is unavailable.')
   return tree
 }
-const assertTeamTarget = (memberTree: readonly TeamDefinitionMemberNode[], address: string): AgentTeamAddress => {
+const assertTeamTarget = (memberTree: readonly TeamDefinitionAgentNode[], address: string): AgentTeamAddress => {
   const canonical = parseAgentTeamAddress(address)
   if (canonical !== address || !indexTeamLaunchTopology(memberTree).teams.has(canonical)) {
     throw new Error(`Address '${address}' is not an exact Team placement.`)
   }
   return canonical
 }
-const reconcileDraftTopology = (draft: TeamLaunchDraft, memberTree: readonly TeamDefinitionMemberNode[]) => {
+const reconcileDraftTopology = (draft: TeamLaunchDraft, memberTree: readonly TeamDefinitionAgentNode[]) => {
   const config = reconcileTeamRunConfigTopology(draft.config, memberTree)
   const workspaces = reconcileTeamWorkspaceAuthoringTopology(draft.teamWorkspaceAuthoringByTeamAddress, memberTree)
   const addresses = Object.freeze([...new Set([...config.repairedAddresses, ...workspaces.repairedAddresses])].sort())
@@ -120,7 +120,7 @@ const workspaceMetadataForId = (workspaceId: string): WorkspaceMetadata => {
   return metadata
 }
 const workspaceEdit = (
-  config: Readonly<TeamRunConfig>, memberTree: readonly TeamDefinitionMemberNode[], address: AgentTeamAddress,
+  config: Readonly<TeamRunConfig>, memberTree: readonly TeamDefinitionAgentNode[], address: AgentTeamAddress,
   workspace: { workspaceId: string; workspaceMetadata: WorkspaceMetadata },
 ): TeamRunConfig => address === '/'
   ? applyTeamLaunchConfigEdit(config, { kind: 'set_root_workspace', workspace }, memberTree)
@@ -146,7 +146,7 @@ export const useTeamRunConfigStore = defineStore('teamRunConfig', {
     selectedDraft(state): TeamLaunchDraft | null { return state.selectedDraftId ? state.drafts.get(state.selectedDraftId) ?? null : null },
     config(): Readonly<TeamRunConfig> | null { return this.selectedDraft?.config ?? null },
     hasConfig(): boolean { return this.selectedDraft !== null },
-    memberTree(): readonly TeamDefinitionMemberNode[] | null { return this.selectedDraft ? currentMemberTree(this.selectedDraft.config) : null },
+    memberTree(): readonly TeamDefinitionAgentNode[] | null { return this.selectedDraft ? currentMemberTree(this.selectedDraft.config) : null },
     launchReadiness(): TeamRunLaunchReadiness {
       const base = evaluateTeamRunLaunchReadiness(this.selectedDraft?.config, this.runtimeModelCatalogs, this.memberTree)
       const blockingIssues = applyTeamWorkspaceAuthoringReadiness(
@@ -235,7 +235,7 @@ export const useTeamRunConfigStore = defineStore('teamRunConfig', {
         teamWorkspaceAuthoringByTeamAddress: freezeTeamWorkspaceAuthoring(authoring),
       }))
     },
-    reconcileSelectedDraftTopology(memberTree: readonly TeamDefinitionMemberNode[]) {
+    reconcileSelectedDraftTopology(memberTree: readonly TeamDefinitionAgentNode[]) {
       const draft = this.selectedDraft; if (!draft) return { repaired: false, addresses: [] as readonly AgentTeamAddress[], draft: null }
       assertDraftMutable(this.workspacePreparationPlans, this.inFlightDrafts, draft.draftId, 'be reconciled')
       const result = reconcileDraftTopology(draft, memberTree)
@@ -277,7 +277,7 @@ export const useTeamRunConfigStore = defineStore('teamRunConfig', {
       }
       this.drafts = new Map(this.drafts).set(draft.draftId, draft)
     },
-    reconcileAndPlanSelectedDraftLaunch(expectedDraft: TeamLaunchDraft, memberTree: readonly TeamDefinitionMemberNode[]) {
+    reconcileAndPlanSelectedDraftLaunch(expectedDraft: TeamLaunchDraft, memberTree: readonly TeamDefinitionAgentNode[]) {
       assertNoLockedDraft(this.workspacePreparationPlans, this.inFlightDrafts, 'start another launch')
       if (this.selectedDraft !== expectedDraft || this.selectedDraftId !== expectedDraft.draftId) {
         throw new Error(`Team launch draft '${expectedDraft.draftId}' is not the exact selected snapshot.`)
@@ -312,7 +312,7 @@ export const useTeamRunConfigStore = defineStore('teamRunConfig', {
       this.replacePreparedDraft(preparedDraft, plan)
       return { status: 'planned' as const, plan, draft: preparedDraft }
     },
-    stopStaleWorkspacePreparation(plan: TeamWorkspacePreparationPlan, memberTree: readonly TeamDefinitionMemberNode[]) {
+    stopStaleWorkspacePreparation(plan: TeamWorkspacePreparationPlan, memberTree: readonly TeamDefinitionAgentNode[]) {
       const draft = this.selectedDraft
       if (!draft || this.workspacePreparationPlans.get(plan.draftId) !== plan) throw new Error(`Team workspace preparation for '${plan.draftId}' is no longer active.`)
       const subjects = buildTeamLaunchTopologySubjects(draft.config, memberTree)
@@ -328,7 +328,7 @@ export const useTeamRunConfigStore = defineStore('teamRunConfig', {
       return { status: 'repaired' as const, addresses, draft: repairedDraft }
     },
     authorizeWorkspacePreparationRequest(
-      plan: TeamWorkspacePreparationPlan, memberTree: readonly TeamDefinitionMemberNode[], addresses: readonly AgentTeamAddress[],
+      plan: TeamWorkspacePreparationPlan, memberTree: readonly TeamDefinitionAgentNode[], addresses: readonly AgentTeamAddress[],
     ) {
       const draft = this.selectedDraft
       if (!draft || this.workspacePreparationPlans.get(plan.draftId) !== plan) throw new Error(`Team workspace preparation for '${plan.draftId}' is no longer active.`)
@@ -343,7 +343,7 @@ export const useTeamRunConfigStore = defineStore('teamRunConfig', {
     },
     completeWorkspacePreparation(
       plan: TeamWorkspacePreparationPlan,
-      memberTree: readonly TeamDefinitionMemberNode[],
+      memberTree: readonly TeamDefinitionAgentNode[],
       addresses: readonly AgentTeamAddress[],
       result: { workspaceId: string; workspaceMetadata: WorkspaceMetadata },
     ) {
@@ -366,7 +366,7 @@ export const useTeamRunConfigStore = defineStore('teamRunConfig', {
     },
     failWorkspacePreparation(
       plan: TeamWorkspacePreparationPlan,
-      memberTree: readonly TeamDefinitionMemberNode[],
+      memberTree: readonly TeamDefinitionAgentNode[],
       addresses: readonly AgentTeamAddress[],
       error: string,
     ) {
@@ -385,7 +385,7 @@ export const useTeamRunConfigStore = defineStore('teamRunConfig', {
       const plans = new Map(this.workspacePreparationPlans); plans.delete(plan.draftId); this.workspacePreparationPlans = plans
       return { status: 'failed' as const, draft }
     },
-    finalizeWorkspacePreparation(plan: TeamWorkspacePreparationPlan, memberTree: readonly TeamDefinitionMemberNode[]) {
+    finalizeWorkspacePreparation(plan: TeamWorkspacePreparationPlan, memberTree: readonly TeamDefinitionAgentNode[]) {
       const authorization = this.authorizeWorkspacePreparationRequest(plan, memberTree, [])
       if (authorization.status === 'repaired') return authorization
       const reconciled = reconcileDraftTopology(authorization.draft, memberTree)

@@ -30,7 +30,7 @@ Memory files live under the configured memory root:
 
 - Standalone runs: `memory/agents/<runId>/...`
 - Direct team members: `memory/agent_teams/<rootTeamRunId>/<memberRunId>/...`
-- Nested subteam members: `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<memberRunId>/...`; deeper nesting appends each physical ancestor TeamRun id before the AgentRun id
+- Delegated task-Team members: `memory/agent_teams/<rootTeamRunId>/<taskTeamRunId>/<memberRunId>/...`; a task Team delegated inside a task Team appends its run id, so each physical ancestor TeamRun id precedes the AgentRun id (Teams are flat: a Team's members are Agents)
 - Task-Agent runs: `memory/agent_teams/<rootTeamRunId>/<...ancestorTeamRunIds>/<taskAgentRunId>/...` using the logical member's physical Team memory scope
 - Agent org members: `memory/agent_orgs/<orgRunId>/<...ancestorTeamRunIds>/<agentRunId>/...` (composed by `AgentMemoryLayout`, resolved by `AgentOrgExecutionTreeLocationService`)
 - Imported Memory Sync sources: `memory/imports/<sourceNodeId>/agents/...` and

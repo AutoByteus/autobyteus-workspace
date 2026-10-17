@@ -1,9 +1,7 @@
 import type {
-  ConfiguredMemberExecutionDto,
-  ConfiguredTeamExecutionDto,
+  ConfiguredAgentExecutionDto,
   TaskExecutionDto,
   TaskTeamExecutionDto,
-  TaskTeamMemberExecutionDto,
   TeamRunExecutionTreeDto,
 } from '@autobyteus/team-stream-contracts';
 import type { AgentContext } from '~/types/agent/AgentContext';
@@ -37,38 +35,10 @@ const isCatalogCopyAddress = (tree: TeamRunExecutionTreeDto, address: string): b
 export const readsAsDisplayName = (tree: TeamRunExecutionTreeDto, address: string): boolean =>
   isCatalogCopyAddress(tree, address);
 
+/** Teams are flat: the root Team's configured members are its Agents. */
 export const collectConfiguredAgents = (
   tree: TeamRunExecutionTreeDto,
-): readonly Extract<ConfiguredMemberExecutionDto, { kind: 'configured_agent' }>[] => {
-  const agents: Extract<ConfiguredMemberExecutionDto, { kind: 'configured_agent' }>[] = [];
-  const visit = (members: readonly ConfiguredMemberExecutionDto[]): void => {
-    for (const member of members) {
-      if (member.kind === 'configured_agent') agents.push(member);
-      else visit(member.members);
-    }
-  };
-  visit(tree.root_team.members);
-  return Object.freeze(agents);
-};
-
-export const collectConfiguredTeams = (
-  tree: TeamRunExecutionTreeDto,
-): readonly (ConfiguredTeamExecutionDto | TeamRunExecutionTreeDto['root_team'])[] => {
-  const teams: Array<ConfiguredTeamExecutionDto | TeamRunExecutionTreeDto['root_team']> = [tree.root_team];
-  const visit = (members: readonly ConfiguredMemberExecutionDto[]): void => {
-    for (const member of members) {
-      if (member.kind === 'configured_team') { teams.push(member); visit(member.members); }
-    }
-  };
-  visit(tree.root_team.members);
-  return Object.freeze(teams);
-};
-
-export const findConfiguredTeamByAddress = (
-  tree: TeamRunExecutionTreeDto,
-  address: AgentTeamAddress,
-): ConfiguredTeamExecutionDto | TeamRunExecutionTreeDto['root_team'] | null =>
-  collectConfiguredTeams(tree).find((team) => (team === tree.root_team ? '/' : team.address) === address) ?? null;
+): readonly ConfiguredAgentExecutionDto[] => Object.freeze([...tree.root_team.members]);
 
 export const collectAgentExecutionLocations = (
   tree: TeamRunExecutionTreeDto,
@@ -85,39 +55,12 @@ export const collectAgentExecutionLocations = (
     for (const task of tasks) {
       if (task.kind === 'task_agent') addLocation(task.agent_run_id, task.address, containingTeamRunId);
       else {
-        visitTaskMembers(task.members, task.team_run_id);
+        task.members.forEach((member) => addLocation(member.agent_run_id, member.address, task.team_run_id));
         visitTasks(task.task_executions, task.team_run_id);
       }
     }
   };
-  const visitTaskMembers = (
-    members: readonly TaskTeamMemberExecutionDto[],
-    containingTeamRunId: string,
-  ): void => {
-    for (const member of members) {
-      if (member.kind === 'task_team_agent') {
-        addLocation(member.agent_run_id, member.address, containingTeamRunId);
-      }
-      else {
-        visitTaskMembers(member.members, member.team_run_id);
-        visitTasks(member.task_executions, member.team_run_id);
-      }
-    }
-  };
-  const visitConfigured = (
-    members: readonly ConfiguredMemberExecutionDto[],
-    containingTeamRunId: string,
-  ): void => {
-    for (const member of members) {
-      if (member.kind === 'configured_agent') {
-        addLocation(member.agent_run_id, member.address, containingTeamRunId);
-      } else {
-        visitConfigured(member.members, member.team_run_id);
-        visitTasks(member.task_executions, member.team_run_id);
-      }
-    }
-  };
-  visitConfigured(tree.root_team.members, tree.root_team.team_run_id);
+  tree.root_team.members.forEach((member) => addLocation(member.agent_run_id, member.address, tree.root_team.team_run_id));
   visitTasks(tree.root_team.task_executions, tree.root_team.team_run_id);
   return Object.freeze(output);
 };
@@ -127,10 +70,9 @@ export const findContainingTaskExecutionRunId = (
   tree: TeamRunExecutionTreeDto,
   agentRunId: string,
 ): string | null => {
-  type Member = ConfiguredMemberExecutionDto | TaskTeamMemberExecutionDto;
   const search = (
     tasks: readonly TaskExecutionDto[],
-    members: readonly Member[],
+    members: readonly { agent_run_id: string }[],
     owningTaskRunId: string | null,
   ): string | null => {
     for (const task of tasks) {
@@ -141,15 +83,7 @@ export const findContainingTaskExecutionRunId = (
       const found = search(task.task_executions, task.members, task.team_run_id);
       if (found) return found;
     }
-    for (const member of members) {
-      if (member.kind === 'configured_agent' || member.kind === 'task_team_agent') {
-        if (member.agent_run_id === agentRunId) return owningTaskRunId;
-        continue;
-      }
-      const found = search(member.task_executions, member.members, owningTaskRunId);
-      if (found) return found;
-    }
-    return null;
+    return members.some((member) => member.agent_run_id === agentRunId) ? owningTaskRunId : null;
   };
   return search(tree.root_team.task_executions, tree.root_team.members, null);
 };
@@ -157,7 +91,7 @@ export const findContainingTaskExecutionRunId = (
 export const findConfiguredAgentByAddress = (
   tree: TeamRunExecutionTreeDto,
   address: AgentTeamAddress,
-): Extract<ConfiguredMemberExecutionDto, { kind: 'configured_agent' }> | null =>
+): ConfiguredAgentExecutionDto | null =>
   collectConfiguredAgents(tree).find((agent) => agent.address === address) ?? null;
 
 export const projectNavigationRows = (inputTree: {
@@ -209,32 +143,20 @@ export const projectNavigationRows = (inputTree: {
     addTaskTeam(task, depth, parentKey);
   };
   const addTaskMembers = (
-    members: readonly TaskTeamMemberExecutionDto[],
-    tasks: readonly TaskExecutionDto[],
+    team: TaskTeamExecutionDto,
     depth: number,
     parentKey: string,
     coordinatorAddress: AgentTeamAddress,
   ): void => {
-    for (const member of members) {
-      if (member.kind === 'task_team_agent') {
-        addAgent({
-          kind: 'task_team_agent', address: member.address, agentRunId: member.agent_run_id,
-          depth, parentKey, coordinatorAddress,
-        });
-      } else {
-        const key = teamRowKey(member.team_run_id);
-        rows.push(Object.freeze({
-          key, kind: 'task_team_member', address: member.address,
-          displayName: nameOf(member.address), accessibleName: nameOf(member.address),
-          depth, parentKey, agentRunId: null, teamRunId: member.team_run_id, delegatedBy: null,
-          currentStatus: null, focusable: false,
-          expandable: member.members.length > 0 || member.task_executions.length > 0, coordinator: false,
-        }));
-        addTaskMembers(member.members, member.task_executions, depth + 1, key, coordinatorAddress);
-      }
-      tasks.filter((task) => task.address === member.address).forEach((task) => addTask(task, depth + 1, member.kind === 'task_team_agent' ? agentRowKey(member.agent_run_id) : teamRowKey(member.team_run_id)));
+    for (const member of team.members) {
+      addAgent({
+        kind: 'task_team_agent', address: member.address, agentRunId: member.agent_run_id,
+        depth, parentKey, coordinatorAddress,
+      });
+      team.task_executions.filter((task) => task.address === member.address)
+        .forEach((task) => addTask(task, depth + 1, agentRowKey(member.agent_run_id)));
     }
-    tasks.filter((task) => !members.some((member) => member.address === task.address))
+    team.task_executions.filter((task) => !team.members.some((member) => member.address === task.address))
       .forEach((task) => addTask(task, depth, parentKey));
   };
   const addTaskTeam = (
@@ -243,9 +165,7 @@ export const projectNavigationRows = (inputTree: {
     parentKey: string,
   ): void => {
     const key = teamRowKey(team.team_run_id);
-    const coordinatorAddress = team.source?.coordinator_address
-      ?? configuredTeamAtAddress(input.tree, team.address)?.coordinator_address
-      ?? team.address;
+    const coordinatorAddress = team.source?.coordinator_address ?? team.address;
     const label = nameOf(team.address);
     rows.push(Object.freeze({
       key, kind: 'task_team', address: team.address,
@@ -255,54 +175,27 @@ export const projectNavigationRows = (inputTree: {
       currentStatus: null, focusable: false,
       expandable: team.members.length > 0 || team.task_executions.length > 0, coordinator: false,
     }));
-    addTaskMembers(team.members, team.task_executions, depth + 1, key, coordinatorAddress);
+    addTaskMembers(team, depth + 1, key, coordinatorAddress);
   };
-  const addConfiguredTeam = (
-    team: ConfiguredTeamExecutionDto | TeamRunExecutionTreeDto['root_team'],
-    depth: number,
-    parentKey: string | null,
-    isRoot: boolean,
-  ): void => {
-    const key = teamRowKey(team.team_run_id);
-    rows.push(Object.freeze({
-      key, kind: 'configured_team', address: isRoot ? '/' : (team as ConfiguredTeamExecutionDto).address,
-      displayName: isRoot ? input.tree.root_team.team_definition_name : memberAddressBasename((team as ConfiguredTeamExecutionDto).address),
-      accessibleName: isRoot ? input.tree.root_team.team_definition_name : memberAddressBasename((team as ConfiguredTeamExecutionDto).address),
-      depth, parentKey, agentRunId: null, teamRunId: team.team_run_id, delegatedBy: null,
-      currentStatus: null, focusable: false,
-      expandable: team.members.length > 0 || team.task_executions.length > 0, coordinator: false,
-    }));
-    for (const member of team.members) {
-      if (member.kind === 'configured_agent') {
-        addAgent({ kind: 'configured_agent', address: member.address, agentRunId: member.agent_run_id, depth: depth + 1, parentKey: key, coordinatorAddress: team.coordinator_address });
-      } else addConfiguredTeam(member, depth + 1, key, false);
-      const placementKey = member.kind === 'configured_agent' ? agentRowKey(member.agent_run_id) : teamRowKey(member.team_run_id);
-      team.task_executions
-        .filter((task) => task.address === member.address)
-        .forEach((task) => addTask(task, depth + 2, placementKey));
-    }
-    team.task_executions
-      .filter((task) => !team.members.some((member) => member.address === task.address))
-      .forEach((task) => addTask(task, depth + 1, key));
-  };
-  addConfiguredTeam(input.tree.root_team, 0, null, true);
+  const root = input.tree.root_team;
+  const rootKey = teamRowKey(root.team_run_id);
+  rows.push(Object.freeze({
+    key: rootKey, kind: 'configured_team', address: '/',
+    displayName: root.team_definition_name, accessibleName: root.team_definition_name,
+    depth: 0, parentKey: null, agentRunId: null, teamRunId: root.team_run_id, delegatedBy: null,
+    currentStatus: null, focusable: false,
+    expandable: root.members.length > 0 || root.task_executions.length > 0, coordinator: false,
+  }));
+  for (const member of root.members) {
+    addAgent({ kind: 'configured_agent', address: member.address, agentRunId: member.agent_run_id, depth: 1, parentKey: rootKey, coordinatorAddress: root.coordinator_address });
+    root.task_executions
+      .filter((task) => task.address === member.address)
+      .forEach((task) => addTask(task, 2, agentRowKey(member.agent_run_id)));
+  }
+  root.task_executions
+    .filter((task) => !root.members.some((member) => member.address === task.address))
+    .forEach((task) => addTask(task, 1, rootKey));
   return Object.freeze(rows);
-};
-
-const configuredTeamAtAddress = (
-  tree: TeamRunExecutionTreeDto,
-  address: AgentTeamAddress,
-): ConfiguredTeamExecutionDto | null => {
-  const visit = (members: readonly ConfiguredMemberExecutionDto[]): ConfiguredTeamExecutionDto | null => {
-    for (const member of members) {
-      if (member.kind !== 'configured_team') continue;
-      if (member.address === address) return member;
-      const nested = visit(member.members);
-      if (nested) return nested;
-    }
-    return null;
-  };
-  return visit(tree.root_team.members);
 };
 
 /** A node of the Team tree: Agents, and Teams with members and task executions. */

@@ -374,7 +374,7 @@ resource lifecycle) have no starter, and task-Team members have none. Shut-down 
 the standard `offline` status. Participant links open the exact AgentRun,
 never the configured source at the same address.
 
-A delegated task-Team row (including a nested Team inside a task Team) that has
+A delegated task-Team row (including a task Team delegated inside another task Team) that has
 members or nested task executions shows the same chevron as a mounted Team row
 and starts expanded. Activating the row by pointer or Enter/Space toggles its
 descendants and inspects its coordinator, as the mounted Team row does. The row

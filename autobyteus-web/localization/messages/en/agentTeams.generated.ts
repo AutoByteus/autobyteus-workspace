@@ -3,7 +3,6 @@ import type { TranslationCatalog } from '../../runtime/types';
 const messages = {
   'agentTeams.components.agentTeams.AgentTeamCard.and_rarr': '&rarr;',
   'agentTeams.components.agentTeams.AgentTeamCard.avatar': '`${teamDef.name} avatar`',
-  'agentTeams.components.agentTeams.AgentTeamCard.nested_teams': 'Nested Teams',
   'agentTeams.components.agentTeams.AgentTeamCard.no_members_defined': 'No members defined',
   'agentTeams.components.agentTeams.AgentTeamCard.text': '`${node.memberName} (${node.refType})`',
   'agentTeams.components.agentTeams.AgentTeamCard.view_details': 'View Details',

@@ -7,7 +7,7 @@ import type {
   TeamWorkspacePreparationRequest,
 } from '~/types/agent/TeamLaunchDraft'
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig'
-import type { TeamDefinitionMemberNode } from '~/utils/teamDefinitionMembers'
+import type { TeamDefinitionAgentNode } from '~/utils/teamDefinitionMembers'
 import { indexTeamLaunchTopology, resolveTeamRunConfiguration } from '~/utils/teamRunLaunchHierarchy'
 import { normalizeWorkspaceRootPath } from '~/utils/workspaceMetadata'
 
@@ -25,7 +25,7 @@ export const freezeTeamWorkspaceAuthoring = (
 
 export const deriveTeamWorkspaceAuthoringView = (
   draft: TeamLaunchDraft,
-  memberTree: readonly TeamDefinitionMemberNode[],
+  memberTree: readonly TeamDefinitionAgentNode[],
   address: AgentTeamAddress,
 ): TeamWorkspaceAuthoringView => {
   const effective = resolveTeamRunConfiguration(draft.config, memberTree).teamsByAddress[address]?.effectiveConfig
@@ -43,7 +43,7 @@ export const deriveTeamWorkspaceAuthoringView = (
 
 export const reconcileTeamWorkspaceAuthoringTopology = (
   values: Readonly<Partial<Record<AgentTeamAddress, TeamWorkspaceAuthoringState>>>,
-  memberTree: readonly TeamDefinitionMemberNode[],
+  memberTree: readonly TeamDefinitionAgentNode[],
 ): Readonly<{
   values: Readonly<Partial<Record<AgentTeamAddress, TeamWorkspaceAuthoringState>>>
   repairedAddresses: readonly AgentTeamAddress[]
@@ -63,20 +63,12 @@ export const reconcileTeamWorkspaceAuthoringTopology = (
 
 export const buildTeamLaunchTopologySubjects = (
   config: Readonly<TeamRunConfig>,
-  memberTree: readonly TeamDefinitionMemberNode[],
+  memberTree: readonly TeamDefinitionAgentNode[],
 ): readonly TeamLaunchTopologySubject[] => {
   const subjects: TeamLaunchTopologySubject[] = [{
     address: '/', kind: 'team', definitionId: config.teamDefinitionId,
   }]
-  const visit = (node: TeamDefinitionMemberNode): void => {
-    if (node.kind === 'agent') {
-      subjects.push({ address: node.address, kind: 'agent', definitionId: node.agentDefinitionId })
-      return
-    }
-    subjects.push({ address: node.address, kind: 'team', definitionId: node.teamDefinitionId })
-    node.children.forEach(visit)
-  }
-  memberTree.forEach(visit)
+  memberTree.forEach((node) => subjects.push({ address: node.address, kind: 'agent', definitionId: node.agentDefinitionId }))
   return Object.freeze(subjects
     .sort((left, right) => left.address.localeCompare(right.address))
     .map((subject) => Object.freeze(subject)))

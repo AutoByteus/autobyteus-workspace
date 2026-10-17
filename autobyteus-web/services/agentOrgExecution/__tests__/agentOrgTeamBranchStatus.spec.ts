@@ -39,10 +39,16 @@ const team: AgentOrgConfiguredTeamNode = {
     {
       address: '/design', teamRunId: 'task-team', startedAt: '2026-09-01T00:00:00.000Z',
       delegatorAgentRunId: 'configured-researcher',
-      members: [
-        { address: '/design/lead', agentRunId: 'task-team-lead', platformAgentRunId: null },
+      members: [{ address: '/design/lead', agentRunId: 'task-team-lead', platformAgentRunId: null }],
+      taskExecutions: [
         {
-          address: '/design/review', teamRunId: 'nested-task-team',
+          address: '/design/lead', agentRunId: 'task-team-child-task', platformAgentRunId: null,
+          delegatorAgentRunId: 'task-team-lead', startedAt: '2026-09-01T00:00:00.000Z',
+        },
+        {
+          // A task Team the task Team's lead delegated in turn (Teams are flat).
+          address: '/design/review', teamRunId: 'nested-task-team', startedAt: '2026-09-01T00:00:00.000Z',
+          delegatorAgentRunId: 'task-team-lead',
           members: [{ address: '/design/review/reviewer', agentRunId: 'nested-reviewer', platformAgentRunId: null }],
           taskExecutions: [{
             address: '/design/review/reviewer', agentRunId: 'nested-child-task',
@@ -50,10 +56,6 @@ const team: AgentOrgConfiguredTeamNode = {
           }],
         },
       ],
-      taskExecutions: [{
-        address: '/design/lead', agentRunId: 'task-team-child-task', platformAgentRunId: null,
-        delegatorAgentRunId: 'task-team-lead', startedAt: '2026-09-01T00:00:00.000Z',
-      }],
     },
   ],
 };
@@ -83,9 +85,9 @@ describe('projectAgentOrgTeamBranchStatus', () => {
       'configured-researcher',
       'direct-task-agent',
       'task-team-lead',
+      'task-team-child-task',
       'nested-reviewer',
       'nested-child-task',
-      'task-team-child-task',
     ]);
   });
 

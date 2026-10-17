@@ -15,8 +15,6 @@ import type {
   TaskExecution,
   TaskTeamAgentExecution,
   TaskTeamExecution,
-  TaskTeamMemberExecution,
-  TaskTeamNestedTeamExecution,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import {
@@ -33,6 +31,8 @@ import {
 } from "../../agent-collaboration/collaborators/mention-viewer.js";
 
 export type AgentOrgExecutionKind = "configured" | "task" | "task_team_member";
+/** A team in an Org run: a team of the organization, or a task agent team (teams are flat: no team is a member of a team). */
+export type AgentOrgTeamExecutionKind = "configured" | "task";
 export type AgentOrgIndexedAgentExecution = Readonly<{
   agentRunId: string;
   address: AgentTeamAddress;
@@ -44,8 +44,8 @@ export type AgentOrgIndexedTeamExecution = Readonly<{
   teamRunId: string;
   address: AgentTeamAddress;
   parentTeamRunId: string | null;
-  executionKind: AgentOrgExecutionKind;
-  source: ConfiguredTeamExecutionNode | TaskTeamExecution | TaskTeamNestedTeamExecution;
+  executionKind: AgentOrgTeamExecutionKind;
+  source: ConfiguredTeamExecutionNode | TaskTeamExecution;
 }>;
 /** One message target: the receiving Agent run of an Agent address, or a Team's coordinator. */
 export type AgentOrgMessagePlacement = CollaborationMessagePlacement;
@@ -138,14 +138,7 @@ export class AgentOrgExecutionIndex implements MessageRecipientIndexPort, Mentio
 
   private findInstanceAgent(team: AgentOrgIndexedTeamExecution, address: string): AgentOrgIndexedAgentExecution | null {
     const host = createTaskExecutionHostIdentity({ root: this.root, hostKind: "team", hostRunId: team.teamRunId, hostAddress: team.address });
-    const direct = this.listDirectAgents(host).find((agent) => agent.executionKind !== "task" && agent.address === address);
-    if (direct) return direct;
-    for (const nested of this.listDirectTeams(team.teamRunId)) {
-      if (nested.executionKind === "task") continue;
-      const found = this.findInstanceAgent(nested, address);
-      if (found) return found;
-    }
-    return null;
+    return this.listDirectAgents(host).find((agent) => agent.executionKind !== "task" && agent.address === address) ?? null;
   }
 
   /** A mounted Team's own; a task copy's catalog source, else its source Team's at the same address. */
@@ -256,19 +249,12 @@ export class AgentOrgExecutionIndex implements MessageRecipientIndexPort, Mentio
     }));
     this.visitTaskTeamContents(task);
   }
-  private visitTaskTeamContents(team: TaskTeamExecution | TaskTeamNestedTeamExecution): void {
+  private visitTaskTeamContents(team: TaskTeamExecution): void {
     const host = createTaskExecutionHostIdentity({
       root: this.root, hostKind: "team", hostRunId: team.teamRunId, hostAddress: team.address,
     });
-    team.members.forEach((member) => this.visitTaskMember(member, host));
+    team.members.forEach((member) => this.addAgent(member, host, "task_team_member"));
     team.taskExecutions.forEach((task) => this.visitTask(task, host));
-  }
-  private visitTaskMember(member: TaskTeamMemberExecution, host: TaskExecutionHostIdentity): void {
-    if ("agentRunId" in member) this.addAgent(member, host, "task_team_member");
-    else {
-      this.addTeam(member, host.hostRunId, "task_team_member");
-      this.visitTaskTeamContents(member);
-    }
   }
   private addAgent(
     source: AgentOrgIndexedAgentExecution["source"],

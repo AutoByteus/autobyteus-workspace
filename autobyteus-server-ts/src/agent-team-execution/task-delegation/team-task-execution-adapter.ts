@@ -80,9 +80,9 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
     } else {
       const source = this.sources.requireTeam(input.placement.address, input.placement.source);
       const materialized = await this.options.taskExecutionIdentity.taskTeams.create({ source: source.node });
-      const coordinator = materialized.teamNode.children.find(node => node.kind === "agent" && node.address === materialized.teamNode.coordinatorAddress);
-      if (!coordinator || coordinator.kind !== "agent") throw new Error("Planned Team has no exact coordinator.");
-      execution = { teamRunId: materialized.teamNode.teamRunId }; ingressAgentRunId = coordinator.agentRunId; ownedAgentRunIds = materialized.teamNode.children.flatMap(node => node.kind === "agent" ? [node.agentRunId] : []);
+      const coordinator = materialized.teamNode.children.find((node) => node.address === materialized.teamNode.coordinatorAddress);
+      if (!coordinator) throw new Error("Planned Team has no exact coordinator.");
+      execution = { teamRunId: materialized.teamNode.teamRunId }; ingressAgentRunId = coordinator.agentRunId; ownedAgentRunIds = materialized.teamNode.children.map((node) => node.agentRunId);
       command = { address: input.placement.address, teamRunId: materialized.teamNode.teamRunId,
         handoffs: source.handoffs, teamNode: materialized.teamNode, message: input.workPacket };
     }
