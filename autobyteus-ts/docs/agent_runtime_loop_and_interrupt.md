@@ -209,6 +209,10 @@ The runner uses these collaborators:
   - builds `ToolSchemaProvider` schemas only when configured tools exist;
   - settles the call's recovery snapshot exactly once (commit or restore) and
     ingests the response per outcome; publishes the call's token usage;
+  - times the call's output speed with one `LlmCallTiming` (`llm-call-throughput.ts`):
+    started immediately before the stream is created, fed every chunk by the
+    collector after the chunk fence, reported as `output_throughput` on the
+    call's token-usage notification;
   - checks the `TurnExecutionScope` before starting the stream, after
     consumption (`llm_stream_finalize`), and after awaited LLM seams before
     publishing normal assistant completion side effects;
