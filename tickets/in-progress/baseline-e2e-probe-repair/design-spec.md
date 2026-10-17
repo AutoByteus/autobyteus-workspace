@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-002` (evidence/design clarification; requirements basis unchanged at SR-001)
+- Current solution revision ID: `SR-003` (requirements re-approved at SR-003: UC-006 withdrawn; otherwise unchanged)
 - Approved requirements baseline: `requirements-doc.md` at `SR-001`, approved by the Solution Designer within the Task's direction (user informed 2026-10-17).
 - Behavior-defining supplements: None.
 - Design status: `Ready`
@@ -43,13 +43,15 @@ Update each failing test to the current product contract, through public APIs an
 
 ## Change Scope (Mandatory)
 
-- In scope: UC-001..UC-011. Areas: `autobyteus-server-ts/tests/e2e/{agent-team-runs,agent,app-data-migrations,memory-sync,run-history,runtime}/` (the 8 files), `autobyteus-server-ts/tests/fixtures/` only when a released or current-shape fixture must be added or derived for these suites, `autobyteus-web/tests/e2e/{existing-run-model-config-probe.mjs,interrupt-result-presentation-probe.mjs,run-settings-live-probe.mjs}`, their pages in `autobyteus-web/tests/e2e/fixtures/`, and `autobyteus-web/package.json` (one script).
+- In scope: UC-001..UC-011 except UC-006 (withdrawn SR-003); UC-001 and UC-007 are verify-only (fixed upstream, SR-002). Areas: `autobyteus-server-ts/tests/e2e/{agent-team-runs,agent,app-data-migrations,memory-sync,run-history,runtime}/` (the 8 files), `autobyteus-server-ts/tests/fixtures/` only when a released or current-shape fixture must be added or derived for these suites, `autobyteus-web/tests/e2e/{existing-run-model-config-probe.mjs,interrupt-result-presentation-probe.mjs,run-settings-live-probe.mjs}`, their pages in `autobyteus-web/tests/e2e/fixtures/`, and `autobyteus-web/package.json` (one script).
 - Deliberately left alone: all production source and docs; `test-support/live-e2e/test-runtime-bootstrap.mjs` (shared; changing its error reporting is a separate decision); other stale/flaky suites owned by Tasks 0c7efc37, 7e13a4af, a1dfb6dc; `terminal-websocket-lifecycle`; CI (7ea7804f).
 - SR-002 upstream status (2026-10-17): UC-001 and UC-007 were fixed upstream by other tickets (`e6ba249a96`/`2e70401f18`/`57d388a7fd` and `149bce0be9`) and are in the branch base `66429d6f31`; for them this ticket only verifies AC-001/AC-007. UC-004's ledger part is fixed upstream in `fa49138794`; refresh onto `origin/personal` (`516e592d7b` or later) before committing UC-004. PMU-021 (`project-manager-ux`) is not in scope; it stays with Task a1dfb6dc.
 - Follow-ups (for `/project_task_manager`):
   - FU-1: `tests/e2e/runtime/codex-interrupted-compaction.e2e.test.ts` (Task 0c7efc37) fails for the same reason as UC-003 (`prepareNewAgentRun` removed; use `beginActivation`). 0c7efc37 can also drop `team-run-v1-production-upgrade`, fixed here.
   - FU-2: `executeGraphql` in `test-support/live-e2e/test-runtime-bootstrap.mjs` throws `TEST_GRAPHQL_REQUEST_FAILED` without the server's error message, which made every stale-API failure in this ticket opaque. Suggest including the GraphQL error messages (no secrets are in them) in the thrown error. Fits naturally with 7ea7804f.
-  - FU-3: no unit test asserts the flat migration's three-level refusal (REQ-013); UC-006 adds e2e proof, a unit case would be cheaper. Optional.
+  - FU-3: withdrawn (SR-003): the three-level shape is unsupported (the user, remove-nested-task-team DEC-008).
+  - FU-4 (product, from IR-001): when the derived `memory/team_run_history_index.json` is unreadable (not an array), `listWorkspaceRunHistory` and `listCollaborationRootHistory` fail for every run, standalone included, across restarts, until the file is fixed by hand. The data is intact and the index is derived. This is worth a product look against DESIGN.md rule 7 (contain bad data), for example rebuilding the index from admitted packages. Evidence: `evidence/implementation/uc004-warning-case-served-behavior-516e592d7b.txt`.
+  - FU-5 (docs): `autobyteus-server-ts/tests/fixtures/app-data-migrations/team-run-execution-tree-v1/README.md` claims a V1 package-schema suite validates every case, but no suite enumerates them.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -60,7 +62,7 @@ Update each failing test to the current product contract, through public APIs an
 | BEH-003 | Contract | REQ-003 / AC-003 | `beginActivation`, GraphQL | — | harness updated | DS-003 |
 | BEH-004 | Operational | REQ-004 / AC-004 | startup chain | ends in Org family | expectations to end state | DS-004 |
 | BEH-005 | Operational | REQ-005 / AC-005 | Memory Sync | flat Team only | fixture updated | DS-005 |
-| BEH-006 | Operational | REQ-006 / AC-006 | startup chain, `runAppDataMigration` | one-level converts; three-level refused | cases split | DS-004 |
+| BEH-006 | Operational | REQ-006 / AC-006 (withdrawn SR-003) | — | suite removed upstream | none | — |
 | BEH-007 | Contract | REQ-007 / AC-007 | history projection GraphQL | admission required | seeding updated | DS-006 |
 | BEH-008 | System | REQ-008 / AC-008 | `beginPreparation` | — | harness updated | DS-003 |
 | BEH-009 | User | REQ-009 / AC-009 | run settings page | new operations | fixture updated | DS-007 |
@@ -241,8 +243,8 @@ N/A — no shared structure added.
 | `autobyteus-server-ts/tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts` | Error-runtime lifecycle | Modify: replace `prepareNewAgentRun(...)` with `beginActivation({ kind: "new", runId, config }).prepare()` and publish the candidate (mirror `tests/integration/agent-execution/agent-run-manager.integration.test.ts:138`); release the process instance in cleanup that runs on failure. |
 | `autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts` | released upgrade | Modify: assert flat-families migration status and the AgentOrg V1 end state (`agent_orgs/<id>/agent_org_run_execution_tree.json`, retired Team files gone), read history/projection/restore through Org APIs, the ledger-row derivation is already done upstream in `fa49138794` (on `origin/personal`, not yet in the branch): refresh the branch onto `origin/personal` and build on it, do not re-implement it; keep warning isolation, retry and relaunch immutability. |
 | `autobyteus-server-ts/tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts` | cross-process sync | Modify: replace `writeCurrentNestedTeamPackage` with a current flat Team package (member directly under the root); drop the nested-layout conflict/retained assertions; keep conflict and read-back for the flat Team. |
-| `autobyteus-server-ts/tests/e2e/run-history/nested-team-history-restart.e2e.test.ts` | released nested history | Modify: case 1 on a one-level released fixture (reads via Org APIs, after startup and restart); case 2 manual retry then restart (flat migration is `STARTUP_ONLY`) then Org reads; case 3 three-level fixture (`case-003-nested-task-team`) → flat migration `FAILED` with the invariant, Team tree bytes unchanged by it, health ok. |
-| `autobyteus-server-ts/tests/fixtures/app-data-migrations/team-run-execution-tree-v1/<new one-level case>` (only if no existing case fits) | released one-level nested shape | Add: derived from case-003 by removing the deeper `/qa/automation` Team and its task references, keys unchanged; README updated. |
+| `autobyteus-server-ts/tests/e2e/run-history/nested-team-history-restart.e2e.test.ts` | — | **Withdrawn (SR-003)**: deleted upstream by remove-nested-task-team (user decision DEC-008); no change in this ticket |
+| (no new released fixture) | — | Withdrawn with UC-006 (SR-003) |
 | `autobyteus-server-ts/tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts` | projection | Modify: team seeding writes `task_delegation_records.json` and `team_communication_messages.json` (current empty shapes, as `memory-sync-multiprocess` already does) and admits `agent_team`; standalone seeding (both writers, incl. line ~571) admits `agent`. |
 | `autobyteus-server-ts/tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts` | skill loading | Modify: `factory.beginPreparation({ kind: "new", runId, config }).prepare()`; release through the preparation/backend terminate. |
 | `autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs` (+ `fixtures/existing-run-model-config.page.vue` if needed) | settings probe | Modify: answer `DelegatedLaunchModelOptions` and `GetAgentRunCollaboration` with current shapes (from `autobyteus-web/generated/graphql.ts`/the server schema). |

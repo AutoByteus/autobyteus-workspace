@@ -3,14 +3,14 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-003`
 - Package identifier: `baseline-e2e-probe-repair`
 - Request / ticket: Project Task `6834441c` — Fix the pre-existing failing server e2e suites and web probes found in the collaboration-model ticket (test-only)
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`)
 - Requirements owner: Solution Designer
 - Date: 2026-10-17
-- Approved by and reference: `Solution Designer within the direction (user informed)`; reference: Solution Designer conversation message of 2026-10-17 informing the user of the decisions below (all items are stale tests; no product defect; two removed-feature expectations dropped with reasons).
-- Exact approved requirements baseline / solution revision: this document at `SR-001`.
+- Approved by and reference: `Solution Designer within the direction (user informed)`; reference: Solution Designer conversation message of 2026-10-17 informing the user of the decisions below (all items are stale tests; no product defect; two removed-feature expectations dropped with reasons). SR-003 re-approval: Solution Designer within the direction (the Task allows "removed with a stated reason"; the removal itself was the user's decision in remove-nested-task-team DEC-008), user informed in the Solution Designer conversation, 2026-10-17.
+- Exact approved requirements baseline / solution revision: this document at `SR-003` (SR-001 baseline; SR-003 withdraws UC-006/REQ-006/AC-006 and records the UC-004 warning-case classification).
 - Behavior-defining supplements and their approved versions: None.
 
 ## Problem And Desired Outcome
@@ -54,7 +54,7 @@
 | UC-003 | Repair `agent/standalone-error-termination-lifecycle.e2e.test.ts` | SCN-003 |
 | UC-004 | Repair `app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts` (also listed in Task 0c7efc37) | SCN-004 |
 | UC-005 | Repair `memory-sync/memory-sync-multiprocess.e2e.test.ts` | SCN-005 |
-| UC-006 | Repair `run-history/nested-team-history-restart.e2e.test.ts` | SCN-006, SCN-007 |
+| UC-006 | **Withdrawn (SR-003).** `run-history/nested-team-history-restart.e2e.test.ts` was deleted upstream by `remove-nested-task-team` (merge `8a8d322144`): the user stated no install holds the retired nested shape (that ticket's DEC-008, REQ-003, AC-001). Its supported one-level continuity is covered by UC-004; layout-migration retry by `tests/unit/app-data-migrations/team-agent-memory-layout-app-data-migration.test.ts`; `runAppDataMigration` manual retry by `remove-built-in-project-task-manager-startup.e2e.test.ts`. | SCN-006, SCN-007 |
 | UC-007 | Repair `run-history/recent-run-projection-graphql.e2e.test.ts` | SCN-008 |
 | UC-008 | Repair `runtime/configured-skill-on-demand-loading.e2e.test.ts` | SCN-009 |
 | UC-009 | Repair web probe `existing-run-model-config` | SCN-010 |
@@ -95,7 +95,7 @@
 | REQ-003 | `standalone-error-termination-lifecycle` MUST prepare and publish its run through `AgentRunManager.beginActivation`, and each test MUST release the process manager instance even when it fails, so one failure cannot cascade. | BEH-003 | High | API removed | Task direction |
 | REQ-004 | `team-run-v1-production-upgrade` MUST assert the current end state of the startup migration chain for each released root (Org-like roots as AgentOrg V1 under `agent_orgs/`, served through the Org history/projection/restore APIs) and MUST NOT hard-code the number of registered migrations. Its no-loss, health, new-work, warning-isolation, retry and relaunch-immutability assertions MUST be kept. | BEH-004 | Critical | Data-continuity proof for released data | DEC-002 |
 | REQ-005 | `memory-sync-multiprocess` MUST seed only current-shape packages (flat Team V2, Agent-only members) and keep proving cross-process sync, conflict handling and read-back by explicit source for them. Nested-layout repair expectations that need a Team inside a Team MUST be dropped with the reason stated. | BEH-005 | High | Current Team V2 rejects nested Teams | DEC-003 |
-| REQ-006 | `nested-team-history-restart` MUST (a) prove a supported one-level released nested history moves to canonical layout, converts through the full chain and is readable through the current public API after startup and after restart; (b) prove the manual-retry path, including the restart that runs the startup-only flat migration; (c) prove that a three-level released history is refused by the flat migration before it mutates the package, with the server healthy. Released fixtures MUST keep the released keys and shapes (TESTING.md migrations rule). | BEH-006 | High | Supported continuity plus approved refusal | DEC-004 |
+| REQ-006 | **Withdrawn (SR-003)**: the suite was removed upstream with a stated reason (see UC-006). No replacement suite: SCN-006 is covered by REQ-004/AC-004; SCN-007 is now `Technically Possible but Unsupported` (no install holds the shape, the user via remove-nested-task-team DEC-008). | BEH-006 | — | Removed upstream with stated reason | DEC-009 |
 | REQ-007 | `recent-run-projection-graphql` MUST seed complete current packages and admit them the way production writers do, keeping every projection, paging, cursor and archive assertion. | BEH-007 | High | Admission introduced 2026-09-27 | DEC-005 |
 | REQ-008 | `configured-skill-on-demand-loading` MUST build its backend through the factory's public preparation entry. | BEH-008 | High | Private signature changed | Task direction |
 | REQ-009 | The three web probes MUST pass: `existing-run-model-config` and `interrupt-result-presentation` fixtures MUST answer every GraphQL operation and serve every WebSocket the page reaches with current shapes; `interrupt-result-presentation` MUST have a `test:e2e:interrupt-result-presentation` script; R03 MUST provoke a real or boundary-injected server rejection that client readiness cannot pre-empt and keep its AC-003 assertions. | BEH-009, BEH-010, BEH-011 | High | Stale harnesses | DEC-006, DEC-007 |
@@ -112,7 +112,7 @@
 | AC-003 | REQ-003 | BEH-003 / SCN-003 | — | Both tests pass; each passes alone too | — | `vitest run`, plus `-t` per test |
 | AC-004 | REQ-004, REQ-011 | BEH-004 / SCN-004 | — | All 4 tests pass with Org-family end-state assertions and registry-derived ledger expectations | Any lost content → stop, report | `vitest run` |
 | AC-005 | REQ-005 | BEH-005 / SCN-005 | — | Suite passes with current-shape packages | — | `vitest run` |
-| AC-006 | REQ-006, REQ-011 | BEH-006 / SCN-006, SCN-007 | — | Supported one-level case, manual-retry-with-restart case and three-level refusal case pass | — | `vitest run` |
+| AC-006 | REQ-006 | BEH-006 | — | **Withdrawn (SR-003).** Verification: `nested-team-history-restart.e2e.test.ts` absent on the base and branch; the removal reason is recorded in `tickets/done/remove-nested-task-team/`. | — | file absence + record review |
 | AC-007 | REQ-007 | BEH-007 / SCN-008 | — | All 9 tests pass | — | `vitest run` |
 | AC-008 | REQ-008 | BEH-008 / SCN-009 | — | Both tests pass | — | `vitest run` |
 | AC-009 | REQ-009 | BEH-009 / SCN-010 | Nuxt prepared, Chrome | `existing-run-model-config` probe: 0 failures, no browser errors, cleanup receipt | — | probe with fresh `--output-dir` |
@@ -130,7 +130,7 @@
 | SCN-004 | Operational | Upgrading user | Start a new build on released TeamRun V1 data | Server startup | Released data | migrations → serve history → new work → relaunch | No loss; history and new work available; second start changes nothing | Warning/failure isolation; retry on restart | Supported Normal | BEH-004 | REQ-004 / AC-004 |
 | SCN-005 | Operational | User with two nodes | Sync memory between processes | Memory Sync GraphQL/REST | Two servers | configure → sync → read imported | Imported memory readable by source | Conflict handling | Supported Normal | BEH-005 | REQ-005 / AC-005 |
 | SCN-006 | Operational | Upgrading user | Start on released one-level nested Team history | Server startup | Released data | layout repair → V2 → Org conversion → read → restart | Readable via current API, stable after restart | Manual retry + restart | Supported Normal | BEH-006 | REQ-006 / AC-006 |
-| SCN-007 | Operational | Upgrading user | Start on released three-level history | Server startup | Released data (pre-v1.4.70 builds allowed it) | layout repair → flat migration refuses | Server healthy; package not mutated by the flat migration; invariant reported | — | Supported Explicit Edge (flat-Orgs REQ-013/AC-008) | BEH-006 | REQ-006 / AC-006 |
+| SCN-007 | Operational | Upgrading user | Start on released three-level history | Server startup | — | — | — | — | **Technically Possible but Unsupported (SR-003)**: no install holds the retired nested shape (the user, remove-nested-task-team DEC-008) | remove-nested-task-team | — |
 | SCN-008 | Contract | Web client | Read run projection and trace pages | GraphQL | Admitted runs | projection → pages | Correct windows, cursors, archive untouched | Cursor rejected for another subject | Supported Normal | BEH-007 | REQ-007 / AC-007 |
 | SCN-009 | System | Native runtime | Start a run with configured skills | Backend preparation | Installed skills | prepare → tools/skills catalog → read SKILL.md | Explicit skill reads | — | Supported Normal | BEH-008 | REQ-008 / AC-008 |
 | SCN-010 | User | User | Edit an existing run's model settings | Web UI | Saved run | open settings → change → save | Correct config | — | Supported Normal | BEH-009 | REQ-009 / AC-009 |
@@ -146,7 +146,7 @@
 
 | Quality ID | Related IDs | Area | Requirement | Conditions | Verification |
 | --- | --- | --- | --- | --- | --- |
-| QR-001 | AC-001..AC-008 | Reliability | Each repaired suite passes in a clean environment (TESTING.md) twice in a row | `env -i PATH HOME=<tmp> TMPDIR` | two consecutive runs |
+| QR-001 | AC-001..AC-005, AC-007, AC-008 | Reliability | Each repaired suite passes in a clean environment (TESTING.md) twice in a row | `env -i PATH HOME=<tmp> TMPDIR` | two consecutive runs |
 | QR-002 | AC-011 | Operability | R03 makes no paid model inference | — | case design review |
 
 ## Data Continuity And Acceptable Loss
@@ -184,6 +184,8 @@
 | DEC-006 | How should R03 provoke a server rejection? | Client readiness now pre-empts deletion | Real server-only cause; network-boundary injection of the launch mutation response; assert only the new client block | Prefer a real server-side cause the client cannot see. If none exists cheaply, inject the rejection at the GraphQL boundary of the launch mutation only (documented in the case), since R03's subject is the page's failure presentation, not server validation (covered by server tests). Do not just assert the new block: it would drop AC-003 coverage. | Solution Designer | Decided |
 | DEC-007 | Add the missing probe script? | TESTING.md: probes are found via their script | Add / leave | Add `test:e2e:interrupt-result-presentation`; one line, in the probe's own fix commit. | Solution Designer | Decided |
 | DEC-008 | Absorb `codex-interrupted-compaction` (same cause, Task 0c7efc37)? | Scope | Absorb / leave | Not in this Task's list; leave to 0c7efc37 and tell the Project Task Manager the cause is the same. | Solution Designer | Decided |
+| DEC-009 | `nested-team-history-restart` was deleted upstream after SR-001; replace or withdraw UC-006? | Requirement Gap from IR-001 | Recreate the suite; replace it with another suite; withdraw | The Task allows "removed with a stated reason", and a user decision removed it. Its supported parts are covered elsewhere (UC-004 for one-level continuity; a unit test for layout migration; an e2e for manual retry). Recreating it would contradict remove-nested-task-team AC-001 (no nested fixtures outside migrations). **Withdraw.** | Solution Designer (removal decided by the user upstream) | Decided |
+| DEC-010 | UC-004 warning case: the seeded `team_run_history_index.json` is not an array, and the flat migration fails closed, leaving that root unreadable. Defect? | REQ-011 gate | IR-001 evidence: no released writer produced that file (atomic array writes from `4fb78f8646` through v1.4.69); the flat-Orgs design fails closed on an unreadable required structure (`RESTART_TO_RETRY`) | Synthetic corruption outside the supported population, so not a defect. Accept the updated assertions: fail closed, V2 package byte-identical, no Org, index bytes kept, new work admitted, restart retries. The wider effect (an unreadable derived index fails every history list) goes to follow-up FU-4. | Solution Designer | Decided |
 
 ## Traceability
 
@@ -194,7 +196,7 @@
 | REQ-003 | UC-003 | BEH-003 | AC-003 | SCN-003 | notes |
 | REQ-004 | UC-004 | BEH-004 | AC-004 | SCN-004 | notes |
 | REQ-005 | UC-005 | BEH-005 | AC-005 | SCN-005 | notes |
-| REQ-006 | UC-006 | BEH-006 | AC-006 | SCN-006, SCN-007 | notes |
+| REQ-006 (withdrawn) | UC-006 | BEH-006 | AC-006 (withdrawn) | SCN-006, SCN-007 | remove-nested-task-team |
 | REQ-007 | UC-007 | BEH-007 | AC-007 | SCN-008 | notes |
 | REQ-008 | UC-008 | BEH-008 | AC-008 | SCN-009 | notes |
 | REQ-009 | UC-009..UC-011 | BEH-009..BEH-011 | AC-009..AC-011 | SCN-010..SCN-012 | notes |

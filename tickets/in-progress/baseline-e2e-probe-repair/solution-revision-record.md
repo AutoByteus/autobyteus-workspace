@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Mixed | Project Task 6834441c (initial baseline) | N/A | N/A | Requirements Approved; Design Ready | BEH-001..BEH-011; REQ-001..REQ-012; AC-001..AC-012 | Architecture Design Complete (Medium / Low) |
 | SR-002 | Evidence | PTM message 2026-10-17 (task-keys-and-dependencies finding) | N/A | Approved / Ready | Approved (unchanged) / Ready | BEH-001, BEH-004, BEH-007; UC-001, UC-004, UC-007 | Upstream overlap recorded; implementation refreshes base; no re-approval |
+| SR-003 | Requirements | IR-001 Requirement Gap (implementation engineer, 2026-10-17) | IR-001 UC-006 gap; REQ-011 warning-case classification | Approved (SR-001) / Ready | Approved (SR-003) / Ready | UC-006, REQ-006, AC-006, SCN-007; DEC-009, DEC-010 | UC-006 withdrawn (removed upstream with a stated reason); warning case accepted as not a defect |
 
 ## Revision Entries
 
@@ -46,3 +47,21 @@
 - Handoff: implementation engineer told to refresh onto `origin/personal`, keep `fa49138794`, drop its duplicate ledger change, and treat UC-001/UC-007 as verify-only. PTM told: no duplication; PMU-021 stays in a1dfb6dc; 0c7efc37 can drop `team-run-v1-production-upgrade`.
 - Remaining gaps: RSK-001 / the UC-004 warning-case finding (the flat migration fails on the seeded invalid history index) is being investigated by implementation under REQ-011. It comes back to the Solution Designer if it is a product defect.
 - Next action: implementation continues.
+
+### SR-003 — UC-006 withdrawn; UC-004 warning case classified
+
+- Phase and classification: `Requirement Gap` (scope reduced to match the base).
+- Trigger: IR-001 from the Implementation Engineer: `implementation-handoff.md`, Routing Classification and Known Risks.
+- Finding IDs: IR-001 UC-006 Requirement Gap; the IR-001 REQ-011 classification of the UC-004 warning case.
+- Prior status: requirements Approved at SR-001, design Ready (SR-002).
+- Current status: requirements Approved at SR-003; design Ready.
+- IDs affected: UC-006, REQ-006, AC-006 withdrawn; SCN-007 reclassified `Technically Possible but Unsupported`; DEC-009 and DEC-010 added; QR-001 scope adjusted; follow-up FU-3 withdrawn, FU-4 and FU-5 added.
+- Evidence: `nested-team-history-restart.e2e.test.ts` deleted upstream by remove-nested-task-team (merge `8a8d322144`; `tickets/done/remove-nested-task-team/requirements-doc.md` DEC-001 (e), DEC-008, REQ-003, AC-001; its api-e2e-coverage-investigation lists the removal). The remaining coverage: UC-004 (one-level continuity), `tests/unit/app-data-migrations/team-agent-memory-layout-app-data-migration.test.ts`, `tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts` (`runAppDataMigration`). UC-004 warning-case evidence: `evidence/implementation/uc004-warning-case-*.txt`.
+- Sections changed: requirements Document Status, UC-006, REQ-006, AC-006, SCN-007, Decisions (DEC-009, DEC-010), Traceability, QR-001; design-spec revision ID, Change Scope (in-scope line, follow-ups), behavior map BEH-006, the UC-006 and fixture rows of the file mapping.
+- Intended behavior changed: product `No`; ticket scope `Yes` (one suite withdrawn, as the Task's done-criteria allow).
+- Approval: Solution Designer within the direction (the Task allows "removed with a stated reason"; the removal itself was the user's decision upstream). User informed in the Solution Designer conversation, 2026-10-17. Baseline: `requirements-doc.md` at SR-003.
+- Design/review basis: no architecture review on the direct route. Implementation IR-001 stays valid for every other item.
+- Classification: unchanged, `Medium` / `Low`.
+- Handoff: `handoff-sr-003.md`.
+- Remaining gaps: none blocking.
+- Next action: Implementation Engineer updates its handoff to SR-003 and continues on its route to API/E2E.
