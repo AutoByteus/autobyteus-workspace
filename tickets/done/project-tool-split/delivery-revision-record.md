@@ -36,3 +36,9 @@
   - FU-1 and FU-2 are owned elsewhere. FU-2 must also move `autobyteus-web/tests/e2e/team-status-live-probe.mjs` off the old name.
 
 #### Finalization refs (appended after the merge was pushed)
+
+- Ticket branch: commit `5c45e9de8d` (archive), pushed as `origin/codex/project-tool-split`.
+- Target recheck after verification: `origin/personal` was still `e579e82b7f`. Not advanced; no re-integration needed.
+- Finalization: `finalize/project-tool-split` from `origin/personal`, `--no-ff` merge `98e44053b7` (tree identical to the ticket branch). Hygiene and licensing pass on the merged state. Fetched and checked again, then pushed: `origin/personal` `e579e82b7f..98e44053b7`.
+- Release: none (no tag, no workflows triggered).
+- Cleanup: after this record commit is pushed, remove the worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split` and the local branches `codex/project-tool-split` and `finalize/project-tool-split`. Confirmed in the terminal message. The untracked `*/dist/` build output goes with the worktree.
