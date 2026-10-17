@@ -8,12 +8,13 @@
   - `implementation-handoff.md` (IR-003, § CRR-003 Resolution), `implementation-revision-record.md`, `implementation-evidence/`;
   - `code-review-report.md` (CRR-004 Pass, § Round 4), `code-review-revision-record.md`.
 - Coverage investigation: `api-e2e-coverage-investigation.md` (§ Round 2 Delta); ledger: `api-e2e-test-case-ledger.md`; revision record: `api-e2e-revision-record.md`.
-- Current API/E2E Revision ID: `API-REV-002`; round 2; trigger CRR-004 Pass; prior round API-REV-001 (Fail, APE-001).
-- Code under test: `codex/active-run-skill-update-notice` at `f181b9b13`:
-  - fix `53074d2ac`;
-  - docs `f181b9b13`;
-  - on top of the API/E2E test commit `c9e100778` and the product at `4bd93a32f`.
-- Evidence: round 1 in `api-e2e-evidence/`; round 2 in `api-e2e-evidence/rerun/`.
+- Current API/E2E Revision ID: `API-REV-003`; round 3; trigger CRR-006 Pass (delivery re-entry DR-001); prior round API-REV-002 (Pass, 96%).
+- Code under test: `codex/active-run-skill-update-notice` at `141268a74`:
+  - IR-004 `f977849b2` (DR-001) plus docs;
+  - on delivery head `98360b8a3`, which merges `origin/personal@a609de982` (web only) and the docs sync;
+  - plus this round's test commit `06c4a62f1`.
+- Upstream additions: `code-review-report.md` § Round 5 (CRR-006), `implementation-handoff.md` § DR-001 Resolution (IR-004), `release-deployment-report.md`, `delivery-revision-record.md`, `api-e2e-test-review-report.md`.
+- Evidence: round 1 in `api-e2e-evidence/`; round 2 in `api-e2e-evidence/rerun/`; round 3 in `api-e2e-evidence/round3/`.
 
 ## Routing Classification
 
@@ -27,6 +28,30 @@
   - Linux inotify measured (new);
   - a proportional rerun of the changed-detection paths.
 - Round-1 evidence for boundaries the delta does not touch remains valid.
+
+## Round 3 (API-REV-003): DR-001 Seen-Record Write Fix
+
+The fix:
+- Seen-record writes go only into an existing memory folder.
+- A missing folder is retried while the run is tracked (1 s, 5 s, 15 s, then 60 s).
+- Release cancels writing; `close()` awaits it.
+
+| Case | Requirement | Boundary | Mode | Result | Key Observation |
+| --- | --- | --- | --- | --- | --- |
+| R3-001 | — | build | typecheck, build | Pass | clean |
+| R3-002 | DR-001 teardown flake; IR-004 cases | tracker and store | notice unit + integration ×5 | Pass | 37/37 in each of 5 consecutive runs; no `ENOTEMPTY` |
+| R3-003 | AC-003, SUN-E2E-002 | record-dependent restore at the wire | gated scripted AGY ×2 | Pass | 5/5 ×2 |
+| R3-004 | AC-003, DR-001 | live runtimes whose folder appears with the first trace | live Codex and Claude, new durable case | Pass | 4/4. The record was on disk when the first turn ended. Terminate → change → continue gave 1 notice and the new codeword. `deleteStoredRun` → the folder stayed absent 22 s later |
+| R3-005 | close order, tracker | server | `test:unit` | Pass | 683 files / 5400 tests |
+| R3-006 | AC-003, DR-001 on AutoByteus | full product, UI | isolated desktop, keys via `pnpm secrets:import` | Pass | `gpt-5.5`: RS-REV-1. Edit while stopped → continue: 1 notice, re-read, RS-REV-2. UI delete (with confirmation) removed the folder at once; a skill edit afterwards; folder not re-created in 75 s |
+
+- Execution revision (user, 2026-10-17):
+  - Codex has no token budget left, so later live work uses Claude and AutoByteus; earlier Codex results stand.
+  - Keys go only through the importer into the test vault.
+  - An AutoByteus live-suite attempt that took its key from the environment was stopped and not counted.
+  - The imported Anthropic key returned HTTP 400 (credit balance too low). That is an account limit, not a product failure, so the desktop run used OpenAI `gpt-5.5` on the AutoByteus runtime.
+- Test-side note: my first live attempt failed to transform. A `**/` inside my doc comment closed it; I fixed it before any test ran.
+- Observation: AutoByteus creates the run's memory folder at run start, so the record is written right away. Codex and Claude depend on the retry path, and the record was in place by the end of their first turn.
 
 ## Prior Failure Resolution
 
@@ -117,7 +142,9 @@
 | `tests/e2e/runtime/skill-update-notice-live.e2e.test.ts` | Updated (Grok) | API/E2E, `c9e100778` | Pass |
 | `tests/fixtures/agy-failure-cli.mjs` | Updated (`ECHO_INPUT`) | API/E2E, `c9e100778` | Pass |
 | `tests/unit/skill-update-notices/skill-folder-watcher.test.ts` | Updated: per-folder fakes; a real-chokidar descriptor-release test | implementation, `53074d2ac` | Pass |
-| `tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts` | Updated: open-watch accounting; R-5 closes on run end | implementation, `53074d2ac` | Pass |
+| `tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts` | Updated: open-watch accounting; R-5 closes on run end (`53074d2ac`); 3 DR-001 cases, fakes create run memory folders (`f977849b2`) | implementation | Pass (×5) |
+| `tests/unit/skill-update-notices/skill-update-notice-parts.test.ts` | Updated: 2 store cases (DR-001) | implementation, `f977849b2` | Pass |
+| `tests/e2e/runtime/skill-update-notice-live.e2e.test.ts` | Updated: restore-and-delete live case | API/E2E, `06c4a62f1` | Pass (Codex, Claude) |
 
 - No new durable test from API/E2E in round 2. The implementation's real-chokidar test now guards the defect on macOS. Linux release was proven here by a temporary probe; a Linux CI run of that unit test would assert only the closes (noted by the code reviewer).
 
@@ -163,9 +190,16 @@
 ## Latest Authoritative Result
 
 - Result: `Pass`
-- Final validation confidence: 96%
-- Broader validation: `Required`, executed (round 1: AC-010 journey, restart; round 2: release, notice and re-watch on desktop, plus Linux)
-- Critical acceptance criteria lacking direct proof: none
+- Final validation confidence: 96%. Every category ≥ 93%. The DR-001 path was proven on Codex, Claude (live) and AutoByteus (desktop).
+- Broader validation: `Required`, executed in every round:
+  - round 1: AC-010 journey, restart;
+  - round 2: handle release, Linux;
+  - round 3: AutoByteus restore and delete on desktop.
+- Critical acceptance criteria lacking direct proof: none.
+- Residual risks:
+  - Grok was not rerun in round 3;
+  - the 60 s steady-state retry is exercised only with injected delays;
+  - accepted limitation: no record for a run whose folder never appears while it is tracked.
 - Next: proportional test-code review by the code reviewer of:
-  - API/E2E `c9e100778`;
-  - the IR-001…IR-003 durable test changes, including the real-chokidar watcher test.
+  - the IR-004 test changes;
+  - my `06c4a62f1`.

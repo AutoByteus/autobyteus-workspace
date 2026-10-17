@@ -12,7 +12,7 @@
 - Code Review Report: `…/code-review-report.md` (CRR-004 Pass, § Round 4); Code Review Revision Record: `…/code-review-revision-record.md`
 - Delivery Revision Record: N/A
 - API/E2E Revision Record: `…/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-002`
+- Current API/E2E Revision ID: `API-REV-003`
 - API/E2E Test-Case Ledger: `…/api-e2e-test-case-ledger.md`
 - Current Investigation Round: 2
 - Trigger: CRR-004 Pass (APE-001 / CR-005 resolved by `53074d2ac`) from `/software_engineering_team/code_reviewer`
@@ -183,3 +183,38 @@ Critical ACs: AC-001 (REQ-001/003/004/007), AC-007/AC-010 (REQ-011).
 | MEAS-002 desktop | the round-1 failing measurement, plus notice and re-watch in the product | isolated instance at `f181b9b13`; the same 5 real sources read-only plus a test-owned source; two `ALL_INSTALLED` chats each followed by a skill edit and a UI terminate; `lsof` sampling |
 
 - Not rerun (unaffected by the delta): AC-010 PR-merge journey, app-restart case, Claude/Grok/AutoByteus live, web, autobyteus-ts, integration suite beyond the notice files.
+
+## Round 3 Delta (API-REV-003, delivery re-entry DR-001)
+
+- Trigger: CRR-006 Pass (round 5) from `/software_engineering_team/code_reviewer`. The DR-001 fix is implementation-owned, so it returns through API/E2E before delivery re-integration.
+- Code under test: `141268a74`. Fix: IR-004 `f977849b2`, on delivery head `98360b8a3`, which merges `origin/personal@a609de982` (web only) and the docs sync.
+- What changed:
+  - `SeenSkillVersionsStore.write` never creates the run's memory folder (`stat`, temp file opened `wx`) and returns `written | folder_missing | aborted`.
+  - `RunSkillTracker` serializes a run's writes and retries `folder_missing` while the run is tracked (1 s, 5 s, 15 s, then 60 s).
+  - Release stops writing and cancels the retry.
+  - `close()` awaits tracking and writes, with the close order watcher → service → tracker.
+- Boundaries affected:
+  - the seen record's existence and timing for runtimes whose memory folder appears with the first trace (Codex, Claude);
+  - restore after a change (AC-003), which depends on that record;
+  - delete-after-release (no re-created folder);
+  - the integration teardown flake (`ENOTEMPTY`).
+- Not affected: the watcher (round 2), delivery classes, rendering. The web-only merge from `origin/personal` is delivery's integration and is covered by its checks.
+
+| Case | Purpose | Method |
+| --- | --- | --- |
+| R3-001 typecheck + build | — | `typecheck`; `build` |
+| R3-002 notice unit + integration ×5 | flake gone; 3 DR-001 cases and 2 store cases | five consecutive `vitest run tests/unit/skill-update-notices tests/integration/skill-update-notices` |
+| R3-003 roots + transport E2E ×2 | SUN-E2E-002 (copy restore) and AC-003 rely on the record | gated scripted AGY |
+| R3-004 live restore, Codex and Claude (new durable case) | the record appears after the first trace within the retry schedule; terminate → change → continue gives one notice and a re-read; `deleteStoredRun` → the folder stays deleted (22 s, longer than the 1 + 5 + 15 s schedule) | `skill-update-notice-live.e2e.test.ts`, new `it.each`; both live cases run for Codex and Claude |
+| R3-005 server unit | regression of the composition close order and tracker | `test:unit` |
+
+- Durable coverage to add: one live case in `skill-update-notice-live.e2e.test.ts` (the gated live suite). No live test covered restore or delete with a real runtime-created folder.
+- Broader validation: the live runs (R3-004) plus an isolated desktop journey on the AutoByteus runtime (R3-006). That journey uses keys imported with `pnpm secrets:import` from the user-designated source `/Users/normy/.autobyteus/server-data/.env`, because the vitest live suite resets its test database on every run.
+- Execution revision (user direction, 2026-10-17):
+  - Codex has no token budget left, so later live work uses the Claude Agent SDK and AutoByteus runtimes; Codex results recorded before that point stand.
+  - API keys go through the importer into the test vault, never through environment variables.
+  - The AutoByteus live-suite attempt that took its key from the environment was stopped before completion and is not counted.
+
+| Case | Purpose | Method |
+| --- | --- | --- |
+| R3-006 desktop restore and delete on AutoByteus | the same DR-001 path on the AutoByteus runtime, through the UI | `iso-54264-fe7b` built at `141268a74`; importer dry run, then import, then restart; Daily Assistant on AutoByteus `gpt-5.5`; a test-owned skill source; terminate → edit → continue; delete from history in the UI → folder removed; a skill edit after the delete → folder not re-created (75 s) |

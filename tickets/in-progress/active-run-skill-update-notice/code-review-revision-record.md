@@ -11,6 +11,8 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) remains 
 | CRR-003 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-001 APE-001 | Pass | Fail (Local Fix: implementation defect) | CR-005 (new) |
 | CRR-004 | `code-review-report.md` | Implementation Review round 4 / IR-003 (CR-005) | Fail (Local Fix) | Pass | CR-005 resolved |
 | CRR-005 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-002 Pass | Pass (CRR-004) | Pass | None |
+| CRR-006 | `code-review-report.md` | Implementation Review round 5 / delivery re-entry IR-004 (DR-001) | Pass (CRR-004/005) | Pass | None (DR-001 resolved) |
+| CRR-007 | `api-e2e-test-review-report.md` | Proportional test-code review round 2 / API-REV-003 Pass | Pass (CRR-006) | Pass | None |
 
 ## Revision Entries
 
@@ -175,3 +177,69 @@ None (no prior test-review findings). CR-001…CR-005 remain resolved; API/E2E v
   - Linux is proven by a container probe only;
   - application execution scopes are not tracked (C-06, follow-up);
   - R-1 optional cleanup.
+
+### CRR-006 — Delivery re-entry: IR-004 resolves DR-001 (seen-versions writes after release/close); Pass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/active-run-skill-update-notice/tickets/in-progress/active-run-skill-update-notice/code-review-report.md` (§ Round 5; Classification; Latest Authoritative Result)
+- Review entry point and round: Implementation Review, round 5 (delivery re-entry)
+- Review scope: `Targeted Delta Review` (store, tracker, composition close, doc, tests)
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/implementation_engineer`, `implementation-handoff.md` § DR-001 Resolution / `implementation-revision-record.md` IR-004 (`f977849b2`, `141268a74`); delivery finding DR-001 (`release-deployment-report.md`, `delivery-revision-record.md`)
+- Relevant solution revision IDs: SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: API-REV-002 (rerun needed for the fix)
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: `Pass` (CRR-004 implementation; CRR-005 test review)
+- Current authoritative result: `Pass`
+- What changed in the review result and why:
+  - Writes never create the memory folder, stop once the run is released or the subsystem closed, and are serialized and retried only while the run is tracked.
+  - `close()` awaits all of them, and tracking matches on the run object.
+  - Reruns: notices unit + integration ×5 consecutive, 37/37 each; typecheck clean.
+  - C-08 (same-syscall delete race) rejected as artificial timing.
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| DR-001 (delivery) | Open (Local Fix, delivery) | Resolved (source review) | IR-004 | Store `write` guard plus no-create; tracker serialization, retry, cancel on release, awaited close; 3 integration and 2 unit cases (failing on the previous code per the handoff); 5 consecutive passes |
+| CR-001…CR-005 | Resolved | Resolved (unchanged) | IR-002, IR-003 | No regression in reruns |
+
+- New or remaining finding IDs: none open. Non-blocking: R-1, C-06.
+- Material score or classification changes: none (9.3). Large / High unchanged.
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer` (primary); `/software_engineering_team/implementation_engineer` (informational)
+- Remaining risks or uncertainty:
+  - a run whose memory folder never appears while tracked has no record (accepted loss);
+  - the IR-004 test changes wait for proportional review.
+
+### CRR-007 — Proportional test-code review after API-REV-003 (DR-001 re-entry); Pass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/active-run-skill-update-notice/tickets/in-progress/active-run-skill-update-notice/api-e2e-test-review-report.md` (round 2)
+- Review entry point and round: Successful API/E2E test-code review, round 2
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/api_e2e_engineer`, `api-e2e-execution-coverage-report.md` § Round 3 (API-REV-003); `06c4a62f1`; IR-004 test changes
+- Relevant solution revision IDs: SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: `Pass` (CRR-006 implementation; CRR-005 test review round 1)
+- Current authoritative result: `Pass` (test review round 2)
+- What changed in the review result and why:
+  - The live restore and delete case uses real triggers and proves REQ-006 and the DR-001 no-re-create rule end to end.
+  - The IR-004 integration and unit cases target the exact DR-001 paths, with fakes now mirroring the platform's folder creation.
+  - Non-blocking notes TN-1 (guard-count coupling) and TN-2 (leftover fake members).
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None (no prior test-review findings).
+
+- New or remaining finding IDs: None. Non-blocking: TN-1, TN-2, R-1, C-06.
+- Material score or classification changes: N/A. Large / High unchanged.
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty:
+  - the 60 s retry steady state is exercised only with injected delays;
+  - Grok was not rerun this round;
+  - Linux is proven by a container probe only;
+  - Codex budget exhausted (live work continues on Claude and AutoByteus).

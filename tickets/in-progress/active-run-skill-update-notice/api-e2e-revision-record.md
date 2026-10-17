@@ -8,6 +8,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code Reviewer / `code-review-report.md` / CRR-002 Pass | SR-003, SR-004, ARCH-REV-003, IR-001, IR-002, CRR-001, CRR-002 | N/A | Fail / 92% (APE-001) |
 | API-REV-002 | Code Reviewer / `code-review-report.md` / CRR-004 Pass (round 4) | IR-003, CRR-003, CRR-004 | Fail / 92% | Pass / 96% |
+| API-REV-003 | Code Reviewer / `code-review-report.md` / CRR-006 Pass (round 5), delivery re-entry DR-001 | DR-001, IR-004, CRR-005, CRR-006 | Pass / 96% | Pass / 96% |
 
 ## Revision Entries
 
@@ -57,3 +58,30 @@ None.
   - Linux is proven by a container probe, not a Linux desktop build;
   - the Linux unit test asserts closes only;
   - application execution scopes are not tracked (C-06 follow-up).
+
+### API-REV-003 — DR-001 re-entry: seen-record writes never outlive release or re-create a folder
+
+- Trigger: `/software_engineering_team/code_reviewer`, CRR-006 (Pass), delivery re-entry for DR-001 (IR-004 `f977849b2`).
+- Code under test: `141268a74`.
+- Durable coverage changed: `06c4a62f1`, a live case in `skill-update-notice-live.e2e.test.ts` (restore after a change; delete from history keeps the folder deleted).
+- Cases:
+  - R3-001 typecheck and build;
+  - R3-002 notice suites ×5;
+  - R3-003 roots and transport ×2;
+  - R3-004 live Codex and Claude;
+  - R3-005 server unit;
+  - R3-006 desktop on AutoByteus with importer-provisioned keys.
+- Execution revision (user, 2026-10-17): no further Codex use; live work on the Claude Agent SDK and AutoByteus; keys only through `pnpm secrets:import` into the test vault.
+
+#### Prior Failure Resolution
+
+No open failures from API-REV-002. DR-001 is a delivery finding, verified here:
+- 5 consecutive notice-suite runs with no `ENOTEMPTY`;
+- restore after a change works on Codex, Claude and AutoByteus;
+- the deleted run's memory folder is not re-created (22 s live; 75 s on desktop, with a skill edit after the delete).
+
+- Result: **Pass, 96%**. New failures: none.
+- Remaining risks:
+  - Grok was not rerun this round;
+  - the unit suite exercises the 60 s retry steady state only with injected delays;
+  - accepted limitation: a run whose folder never appears while tracked has no record.

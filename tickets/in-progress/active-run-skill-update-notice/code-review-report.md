@@ -2,7 +2,7 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review` (round 4, IR-003 / CR-005). Round 3 was an `API/E2E Failure-Origin Review`; rounds 1–2 were `Implementation Review`. Earlier sections are kept for history.
+- Review Entry Point: `Implementation Review` (round 5, delivery re-entry: IR-004 / DR-001). Earlier rounds are kept below for history.
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (Approved SR-003; Solution Designer within the direction, user informed)
 - Investigation Notes Reviewed As Context: `investigation-notes.md`
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md`
@@ -16,13 +16,15 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/active-run-skill-update-notice/tickets/in-progress/active-run-skill-update-notice/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-004`
-- Current Review Round: 4
+- Current Code Review Revision ID: `CRR-006`
+- Current Review Round: 5
 - Review Scope: `Targeted Delta Review`
-- Review Scope Evidence (round >1): IR-003 (`53074d2ac`) changes only `skill-folder-watcher.ts` (the CR-005 owner) and its unit and integration tests. The `SkillFolderWatchFactory` signature is internal to the subsystem (one production factory plus tests). No spine, port or shared contract changed. Round-2 evidence for the other checks is carried forward.
-- Trigger: IR-003 local fix for CR-005 from `/software_engineering_team/implementation_engineer` (`53074d2ac`, `f181b9b13` on API/E2E's `c9e100778`)
-- Prior Review Round Reviewed: 3 (CRR-003, failure-origin Fail, Local Fix)
-- Latest Authoritative Round: 4
+- Review Scope Evidence (round >1): IR-004 (`f977849b2`) changes only `seen-skill-versions-store.ts`, `run-skill-tracker.ts`, `skill-update-notices.ts` (close order), the module doc and the notice tests. No port, spine or shared contract changed; the `AgentRun` side is untouched.
+- Delivery Revision Record Reviewed: `delivery-revision-record.md` (DR-001); `release-deployment-report.md` § Escalation / Reroute
+- Relevant Delivery Revision IDs: DR-001
+- Trigger: IR-004 local fix for DR-001 (a seen-versions write outliving release/close and re-creating a deleted run's memory folder; flaky integration teardown `ENOTEMPTY`) from `/software_engineering_team/implementation_engineer` (`f977849b2`, `141268a74` on delivery head `98360b8a3`)
+- Prior Review Round Reviewed: 4 (CRR-004, Pass); test review CRR-005 Pass
+- Latest Authoritative Round: 5
 - Coverage Investigation Reviewed: `api-e2e-coverage-investigation.md`
 - Execution Coverage Report Reviewed: `api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed: `api-e2e-revision-record.md`
@@ -56,6 +58,28 @@
   - Server `agent-run-input-preface`, `skill-update-notices`, `agent-run-manager`, `agent-run-resource-manager` and `runtime-memory-system-task-notification` unit tests, plus `tests/integration/skill-update-notices`: 8 files, 75 tests pass.
   - Server `typecheck`: clean.
 - Explicit exclusions: the gated live E2E suites (not rerun; reported passing), the AC-010 desktop journey and ACP/Grok live (left to API/E2E).
+
+## Round 5 — DR-001 Delta Verification (IR-004)
+
+- **Store:** `SeenSkillVersionsStore.write(owner, versions, shouldContinue)` returns `written | folder_missing | aborted`.
+  - It never creates the memory folder: the `mkdir` is removed, the folder is checked with `stat`, and the temp file is opened with `wx`, so ENOENT gives `folder_missing`.
+  - `shouldContinue` is checked before the folder check, before the temp write and before the rename.
+  - The temp file is always removed (`finally`).
+- **Tracker:**
+  - A run's writes are serialized (`chain`).
+  - `folder_missing` is retried while the run is tracked (1 s, 5 s, 15 s, then every 60 s; injectable). The reason is sound: external runtimes create the folder with their first trace, which can be after tracking.
+  - `untrackRun` makes `isCurrent` false, cancels the retry and drops the run's write state, so an in-flight write aborts before its next step.
+  - `close()` cancels retries and awaits every held promise.
+  - Tracking now matches on the run object (`tracking: runId → {run, promise}`), so an older tracking cannot install a stale run after release and re-track.
+  - `loadRun` no longer awaits the first write (`void persist`). `whenTracked` therefore resolves on the known state, and later records stay ordered through the chain.
+- **Composition:** `close()` closes the watcher, then the service, then awaits the tracker.
+- **Docs:** `docs/modules/skill_update_notices.md` states the no-create / retry / release rule and the awaited close, matching the code.
+- **Candidate C-08, rejected:** a run-history delete (`rm` of the memory folder) running during the same in-flight temp-file write syscall right after release. The timing is artificial, since a user terminates a run and deletes it seconds apart, and every step after the syscall re-checks the guard and removes the temp file.
+- **Accepted limitation:** a run whose memory folder never appears while tracked has no record; on restore it is treated as "no record" (the approved acceptable loss).
+- **Reruns (round 5):**
+  - Server `vitest run tests/unit/skill-update-notices tests/integration/skill-update-notices` **×5 consecutive**: 37/37 each time (the DR-001 flake did not reproduce).
+  - Server `typecheck`: clean.
+  - Sizes: `run-skill-tracker.ts` 233 and `seen-skill-versions-store.ts` 111 effective lines.
 
 ## Round 4 — CR-005 Delta Verification (IR-003)
 
@@ -350,15 +374,16 @@
 
 ## Classification
 
-- Round 4: N/A (Pass). CR-005 resolved.
+- Round 5: N/A (Pass). DR-001 resolved.
 - History:
+  - round 4: Pass (CR-005);
   - round 3: failure-origin `Local Fix` (CR-005);
-  - round 2: Pass (superseded by round 3);
-  - round 1: `Local Fix` (CR-001…CR-004, resolved).
+  - round 2: Pass;
+  - round 1: `Local Fix` (CR-001…CR-004).
 
 ## Recommended Recipient
 
-- Primary: `/software_engineering_team/api_e2e_engineer`. Rerun APE-001 (probe plus desktop handle samples), then send the test changes for proportional review.
+- Primary: `/software_engineering_team/api_e2e_engineer`. An implementation-owned fix returns through API/E2E: rerun the affected validation (notice integration ×N, the scripted AGY roots and transport E2E that depend on the seen record), then send any test changes for proportional review before delivery re-integration.
 - Informational: `/software_engineering_team/implementation_engineer`.
 
 ## Residual Risks
@@ -369,12 +394,12 @@
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Review Entry Point: `Implementation Review` (round 4, Targeted Delta Review)
-- Supported Product Scenario Gate: `Pass`
+- Review Entry Point: `Implementation Review` (round 5, Targeted Delta Review; delivery re-entry DR-001)
+- Supported Product Scenario Gate: `Pass` (release then delete of a run is a supported normal lifecycle; C-08 rejected)
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.3/10; every category ≥ 9.0
+- Score Summary: 9.3/10; every category ≥ 9.0 (round-4 scores stand; Runtime Correctness 9.2 now also covers the release/close write rule)
 - Failure Origin: N/A
 - Recommended Recipient: `/software_engineering_team/api_e2e_engineer` (primary); `/software_engineering_team/implementation_engineer` (informational)
 - Notes:
-  - Non-blocking R-1 (test-only `tracker` field) and C-06 (application execution scopes not tracked; designer follow-up) remain.
-  - Test code for proportional review after a passing run: API/E2E's `c9e100778` (`agy-skill-update-notice-roots.e2e.test.ts`, Grok live case, `agy-failure-cli.mjs` `ECHO_INPUT`), plus the IR-001…IR-003 durable test changes.
+  - IR-004 test changes (3 integration cases, 2 store unit cases, folder-creating fakes) need proportional test review after the API/E2E rerun.
+  - R-1 and C-06 remain non-blocking.
