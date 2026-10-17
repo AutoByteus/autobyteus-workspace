@@ -14,6 +14,12 @@ const LOCATED_BG = 'rgb(238, 242, 255)';
 const INDIGO_500 = 'rgb(99, 102, 241)';
 const SLATE_300 = 'rgb(203, 213, 225)';
 const LIVE_HIGHLIGHT_MS = 2400;
+/** Where two texts first differ, with a little context on each side (null when equal). */
+const textDiff = (a, b) => {
+  if (a === b) return null;
+  let i = 0; while (i < a.length && i < b.length && a[i] === b[i]) i += 1;
+  return { at: i, lengths: [a.length, b.length], before: a.slice(Math.max(0, i - 120), i + 200), after: b.slice(Math.max(0, i - 120), i + 200) };
+};
 
 /** @param {Record<string, any>} h the probe's helpers */
 export const createTaskLocatorCases = (h) => {
@@ -267,7 +273,17 @@ export const createTaskLocatorCases = (h) => {
     await sleep(800);
     await rightTab(page, 'files').click();
     await until('docked on another tab', async () => !(await page.locator('[data-test="right-side-projects-panel"]').count()), 10000);
-    const centerBefore = await centerText(page); const selectionBefore = await selectionState(page); const treeBefore = await treeSelection(page);
+    // The center is the host's live conversation: read it only after the Manager's tool reply is shown and the text is
+    // stable, so a late reply or status change under load is not mistaken for the locate opening something. Each check
+    // compares with a baseline read just before its own action.
+    const settledCenter = (label) => until(`host conversation settled (${label})`, async () => {
+      const first = await centerText(page);
+      if (!first.includes('CALLED:')) return null;
+      await sleep(1000);
+      return first === await centerText(page) ? first : null;
+    }, 30000);
+    const centerBefore = await settledCenter('before the docked locate');
+    const selectionBefore = await selectionState(page); const treeBefore = await treeSelection(page);
 
     await summaryIn(agentRow(page, s.workers.agent)).click();
     details.first = await located(page, s.tasks.agent, 'docked');
@@ -278,8 +294,10 @@ export const createTaskLocatorCases = (h) => {
     assert(details.highlight.background === LOCATED_BG && details.highlight.boxShadow.includes(INDIGO_500) && details.highlight.animation.startsWith('task-live'),
       'located highlight: #eef2ff wash, inset #6366f1 bar (task-live)', details.highlight);
     await shot(page, 'pmu-021-located-docked');
-    assert((await centerText(page)) === centerBefore && JSON.stringify(await selectionState(page)) === JSON.stringify(selectionBefore)
-      && JSON.stringify(await treeSelection(page)) === JSON.stringify(treeBefore), 'center view and tree selection unchanged', { selectionBefore, after: await selectionState(page) });
+    const centerAfter = await centerText(page); const selectionAfter = await selectionState(page); const treeAfter = await treeSelection(page);
+    assert(centerAfter === centerBefore && JSON.stringify(selectionAfter) === JSON.stringify(selectionBefore)
+      && JSON.stringify(treeAfter) === JSON.stringify(treeBefore), 'center view and tree selection unchanged',
+    { selectionBefore, selectionAfter, treeBefore, treeAfter, centerDiff: textDiff(centerBefore, centerAfter) });
     await sleep(LIVE_HIGHLIGHT_MS + 300);
     details.afterHighlight = await panelState(page);
     assert(details.afterHighlight.located.length === 0, 'highlight ends after 2.4 s', details.afterHighlight);
@@ -323,14 +341,16 @@ export const createTaskLocatorCases = (h) => {
     details.keyboardFocus = await page.evaluate(() => ({ test: document.activeElement?.getAttribute('data-test'), ring: getComputedStyle(document.activeElement).boxShadow }));
     assert(details.keyboardFocus.test === 'workspace-task-worker-task-summary' && details.keyboardFocus.ring.includes(INDIGO_500), 'Tab reaches the summary with the indigo-500 ring', details.keyboardFocus);
     await shot(page, 'pmu-021-summary-keyboard-focus');
-    const selectionBeforeKeys = await selectionState(page);
+    const centerBeforeKeys = await settledCenter('before the keys'); const selectionBeforeKeys = await selectionState(page);
     await page.keyboard.press('Enter');
     await located(page, s.tasks.agent, 'Enter on the summary');
     await agentRow(page, s.workers.temp).focus();
     await page.keyboard.press('Tab');
     await page.keyboard.press(' ');
     await located(page, s.tempTaskId, 'Space on the summary');
-    assert(JSON.stringify(await selectionState(page)) === JSON.stringify(selectionBeforeKeys) && (await centerText(page)) === centerBefore, 'Enter / Space neither open nor toggle the row', await selectionState(page));
+    const selectionAfterKeys = await selectionState(page); const centerAfterKeys = await centerText(page);
+    assert(JSON.stringify(selectionAfterKeys) === JSON.stringify(selectionBeforeKeys) && centerAfterKeys === centerBeforeKeys, 'Enter / Space neither open nor toggle the row',
+      { selectionBeforeKeys, selectionAfterKeys, centerDiff: textDiff(centerBeforeKeys, centerAfterKeys) });
 
     // The choice made by a locate is remembered like a manual pick (reload).
     await summaryIn(agentRow(page, s.workers.agent)).click();
