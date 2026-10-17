@@ -1,0 +1,6 @@
+
+> autobyteus@1.5.5-beta.2 test:e2e:team-status-live /Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-web
+> node tests/e2e/team-status-live-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/tickets/in-progress/remove-nested-task-team/evidence/api-e2e/round2/probes/team-status-live
+
+Team status live probe: Fail. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/tickets/in-progress/remove-nested-task-team/evidence/api-e2e/round2/probes/team-status-live/evidence.json
+ ELIFECYCLE  Command failed with exit code 1.

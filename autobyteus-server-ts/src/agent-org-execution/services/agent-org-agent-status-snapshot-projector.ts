@@ -13,7 +13,7 @@ import type { RootTeamExecutionDirectory } from "../../agent-collaboration/execu
  *
  * The Team directory is intentionally flat for exact identity/lifecycle lookup,
  * while every TeamRun recursively owns the task Teams beneath it. Walking every
- * directory entry would therefore visit nested task-Team leaves more than once.
+ * directory entry would therefore visit the leaves of task Teams delegated beneath a TeamRun more than once.
  */
 export const projectAgentOrgAgentStatusSnapshots = (input: Readonly<{
   tree: AgentOrgRunExecutionTreeSnapshot;

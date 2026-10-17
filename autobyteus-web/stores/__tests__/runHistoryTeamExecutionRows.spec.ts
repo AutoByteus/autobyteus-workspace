@@ -3,8 +3,8 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import {
   buildTestTeamContext,
   testAgentNode,
-  testSubTeamNode,
   testDelegation,
+  testTaskTeamLayout,
 } from '~/test-support/currentTeamTestFixtures';
 import { buildRunHistoryTeamExecutionRows } from '../runHistoryTeamExecutionRows';
 import { buildRunHistoryNavigationProjection, runHistoryMemberIndexKey } from '../runHistoryNavigationProjection';
@@ -26,6 +26,16 @@ const stableRow = (memberAddress: string, children: any[] = [], overrides: Recor
   deleteLifecycle: 'READY',
   children,
   ...overrides,
+});
+
+/** The recorded catalog source of a task Team copy whose only member is its coordinator. */
+const teamSource = (address: string, coordinator: string) => ({
+  kind: 'agent_team' as const, team_definition_id: `${address}-definition`, coordinator_address: coordinator,
+  members: [{ address: coordinator, agent_definition_id: `${coordinator}-definition` }], handoffs: [],
+  default_launch_configuration: {
+    runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null,
+    auto_execute_tools: true, workspace_root_path: null,
+  },
 });
 
 const historyTeam = (children: any[], isActive = true) => ({
@@ -54,32 +64,28 @@ describe('runHistoryTeamExecutionRows current run identities', () => {
     const solution = testAgentNode('/solution_designer', { agentRunId: 'solution-designer-run' });
     const worker = testAgentNode('/worker', { agentRunId: 'worker-run' });
     const reviewLead = testAgentNode('/SoftwareEngineeringTeam/review_lead', { agentRunId: 'review-lead-run' });
-    const softwareTeam = testSubTeamNode('/SoftwareEngineeringTeam', [reviewLead], {
-      teamDefinitionId: 'software-team', teamRunId: 'software-team-run', coordinatorAddress: reviewLead.address,
+    const softwareTeam = testTaskTeamLayout('/SoftwareEngineeringTeam', [reviewLead], {
+      teamDefinitionId: 'software-team', coordinatorAddress: reviewLead.address,
     });
     const context = buildTestTeamContext({
       teamRunId: ROOT,
       coordinatorAddress: solution.address,
-      rootChildren: [solution, worker, softwareTeam],
+      rootChildren: [solution, worker],
       delegations: [
         testDelegation({ delegatorAgentRunId: solution.agentRunId, recipientAddress: worker.address, target: { agentRunId: 'task-agent-run-1' } }),
-        testDelegation({ delegatorAgentRunId: solution.agentRunId, recipientAddress: softwareTeam.address, target: { teamRunId: 'task-team-run-1' } }),
+        testDelegation({ delegatorAgentRunId: solution.agentRunId, recipientAddress: softwareTeam.address, target: { teamRunId: 'task-team-run-1', team: softwareTeam } }),
       ],
     });
     context.view.getAgentContext('task-agent-run-1')!.state.currentStatus = AgentStatus.Running;
     const stableChildren = [
       stableRow(solution.address, [], { agentRunId: solution.agentRunId }),
       stableRow(worker.address, [], { agentRunId: worker.agentRunId }),
-      stableRow(softwareTeam.address, [stableRow(reviewLead.address, [], { agentRunId: reviewLead.agentRunId })], {
-        kind: 'agent_team', teamDefinitionId: 'software-team', teamRunIdForNode: 'software-team-run',
-        coordinatorAddress: reviewLead.address,
-      }),
     ];
 
     const rows = buildRunHistoryTeamExecutionRows(historyTeam(stableChildren) as any, context);
 
     expect(rows.filter((row) => row.kind === 'stable_member').map((row) => row.rowKey)).toEqual([
-      'agent:solution-designer-run', 'agent:worker-run', 'team:software-team-run', 'agent:review-lead-run',
+      'agent:solution-designer-run', 'agent:worker-run',
     ]);
     expect(rows.find((row) => row.agentRunId === 'task-agent-run-1')).toMatchObject({
       kind: 'transient_execution', transientKind: 'task_agent', depth: 0, hasChildren: false, currentStatus: AgentStatus.Running,
@@ -134,45 +140,38 @@ describe('runHistoryTeamExecutionRows current run identities', () => {
   });
 
   it('falls back to configured rows only when no live context exists', () => {
-    const worker = stableRow('/worker', [stableRow('/worker/reviewer')], {
-      kind: 'agent_team', teamDefinitionId: 'worker-team', teamRunIdForNode: 'worker-team-run',
-      coordinatorAddress: '/worker/reviewer',
-    });
-    const rows = buildRunHistoryTeamExecutionRows(historyTeam([worker]) as any);
+    const rows = buildRunHistoryTeamExecutionRows(historyTeam([stableRow('/worker'), stableRow('/reviewer')]) as any);
     expect(rows.map((row) => `${row.kind}:${row.memberAddress}:${row.depth}`)).toEqual([
-      'stable_member:/worker:0', 'stable_member:/worker/reviewer:1',
+      'stable_member:/worker:0', 'stable_member:/reviewer:0',
     ]);
   });
 
-  it('retains settled task-Team descendants and nested task executions for inactive history rows', () => {
+  it('retains settled task-Team descendants and the delegations inside them for inactive history rows', () => {
     const solution = testAgentNode('/solution_designer', { agentRunId: 'solution-designer-run' });
-    const reviewLead = testAgentNode('/SoftwareEngineeringTeam/review_lead', { agentRunId: 'review-lead-run' });
-    const analyst = testAgentNode('/SoftwareEngineeringTeam/research/analyst', { agentRunId: 'analyst-run' });
-    const researchTeam = testSubTeamNode('/SoftwareEngineeringTeam/research', [analyst], {
-      teamDefinitionId: 'research-team', teamRunId: 'research-team-run', coordinatorAddress: analyst.address,
-    });
-    const softwareTeam = testSubTeamNode('/SoftwareEngineeringTeam', [reviewLead, researchTeam], {
-      teamDefinitionId: 'software-team', teamRunId: 'software-team-run', coordinatorAddress: reviewLead.address,
-    });
-    const teamTask = testDelegation({ delegatorAgentRunId: solution.agentRunId, recipientAddress: softwareTeam.address, target: { teamRunId: 'settled-task-team-run' } });
-    const nestedTask = testDelegation({ delegatorAgentRunId: 'settled-review-lead-run', recipientAddress: reviewLead.address, target: { agentRunId: 'settled-nested-agent-run' } });
+    const reviewLead = '/SoftwareEngineeringTeam/review_lead';
+    // A settled task Team whose lead delegated an Agent and a further task Team (Teams are flat).
     const context = buildTestTeamContext({
       teamRunId: ROOT,
       coordinatorAddress: solution.address,
-      rootChildren: [solution, softwareTeam],
+      rootChildren: [solution],
       isActive: false,
-      delegations: [teamTask, nestedTask],
       taskExecutions: [{
-        kind: 'task_team', address: softwareTeam.address, team_run_id: 'settled-task-team-run',
+        kind: 'task_team', address: '/SoftwareEngineeringTeam', team_run_id: 'settled-task-team-run',
         delegator_agent_run_id: solution.agentRunId, started_at: createdAt,
-        members: [
+        source: teamSource('/SoftwareEngineeringTeam', reviewLead),
+        members: [{
+          kind: 'task_team_agent', address: reviewLead,
+          agent_run_id: 'settled-review-lead-run', platform_agent_run_id: null,
+        }],
+        task_executions: [
           {
-            kind: 'task_team_agent', address: reviewLead.address,
-            agent_run_id: 'settled-review-lead-run', platform_agent_run_id: null,
+            kind: 'task_agent', address: reviewLead, agent_run_id: 'settled-nested-agent-run',
+            platform_agent_run_id: null, delegator_agent_run_id: 'settled-review-lead-run', started_at: createdAt,
           },
           {
-            kind: 'task_team', address: '/SoftwareEngineeringTeam/research',
-            team_run_id: 'settled-research-team-run',
+            kind: 'task_team', address: '/SoftwareEngineeringTeam/research', team_run_id: 'settled-research-team-run',
+            delegator_agent_run_id: 'settled-review-lead-run', started_at: createdAt,
+            source: teamSource('/SoftwareEngineeringTeam/research', '/SoftwareEngineeringTeam/research/analyst'),
             members: [{
               kind: 'task_team_agent', address: '/SoftwareEngineeringTeam/research/analyst',
               agent_run_id: 'settled-analyst-run', platform_agent_run_id: null,
@@ -180,50 +179,27 @@ describe('runHistoryTeamExecutionRows current run identities', () => {
             task_executions: [],
           },
         ],
-        task_executions: [{
-          kind: 'task_agent', address: reviewLead.address, agent_run_id: 'settled-nested-agent-run',
-          platform_agent_run_id: null, delegator_agent_run_id: 'settled-review-lead-run', started_at: createdAt,
-        }],
       }],
     });
-    const stableChildren = [
-      stableRow(solution.address, [], { agentRunId: solution.agentRunId }),
-      stableRow(softwareTeam.address, [
-        stableRow(reviewLead.address, [], { agentRunId: reviewLead.agentRunId }),
-        stableRow(researchTeam.address, [stableRow(analyst.address, [], { agentRunId: analyst.agentRunId })], {
-          kind: 'agent_team', teamDefinitionId: 'research-team', teamRunIdForNode: 'research-team-run',
-          coordinatorAddress: analyst.address,
-        }),
-      ], {
-        kind: 'agent_team', teamDefinitionId: 'software-team', teamRunIdForNode: 'software-team-run',
-        coordinatorAddress: reviewLead.address,
-      }),
-    ];
+    const stableChildren = [stableRow(solution.address, [], { agentRunId: solution.agentRunId })];
 
     const rows = buildRunHistoryTeamExecutionRows(historyTeam(stableChildren, false) as any, context);
 
-    expect(rows.find((row) => row.teamRunIdForNode === 'settled-task-team-run')).toMatchObject({
-      transientKind: 'task_team', depth: 1, hasChildren: true,
-    });
-    expect(rows.find((row) => row.agentRunId === 'settled-review-lead-run')).toMatchObject({
-      transientKind: 'task_team_child', depth: 2, hasChildren: false,
-    });
-    expect(rows.find((row) => row.teamRunIdForNode === 'settled-research-team-run')).toMatchObject({
-      transientKind: 'task_team_child', depth: 2, hasChildren: true,
-    });
-    expect(rows.find((row) => row.agentRunId === 'settled-analyst-run')).toMatchObject({
-      transientKind: 'task_team_child', depth: 3,
-    });
-    expect(rows.find((row) => row.agentRunId === 'settled-nested-agent-run')).toMatchObject({
-      transientKind: 'task_agent', depth: 2, hasChildren: false,
-    });
+    expect(rows.map((row) => [row.agentRunId ?? row.teamRunIdForNode, 'transientKind' in row ? row.transientKind : row.kind, row.depth, row.hasChildren])).toEqual([
+      ['solution-designer-run', 'stable_member', 0, false],
+      ['settled-task-team-run', 'task_team', 0, true],
+      ['settled-review-lead-run', 'task_team_child', 1, false],
+      ['settled-nested-agent-run', 'task_agent', 1, false],
+      ['settled-research-team-run', 'task_team', 1, true],
+      ['settled-analyst-run', 'task_team_child', 2, false],
+    ]);
 
     const projection = buildRunHistoryNavigationProjection({
       workspaceGroups: [], agentAvatarByDefinitionId: {}, allWorkspaces: [],
       workspacesById: {}, agentContexts: new Map(), teamContexts: [context], agentOrgHistory: [],
     });
     expect(projection.memberAncestorExecutionKeysByIdentity[
-      runHistoryMemberIndexKey(ROOT, 'settled-nested-agent-run')
-    ]).toEqual(['team:software-team-run', 'team:settled-task-team-run']);
+      runHistoryMemberIndexKey(ROOT, 'settled-analyst-run')
+    ]).toEqual(['team:settled-task-team-run', 'team:settled-research-team-run']);
   });
 });

@@ -42,9 +42,6 @@ export class FlatTeamExecutionFactory {
     if (!sameRootExecutionIdentity(physicalScope.root, input.physicalScope.root)) {
       throw new Error("Flat Team physical scope root is invalid.");
     }
-    if (input.teamNode.children.some((member) => member.kind !== "agent")) {
-      throw new Error(`Flat Team '${input.teamNode.address}' cannot contain a configured Team.`);
-    }
     let subTeamFactory!: TaskTeamExecutionFactory;
     const buildContext = (scope: RootExecutionPhysicalScope, teamNode: TeamRunAgentTeamNode, mode: ConfiguredMemberActivationMode, handoffs: readonly CollaborationHandoff[], applicationBinding: TeamRunApplicationBinding | null) => new TeamRunContext({
       physicalScope: scope,
@@ -54,15 +51,12 @@ export class FlatTeamExecutionFactory {
       handoffs,
       applicationBinding,
       runtimeContext: new FlatTeamExecutionContext({
-        memberContexts: teamNode.children.map((node) => {
-          if (node.kind !== "agent") throw new Error(`Flat Team '${teamNode.address}' cannot contain a configured Team.`);
-          return new FlatAgentExecutionContext({
-            address: node.address,
-            agentRunId: node.agentRunId,
-            runtimeKind: node.runtimeKind,
-            platformAgentRunId: node.platformAgentRunId,
-          });
-        }),
+        memberContexts: teamNode.children.map((node) => new FlatAgentExecutionContext({
+          address: node.address,
+          agentRunId: node.agentRunId,
+          runtimeKind: node.runtimeKind,
+          platformAgentRunId: node.platformAgentRunId,
+        })),
         configuredMemberActivationMode: mode,
       }),
     });

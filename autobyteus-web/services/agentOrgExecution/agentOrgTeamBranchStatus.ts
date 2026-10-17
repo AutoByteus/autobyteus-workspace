@@ -6,8 +6,9 @@ import type {
 } from '~/types/collaboration/agentOrgExecution';
 import { resolveTeamStatus, type TeamStatus } from '~/utils/workspaceTeamAggregateStatus';
 
+/** A task branch node: a delegated child, or an Agent member of a delegated Team (Teams are flat). */
 type AgentOrgTaskBranchNode = AgentOrgTaskExecutionNode | AgentOrgTaskTeamMember;
-type AgentOrgTaskTeamNode = Exclude<AgentOrgTaskBranchNode, { agentRunId: string }>;
+type AgentOrgTaskTeamNode = Extract<AgentOrgTaskExecutionNode, { teamRunId: string }>;
 
 type AgentOrgTeamStatusInput<TTeam> = Readonly<{
   team: TTeam;
@@ -18,9 +19,9 @@ type AgentOrgTeamStatusInput<TTeam> = Readonly<{
   statusForAgentRunId(agentRunId: string): AgentStatus | string | null | undefined;
 }>;
 
-/** The AgentRun IDs of the listed agents in a task branch (members, nested Teams and their delegated work). */
+/** The AgentRun IDs of the listed agents in a task branch: a task Agent, or a task Team's members and its delegated work. */
 const appendListedTaskAgentRunIds = (
-  node: AgentOrgTaskBranchNode,
+  node: AgentOrgTaskExecutionNode,
   isListed: (node: AgentOrgTaskBranchNode) => boolean,
   runIds: string[],
 ): void => {
@@ -29,7 +30,7 @@ const appendListedTaskAgentRunIds = (
     runIds.push(node.agentRunId);
     return;
   }
-  for (const member of node.members) appendListedTaskAgentRunIds(member, isListed, runIds);
+  for (const member of node.members) if (isListed(member)) runIds.push(member.agentRunId);
   for (const task of node.taskExecutions) appendListedTaskAgentRunIds(task, isListed, runIds);
 };
 
@@ -50,7 +51,7 @@ export const projectAgentOrgTeamBranchStatus = (
   return resolveStatus(agentRunIds, input);
 };
 
-/** A delegated Team (or a Team nested in one) under an Org run: the listed agents in its subtree. */
+/** A delegated Team under an Org run (also one delegated inside another): the listed agents in its subtree. */
 export const projectAgentOrgTaskTeamStatus = (
   input: AgentOrgTeamStatusInput<AgentOrgTaskTeamNode>,
 ): TeamStatus => {

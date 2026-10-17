@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig'
-import type { TeamDefinitionMemberNode } from '~/utils/teamDefinitionMembers'
+import type { TeamDefinitionAgentNode } from '~/utils/teamDefinitionMembers'
 import {
   indexTeamLaunchTopology,
   projectTeamRunLaunchRecords,
@@ -18,58 +18,11 @@ const workspace = (id: string, path: string) => ({
   },
 })
 
-const tree: readonly TeamDefinitionMemberNode[] = [
-  {
-    kind: 'agent',
-    address: '/root_agent',
-    displayName: 'root_agent',
-    agentDefinitionId: 'root-agent-def',
-  },
-  {
-    kind: 'agent_team',
-    address: '/Research',
-    displayName: 'Research',
-    teamDefinitionId: 'research-def',
-    coordinatorAddress: '/Research/lead',
-    children: [
-      {
-        kind: 'agent',
-        address: '/Research/lead',
-        displayName: 'lead',
-        agentDefinitionId: 'lead-def',
-      },
-      {
-        kind: 'agent_team',
-        address: '/Research/Review',
-        displayName: 'Review',
-        teamDefinitionId: 'review-def',
-        coordinatorAddress: '/Research/Review/reviewer',
-        children: [
-          {
-            kind: 'agent',
-            address: '/Research/Review/reviewer',
-            displayName: 'reviewer',
-            agentDefinitionId: 'reviewer-def',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    kind: 'agent_team',
-    address: '/Delivery',
-    displayName: 'Delivery',
-    teamDefinitionId: 'delivery-def',
-    coordinatorAddress: '/Delivery/publisher',
-    children: [
-      {
-        kind: 'agent',
-        address: '/Delivery/publisher',
-        displayName: 'publisher',
-        agentDefinitionId: 'publisher-def',
-      },
-    ],
-  },
+/** A flat Team definition: every member is an Agent directly under the root Team. */
+const tree: readonly TeamDefinitionAgentNode[] = [
+  { kind: 'agent', address: '/root_agent', displayName: 'root_agent', agentDefinitionId: 'root-agent-def' },
+  { kind: 'agent', address: '/lead', displayName: 'lead', agentDefinitionId: 'lead-def' },
+  { kind: 'agent', address: '/reviewer', displayName: 'reviewer', agentDefinitionId: 'reviewer-def' },
 ]
 
 const config = (): TeamRunConfig => ({
@@ -82,44 +35,28 @@ const config = (): TeamRunConfig => ({
     llmConfig: { reasoning_effort: 'medium' },
     autoExecuteTools: false,
   },
-  teamOverrides: {
-    '/Research': {
-      runtimeKind: 'claude_agent_sdk',
-      workspace: workspace('research-ws', '/workspace/research'),
-      llmModelIdentifier: 'claude-sonnet',
-      llmConfig: null,
-      autoExecuteTools: true,
-    },
-    '/Research/Review': {
-      llmModelIdentifier: 'claude-opus',
-      llmConfig: { thinking: true },
-    },
-  },
+  teamOverrides: {},
   agentOverrides: {
-    '/Research/Review/reviewer': {
+    '/reviewer': {
       runtimeKind: 'autobyteus',
+      workspace: workspace('review-ws', '/workspace/review'),
       llmModelIdentifier: 'gpt-5.6-luna',
       llmConfig: null,
-      autoExecuteTools: false,
+      autoExecuteTools: true,
     },
   },
   isLocked: false,
 })
 
 describe('teamRunLaunchHierarchy', () => {
-  it('indexes exact Team and Agent subjects including the root Team', () => {
+  it('indexes the root Team and every Agent subject', () => {
     const index = indexTeamLaunchTopology(tree)
 
-    expect([...index.teams]).toEqual(['/', '/Research', '/Research/Review', '/Delivery'])
-    expect([...index.agents]).toEqual([
-      '/root_agent',
-      '/Research/lead',
-      '/Research/Review/reviewer',
-      '/Delivery/publisher',
-    ])
+    expect([...index.teams]).toEqual(['/'])
+    expect([...index.agents]).toEqual(['/root_agent', '/lead', '/reviewer'])
   })
 
-  it('resolves nearest-Team and exact-Agent precedence without activating embedded definition defaults', () => {
+  it('resolves root-Team and exact-Agent precedence without activating embedded definition defaults', () => {
     const view = resolveTeamRunConfiguration(config(), tree)
 
     expect(view.root.effectiveConfig).toEqual(expect.objectContaining({
@@ -128,98 +65,67 @@ describe('teamRunLaunchHierarchy', () => {
       llmModelIdentifier: 'gpt-5.4',
       llmConfig: { reasoning_effort: 'medium' },
     }))
-    expect(view.teamsByAddress['/Research']).toEqual(expect.objectContaining({
-      parentAddress: '/',
-      depth: 1,
-      isCustomized: true,
+    expect(Object.keys(view.teamsByAddress)).toEqual(['/'])
+    expect(view.agentsByAddress['/reviewer']).toEqual(expect.objectContaining({
+      containingTeamAddress: '/',
       effectiveConfig: expect.objectContaining({
-        runtimeKind: 'claude_agent_sdk',
-        workspaceRootPath: '/workspace/research',
+        runtimeKind: 'autobyteus',
+        workspaceRootPath: '/workspace/review',
+        llmModelIdentifier: 'gpt-5.6-luna',
         llmConfig: null,
+        autoExecuteTools: true,
       }),
     }))
-    expect(view.teamsByAddress['/Research/Review'].effectiveConfig).toEqual(expect.objectContaining({
-      runtimeKind: 'claude_agent_sdk',
-      workspaceRootPath: '/workspace/research',
-      llmModelIdentifier: 'claude-opus',
-      llmConfig: { thinking: true },
-      autoExecuteTools: true,
-    }))
-    expect(view.agentsByAddress['/Research/Review/reviewer'].effectiveConfig).toEqual(expect.objectContaining({
-      runtimeKind: 'autobyteus',
-      workspaceRootPath: '/workspace/research',
-      llmModelIdentifier: 'gpt-5.6-luna',
-      llmConfig: null,
-      autoExecuteTools: false,
-    }))
-    expect(view.agentsByAddress['/Delivery/publisher'].effectiveConfig).toEqual(
+    expect(view.agentsByAddress['/lead'].effectiveConfig).toEqual(
       expect.objectContaining({ runtimeKind: 'codex_app_server', workspaceRootPath: '/workspace/root' }),
     )
   })
 
   it('clears inherited model config when a runtime or model is explicitly changed without a config value', () => {
     const candidate = config()
-    candidate.teamOverrides['/Delivery'] = { runtimeKind: 'autobyteus' }
-    candidate.agentOverrides['/Research/lead'] = { llmModelIdentifier: 'claude-haiku' }
+    candidate.agentOverrides['/root_agent'] = { runtimeKind: 'autobyteus' }
+    candidate.agentOverrides['/lead'] = { llmModelIdentifier: 'claude-haiku' }
 
     const view = resolveTeamRunConfiguration(candidate, tree)
 
-    expect(view.teamsByAddress['/Delivery'].effectiveConfig.llmConfig).toBeNull()
-    expect(view.agentsByAddress['/Research/lead'].effectiveConfig.llmConfig).toBeNull()
+    expect(view.agentsByAddress['/root_agent'].effectiveConfig.llmConfig).toBeNull()
+    expect(view.agentsByAddress['/lead'].effectiveConfig.llmConfig).toBeNull()
   })
 
   it('prunes noncanonical, stale, and kind-mismatched intent in sorted address order', () => {
     const candidate = config()
-    candidate.teamOverrides['/Research/lead'] = { autoExecuteTools: false }
-    candidate.teamOverrides['/Missing'] = { autoExecuteTools: false }
-    candidate.agentOverrides['/Research'] = { autoExecuteTools: false }
-    candidate.agentOverrides['Research/lead'] = { autoExecuteTools: false }
+    candidate.teamOverrides['/lead'] = { autoExecuteTools: false }
+    candidate.teamOverrides['/Research'] = { autoExecuteTools: false }
+    candidate.agentOverrides['/Missing'] = { autoExecuteTools: false }
+    candidate.agentOverrides['lead'] = { autoExecuteTools: false }
 
     const result = reconcileTeamRunConfigTopology(candidate, tree)
 
-    expect(result.repairedAddresses).toEqual([
-      '/Missing',
-      '/Research',
-      '/Research/lead',
-      'Research/lead',
-    ])
-    expect(result.config.teamOverrides['/Research']).toEqual(candidate.teamOverrides['/Research'])
-    expect(result.config.agentOverrides['/Research/Review/reviewer']).toEqual(
-      candidate.agentOverrides['/Research/Review/reviewer'],
-    )
+    expect(result.repairedAddresses).toEqual(['/Missing', '/Research', '/lead', 'lead'])
+    expect(result.config.teamOverrides).toEqual({})
+    expect(result.config.agentOverrides).toEqual({ '/reviewer': candidate.agentOverrides['/reviewer'] })
   })
 
-  it('projects one complete Team record per scope and one complete Agent record per leaf', () => {
+  it('projects one complete root Team record and one complete Agent record per member', () => {
     const result = projectTeamRunLaunchRecords(config(), tree)
 
-    expect(result.teamConfigs.map((entry) => entry.teamAddress)).toEqual([
-      '/',
-      '/Research',
-      '/Research/Review',
-      '/Delivery',
-    ])
-    expect(result.memberConfigs.map((entry) => entry.memberAddress)).toEqual([
-      '/root_agent',
-      '/Research/lead',
-      '/Research/Review/reviewer',
-      '/Delivery/publisher',
-    ])
-    expect(result.teamConfigs.find((entry) => entry.teamAddress === '/Research/Review')).toEqual({
-      teamAddress: '/Research/Review',
-      runtimeKind: 'claude_agent_sdk',
-      llmModelIdentifier: 'claude-opus',
-      llmConfig: { thinking: true },
-      autoExecuteTools: true,
-      workspaceRootPath: '/workspace/research',
-    })
-    expect(result.memberConfigs.find((entry) => entry.memberAddress === '/Research/Review/reviewer')).toEqual({
-      memberAddress: '/Research/Review/reviewer',
+    expect(result.teamConfigs).toEqual([{
+      teamAddress: '/',
+      runtimeKind: 'codex_app_server',
+      llmModelIdentifier: 'gpt-5.4',
+      llmConfig: { reasoning_effort: 'medium' },
+      autoExecuteTools: false,
+      workspaceRootPath: '/workspace/root',
+    }])
+    expect(result.memberConfigs.map((entry) => entry.memberAddress)).toEqual(['/root_agent', '/lead', '/reviewer'])
+    expect(result.memberConfigs.find((entry) => entry.memberAddress === '/reviewer')).toEqual({
+      memberAddress: '/reviewer',
       agentDefinitionId: 'reviewer-def',
       runtimeKind: 'autobyteus',
       llmModelIdentifier: 'gpt-5.6-luna',
       llmConfig: null,
-      autoExecuteTools: false,
-      workspaceRootPath: '/workspace/research',
+      autoExecuteTools: true,
+      workspaceRootPath: '/workspace/review',
     })
   })
 })

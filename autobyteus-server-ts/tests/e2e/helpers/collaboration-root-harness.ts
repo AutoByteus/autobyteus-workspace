@@ -199,6 +199,11 @@ export const startCollaborationHarness = async (label: string) => {
     }
     active.push({ kind, rootId });
     expect(managerRunId).toBeTruthy();
+    return attachRoot(kind, rootId, managerRunId, members);
+  };
+
+  /** Streams and helpers for an existing root (a new root, or one reopened after Stop: its next message restores it). */
+  const attachRoot = async (kind: RootKind, rootId: string, managerRunId: string, members: Record<string, string>) => {
     const viewRoute = kind === "agent" ? "agent-collaboration" : kind === "team" ? "agent-team" : "agent-org";
     const isSnapshot = (frame: Frame) => frame.type === (kind === "team" ? "TEAM_EXECUTION_VIEW_SNAPSHOT" : "ROOT_EXECUTION_VIEW_SNAPSHOT");
     const inputChannel = kind === "agent" ? await connect("agent", rootId, (frames) => frames.some((f) => f.type === "CONNECTED")) : null;
@@ -242,17 +247,36 @@ export const startCollaborationHarness = async (label: string) => {
       await until(async () => Boolean(found = (await taskAgents()).find((agent) => agent.agentRunId === id || agent.teamRunId === id)), `${kind}: task agent ${id} recorded`, 60_000);
       return found!;
     };
-    return { kind, rootId, managerRunId, members, sendTo, calls, conversationOf, taskAgents, waitForTaskAgent, close: () => { view.socket.close(); inputChannel?.socket.close(); } };
+    return { kind, rootId, managerRunId, members, sendTo, calls, conversationOf, liveTree, taskAgents, waitForTaskAgent, close: () => { view.socket.close(); inputChannel?.socket.close(); } };
+  };
+  /** Reopens a stopped root as the app does: the restore mutation of its kind, then its streams. */
+  const reopenRoot = async (root: { kind: RootKind; rootId: string; managerRunId: string; members: Record<string, string> }) => {
+    const mutation = root.kind === "agent" ? `mutation($id:String!){restoreAgentRun(agentRunId:$id){success message}}`
+      : root.kind === "team" ? `mutation($id:String!){restoreAgentTeamRun(teamRunId:$id){success message}}`
+        : `mutation($id:String!){restoreAgentOrgRun(agentOrgRunId:$id){success message}}`;
+    const restored = Object.values(await graphql(mutation, { id: root.rootId }))[0] as Rec;
+    expect(restored.success, restored.message).toBe(true);
+    active.push({ kind: root.kind, rootId: root.rootId });
+    return attachRoot(root.kind, root.rootId, root.managerRunId, root.members);
+  };
+
+  let serverStopped = false;
+  /** Stops the in-process server and leaves the data dir in place (to start another server process on it). */
+  const stopServer = async () => {
+    for (const socket of sockets.splice(0)) socket.terminate();
+    active.splice(0);
+    await app.close();
+    serverStopped = true;
   };
 
   const close = async () => {
     const errors: string[] = [];
     for (const socket of sockets) socket.terminate();
     for (const root of [...active]) await terminate(root.kind, root.rootId).catch((error) => errors.push(String(error)));
-    await app.close();
+    if (!serverStopped) await app.close();
     await fs.rm(dataDir, { recursive: true, force: true });
     if (priorCase === undefined) delete process.env["AGY_FAKE_CASE"]; else process.env["AGY_FAKE_CASE"] = priorCase;
     expect(errors, "owned cleanup").toEqual([]);
   };
-  return { graphql, config, agentDefinition, teamDefinition, orgDefinition, startRoot, terminate, promptOf, mcpCall, close, dataDir, workspace };
+  return { graphql, config, agentDefinition, teamDefinition, orgDefinition, startRoot, reopenRoot, terminate, stopServer, promptOf, mcpCall, close, dataDir, workspace };
 };

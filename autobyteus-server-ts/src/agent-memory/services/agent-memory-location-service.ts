@@ -94,7 +94,8 @@ export class AgentMemoryLocationService {
 
   /**
    * Root-first lookup: an active or admitted root team run reads only its own tree. Any other team run ID
-   * may name a nested team inside some root, so it is matched against every root's agents.
+   * may name a team inside some root (an organization's team or a task agent team), so it is matched against
+   * every root's agents.
    */
   private async listTeamRunAgents(teamRunId: string): Promise<LocatedTeamAgentExecution[]> {
     if ((await this.locations.listRootTeamRunIds()).includes(teamRunId)) {

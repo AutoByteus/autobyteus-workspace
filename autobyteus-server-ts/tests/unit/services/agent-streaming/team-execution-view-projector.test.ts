@@ -18,7 +18,7 @@ import {
 
 const scenarioDir = path.resolve(
   process.cwd(),
-  "tests/fixtures/current-team-run-v2/case-001-nested-task-team",
+  "tests/fixtures/current-team-run-v2/case-001-delegated-task-team-forest",
 );
 const recordsDir = path.resolve(
   process.cwd(),
@@ -90,10 +90,11 @@ describe("Team execution view strict projection", () => {
               kind: "task_team",
               team_run_id: "task-team-run-qa-001",
               delegator_agent_run_id: "agent-run-product-manager",
-              members: expect.arrayContaining([expect.objectContaining({
-                kind: "task_team_member",
+              task_executions: [expect.objectContaining({
+                kind: "task_team",
                 team_run_id: "task-team-run-automation-001",
-              })]),
+                delegator_agent_run_id: "task-team-agent-run-qa-lead-001",
+              })],
             }],
           },
         },
@@ -114,8 +115,8 @@ describe("Team execution view strict projection", () => {
     const stamped = JSON.parse(JSON.stringify(tree));
     const parent = stamped.rootTeam.taskExecutions[0];
     parent.taskLifetime = { lifetimeId: "controlled-lifetime", purpose: "assignment" };
-    const nested = parent.members.find((member: { teamRunId?: string }) => member.teamRunId === "task-team-run-automation-001");
-    nested.taskExecutions[0].taskLifetime = { lifetimeId: "controlled-lifetime", purpose: "delegation" };
+    const delegated = parent.taskExecutions.find((task: { teamRunId?: string }) => task.teamRunId === "task-team-run-automation-001");
+    delegated.taskExecutions[0].taskLifetime = { lifetimeId: "controlled-lifetime", purpose: "delegation" };
     const current = validateTeamRunExecutionTreePayload(stamped, "team-run-root"), before = JSON.stringify(current);
     expect(projectTeamExecutionViewSnapshot("team-run-root", { tree: current, closedTaskExecutions: [], messages, statuses: [], inputStates: [] }, 17))
       .toEqual(projectTeamExecutionViewSnapshot("team-run-root", { tree, closedTaskExecutions: [], messages, statuses: [], inputStates: [] }, 17));
@@ -230,7 +231,7 @@ describe("Team execution view strict projection", () => {
     });
   });
 
-  it("locates a nested task Agent under its concrete containing task TeamRun", () => {
+  it("locates a task Agent delegated inside a delegated task TeamRun under that containing TeamRun", () => {
     const projected = projectSequencedTeamRunEvent(root as never, {
       changeSequence: 19,
       event: {
@@ -251,7 +252,7 @@ describe("Team execution view strict projection", () => {
           kind: "task_agent",
           address: "/qa/automation/tester",
           agent_run_id: "nested-task-agent-run-001",
-          delegator_agent_run_id: "task-team-agent-run-qa-lead-001",
+          delegator_agent_run_id: "task-team-agent-run-automation-lead-001",
         },
       },
     });

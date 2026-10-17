@@ -16,7 +16,6 @@
         v-if="displayRow.row.kind === 'stable_member'"
         :row="displayRow.row"
         :avatars="avatars"
-        :aggregate-status="teamStatusOf(displayRow.row)"
         :age="formatRelativeTime(team.lastActivityAt)"
         :is-selected="isSelected(displayRow.row)"
         :has-children="displayRow.hasChildren"

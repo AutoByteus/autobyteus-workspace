@@ -11,7 +11,6 @@ import {
   TeamRunConfig,
   type TeamRunAgentNode,
   type TeamRunAgentTeamNode,
-  type TeamRunNode,
 } from "../../src/agent-team-execution/domain/team-run-config.js";
 import type { TeamRunExecutionTreeSnapshot } from "../../src/agent-team-execution/domain/team-run-execution-tree.js";
 import type { RootTeamRun } from "../../src/agent-team-execution/domain/root-team-run.js";
@@ -46,7 +45,7 @@ export const testAgentNode = (
 export const testAgentTeamNode = (input: {
   address: string;
   coordinatorAddress: string;
-  children: readonly TeamRunNode[];
+  children: readonly TeamRunAgentNode[];
   teamRunId?: string;
   teamDefinitionId?: string;
   role?: string | null;
@@ -55,9 +54,7 @@ export const testAgentTeamNode = (input: {
   const address = assertAgentTeamAddress(input.address);
   const name = getAgentTeamAddressBasename(address) ?? "root";
   const coordinatorAddress = assertAgentTeamAddress(input.coordinatorAddress);
-  const coordinator = input.children.find((child): child is TeamRunAgentNode =>
-    child.kind === "agent" && child.address === coordinatorAddress,
-  );
+  const coordinator = input.children.find((child) => child.address === coordinatorAddress);
   if (!coordinator) {
     throw new Error(`Test AgentTeam '${address}' requires direct coordinator '${coordinatorAddress}'.`);
   }

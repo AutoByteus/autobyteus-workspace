@@ -12,7 +12,7 @@ import { createTeamAgentStatusDetails } from "../../../../src/agent-team-executi
 
 const scenarioDir = path.resolve(
   process.cwd(),
-  "tests/fixtures/current-team-run-v2/case-001-nested-task-team",
+  "tests/fixtures/current-team-run-v2/case-001-delegated-task-team-forest",
 );
 const recordsDir = path.resolve(
   process.cwd(),

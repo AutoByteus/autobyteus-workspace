@@ -3,7 +3,6 @@ import type { TranslationCatalog } from '../../runtime/types';
 const messages = {
   'agentTeams.components.agentTeams.AgentTeamCard.and_rarr': '➡️',
   'agentTeams.components.agentTeams.AgentTeamCard.avatar': '`${teamDef.name} 头像`',
-  'agentTeams.components.agentTeams.AgentTeamCard.nested_teams': '嵌套团队',
   'agentTeams.components.agentTeams.AgentTeamCard.no_members_defined': '未定义成员',
   'agentTeams.components.agentTeams.AgentTeamCard.text': '`${node.memberName} (${node.refType})`',
   'agentTeams.components.agentTeams.AgentTeamCard.view_details': '查看详情',

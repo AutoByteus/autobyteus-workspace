@@ -4,7 +4,7 @@ import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { normalizeRootPath as pathKey } from '~/stores/runHistoryReadModel'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { createTeamConfigurationView } from '~/services/teamExecution/teamExecutionContextFactory'
-import { collectConfiguredAgents, collectConfiguredTeams } from '~/services/teamExecution/teamExecutionTreeSelectors'
+import { collectConfiguredAgents } from '~/services/teamExecution/teamExecutionTreeSelectors'
 import { buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults'
 
 type ReadDependencies = Pick<ReturnType<typeof useRunHistoryStore>, 'refreshTeamResumeConfig' | 'resolveWorkspaceMetadataByRootPath'>
@@ -40,7 +40,7 @@ export const loadTeamRunLaunchSeed = async (
     return request
   }
   const configured = [
-    ...collectConfiguredTeams(tree).map(team => ({ address: team === tree.root_team ? '/' : team.address, launch: team.default_launch_configuration })),
+    { address: '/', launch: tree.root_team.default_launch_configuration },
     ...collectConfiguredAgents(tree).map(agent => ({ address: agent.address, launch: agent.launch_configuration })),
   ]
   await Promise.all(configured.map(async ({ address, launch }) => {

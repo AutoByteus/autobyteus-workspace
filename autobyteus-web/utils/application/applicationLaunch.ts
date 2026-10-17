@@ -88,14 +88,11 @@ export const buildPreparedTeamLaunch = (
   application: ApplicationCatalogEntry,
   teamDefinition: AgentTeamDefinition,
   _getAgentDefinitionById: (agentDefinitionId: string) => AgentDefinition | null | undefined,
-  getTeamDefinitionById: (teamDefinitionId: string) => AgentTeamDefinition | null | undefined,
+  _getTeamDefinitionById: (teamDefinitionId: string) => AgentTeamDefinition | null | undefined,
 ): PreparedTeamApplicationLaunch => ({
   kind: 'AGENT_TEAM',
   application,
   teamDefinition,
-  leafMembers: resolveLeafTeamMembers(teamDefinition, {
-    getTeamDefinitionById: (teamDefinitionId: string) =>
-      getTeamDefinitionById(teamDefinitionId) ?? null,
-  }),
+  leafMembers: resolveLeafTeamMembers(teamDefinition),
   config: cloneTeamConfig(buildTeamRunTemplate(teamDefinition)),
 })

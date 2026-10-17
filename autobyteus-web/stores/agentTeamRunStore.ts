@@ -19,7 +19,7 @@ import {
   buildTeamMemberFinalContextFileOwner,
   type DraftContextFileOwnerDescriptor,
 } from '~/utils/contextFiles/contextFileOwner';
-import { buildTeamMemberTreeFromDefinition, flattenLeafAgentMemberNodes } from '~/utils/teamDefinitionMembers';
+import { buildTeamMemberTreeFromDefinition } from '~/utils/teamDefinitionMembers';
 import { projectTeamRunLaunchRecords } from '~/utils/teamRunLaunchHierarchy';
 import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState';
 import {
@@ -391,9 +391,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       const resolveMemberTree = () => {
         const definition = definitions.getCatalogAgentTeamDefinitionById(draft.config.teamDefinitionId);
         if (!definition) throw new Error(`Team definition '${draft.config.teamDefinitionId}' was not found.`);
-        return buildTeamMemberTreeFromDefinition(definition, {
-          getTeamDefinitionById: (id) => definitions.getCatalogAgentTeamDefinitionById(id),
-        });
+        return buildTeamMemberTreeFromDefinition(definition);
       };
       const preparation = drafts.reconcileAndPlanSelectedDraftLaunch(draft, resolveMemberTree());
       if (preparation.status === 'repaired') {
@@ -456,9 +454,8 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         if (!readiness.canLaunch) throw new Error(readiness.blockingIssues[0]?.message || 'Team configuration is not launch-ready.');
         drafts.admitPreparedDraftLaunch(plan, currentDraft);
         admittedDraft = currentDraft;
-        const leafMembers = flattenLeafAgentMemberNodes(memberTree);
-        if (!leafMembers.some((member) => member.address === currentDraft.focusedMemberAddress)) throw new Error(`Draft focus '${currentDraft.focusedMemberAddress}' is stale.`);
-        const leafAddresses = new Set(leafMembers.map((member) => member.address));
+        if (!memberTree.some((member) => member.address === currentDraft.focusedMemberAddress)) throw new Error(`Draft focus '${currentDraft.focusedMemberAddress}' is stale.`);
+        const leafAddresses = new Set(memberTree.map((member) => member.address));
         const stalePendingAddress = Object.keys(currentDraft.pendingInputsByMemberAddress).find((address) => !leafAddresses.has(address));
         if (stalePendingAddress) throw new Error(`Draft input target '${stalePendingAddress}' is stale.`);
         const { teamConfigs, memberConfigs } = projectTeamRunLaunchRecords(currentDraft.config, memberTree);

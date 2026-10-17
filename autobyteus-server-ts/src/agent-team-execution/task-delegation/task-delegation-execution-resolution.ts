@@ -4,17 +4,8 @@ import type { TeamRunAgentTeamNode, TeamRunNode } from "../domain/team-run-confi
 export const findTaskConfigNode = (
   root: TeamRunAgentTeamNode,
   address: string,
-): TeamRunNode | null => {
-  if (root.address === address) return root;
-  for (const child of root.children) {
-    if (child.address === address) return child;
-    if (child.kind === "agent_team") {
-      const nested = findTaskConfigNode(child, address);
-      if (nested) return nested;
-    }
-  }
-  return null;
-};
+): TeamRunNode | null =>
+  root.address === address ? root : root.children.find((child) => child.address === address) ?? null;
 
 export const requirePreparedTaskTeamNode = (
   prepared: PreparedTaskExecution,

@@ -24,8 +24,6 @@ import type {
   TaskAgentExecution,
   TaskExecution,
   TaskTeamExecution,
-  TaskTeamMemberExecution,
-  TaskTeamNestedTeamExecution,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { StandaloneRootTreeSnapshot } from "../domain/standalone-root-tree.js";
 
@@ -48,9 +46,10 @@ export type StandaloneRootIndexedTeam = Readonly<{
   teamRunId: string;
   address: AgentTeamAddress;
   parentTeamRunId: string | null;
-  executionKind: "task" | "task_team_member";
+  /** Every team of an Agent root is a task agent team (teams are flat: no team is a member of a team). */
+  executionKind: "task";
   startedAt: string | null;
-  source: TaskTeamExecution | TaskTeamNestedTeamExecution;
+  source: TaskTeamExecution;
 }>;
 
 export type StandaloneRootIndexedTaskExecution =
@@ -143,15 +142,8 @@ export class StandaloneRootExecutionIndex implements MessageRecipientIndexPort, 
   }
 
   private findInstanceAgent(teamRunId: string, address: string): StandaloneRootIndexedAgent | null {
-    const direct = this.listAgents().find((agent) => agent.host.hostKind === "team" && agent.host.hostRunId === teamRunId
-      && agent.executionKind !== "task" && agent.address === address);
-    if (direct) return direct;
-    for (const nested of this.listTeams()) {
-      if (nested.parentTeamRunId !== teamRunId || nested.executionKind === "task") continue;
-      const found = this.findInstanceAgent(nested.teamRunId, address);
-      if (found) return found;
-    }
-    return null;
+    return this.listAgents().find((agent) => agent.host.hostKind === "team" && agent.host.hostRunId === teamRunId
+      && agent.executionKind !== "task" && agent.address === address) ?? null;
   }
 
   listTeamAncestorsDeepestFirst(teamRunId: string): readonly StandaloneRootIndexedTeam[] {
@@ -185,9 +177,7 @@ export class StandaloneRootExecutionIndex implements MessageRecipientIndexPort, 
     const chain: StandaloneRootIndexedTaskExecution[] = [];
     if (agent.executionKind === "task") chain.push(this.requireTask(agent.agentRunId));
     if (agent.host.hostKind === "team") {
-      for (const team of this.listTeamAncestorsDeepestFirst(agent.host.hostRunId)) {
-        if (team.executionKind === "task") chain.push(this.requireTask(team.teamRunId));
-      }
+      for (const team of this.listTeamAncestorsDeepestFirst(agent.host.hostRunId)) chain.push(this.requireTask(team.teamRunId));
     }
     return Object.freeze(chain);
   }
@@ -212,24 +202,17 @@ export class StandaloneRootExecutionIndex implements MessageRecipientIndexPort, 
     this.visitTeamContents(task);
   }
 
-  private visitTeamContents(team: TaskTeamExecution | TaskTeamNestedTeamExecution): void {
+  private visitTeamContents(team: TaskTeamExecution): void {
     const host = createTaskExecutionHostIdentity({
       root: this.root, hostKind: "team", hostRunId: team.teamRunId, hostAddress: team.address,
     });
-    team.members.forEach((member) => this.visitMember(member, host));
-    team.taskExecutions.forEach((task) => this.visitTask(task, host));
-  }
-
-  private visitMember(member: TaskTeamMemberExecution, host: TaskExecutionHostIdentity): void {
-    if ("agentRunId" in member) {
+    for (const member of team.members) {
       this.addAgent({
         agentRunId: member.agentRunId, address: member.address, host, executionKind: "task_team_member",
         platformAgentRunId: member.platformAgentRunId, startedAt: null,
       });
-      return;
     }
-    this.addTeam(member, host.hostRunId, "task_team_member", null);
-    this.visitTeamContents(member);
+    team.taskExecutions.forEach((task) => this.visitTask(task, host));
   }
 
   private addAgent(agent: StandaloneRootIndexedAgent): void {

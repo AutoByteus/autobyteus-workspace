@@ -25,7 +25,7 @@ export declare const teamExecutionViewSnapshotPayloadSchema: z.ZodObject<{
             team_run_id: string;
             coordinator_address: string;
             default_launch_configuration: import("./team-execution-view-dtos.js").AgentLaunchConfigurationDto;
-            members: readonly import("./team-execution-view-dtos.js").ConfiguredMemberExecutionDto[];
+            members: readonly import("./team-execution-view-dtos.js").ConfiguredAgentExecutionDto[];
             task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
         }>;
     }>, unknown, z.core.$ZodTypeInternals<Readonly<{
@@ -47,7 +47,7 @@ export declare const teamExecutionViewSnapshotPayloadSchema: z.ZodObject<{
             team_run_id: string;
             coordinator_address: string;
             default_launch_configuration: import("./team-execution-view-dtos.js").AgentLaunchConfigurationDto;
-            members: readonly import("./team-execution-view-dtos.js").ConfiguredMemberExecutionDto[];
+            members: readonly import("./team-execution-view-dtos.js").ConfiguredAgentExecutionDto[];
             task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
         }>;
     }>, unknown>>;
@@ -836,7 +836,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
                 team_run_id: string;
                 coordinator_address: string;
                 default_launch_configuration: import("./team-execution-view-dtos.js").AgentLaunchConfigurationDto;
-                members: readonly import("./team-execution-view-dtos.js").ConfiguredMemberExecutionDto[];
+                members: readonly import("./team-execution-view-dtos.js").ConfiguredAgentExecutionDto[];
                 task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
             }>;
         }>, unknown, z.core.$ZodTypeInternals<Readonly<{
@@ -858,7 +858,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
                 team_run_id: string;
                 coordinator_address: string;
                 default_launch_configuration: import("./team-execution-view-dtos.js").AgentLaunchConfigurationDto;
-                members: readonly import("./team-execution-view-dtos.js").ConfiguredMemberExecutionDto[];
+                members: readonly import("./team-execution-view-dtos.js").ConfiguredAgentExecutionDto[];
                 task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
             }>;
         }>, unknown>>;
@@ -1017,7 +1017,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
             kind: "task_team";
             address: string;
             team_run_id: string;
-            members: readonly import("./team-execution-view-dtos.js").TaskTeamMemberExecutionDto[];
+            members: readonly import("./team-execution-view-dtos.js").TaskTeamAgentExecutionDto[];
             task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
             delegator_agent_run_id: string | null;
             started_at: string;
@@ -1027,7 +1027,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
             kind: "task_team";
             address: string;
             team_run_id: string;
-            members: readonly import("./team-execution-view-dtos.js").TaskTeamMemberExecutionDto[];
+            members: readonly import("./team-execution-view-dtos.js").TaskTeamAgentExecutionDto[];
             task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
             delegator_agent_run_id: string | null;
             started_at: string;

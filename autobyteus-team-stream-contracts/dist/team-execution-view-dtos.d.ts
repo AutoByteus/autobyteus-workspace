@@ -115,20 +115,12 @@ export type TaskTeamAgentExecutionDto = Readonly<{
     platform_agent_run_id: string | null;
     user_launch_selection?: UserLaunchSelectionDto;
 }>;
-export type TaskTeamNestedTeamExecutionDto = Readonly<{
-    kind: "task_team_member";
-    address: string;
-    team_run_id: string;
-    members: readonly TaskTeamMemberExecutionDto[];
-    task_executions: readonly TaskExecutionDto[];
-}>;
-export type TaskTeamMemberExecutionDto = TaskTeamAgentExecutionDto | TaskTeamNestedTeamExecutionDto;
 /** A delegated child Team; `delegator_agent_run_id` is the AgentRun that started it (null when not recorded). */
 export type TaskTeamExecutionDto = Readonly<{
     kind: "task_team";
     address: string;
     team_run_id: string;
-    members: readonly TaskTeamMemberExecutionDto[];
+    members: readonly TaskTeamAgentExecutionDto[];
     task_executions: readonly TaskExecutionDto[];
     delegator_agent_run_id: string | null;
     started_at: string;
@@ -136,19 +128,6 @@ export type TaskTeamExecutionDto = Readonly<{
     user_team_launch_selection?: UserLaunchSelectionDto;
 }>;
 export type TaskExecutionDto = TaskAgentExecutionDto | TaskTeamExecutionDto;
-export type ConfiguredTeamExecutionDto = Readonly<{
-    kind: "configured_team";
-    address: string;
-    team_definition_id: string;
-    role: string | null;
-    description: string | null;
-    team_run_id: string;
-    coordinator_address: string;
-    default_launch_configuration: AgentLaunchConfigurationDto;
-    members: readonly ConfiguredMemberExecutionDto[];
-    task_executions: readonly TaskExecutionDto[];
-}>;
-export type ConfiguredMemberExecutionDto = ConfiguredAgentExecutionDto | ConfiguredTeamExecutionDto;
 export declare const userLaunchSelectionDtoSchema: z.ZodType<UserLaunchSelectionDto>;
 export declare const taskAgentExecutionDtoSchema: z.ZodType<TaskAgentExecutionDto>;
 export declare const taskTeamExecutionDtoSchema: z.ZodType<TaskTeamExecutionDto>;
@@ -171,7 +150,7 @@ export type TeamRunExecutionTreeDto = Readonly<{
         team_run_id: string;
         coordinator_address: string;
         default_launch_configuration: AgentLaunchConfigurationDto;
-        members: readonly ConfiguredMemberExecutionDto[];
+        members: readonly ConfiguredAgentExecutionDto[];
         task_executions: readonly TaskExecutionDto[];
     }>;
 }>;

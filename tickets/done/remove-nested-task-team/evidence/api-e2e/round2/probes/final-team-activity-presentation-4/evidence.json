@@ -1,0 +1,385 @@
+{
+  "startedAt": "2026-10-17T12:35:47.136Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "webDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-web",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-web/tests/e2e/fixtures/team-activity-presentation.page.vue",
+  "installedPagePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-web/pages/api-e2e-team-activity-presentation.vue",
+  "routePath": "/api-e2e-team-activity-presentation",
+  "scenarios": {
+    "SR006-BR-001": {
+      "description": "Mixed siblings: the history surface shows the universal Team status; the running surface keeps binary activity",
+      "result": "Pass",
+      "startedAt": "2026-10-17T12:35:56.877Z",
+      "details": {
+        "historyGroup": {
+          "status": "error",
+          "role": "img",
+          "ariaLabel": "Team status: Error",
+          "title": "Team status: Error",
+          "innerClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-red-500",
+          "backgroundColor": "rgb(239, 68, 68)",
+          "width": 8,
+          "height": 8
+        },
+        "historyActiveRun": {
+          "status": "error",
+          "role": "img",
+          "ariaLabel": "Team status: Error",
+          "title": "Team status: Error",
+          "innerClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-red-500",
+          "backgroundColor": "rgb(239, 68, 68)",
+          "width": 8,
+          "height": 8
+        },
+        "historyInactiveRun": {
+          "status": "offline",
+          "role": "img",
+          "ariaLabel": "Team status: Offline",
+          "title": "Team status: Offline",
+          "innerClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+          "backgroundColor": "rgb(153, 153, 153)",
+          "width": 8,
+          "height": 8
+        },
+        "runningGroup": {
+          "dataActive": "true",
+          "role": "img",
+          "ariaLabel": "Active team runs",
+          "title": "Active team runs",
+          "className": "h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 mr-1.5",
+          "backgroundColor": "rgb(59, 130, 246)",
+          "animationName": "none",
+          "animationDuration": "0s",
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 8,
+          "height": 8
+        },
+        "runningActiveRun": {
+          "dataActive": "true",
+          "role": "img",
+          "ariaLabel": "Active team run",
+          "title": "Active team run",
+          "className": "h-2 w-2 flex-shrink-0 rounded-full bg-blue-500",
+          "backgroundColor": "rgb(59, 130, 246)",
+          "animationName": "none",
+          "animationDuration": "0s",
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 8,
+          "height": 8
+        },
+        "runningInactiveRun": {
+          "dataActive": "false",
+          "role": "img",
+          "ariaLabel": "Inactive team run",
+          "title": "Inactive team run",
+          "className": "h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+          "backgroundColor": "rgb(153, 153, 153)",
+          "animationName": "none",
+          "animationDuration": "0s",
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 8,
+          "height": 8
+        }
+      }
+    },
+    "SR006-BR-002": {
+      "description": "Collapsed history group follows member status (not representative, subscription or Stop state); running surface stays binary",
+      "result": "Pass",
+      "startedAt": "2026-10-17T12:35:56.961Z",
+      "details": {
+        "collapsedBefore": {
+          "history": {
+            "status": "error",
+            "role": "img",
+            "ariaLabel": "Team status: Error",
+            "title": "Team status: Error",
+            "innerClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-red-500",
+            "backgroundColor": "rgb(239, 68, 68)",
+            "width": 8,
+            "height": 8
+          },
+          "running": {
+            "dataActive": "true",
+            "role": "img",
+            "ariaLabel": "Active team runs",
+            "title": "Active team runs",
+            "className": "h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 mr-1.5",
+            "backgroundColor": "rgb(59, 130, 246)",
+            "animationName": "none",
+            "animationDuration": "0s",
+            "display": "block",
+            "visibility": "visible",
+            "opacity": "1",
+            "width": 8,
+            "height": 8
+          }
+        },
+        "pending": {
+          "history": {
+            "status": "running",
+            "role": "img",
+            "ariaLabel": "Team status: Running",
+            "title": "Team status: Running",
+            "innerClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 animate-pulse",
+            "backgroundColor": "rgb(59, 130, 246)",
+            "width": 8,
+            "height": 8
+          },
+          "running": {
+            "dataActive": "true",
+            "role": "img",
+            "ariaLabel": "Active team runs",
+            "title": "Active team runs",
+            "className": "h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 mr-1.5",
+            "backgroundColor": "rgb(59, 130, 246)",
+            "animationName": "none",
+            "animationDuration": "0s",
+            "display": "block",
+            "visibility": "visible",
+            "opacity": "1",
+            "width": 8,
+            "height": 8
+          }
+        },
+        "failed": {
+          "history": {
+            "status": "running",
+            "role": "img",
+            "ariaLabel": "Team status: Running",
+            "title": "Team status: Running",
+            "innerClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 animate-pulse",
+            "backgroundColor": "rgb(59, 130, 246)",
+            "width": 8,
+            "height": 8
+          },
+          "running": {
+            "dataActive": "true",
+            "role": "img",
+            "ariaLabel": "Active team runs",
+            "title": "Active team runs",
+            "className": "h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 mr-1.5",
+            "backgroundColor": "rgb(59, 130, 246)",
+            "animationName": "none",
+            "animationDuration": "0s",
+            "display": "block",
+            "visibility": "visible",
+            "opacity": "1",
+            "width": 8,
+            "height": 8
+          }
+        },
+        "independentFacts": " member=running subscribed=true stopPending=false failures=1"
+      }
+    },
+    "SR006-BR-003": {
+      "description": "Final active-to-inactive transition updates collapsed parents and exact run rows",
+      "result": "Pass",
+      "startedAt": "2026-10-17T12:35:57.157Z",
+      "details": {
+        "collapsedSettled": {
+          "history": {
+            "status": "offline",
+            "role": "img",
+            "ariaLabel": "Team status: Offline",
+            "title": "Team status: Offline",
+            "innerClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+            "backgroundColor": "rgb(153, 153, 153)",
+            "width": 8,
+            "height": 8
+          },
+          "running": {
+            "dataActive": "false",
+            "role": "img",
+            "ariaLabel": "No active team runs",
+            "title": "No active team runs",
+            "className": "h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5",
+            "backgroundColor": "rgb(153, 153, 153)",
+            "animationName": "none",
+            "animationDuration": "0s",
+            "display": "block",
+            "visibility": "visible",
+            "opacity": "1",
+            "width": 8,
+            "height": 8
+          }
+        },
+        "expandedSettled": {
+          "historyFormerActive": {
+            "status": "offline",
+            "role": "img",
+            "ariaLabel": "Team status: Offline",
+            "title": "Team status: Offline",
+            "innerClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+            "backgroundColor": "rgb(153, 153, 153)",
+            "width": 8,
+            "height": 8
+          },
+          "historyInactive": {
+            "status": "offline",
+            "role": "img",
+            "ariaLabel": "Team status: Offline",
+            "title": "Team status: Offline",
+            "innerClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+            "backgroundColor": "rgb(153, 153, 153)",
+            "width": 8,
+            "height": 8
+          },
+          "runningFormerActive": {
+            "dataActive": "false",
+            "role": "img",
+            "ariaLabel": "Inactive team run",
+            "title": "Inactive team run",
+            "className": "h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+            "backgroundColor": "rgb(153, 153, 153)",
+            "animationName": "none",
+            "animationDuration": "0s",
+            "display": "block",
+            "visibility": "visible",
+            "opacity": "1",
+            "width": 8,
+            "height": 8
+          },
+          "runningInactive": {
+            "dataActive": "false",
+            "role": "img",
+            "ariaLabel": "Inactive team run",
+            "title": "Inactive team run",
+            "className": "h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+            "backgroundColor": "rgb(153, 153, 153)",
+            "animationName": "none",
+            "animationDuration": "0s",
+            "display": "block",
+            "visibility": "visible",
+            "opacity": "1",
+            "width": 8,
+            "height": 8
+          }
+        }
+      }
+    },
+    "SR006-BR-004": {
+      "description": "English and Simplified Chinese catalogs provide the accessible Team status and binary running-surface meaning",
+      "result": "Pass",
+      "startedAt": "2026-10-17T12:35:57.307Z",
+      "details": {
+        "historyGroup": {
+          "status": "offline",
+          "role": "img",
+          "ariaLabel": "团队状态：离线",
+          "title": "团队状态：离线",
+          "innerClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+          "backgroundColor": "rgb(153, 153, 153)",
+          "width": 8,
+          "height": 8
+        },
+        "historyFormerActive": {
+          "status": "offline",
+          "role": "img",
+          "ariaLabel": "团队状态：离线",
+          "title": "团队状态：离线",
+          "innerClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+          "backgroundColor": "rgb(153, 153, 153)",
+          "width": 8,
+          "height": 8
+        },
+        "runningGroup": {
+          "dataActive": "false",
+          "role": "img",
+          "ariaLabel": "无活跃团队运行",
+          "title": "无活跃团队运行",
+          "className": "h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5",
+          "backgroundColor": "rgb(153, 153, 153)",
+          "animationName": "none",
+          "animationDuration": "0s",
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 8,
+          "height": 8
+        },
+        "runningFormerActive": {
+          "dataActive": "false",
+          "role": "img",
+          "ariaLabel": "非活跃团队运行",
+          "title": "非活跃团队运行",
+          "className": "h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+          "backgroundColor": "rgb(153, 153, 153)",
+          "animationName": "none",
+          "animationDuration": "0s",
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 8,
+          "height": 8
+        }
+      }
+    }
+  },
+  "browserEvents": [
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace:browser-fixture, workspaceRootPath: /browser-fixture, workspaceName: Browser Fixture Workspace, workspaceKind: filesystem, canRemoveFromWorkspaces: false} workspace-teams= [Object, Object] workspace-team-history-groups= [Object]  ... > \n  at <ApiE2eTeamActivityPresentation onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-team-activity-presentation\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-team-activity-presentation, hash: , query: Object, name: api-e2e-team-activity-presentation, path: /api-e2e-team-activity-presentation}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace:browser-fixture, workspaceRootPath: /browser-fixture, workspaceName: Browser Fixture Workspace, workspaceKind: filesystem, canRemoveFromWorkspaces: false} workspace-teams= [Object, Object] workspace-team-history-groups= [Object]  ... > \n  at <ApiE2eTeamActivityPresentation onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-team-activity-presentation\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-team-activity-presentation, hash: , query: Object, name: api-e2e-team-activity-presentation, path: /api-e2e-team-activity-presentation}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace:browser-fixture, workspaceRootPath: /browser-fixture, workspaceName: Browser Fixture Workspace, workspaceKind: filesystem, canRemoveFromWorkspaces: false} workspace-teams= [Object, Object] workspace-team-history-groups= [Object]  ... > \n  at <ApiE2eTeamActivityPresentation onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-team-activity-presentation\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-team-activity-presentation, hash: , query: Object, name: api-e2e-team-activity-presentation, path: /api-e2e-team-activity-presentation}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace:browser-fixture, workspaceRootPath: /browser-fixture, workspaceName: Browser Fixture Workspace, workspaceKind: filesystem, canRemoveFromWorkspaces: false} workspace-teams= [Object, Object] workspace-team-history-groups= [Object]  ... > \n  at <ApiE2eTeamActivityPresentation onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-team-activity-presentation\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-team-activity-presentation, hash: , query: Object, name: api-e2e-team-activity-presentation, path: /api-e2e-team-activity-presentation}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace:browser-fixture, workspaceRootPath: /browser-fixture, workspaceName: Browser Fixture Workspace, workspaceKind: filesystem, canRemoveFromWorkspaces: false} workspace-teams= [Object, Object] workspace-team-history-groups= [Object]  ... > \n  at <ApiE2eTeamActivityPresentation onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-team-activity-presentation\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-team-activity-presentation, hash: , query: Object, name: api-e2e-team-activity-presentation, path: /api-e2e-team-activity-presentation}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace:browser-fixture, workspaceRootPath: /browser-fixture, workspaceName: Browser Fixture Workspace, workspaceKind: filesystem, canRemoveFromWorkspaces: false} workspace-teams= [Object, Object] workspace-team-history-groups= [Object]  ... > \n  at <ApiE2eTeamActivityPresentation onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-team-activity-presentation\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-team-activity-presentation, hash: , query: Object, name: api-e2e-team-activity-presentation, path: /api-e2e-team-activity-presentation}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace:browser-fixture, workspaceRootPath: /browser-fixture, workspaceName: Browser Fixture Workspace, workspaceKind: filesystem, canRemoveFromWorkspaces: false} workspace-teams= [Object, Object] workspace-team-history-groups= [Object]  ... > \n  at <ApiE2eTeamActivityPresentation onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-team-activity-presentation\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-team-activity-presentation, hash: , query: Object, name: api-e2e-team-activity-presentation, path: /api-e2e-team-activity-presentation}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace:browser-fixture, workspaceRootPath: /browser-fixture, workspaceName: Browser Fixture Workspace, workspaceKind: filesystem, canRemoveFromWorkspaces: false} workspace-teams= [Object, Object] workspace-team-history-groups= [Object]  ... > \n  at <ApiE2eTeamActivityPresentation onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-team-activity-presentation\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-team-activity-presentation, hash: , query: Object, name: api-e2e-team-activity-presentation, path: /api-e2e-team-activity-presentation}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>"
+    }
+  ],
+  "failures": [],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 49896,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": null,
+      "finalSignalCode": "SIGTERM"
+    },
+    "nuxtLog": "closed",
+    "installedFixture": "removed"
+  },
+  "port": 60321,
+  "baseUrl": "http://127.0.0.1:60321",
+  "result": "Pass",
+  "finishedAt": "2026-10-17T12:35:57.924Z",
+  "artifacts": {
+    "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/tickets/in-progress/remove-nested-task-team/evidence/api-e2e/round2/probes/final-team-activity-presentation-4/evidence.json",
+    "nuxtLogPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/tickets/in-progress/remove-nested-task-team/evidence/api-e2e/round2/probes/final-team-activity-presentation-4/nuxt.log",
+    "initialScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/tickets/in-progress/remove-nested-task-team/evidence/api-e2e/round2/probes/final-team-activity-presentation-4/mixed-active-inactive.png",
+    "finalScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/tickets/in-progress/remove-nested-task-team/evidence/api-e2e/round2/probes/final-team-activity-presentation-4/settled-zh-cn.png"
+  }
+}

@@ -7,7 +7,7 @@ import {
 } from '../useDefinitionLaunchDefaults'
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
 import { resolveTeamRunConfiguration, projectTeamRunLaunchRecords } from '~/utils/teamRunLaunchHierarchy'
-import type { TeamDefinitionMemberNode } from '~/utils/teamDefinitionMembers'
+import type { TeamDefinitionAgentNode } from '~/utils/teamDefinitionMembers'
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig'
 
 describe('useDefinitionLaunchDefaults editable seeds', () => {
@@ -88,7 +88,7 @@ describe('useDefinitionLaunchDefaults editable seeds', () => {
 
 // Round-trip through the actual effective resolver and Create records, not only sparse shape.
 describe('canonical view seed parameter fidelity', () => {
-  const members: readonly TeamDefinitionMemberNode[] = [{ kind: 'agent', address: '/lead', displayName: 'Lead', agentDefinitionId: 'agent' }]
+  const members: readonly TeamDefinitionAgentNode[] = [{ kind: 'agent', address: '/lead', displayName: 'Lead', agentDefinitionId: 'agent' }]
   const source = (llmConfig: Record<string, unknown> | null): TeamRunConfig => ({
     teamDefinitionId: 'team', teamDefinitionName: 'Team', isLocked: false,
     rootConfig: { runtimeKind: 'autobyteus', llmModelIdentifier: 'root-model', llmConfig,
@@ -114,17 +114,6 @@ describe('canonical view seed parameter fidelity', () => {
       seed.agentOverrides['/lead'].llmConfig!.changed = true
       expect(canonicalView.agentsByAddress['/lead'].effectiveConfig.llmConfig).toEqual(parameters)
     }
-  })
-  it('keeps the existing shared scope projector coherent (pure view only, not nested runtime admission)', () => {
-    const config = source({ reasoning_effort: 'low' })
-    const scopeNodes: readonly TeamDefinitionMemberNode[] = [{
-      kind: 'agent_team', address: '/scope', displayName: 'Scope', teamDefinitionId: 'scope',
-      coordinatorAddress: '/scope/lead', children: [{ kind: 'agent', address: '/scope/lead', displayName: 'Lead', agentDefinitionId: 'agent' }],
-    }]
-    config.teamOverrides['/scope'] = { llmModelIdentifier: 'scope-model', llmConfig: { reasoning_effort: 'low' } }
-    const seed = buildEditableTeamRunSeed(resolveTeamRunConfiguration(config, scopeNodes))
-    expect(seed.teamOverrides['/scope'].llmConfig).toEqual({ reasoning_effort: 'low' })
-    expect(projectTeamRunLaunchRecords(seed, scopeNodes)).toEqual(projectTeamRunLaunchRecords(config, scopeNodes))
   })
   it('keeps unchanged model/runtime/equal parameters inherited and sparse', () => {
     const config = source({ budget: 0, enabled: false })
@@ -159,7 +148,7 @@ describe('fresh launch approval defaults', () => {
   )
 
   it('inherits fresh Team approval while retaining explicit member false in records and derived seeds', () => {
-    const members: readonly TeamDefinitionMemberNode[] = [
+    const members: readonly TeamDefinitionAgentNode[] = [
       { kind: 'agent', address: '/lead', displayName: 'Lead', agentDefinitionId: 'lead' },
       { kind: 'agent', address: '/reviewer', displayName: 'Reviewer', agentDefinitionId: 'reviewer' },
     ]

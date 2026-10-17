@@ -45,8 +45,7 @@ export type CollaboratorCopySource =
 
 /** The direct member agents of a configured Team placement that follow its launch (configured rule). */
 export const configuredTeamFollowerAddresses = (node: TeamRunAgentTeamNode): readonly AgentTeamAddress[] =>
-  Object.freeze(node.children.flatMap((child) => child.kind === "agent"
-    && memberFollowsTeam({ kind: "configured", team: node.defaultLaunchConfiguration, member: child })
+  Object.freeze(node.children.flatMap((child) => memberFollowsTeam({ kind: "configured", team: node.defaultLaunchConfiguration, member: child })
     ? [child.address] : []));
 
 /** The member addresses of a recorded Team that follow its launch (recorded rule). */

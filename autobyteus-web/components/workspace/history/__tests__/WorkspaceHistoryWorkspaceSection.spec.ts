@@ -16,8 +16,8 @@ import type {
 import {
   buildTestTeamContext,
   testAgentNode,
-  testSubTeamNode,
   testDelegation,
+  testTaskTeamLayout,
 } from '~/test-support/currentTeamTestFixtures';
 
 vi.mock('@iconify/vue', () => ({ Icon: {props: ['icon'], template: '<span :data-icon="icon" />'} }));
@@ -488,29 +488,20 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
 
   it('toggles a task-Team subtree and selects only its concrete task Agent child', async () => {
     const worker = stableAgent('/worker', { agentRunId: 'worker-run' });
-    const stableReviewer = stableAgent('/study_group/reviewer', { displayName: 'reviewer', agentRunId: 'reviewer-run' });
-    const stableStudyGroup: TeamMemberTreeRow = {
-      ...stableAgent('/study_group', { displayName: 'Study Group' }), kind: 'agent_team', agentRunId: null,
-      teamDefinitionId: 'study-group-definition', teamRunIdForNode: 'study-group-run',
-      coordinatorAddress: '/study_group/reviewer', currentStatus: null, children: [stableReviewer],
-    };
+    const studyGroup = testTaskTeamLayout('/study_group', [testAgentNode('/study_group/reviewer', { agentRunId: 'reviewer-run' })]);
     const liveContext = buildTestTeamContext({
       teamRunId: 'team-run-1',
-      rootChildren: [
-        testAgentNode('/worker', { agentRunId: 'worker-run' }),
-        testSubTeamNode('/study_group', [testAgentNode('/study_group/reviewer', { agentRunId: 'reviewer-run' })], {
-          teamRunId: 'study-group-run',
-        }),
-      ],
+      rootChildren: [testAgentNode('/worker', { agentRunId: 'worker-run' })],
       coordinatorAddress: '/worker', focusedAgentRunId: 'worker-run',
-      delegations: [testDelegation({ delegatorAgentRunId: 'worker-run', recipientAddress: '/study_group', target: { teamRunId: 'task-team-run-1' } })],
+      delegations: [testDelegation({
+        delegatorAgentRunId: 'worker-run', recipientAddress: '/study_group',
+        target: { teamRunId: 'task-team-run-1', team: studyGroup },
+      })],
     });
     const taskChildRunId = 'task-team-run-1:reviewer-run';
     liveContext.view.getAgentContext(taskChildRunId)!.state.currentStatus = AgentStatus.Running;
-    const { wrapper, actions } = mountSubject({ stableChildren: [worker, stableStudyGroup], liveContext });
+    const { wrapper, actions } = mountSubject({ stableChildren: [worker], liveContext });
 
-    await wrapper.get('[data-test="workspace-team-member-team-run-1-/study_group"]').trigger('click');
-    await wrapper.vm.$nextTick();
     let taskRows = wrapper.findAll('[data-test="workspace-team-transient-execution-row"]');
     expect(taskRows).toHaveLength(1);
     expect(taskRows[0].attributes('data-transient-kind')).toBe('task_team');
@@ -532,38 +523,25 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
   // delegated-team-aggregate-status REQ-002/003/005, AC-005/007/009: delegated Teams under a Team run.
   it('gives a delegated Team row under a Team run one Team status dot, collapsed included, gray when the run stops', async () => {
     const worker = stableAgent('/worker', { agentRunId: 'worker-run' });
-    const stableReviewer = stableAgent('/study_group/reviewer', { displayName: 'reviewer', agentRunId: 'reviewer-run', currentStatus: AgentStatus.Offline });
-    const stableStudyGroup: TeamMemberTreeRow = {
-      ...stableAgent('/study_group', { displayName: 'Study Group' }), kind: 'agent_team', agentRunId: null,
-      teamDefinitionId: 'study-group-definition', teamRunIdForNode: 'study-group-run',
-      coordinatorAddress: '/study_group/reviewer', currentStatus: null, children: [stableReviewer],
-    };
+    const studyGroup = testTaskTeamLayout('/study_group', [testAgentNode('/study_group/reviewer', { agentRunId: 'reviewer-run' })]);
     const liveContext = buildTestTeamContext({
       teamRunId: 'team-run-1',
-      rootChildren: [
-        testAgentNode('/worker', { agentRunId: 'worker-run' }),
-        testSubTeamNode('/study_group', [testAgentNode('/study_group/reviewer', { agentRunId: 'reviewer-run' })], {
-          teamRunId: 'study-group-run',
-        }),
-      ],
+      rootChildren: [testAgentNode('/worker', { agentRunId: 'worker-run' })],
       coordinatorAddress: '/worker', focusedAgentRunId: 'worker-run',
-      delegations: [testDelegation({ delegatorAgentRunId: 'worker-run', recipientAddress: '/study_group', target: { teamRunId: 'task-team-run-1' } })],
+      delegations: [testDelegation({
+        delegatorAgentRunId: 'worker-run', recipientAddress: '/study_group',
+        target: { teamRunId: 'task-team-run-1', team: studyGroup },
+      })],
     });
-    liveContext.view.getAgentContext('reviewer-run')!.state.currentStatus = AgentStatus.Offline;
     liveContext.view.getAgentContext('task-team-run-1:reviewer-run')!.state.currentStatus = AgentStatus.Running;
-    const { wrapper, team } = mountSubject({ stableChildren: [worker, stableStudyGroup], liveContext });
-    await wrapper.get('[data-test="workspace-team-member-team-run-1-/study_group"]').trigger('click');
-    await wrapper.vm.$nextTick();
+    const { wrapper, team } = mountSubject({ stableChildren: [worker], liveContext });
 
     const taskTeamRow = () => wrapper.get('[data-transient-kind="task_team"]');
     expect(taskTeamRow().attributes('aria-expanded')).toBe('false');
     expect(taskTeamRow().findAll('[data-test="team-aggregate-status-dot"]')).toHaveLength(1);
     expect(taskTeamRow().get('[data-test="team-aggregate-status-dot"]').attributes('data-status')).toBe(AgentStatus.Running);
     expect(taskTeamRow().attributes('aria-label')).toContain('running');
-    // The configured Team row counts the delegated work under it too.
-    expect(wrapper.get('[data-test="workspace-team-member-team-run-1-/study_group"] [data-test="team-aggregate-status-dot"]')
-      .attributes('data-status')).toBe(AgentStatus.Running);
-    // Agent rows keep their own status dot and never get a Team dot.
+    // Agent rows keep their own status dot and never get a Team dot (Teams are flat: stable rows are Agents).
     expect(wrapper.get('[data-test="workspace-team-member-team-run-1-/worker"]').find('[data-test="team-aggregate-status-dot"]').exists()).toBe(false);
 
     await wrapper.setProps({ workspaceTeams: [{ ...team, isActive: false }] });
@@ -585,177 +563,60 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     expect(wrapper.find('[data-row-kind="stable_member"]').exists()).toBe(true);
   });
 
-  it('toggles stable nested Team children by exact row key and selects the concrete child Agent', async () => {
-    const reviewLead = stableAgent('/software_team/review_lead', { displayName: 'review_lead', agentRunId: 'review-lead-run' });
-    const structuralTeam: TeamMemberTreeRow = {
-      ...stableAgent('/software_team', { displayName: 'Software Engineering Team' }), kind: 'agent_team', agentRunId: null,
-      teamDefinitionId: 'software-team', teamRunIdForNode: 'software-team-run', coordinatorAddress: '/software_team/review_lead',
-      currentStatus: null, children: [reviewLead],
-    };
-    const liveContext = buildTestTeamContext({
-      teamRunId: 'team-run-1',
-      rootChildren: [testSubTeamNode('/software_team', [testAgentNode('/software_team/review_lead', { agentRunId: 'review-lead-run' })], {
-        teamRunId: 'software-team-run',
-      })],
-      coordinatorAddress: '/software_team/review_lead', focusedAgentRunId: 'review-lead-run',
-    });
-    const { wrapper, actions, state } = mountSubject({ stableChildren: [structuralTeam], liveContext });
-    const nestedRow = () => wrapper.get('[data-test="workspace-team-member-team-run-1-/software_team"]');
-    const childRow = () => wrapper.find('[data-test="workspace-team-member-team-run-1-/software_team/review_lead"]');
-    expect(childRow().exists()).toBe(false);
-    await nestedRow().trigger('click');
-    await wrapper.vm.$nextTick();
-    expect(state.toggleTeamMember).toHaveBeenLastCalledWith('workspace:/ws/a', 'team-run-1', 'team:software-team-run');
-    expect(actions.onSelectTeamMember).not.toHaveBeenCalled();
-    expect(childRow().exists()).toBe(true);
-    await childRow().trigger('click');
-    expect(actions.onSelectTeamMember).toHaveBeenCalledWith({
-      teamRunId: 'team-run-1', memberAddress: '/software_team/review_lead', agentRunId: 'review-lead-run',
-    }, 'workspace:/ws/a');
-  });
-
-  it('keeps a localized nested-Team aggregate visible, reactive, aligned, and non-interactive while collapsed', async () => {
-    const prototyper = stableAgent('/product_team/product_prototyper', {
-      displayName: 'product_prototyper', agentRunId: 'product-prototyper-run',
-      currentStatus: AgentStatus.Running,
-    });
-    const bootstrapper = stableAgent('/product_team/prototype_bootstrapper', {
-      displayName: 'prototype_bootstrapper', agentRunId: 'prototype-bootstrapper-run',
-      currentStatus: AgentStatus.Idle,
-    });
-    const productTeam: TeamMemberTreeRow = {
-      ...stableAgent('/product_team', { displayName: 'Product Design & Prototyping Team' }),
-      kind: 'agent_team', agentRunId: null, teamDefinitionId: 'product-team',
-      teamRunIdForNode: 'product-team-run', coordinatorAddress: prototyper.memberAddress,
-      currentStatus: null, children: [prototyper, bootstrapper],
-    };
-    const liveContext = buildTestTeamContext({
-      teamRunId: 'team-run-1',
-      rootChildren: [testSubTeamNode('/product_team', [
-        testAgentNode(prototyper.memberAddress, { agentRunId: prototyper.agentRunId! }),
-        testAgentNode(bootstrapper.memberAddress, { agentRunId: bootstrapper.agentRunId! }),
-      ], { teamRunId: 'product-team-run', coordinatorAddress: prototyper.memberAddress })],
-      coordinatorAddress: prototyper.memberAddress,
-      focusedAgentRunId: prototyper.agentRunId!,
-    });
-    liveContext.view.getAgentContext(prototyper.agentRunId!)!.state.currentStatus = AgentStatus.Running;
-    liveContext.view.getAgentContext(bootstrapper.agentRunId!)!.state.currentStatus = AgentStatus.Idle;
-
-    const { wrapper, state, actions, team } = mountSubject({
-      stableChildren: [productTeam], liveContext,
-    });
-    const nestedRow = wrapper.get('[data-test="workspace-team-member-team-run-1-/product_team"]');
-    expect(wrapper.find('[data-test="workspace-team-member-team-run-1-/product_team/product_prototyper"]').exists()).toBe(false);
-    expect(nestedRow.findAll('[data-test="team-aggregate-status-dot"]')).toHaveLength(1);
-    let dot = nestedRow.get('[data-test="team-aggregate-status-dot"]');
-    expect(dot.attributes()).toMatchObject({
-      'data-status': AgentStatus.Running,
-      'aria-label': 'Team status: Running',
-      title: 'Team status: Running',
-      role: 'img',
-    });
-    expect(dot.get('[aria-hidden="true"]').classes()).toEqual(expect.arrayContaining([
-      'h-2', 'w-2', 'bg-blue-500', 'animate-pulse',
-    ]));
-    expect(dot.attributes('tabindex')).toBeUndefined();
-    expect(dot.element.parentElement?.nextElementSibling?.classList.contains('h-4')).toBe(true);
-    expect(nestedRow.get('[data-test="workspace-team-member-disclosure"]').element.compareDocumentPosition(dot.element))
-      .toBe(Node.DOCUMENT_POSITION_FOLLOWING);
-
-    const idleRows = team.executionRows.map((row) => {
-      if (row.memberKind !== 'agent') return row;
-      return row.kind === 'stable_member'
-        ? { ...row, row: { ...row.row, currentStatus: AgentStatus.Idle } }
-        : { ...row, currentStatus: AgentStatus.Idle };
-    });
-    await wrapper.setProps({ workspaceTeams: [{ ...team, executionRows: idleRows }] });
-    await wrapper.vm.$nextTick();
-    dot = nestedRow.get('[data-test="team-aggregate-status-dot"]');
-    expect(dot.attributes()).toMatchObject({
-      'data-status': AgentStatus.Idle,
-      'aria-label': 'Team status: Idle',
-      title: 'Team status: Idle',
-    });
-    expect(dot.get('[aria-hidden="true"]').classes()).toContain('bg-green-500');
-    expect(dot.get('[aria-hidden="true"]').classes()).not.toContain('animate-pulse');
-
-    expect(state.toggleTeamMember).not.toHaveBeenCalled();
-    await dot.trigger('click');
-    expect(state.toggleTeamMember).toHaveBeenCalledTimes(1);
-    expect(state.toggleTeamMember).toHaveBeenCalledWith(
-      'workspace:/ws/a', 'team-run-1', 'team:product-team-run',
-    );
-    expect(actions.onSelectTeamMember).not.toHaveBeenCalled();
-  });
-
   it('renders accessible printed-tree rails, node identities, and orthogonal selection', async () => {
-    const nestedAgent = stableAgent('/design/researcher', {
-      displayName: 'Research Operations Specialist',
-      agentRunId: 'researcher-run',
-    });
-    const designTeam: TeamMemberTreeRow = {
-      ...stableAgent('/design', { displayName: 'Product Design & Prototyping' }),
-      kind: 'agent_team', agentRunId: null, teamDefinitionId: 'design-team',
-      teamRunIdForNode: 'design-team-run', coordinatorAddress: nestedAgent.memberAddress,
-      currentStatus: null, children: [nestedAgent],
-    };
     const coordinator = stableAgent('/coordinator', {
       displayName: 'Workspace Program Coordinator',
       agentRunId: 'coordinator-run',
     });
+    const design = testTaskTeamLayout('/design', [testAgentNode('/design/researcher', { agentRunId: 'researcher-run' })]);
     const liveContext = buildTestTeamContext({
       teamRunId: 'team-run-1',
-      rootChildren: [
-        testSubTeamNode('/design', [
-          testAgentNode(nestedAgent.memberAddress, { agentRunId: nestedAgent.agentRunId! }),
-        ], {
-          teamRunId: 'design-team-run',
-          coordinatorAddress: nestedAgent.memberAddress,
-          displayName: 'Product Design & Prototyping',
-        }),
-        testAgentNode(coordinator.memberAddress, { agentRunId: coordinator.agentRunId! }),
-      ],
+      rootChildren: [testAgentNode(coordinator.memberAddress, { agentRunId: coordinator.agentRunId! })],
       coordinatorAddress: coordinator.memberAddress,
       focusedAgentRunId: coordinator.agentRunId!,
+      delegations: [testDelegation({
+        delegatorAgentRunId: coordinator.agentRunId!, recipientAddress: '/design',
+        target: { teamRunId: 'design-team-run', team: design },
+      })],
     });
-    const { wrapper } = mountSubject({
-      stableChildren: [designTeam, coordinator],
-      liveContext,
-    });
+    const { wrapper } = mountSubject({ stableChildren: [coordinator], liveContext });
 
     const tree = wrapper.get('[data-test="workspace-team-execution-tree"]');
     expect(tree.attributes('role')).toBe('tree');
     expect(tree.attributes('aria-label')).toContain('organization tree');
 
-    const designRow = wrapper.get('[data-test="workspace-team-member-team-run-1-/design"]');
+    const selectedCoordinator = wrapper.get('[data-test="workspace-team-member-team-run-1-/coordinator"]');
+    expect(selectedCoordinator.classes()).toContain('is-selected');
+    expect(selectedCoordinator.attributes()).toMatchObject({
+      role: 'treeitem',
+      'aria-level': '1',
+      'aria-selected': 'true',
+      'aria-current': 'true',
+    });
+    expect(selectedCoordinator.get('[data-test="workspace-hierarchy-branches"] [data-has-following-sibling]').attributes('data-has-following-sibling'))
+      .toBe('true');
+
+    const designRow = wrapper.get('[data-row-kind="transient_execution"][data-member-address="/design"]');
     expect(designRow.attributes()).toMatchObject({
       role: 'treeitem',
       'aria-level': '1',
       'aria-expanded': 'false',
       'aria-selected': 'false',
-      title: 'Agent team · design · /design',
+      title: 'Temporary task team · design · /design',
     });
-    expect(designRow.classes()).toContain('font-semibold');
-    expect(designRow.find('[data-team-icon="user-group-solid"]').exists()).toBe(true);
-    expect(designRow.get('[data-test="workspace-team-member-disclosure"]').attributes('aria-label'))
+    expect(designRow.find('[data-team-icon="temporary-task-team"]').exists()).toBe(true);
+    expect(designRow.get('[data-test="workspace-team-transient-disclosure"]').attributes('aria-label'))
       .toBe('Expand design');
     expect(designRow.get('[data-test="workspace-hierarchy-branches"] [data-has-following-sibling]').attributes('data-has-following-sibling'))
-      .toBe('true');
-
-    const selectedCoordinator = wrapper.get('[data-test="workspace-team-member-team-run-1-/coordinator"]');
-    expect(selectedCoordinator.classes()).toContain('is-selected');
-    expect(selectedCoordinator.attributes()).toMatchObject({
-      'aria-selected': 'true',
-      'aria-current': 'true',
-    });
+      .toBe('false');
 
     await designRow.trigger('keydown', { key: 'Enter' });
     await wrapper.vm.$nextTick();
-    const nestedAgentRow = wrapper.get('[data-test="workspace-team-member-team-run-1-/design/researcher"]');
-    expect(nestedAgentRow.attributes('aria-level')).toBe('2');
-    expect(nestedAgentRow.find('[data-test="workspace-team-member-avatar"]').exists()).toBe(true);
-    expect(nestedAgentRow.find('[data-test="workspace-hierarchy-branches"] [data-ancestor-depth="0"]').exists()).toBe(true);
-    expect(nestedAgentRow.get('[data-test="workspace-hierarchy-branches"] [data-has-following-sibling]').attributes('data-has-following-sibling'))
+    const researcherRow = wrapper.get('[data-agent-run-id="design-team-run:researcher-run"]');
+    expect(researcherRow.attributes('aria-level')).toBe('2');
+    // `/design` is the last root-level row, so no depth-0 rail continues past it.
+    expect(researcherRow.find('[data-test="workspace-hierarchy-branches"] [data-ancestor-depth="0"]').exists()).toBe(false);
+    expect(researcherRow.get('[data-test="workspace-hierarchy-branches"] [data-has-following-sibling]').attributes('data-has-following-sibling'))
       .toBe('false');
   });
 });

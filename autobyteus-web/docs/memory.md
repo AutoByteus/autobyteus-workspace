@@ -80,8 +80,8 @@ structure. It shows every agent run of that root run that has memory on disk:
 - configured teams as group rows containing their members;
 - delegated task agents (marked as tasks, with their start time);
 - delegated task teams as group rows (marked as tasks, with their start time)
-  containing their members, including nested teams inside task teams at any
-  depth.
+  containing their members, including task teams that their members delegated
+  in turn, at any depth. Teams are flat: a team's members are agents.
 
 Group rows are structural only and have no memory of their own; a group row
 appears only when something inside it has memory. Every agent row shows the
@@ -178,7 +178,7 @@ Storage is server-owned and identity-opaque:
 
 - Standalone runs: `memory/agents/<runId>/...`
 - Direct team members: `memory/agent_teams/<rootTeamRunId>/<memberRunId>/...`
-- Nested subteam members: `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<memberRunId>/...`, with deeper child team ids appended before the member id
+- Delegated task-team members: `memory/agent_teams/<rootTeamRunId>/<taskTeamRunId>/<memberRunId>/...`; a task team delegated inside a task team appends its run id before the member id
 - Task-Agent runs: `memory/agent_teams/<rootTeamRunId>/<...ancestorTeamRunIds>/<taskAgentRunId>/...`
 - Agent org members: `memory/agent_orgs/<orgRunId>/<...teamRunIds>/<agentRunId>/...` (team runs hosted inside the org, including task teams, contribute their run ids before the agent run id)
 - Imported source memory: `memory/imports/<sourceNodeId>/agents/...` and

@@ -26,7 +26,7 @@ const touch = async (filePath: string, mtime: number) => {
 /**
  * `/ceo`; configured team `/engineering` with `/engineering/solution_designer`. With tasks: a delegated `/ceo`
  * task agent and a task team delegated to the configured team address `/engineering` (same address, own
- * teamRunId) whose members are `/engineering/solution_designer` and a nested team `/engineering/review`.
+ * teamRunId) whose member `/engineering/solution_designer` delegates a task team `/engineering/review`.
  */
 const orgTree = (orgRunId: string, orgDefinitionId: string, withTasks: boolean): AgentOrgRunExecutionTreeSnapshot => {
   const designer = testOrgAgentNode("/engineering/solution_designer", `${orgRunId}-designer`);
@@ -51,14 +51,15 @@ const orgTree = (orgRunId: string, orgDefinitionId: string, withTasks: boolean):
           teamRunId: `${orgRunId}-engineering-task`,
           members: [
             { address: assertAgentTeamAddress("/engineering/solution_designer"), agentRunId: `${orgRunId}-task-team-designer`, platformAgentRunId: null },
-            {
-              address: assertAgentTeamAddress("/engineering/review"),
-              teamRunId: `${orgRunId}-review`,
-              members: [{ address: assertAgentTeamAddress("/engineering/review/reviewer"), agentRunId: `${orgRunId}-reviewer`, platformAgentRunId: null }],
-              taskExecutions: [],
-            },
           ],
-          taskExecutions: [],
+          taskExecutions: [{
+            address: assertAgentTeamAddress("/engineering/review"),
+            teamRunId: `${orgRunId}-review`,
+            members: [{ address: assertAgentTeamAddress("/engineering/review/reviewer"), agentRunId: `${orgRunId}-reviewer`, platformAgentRunId: null }],
+            taskExecutions: [],
+            delegatorAgentRunId: `${orgRunId}-task-team-designer`,
+            startedAt: "2026-09-01T00:03:00.000Z",
+          }],
           delegatorAgentRunId: `${orgRunId}-ceo`,
           startedAt: "2026-09-01T00:02:00.000Z",
         },
@@ -149,7 +150,7 @@ describe("AgentOrgMemoryExplorerService", () => {
 
     const engineering = { teamRunId: "org-a-1-engineering", address: "/engineering", displayName: "engineering", kind: "CONFIGURED_TEAM", startedAt: null };
     const engineeringTask = { teamRunId: "org-a-1-engineering-task", address: "/engineering", displayName: "engineering", kind: "TASK_TEAM", startedAt: "2026-09-01T00:02:00.000Z" };
-    const review = { teamRunId: "org-a-1-review", address: "/engineering/review", displayName: "engineering/review", kind: "TASK_TEAM", startedAt: null };
+    const review = { teamRunId: "org-a-1-review", address: "/engineering/review", displayName: "engineering/review", kind: "TASK_TEAM", startedAt: "2026-09-01T00:03:00.000Z" };
     expect(page.entries[1]?.memberTargets.map((member) => ({
       displayName: member.displayName,
       agentRunId: member.agentRunId,

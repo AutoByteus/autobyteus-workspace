@@ -17,8 +17,9 @@ export type OrgConfiguredTeam = Extract<OrgConfiguredMember, { teamRunId: string
 export type OrgTaskExecution = Root['taskExecutions'][number]
 type TaskTeam = Extract<OrgTaskExecution, { teamRunId: string }>
 type TaskMember = TaskTeam['members'][number]
-export type OrgTeamNode = OrgConfiguredTeam | TaskTeam | Extract<TaskMember, { teamRunId: string }>
-export type OrgAgentNode = OrgConfiguredAgent | Extract<OrgTaskExecution | TaskMember, { agentRunId: string }>
+/** An Org's Team, configured or delegated; Teams are flat, so its members are Agents. */
+export type OrgTeamNode = OrgConfiguredTeam | TaskTeam
+export type OrgAgentNode = OrgConfiguredAgent | Extract<OrgTaskExecution, { agentRunId: string }> | TaskMember
 export type OrgWorkspaceSelection =
   | Readonly<{ kind: 'agent_execution'; agentRunId: string }>
   | Readonly<{ kind: 'configured_team'; teamRunId: string }>
@@ -108,9 +109,7 @@ export class AgentOrgExecutionViewIndex {
     return team && !team.delegation ? this.coordinator(team.teamRunId) : null
   }
   teamMembers(teamRunId: string): readonly OrgAgentViewIdentity[] {
-    const collect = (team: OrgTeamNode): OrgAgentViewIdentity[] => team.members.flatMap((member) =>
-      'agentRunId' in member ? [this.requireAgent(member.agentRunId)] : collect(member))
-    return collect(this.requireTeam(teamRunId).execution)
+    return this.requireTeam(teamRunId).execution.members.map((member) => this.requireAgent(member.agentRunId))
   }
   coordinator(teamRunId: string): OrgAgentViewIdentity {
     const team = this.requireTeam(teamRunId)
@@ -158,10 +157,7 @@ export class AgentOrgExecutionViewIndex {
     this.teamsById.set(execution.teamRunId, Object.freeze({ teamRunId: execution.teamRunId,
       address: parseAgentTeamAddress(execution.address), source, execution, delegation, live }))
     const host: OrgExecutionHost = { kind: 'team', runId: execution.teamRunId }
-    execution.members.forEach((member) => {
-      if ('agentRunId' in member) this.addAgent(member, host, delegation, live, delegation ? 'task_team_member' : 'configured')
-      else this.addTeam(member, delegation, live)
-    })
+    execution.members.forEach((member) => this.addAgent(member, host, delegation, live, delegation ? 'task_team_member' : 'configured'))
     this.coordinator(execution.teamRunId)
     execution.taskExecutions.forEach((child) => this.addTask(child, host, live))
   }

@@ -425,47 +425,6 @@ pnpm test:e2e:diagram-zoom-viewer -- --output-dir test-results/diagram-zoom-view
 
 The probe chooses a free local port by default. Use `--port <port>` to pin it. If automatic browser discovery does not find Chrome/Chromium, pass `--browser-executable <path>` or set `PLAYWRIGHT_CHROME_EXECUTABLE_PATH=<path>`.
 
-### Nested Team Aggregate Status Browser Probe
-
-The Workspaces/Teams history tree has a self-starting browser probe for the
-presentation-only aggregate status on stable configured nested-Team rows. It
-covers the full five-state presentation, recursive and task-scoped Agent
-aggregation, sibling isolation, expanded/collapsed rendering, collapsed live
-patching without a new request, English and Simplified Chinese accessibility
-copy, exactly-once row/disclosure interaction, and root/Agent/transient-Team
-route exclusions. The probe installs a temporary Nuxt fixture route, starts an
-owned development server on a free loopback port, runs Chrome through
-Playwright Core, captures evidence, and removes only the resources it owns:
-
-```bash
-pnpm test:e2e:nested-team-aggregate-status -- --output-dir test-results/nested-team-aggregate-status
-```
-
-Use `--port <port>` to pin the port. If automatic discovery does not find
-Chrome/Chromium, pass `--browser-executable <path>` or set
-`PLAYWRIGHT_CHROME_EXECUTABLE_PATH=<path>`.
-
-### Nested Team Hierarchy Browser Probe
-
-The Workspace-history nested-Team hierarchy has a self-starting Chromium probe
-covering the production printed-tree components and current execution-row
-contracts. It verifies configured, transient, and deep mixed-node identity;
-continuous ancestor rails and terminating right-only elbows; orthogonal
-selection; the complete 260/320/520px by Default/Large/Extra Large matrix;
-narrow metadata and full-identity recovery; localized tree/treeitem accessibility
-output; pointer and keyboard disclosure; exact selection and Stop action routing;
-quiet-refresh preservation; runtime errors; and owned cleanup. The probe installs
-a temporary Nuxt fixture route, starts an owned development server on a free
-loopback port, writes evidence, and removes only the resources it owns:
-
-```bash
-pnpm test:e2e:nested-team-hierarchy -- --output-dir test-results/nested-team-hierarchy
-```
-
-Use `--port <port>` to pin the port. If automatic browser discovery does not find
-Chrome/Chromium, pass `--browser-executable <path>` or set
-`PLAYWRIGHT_CHROME_EXECUTABLE_PATH=<path>`.
-
 ### Codex Command Failure Detail Browser Probe
 
 The failed Codex command diagnostic has a self-starting renderer probe for the
@@ -555,7 +514,6 @@ pnpm codegen
 - `pnpm test:e2e:electron:isolation`: Run the complete packaged Electron isolation probe and write evidence
 - `pnpm test:e2e:workspace-responsive`: Run the standard workspace responsive browser probe against a running frontend/backend target
 - `pnpm test:e2e:diagram-zoom-viewer`: Run the self-starting shared Markdown Mermaid viewer browser probe
-- `pnpm test:e2e:nested-team-hierarchy`: Run the self-starting Workspace-history nested-Team hierarchy browser probe
 - `pnpm test:e2e:codex-command-failure-detail`: Run the self-starting center/Activity failed-command diagnostic browser probe
 - `pnpm test:e2e:task-agent-monitor-visibility`: Run the self-starting exact task hydration and settlement-fallback browser probe
 - `pnpm test:e2e:agent-org-role-labels`: Run the self-starting real-backend Agent Org role-label probe

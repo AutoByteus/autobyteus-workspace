@@ -1,0 +1,834 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/rnt-base-check/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/rnt-base-check/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:80435) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/rnt-base-check/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/rnt-base-check/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/rnt-base-check/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/rnt-base-check/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/memory
+============================================================
+Initialized server settings service with 19 predefined settings
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: df-manager-39588f
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: df-mate-39588f
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: df-lead-39588f
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: df-peer-39588f
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: df-builder-39588f
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: df-checker-39588f
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: df-helper-39588f
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Team Definition created successfully with ID: df-team-39588f
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Team Definition created successfully with ID: df-squad-39588f
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Team Definition created successfully with ID: df-crew-39588f
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mCreated and registered workspace ID: agent_ws_03e2f1247440882f04f55782a2df29437db4c4f083100a75d8cc609b590b07cf
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mAgent team websocket attached for team run df_team_39588f_928484dc283f46ab92cef2cda33983f2
+Created agent session fb729564-6f1a-48c4-800d-608d4f59ed31 for run df_team_39588f_928484dc283f46ab92cef2cda33983f2
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mAgent Team WebSocket connected: session=fb729564-6f1a-48c4-800d-608d4f59ed31, run=df_team_39588f_928484dc283f46ab92cef2cda33983f2
+
+[90mstderr[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/memory/agent_teams/df_team_39588f_928484dc283f46ab92cef2cda33983f2/df_manager_39588f_3eddbf1cc1324cd49ac230af44feb001/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mReusing registered workspace ID: agent_ws_03e2f1247440882f04f55782a2df29437db4c4f083100a75d8cc609b590b07cf
+
+[90mstderr[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/memory/agent_teams/df_team_39588f_928484dc283f46ab92cef2cda33983f2/df_manager_39588f_3eddbf1cc1324cd49ac230af44feb001/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/memory/agent_teams/df_team_39588f_928484dc283f46ab92cef2cda33983f2/df_manager_39588f_3eddbf1cc1324cd49ac230af44feb001/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/memory/agent_teams/df_team_39588f_928484dc283f46ab92cef2cda33983f2/df_manager_39588f_3eddbf1cc1324cd49ac230af44feb001/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/memory/agent_teams/df_team_39588f_928484dc283f46ab92cef2cda33983f2/df_manager_39588f_3eddbf1cc1324cd49ac230af44feb001/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/memory/agent_teams/df_team_39588f_928484dc283f46ab92cef2cda33983f2/df_manager_39588f_3eddbf1cc1324cd49ac230af44feb001/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/memory/agent_teams/df_team_39588f_928484dc283f46ab92cef2cda33983f2/df_manager_39588f_3eddbf1cc1324cd49ac230af44feb001/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mAGY compaction detection off for run df_manager_39588f_3eddbf1cc1324cd49ac230af44feb001: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/memory/agent_teams/df_team_39588f_928484dc283f46ab92cef2cda33983f2/df_manager_39588f_3eddbf1cc1324cd49ac230af44feb001/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mReusing registered workspace ID: agent_ws_03e2f1247440882f04f55782a2df29437db4c4f083100a75d8cc609b590b07cf
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mAGY compaction detection off for run df_lead_39588f_4256bc13d3ff4aebb3d52b68a8775c38: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mReusing registered workspace ID: agent_ws_03e2f1247440882f04f55782a2df29437db4c4f083100a75d8cc609b590b07cf
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mAGY compaction detection off for run df_builder_39588f_adff871a6ee74f44a39340ad2ca0f8c5: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mReusing registered workspace ID: agent_ws_03e2f1247440882f04f55782a2df29437db4c4f083100a75d8cc609b590b07cf
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mAGY compaction detection off for run df_helper_39588f_35250bcafe26477b8d67aed136ba68f8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mClosed agent session fb729564-6f1a-48c4-800d-608d4f59ed31
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mAgent team websocket attached for team run df_team_39588f_928484dc283f46ab92cef2cda33983f2
+Created agent session 3d19f69b-4b92-4f75-afd0-73f93971274c for run df_team_39588f_928484dc283f46ab92cef2cda33983f2
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mAgent Team WebSocket connected: session=3d19f69b-4b92-4f75-afd0-73f93971274c, run=df_team_39588f_928484dc283f46ab92cef2cda33983f2
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mReusing registered workspace ID: agent_ws_03e2f1247440882f04f55782a2df29437db4c4f083100a75d8cc609b590b07cf
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mAGY compaction detection off for run df_builder_39588f_adff871a6ee74f44a39340ad2ca0f8c5: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mReusing registered workspace ID: agent_ws_03e2f1247440882f04f55782a2df29437db4c4f083100a75d8cc609b590b07cf
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mAGY compaction detection off for run df_helper_39588f_35250bcafe26477b8d67aed136ba68f8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+[22m[39mClosed agent session 3d19f69b-4b92-4f75-afd0-73f93971274c
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mReusing registered workspace ID: agent_ws_03e2f1247440882f04f55782a2df29437db4c4f083100a75d8cc609b590b07cf
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mReusing registered workspace ID: agent_ws_03e2f1247440882f04f55782a2df29437db4c4f083100a75d8cc609b590b07cf
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mAGY compaction detection off for run df_manager_39588f_a9362d13211e415cb5258d5b721b0a4b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mAgent websocket attached for run df_manager_39588f_a9362d13211e415cb5258d5b721b0a4b
+Created agent session f0289fc8-5f5d-4003-b82b-d96e3beed31d for run df_manager_39588f_a9362d13211e415cb5258d5b721b0a4b
+Agent WebSocket connected: session=f0289fc8-5f5d-4003-b82b-d96e3beed31d, run=df_manager_39588f_a9362d13211e415cb5258d5b721b0a4b
+
+[90mstderr[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/memory/agents/df_manager_39588f_a9362d13211e415cb5258d5b721b0a4b/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mReusing registered workspace ID: agent_ws_03e2f1247440882f04f55782a2df29437db4c4f083100a75d8cc609b590b07cf
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mAGY compaction detection off for run df_lead_39588f_40041f435a3a4f2da5ef75660cd86567: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mReusing registered workspace ID: agent_ws_03e2f1247440882f04f55782a2df29437db4c4f083100a75d8cc609b590b07cf
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mAGY compaction detection off for run df_builder_39588f_2b39d2f3a5a14f31b95b6f3bd73a3df8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mReusing registered workspace ID: agent_ws_03e2f1247440882f04f55782a2df29437db4c4f083100a75d8cc609b590b07cf
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mAGY compaction detection off for run df_helper_39588f_90b53bcd29a445979e0bc4806079e92b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mClosed agent session f0289fc8-5f5d-4003-b82b-d96e3beed31d
+Agent WebSocket disconnected: f0289fc8-5f5d-4003-b82b-d96e3beed31d
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mReusing registered workspace ID: agent_ws_03e2f1247440882f04f55782a2df29437db4c4f083100a75d8cc609b590b07cf
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mAGY compaction detection off for run df_manager_39588f_a9362d13211e415cb5258d5b721b0a4b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mAgent websocket attached for run df_manager_39588f_a9362d13211e415cb5258d5b721b0a4b
+Created agent session ee49b0bb-fb2b-4cd1-934f-89d54295cc52 for run df_manager_39588f_a9362d13211e415cb5258d5b721b0a4b
+Agent WebSocket connected: session=ee49b0bb-fb2b-4cd1-934f-89d54295cc52, run=df_manager_39588f_a9362d13211e415cb5258d5b721b0a4b
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mReusing registered workspace ID: agent_ws_03e2f1247440882f04f55782a2df29437db4c4f083100a75d8cc609b590b07cf
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mAGY compaction detection off for run df_builder_39588f_2b39d2f3a5a14f31b95b6f3bd73a3df8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mReusing registered workspace ID: agent_ws_03e2f1247440882f04f55782a2df29437db4c4f083100a75d8cc609b590b07cf
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mAGY compaction detection off for run df_helper_39588f_90b53bcd29a445979e0bc4806079e92b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+[22m[39mClosed agent session ee49b0bb-fb2b-4cd1-934f-89d54295cc52
+Agent WebSocket disconnected: ee49b0bb-fb2b-4cd1-934f-89d54295cc52
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+[22m[39mReusing registered workspace ID: agent_ws_03e2f1247440882f04f55782a2df29437db4c4f083100a75d8cc609b590b07cf
+
+[90mstderr[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/memory/agent_orgs/df_org_39588f_41210ead42f24b6fb6801dde49f0a9b9/df_manager_39588f_6d608fe19de44b8cb0e083d0c5270187/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+[22m[39mReusing registered workspace ID: agent_ws_03e2f1247440882f04f55782a2df29437db4c4f083100a75d8cc609b590b07cf
+
+[90mstderr[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/memory/agent_orgs/df_org_39588f_41210ead42f24b6fb6801dde49f0a9b9/df_manager_39588f_6d608fe19de44b8cb0e083d0c5270187/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/memory/agent_orgs/df_org_39588f_41210ead42f24b6fb6801dde49f0a9b9/df_manager_39588f_6d608fe19de44b8cb0e083d0c5270187/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+[22m[39mAGY compaction detection off for run df_manager_39588f_6d608fe19de44b8cb0e083d0c5270187: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/memory/agent_orgs/df_org_39588f_41210ead42f24b6fb6801dde49f0a9b9/df_manager_39588f_6d608fe19de44b8cb0e083d0c5270187/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+[22m[39mReusing registered workspace ID: agent_ws_03e2f1247440882f04f55782a2df29437db4c4f083100a75d8cc609b590b07cf
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+[22m[39mAGY compaction detection off for run df_lead_39588f_49eedc948a0343cfa13d6713a545ba0c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+[22m[39mReusing registered workspace ID: agent_ws_03e2f1247440882f04f55782a2df29437db4c4f083100a75d8cc609b590b07cf
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+[22m[39mAGY compaction detection off for run df_builder_39588f_767fb8f4c8644d1dab184ce2ca89c73d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+[22m[39mReusing registered workspace ID: agent_ws_03e2f1247440882f04f55782a2df29437db4c4f083100a75d8cc609b590b07cf
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+[22m[39mAGY compaction detection off for run df_helper_39588f_ac148cdc14584c8ead7e3761e7f5163f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+[22m[39mReusing registered workspace ID: agent_ws_03e2f1247440882f04f55782a2df29437db4c4f083100a75d8cc609b590b07cf
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+[22m[39mAGY compaction detection off for run df_builder_39588f_767fb8f4c8644d1dab184ce2ca89c73d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-wJSkw6/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+[22m[39mReusing registered workspace ID: agent_ws_03e2f1247440882f04f55782a2df29437db4c4f083100a75d8cc609b590b07cf
+
+[90mstdout[2m | tests/e2e/projects/delegation-forest-restore.e2e.test.ts[2m > [22m[2mDelegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mDF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+[22m[39mAGY compaction detection off for run df_helper_39588f_ac148cdc14584c8ead7e3761e7f5163f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+ [32m✓[39m tests/e2e/projects/delegation-forest-restore.e2e.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 8523[2mms[22m[39m
+     [33m[2m✓[22m[39m DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop [33m 2408[2mms[22m[39m
+     [33m[2m✓[22m[39m DF-2 Agent root: the agent the user started heads the same forest; restored after Stop [33m 2754[2mms[22m[39m
+     [33m[2m✓[22m[39m DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop [33m 2933[2mms[22m[39m
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:82142) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/rnt-base-check/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/rnt-base-check/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/rnt-base-check/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/rnt-base-check/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/memory
+============================================================
+Initialized server settings service with 19 predefined settings
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mRegistered required tool unit: Task Delegation Tools
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mAgent Definition created successfully with ID: uc-host-8a9186
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mAgent Definition created successfully with ID: uc-helper-8a9186
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/workspace.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mCreated and registered workspace ID: agent_ws_d33a8181ad449ac891951350dbff60ac99858e68ded592a1c22a1d0fe937c1ca
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/workspace.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mReusing registered workspace ID: agent_ws_d33a8181ad449ac891951350dbff60ac99858e68ded592a1c22a1d0fe937c1ca
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mAGY compaction detection off for run uc_host_8a9186_b051dc8424db43c3a9c78582d37c284a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mAgent websocket attached for run uc_host_8a9186_b051dc8424db43c3a9c78582d37c284a
+Created agent session 350be71e-688a-495a-89a9-8440967296fd for run uc_host_8a9186_b051dc8424db43c3a9c78582d37c284a
+Agent WebSocket connected: session=350be71e-688a-495a-89a9-8440967296fd, run=uc_host_8a9186_b051dc8424db43c3a9c78582d37c284a
+
+[90mstderr[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/memory/agents/uc_host_8a9186_b051dc8424db43c3a9c78582d37c284a/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/workspace.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mReusing registered workspace ID: agent_ws_d33a8181ad449ac891951350dbff60ac99858e68ded592a1c22a1d0fe937c1ca
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mAGY compaction detection off for run uc_helper_8a9186_6f7c8af13380466395ec2b2a2ca00936: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mClosed agent session 350be71e-688a-495a-89a9-8440967296fd
+Agent WebSocket disconnected: 350be71e-688a-495a-89a9-8440967296fd
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/workspace.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mReusing registered workspace ID: agent_ws_d33a8181ad449ac891951350dbff60ac99858e68ded592a1c22a1d0fe937c1ca
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/workspace.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mReusing registered workspace ID: agent_ws_d33a8181ad449ac891951350dbff60ac99858e68ded592a1c22a1d0fe937c1ca
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mAGY compaction detection off for run uc_host_8a9186_ad893d889ac94952a50743322f0cceb3: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mAgent websocket attached for run uc_host_8a9186_ad893d889ac94952a50743322f0cceb3
+Created agent session b4d6bd0e-ea79-40ed-bfdc-17f9769cc6c8 for run uc_host_8a9186_ad893d889ac94952a50743322f0cceb3
+Agent WebSocket connected: session=b4d6bd0e-ea79-40ed-bfdc-17f9769cc6c8, run=uc_host_8a9186_ad893d889ac94952a50743322f0cceb3
+
+[90mstderr[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/memory/agents/uc_host_8a9186_ad893d889ac94952a50743322f0cceb3/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/workspace.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mReusing registered workspace ID: agent_ws_d33a8181ad449ac891951350dbff60ac99858e68ded592a1c22a1d0fe937c1ca
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mAGY compaction detection off for run uc_helper_8a9186_bf249881164d4f0487569bea4cf69821: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mClosed agent session b4d6bd0e-ea79-40ed-bfdc-17f9769cc6c8
+Agent WebSocket disconnected: b4d6bd0e-ea79-40ed-bfdc-17f9769cc6c8
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/workspace.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mReusing registered workspace ID: agent_ws_d33a8181ad449ac891951350dbff60ac99858e68ded592a1c22a1d0fe937c1ca
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/workspace.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mReusing registered workspace ID: agent_ws_d33a8181ad449ac891951350dbff60ac99858e68ded592a1c22a1d0fe937c1ca
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mAGY compaction detection off for run uc_host_8a9186_d10a18af9ba64faf90633143a9d520c2: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mAgent websocket attached for run uc_host_8a9186_d10a18af9ba64faf90633143a9d520c2
+Created agent session 7461cadc-1235-4cb3-b954-b214e2e382bd for run uc_host_8a9186_d10a18af9ba64faf90633143a9d520c2
+Agent WebSocket connected: session=7461cadc-1235-4cb3-b954-b214e2e382bd, run=uc_host_8a9186_d10a18af9ba64faf90633143a9d520c2
+
+[90mstderr[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/memory/agents/uc_host_8a9186_d10a18af9ba64faf90633143a9d520c2/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/uc-e2e-6SncNe/workspace.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mReusing registered workspace ID: agent_ws_d33a8181ad449ac891951350dbff60ac99858e68ded592a1c22a1d0fe937c1ca
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mAGY compaction detection off for run uc_helper_8a9186_c3ee2c133da04d90b60c3c0e8fbff284: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22m[2mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)
+[22m[39mClosed agent session 7461cadc-1235-4cb3-b954-b214e2e382bd
+Agent WebSocket disconnected: 7461cadc-1235-4cb3-b954-b214e2e382bd
+
+ [31m❯[39m tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts [2m([22m[2m2 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[33m 5340[2mms[22m[39m
+[31m     [31m×[31m UC-1 the other runs work, the scan warns naming the bad run and continues, the bad run reports its error, no file changes[39m[32m 14[2mms[22m[39m
+[31m     [31m×[31m UC-2 a new server process starts with the unreadable tree present and the same holds[39m[33m 2757[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)[2m > [22mUC-1 the other runs work, the scan warns naming the bad run and continues, the bad run reports its error, no file changes
+[31m[1mAssertionError[22m: running server: file changes of uc_helper_8a9186_6f7c8af13380466395ec2b2a2ca00936: [{"message":"Unterminated string in JSON at position 544 (line 15 column 25)","locations":[{"line":1,"column":19}],"path":["getRunFileChanges"]}]: expected '[{"message":"Unterminated string in J…' to be null[39m
+
+[32m- Expected:[39m 
+null
+
+[31m+ Received:[39m 
+"[{\"message\":\"Unterminated string in JSON at position 544 (line 15 column 25)\",\"locations\":[{\"line\":1,\"column\":19}],\"path\":[\"getRunFileChanges\"]}]"
+
+[36m [2m❯[22m expectContained tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts:[2m111:89[22m[39m
+    [90m109| [39m    [35mfor[39m ([35mconst[39m run [35mof[39m [runs[[34m1[39m][33m![39m[33m,[39m runs[[34m2[39m][33m![39m]) {
+    [90m110| [39m      [35mconst[39m changes [33m=[39m [35mawait[39m [34mfileChanges[39m(run[33m.[39mchild)[33m;[39m
+    [90m111| [39m      expect(changes.error, `${label}: file changes of ${run.child}: $…
+    [90m   | [39m                                                                                        [31m^[39m
+    [90m112| [39m      [35mconst[39m projection [33m=[39m [35mawait[39m [34mmember[39m(run)[33m;[39m
+    [90m113| [39m      expect(projection.error, `${label}: member projection of ${run.c…
+[90m [2m❯[22m tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts:[2m130:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts[2m > [22mAn unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)[2m > [22mUC-2 a new server process starts with the unreadable tree present and the same holds
+[31m[1mAssertionError[22m: new server process: file changes of uc_helper_8a9186_6f7c8af13380466395ec2b2a2ca00936: [{"message":"Unterminated string in JSON at position 544 (line 15 column 25)","locations":[{"line":1,"column":19}],"path":["getRunFileChanges"]}]: expected '[{"message":"Unterminated string in J…' to be null[39m
+
+[32m- Expected:[39m 
+null
+
+[31m+ Received:[39m 
+"[{\"message\":\"Unterminated string in JSON at position 544 (line 15 column 25)\",\"locations\":[{\"line\":1,\"column\":19}],\"path\":[\"getRunFileChanges\"]}]"
+
+[36m [2m❯[22m expectContained tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts:[2m111:89[22m[39m
+    [90m109| [39m    [35mfor[39m ([35mconst[39m run [35mof[39m [runs[[34m1[39m][33m![39m[33m,[39m runs[[34m2[39m][33m![39m]) {
+    [90m110| [39m      [35mconst[39m changes [33m=[39m [35mawait[39m [34mfileChanges[39m(run[33m.[39mchild)[33m;[39m
+    [90m111| [39m      expect(changes.error, `${label}: file changes of ${run.child}: $…
+    [90m   | [39m                                                                                        [31m^[39m
+    [90m112| [39m      [35mconst[39m projection [33m=[39m [35mawait[39m [34mmember[39m(run)[33m;[39m
+    [90m113| [39m      expect(projection.error, `${label}: member projection of ${run.c…
+[90m [2m❯[22m tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts:[2m152:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m1 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m3 passed[39m[22m[90m (5)[39m
+[2m   Start at [22m 11:05:15
+[2m   Duration [22m 24.34s[2m (transform 5.45s, setup 33ms, import 9.69s, tests 13.86s, environment 0ms)[22m
+

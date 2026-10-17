@@ -1,0 +1,114 @@
+
+> @autobyteus/team-stream-contracts@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-team-stream-contracts
+> pnpm build && node --test tests/*.test.mjs
+
+
+> @autobyteus/team-stream-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-team-stream-contracts
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: copy DTOs carry optional user choices; malformed ones are refused
+ok 1 - copy DTOs carry optional user choices; malformed ones are refused
+  ---
+  duration_ms: 3.652375
+  type: 'test'
+  ...
+# Subtest: the copy launch rule: own choice, else the followed Team's, else started; runtime and approval stay
+ok 2 - the copy launch rule: own choice, else the followed Team's, else started; runtime and approval stay
+  ---
+  duration_ms: 0.164291
+  type: 'test'
+  ...
+# Subtest: a live Save's DELEGATED_LAUNCH_SELECTIONS_CHANGED carries each saved choice by run ID
+ok 3 - a live Save's DELEGATED_LAUNCH_SELECTIONS_CHANGED carries each saved choice by run ID
+  ---
+  duration_ms: 1.3175
+  type: 'test'
+  ...
+# Subtest: catalog Team copy DTOs carry optional per-member launch values and sources
+ok 4 - catalog Team copy DTOs carry optional per-member launch values and sources
+  ---
+  duration_ms: 4.639292
+  type: 'test'
+  ...
+# Subtest: records written before sources existed still parse
+ok 5 - records written before sources existed still parse
+  ---
+  duration_ms: 0.212833
+  type: 'test'
+  ...
+# Subtest: the effective member launch is the member's own, else the Team's; the source likewise, null when not recorded
+ok 6 - the effective member launch is the member's own, else the Team's; the source likewise, null when not recorded
+  ---
+  duration_ms: 0.120042
+  type: 'test'
+  ...
+# Subtest: SEND_MESSAGE accepts optional mentions
+ok 7 - SEND_MESSAGE accepts optional mentions
+  ---
+  duration_ms: 2.859708
+  type: 'test'
+  ...
+# Subtest: the Team tree has no collaborators, and COLLABORATOR_ADDED is no longer a message
+ok 8 - the Team tree has no collaborators, and COLLABORATOR_ADDED is no longer a message
+  ---
+  duration_ms: 1.787417
+  type: 'test'
+  ...
+# Subtest: the Team snapshot requires its closed task executions beside the unfiltered tree
+ok 9 - the Team snapshot requires its closed task executions beside the unfiltered tree
+  ---
+  duration_ms: 4.315292
+  type: 'test'
+  ...
+# Subtest: TASK_EXECUTIONS_CLOSED is sequenced, strict and non-empty
+ok 10 - TASK_EXECUTIONS_CLOSED is sequenced, strict and non-empty
+  ---
+  duration_ms: 0.715208
+  type: 'test'
+  ...
+# Subtest: TASK_EXECUTIONS_REOPENED mirrors the closed event: sequenced, strict and non-empty
+ok 11 - TASK_EXECUTIONS_REOPENED mirrors the closed event: sequenced, strict and non-empty
+  ---
+  duration_ms: 0.522667
+  type: 'test'
+  ...
+# Subtest: validates and preserves the exact cumulative summary on a team token event
+ok 12 - validates and preserves the exact cumulative summary on a team token event
+  ---
+  duration_ms: 5.177834
+  type: 'test'
+  ...
+# Subtest: carries the summary revision and compaction threshold and keeps unknown keys rejected
+ok 13 - carries the summary revision and compaction threshold and keeps unknown keys rejected
+  ---
+  duration_ms: 1.19025
+  type: 'test'
+  ...
+# Subtest: team token event carries whether it reports a model call
+ok 14 - team token event carries whether it reports a model call
+  ---
+  duration_ms: 0.585042
+  type: 'test'
+  ...
+# Subtest: requires a non-negative safe-integer report generation
+ok 15 - requires a non-negative safe-integer report generation
+  ---
+  duration_ms: 4.2065
+  type: 'test'
+  ...
+# Subtest: team stream carries background-task snapshots with execution identity and rejects to-do messages
+ok 16 - team stream carries background-task snapshots with execution identity and rejects to-do messages
+  ---
+  duration_ms: 0.941792
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 161.268

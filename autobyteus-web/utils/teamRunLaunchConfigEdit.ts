@@ -3,11 +3,11 @@ import { cloneTeamConfig } from '~/composables/useDefinitionLaunchDefaults'
 import type { AgentConfigOverride, TeamRunConfig, TeamScopeConfigOverride } from '~/types/agent/TeamRunConfig'
 import type { TeamLaunchConfigEdit } from '~/types/agent/TeamLaunchDraft'
 import { parseAgentTeamAddress, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
-import type { TeamDefinitionMemberNode } from '~/utils/teamDefinitionMembers'
+import type { TeamDefinitionAgentNode } from '~/utils/teamDefinitionMembers'
 import { hasExplicitLlmConfigOverride, hasMeaningfulLaunchOverride, normalizeRuntimeKind } from '~/utils/teamRunConfigUtils'
 import { indexTeamLaunchTopology, resolveTeamRunConfiguration } from '~/utils/teamRunLaunchHierarchy'
 
-export const assertTeamLaunchEditTarget = (memberTree: readonly TeamDefinitionMemberNode[], address: string, expected: 'team' | 'agent'): AgentTeamAddress => {
+export const assertTeamLaunchEditTarget = (memberTree: readonly TeamDefinitionAgentNode[], address: string, expected: 'team' | 'agent'): AgentTeamAddress => {
   const canonical = parseAgentTeamAddress(address)
   if (canonical !== address || canonical === '/') throw new Error(`Team launch edit requires a canonical non-root ${expected} address '${address}'.`)
   const index = indexTeamLaunchTopology(memberTree)
@@ -15,7 +15,7 @@ export const assertTeamLaunchEditTarget = (memberTree: readonly TeamDefinitionMe
   return canonical
 }
 const pruneInvalidatedLlmConfigs = (
-  previous: Readonly<TeamRunConfig>, next: TeamRunConfig, memberTree: readonly TeamDefinitionMemberNode[],
+  previous: Readonly<TeamRunConfig>, next: TeamRunConfig, memberTree: readonly TeamDefinitionAgentNode[],
 ): TeamRunConfig => {
   const before = resolveTeamRunConfiguration(previous, memberTree)
   const after = resolveTeamRunConfiguration(next, memberTree)
@@ -40,7 +40,7 @@ const pruneInvalidatedLlmConfigs = (
   return next
 }
 export const applyTeamLaunchConfigEdit = (
-  config: Readonly<TeamRunConfig>, edit: TeamLaunchConfigEdit, memberTree: readonly TeamDefinitionMemberNode[],
+  config: Readonly<TeamRunConfig>, edit: TeamLaunchConfigEdit, memberTree: readonly TeamDefinitionAgentNode[],
 ): TeamRunConfig => {
   const next = cloneTeamConfig(config)
   switch (edit.kind) {

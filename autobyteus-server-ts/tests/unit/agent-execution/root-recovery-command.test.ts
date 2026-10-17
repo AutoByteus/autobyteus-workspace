@@ -36,7 +36,7 @@ async function ingress(kind:'agent_team'|'agent_org', f:Awaited<ReturnType<typeo
  };
  let handler:AgentTeamStreamHandler|AgentOrgStreamHandler;
  if(kind==='agent_team') {
-  const tree=JSON.parse(fs.readFileSync(path.resolve('tests/fixtures/current-team-run-v2/case-001-nested-task-team/team_run_execution_tree.json'),'utf8').replaceAll('agent-run-product-manager',f.run.runId));
+  const tree=JSON.parse(fs.readFileSync(path.resolve('tests/fixtures/current-team-run-v2/case-001-delegated-task-team-forest/team_run_execution_tree.json'),'utf8').replaceAll('agent-run-product-manager',f.run.runId));
   tree.rootTeam.collaborators=[];
   const run={teamRunId:root.rootRunId,getExecutionTreeSnapshot:()=>tree,executeAgentCommand,
    openPackageSnapshotConnection:()=>publisher.openSnapshotConnection(()=>({tree,closedTaskExecutions:[],messages:{schemaVersion:1,teamRunId:root.rootRunId,messages:[]},statuses:[],inputStates:handle.getInputStateSnapshots()}))};

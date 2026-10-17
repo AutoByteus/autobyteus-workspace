@@ -11,7 +11,8 @@ import { AgentStatus } from '~/types/agent/AgentStatus'
 import {
   buildTestTeamContext,
   testAgentNode,
-  testSubTeamNode,
+  testDelegation,
+  testTaskTeamLayout,
 } from '~/test-support/currentTeamTestFixtures'
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext'
 import type { TeamLaunchDraft } from '~/types/agent/TeamLaunchDraft'
@@ -276,22 +277,22 @@ const flatHydratedTeam = (): AgentTeamContext => buildTestTeamContext({
   ],
 })
 
-const nestedHydratedTeam = (): AgentTeamContext => {
+/** A Team root whose program manager delegated a copy of a catalog Team (`build-run`); Teams are flat. */
+const delegatedTeamHydratedTeam = (): AgentTeamContext => {
   const programManager = testAgentNode('/program_manager', { agentRunId: 'pm-run' })
   const reviewer = testAgentNode('/BuildSquad/review_lead', { agentRunId: 'review-run' })
   const implementer = testAgentNode('/BuildSquad/implementer', { agentRunId: 'impl-run' })
   return buildTestTeamContext({
-    teamRunId: 'team-nested-live',
+    teamRunId: 'team-delegating-live',
     teamDefinitionId: 'root-definition',
     coordinatorAddress: programManager.address,
-    rootChildren: [
-      programManager,
-      testSubTeamNode('/BuildSquad', [reviewer, implementer], {
-        teamDefinitionId: 'build-definition',
-        teamRunId: 'build-run',
-        coordinatorAddress: reviewer.address,
-      }),
-    ],
+    rootChildren: [programManager],
+    delegations: [testDelegation({
+      delegatorAgentRunId: programManager.agentRunId, recipientAddress: '/BuildSquad',
+      target: { teamRunId: 'build-run', team: testTaskTeamLayout('/BuildSquad', [reviewer, implementer], {
+        teamDefinitionId: 'build-definition', coordinatorAddress: reviewer.address,
+      }) },
+    })],
   })
 }
 
@@ -527,48 +528,48 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(runHistoryStoreMock.markTeamAsActive).toHaveBeenCalledWith('team-send')
   })
 
-  it('finalizes a nested Agent upload with its containing TeamRun while preserving root send scope', async () => {
-    const team = nestedHydratedTeam()
-    expect(team.view.focusAgent('review-run')).toMatchObject({ disposition: 'applied' })
+  it('finalizes a delegated task-Team Agent upload with its containing TeamRun while preserving root send scope', async () => {
+    const team = delegatedTeamHydratedTeam()
+    expect(team.view.focusAgent('build-run:review-run')).toMatchObject({ disposition: 'applied' })
     setActiveTeam(team)
     const draftImage: ContextAttachment = {
-      kind: 'uploaded', id: 'nested-image', locator: '/rest/drafts/nested-image.png',
-      storedFilename: 'ctx_nested__image.png', displayName: 'image.png', phase: 'draft', type: 'Image',
+      kind: 'uploaded', id: 'delegated-image', locator: '/rest/drafts/delegated-image.png',
+      storedFilename: 'ctx_delegated__image.png', displayName: 'image.png', phase: 'draft', type: 'Image',
     }
     const finalImage: ContextAttachment = {
-      ...draftImage, locator: '/rest/team-runs/build-run/agent-runs/review-run/context-files/ctx_nested__image.png',
+      ...draftImage, locator: '/rest/team-runs/build-run/agent-runs/build-run:review-run/context-files/ctx_delegated__image.png',
       phase: 'final',
     }
     contextFileUploadStoreMock.finalizeDraftAttachments.mockResolvedValueOnce([finalImage])
 
-    await useAgentTeamRunStore().sendMessageToFocusedMember('inspect nested image', [draftImage])
+    await useAgentTeamRunStore().sendMessageToFocusedMember('inspect delegated image', [draftImage])
 
     expect(contextFileUploadStoreMock.finalizeDraftAttachments).toHaveBeenCalledWith({
       draftOwner: {
         kind: 'team_member_draft',
-        teamDraftId: 'team-nested-live',
+        teamDraftId: 'team-delegating-live',
         memberAddress: '/BuildSquad/review_lead',
       },
       finalOwner: {
         kind: 'team_member_final',
         teamRunId: 'build-run',
-        agentRunId: 'review-run',
+        agentRunId: 'build-run:review-run',
       },
       attachments: [draftImage],
     })
     expect(mockSendMessage).toHaveBeenCalledWith(
-      'inspect nested image',
-      'review-run',
+      'inspect delegated image',
+      'build-run:review-run',
       [],
       [finalImage.locator],
-      expect.objectContaining({ dedupeKey: expect.stringContaining('team-nested-live') }),
+      expect.objectContaining({ dedupeKey: expect.stringContaining('team-delegating-live') }),
     )
-    expect(runHistoryStoreMock.markTeamAsActive).toHaveBeenCalledWith('team-nested-live')
+    expect(runHistoryStoreMock.markTeamAsActive).toHaveBeenCalledWith('team-delegating-live')
   })
 
   it('finalizes attachments from an explicit source owner (a Team started from a New chat)', async () => {
-    const team = nestedHydratedTeam()
-    expect(team.view.focusAgent('review-run')).toMatchObject({ disposition: 'applied' })
+    const team = delegatedTeamHydratedTeam()
+    expect(team.view.focusAgent('build-run:review-run')).toMatchObject({ disposition: 'applied' })
     setActiveTeam(team)
     const draftFile: ContextAttachment = {
       kind: 'uploaded', id: 'chat-file', locator: '/rest/drafts/agent-runs/temp-chat-1/context-files/ctx__notes.txt',
@@ -581,7 +582,7 @@ describe('agentTeamRunStore current rooted execution contract', () => {
 
     expect(contextFileUploadStoreMock.finalizeDraftAttachments).toHaveBeenCalledWith(expect.objectContaining({
       draftOwner: { kind: 'agent_draft', draftRunId: 'temp-chat-1' },
-      finalOwner: { kind: 'team_member_final', teamRunId: 'build-run', agentRunId: 'review-run' },
+      finalOwner: { kind: 'team_member_final', teamRunId: 'build-run', agentRunId: 'build-run:review-run' },
     }))
   })
 
