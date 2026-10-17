@@ -15,9 +15,9 @@ import {
 import { WorkingContextSnapshotStore } from "autobyteus-ts/memory/store/working-context-snapshot-store.js";
 import { ReleasedNativeSnapshotV5Codec, recognizeVersionlessSnapshotForPreservation } from "autobyteus-ts/memory/migration/native-working-context-snapshot-shapes.js";
 import {
-  RuntimeMemoryLocationClassifier,
+  ReleasedRuntimeMemoryLocationClassifier,
   type RuntimeMemoryLocation,
-} from "../../agent-memory/services/runtime-memory-location-classifier.js";
+} from "../legacy/released-run-package-shapes/released-memory-locations-before-task-agent-own-run.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type {
   AppDataMigrationDefinition,
@@ -64,11 +64,11 @@ export class MigrateNativeWorkingContextSnapshotsV5Migration
   readonly requiredOnStartup = true;
   readonly prerequisiteMigrationIds = [TEAM_AGENT_MEMORY_LAYOUT_MIGRATION_ID] as const;
 
-  private readonly classifier: RuntimeMemoryLocationClassifier;
+  private readonly classifier: ReleasedRuntimeMemoryLocationClassifier;
   private readonly converter = new NativeWorkingContextSnapshotV5Converter();
 
   constructor(private readonly memoryDir: string) {
-    this.classifier = new RuntimeMemoryLocationClassifier(memoryDir);
+    this.classifier = new ReleasedRuntimeMemoryLocationClassifier(memoryDir);
   }
 
   async execute(): Promise<AppDataMigrationExecutionResult> {

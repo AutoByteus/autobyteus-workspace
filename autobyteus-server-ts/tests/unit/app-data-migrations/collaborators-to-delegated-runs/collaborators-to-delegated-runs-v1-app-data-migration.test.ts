@@ -10,6 +10,7 @@ import {
 } from "../../../../src/app-data-migrations/migrations/collaborators-to-delegated-runs-v1/collaborators-to-delegated-runs-v1-app-data-migration.js";
 import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
 import { StandaloneRootPackageStore } from "../../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
+import { AtomicRunPackageFileCommitWriter } from "../../../../src/run-history/store/atomic-run-package-file-commit-writer.js";
 import { getStandaloneRootDirPath, getStandaloneRootTreePath } from "../../../../src/standalone-agent-run-root/persistence/standalone-root-tree-path.js";
 import { emptyStandaloneRootTree } from "../../../../src/standalone-agent-run-root/domain/standalone-root-tree.js";
 import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/team-run-execution-tree-store.js";
@@ -240,8 +241,12 @@ describe("20261015_collaborators_to_delegated_runs_v1", () => {
   it("FAILED_OPERATION: a write that does not rename leaves the original tree and fails the item", async () => {
     const f = await fixture();
     const dirs = await seedAllFamilies(f);
-    vi.spyOn(StandaloneRootPackageStore.prototype, "writeTree").mockResolvedValue({ outcome: "not_renamed", cause: new Error("disk full") } as never);
     const agentTree = getStandaloneRootTreePath(dirs.agentDir);
+    const write = AtomicRunPackageFileCommitWriter.prototype.write;
+    vi.spyOn(AtomicRunPackageFileCommitWriter.prototype, "write").mockImplementation(function (this: AtomicRunPackageFileCommitWriter, input) {
+      if (input.filePath === agentTree) return Promise.resolve({ outcome: "not_renamed", cause: new Error("disk full") } as never);
+      return write.call(this, input);
+    });
     const before = await sha(agentTree);
     const result = await f.migration.execute();
     expect(result.status).toBe("FAILED");

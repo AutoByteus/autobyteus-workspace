@@ -3,9 +3,9 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { WORKING_CONTEXT_SNAPSHOT_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
 import {
-  RuntimeMemoryLocationClassifier,
+  ReleasedRuntimeMemoryLocationClassifier,
   type RuntimeMemoryLocation,
-} from "../../agent-memory/services/runtime-memory-location-classifier.js";
+} from "../legacy/released-run-package-shapes/released-memory-locations-before-task-agent-own-run.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { isExternalProviderRuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type {
@@ -87,11 +87,11 @@ export class RemoveExternalRuntimeWorkingContextSnapshotsMigration
   readonly prerequisiteMigrationIds = [TEAM_AGENT_MEMORY_LAYOUT_MIGRATION_ID] as const;
 
   private readonly layout: AgentMemoryLayout;
-  private readonly classifier: RuntimeMemoryLocationClassifier;
+  private readonly classifier: ReleasedRuntimeMemoryLocationClassifier;
 
   constructor(private readonly memoryDir: string) {
     this.layout = new AgentMemoryLayout(memoryDir);
-    this.classifier = new RuntimeMemoryLocationClassifier(memoryDir);
+    this.classifier = new ReleasedRuntimeMemoryLocationClassifier(memoryDir);
   }
 
   async execute(): Promise<AppDataMigrationExecutionResult> {
