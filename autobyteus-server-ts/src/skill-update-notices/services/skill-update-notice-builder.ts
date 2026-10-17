@@ -10,26 +10,34 @@ export const SKILL_UPDATE_NOTICE_HEADER = "[Platform notice — skill updated]";
 export const SKILL_UPDATE_NOTICE_METADATA_KEY = "skill_update_notice";
 const MAX_FILES_PER_SKILL = 10;
 
-const describeChange = (change: SkillChange): string => {
-  if (change.kind === "removed") return `- ${change.skillName}: no longer available`;
-  const shown = change.changedFiles.slice(0, MAX_FILES_PER_SKILL);
-  const more = change.changedFiles.length - shown.length;
-  const files = more > 0 ? `${shown.join(", ")} and ${more} more` : shown.join(", ");
-  return `- ${change.skillName} (${change.skillMdPath}): ${files}`;
-};
-
-/** The notice the agent and the web see (REQ-008). */
-export const buildSkillUpdateNoticeText = (changes: readonly SkillChange[]): string => {
-  const lines = [
-    SKILL_UPDATE_NOTICE_HEADER,
-    "The following skills you use changed on disk since you last read them:",
-    ...changes.map(describeChange),
-    // A blank line ends the list, so the instructions are not read (or rendered) as part of its last item.
+/** One Markdown block per skill; each ends with a blank line, so blocks and lists render apart. */
+const describeChange = (change: SkillChange): string[] => {
+  if (change.kind === "removed") return [`Your skill package \`${change.skillName}\` is no longer available.`, ""];
+  const shown = change.files.slice(0, MAX_FILES_PER_SKILL);
+  const more = change.files.length - shown.length;
+  return [
+    `Your skill package \`${change.skillName}\` has been updated (${change.skillDir}).`,
+    "",
+    "Changed files:",
+    ...shown.map((file) => `- ${file.path} (${file.status})`),
+    ...(more > 0 ? [`- …and ${more} more files`] : []),
     "",
   ];
-  const updated = changes.some((change) => change.kind === "updated");
-  if (updated) {
-    lines.push("Re-read the updated SKILL.md (and any files it points to) before continuing work that relies on these skills.");
+};
+
+/**
+ * The notice the agent and the web see: the header (the web labels the card by it), then one
+ * block per skill naming its folder and listing exactly the files that differ, each with its
+ * status, then what to do.
+ */
+export const buildSkillUpdateNoticeText = (changes: readonly SkillChange[]): string => {
+  const updated = changes.filter((change) => change.kind === "updated");
+  const lines = [SKILL_UPDATE_NOTICE_HEADER, "", ...changes.flatMap(describeChange)];
+  if (updated.length > 0) {
+    lines.push(`Re-read the updated files before continuing work that relies on ${updated.length > 1 ? "these skills" : "this skill"}.`);
+  }
+  if (updated.some((change) => change.files.some((file) => file.status === "removed"))) {
+    lines.push("Removed files are no longer available.");
   }
   if (changes.some((change) => change.kind === "removed")) {
     lines.push("Do not rely on a skill that is no longer available.");

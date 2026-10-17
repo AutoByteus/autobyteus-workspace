@@ -14,7 +14,7 @@ import type { AgentRunBackendInputDispatch } from "../../../src/agent-execution/
 // next external input at dispatch (one dispatch, one turn); admission and the backend contract
 // are unchanged.
 
-const NOTICE = "[Platform notice — skill updated]\n- code-review (/s/code-review/SKILL.md): SKILL.md";
+const NOTICE = "[Platform notice — skill updated]\n\nYour skill package `code-review` has been updated (/s/code-review).\n\nChanged files:\n- SKILL.md (changed)";
 const SENDER = "system.skill_update_notifier";
 
 const event = (runId: string, eventType: AgentRunEventType, payload: Record<string, unknown>): AgentRunEvent =>

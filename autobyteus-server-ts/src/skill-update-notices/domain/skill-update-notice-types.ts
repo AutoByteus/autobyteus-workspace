@@ -9,9 +9,18 @@ export type SkillFolderSnapshot = Readonly<{
 /** The last snapshot of each used skill a run was given, keyed by skill name. */
 export type SeenSkillVersions = ReadonlyMap<string, SkillFolderSnapshot>;
 
-/** What changed for one skill since a run last saw it. */
+/** How one file of a skill differs from the version a run saw. */
+export type SkillFileChangeStatus = "changed" | "added" | "removed";
+
+/** One file of a skill that differs, by path relative to the skill folder. */
+export type SkillFileChange = Readonly<{ path: string; status: SkillFileChangeStatus }>;
+
+/**
+ * What changed for one skill since a run last saw it: updated (its current folder and every file
+ * that differs, `SKILL.md` first, then by path) or no longer available.
+ */
 export type SkillChange =
-  | Readonly<{ kind: "updated"; skillName: string; skillMdPath: string; changedFiles: readonly string[] }>
+  | Readonly<{ kind: "updated"; skillName: string; skillDir: string; files: readonly SkillFileChange[] }>
   | Readonly<{ kind: "removed"; skillName: string }>;
 
 /** A skill as the catalog resolves it now. */
