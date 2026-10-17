@@ -9,6 +9,7 @@ The latest `docs-sync-report.md`, `handoff-summary.md` and `release-deployment-r
 | DR-001 | CRR-003 Pass (test-code review) after API-REV-001 Pass, from `/software_engineering_team/code_reviewer` | N/A | **Blocked — Local Fix** (`/software_engineering_team/implementation_engineer`): integrated with `e579e82b7f`, docs synced, verified from evidence. The pre-merge target refresh found `personal` advanced to `a716a4632e` (project-tool-split), and its merge conflicts in the agent-tool contract | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, this record; docs `autobyteus-web/docs/projects.md`, `autobyteus-server-ts/docs/modules/agent_tools_mcp_server.md`, `autobyteus-server-ts/docs/modules/agent_tools.md`; `api-e2e-test-case-ledger.md` (snapshot reference) |
 | DR-002 | CRR-005 Pass after IR-004 (Local Fix for DR-001), CRR-004 and API-REV-002, from `/software_engineering_team/code_reviewer` | DR-001 Blocked — Local Fix | **Delivery Completed**: re-verified from evidence at `c95e0138e8` (current with `origin/personal@66429d6f31`), docs re-checked, archived, finalized into `personal` with `--no-ff`, No release, cleanup | `docs-sync-report.md` (DR-002 re-check), `handoff-summary.md`, `release-deployment-report.md`, this record; ticket archived to `tickets/done/` |
 | DR-003 | Solution Designer receipt check: Delivery Receipt Evidence Gap (the Task asks for a beta release and the user's check) | DR-002 Delivery Completed (No release, user check No) | **Beta `v1.5.5-beta.3` released** (4/4 workflows, 17 assets, Docker `1.5.5-beta.3` / `beta`); **user check pending** | `release-deployment-report.md`, `handoff-summary.md`, this record |
+| DR-004 | The user's check in the app | DR-003 Beta released, user check pending | **Delivery Completed**: user check passed on `v1.5.5-beta.3` | `release-deployment-report.md`, `handoff-summary.md`, this record |
 
 ## Revision Entries
 
@@ -130,3 +131,18 @@ The pre-merge refresh found `origin/personal` at `a716a4632e`, 12 commits past t
 - User check: asked of the user directly on 2026-10-17 (steps in `release-deployment-report.md` → Final Status). Pending.
 - Terminal return to `/solution_designer`: `Not yet eligible`. It is sent after the user's check is recorded (DR-004).
 - Remaining blockers: none besides the pending user check.
+
+### DR-004 — User check passed; Delivery Completed
+
+- Delivery round and trigger: the user's check in the app, which the delegating Task's "Done when" asks for.
+- Prior authoritative result: DR-003 (Beta `v1.5.5-beta.3` released, user check pending).
+- Current authoritative result: **`Delivery Completed`**.
+- User check: **Passed**. the user replied "works. now i am running the latest beta" on 2026-10-17, after upgrading their own desktop app to `v1.5.5-beta.3` and checking Projects (Task keys on the cards; the minimal check agreed with the user).
+- All gates:
+  - verification from the evidence: DR-002;
+  - repository finalization: `1b108514cb`, record `1e8b45486b`;
+  - beta release: `516e592d7b`, tag `v1.5.5-beta.3`, 4/4 release workflows, 17 assets, Docker `1.5.5-beta.3` / `beta`; records `de532ceb43` and this commit;
+  - the user's check: this round;
+  - cleanup: done.
+- Terminal return to `/solution_designer`: `Sent` after this record's push (`send_message_to` → `/software_engineering_team/solution_designer`).
+- Remaining blockers: none. Follow-ups are with `/project_task_manager` (sent in DR-003).

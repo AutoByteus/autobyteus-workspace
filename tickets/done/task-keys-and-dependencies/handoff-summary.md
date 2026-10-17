@@ -1,8 +1,8 @@
 # Handoff Summary — task-keys-and-dependencies
 
-> **Status (DR-003): finalized into `personal` and released as beta `v1.5.5-beta.3` (complete: 17 assets, Docker `1.5.5-beta.3` / `beta`). The user's check in the app is pending.**
-> - The delegating Task asks for a beta and the user's check; DR-002 had wrongly recorded No release.
-> - See `release-deployment-report.md` and `delivery-revision-record.md`.
+> **Status (DR-004): Delivery Completed.**
+> - Finalized into `personal` and released as beta `v1.5.5-beta.3`.
+> - The user checked it in their upgraded app ("works. now i am running the latest beta").
 
 ## What Shipped
 

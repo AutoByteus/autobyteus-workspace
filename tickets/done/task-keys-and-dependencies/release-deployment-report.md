@@ -16,7 +16,7 @@
 - Handoff summary artifact: `tickets/in-progress/task-keys-and-dependencies/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `tickets/in-progress/task-keys-and-dependencies/delivery-revision-record.md`
-- Current delivery revision ID: `DR-003`
+- Current delivery revision ID: `DR-004`
 
 ## Initial Delivery Integration Refresh
 
@@ -88,7 +88,7 @@
   - Integrated-state rerun: as above.
 - More evidence requested: `None`
 - User check needed: **`Yes`**, because the delegating Task's "Done when" asks for the user's check in the app. (DR-001/DR-002 said `No`, which was wrong.) The evidence alone already proves the change works; this check is the requested acceptance step on the released beta.
-- User check reference: **pending** (DR-003). The user was asked directly in the delivery conversation on 2026-10-17 to install `v1.5.5-beta.3` and check the steps listed in Final Status.
+- User check reference: **Passed** (DR-004): the user replied "works. now i am running the latest beta" on 2026-10-17, after upgrading their own desktop app to `v1.5.5-beta.3` and checking Projects (Task keys on the cards; the minimal check agreed with the user).
 - Re-verification after re-integration (DR-002): `Sufficient`.
   - API-REV-002 re-proved every critical AC at `c95e0138e8`, at 95.6% confidence with no category below 90%.
   - Delivery opened the round-2 evidence:
@@ -218,14 +218,14 @@
 ## Final Status
 
 - Verification complete from the evidence: `Yes` (DR-002)
-- User check in the app (requested by the Task): **`Pending`**. Steps the user was asked to check on `v1.5.5-beta.3`, with **Settings > Updates > Receive beta updates** on:
+- User check in the app (requested by the Task): **`Passed`** (DR-004): the user replied "works. now i am running the latest beta" on 2026-10-17, after upgrading their own desktop app to `v1.5.5-beta.3` and checking Projects (Task keys on the cards; the minimal check agreed with the user). The full list offered to the user: Steps the user was asked to check on `v1.5.5-beta.3`, with **Settings > Updates > Receive beta updates** on:
   1. Every Project Task card shows a key (e.g. `autobyteus-1`); existing Tasks are numbered in creation order.
   2. A Task page shows the key chip (copy works) and a Dependencies card.
   3. Edit task → "Depends on" adds a dependency, and the board card shows "Blocked by <key>" until that Task is Done.
   4. The Workspaces-tree Task summary reads "<key> <summary>".
 - Repository finalization complete: `Yes` (`1b108514cb`, record `1e8b45486b`, release commit `516e592d7b` on `personal`)
 - Release complete: `Yes` (Beta `v1.5.5-beta.3`, 4/4 release workflows, 17 assets, Docker `1.5.5-beta.3` / `beta`)
-- Applicable safe cleanup complete or not required: ticket worktree and branches removed (DR-002). The beta worktree and `finalize/task-keys-and-dependencies-beta` are removed after this record is pushed.
-- Unresolved blocker: none. The user's check is pending.
-- Successful terminal package eligible for return: **`No`**, until the user's check is recorded
-- Terminal package sent to `/solution_designer`: not yet (DR-003)
+- Applicable safe cleanup complete or not required: `Yes`. The ticket worktree and branches were removed (DR-002), and the beta worktree and branch (DR-003). The DR-004 record worktree is removed after this push.
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: **`Yes`** (DR-004)
+- Terminal package sent to `/solution_designer`: `Yes`, after this record's push (DR-004)
