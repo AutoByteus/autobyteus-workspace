@@ -272,7 +272,9 @@ try {
     assert(outer.x === mounted.x && second.x === mounted.x, 'Delegated chevron is not horizontally aligned with the mounted Team chevron', { mounted, outer, second });
     assert(outer.width === mounted.width && outer.height === mounted.height && outer.width === 14, 'Delegated chevron size differs from the mounted Team chevron', { mounted, outer });
     assert(Math.abs(nested.x - (outer.x + 14)) < 0.5, 'Nested delegated chevron is not indented by one level', { outer, nested });
-    assert(await taskTeam('ssg-task-1').getAttribute('aria-label') === 'StudentStudyGroup, Started by Teacher, /StudentStudyGroup, ssg-task-1', 'Row label changed');
+    // The universal Team status (delegated-team-aggregate-status REQ-007) puts the Team status in words into the label.
+    const rowLabel = await taskTeam('ssg-task-1').getAttribute('aria-label');
+    assert(/^StudentStudyGroup\. Team status: (Running|Error|Idle|Offline), Started by Teacher, \/StudentStudyGroup, ssg-task-1$/.test(rowLabel ?? ''), 'Row label changed', { rowLabel });
     await screenshot('b01-default-open');
     return { order, geometry: { mounted, outer, second, nested }, chevronElement: outer.tag };
   });
