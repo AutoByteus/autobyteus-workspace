@@ -108,6 +108,7 @@ Do not rely on a skill that is no longer available.
 - It is written only into the run's existing memory folder, never creating it. If the runtime has not created the folder yet, the write is retried (1 s, 5 s, 15 s, then every 60 s) while the run is tracked.
 - Once a run is released, nothing more is written for it: a write in progress stops before its next step, and a waiting retry is cancelled. A deleted run's memory folder is therefore never re-created.
 - It is deleted with the run's memory folder. Runs with no memory folder keep the record in memory only.
+- Accepted limitation: a run whose memory folder never appears while it is tracked has no stored record. If such a run is later restored, its record is re-created from the then-current files, with no retroactive notice.
 - The file is additive; no migration. Run metadata and execution-tree schemas are unchanged.
 
 ## Lifecycle And Composition
