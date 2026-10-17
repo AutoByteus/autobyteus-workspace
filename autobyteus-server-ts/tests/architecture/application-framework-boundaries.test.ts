@@ -3143,7 +3143,9 @@ describe("application framework architecture boundaries", () => {
       "utf8",
     );
     expect(factory).toContain("class FlatTeamExecutionFactory");
-    expect(factory).toContain("cannot contain a configured Team");
+    // Teams are flat by type: a team node's children are agents (remove-nested-task-team replaced the factory's runtime check).
+    const teamRunConfig = readFileSync(join(serverSourceRoot, "agent-team-execution/domain/team-run-config.ts"), "utf8");
+    expect(teamRunConfig).toContain("children: readonly TeamRunAgentNode[];");
     expect(factory).not.toMatch(/RootTeamRun|AgentOrgRun|ExecutionTreeStore|RunManager\.getInstance|registerRoot/);
   }, 15_000);
 });
