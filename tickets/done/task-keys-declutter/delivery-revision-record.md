@@ -7,6 +7,7 @@ The latest `docs-sync-report.md`, `handoff-summary.md` and `release-deployment-r
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | API-REV-001 Pass (direct route) from `/software_engineering_team/api_e2e_engineer` | N/A | Verified, docs synced, finalized (`be52a331a4`); stable `v1.5.5` released (`696e09b374`), **partial**: Android APK upload failed transiently, rerun pending the user's decision; **user check passed** | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md`, this record; `autobyteus-web/docs/projects.md` |
+| DR-002 | The user's "retrigger the android" | DR-001 release Partial (APK missing), user check passed | **Delivery Completed**: Android republished by manual dispatch 39058604688; 17/17 assets | `release-deployment-report.md`, `handoff-summary.md`, this record |
 
 ## Revision Entries
 
@@ -23,3 +24,12 @@ The latest `docs-sync-report.md`, `handoff-summary.md` and `release-deployment-r
 - Path hygiene: before the push, three evidence logs with `:` in their names were renamed to `-`.
 - User check: **Passed**. The user ran `v1.5.5` and replied "i checked now its working. thanks".
 - Terminal return to `/solution_designer`: not yet sent. It follows once Android is complete, or once the user accepts the partial release.
+
+### DR-002 — Android APK republished; Delivery Completed
+
+- Trigger: the user said "retrigger the android".
+- Prior result: DR-001. Stable `v1.5.5` was partial (APK missing after a transient GitHub upload error); the user check had passed.
+- Action: GitHub refused a rerun of the failed job, so delivery used a manual dispatch of `release-android.yml` for `v1.5.5`, building from the tag with `prerelease=false`.
+- Result: run 39058604688 succeeded. `v1.5.5` is Latest with 17/17 assets, and the APK checksum matches.
+- Current authoritative result: **`Delivery Completed`**.
+- Terminal return to `/solution_designer`: sent after this record's push.

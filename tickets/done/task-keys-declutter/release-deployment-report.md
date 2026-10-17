@@ -73,7 +73,7 @@
   - `desktop-release.sh release 1.5.5 --release-notes tickets/done/task-keys-declutter/release-notes.md --branch finalize/task-keys-declutter --no-push` → `696e09b374` "chore(release): bump workspace release version to 1.5.5". It bumps `autobyteus-web/package.json`, and writes `.github/release-notes/release-notes.md`, identical to the ticket's notes. Annotated tag `v1.5.5`.
   - After a re-fetch showed `origin/personal` unchanged at `aa84fd026c`, pushed `aa84fd026c..696e09b374 HEAD -> personal` and then the tag `v1.5.5`.
 
-### Release / Publication — **Partial**
+### Release / Publication — **Completed** (DR-002; first recorded as Partial in DR-001)
 
 | Workflow | Run | Result |
 | --- | --- | --- |
@@ -96,3 +96,25 @@
 
 - Roll back on a broken board, tree or Task page.
 - Method: revert on `personal` and cut `v1.5.6`. Updates never downgrade. Docker users can pin `1.5.4`.
+
+
+### DR-002 — Android recovery
+
+- The user said "retrigger the android".
+- `gh run rerun 39055669125 --failed` was refused by GitHub ("This workflow run cannot be retried"). Delivery used the guide's other recovery path, a manual dispatch for the existing tag: `gh workflow run release-android.yml --ref personal -f publish_release=true -f release_tag=v1.5.5 -f release_ref=v1.5.5 -f prerelease=false`. `prerelease=false` was set explicitly, because the dispatch default (`true`) could have demoted the stable release.
+- Run 39058604688: metadata, build and publish all succeeded.
+- Result:
+  - `v1.5.5` is **Latest**, not a pre-release, with the curated notes unchanged, and has **17/17 assets**.
+  - `AutoByteus_personal_android-1.5.5-release.apk` is 1,846,691 bytes, which matches earlier releases.
+  - Its SHA-256 `8701051747d0…` matches the published `.sha256`.
+- Release/publication result: **`Completed`**. Desktop, Android, iOS and Server Docker are published. NFS is out of scope, per the user.
+
+### Final Status
+
+- Verification complete (from the evidence): `Yes`
+- User check: `Passed`
+- Repository finalization complete: `Yes` (`be52a331a4`)
+- Release complete: `Yes` (stable `v1.5.5`: 4/4 release workflows, Android via dispatch 39058604688, 17 assets, Docker `1.5.5` / `latest`)
+- Cleanup complete: `Yes` (ticket worktree and branches removed; the DR-002 record worktree is removed after its push)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`. Sent to `/software_engineering_team/solution_designer` after this push.
