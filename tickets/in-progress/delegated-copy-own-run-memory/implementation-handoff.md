@@ -28,14 +28,15 @@ agents, and the readiness check skips task-agent folders. Deleting a run keeps i
 migration `20261017_task_agent_own_run_v1` brings existing data to the new layout. Released migrations
 were repointed to frozen copies first (D-9). Current-code names no longer carry version numbers (D-10).
 
-- Implementation cycle: `Rework` (IR-003: Local Fix for CRR-005 CR-004; IR-002: CRR-001 CR-001..CR-003; IR-001 initial baseline)
+- Implementation cycle: `Rework` (IR-004: Local Fix for DR-001, merged-state e2e; IR-003: Local Fix for CRR-005 CR-004; IR-002: CRR-001 CR-001..CR-003; IR-001 initial baseline)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/tickets/in-progress/delegated-copy-own-run-memory/implementation-revision-record.md`
-- Current implementation revision ID: `IR-003`
+- Current implementation revision ID: `IR-004`
 - Related solution revision IDs: `SR-009` (cumulative SR-005..SR-009)
 - Related architecture-review revision IDs: `ARCH-REV-004`
 - Related code-review revision IDs: `CRR-001` (Fail, Local Fix), `CRR-002` (Pass), `CRR-005` (Fail, Local Fix: DEC-018)
-- Related API/E2E / delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-004` (IR-003); `CR-001`, `CR-002`, `CR-003` (IR-002)
+- Related API/E2E revision IDs: see api-e2e-revision-record.md
+- Related delivery revision IDs: `DR-001` (Blocked at the post-integration rerun → IR-004)
+- Triggering finding IDs: DR-001 items 1–3 (IR-004); `CR-004` (IR-003); `CR-001`, `CR-002`, `CR-003` (IR-002)
 - Commits: `8bbd081c8d` (D-10 renames), `5a5359e707` (D-9 frozen copies), and the behavior commit on top
   (D-1..D-8, tests, docs, web text and ticket artifacts) is `6bcb206e4e`; the IR-002 and IR-003 local fixes follow it.
 
@@ -224,6 +225,40 @@ kept. The web search found only test data (`report_v1`).
 - E2E runs used a clean environment: `env -i PATH HOME=<tmp> TMPDIR=<tmp>`.
 
 ## Local Implementation Checks Run
+
+IR-004 (DR-001, on the merged state `1dd3cedadf` + `1251a9b491`; test-only changes, no `src` change):
+
+- Item 1, `team-run-v1-production-upgrade.e2e.test.ts` (4/4 pass alone): the test encoded the pre-ticket layout
+  (AC-019 kind). After `20261017_task_agent_own_run_v1` the Org tree's configured-team task execution is a link
+  without `settledAt` (current trees never record it; the released field survived only while nothing rewrote that
+  tree), and the task agent's facts are in `agents/<id>/run_metadata.json` (`origin: "configured_place"`, the
+  place's definition) — now asserted. In the mixed-root case the Org conversion (`20260901`) fails closed on the
+  unreadable history index (`RESTART_TO_RETRY`), so our per-run gate keeps that Team root
+  `WAITING_FOR_PREDECESSOR` (FAILED, non-terminal) and leaves its tree byte-identical; it retries with its
+  predecessor (attempts 1 → 2) — now asserted, and the ledger comparison excludes both retried rows.
+  - Question 2 (fails forever?): no. Our run waits only while a tree-writing predecessor that can still
+    convert the tree is not `SUCCEEDED*` (contract §5.4, design Migration Plan, R-8 accepted, ARCH-REV-003,
+    AC-020 F-PENDING-FAILED). Here that predecessor is itself FAILED and asks the user to correct the history
+    index and restart; once it succeeds and converts the root, ours migrates it. If a predecessor ever finished
+    without converting the tree, the gate would switch to `PRESERVED_UNSUPPORTED_TREE` (warning; ours terminal).
+    Every other run migrates meanwhile (rule 7 containment); the cost is one tree read per start. The designed
+    behavior; no design question.
+- Item 2, both `token-usage/*-backfill-startup.e2e.test.ts`: cause — test isolation, not this ticket's code. The
+  e2e files share one database (`fileParallelism: false`, `globalSetup` resets it once per invocation). Any
+  earlier file that starts a Studio server runs the real startup migrations on it; in the delivery run
+  `run-history/standalone-unreadable-tree-containment` (harness `uc-e2e`, 18:57:36) recorded both backfill
+  migrations as SUCCEEDED, so the token tests (19:00) found them done and `runPending` skipped them. The tests
+  deleted their migration records only after each test. Reproduced alone by planting the SUCCEEDED row (fails
+  the same way); fixed by deleting the file's migration records in `beforeAll` (passes with the row planted).
+  The merged files changed the file order, which exposed it.
+- Item 3, `llm-management/model-metadata-provenance-graphql.e2e.test.ts`: cause — test isolation, not this
+  ticket's code. The vault repository uses the process Prisma client, which the e2e setup binds to the shared
+  test database, while the root key is read beside this file's own database (where its migration server created
+  the vault). When an earlier file has created a vault in the shared database (any Studio server start does),
+  the verifier fails → `SECRET_VAULT_CORRUPT`. Reproduced alone by creating a vault in the shared database first
+  (fails the same way); fixed by binding Prisma to the file's own database after the migration server stops
+  (and closing it in `afterAll`); passes with the shared vault planted.
+- Full server e2e on the merged state (clean env, `RUN_AGY_FAILURE_E2E=1`, scripted AGY): 161 files: 113 passed, 47 skipped, 1 failed — `terminal-websocket-lifecycle` (PTY home path; known Task 0c7efc37, not this ticket). 484 tests passed. Log: `evidence/implementation/IR-004-server-e2e-merged.log`.
 
 IR-003 (after CRR-005 / DEC-018): build typecheck 0 errors; no new test-typecheck error in the changed test;
 `vitest run tests/unit/agent-memory tests/unit/memory-sync tests/unit/api/graphql` 41 files / 213 tests

@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 | IR-001 | Solution Designer / design-spec.md (SR-009), ARCH-REV-004 Pass / round 1 | N/A | `Initial Baseline` | SR-009, ARCH-REV-004 | Implemented D-1..D-10 and U-1..U-5; ready for Code Review |
 | IR-002 | Code Reviewer / code-review-report.md / CRR-001 round 1 | CR-001, CR-002, CR-003 | `Local Fix` | SR-009, ARCH-REV-004, CRR-001 | Unused declarations removed; one task-agent metadata parse path; team own-file placement recorded; unreadable coordinating tree warned |
 | IR-003 | Code Reviewer / code-review-report.md / CRR-005 (requirement refinement DEC-018) | CR-004 | `Local Fix` | SR-009, ARCH-REV-004, CRR-005 | Memory page group shows the definition's name when no history row names it; id only when the definition is gone |
+| IR-004 | Delivery Engineer / delivery-integration-blocker.md / DR-001 | DR-001 items 1–3 | `Local Fix` | SR-009, ARCH-REV-004, CRR-007, DR-001 | Merged-state e2e: one test updated to the new layout and the waiting gate; two test-isolation defects fixed from their causes |
 
 ## Revision Entries
 
@@ -75,3 +76,26 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Local validation and result: build typecheck clean; agent-memory, memory-sync and graphql unit folders 41 files / 213 tests passed.
 - Next recipient or routing: Code Reviewer (Targeted Delta Review of CR-004).
 - Remaining limitations or risks: AC-020's locator sub-case is verified by composition (DEC-017); the full unit suite was not rerun for this change.
+
+### IR-004 — Merged-state e2e failures (DR-001)
+
+- Triggering role, report path, and round: Delivery Engineer, `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/tickets/in-progress/delegated-copy-own-run-memory/delivery-integration-blocker.md` (DR-001, post-integration rerun after merging `origin/personal` `2d076088dd`).
+- Triggering finding IDs: DR-001 items 1, 2, 3 (item 4, terminal PTY, is the known Task 0c7efc37).
+- Classification: `Local Fix` (test-only; no `src` change).
+- Prior authoritative result: IR-003 (CRR-007 Pass).
+- Current authoritative result: IR-003 on the merged branch plus three test changes; classification unchanged (Large / High).
+- Related solution revision IDs: SR-009
+- Related architecture-review revision IDs: ARCH-REV-004
+- Related code-review revision IDs: CRR-007
+- Related API/E2E revision IDs: see api-e2e-revision-record.md
+- Related delivery revision IDs: DR-001
+- Why this implementation revision is recorded: the merged state's full e2e failed in three files.
+- Approved behavior or requirement IDs affected: none changed (REQ-016 / AC-019 test update; REQ-017 / AC-020 waiting gate now asserted at startup level).
+- Implementation delta:
+  - `tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts`: the converted Org tree holds the task agent as a link (no `settledAt`) and its own file at L1 (`configured_place`); in the mixed-root case our migration waits (`WAITING_FOR_PREDECESSOR` for `agent_team:<root>`, FAILED, attempts 1 → 2) and the ledger comparison excludes both retried rows.
+  - `tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts`, `token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts`: delete the file's migration records in `beforeAll` (shared-database isolation).
+  - `tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts`: bind the process Prisma client to the file's own database before the vault initializes; close it in `afterAll`.
+- Changed files or areas: the four test files above; `implementation-handoff.md`.
+- Local validation and result: each file passes alone; items 2 and 3 reproduced alone by planting the leaked state, then pass with the fix and the leaked state present; full merged-state e2e as recorded in the handoff.
+- Next recipient or routing: Code Reviewer (Large / High Local Fix), then re-validation as usual.
+- Remaining limitations or risks: items 2 and 3 are pre-existing isolation defects in tests outside this ticket, fixed here because they block its delivery gate; other files with the same shared-database pattern may exist (follow-up candidate).
