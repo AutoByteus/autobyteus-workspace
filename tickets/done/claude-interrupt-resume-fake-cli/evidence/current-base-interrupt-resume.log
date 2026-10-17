@@ -1,0 +1,313 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.22                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL01 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mAgent websocket attached for run claude-runtime-error-API-CL01
+Created agent session 2c0fc91f-b21b-4fe8-bffe-9f54ef2aadd4 for run claude-runtime-error-API-CL01
+Agent WebSocket connected: session=2c0fc91f-b21b-4fe8-bffe-9f54ef2aadd4, run=claude-runtime-error-API-CL01
+
+[90mstderr[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL01 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mClaude input for run 'claude-runtime-error-API-CL01' failed before send: AggregateError: Claude opening and cleanup failed.
+    at ClaudeSessionProcess.open (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts:82:68)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at ClaudeSession.submitInput (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:233:7)
+    at ClaudeAgentRunBackend.dispatchUserInput (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend.ts:85:22)
+    at AgentRun.executeInputDispatch (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts:332:16)
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL02 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mClosed agent session 2c0fc91f-b21b-4fe8-bffe-9f54ef2aadd4
+Agent WebSocket disconnected: 2c0fc91f-b21b-4fe8-bffe-9f54ef2aadd4
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL02 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mAgent websocket attached for run claude-runtime-error-API-CL02
+Created agent session 5e92b80e-3281-4fd9-a2ba-134895499dde for run claude-runtime-error-API-CL02
+Agent WebSocket connected: session=5e92b80e-3281-4fd9-a2ba-134895499dde, run=claude-runtime-error-API-CL02
+
+[90mstderr[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL02 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mClaude input for run 'claude-runtime-error-API-CL02' failed before send: AggregateError: Claude opening and cleanup failed.
+    at ClaudeSessionProcess.open (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts:82:68)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at ClaudeSession.submitInput (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:233:7)
+    at ClaudeAgentRunBackend.dispatchUserInput (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend.ts:85:22)
+    at AgentRun.executeInputDispatch (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts:332:16)
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL03 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mClosed agent session 5e92b80e-3281-4fd9-a2ba-134895499dde
+Agent WebSocket disconnected: 5e92b80e-3281-4fd9-a2ba-134895499dde
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL03 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mAgent websocket attached for run claude-runtime-error-API-CL03
+Created agent session fae0f1e5-7467-48e2-b064-15f5f1d68dc9 for run claude-runtime-error-API-CL03
+Agent WebSocket connected: session=fae0f1e5-7467-48e2-b064-15f5f1d68dc9, run=claude-runtime-error-API-CL03
+
+[90mstderr[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL03 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mClaude input for run 'claude-runtime-error-API-CL03' failed before send: AggregateError: Claude opening and cleanup failed.
+    at ClaudeSessionProcess.open (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts:82:68)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at ClaudeSession.submitInput (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:233:7)
+    at ClaudeAgentRunBackend.dispatchUserInput (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend.ts:85:22)
+    at AgentRun.executeInputDispatch (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts:332:16)
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL04 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mClosed agent session fae0f1e5-7467-48e2-b064-15f5f1d68dc9
+Agent WebSocket disconnected: fae0f1e5-7467-48e2-b064-15f5f1d68dc9
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL04 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mAgent websocket attached for run claude-runtime-error-API-CL04
+Created agent session 10bda0a1-8345-4c2d-a483-5253fcc76dce for run claude-runtime-error-API-CL04
+Agent WebSocket connected: session=10bda0a1-8345-4c2d-a483-5253fcc76dce, run=claude-runtime-error-API-CL04
+
+[90mstderr[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mAPI-CL04 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[22m[39mClaude input for run 'claude-runtime-error-API-CL04' failed before send: AggregateError: Claude opening and cleanup failed.
+    at ClaudeSessionProcess.open (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts:82:68)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at ClaudeSession.submitInput (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:233:7)
+    at ClaudeAgentRunBackend.dispatchUserInput (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend.ts:85:22)
+    at AgentRun.executeInputDispatch (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts:332:16)
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2minterrupts only the turn and answers the follow-up from the same Claude process and conversation (AC-005)
+[22m[39mAgent websocket attached for run claude-ws-interrupt-same-process
+Created agent session 0cb9c6c1-f835-48bf-a779-6ec8f177f812 for run claude-ws-interrupt-same-process
+Agent WebSocket connected: session=0cb9c6c1-f835-48bf-a779-6ec8f177f812, run=claude-ws-interrupt-same-process
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2minterrupts only the turn and answers the follow-up from the same Claude process and conversation (AC-005)
+[22m[39mClosed agent session 10bda0a1-8345-4c2d-a483-5253fcc76dce
+Agent WebSocket disconnected: 10bda0a1-8345-4c2d-a483-5253fcc76dce
+
+[90mstderr[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2minterrupts only the turn and answers the follow-up from the same Claude process and conversation (AC-005)
+[22m[39mClaude input for run 'claude-ws-interrupt-same-process' failed before send: AggregateError: Claude opening and cleanup failed.
+    at ClaudeSessionProcess.open (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts:82:68)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at ClaudeSession.submitInput (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:233:7)
+    at ClaudeAgentRunBackend.dispatchUserInput (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend.ts:85:22)
+    at AgentRun.executeInputDispatch (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts:332:16)
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mdelivers a message sent to a busy agent into the running turn (AC-003)
+[22m[39mAgent websocket attached for run claude-ws-busy-append
+Created agent session 64934c4d-cf02-4258-b1bd-761b33f7e2e3 for run claude-ws-busy-append
+Agent WebSocket connected: session=64934c4d-cf02-4258-b1bd-761b33f7e2e3, run=claude-ws-busy-append
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mdelivers a message sent to a busy agent into the running turn (AC-003)
+[22m[39mClosed agent session 0cb9c6c1-f835-48bf-a779-6ec8f177f812
+Agent WebSocket disconnected: 0cb9c6c1-f835-48bf-a779-6ec8f177f812
+
+[90mstderr[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mdelivers a message sent to a busy agent into the running turn (AC-003)
+[22m[39mClaude input for run 'claude-ws-busy-append' failed before send: AggregateError: Claude opening and cleanup failed.
+    at ClaudeSessionProcess.open (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts:82:68)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at ClaudeSession.submitInput (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:233:7)
+    at ClaudeAgentRunBackend.dispatchUserInput (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend.ts:85:22)
+    at AgentRun.executeInputDispatch (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts:332:16)
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mrequeues an append that reaches Claude after its turn settled and starts it as the next turn (AC-016)
+[22m[39mAgent websocket attached for run claude-ws-append-after-settle
+Created agent session 4a947014-2bed-4440-afe7-e8b9c3ec112e for run claude-ws-append-after-settle
+Agent WebSocket connected: session=4a947014-2bed-4440-afe7-e8b9c3ec112e, run=claude-ws-append-after-settle
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mrequeues an append that reaches Claude after its turn settled and starts it as the next turn (AC-016)
+[22m[39mClosed agent session 64934c4d-cf02-4258-b1bd-761b33f7e2e3
+Agent WebSocket disconnected: 64934c4d-cf02-4258-b1bd-761b33f7e2e3
+
+[90mstderr[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mrequeues an append that reaches Claude after its turn settled and starts it as the next turn (AC-016)
+[22m[39mClaude input for run 'claude-ws-append-after-settle' failed before send: AggregateError: Claude opening and cleanup failed.
+    at ClaudeSessionProcess.open (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts:82:68)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at ClaudeSession.submitInput (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:233:7)
+    at ClaudeAgentRunBackend.dispatchUserInput (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend.ts:85:22)
+    at AgentRun.executeInputDispatch (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts:332:16)
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mannounces a background completion and streams the turn Claude starts on its own (AC-002)
+[22m[39mAgent websocket attached for run claude-ws-background-notice
+Created agent session 10f33a57-6fe1-4a84-a78d-6c7e597ac78d for run claude-ws-background-notice
+Agent WebSocket connected: session=10f33a57-6fe1-4a84-a78d-6c7e597ac78d, run=claude-ws-background-notice
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mannounces a background completion and streams the turn Claude starts on its own (AC-002)
+[22m[39mClosed agent session 4a947014-2bed-4440-afe7-e8b9c3ec112e
+Agent WebSocket disconnected: 4a947014-2bed-4440-afe7-e8b9c3ec112e
+
+[90mstderr[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mannounces a background completion and streams the turn Claude starts on its own (AC-002)
+[22m[39mClaude input for run 'claude-ws-background-notice' failed before send: AggregateError: Claude opening and cleanup failed.
+    at ClaudeSessionProcess.open (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts:82:68)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at ClaudeSession.submitInput (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:233:7)
+    at ClaudeAgentRunBackend.dispatchUserInput (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend.ts:85:22)
+    at AgentRun.executeInputDispatch (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts:332:16)
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket interrupt/resume live E2E
+[22m[39mClosed agent session 10f33a57-6fe1-4a84-a78d-6c7e597ac78d
+Agent WebSocket disconnected: 10f33a57-6fe1-4a84-a78d-6c7e597ac78d
+
+ [31m❯[39m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts [2m([22m[2m9 tests[22m[2m | [22m[31m8 failed[39m[2m | [22m[33m1 skipped[39m[2m)[22m[33m 16143[2mms[22m[39m
+[31m     [31m×[31m API-CL01 preserves supplied SDK failure text over public WebSocket and the next same-session turn[39m[33m 2032[2mms[22m[39m
+[31m     [31m×[31m API-CL02 preserves supplied SDK failure text over public WebSocket and the next same-session turn[39m[33m 2018[2mms[22m[39m
+[31m     [31m×[31m API-CL03 preserves supplied SDK failure text over public WebSocket and the next same-session turn[39m[33m 2017[2mms[22m[39m
+[31m     [31m×[31m API-CL04 preserves supplied SDK failure text over public WebSocket and the next same-session turn[39m[33m 2014[2mms[22m[39m
+[31m     [31m×[31m interrupts only the turn and answers the follow-up from the same Claude process and conversation (AC-005)[39m[33m 2018[2mms[22m[39m
+[31m     [31m×[31m delivers a message sent to a busy agent into the running turn (AC-003)[39m[33m 2008[2mms[22m[39m
+[31m     [31m×[31m requeues an append that reaches Claude after its turn settled and starts it as the next turn (AC-016)[39m[33m 2019[2mms[22m[39m
+[31m     [31m×[31m announces a background completion and streams the turn Claude starts on its own (AC-002)[39m[33m 2013[2mms[22m[39m
+     [2m[90m↓[39m[22m uses the real Claude SDK to preserve context after INTERRUPT_GENERATION interrupts an incomplete turn
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 8 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22mAPI-CL01 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22mAPI-CL02 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22mAPI-CL03 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22mAPI-CL04 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22minterrupts only the turn and answers the follow-up from the same Claude process and conversation (AC-005)
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22mdelivers a message sent to a busy agent into the running turn (AC-003)
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22mrequeues an append that reaches Claude after its turn settled and starts it as the next turn (AC-016)
+[31m[1mAggregateError[22m: Claude exact component cleanup failed.[39m
+[36m [2m❯[22m ClaudeSessionCleanup.cleanupSessionResources src/agent-execution/backends/claude/session/claude-session-cleanup.ts:[2m40:30[22m[39m
+    [90m 38| [39m    }))[33m;[39m
+    [90m 39| [39m    const errors = results.flatMap(result => result.status === "reject…
+    [90m 40| [39m    if (errors.length) throw new AggregateError(errors, "Claude exact …
+    [90m   | [39m                             [31m^[39m
+    [90m 41| [39m    [35mthis[39m[33m.[39mproofs[33m.[39m[35mdelete[39m(input[33m.[39msession)[33m;[39m
+    [90m 42| [39m    [35mthis[39m[33m.[39mreleased[33m.[39m[34madd[39m(input[33m.[39msession)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22mannounces a background completion and streams the turn Claude starts on its own (AC-002)
+[31m[1mAggregateError[22m: Claude exact component cleanup failed.[39m
+[36m [2m❯[22m ClaudeSessionCleanup.cleanupSessionResources src/agent-execution/backends/claude/session/claude-session-cleanup.ts:[2m40:30[22m[39m
+    [90m 38| [39m    }))[33m;[39m
+    [90m 39| [39m    const errors = results.flatMap(result => result.status === "reject…
+    [90m 40| [39m    if (errors.length) throw new AggregateError(errors, "Claude exact …
+    [90m   | [39m                             [31m^[39m
+    [90m 41| [39m    [35mthis[39m[33m.[39mproofs[33m.[39m[35mdelete[39m(input[33m.[39msession)[33m;[39m
+    [90m 42| [39m    [35mthis[39m[33m.[39mreleased[33m.[39m[34madd[39m(input[33m.[39msession)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Unhandled Errors [49m[22m[31m⎯⎯⎯⎯⎯⎯[39m
+[31m[1m
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.[22m[39m
+
+[31m⎯⎯⎯⎯[39m[1m[41m Unhandled Rejection [49m[22m[31m⎯⎯⎯⎯⎯[39m
+[31m[1mError[22m: Timed out waiting for provider-initiated report; accumulated=''; seen messages: {"type":"AGENT_STATUS","payload":{"status":"initializing","recoverableBlock":null,"agent_id":"claude-ws-background-notice"}} | {"type":"AGENT_INPUT_STATE","payload":{"run_instance_id":"cecae6c3-aa01-494e-8949-7c2fdc9f1f6d","revision":2,"entries":[{"sequence":1,"message_id":"e2e-9c35e095-1062-4368-9122-16d7f48b7a35","dedupe_key":"agent_run_input:e2e:e2e-9c35e095-1062-4368-9122-16d7f48b7a35","turn_id":null,"state":"queued","content":"build the app in the background","sender_type":"user","file_attachments":[]}],"recoverableBlock":null}} | {"type":"AGENT_COMMAND_ACK","payload":{"command_type":"SEND_MESSAGE","run_id":"claude-ws-background-notice","message_id":"e2e-9c35e095-1062-4368-9122-16d7f48b7a35","dedupe_key":"agent_run_input:e2e:e2e-9c35e095-1062-4368-9122-16d7f48b7a35","state":"accepted","accepted":true,"duplicate":false,"status":{"status":"running","recoverableBlock":null,"agent_id":"claude-ws-background-notice"}}} | {"type":"AGENT_STATUS","payload":{"status":"running","recoverableBlock":null,"agent_id":"claude-ws-background-notice"}} | {"type":"TURN_STARTED","payload":{"turnId":"claude-ws-background-notice:turn:d29e2b78-1e61-4400-b92a-a1284ddbe60d","turn_id":"claude-ws-background-notice:turn:d29e2b78-1e61-4400-b92a-a1284ddbe60d"}} | {"type":"AGENT_INPUT_STATE","payload":{"run_instance_id":"cecae6c3-aa01-494e-8949-7c2fdc9f1f6d","revision":3,"entries":[{"sequence":1,"message_id":"e2e-9c35e095-1062-4368-9122-16d7f48b7a35","dedupe_key":"agent_run_input:e2e:e2e-9c35e095-1062-4368-9122-16d7f48b7a35","turn_id":"claude-ws-background-notice:turn:d29e2b78-1e61-4400-b92a-a1284ddbe60d","state":"queued","content":"build the app in the background","sender_type":"user","file_attachments":[]}],"recoverableBlock":null}} | {"type":"ERROR","payload":{"code":"CLAUDE_RUNTIME_TURN_FAILED","message":"CLAUDE_RUNTIME_TURN_FAILED: Claude opening and cleanup failed.","error_scope":"turn","error_effect":"terminal","turn_id":"claude-ws-background-notice:turn:d29e2b78-1e61-4400-b92a-a1284ddbe60d"}} | {"type":"AGENT_STATUS","payload":{"status":"error","recoverableBlock":null,"agent_id":"claude-ws-background-notice"}} | {"type":"AGENT_INPUT_STATE","payload":{"run_instance_id":"cecae6c3-aa01-494e-8949-7c2fdc9f1f6d","revision":3,"entries":[{"sequence":1,"message_id":"e2e-9c35e095-1062-4368-9122-16d7f48b7a35","dedupe_key":"agent_run_input:e2e:e2e-9c35e095-1062-4368-9122-16d7f48b7a35","turn_id":"claude-ws-background-notice:turn:d29e2b78-1e61-4400-b92a-a1284ddbe60d","state":"queued","content":"build the app in the background","sender_type":"user","file_attachments":[]}],"recoverableBlock":null}} | {"type":"AGENT_INPUT_STATE","payload":{"run_instance_id":"cecae6c3-aa01-494e-8949-7c2fdc9f1f6d","revision":4,"entries":[],"recoverableBlock":null}}[39m
+[36m [2m❯[22m Timeout._onTimeout tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:[2m264:9[22m[39m
+    [90m262| [39m      socket[33m.[39m[34moff[39m([32m"message"[39m[33m,[39m onMessage)[33m;[39m
+    [90m263| [39m      [34mreject[39m(
+    [90m264| [39m        [35mnew[39m [33mError[39m(
+    [90m   | [39m        [31m^[39m
+    [90m265| [39m          `Timed out waiting for ${label}; accumulated='${accumulated}…
+    [90m266| [39m        )[33m,[39m
+[90m [2m❯[22m listOnTimeout node:internal/timers:[2m585:17[22m[39m
+[90m [2m❯[22m processTimers node:internal/timers:[2m521:7[22m[39m
+
+[31mThis error originated in "[1mtests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[22m" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.[39m
+[31m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m8 failed[39m[22m[2m | [22m[33m1 skipped[39m[90m (9)[39m
+[2m     Errors [22m [1m[31m1 error[39m[22m
+[2m   Start at [22m 05:00:38
+[2m   Duration [22m 20.36s[2m (transform 2.52s, setup 21ms, import 3.75s, tests 16.14s, environment 0ms)[22m
+

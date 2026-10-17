@@ -1,5 +1,5 @@
 export interface TerminalSession {
-  start(cwd: string): Promise<void>;
+  start(cwd: string, environment?: NodeJS.ProcessEnv): Promise<void>;
   write(data: Buffer | string): Promise<void>;
   read(timeout?: number): Promise<Buffer | null>;
   resize(rows: number, cols: number): void;

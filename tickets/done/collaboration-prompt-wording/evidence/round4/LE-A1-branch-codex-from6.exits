@@ -1,0 +1,11 @@
+branch codex run 6 exit 0
+branch codex run 7 exit 1
+branch codex run 8 exit 1
+branch codex run 9 exit 1
+branch codex run 10 exit 0
+branch codex run 11 exit 0
+branch codex run 12 exit 1
+branch codex run 13 exit 0
+branch codex run 14 exit 0
+branch codex run 15 exit 0
+done

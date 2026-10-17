@@ -51,10 +51,12 @@ const summary = (overrides = {}) => ({
   latest_prompt_tokens: 200,
   effective_context_window_tokens: 128_000,
   context_window_usage_percent: 0.15625,
+  context_compaction_threshold_tokens: null,
   latest_model_provider: 'OPENAI',
   latest_model_identifier: 'gpt-5.6-sol',
   latest_runtime_kind: 'codex_app_server',
   usage_report_count: 3,
+  revision: 4,
   updated_at: '2026-08-20T10:05:00.000Z',
   ...overrides,
 });
@@ -109,6 +111,9 @@ const teamTokenMessage = () => ({
     latest_prompt_tokens: 200,
     effective_context_window_tokens: 128_000,
     context_window_usage_percent: 0.15625,
+    context_compaction_threshold_tokens: null,
+    reports_model_call: true,
+    output_throughput: { method: "end_to_end", output_tokens: 300, duration_ms: 4000 },
     run_summary_after_event: summary(),
     quality_flags: [],
   },
@@ -121,6 +126,31 @@ test('validates and preserves the exact cumulative summary on a team token event
   assert.equal(parsed.payload.run_summary_after_event.unit_prices.cache_creation_1h_input.price_per_million, 10);
   assert.equal(parsed.payload.run_summary_after_event.usage_report_count, 3);
   assert.equal(Object.isFrozen(parsed.payload.run_summary_after_event.unit_prices), true);
+});
+
+test('carries the summary revision and compaction threshold and keeps unknown keys rejected', () => {
+  const parsed = tokenUsageRunSummaryDtoSchema.parse(summary({
+    revision: 42,
+    context_compaction_threshold_tokens: 967_000,
+  }));
+  assert.equal(parsed.revision, 42);
+  assert.equal(parsed.context_compaction_threshold_tokens, 967_000);
+  const { revision: _revision, ...withoutRevision } = summary();
+  assert.throws(() => tokenUsageRunSummaryDtoSchema.parse(withoutRevision));
+  assert.throws(() => tokenUsageRunSummaryDtoSchema.parse(summary({ revision: -1 })));
+  assert.throws(() => tokenUsageRunSummaryDtoSchema.parse(summary({ context_compaction_threshold_tokens: 1.5 })));
+  assert.throws(() => tokenUsageRunSummaryDtoSchema.parse(summary({ unexpected_key: 1 })));
+});
+
+test('team token event carries whether it reports a model call', () => {
+  const message = teamTokenMessage();
+  message.payload.reports_model_call = false;
+  message.payload.context_compaction_threshold_tokens = 167_000;
+  const parsed = parseTeamStreamServerMessage(message);
+  assert.equal(parsed.payload.reports_model_call, false);
+  assert.equal(parsed.payload.context_compaction_threshold_tokens, 167_000);
+  const { reports_model_call: _reports, ...withoutFlag } = teamTokenMessage().payload;
+  assert.throws(() => parseTeamStreamServerMessage({ type: 'TOKEN_USAGE_UPDATED', payload: withoutFlag }));
 });
 
 test('requires a non-negative safe-integer report generation', () => {

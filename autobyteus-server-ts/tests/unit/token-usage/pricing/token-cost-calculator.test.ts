@@ -376,4 +376,75 @@ describe('TokenCostCalculator', () => {
     },
   );
 
+  it.each([
+    // 60k uncached + 50k cache read = 110k gross → long-prompt tier.
+    [60_000, 50_000, 0, 'prompt_gt_100k', 0.5, 0.05, 0.625, 2.5, 0.0325, 0.0025],
+    // Exactly 100k gross (50k uncached + 50k cache read) stays on the short-prompt tier.
+    [50_000, 50_000, 0, 'prompt_le_100k', 0.1, 0.01, 0.125, 0.5, 0.0055, 0.0005],
+    // 40k uncached + 30k cache read + 30,001 5m cache write = 100,001 gross → long-prompt tier.
+    [40_000, 30_000, 30_001, 'prompt_gt_100k', 0.5, 0.05, 0.625, 2.5, 0.040250625, 0.0025],
+    // 40k uncached + 30k cache read + 30k 5m cache write = 100k gross → short-prompt tier.
+    [40_000, 30_000, 30_000, 'prompt_le_100k', 0.1, 0.01, 0.125, 0.5, 0.00805, 0.0005],
+  ] as const)(
+    'selects the Claude Haiku 5.5 tier from cache-inclusive gross input (%i uncached + %i cache read + %i cache write)',
+    (standardInput, cacheReadInput, cacheWriteInput, tierId, inputPrice, cacheReadPrice, cacheWritePrice, outputPrice, inputCost, outputCost) => {
+      const trusted = {
+        input: true, output: true, cached_input_read: true, cached_input_write: true,
+        cached_input_write_5m: true, cached_input_write_1h: true,
+      };
+      const haikuTier = (
+        tier_id: string, max_input_tokens: number | null, input: number, output: number,
+        read: number, write5m: number, write1h: number,
+      ) => ({
+        tier_id, max_input_tokens,
+        input_price_per_million: input, output_price_per_million: output,
+        cached_input_read_price_per_million: read, cached_input_write_price_per_million: write5m,
+        cached_input_write_5m_price_per_million: write5m, cached_input_write_1h_price_per_million: write1h,
+        trusted_dimensions: trusted,
+      });
+      const grossInput = standardInput + cacheReadInput + cacheWriteInput;
+      const enriched = calculator.applyPolicy(buildPayload({
+        model_provider: 'ANTHROPIC',
+        model_identifier: 'claude-haiku-5-5',
+        input_token_semantic: 'base_excludes_cache',
+        reported_input_tokens: standardInput,
+        accounting_input_tokens: grossInput,
+        accounting_output_tokens: 1_000,
+        accounting_total_tokens: grossInput + 1_000,
+        standard_input_tokens: standardInput,
+        cache_read_input_tokens: cacheReadInput,
+        cache_creation_input_tokens: cacheWriteInput,
+        cache_creation_5m_input_tokens: cacheWriteInput,
+        cache_creation_1h_input_tokens: 0,
+        cache_state: 'positive',
+      }), {
+        ...basePrice,
+        model_provider: 'ANTHROPIC',
+        model_identifier: 'claude-haiku-5-5',
+        model_value: 'claude-haiku-5-5',
+        canonical_name: 'claude-haiku-5-5',
+        input_price_per_million: 0.1,
+        output_price_per_million: 0.5,
+        cached_input_read_price_per_million: 0.01,
+        cached_input_write_price_per_million: 0.125,
+        cached_input_write_5m_price_per_million: 0.125,
+        cached_input_write_1h_price_per_million: 0.2,
+        trusted_dimensions: trusted,
+        input_price_tiers: [
+          haikuTier('prompt_le_100k', 100_000, 0.1, 0.5, 0.01, 0.125, 0.2),
+          haikuTier('prompt_gt_100k', null, 0.5, 2.5, 0.05, 0.625, 1),
+        ],
+      });
+
+      expect(enriched.api_cost_status).toBe('estimated');
+      expect(enriched.pricing_snapshot_json).toMatchObject({ selected_tier_id: tierId });
+      expect(enriched.input_price_per_million).toBe(inputPrice);
+      expect(enriched.cached_input_read_price_per_million).toBe(cacheReadPrice);
+      expect(enriched.cached_input_write_5m_price_per_million).toBe(cacheWritePrice);
+      expect(enriched.output_price_per_million).toBe(outputPrice);
+      expect(enriched.estimated_api_input_cost).toBeCloseTo(inputCost, 10);
+      expect(enriched.estimated_api_output_cost).toBeCloseTo(outputCost, 10);
+    },
+  );
+
 });

@@ -1,0 +1,26 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/autobyteus-ts[39m
+
+ [31m❯[39m tests/_ac010/ac010-gemini-probe.test.ts [2m([22m[2m1 test[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 391621[2mms[22m[39m
+[31m     [31m×[31m normal request carries the agent prompt; transcript fallback carries the summary prompt and parses[39m[33m 391620[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/_ac010/ac010-gemini-probe.test.ts[2m > [22mAC-010 Gemini system prompt from the request[2m > [22mnormal request carries the agent prompt; transcript fallback carries the summary prompt and parses
+[31m[1mAssertionError[22m: aiStudio agent request accepted: expected 0 to be greater than 0[39m
+[36m [2m❯[22m tests/_ac010/ac010-gemini-probe.test.ts:[2m113:88[22m[39m
+    [90m111| [39m    fs.writeFileSync(path.join(OUT, 'ac010-results.json'), JSON.string…
+    [90m112| [39m    [35mfor[39m ([35mconst[39m runtime [35mof[39m runtimes) {
+    [90m113| [39m      expect(results[runtime].agentBodies.length, `${runtime} agent re…
+    [90m   | [39m                                                                                       [31m^[39m
+    [90m114| [39m      expect(results[runtime].agentBodies.every((b: any) => b.systemIn…
+    [90m115| [39m      expect(results[runtime].transcriptBodies.every((b: any) => b.sys…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m   Start at [22m 13:08:06
+[2m   Duration [22m 392.35s[2m (transform 255ms, setup 15ms, import 620ms, tests 391.62s, environment 0ms)[22m
+

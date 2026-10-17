@@ -57,7 +57,7 @@
       </div>
     </form>
 
-    <div class="min-h-0 flex-1 overflow-y-auto px-1 pb-2">
+    <div ref="treeScrollRef" class="min-h-0 flex-1 overflow-y-auto px-1 pb-2" data-test="workspace-history-tree-scroll">
       <div v-if="runHistoryStore.loading" class="px-3 py-4 text-xs text-gray-500">{{ $t('workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.loading_task_history') }}</div>
 
       <div v-if="runHistoryStore.historyFamilyErrors?.workspace" class="px-3 py-2 text-xs text-red-600">
@@ -149,6 +149,8 @@ import { pickFolderPath } from '~/composables/useNativeFolderDialog';
 import { useRunHistoryAvatarState } from '~/composables/useRunHistoryAvatarState';
 import { useWorkspaceHistorySelectionActions } from '~/composables/useWorkspaceHistorySelectionActions';
 import { useWorkspaceHistoryTreeState } from '~/composables/useWorkspaceHistoryTreeState';
+import { useRevealSelectedTreeRow } from '~/components/workspace/history/useRevealSelectedTreeRow';
+import { chatRouteRunId } from '~/services/workspace/workspaceNavigationService';
 import { useWorkspaceHistoryWorkspaceCreation } from '~/composables/useWorkspaceHistoryWorkspaceCreation';
 import { useWorkspaceHistoryWorkspaceRemoval } from '~/composables/useWorkspaceHistoryWorkspaceRemoval';
 import { useWorkspaceHistoryMutations } from '~/composables/useWorkspaceHistoryMutations';
@@ -158,6 +160,11 @@ import { useLocalization } from '~/composables/useLocalization';
 import { useRunStart } from '~/composables/runSettings/useRunStart';
 import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
 import { escapeHtml } from '~/utils/escapeHtml';
+
+const props = withDefaults(defineProps<{
+  /** Whether the center shows a run (`useShellPrimaryNavigation().isWorkspacesActive`); gates the reveal. */
+  runShown?: boolean;
+}>(), { runShown: false });
 
 const emit = defineEmits<{
   (e: 'run-selected', payload: { type: 'agent'; runId: string }): void;
@@ -203,6 +210,10 @@ const treeState = useWorkspaceHistoryTreeState({
   selectionStore,
   selectedAgentOrg,
 });
+// When the panel appears, the open run's row is brought into view (REQ-003), only while a run is
+// shown in the center (`runShown`: the shell's Workspaces highlight, passed by the host panel).
+const treeScrollRef = ref<HTMLElement | null>(null);
+useRevealSelectedTreeRow(treeScrollRef, computed(() => props.runShown));
 const { workspaceNodes, workspaceTeams, workspaceTeamHistoryGroups } = treeState;
 const { execute: executeSubjectAction } = useWorkspaceHistorySubjectActions();
 const {
@@ -330,6 +341,7 @@ const {
 const {
   onSelectRun,
   onSelectTeam,
+  onOpenTeamRun,
   onSelectTeamMember,
   onCreateRun,
 } = useWorkspaceHistorySelectionActions({
@@ -391,10 +403,7 @@ const removeWorkspaceConfirmationMessage = computed(() => {
 const sectionState: WorkspaceHistorySectionState = {
   get selectedRunId() {
     // On Chat, the highlighted row is the displayed chat (none on New chat).
-    if (route?.path?.startsWith('/chat')) {
-      const id = route.query.id;
-      return typeof id === 'string' && id ? id : null;
-    }
+    if (route?.path?.startsWith('/chat')) return chatRouteRunId(route.query);
     return treeState.selectedRunId.value;
   },
   isTeamRunSelected: (teamRunId: string) =>
@@ -462,6 +471,7 @@ const sectionActions: WorkspaceHistorySectionActions = {
   onArchiveRun,
   onDeleteRun,
   onSelectTeam,
+  onOpenTeamRun,
   onTerminateTeam,
   onArchiveTeam,
   onDeleteTeam,

@@ -103,7 +103,7 @@ export class DirectShellSession {
     return this.shellName;
   }
 
-  async start(cwd: string): Promise<void> {
+  async start(cwd: string, environment?: NodeJS.ProcessEnv): Promise<void> {
     if (this.child) {
       throw new Error('Session already started');
     }
@@ -115,7 +115,7 @@ export class DirectShellSession {
     this.shellName = selected.shellName;
 
     const env = {
-      ...process.env,
+      ...(environment ?? process.env),
       TERM: 'xterm-256color',
       PS1: '\\w $ '
     };

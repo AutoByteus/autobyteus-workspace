@@ -1,0 +1,40 @@
+{
+  "scope": "personal implementation checks only; no sudo/live resources/provider",
+  "temporaryHome": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-ir003-checks-va49fzh6",
+  "steps": [
+    {
+      "name": "go-race",
+      "command": [
+        "go",
+        "test",
+        "-race",
+        "-count=1",
+        "-v",
+        "./..."
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "go-vet",
+      "command": [
+        "go",
+        "vet",
+        "./..."
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "installer-packaging",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "scripts/tests/test_nfs_packaging_and_launcher.py",
+        "scripts/tests/test_nfs_installer_fixture.py",
+        "-v"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "temporaryHomeRemoved": true
+}

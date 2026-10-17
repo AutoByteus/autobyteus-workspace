@@ -1,0 +1,10 @@
+Started ordinary whole-host reboot 1 automatic actual readiness
+ordinary whole-host reboot 1 automatic actual readiness: Pass
+Started reboot 1 same ID/image/config/private/source/mounted API preservation
+reboot 1 same ID/image/config/private/source/mounted API preservation: Pass
+Started ordinary whole-host reboot 2 automatic actual readiness
+ordinary whole-host reboot 2 automatic actual readiness: Pass
+Started reboot 2 same ID/image/config/private/source/mounted API preservation
+reboot 2 same ID/image/config/private/source/mounted API preservation: Pass
+Two fresh ordinary full-host reboots automatic readiness and exact preservation PASS; no manual Start/reconnect. Controls still required.
+{"result": "Pass", "fatal": null}

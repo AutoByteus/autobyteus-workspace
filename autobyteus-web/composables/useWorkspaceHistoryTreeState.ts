@@ -256,15 +256,13 @@ export const useWorkspaceHistoryTreeState = (params: {
     setTeamExpanded(teamRunId, !isTeamExpanded(teamRunId));
   };
 
-  /** `openByDefault`: a row that opens once when it appears (F-02) until the user collapses it. */
   const isTeamMemberExpanded = (
     workspaceId: string,
     teamRunId: string,
     rowKey: string,
-    openByDefault = false,
   ): boolean => {
     const key = teamMemberKey(workspaceId, teamRunId, rowKey);
-    return key ? expandedTeamMembers.value[key] ?? openByDefault : false;
+    return key ? expandedTeamMembers.value[key] ?? false : false;
   };
 
   const setTeamMemberExpanded = (
@@ -288,13 +286,12 @@ export const useWorkspaceHistoryTreeState = (params: {
     workspaceId: string,
     teamRunId: string,
     rowKey: string,
-    openByDefault = false,
   ): void => {
     setTeamMemberExpanded(
       workspaceId,
       teamRunId,
       rowKey,
-      !isTeamMemberExpanded(workspaceId, teamRunId, rowKey, openByDefault),
+      !isTeamMemberExpanded(workspaceId, teamRunId, rowKey),
     );
   };
 
@@ -325,6 +322,13 @@ export const useWorkspaceHistoryTreeState = (params: {
     setWorkspaceExpanded(ancestry.workspaceId, true);
     setTeamDefinitionExpanded(ancestry.workspaceId, ancestry.teamDefinitionGroupKey, true);
     setTeamExpanded(teamRunId, true);
+    // The focused member's sub-team rows open too, however it was opened (REQ-003). Until its row
+    // exists the reveal stays pending and re-applies on the next topology revision.
+    const team = params.runHistoryStore.getTeamNodes().find((node) => node.teamRunId === teamRunId);
+    const focusedAgentRunId = team?.focusedAgentRunId?.trim();
+    if (!team || !focusedAgentRunId) return true;
+    if (!team.executionRows.some((row) => row.agentRunId === focusedAgentRunId)) return false;
+    expandTeamMemberAncestors(ancestry.workspaceId, teamRunId, focusedAgentRunId);
     return true;
   };
 

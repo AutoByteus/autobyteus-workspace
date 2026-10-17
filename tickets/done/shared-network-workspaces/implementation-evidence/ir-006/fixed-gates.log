@@ -1,0 +1,10 @@
+test_build_only_runs_all_build_gates_without_publishing (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) ... ok
+test_each_gate_rejects_bad_direct_needs_and_cancellation (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) ... ok
+test_existing_candidate_skip_rebuild_reaches_publication (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) ... ok
+test_failed_or_skipped_applicable_prerequisites_block_dependents (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) ... ok
+test_qualification_candidate_and_signing_gates_remain_required (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.009s
+
+OK

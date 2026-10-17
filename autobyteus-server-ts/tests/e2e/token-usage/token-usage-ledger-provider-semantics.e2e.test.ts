@@ -69,6 +69,7 @@ const buildEvent = (input: {
       runtime_kind: input.runtimeKind ?? 'codex_app_server',
       ingestion_kind: input.ingestionKind ?? 'codex_thread_token_usage',
       usage_scope: 'per_turn',
+      reports_model_call: true,
       model_provider: input.modelProvider ?? 'OPENAI',
       model_identifier: input.model ?? 'gpt-5.4-mini',
       input_token_semantic: inputTokenSemantic,
@@ -275,6 +276,49 @@ describe('token usage ledger GraphQL provider semantics', () => {
         estimatedApiOutputCost: 0.004,
         estimatedApiTotalCost: 0.014,
         apiCostStatus: 'estimated',
+        latestPromptTokens: 1_000,
+        effectiveContextWindowTokens: 258_400,
+        contextWindowUsagePercent: 0.387,
+      },
+    });
+    // A ledger-era (v1.3.77–v1.4.52) Claude SDK turn: its reading is the multi-call
+    // result.usage sum (402.5 %). DEC-005 (a): consolidation must not rebuild it.
+    const claudeLedgerRunId = `graphql-claude-ledger-${suffix}`;
+    createdRunIds.add(claudeLedgerRunId);
+    await rootPrismaClient.tokenUsageLedgerEvent.create({
+      data: {
+        usageEventId: `graphql-provider-legacy-claude-${suffix}`,
+        idempotencyKey: `graphql-provider-legacy-claude:${suffix}`,
+        observedAt: new Date('2026-06-24T11:06:00.000Z'),
+        runId: claudeLedgerRunId,
+        runtimeKind: 'claude_agent_sdk',
+        ingestionKind: 'claude_sdk_result',
+        usageScope: 'per_turn',
+        inputTokenSemantic: 'base_excludes_cache',
+        modelProvider: 'ANTHROPIC',
+        modelIdentifier: 'claude-opus-5-5',
+        modelValue: 'claude-opus-5-5',
+        reportedInputTokens: 34,
+        reportedOutputTokens: 443,
+        reportedTotalTokens: 477,
+        accountingInputTokens: 25_027,
+        accountingOutputTokens: 443,
+        accountingTotalTokens: 25_470,
+        standardInputTokens: 34,
+        cacheMissInputTokens: 34,
+        cacheReadInputTokens: 13_656,
+        cacheCreationInputTokens: 11_303,
+        cacheCreation5mInputTokens: 0,
+        cacheCreation1hInputTokens: 0,
+        cacheState: 'positive',
+        billableInputTokens: 25_027,
+        billableOutputTokens: 443,
+        pricingStatus: 'missing',
+        missingPriceDimensionsJson: '[]',
+        apiCostStatus: 'price_missing',
+        latestPromptTokens: 4_025_193,
+        effectiveContextWindowTokens: 1_000_000,
+        contextWindowUsagePercent: 402.5193,
       },
     });
     const migration = new TokenUsageRunRecordsV1AppDataMigration(
@@ -282,13 +326,13 @@ describe('token usage ledger GraphQL provider semantics', () => {
     );
     await expect(migration.execute()).resolves.toMatchObject({
       status: 'SUCCEEDED',
-      summary: { scannedCount: 1, migratedCount: 1, failedCount: 0 },
+      summary: { scannedCount: 2, migratedCount: 2, failedCount: 0 },
       errorMessage: null,
     });
     await expect(rootPrismaClient.tokenUsageLedgerEvent.count()).resolves.toBe(0);
 
     const query = `
-      query ProviderSemantics($anthropicRunId: String!, $customRunId: String!, $localRunId: String!, $unknownRunId: String!) {
+      query ProviderSemantics($anthropicRunId: String!, $customRunId: String!, $localRunId: String!, $unknownRunId: String!, $claudeLedgerRunId: String!) {
         anthropic: getAgentRunTokenUsageSummary(runId: $anthropicRunId) {
           grossInputTokens
           standardInputTokens
@@ -330,6 +374,23 @@ describe('token usage ledger GraphQL provider semantics', () => {
           estimatedApiTotalCost
           apiCostStatus
           missingPriceDimensions
+          latestPromptTokens
+          effectiveContextWindowTokens
+          contextWindowUsagePercent
+        }
+        claudeLedger: getAgentRunTokenUsageSummary(runId: $claudeLedgerRunId) {
+          grossInputTokens
+          cacheReadInputTokens
+          cacheCreationInputTokens
+          outputTokens
+          totalTokens
+          usageReportCount
+          latestRuntimeKind
+          latestModelIdentifier
+          latestPromptTokens
+          effectiveContextWindowTokens
+          contextWindowUsagePercent
+          contextCompactionThresholdTokens
         }
       }
     `;
@@ -339,7 +400,8 @@ describe('token usage ledger GraphQL provider semantics', () => {
       custom: Record<string, unknown>;
       local: Record<string, unknown>;
       unknown: Record<string, unknown>;
-    }>(query, { anthropicRunId, customRunId, localRunId, unknownRunId });
+      claudeLedger: Record<string, unknown>;
+    }>(query, { anthropicRunId, customRunId, localRunId, unknownRunId, claudeLedgerRunId });
 
     expect(result.anthropic).toMatchObject({
       grossInputTokens: 20_894,
@@ -383,6 +445,25 @@ describe('token usage ledger GraphQL provider semantics', () => {
       estimatedApiTotalCost: 0.004,
       apiCostStatus: 'partial_price_missing',
       missingPriceDimensions: ['input_token_semantic', 'standard_input_tokens'],
+      // A non-Claude ledger reading is consolidated unchanged.
+      latestPromptTokens: 1_000,
+      effectiveContextWindowTokens: 258_400,
+      contextWindowUsagePercent: 0.387,
+    });
+    // DEC-005 (a) at the ledger boundary: totals and the report survive, the turn-sum reading does not.
+    expect(result.claudeLedger).toEqual({
+      grossInputTokens: 25_027,
+      cacheReadInputTokens: 13_656,
+      cacheCreationInputTokens: 11_303,
+      outputTokens: 443,
+      totalTokens: 25_470,
+      usageReportCount: 1,
+      latestRuntimeKind: 'claude_agent_sdk',
+      latestModelIdentifier: 'claude-opus-5-5',
+      latestPromptTokens: null,
+      effectiveContextWindowTokens: null,
+      contextWindowUsagePercent: null,
+      contextCompactionThresholdTokens: null,
     });
   });
 

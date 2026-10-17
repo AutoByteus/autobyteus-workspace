@@ -1,0 +1,15 @@
+
+stderr | tests/unit/agent-tools/mcp/agent-tool-mcp-catalog.test.ts > AgentToolMcpCatalog configured MCP bridge > keeps the first-party create_task and update_task authoritative when a third-party configured MCP tool uses either name (AC-003, task-tool-split)
+Configured MCP tool 'create_task' was not exposed because it collides with a protected Agent Tools MCP adapter.
+Configured MCP tool 'update_task' was not exposed because it collides with a protected Agent Tools MCP adapter.
+
+stderr | tests/unit/agent-tools/mcp/agent-tool-mcp-catalog.test.ts > AgentToolMcpCatalog configured MCP bridge > resolves configured MCP calls through a registry-backed adapter
+Tool 'FakeConfiguredMcpTool' does not define an argument schema but received arguments: {"sql":"select 1"}.
+
+ ✓ tests/unit/agent-tools/mcp/agent-tool-mcp-catalog.test.ts (14 tests) 9ms
+
+ Test Files  1 passed (1)
+      Tests  14 passed (14)
+   Start at  09:27:58
+   Duration  3.87s (transform 2.32s, setup 22ms, import 3.36s, tests 9ms, environment 0ms)
+

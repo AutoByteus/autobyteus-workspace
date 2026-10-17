@@ -125,14 +125,16 @@ describe('InterAgentMessageSegment', () => {
     expect(wrapper.find('.katex').exists()).toBe(false);
   });
 
-  it('RD-004: names the sender of a delivery with the shared formatter (address or name)', () => {
-    const byAddress = mount(InterAgentMessageSegment, { props: { segment: {
-      ...baseSegment, senderAgentRunId: 'pp-run', senderAddress: '/product_team/product_prototyper', recipientRoleName: '',
-    } } });
-    expect(byAddress.text()).toContain('From Product Prototyper:');
-    const byName = mount(InterAgentMessageSegment, { props: { segment: {
-      ...baseSegment, senderAgentRunId: 'ra-run', senderName: 'research_assistant', recipientRoleName: '',
-    } } });
-    expect(byName.text()).toContain('From Research Assistant:');
+  it('SR-013: the sender label comes only from the run ID: the lookup by run ID, else the readable run ID', () => {
+    const looked = mount(InterAgentMessageSegment, { props: {
+      segment: { ...baseSegment, senderAgentRunId: 'pp_9f3a1c', recipientRoleName: '' },
+      senderDisplayName: 'product_prototyper',
+    } });
+    expect(looked.text()).toContain('From Product Prototyper:');
+    const readable = mount(InterAgentMessageSegment, { props: {
+      segment: { ...baseSegment, senderAgentRunId: 'research_assistant_7f3a', recipientRoleName: '' },
+    } });
+    expect(readable.text()).toContain('From Research Assistant:');
+    expect(readable.text()).not.toContain('7f3a');
   });
 });

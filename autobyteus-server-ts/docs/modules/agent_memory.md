@@ -24,6 +24,8 @@ for the scoped primary-key rule used to join new saved and live presentation.
 
 ## Storage Layout
 
+The target run storage shape (every run, including a delegated run, in its own folder) is defined in the [Collaboration Model](../design/collaboration_model.md#3-run-storage-shape); the layout below is the current one.
+
 Memory files live under the configured memory root:
 
 - Standalone runs: `memory/agents/<runId>/...`
@@ -61,6 +63,7 @@ Common files/directories:
 - `episodic.jsonl` and `semantic.jsonl` — historical compacted output rows; current direct compaction does not append them.
 - `compaction_lineage.jsonl` — historical append-only lineage, not current continuation authority and not a normal compaction/restore dependency.
 - `working_context_snapshot.json` — native continuation state: versionless `{agent_id, messages}` with finalized messages and provenance. The normal reader ignores obsolete root version/extras but requires current shapes, identity and repairable tool facts. Codex/Claude recording does not write it.
+- `seen_skill_versions.json` — the skill file versions this run was last given, used by [Skill Update Notices](./skill_update_notices.md) on every runtime. It is additive and disposable: missing or invalid means "nothing seen", and the root-package validators tolerate it.
 
 There is no current compacted-memory manifest or pointer. The destructive
 `20260730_reset_pre_lineage_memory` path is removed. Normal restore accepts
@@ -140,20 +143,25 @@ runtime memory provider.
 
 Native AutoByteus runs use the core `MemoryManager`. The canonical
 [core memory design](../../../autobyteus-ts/docs/agent_memory_design.md) owns
-planning, provider-safe content construction, direct `compress(content)` output,
-validation, snapshot publication and repair. Server composition uses
-`src/agent-execution/compaction/compaction-llm-factory.ts` to construct an isolated
-tool-free LLM per attempt, not a visible child agent. There is no strategy catalog,
-registered algorithm selector, category-output projector or live lineage head.
+planning, provider-safe content construction, summary production on the agent's
+own model, validation, snapshot publication and repair. Server composition only
+enables compaction with its policy (`createEnabledMemoryCompactionConfiguration(new
+CompactionPolicy())`); it creates no compaction LLM and no visible child agent.
+There is no strategy catalog, registered algorithm selector, category-output
+projector or live lineage head.
 
-`AUTOBYTEUS_COMPACTION_MODEL_SETTINGS` is the optional current model/config tuple.
-Missing/null selection uses the then-current parent model identifier and selected-
-model defaults without a settings write. Controlled prompt/tool/transport fields
-are excluded; the parent instance and its ordinary retry policy stay unchanged.
-The existing trigger-ratio, active-context override and diagnostic settings remain.
-Old built-in Memory Compactor definitions/settings are not imported or deleted.
+There is no compaction-model setting. The summary is the agent's own cached
+conversation request plus a summary instruction (falling back to a transcript
+request on the same model); each attempt runs on an isolated
+`compaction_<operationId>_<attempt>` provider conversation that is released
+afterwards, and its usage is ingested as `autobyteus_compaction` token usage of the
+run. A value saved under the removed `AUTOBYTEUS_COMPACTION_MODEL_SETTINGS` key is
+inert (listed only as a deletable custom setting). The existing trigger-ratio,
+active-context override and diagnostic settings remain. Old built-in Memory
+Compactor definitions/settings are not imported or deleted.
 
-One strategy execution permits at most three isolated generation attempts.
+One summary operation permits at most two cached and three transcript attempts,
+each one provider call.
 Planning/input construction happens before generation. Exhaustion retains the
 same pending operation and exposes a fresh failure epoch. A later accepted user
 message supplies one retry permit; pre-failure queued input and agent/system

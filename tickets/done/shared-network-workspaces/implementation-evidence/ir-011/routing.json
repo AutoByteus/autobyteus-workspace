@@ -1,0 +1,8 @@
+{
+  "time": "2026-10-15T16:31:21.483293+00:00",
+  "authority": "fresh get_handoff_rules tool result",
+  "classification": "Local Fix complete; Large/High/Reviewed",
+  "selectedRule": "When an implementation-owned Local Fix requested by the code reviewer or delivery engineer is complete, the existing package is task_size=Large or architectural_risk=High, and the updated implementation must return for source review.",
+  "recipient_address": "/software_engineering_team/code_reviewer",
+  "reason": "Most-specific rule for Delivery DR001 recovery; ordinary completion also overlaps but is less specific. No additional notification."
+}

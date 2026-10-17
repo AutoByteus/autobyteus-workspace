@@ -1,0 +1,126 @@
+[
+  {
+    "name": "go-version",
+    "argv": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky/go/bin/go",
+      "version"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "rc": 0,
+    "expected": 0,
+    "seconds": 0.244
+  },
+  {
+    "name": "go-race",
+    "argv": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky/go/bin/go",
+      "test",
+      "-race",
+      "-count=1",
+      "-json",
+      "./..."
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+    "rc": 0,
+    "expected": 0,
+    "seconds": 32.733
+  },
+  {
+    "name": "go-vet",
+    "argv": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky/go/bin/go",
+      "vet",
+      "./..."
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs",
+    "rc": 0,
+    "expected": 0,
+    "seconds": 5.617
+  },
+  {
+    "name": "python-packaging",
+    "argv": [
+      "python3",
+      "-m",
+      "unittest",
+      "scripts/tests/test_nfs_engine_packaging.py",
+      "scripts/tests/test_nfs_installer_fixture.py",
+      "scripts/tests/test_nfs_packaging_and_launcher.py",
+      "scripts/tests/test_nfs_release_workflow.py",
+      "-v"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "rc": 0,
+    "expected": 0,
+    "seconds": 3.568
+  },
+  {
+    "name": "source-hash",
+    "argv": [
+      "python3",
+      "autobyteus-nfs/packaging/release.py",
+      "--source-hash"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "rc": 0,
+    "expected": 0,
+    "seconds": 0.276
+  },
+  {
+    "name": "publish-refusal",
+    "argv": [
+      "python3",
+      "autobyteus-nfs/packaging/release.py",
+      "--check-publish"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+    "rc": 1,
+    "expected": 1,
+    "seconds": 0.27
+  },
+  {
+    "name": "mutation-omit-export-expiry",
+    "argv": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky/go/bin/go",
+      "test",
+      "-count=1",
+      "-run",
+      "TestGaneshaPolicyAndPersistentRecovery",
+      "./internal/backend"
+    ],
+    "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky/mutation-omit-export-expiry",
+    "rc": 1,
+    "expected": 1,
+    "seconds": 1.397
+  },
+  {
+    "name": "mutation-missing-ready",
+    "argv": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky/go/bin/go",
+      "test",
+      "-count=1",
+      "-run",
+      "TestHostedConfigStatusRefusesBeforeReadiness",
+      "./internal/setup"
+    ],
+    "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky/mutation-missing-ready",
+    "rc": 1,
+    "expected": 1,
+    "seconds": 1.81
+  },
+  {
+    "name": "mutation-skip-detach",
+    "argv": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky/go/bin/go",
+      "test",
+      "-count=1",
+      "-run",
+      "TestHostedConfigDetachPreflightsBeforeEffects",
+      "./internal/setup"
+    ],
+    "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-crr011-2rv5b2ky/mutation-skip-detach",
+    "rc": 1,
+    "expected": 1,
+    "seconds": 0.985
+  }
+]

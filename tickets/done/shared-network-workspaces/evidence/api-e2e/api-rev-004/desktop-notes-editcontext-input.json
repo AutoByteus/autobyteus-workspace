@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "F39CBF24AEE7CEC3D3F97A2834E38841",
+    "--script",
+    "() => {const e=document.querySelector(\".native-edit-context\");if(!e?.editContext)throw Error(\"edit context absent\");e.focus();const text=\"API004 UNSAVED BUFFER\\n\";e.editContext.dispatchEvent(new TextUpdateEvent(\"textupdate\",{text,updateRangeStart:0,updateRangeEnd:0,selectionStart:text.length,selectionEnd:text.length}));return {inputBoundary:\"synthetic browser EditContext textupdate, not application model/state write\",text}}"
+  ],
+  "rc": 0,
+  "stdout": "{\"schema_version\":\"1\",\"ok\":true,\"command\":\"run-script\",\"result\":{\"tab_id\":\"F39CBF24AEE7CEC3D3F97A2834E38841\",\"url\":\"file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat\",\"output_mode\":\"inline\",\"result\":{\"inputBoundary\":\"synthetic browser EditContext textupdate, not application model/state write\",\"text\":\"API004 UNSAVED BUFFER\\n\"}}}\n",
+  "stderr": ""
+}

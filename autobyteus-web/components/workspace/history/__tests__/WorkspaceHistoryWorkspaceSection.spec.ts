@@ -6,6 +6,8 @@ import { useRunHistoryAvatarState } from '~/composables/useRunHistoryAvatarState
 import WorkspaceHistoryWorkspaceSection from '../WorkspaceHistoryWorkspaceSection.vue';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { buildRunHistoryTeamExecutionRows } from '~/stores/runHistoryTeamExecutionRows';
+import { useTaskWorkerTaskStore } from '~/stores/taskWorkerTaskStore';
+import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
 import type {
   AgentOrgHistoryDefinitionGroup,
   TeamMemberTreeRow,
@@ -84,7 +86,6 @@ const agentOrgDefinitionGroup = (): AgentOrgHistoryDefinitionGroup => {
         applicationBinding: null,
         handoffs: [],
         rootOrg: {
-          collaborators: [],
           address: '/', orgDefinitionId: 'org-definition', orgDefinitionName: 'Delivery Org', orgRunId: 'org-run',
           defaultLaunchConfiguration: launch, taskExecutions: [],
           members: [{
@@ -112,6 +113,8 @@ const mountSubject = (options: {
   teamExpanded?: boolean;
   selectedTeamRunId?: string | null;
   selectedType?: 'agent' | 'team' | null;
+  agents?: unknown[];
+  stubs?: Record<string, unknown>;
 } = {}) => {
   const worker = stableAgent('/worker', { agentRunId: 'worker-run' });
   const stableChildren = options.stableChildren ?? [worker];
@@ -148,7 +151,7 @@ const mountSubject = (options: {
     onRemoveWorkspace: vi.fn(), onCreateRun: vi.fn(), onSelectRun: vi.fn(),
     onTerminateRun: vi.fn(), onArchiveRun: vi.fn(), onDeleteRun: vi.fn(),
     onSelectTeam: vi.fn(), onTerminateTeam: vi.fn(), onArchiveTeam: vi.fn(),
-    onDeleteTeam: vi.fn(), onSelectTeamMember: vi.fn(),
+    onDeleteTeam: vi.fn(), onSelectTeamMember: vi.fn(), onOpenTeamRun: vi.fn(),
     onOpenAgentOrgRun: vi.fn(), onSelectAgentOrgMember: vi.fn(), onTerminateAgentOrg: vi.fn(),
   };
   const expandedTeamMembers = reactive<Record<string, boolean>>({});
@@ -165,7 +168,7 @@ const mountSubject = (options: {
     isWorkspaceRemoving: () => false, isWorkspaceHistoryLoading: () => false,
     workspaceHistoryError: () => null, formatRelativeTime: () => 'now',
     isWorkspaceExpanded: () => true, toggleWorkspace: vi.fn(),
-    isAgentExpanded: () => false, toggleAgent: vi.fn(),
+    isAgentExpanded: () => Boolean(options.agents?.length), toggleAgent: vi.fn(),
     isTeamDefinitionExpanded: () => true, toggleTeamDefinition: vi.fn(),
     isTeamExpanded: () => options.teamExpanded ?? true,
     isTeamMemberExpanded: vi.fn((workspaceId: string, teamRunId: string, rowKey: string) =>
@@ -191,7 +194,7 @@ const mountSubject = (options: {
     props: {
       workspaceNode: {
         workspaceId: 'workspace:/ws/a', workspaceRootPath: '/ws/a', workspaceName: 'Workspace A',
-        workspaceKind: 'filesystem', canRemoveFromWorkspaces: false, agents: [],
+        workspaceKind: 'filesystem', canRemoveFromWorkspaces: false, agents: (options.agents ?? []) as any,
         stableKey: 'workspace:/ws/a', agentOrgDefinitions: options.agentOrgDefinitions ?? [],
       },
       workspaceTeams: options.workspaceTeams ?? [team], workspaceTeamHistoryGroups: [], state,
@@ -204,6 +207,7 @@ const mountSubject = (options: {
       actions,
     },
     global: {
+      stubs: options.stubs ?? {},
       mocks: { $t: (key: string) => ({
         'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.temporary_execution_title': 'Temporary task execution',
         'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_running': 'Team status: Running',
@@ -219,6 +223,51 @@ const mountSubject = (options: {
 };
 
 describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
+  // sidebar-stop-red-default BEH-001..003: the three real root templates, not a replacement Stop stub.
+  it.each([
+    { kind: 'Agent', selector: '[data-test="terminate-agent-run"]', action: 'onTerminateRun', target: 'agent-run-1' },
+    { kind: 'Team', selector: 'button[title$="terminate_team"]', action: 'onTerminateTeam', target: 'team-run-1' },
+    { kind: 'Org', selector: 'button[aria-label="Stop Agent Org"]', action: 'onTerminateAgentOrg', target: null },
+  ] as const)('$kind root Stop is red when enabled, muted while disabled, and keeps its exact target', async (variant) => {
+    const run = { runId: 'agent-run-1', summary: 'Manager run', currentStatus: AgentStatus.Running,
+      lastActivityAt: '2026-06-30T00:00:00.000Z', isActive: true, hasCollaboration: false, source: 'history', isDraft: false };
+    const agent = { agentDefinitionId: 'manager', agentName: 'Manager', runs: [run] };
+    const group = agentOrgDefinitionGroup();
+    const { wrapper, actions, state, team } = mountSubject({ agents: [agent], agentOrgDefinitions: [group], teamExpanded: false });
+    const button = wrapper.get(variant.selector);
+    expect(button.classes()).toEqual(expect.arrayContaining([
+      'text-red-500', 'hover:bg-red-50', 'hover:text-red-600', 'disabled:text-gray-400',
+      'disabled:hover:text-gray-400', 'disabled:hover:bg-transparent', 'disabled:cursor-not-allowed', 'disabled:opacity-50',
+    ]));
+    expect(button.classes()).not.toContain('text-gray-400');
+    expect(button.classes()).not.toContain('focus:outline-none'); // keep the roots' native focus convention
+    expect(button.attributes('type')).toBe('button');
+    expect(button.attributes('aria-label')).toBe(button.attributes('title'));
+    expect(button.attributes('disabled')).toBeUndefined();
+    await button.trigger('click');
+    expect(actions[variant.action]).toHaveBeenCalledExactlyOnceWith(variant.target ?? group.runs[0]);
+    for (const action of ['onTerminateRun', 'onTerminateTeam', 'onTerminateAgentOrg'] as const) {
+      if (action !== variant.action) expect(actions[action]).not.toHaveBeenCalled();
+    }
+    expect(actions.onSelectRun).not.toHaveBeenCalled();
+    expect(actions.onSelectTeam).not.toHaveBeenCalled();
+    expect(actions.onOpenAgentOrgRun).not.toHaveBeenCalled();
+    expect(state.toggleAgentOrgRun).not.toHaveBeenCalled();
+    expect(wrapper.get('[data-test="workspace-team-row-team-run-1"] [data-test="team-activity-dot"]').attributes('data-active')).toBe('true');
+    expect(wrapper.get('[data-test="agent-org-run-open-org-run"] .bg-emerald-500').exists()).toBe(true);
+    await wrapper.setProps({ state: { ...state, isRunTerminating: () => true, isTeamTerminating: () => true, isAgentOrgTerminating: () => true } });
+    expect(button.attributes('disabled')).toBeDefined();
+    await button.trigger('click');
+    expect(actions[variant.action]).toHaveBeenCalledTimes(1);
+    await wrapper.setProps({
+      workspaceNode: { ...wrapper.props().workspaceNode, agents: [{ ...agent, runs: [{ ...run, isActive: false }] }] as any,
+        agentOrgDefinitions: [{ ...group, runs: [{ ...group.runs[0], isActive: false }] }] },
+      workspaceTeams: [{ ...team, isActive: false }],
+    });
+    expect(wrapper.find(variant.selector).exists()).toBe(false);
+    wrapper.unmount();
+  });
+
   it('keeps supplied Team images and uses the group glyph for missing or broken images', async () => {
     const definitions = ref<{id: string; avatarUrl?: string}[]>([]);
     const scope = effectScope();
@@ -555,7 +604,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     expect(childRow().exists()).toBe(false);
     await nestedRow().trigger('click');
     await wrapper.vm.$nextTick();
-    expect(state.toggleTeamMember).toHaveBeenLastCalledWith('workspace:/ws/a', 'team-run-1', 'team:software-team-run', false);
+    expect(state.toggleTeamMember).toHaveBeenLastCalledWith('workspace:/ws/a', 'team-run-1', 'team:software-team-run');
     expect(actions.onSelectTeamMember).not.toHaveBeenCalled();
     expect(childRow().exists()).toBe(true);
     await childRow().trigger('click');
@@ -633,7 +682,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     await dot.trigger('click');
     expect(state.toggleTeamMember).toHaveBeenCalledTimes(1);
     expect(state.toggleTeamMember).toHaveBeenCalledWith(
-      'workspace:/ws/a', 'team-run-1', 'team:product-team-run', false,
+      'workspace:/ws/a', 'team-run-1', 'team:product-team-run',
     );
     expect(actions.onSelectTeamMember).not.toHaveBeenCalled();
   });
@@ -707,5 +756,38 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     expect(nestedAgentRow.find('[data-test="workspace-hierarchy-branches"] [data-ancestor-depth="0"]').exists()).toBe(true);
     expect(nestedAgentRow.get('[data-test="workspace-hierarchy-branches"] [data-has-following-sibling]').attributes('data-has-following-sibling'))
       .toBe('false');
+  });
+});
+
+/** delegated-copy-task-locator REQ-012: a Task summary on a page without a right panel opens the row's run. */
+describe('WorkspaceHistoryWorkspaceSection Task summary run opening', () => {
+  it('opens the Team run (never collapsing it) when a Team host Task summary is located without a right panel', async () => {
+    const workerTasks = useTaskWorkerTaskStore();
+    vi.spyOn(workerTasks, 'retain').mockReturnValue(() => undefined);
+    vi.spyOn(workerTasks, 'taskOf').mockImplementation((worker) => worker.kind === 'agent' && worker.agentRunId === 'task-agent-run-1'
+      ? { taskId: 't1', projectId: null, description: 'Write the notes', status: 'TODO' } : null);
+    const { wrapper, actions, team } = mountSubject();
+    const summary = wrapper.get('[data-agent-run-id="task-agent-run-1"] [data-test="workspace-task-worker-task-summary"]');
+    expect(summary.text()).toBe('Write the notes');
+    await summary.trigger('click');
+    expect(actions.onOpenTeamRun).toHaveBeenCalledWith(team, 'workspace:/ws/a');
+    expect(actions.onSelectTeam).not.toHaveBeenCalled();
+    expect(actions.onSelectTeamMember).not.toHaveBeenCalled();
+    wrapper.unmount();
+  });
+
+  it('opens the Agent run\'s own conversation (as its run row does) for an Agent host\'s open-run', async () => {
+    const run = { runId: 'agent-run-1', summary: 'Manager run', currentStatus: AgentStatus.Idle, lastActivityAt: '2026-06-30T00:00:00.000Z',
+      isActive: true, hasCollaboration: true, source: 'history', isDraft: false };
+    const selectChild = vi.spyOn(useAgentRunCollaborationStore(), 'selectChild');
+    const { wrapper, actions } = mountSubject({
+      workspaceTeams: [],
+      agents: [{ agentDefinitionId: 'manager', agentName: 'Manager', runs: [run] }],
+      stubs: { AgentRunTaskRows: { emits: ['open-run', 'select-run'], template: '<button data-test="stub-open-run" @click="$emit(\'open-run\')" />' } },
+    });
+    await wrapper.get('[data-test="stub-open-run"]').trigger('click');
+    expect(selectChild).toHaveBeenCalledWith('agent-run-1', null);
+    expect(actions.onSelectRun).toHaveBeenCalledWith(run);
+    wrapper.unmount();
   });
 });

@@ -1,3 +1,4 @@
+import { DelegatedLaunchSelectionService } from "../../run-history/services/delegated-launch-selection-service.js";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import type { AgentOrgDefinitionService } from "../../agent-org-definition/services/agent-org-definition-service.js";
@@ -67,6 +68,7 @@ import {
   releaseProcessStandaloneRunCommandPort,
 } from "../services/standalone-run-ports.js";
 import { StandaloneRootLocationService } from "../../standalone-agent-run-root/services/standalone-root-location-service.js";
+import { getRuntimeAvailabilityService } from "../../runtime-management/runtime-availability-service.js";
 import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import {
@@ -75,6 +77,8 @@ import {
   createCollaboratorDefinitionCatalog,
   releaseProcessCollaboratorAdmission,
 } from "../../agent-collaboration/collaborators/collaborator-definition-catalog.js";
+import type { AgentRunInputPreface } from "../domain/agent-run-input-preface.js";
+import type { AgentRunLifecycleObserver } from "../domain/agent-run-lifecycle-observer.js";
 
 export type GeneralProcessRunSupervisorInput = Readonly<{
   memoryDir: string;
@@ -89,6 +93,11 @@ export type GeneralProcessRunSupervisorInput = Readonly<{
   modelSelectionValidator: RunModelSelectionValidator & Pick<RunModelSelectionService, "listOptions" | "listOptionsMany">;
   /** Neutral Task agent resource port from the host composition, forwarded to every root builder. */
   taskExecutionResources: TaskExecutionResourcePort;
+  /**
+   * Platform notices that ride along with each run's next external input, told when runs are
+   * published and released (the host composition owns and closes it). None by default.
+   */
+  platformInputNotices?: (AgentRunInputPreface & AgentRunLifecycleObserver) | null;
 }>;
 
 const requireGeneralProcessRunSupervisorInput = (
@@ -128,6 +137,7 @@ export class GeneralProcessRunSupervisor {
   readonly teamRunHistoryService: TeamRunHistoryService;
   readonly agentOrgRunHistoryCatalogService: AgentOrgRunHistoryCatalogService;
   readonly collaborationRootHistoryService: CollaborationRootHistoryService;
+  readonly delegatedLaunchSelectionService: DelegatedLaunchSelectionService;
   private readonly agentRunManager: AgentRunManager;
   private readonly agentTeamRunManager: AgentTeamRunManager;
   private readonly agentOrgRunManager: AgentOrgRunManager;
@@ -164,7 +174,7 @@ export class GeneralProcessRunSupervisor {
     const collaboratorAdmission = createCollaboratorAdmission(createCollaboratorDefinitionCatalog({
       agents: input.agentDefinitionService,
       teams: input.agentTeamDefinitionService,
-    }), input.modelSelectionValidator);
+    }), input.modelSelectionValidator, getRuntimeAvailabilityService());
     let collaboratorAdmissionBound = false;
     // The one process owner of live run file changes: it records FILE_CHANGE events and serves reads.
     const runFileChangeService = new RunFileChangeService({ workspaceManager });
@@ -196,6 +206,7 @@ export class GeneralProcessRunSupervisor {
         runFileChangeService,
         publishedArtifactRelayService: createGeneralProcessPublishedArtifactRelayService(),
         memoryRecorder,
+        lifecycleObserver: input.platformInputNotices ?? null,
       });
       const activationRegistry = new AgentRunActivationRegistry(resourceManager);
       const providerFactories = input.agentProviderFactoryBuilder.createForExecution({
@@ -214,6 +225,8 @@ export class GeneralProcessRunSupervisor {
         providerInputNormalizer,
         agentToolMcpRunSessionDeactivator:
           input.agentToolMcpSessionAuthority.runSessions,
+        inputPreface: input.platformInputNotices ?? null,
+        lifecycleObserver: input.platformInputNotices ?? null,
       });
 
       const metadataService = new AgentRunMetadataService(memoryDir);
@@ -360,6 +373,13 @@ export class GeneralProcessRunSupervisor {
       bindProcessTeamRunService(teamRunService);
       teamRunServiceBound = true;
 
+      this.delegatedLaunchSelectionService = new DelegatedLaunchSelectionService({
+        teams: agentTeamRunManager,
+        orgs: agentOrgRunManager,
+        agents: standaloneRootManager,
+        agentRuns: agentRunService,
+        validator: input.modelSelectionValidator,
+      });
       this.agentRunManager = agentRunManager;
       this.agentTeamRunManager = agentTeamRunManager;
       this.agentOrgRunManager = agentOrgRunManager;

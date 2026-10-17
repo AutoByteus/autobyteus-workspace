@@ -1,0 +1,23 @@
+{
+  "node": "ab-nfs-api007-mac-85a4eb35",
+  "os": "mac",
+  "argv": [
+    "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+    "exec",
+    "ab-nfs-api007-mac-85a4eb35",
+    "/usr/bin/env",
+    "-i",
+    "HOME=/Users/admin",
+    "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+    "LANG=C",
+    "/bin/sh",
+    "-c",
+    "sw_vers; sysctl kern.hv_support; command -v brew; command -v python3; command -v docker; command -v colima; command -v git; df -h /; ifconfig en0"
+  ],
+  "result": "Pass",
+  "started": "2026-10-15T13:18:13Z",
+  "rc": 0,
+  "stdout": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\nkern.hv_support: 0\n/opt/homebrew/bin/brew\n/opt/homebrew/bin/python3\n/usr/bin/git\nFilesystem        Size    Used   Avail Capacity iused ifree %iused  Mounted on\n/dev/disk2s1s1    93Gi    12Gi    64Gi    16%    459k  667M    0%   /\nen0: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 1500\n\toptions=463<RXCSUM,TXCSUM,TSO4,TSO6,CHANNEL_IO>\n\tether 72:76:f4:5e:d8:14\n\tinet6 fe80::9b:4d73:423d:3250%en0 prefixlen 64 secured scopeid 0x5 \n\tinet6 fd91:5d53:a507:b06c:e0:b5ed:f49c:eb9 prefixlen 64 autoconf secured \n\tinet 192.168.64.2 netmask 0xffffff00 broadcast 192.168.64.255\n\tnd6 options=201<PERFORMNUD,DAD>\n\tmedia: autoselect <full-duplex,flow-control>\n\tstatus: active\n",
+  "stderr": "",
+  "seconds": 0.9548458750000001
+}

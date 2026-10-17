@@ -1,0 +1,38 @@
+{
+  "observedUtc": "2026-10-13T07:06:28.367055+00:00",
+  "releaseVersion": "2.40.1",
+  "releaseSha256": "363e2701154a8155cbc1bb6d845430c9b42697d2a186bc49574471ca2877db46",
+  "resolvedReleaseUrl": "https://github.com/openai/tart/releases/tag/2.40.1",
+  "licenseSource": "https://raw.githubusercontent.com/openai/tart/2.40.1/LICENSE",
+  "licenseObserved": "FSL-1.1-ALv2; internal test only, not product dependency",
+  "publisher": "cirruslabs",
+  "imageReference": "ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377",
+  "compressedLayerBytes": 26978586425,
+  "annotations": {
+    "org.cirruslabs.tart.uncompressed-disk-size": "50000000000",
+    "org.cirruslabs.tart.upload-time": "2026-10-03T10:23:18Z"
+  },
+  "scratchRoot": "/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK",
+  "hostVirtualizationSupported": true,
+  "hostRamBytes": 68719476736,
+  "hostCores": 10,
+  "hostFreeDiskApproxGiB": 521,
+  "noHostDirectoryShares": true,
+  "noClipboard": true,
+  "noUsbAccessories": true,
+  "noHostAudio": true,
+  "noHostMounts": true,
+  "noHostAdminAttempt": true,
+  "noGuestProviderCredentials": true,
+  "scope": "Disposable test environment capability; not physical-LAN, user-command, native agent or product completion proof",
+  "authorization": "Current user explicitly prefers fully agent-operated separate macOS VM; if unavailable user will run final command. Does not approve live host mounts/nodes.",
+  "downloadControl": {
+    "initialConcurrency": 4,
+    "initialCloneInterruptedRc": 1,
+    "resumedConcurrency": 16,
+    "samePinnedImage": true,
+    "autoPruneDisabledOnResume": true,
+    "imageSizeLimitBytes": 50000000000,
+    "resourceScope": "only this round private TART_HOME; no system-wide installation"
+  }
+}

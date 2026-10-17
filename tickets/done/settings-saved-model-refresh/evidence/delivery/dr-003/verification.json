@@ -1,0 +1,54 @@
+{
+  "date": "2026-10-13T17:37:57.301707+00:00",
+  "apiCandidate": "fa2b19a8534495f0f691561dd926f91a2d2387e8",
+  "validatedSource": "76fab065ec30bff5be76dd2e013243abda3a6934",
+  "checkedBase": "abfd379059a7bc1c392a6a2137d27e32427cda26",
+  "integration": "2410e5c5dc94fbf9e6cdd112ab912852affc05c2",
+  "integrationMethod": "Merge; no conflicts; version metadata only",
+  "delta": [
+    "autobyteus-web/package.json"
+  ],
+  "manifestFilesVerified": 173,
+  "runtimeSourceHashesVerified": 5,
+  "desktopAsarSha256": "e9b395c077453afd31b5e462a1a3299c491837f7523bde29a352f09aa1ce5154",
+  "desktopBuiltVersion": "1.5.3-beta.4",
+  "integratedVersion": "1.5.3-beta.5",
+  "versionLimit": "Desktop not rebuilt for metadata-only upstream bump; executable app and harness unchanged, not a beta.5 package/rollout certification",
+  "integratedRerun": {
+    "command": "pnpm -C autobyteus-web test:nuxt components/workspace/config/__tests__/ExistingRunConfigEditor.savedSnapshot.spec.ts stores/__tests__/existingRunConfigStore.spec.ts stores/__tests__/delegatedLaunchDraftStore.spec.ts components/workspace/history/__tests__/DelegatedStopButton.spec.ts --run",
+    "files": 4,
+    "tests": 77,
+    "exit": 0,
+    "log": "integrated-unit.log"
+  },
+  "evidenceJudgement": "Sufficient: all critical AC-001..006 directly proven; API-REV-003 95% all categories plus integrated 77-test rerun",
+  "criticalEvidenceRead": [
+    "api-rev-003/desktop/delegated-launch-defaults-evidence.json (all 9 cases and SSR wire)",
+    "api-rev-003/browser/delegated-launch-defaults-evidence.json (7 cases)",
+    "api-rev-003/desktop-boundary-proof.json",
+    "api-rev-003/validation-audit.json",
+    "api-rev-003/desktop/desktop-identity.json",
+    "api-rev-003/desktop/desktop-start.log",
+    "api-rev-003/desktop/desktop-stop.json",
+    "api-rev-003/server-e2e.log",
+    "api-rev-003/web-regression.log",
+    "current settings-saved-model-refresh-cases.mjs same-element/URL/no-write/no-resume assertions"
+  ],
+  "screenshotsVisuallyInspected": [
+    "SSR-001-first-same-view.png",
+    "SSR-002-team-followers-own-choice.png",
+    "SSR-003-saved-refresh-needed.png",
+    "SSR-003-read-only-refresh-recovered.png",
+    "SSR-004-same-model-thinking-saved.png"
+  ],
+  "userCheckRequired": false,
+  "limitations": [
+    "scripted providers, zero quota; not paid inference",
+    "Mac only",
+    "Fast label/config component-only; same-model reasoning actual desktop",
+    "DCP-004 backend restart plus renderer reload, not whole desktop upgrade",
+    "no standalone vue-tsc",
+    "no release authorization or user acceptance"
+  ],
+  "verification": "Completed"
+}

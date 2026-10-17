@@ -1,0 +1,11 @@
+START prepare-linux-docker-v2.py
+COMPLETE prepare-linux-docker-v2.py
+START build-docker-variant.py
+COMPLETE build-docker-variant.py
+START setup-command-mode.py LD
+COMPLETE setup-command-mode.py LD
+START run-command-cases.py LD
+COMPLETE run-command-cases.py LD
+START detach-command-mode.py LD
+COMPLETE detach-command-mode.py LD
+All command sequence steps completed; final audit/cleanup still required

@@ -1,0 +1,198 @@
+{
+  "startedAt": "2026-10-12T20:10:44.297Z",
+  "cases": {
+    "DLP-001": {
+      "title": "AC-011/AC-013: New chat for a Team seeds members from their defaults; root changes keep seeded rows; member change and reset; Run launches what is shown",
+      "result": "Pass",
+      "ms": 27997,
+      "details": {
+        "seeded": {
+          "lead": {
+            "customized": "false",
+            "summary": "Gemini test · Antigravity · Auto-approve",
+            "note": null
+          },
+          "engineer": {
+            "customized": "true",
+            "summary": "Customized · Grok 4.7 · Grok Build · Auto-approve",
+            "note": null
+          },
+          "reviewer": {
+            "customized": "true",
+            "summary": "Customized · Alt test model · Antigravity · Auto-approve",
+            "note": null
+          },
+          "unoffered": {
+            "customized": "false",
+            "summary": "Gemini test · Antigravity · Auto-approve",
+            "note": "Its default (Antigravity · dlc-no-such-model) can't be used: the model is not offered. It follows the settings above."
+          }
+        },
+        "afterRootChanges": {
+          "lead": {
+            "customized": "false",
+            "summary": "Gemini test · Antigravity · Auto-approve",
+            "note": null
+          },
+          "engineer": {
+            "customized": "true",
+            "summary": "Customized · Grok 4.7 · Grok Build · Auto-approve",
+            "note": null
+          },
+          "reviewer": {
+            "customized": "true",
+            "summary": "Customized · Alt test model · Antigravity · Auto-approve",
+            "note": null
+          }
+        },
+        "afterEdits": {
+          "lead": {
+            "customized": "true",
+            "summary": "Customized · Alt test model · Antigravity · Auto-approve",
+            "note": null
+          },
+          "reviewer": {
+            "customized": "false",
+            "summary": "Gemini test · Antigravity · Auto-approve",
+            "note": null
+          },
+          "engineer": {
+            "customized": "true",
+            "summary": "Customized · Grok 4.7 · Grok Build · Auto-approve",
+            "note": null
+          }
+        },
+        "teamRunId": "build_team_a2e8_3ecd85fdbbff4afeb90cbc3cb1d13173",
+        "members": {
+          "/lead": {
+            "runtime": "antigravity_cli",
+            "model": "dlc-alt-model"
+          },
+          "/engineer": {
+            "runtime": "grok_build",
+            "model": "grok-4.7"
+          },
+          "/reviewer": {
+            "runtime": "antigravity_cli",
+            "model": "gemini-3.8-flash-low"
+          },
+          "/unoffered": {
+            "runtime": "antigravity_cli",
+            "model": "gemini-3.8-flash-low"
+          }
+        }
+      }
+    },
+    "DLP-008": {
+      "title": "SR-005 (AC-011): plain New chat → typed text → heading switcher → a Team with member defaults: its members are seeded; the text and the root are kept",
+      "result": "Fail",
+      "ms": 65110,
+      "error": "Timed out waiting for engineer seeded after the switch",
+      "details": null
+    },
+    "DLP-009": {
+      "title": "SR-005 (AC-011, AC-012): carried starts seed members: Team A → Team B (B's seeds only), New chat → Org (placed team and agents seeded; Run readback), Org launch page → Team (seeded)",
+      "result": "Fail",
+      "ms": 67780,
+      "error": "Timed out waiting for Build engineer seeded",
+      "details": null
+    },
+    "DLP-010": {
+      "title": "Preserved (DS-006): \"+\" on a Team run copies its recorded member settings and seeds nothing",
+      "result": "Pass",
+      "ms": 15055,
+      "details": {
+        "copy": {
+          "lead": {
+            "customized": "true",
+            "summary": "Customized · Alt test model · Antigravity · Auto-approve",
+            "note": null
+          },
+          "engineer": {
+            "customized": "true",
+            "summary": "Customized · Grok 4.7 · Grok Build · Auto-approve",
+            "note": null
+          },
+          "reviewer": {
+            "customized": "false",
+            "summary": "Gemini test · Antigravity · Auto-approve",
+            "note": null
+          }
+        }
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 12251
+    },
+    {
+      "label": "frontend",
+      "pid": 12282
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 12282,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 12251,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-0Oad1Y"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-0Oad1Y",
+  "backendUrl": "http://127.0.0.1:58999",
+  "frontUrl": "http://127.0.0.1:59000",
+  "definitions": {
+    "ids": {
+      "manager": "manager-a983",
+      "lead": "lead-9fe5",
+      "worker": "worker-e014",
+      "plain": "plain-550a",
+      "engineer": "engineer-6f66",
+      "reviewer": "reviewer-2cac",
+      "writer": "writer-db25",
+      "offline": "offline-d919",
+      "unoffered": "unoffered-a989",
+      "badsettings": "badsettings-4565",
+      "incomplete": "incomplete-5573",
+      "build": "build-team-a2e8",
+      "pair": "pair-team-47db",
+      "squad": "squad-team-72e8",
+      "home": "home-team-453a",
+      "launchOrg": "launchorg-org-2a85",
+      "hostOrg": "hostorg-org-daed"
+    },
+    "names": {
+      "manager": "Manager a983",
+      "lead": "Lead 9fe5",
+      "worker": "Worker e014",
+      "plain": "Plain 550a",
+      "engineer": "Engineer 6f66",
+      "reviewer": "Reviewer 2cac",
+      "writer": "Writer db25",
+      "offline": "Offline d919",
+      "unoffered": "Unoffered a989",
+      "badsettings": "Badsettings 4565",
+      "incomplete": "Incomplete 5573",
+      "build": "Build Team a2e8",
+      "pair": "Pair Team 47db",
+      "squad": "Squad Team 72e8",
+      "home": "Home Team 453a",
+      "launchOrg": "LaunchOrg Org 2a85",
+      "hostOrg": "HostOrg Org daed"
+    }
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 2,
+    "fail": 2
+  },
+  "completedAt": "2026-10-12T20:14:13.403Z"
+}

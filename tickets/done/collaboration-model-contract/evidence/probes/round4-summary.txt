@@ -1,0 +1,2 @@
+cross-scope S01 exit 0
+run-settings R09,R04 exit 1

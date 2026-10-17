@@ -1,0 +1,88 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/agent-loop-structure-refactor/autobyteus-ts[39m
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mfinal text answer with reasoning
+[22m[39mRegistered AgentContext for agent_id 'golden_tester_4323'. Total registered contexts: 1
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mfinal text answer with reasoning
+[22m[39mUnregistered AgentContext for agent_id 'golden_tester_4323'.
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mone tool cycle
+[22m[39mRegistered AgentContext for agent_id 'golden_tester_2439'. Total registered contexts: 1
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mone tool cycle
+[22m[39mUnregistered AgentContext for agent_id 'golden_tester_2439'.
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2moutput-limit recovery: a cut tool call, then success
+[22m[39mRegistered AgentContext for agent_id 'golden_tester_3071'. Total registered contexts: 1
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2moutput-limit recovery: a cut tool call, then success
+[22m[39mUnregistered AgentContext for agent_id 'golden_tester_3071'.
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2moutput-limit recovery: text cut, then resumed
+[22m[39mRegistered AgentContext for agent_id 'golden_tester_6612'. Total registered contexts: 1
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2moutput-limit recovery: text cut, then resumed
+[22m[39mUnregistered AgentContext for agent_id 'golden_tester_6612'.
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2moutput-limit exhaustion after 3 recoveries
+[22m[39mRegistered AgentContext for agent_id 'golden_tester_1774'. Total registered contexts: 1
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2moutput-limit exhaustion after 3 recoveries
+[22m[39mUnregistered AgentContext for agent_id 'golden_tester_1774'.
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2minterrupt mid-stream
+[22m[39mRegistered AgentContext for agent_id 'golden_tester_2808'. Total registered contexts: 1
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2minterrupt mid-stream
+[22m[39mUnregistered AgentContext for agent_id 'golden_tester_2808'.
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2minterrupt at post_llm_stream after reasoning was streamed (R-3)
+[22m[39mRegistered AgentContext for agent_id 'golden_tester_6188'. Total registered contexts: 1
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2minterrupt at post_llm_stream after reasoning was streamed (R-3)
+[22m[39mUnregistered AgentContext for agent_id 'golden_tester_6188'.
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mprovider error mid-stream
+[22m[39mRegistered AgentContext for agent_id 'golden_tester_2025'. Total registered contexts: 1
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mprovider error mid-stream
+[22m[39mUnregistered AgentContext for agent_id 'golden_tester_2025'.
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mcontent_filter stop error
+[22m[39mRegistered AgentContext for agent_id 'golden_tester_4932'. Total registered contexts: 1
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mcontent_filter stop error
+[22m[39mUnregistered AgentContext for agent_id 'golden_tester_4932'.
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mmalformed tool call is rejected, then the turn continues
+[22m[39mRegistered AgentContext for agent_id 'golden_tester_3106'. Total registered contexts: 1
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mmalformed tool call is rejected, then the turn continues
+[22m[39mUnregistered AgentContext for agent_id 'golden_tester_3106'.
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mafter-final compaction requested and executed
+[22m[39mRegistered AgentContext for agent_id 'golden_tester_1402'. Total registered contexts: 1
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mafter-final compaction requested and executed
+[22m[39mUnregistered AgentContext for agent_id 'golden_tester_1402'.
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mcompaction_blocked, then the retry runs the held turn
+[22m[39mRegistered AgentContext for agent_id 'golden_tester_4357'. Total registered contexts: 1
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mcompaction_blocked, then the retry runs the held turn
+[22m[39mUnregistered AgentContext for agent_id 'golden_tester_4357'.
+
+ [32m✓[39m tests/integration/agent/agent-loop-event-sequence.test.ts [2m([22m[2m12 tests[22m[2m)[22m[33m 4491[2mms[22m[39m
+     [33m[2m✓[22m[39m compaction_blocked, then the retry runs the held turn [33m 3195[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m12 passed[39m[22m[90m (12)[39m
+[2m   Start at [22m 06:23:14
+[2m   Duration [22m 5.48s[2m (transform 643ms, setup 21ms, import 860ms, tests 4.49s, environment 0ms)[22m
+
+exit=0

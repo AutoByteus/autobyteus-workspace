@@ -1,0 +1,11 @@
+{
+  "origin": "external provider capacity",
+  "nativeError": "serverOverloaded",
+  "message": "Selected model is at capacity. Please try a different model.",
+  "stage": "B post-peer-stop native turn, before filesystem command execution",
+  "coreNativeStagesPassed": 3,
+  "overallPass": false,
+  "nativeResumeExecuted": false,
+  "privateSkillOrFilesystemFailureClaim": false,
+  "next": "retain failed round; repeat bounded final stages when provider capacity permits; do not change user requirements or count skip as pass"
+}

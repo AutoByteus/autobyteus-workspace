@@ -1,0 +1,34 @@
+
+> autobyteus@1.5.0-beta.1 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/autobyteus-web
+> cross-env NUXT_TEST=true vitest run components/settings/__tests__/CompactionConfigCard.spec.ts components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/autobyteus-web
+
+stderr | components/settings/__tests__/CompactionConfigCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/CompactionConfigCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/CompactionConfigCard.spec.ts (6 tests) 49ms
+ ✓ components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts (2 tests) 41ms
+
+ Test Files  2 passed (2)
+      Tests  8 passed (8)
+   Start at  07:22:32
+   Duration  6.92s (transform 3.91s, setup 11.91s, collect 436ms, tests 89ms, environment 467ms, prepare 286ms)
+

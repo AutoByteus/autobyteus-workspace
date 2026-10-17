@@ -99,24 +99,6 @@ export const liveE2eScenarios = Object.freeze({
     requiredSecretId: 'provider.anthropic.api-key',
     model: 'claude-sonnet-4-6',
   }),
-  'autobyteus.remote-llm': Object.freeze({
-    operation: 'autobyteus-llm',
-    providerId: 'AUTOBYTEUS',
-    requiredSecretId: 'provider.autobyteus.api-key',
-    hosts: Object.freeze(['https://api.autobyteus.com']),
-  }),
-  'autobyteus.remote-audio': Object.freeze({
-    operation: 'autobyteus-audio',
-    providerId: 'AUTOBYTEUS',
-    requiredSecretId: 'provider.autobyteus.api-key',
-    hosts: Object.freeze(['https://api.autobyteus.com']),
-  }),
-  'autobyteus.remote-image': Object.freeze({
-    operation: 'autobyteus-image',
-    providerId: 'AUTOBYTEUS',
-    requiredSecretId: 'provider.autobyteus.api-key',
-    hosts: Object.freeze(['https://api.autobyteus.com']),
-  }),
 });
 
 export const selectedLiveE2eScenarioIds = () => {

@@ -207,7 +207,7 @@ describe("GlobalAgentRunMessageRouter", () => {
     const getActiveRun = vi.fn(() => null);
     const router = new GlobalAgentRunMessageRouter({ agentRunManager: { getActiveRun }, activeRootDirectory });
     const refusal = { accepted: false, code: "TARGET_IS_TEAM_RUN",
-      message: "copy-team is a Team run; send_message_to reaches agents. Message its coordinator agent run copy-lead." };
+      message: "copy-team is a task agent team's run id, and send_message_to talks with agents. To talk with the team, use its coordinator's run id: copy-lead." };
 
     // Same root as the copy, and an unrelated sender (another root, or none).
     await expect(router.deliver({ sender: sameRootSender, targetAgentRunId: "copy-team", content: "Hi." })).resolves.toEqual(refusal);
@@ -235,7 +235,7 @@ describe("GlobalAgentRunMessageRouter", () => {
     expect(result).toEqual({
       accepted: false,
       code: "TARGET_AGENT_RUN_NOT_ACTIVE",
-      message: "Exact AgentRun target 'preallocated-or-recoverable-run' is not active.",
+      message: "No running agent has the run id 'preallocated-or-recoverable-run', so the message was not sent. Use an exact run id you were given: a sender run id (from a message or your new task), or a run id delegate_task returned to you.",
     });
   });
 
@@ -251,6 +251,7 @@ describe("GlobalAgentRunMessageRouter", () => {
 
     expect(result.accepted).toBe(false);
     expect(result.code).toBe("TARGET_AGENT_RUN_REJECTED_INPUT");
+    expect(result.message).toBe("The agent 'target-run' did not accept the message: busy");
     expect(result.agentRunId).toBeUndefined();
     expect(target.emittedEvents).toEqual([]);
   });

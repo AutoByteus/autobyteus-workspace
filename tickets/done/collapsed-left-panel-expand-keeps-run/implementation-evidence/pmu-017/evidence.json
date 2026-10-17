@@ -1,0 +1,238 @@
+{
+  "startedAt": "2026-10-08T16:20:29.258Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PMU-017": {
+      "result": "Pass",
+      "description": "Collapsed strip Workspaces: a worker opened from a Task card (Agent, Team with nested task Team, Org host) lights Workspaces; it docks the panel without navigating and reveals the row with focus; narrow drawer, short window, New chat",
+      "durationMs": 18069,
+      "details": {
+        "agent": {
+          "worker": {
+            "ingressAgentRunId": "release_notes_writer_pmustrip_925e_dba126efe5234bfc973ab5f6f4f5f0d3",
+            "hostRoot": {
+              "kind": "agent",
+              "runId": "manager_pmustrip_925e_bcb9454f38f841ea855a92f381129829"
+            }
+          },
+          "afterCollapse": {
+            "strip": true,
+            "workspacesLit": true,
+            "stripChatLit": false,
+            "panelChatLit": null,
+            "focus": "workspace-left-strip-workspaces"
+          },
+          "before": {
+            "strip": true,
+            "workspacesLit": true,
+            "stripChatLit": false,
+            "panelChatLit": null,
+            "focus": "BUTTON"
+          },
+          "revealed": {
+            "agentRunId": "release_notes_writer_pmustrip_925e_dba126efe5234bfc973ab5f6f4f5f0d3",
+            "test": "workspace-team-transient-execution-row",
+            "text": "RNrelease notes writer pmustrip 925eTemporary task agent · release notes writer ",
+            "visible": true,
+            "scrollTop": 0,
+            "centreOffset": 53,
+            "focused": true,
+            "selectedRows": 1
+          },
+          "settled": {
+            "agentRunId": "release_notes_writer_pmustrip_925e_dba126efe5234bfc973ab5f6f4f5f0d3",
+            "test": "workspace-team-transient-execution-row",
+            "text": "RNrelease notes writer pmustrip 925eTemporary task agent · release notes writer ",
+            "visible": true,
+            "scrollTop": 0,
+            "centreOffset": 53,
+            "focused": true,
+            "selectedRows": 1
+          },
+          "after": {
+            "strip": false,
+            "workspacesLit": null,
+            "stripChatLit": null,
+            "panelChatLit": false,
+            "focus": "workspace-team-transient-execution-row"
+          },
+          "url": "http://127.0.0.1:53125/chat?id=manager_pmustrip_925e_bcb9454f38f841ea855a92f381129829"
+        },
+        "team": {
+          "worker": {
+            "ingressAgentRunId": "release_notes_writer_pmustrip_925e_1e6eafe83c624cb0aa5f786020a46852",
+            "hostRoot": {
+              "kind": "agent_team",
+              "runId": "delivery_team_pmustrip_925e_878b720e083b4aa9ba0a39c63167be3c"
+            }
+          },
+          "afterCollapse": {
+            "strip": true,
+            "workspacesLit": true,
+            "stripChatLit": false,
+            "panelChatLit": null,
+            "focus": "workspace-left-strip-workspaces"
+          },
+          "before": {
+            "strip": true,
+            "workspacesLit": true,
+            "stripChatLit": false,
+            "panelChatLit": null,
+            "focus": "BUTTON"
+          },
+          "revealed": {
+            "agentRunId": "release_notes_writer_pmustrip_925e_1e6eafe83c624cb0aa5f786020a46852",
+            "test": "workspace-team-transient-execution-row",
+            "text": "RreviewerTemporary task agent · reviewer · /docs_review_team_pmustrip_925e/revie",
+            "visible": true,
+            "scrollTop": 187,
+            "centreOffset": 41,
+            "focused": true,
+            "selectedRows": 1
+          },
+          "settled": {
+            "agentRunId": "release_notes_writer_pmustrip_925e_1e6eafe83c624cb0aa5f786020a46852",
+            "test": "workspace-team-transient-execution-row",
+            "text": "RreviewerTemporary task agent · reviewer · /docs_review_team_pmustrip_925e/revie",
+            "visible": true,
+            "scrollTop": 187,
+            "centreOffset": 41,
+            "focused": true,
+            "selectedRows": 1
+          },
+          "after": {
+            "strip": false,
+            "workspacesLit": null,
+            "stripChatLit": null,
+            "panelChatLit": false,
+            "focus": "workspace-team-transient-execution-row"
+          },
+          "url": "http://127.0.0.1:53125/workspace"
+        },
+        "org": {
+          "worker": {
+            "ingressAgentRunId": "release_notes_writer_pmustrip_925e_46ce0f2a16b741b1a30c624bbf7882d0",
+            "hostRoot": {
+              "kind": "agent_org",
+              "runId": "delivery_org_pmustrip_925e_cdb2b75fc0a649e9aebefd260b70cdbf"
+            }
+          },
+          "afterCollapse": {
+            "strip": true,
+            "workspacesLit": true,
+            "stripChatLit": false,
+            "panelChatLit": null,
+            "focus": "workspace-left-strip-workspaces"
+          },
+          "before": {
+            "strip": true,
+            "workspacesLit": true,
+            "stripChatLit": false,
+            "panelChatLit": null,
+            "focus": "BUTTON"
+          },
+          "revealed": {
+            "agentRunId": "release_notes_writer_pmustrip_925e_46ce0f2a16b741b1a30c624bbf7882d0",
+            "test": "agent-org-task-agent-row-release_notes_writer_pmustrip_925e_46ce0f2a16b741b1a30c624bbf7882d0",
+            "text": "Wworker",
+            "visible": true,
+            "scrollTop": 233,
+            "centreOffset": 71,
+            "focused": true,
+            "selectedRows": 1
+          },
+          "settled": {
+            "agentRunId": "release_notes_writer_pmustrip_925e_46ce0f2a16b741b1a30c624bbf7882d0",
+            "test": "agent-org-task-agent-row-release_notes_writer_pmustrip_925e_46ce0f2a16b741b1a30c624bbf7882d0",
+            "text": "Wworker",
+            "visible": true,
+            "scrollTop": 185,
+            "centreOffset": 71,
+            "focused": true,
+            "selectedRows": 1
+          },
+          "after": {
+            "strip": false,
+            "workspacesLit": null,
+            "stripChatLit": null,
+            "panelChatLit": false,
+            "focus": "agent-org-task-agent-row-release_notes_writer_pmustrip_925e_46ce0f2a16b741b1a30c624bbf7882d0"
+          },
+          "url": "http://127.0.0.1:53125/workspace?rootSubjectKind=agent_org&definitionId=delivery-org-pmustrip-925e&orgRunId=delivery_org_pmustrip_925e_cdb2b75fc0a649e9aebefd260b70cdbf&mode=active&agentRunId=release_notes_writer_pmustrip_925e_46ce0f2a16b741b1a30c624bbf7882d0"
+        },
+        "narrow": {
+          "drawerRow": {
+            "agentRunId": "release_notes_writer_pmustrip_925e_46ce0f2a16b741b1a30c624bbf7882d0",
+            "test": "agent-org-task-agent-row-release_notes_writer_pmustrip_925e_46ce0f2a16b741b1a30c624bbf7882d0",
+            "text": "Wworker",
+            "visible": true,
+            "scrollTop": 0,
+            "centreOffset": 164,
+            "focused": false,
+            "selectedRows": 1
+          },
+          "drawerClosed": {
+            "strip": true,
+            "workspacesLit": true,
+            "stripChatLit": false,
+            "panelChatLit": null,
+            "focus": "workspace-left-strip-workspaces"
+          }
+        },
+        "short": {
+          "dividerDisplay": "none",
+          "settingsBottom": 484,
+          "viewport": 500
+        },
+        "newChat": {
+          "onNewChat": {
+            "strip": true,
+            "workspacesLit": false,
+            "stripChatLit": true,
+            "panelChatLit": null,
+            "focus": "chat-message-input"
+          },
+          "kept": {
+            "route": "/chat",
+            "text": "Keep this draft text"
+          }
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 34868,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 33510,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [],
+  "feed": {
+    "total": 26,
+    "byType": {
+      "connected": 1,
+      "project_upserted": 10,
+      "task_upserted": 9,
+      "task_worker_status": 6
+    }
+  },
+  "stack": {
+    "backendUrl": "http://127.0.0.1:53124",
+    "frontendUrl": "http://127.0.0.1:53125",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-NKUtD4"
+  },
+  "browserVersion": "154.0.8037.98",
+  "warmup": {
+    "reloadsDuringWarmup": 0
+  },
+  "result": "Pass",
+  "finishedAt": "2026-10-08T16:21:25.517Z"
+}

@@ -1,0 +1,69 @@
+{
+  "observations": [
+    {
+      "checkpoint": "- 2026-10-13T16:47:23.780Z SSR-001 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final/delegated-launch-defaults-evidence.json",
+      "observedAt": "2026-10-13T16:47:23.843611+00:00",
+      "case": "SSR-001",
+      "persistedResult": "Pass",
+      "checkpointMatchesPersistedResult": true
+    },
+    {
+      "checkpoint": "- 2026-10-13T16:47:43.255Z SSR-002 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final/delegated-launch-defaults-evidence.json",
+      "observedAt": "2026-10-13T16:47:43.322892+00:00",
+      "case": "SSR-002",
+      "persistedResult": "Pass",
+      "checkpointMatchesPersistedResult": true
+    },
+    {
+      "checkpoint": "- 2026-10-13T16:48:29.937Z SSR-003 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final/delegated-launch-defaults-evidence.json",
+      "observedAt": "2026-10-13T16:48:29.958189+00:00",
+      "case": "SSR-003",
+      "persistedResult": "Pass",
+      "checkpointMatchesPersistedResult": true
+    },
+    {
+      "checkpoint": "- 2026-10-13T16:48:50.549Z SSR-004 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final/delegated-launch-defaults-evidence.json",
+      "observedAt": "2026-10-13T16:48:50.560006+00:00",
+      "case": "SSR-004",
+      "persistedResult": "Pass",
+      "checkpointMatchesPersistedResult": true
+    },
+    {
+      "checkpoint": "- 2026-10-13T16:49:16.224Z DCP-001 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final/delegated-launch-defaults-evidence.json",
+      "observedAt": "2026-10-13T16:49:16.230627+00:00",
+      "case": "DCP-001",
+      "persistedResult": "Pass",
+      "checkpointMatchesPersistedResult": true
+    },
+    {
+      "checkpoint": "- 2026-10-13T16:50:01.769Z DCP-002 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final/delegated-launch-defaults-evidence.json",
+      "observedAt": "2026-10-13T16:50:01.843509+00:00",
+      "case": "DCP-002",
+      "persistedResult": "Pass",
+      "checkpointMatchesPersistedResult": true
+    },
+    {
+      "checkpoint": "- 2026-10-13T16:50:23.287Z DCP-003 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final/delegated-launch-defaults-evidence.json",
+      "observedAt": "2026-10-13T16:50:23.369050+00:00",
+      "case": "DCP-003",
+      "persistedResult": "Pass",
+      "checkpointMatchesPersistedResult": true
+    },
+    {
+      "checkpoint": "- 2026-10-13T16:50:53.172Z DCP-004 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final/delegated-launch-defaults-evidence.json",
+      "observedAt": "2026-10-13T16:50:53.261242+00:00",
+      "case": "DCP-004",
+      "persistedResult": "Pass",
+      "checkpointMatchesPersistedResult": true
+    },
+    {
+      "checkpoint": "- 2026-10-13T16:51:27.600Z DCP-005 Completed Pass; assertions passed; /Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-002/desktop-final/delegated-launch-defaults-evidence.json",
+      "observedAt": "2026-10-13T16:51:27.699966+00:00",
+      "case": "DCP-005",
+      "persistedResult": "Pass",
+      "checkpointMatchesPersistedResult": true
+    }
+  ],
+  "completed": true,
+  "caseCount": 9
+}

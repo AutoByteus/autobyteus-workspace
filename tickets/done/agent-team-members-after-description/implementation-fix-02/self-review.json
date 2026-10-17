@@ -1,0 +1,44 @@
+{
+  "recordedAt": "2026-10-13T04:28:38.018997+00:00",
+  "implementationRevision": "IR-002",
+  "sourceCommit": "d8bac598606001b702e300eeaeefe06c3caf0d3d",
+  "classification": {
+    "task_size": "Small",
+    "architectural_risk": "Low",
+    "changed": false,
+    "basis": "Two existing response selections aligned with current authoritative catalog fields; no new API schema/owner/data meaning"
+  },
+  "mutationFieldsMatchCatalogSelection": true,
+  "productionFiles": {
+    "autobyteus-web/graphql/mutations/agentDefinitionMutations.ts": {
+      "blob": "c655d8e3cdf76f04be74100196abafef302883f7",
+      "nonEmptyLines": 59
+    },
+    "autobyteus-web/graphql/mutations/agentOrgDefinitionMutations.ts": {
+      "blob": "2817cb65d523a03c9a97d96b38415b5808d6e30f",
+      "nonEmptyLines": 25
+    }
+  },
+  "teamTemplateBlobUnchanged": "82982846da660d3bb9c8b9349589e14cc8b5de17",
+  "protectedDeliveryFilesUnchanged": true,
+  "protectedDeliveryFileCount": 12,
+  "workspaceClean": false,
+  "unrelatedFilesPreserved": " M autobyteus-web/docs/agent_teams.md\n?? autobyteus-application-backend-sdk/dist/\n?? autobyteus-application-sdk-contracts/dist/\n?? tickets/in-progress/agent-team-members-after-description/delivery-01/\n?? tickets/in-progress/agent-team-members-after-description/delivery-revision-record.md\n?? tickets/in-progress/agent-team-members-after-description/docs-sync-report.md\n?? tickets/in-progress/agent-team-members-after-description/handoff-summary.md\n?? tickets/in-progress/agent-team-members-after-description/release-deployment-report.md\n",
+  "noSchemaMigrationCompatibilityRecoveryOrErrorSuppressionAdded": true,
+  "deadCodeCheck": "Every mutation export and both fragments are reached by create/update/delete store imports; no new dead code; no removals needed",
+  "resourceCleanup": {
+    "newDesktopBrowserOrDevServerStarted": false,
+    "allOwnUnitAndGuardCommandsCompleted": true,
+    "temporaryOldMutationFragmentsRestored": true,
+    "priorIsolatedReceipt": "api-desktop-01/isolated-stop.json and cleanup-check.json remain authoritative STOPPED/CLEANED"
+  },
+  "freshDesktopProof": "Pending after required implementation-source review; old asar cannot validate these selections",
+  "localResults": {
+    "before": "2 precise failures / 5 pass",
+    "createFix": "7 pass",
+    "fullFocused": "9 suites / 61 pass",
+    "oldFieldsWithUpdateAssertions": "4 expected failures",
+    "restored": "9 pass",
+    "guards": "web/localization passed"
+  }
+}

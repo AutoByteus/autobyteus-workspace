@@ -1,0 +1,29 @@
+{
+  "case": "L23",
+  "mode": "LN",
+  "surface": "Current worktree isolated Electron remote node A via owned SSH loopback forward; UI actions only cua_repl",
+  "instance": "iso-63125-cdfd",
+  "workspace": "previews-api007",
+  "observations": {
+    "text": "Original notes exact rendered; subsequent peer text exact rendered; unsaved preservation FAIL separately.",
+    "markdown": "AX heading API007 Markdown, bold Mounted and relative HTML link",
+    "image": "AX Image content and green 64x32 PNG visibly rendered",
+    "html": "AX iframe public /rest/workspaces/.../static/index.html, heading API007 relative assets; stylesheet green heading and green relative image rendered",
+    "pdf": "API007 mounted PDF visibly rendered on one page",
+    "audio": "Real play control advanced from 0:00 to 0:04 with timeline Value4, reverted to play at end",
+    "video": "Blue decoded frame and actual play control; timeline Value4 elapsed0:04 at end",
+    "peerUpdate": "B fsynced changed PNG(red) and HTML heading; deleted own two entries; Files->Terminal->Files omitted both, close/reopen HTML showed API007 node B updated HTML and red relative PNG",
+    "watcher": "Actual automatic tree create/delete and text-refresh observed on shared-kernel LN. Not independent-kernel guarantee. Automatic text refresh silently overwrote unsaved edits."
+  },
+  "result": "Fail (unsaved); healthy previews and deliberate reload subchecks Pass",
+  "evidence": [
+    "LN-preview-api-result.json",
+    "ui-peer-preview-update.json",
+    "ui-unsaved-peer-reproduction.json"
+  ],
+  "limitations": [
+    "No authenticated agent artifacts or provider execution (deferred)",
+    "No fresh separate local-workspace UI journey; repository real HTTP local preview regression passed",
+    "CUA screenshots available in execution tool output; semantic observations persisted here, no fabricated screenshot path"
+  ]
+}

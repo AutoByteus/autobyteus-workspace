@@ -1,0 +1,34 @@
+{
+  "source": [
+    {
+      "path": "autobyteus-web/components/fileExplorer/FileExplorerTabs.vue",
+      "beforeNonblank": 393,
+      "afterNonblank": 355,
+      "deltaLines": 111,
+      "sha256": "242a529cc896b7906e19f3c1bf9bd1077593bbe9137c3768c6819e2a0d259fc8"
+    },
+    {
+      "path": "autobyteus-web/stores/fileExplorerContentActions.ts",
+      "beforeNonblank": 300,
+      "afterNonblank": 309,
+      "deltaLines": 10,
+      "sha256": "9380ee4f6bb778c77b9a828a2e78350f769e7242bec56b32b37c456947cc0bb1"
+    },
+    {
+      "path": "autobyteus-web/stores/fileExplorerState.ts",
+      "beforeNonblank": 83,
+      "afterNonblank": 85,
+      "deltaLines": 2,
+      "sha256": "ed2d8a6743652ec7cff429aedb89e5e97e4ac8176c7a84b78a037d97f51cefa7"
+    }
+  ],
+  "sourceGuardrails": true,
+  "protectedInputCount": 50,
+  "protectedInputsUnchanged": true,
+  "oldDistAndCandidatesCount": 309,
+  "oldDistAndCandidatesUnchanged": true,
+  "historyPrefixPreserved": true,
+  "unchangedFileViewerAndMonaco": "Protected inputs include both; draft projection fixes their upstream authority without changing shared viewer semantics.",
+  "deadCode": "Removed Tabs-only uncalled context-close handlers, write-only invisible context menu state/listener, unread DOM ref, unused language wrapper/import. Prior SFC template contains no context-menu consumer. Existing test-only document-click assertions retired; active keyboard controls retained.",
+  "persistedData": "Not affected: session-only OpenFileState composition; store is not persisted, no schema migration."
+}

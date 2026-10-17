@@ -1,0 +1,13 @@
+{
+  "round": "IR-008",
+  "result": "Implementation Complete",
+  "task_size": "Large",
+  "architectural_risk": "High",
+  "rulesRead": "fresh get_handoff_rules 2026-10-15 after implementation/local validation/handoff",
+  "selectedRule": {
+    "when": "When implementation is complete and the carried classification is task_size=Large or architectural_risk=High, implementation-scoped validation is complete, and the cumulative implementation package is ready for independent source review.",
+    "recipient_address": "/software_engineering_team/code_reviewer"
+  },
+  "reason": "Architecture-reviewed SR022 implementation complete, Large/High retained. Not a code/delivery Local Fix request. Low-risk rules do not apply. No Design Impact.",
+  "dispatch": "existing role only; one primary handoff; no spawning or direct API dispatch"
+}

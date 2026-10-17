@@ -1,0 +1,628 @@
+{
+  "t1": "ok",
+  "t2": "stalled: Error: Timed out waiting for T2 idle. Recent frames: AGENT_INPUT_STATE:{\"run_instance_id\":\"de3a2861-8cc4-4d3f-8085-6f4b83206b16\",\"revision\":8,\"entries\":[{\"sequence\":2,\"message_id\":\"e2e-c3720a13-51a7-4df4-a46d-6e26e42a2413\",\"dedupe_ | SEGMENT_CONTENT:{\"id\":\"call_00_bYlnqztOA7SwkQNNb1fR9792\",\"turn_id\"",
+  "frames": [
+    {
+      "type": "CONNECTED"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "status": "idle"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "status": "initializing"
+    },
+    {
+      "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+    },
+    {
+      "type": "AGENT_COMMAND_ACK",
+      "status": {
+        "status": "initializing",
+        "recoverableBlock": null,
+        "agent_id": "stall_probe_745abc37_d9162349a589482788f1d066e600b053"
+      },
+      "state": "accepted"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "status": "running"
+    },
+    {
+      "type": "TURN_STARTED"
+    },
+    {
+      "type": "SEGMENT_START",
+      "segment_type": "text"
+    },
+    {
+      "type": "SEGMENT_START",
+      "segment_type": "tool_call"
+    },
+    {
+      "type": "SEGMENT_END"
+    },
+    {
+      "type": "SEGMENT_END"
+    },
+    {
+      "type": "TOKEN_USAGE_UPDATED"
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "SEGMENT_START",
+      "segment_type": "tool_call"
+    },
+    {
+      "type": "SEGMENT_END"
+    },
+    {
+      "type": "TOKEN_USAGE_UPDATED"
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "SEGMENT_START",
+      "segment_type": "tool_call"
+    },
+    {
+      "type": "SEGMENT_END"
+    },
+    {
+      "type": "TOKEN_USAGE_UPDATED"
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "SEGMENT_START",
+      "segment_type": "tool_call"
+    },
+    {
+      "type": "SEGMENT_END"
+    },
+    {
+      "type": "TOKEN_USAGE_UPDATED"
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "SEGMENT_START",
+      "segment_type": "tool_call"
+    },
+    {
+      "type": "SEGMENT_END"
+    },
+    {
+      "type": "TOKEN_USAGE_UPDATED"
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "SEGMENT_START",
+      "segment_type": "tool_call"
+    },
+    {
+      "type": "SEGMENT_END"
+    },
+    {
+      "type": "TOKEN_USAGE_UPDATED"
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "SEGMENT_START",
+      "segment_type": "tool_call"
+    },
+    {
+      "type": "SEGMENT_END"
+    },
+    {
+      "type": "TOKEN_USAGE_UPDATED"
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "SEGMENT_START",
+      "segment_type": "tool_call"
+    },
+    {
+      "type": "SEGMENT_END"
+    },
+    {
+      "type": "TOKEN_USAGE_UPDATED"
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "TOOL_LOG",
+      "tool_name": "read_file"
+    },
+    {
+      "type": "SEGMENT_START",
+      "segment_type": "text"
+    },
+    {
+      "type": "SEGMENT_END"
+    },
+    {
+      "type": "TOKEN_USAGE_UPDATED"
+    },
+    {
+      "type": "ASSISTANT_COMPLETE"
+    },
+    {
+      "type": "TURN_COMPLETED"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "status": "idle"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "status": "initializing"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "status": "idle"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "status": "initializing"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "status": "running"
+    },
+    {
+      "type": "AGENT_COMMAND_ACK",
+      "status": {
+        "status": "running",
+        "recoverableBlock": null,
+        "agent_id": "stall_probe_745abc37_d9162349a589482788f1d066e600b053"
+      },
+      "state": "accepted"
+    },
+    {
+      "type": "TURN_STARTED"
+    },
+    {
+      "type": "SEGMENT_START",
+      "segment_type": "tool_call"
+    },
+    {
+      "type": "SEGMENT_END"
+    },
+    {
+      "type": "TOKEN_USAGE_UPDATED"
+    },
+    {
+      "type": "ERROR",
+      "code": "AgentTurnRunner.Recovered",
+      "message": "Agent turn 'turn_0002' recovered after an execution failure: CompactionPlanningBudgetError: Compaction planning could not derive a positive post-compaction target."
+    }
+  ],
+  "errors": [
+    {
+      "code": "AgentTurnRunner.Recovered",
+      "message": "Agent turn 'turn_0002' recovered after an execution failure: CompactionPlanningBudgetError: Compaction planning could not derive a positive post-compaction target.",
+      "details": "CompactionPlanningBudgetError: Compaction planning could not derive a positive post-compaction target.\n    at resolveCompactionPlanningBudget (/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/autobyteus-ts/src/memory/compaction/compaction-planning-budget.ts:54:11)\n    at evaluateLlmPhaseCompaction (/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/autobyteus-ts/src/agent/loop/llm-phase-compaction.ts:51:26)\n    at LlmPhase.run (/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/autobyteus-ts/src/agent/loop/llm-phase.ts:390:9)\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at AgentTurnRunner.run (/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/autobyteus-ts/src/agent/loop/agent-turn-runner.ts:65:28)\n    at AgentWorker.runTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/autobyteus-ts/src/agent/runtime/agent-worker.ts:279:14)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/autobyteus-ts/src/agent/agent-turn.ts:95:25",
+      "error_scope": "turn",
+      "error_effect": "diagnostic",
+      "turn_id": "turn_0002"
+    }
+  ],
+  "calls": [
+    {
+      "index": 0,
+      "phase": "T1",
+      "host": "api.deepseek.com",
+      "pathname": "/chat/completions",
+      "stream": true,
+      "limits": {
+        "max_tokens": 384000
+      },
+      "rewritten": false,
+      "status": 200,
+      "stopSignals": [
+        "tool_calls"
+      ],
+      "maxReportedOutputTokens": 89,
+      "responseHasToolCall": true,
+      "responseHasVisibleText": true,
+      "errorBody": null,
+      "usage": {
+        "inputTotal": 5354,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "output": 89
+      },
+      "strictInjected": false,
+      "mode": null
+    },
+    {
+      "index": 1,
+      "phase": "T1",
+      "host": "api.deepseek.com",
+      "pathname": "/chat/completions",
+      "stream": true,
+      "limits": {
+        "max_tokens": 384000
+      },
+      "rewritten": false,
+      "status": 200,
+      "stopSignals": [
+        "tool_calls"
+      ],
+      "maxReportedOutputTokens": 82,
+      "responseHasToolCall": true,
+      "responseHasVisibleText": false,
+      "errorBody": null,
+      "usage": {
+        "inputTotal": 5941,
+        "cacheRead": 5376,
+        "cacheWrite": 0,
+        "output": 82
+      },
+      "strictInjected": false,
+      "mode": null
+    },
+    {
+      "index": 2,
+      "phase": "T1",
+      "host": "api.deepseek.com",
+      "pathname": "/chat/completions",
+      "stream": true,
+      "limits": {
+        "max_tokens": 384000
+      },
+      "rewritten": false,
+      "status": 200,
+      "stopSignals": [
+        "tool_calls"
+      ],
+      "maxReportedOutputTokens": 82,
+      "responseHasToolCall": true,
+      "responseHasVisibleText": false,
+      "errorBody": null,
+      "usage": {
+        "inputTotal": 6521,
+        "cacheRead": 6016,
+        "cacheWrite": 0,
+        "output": 82
+      },
+      "strictInjected": false,
+      "mode": null
+    },
+    {
+      "index": 3,
+      "phase": "T1",
+      "host": "api.deepseek.com",
+      "pathname": "/chat/completions",
+      "stream": true,
+      "limits": {
+        "max_tokens": 384000
+      },
+      "rewritten": false,
+      "status": 200,
+      "stopSignals": [
+        "tool_calls"
+      ],
+      "maxReportedOutputTokens": 82,
+      "responseHasToolCall": true,
+      "responseHasVisibleText": false,
+      "errorBody": null,
+      "usage": {
+        "inputTotal": 7101,
+        "cacheRead": 6528,
+        "cacheWrite": 0,
+        "output": 82
+      },
+      "strictInjected": false,
+      "mode": null
+    },
+    {
+      "index": 4,
+      "phase": "T1",
+      "host": "api.deepseek.com",
+      "pathname": "/chat/completions",
+      "stream": true,
+      "limits": {
+        "max_tokens": 384000
+      },
+      "rewritten": false,
+      "status": 200,
+      "stopSignals": [
+        "tool_calls"
+      ],
+      "maxReportedOutputTokens": 82,
+      "responseHasToolCall": true,
+      "responseHasVisibleText": false,
+      "errorBody": null,
+      "usage": {
+        "inputTotal": 7681,
+        "cacheRead": 7168,
+        "cacheWrite": 0,
+        "output": 82
+      },
+      "strictInjected": false,
+      "mode": null
+    },
+    {
+      "index": 5,
+      "phase": "T1",
+      "host": "api.deepseek.com",
+      "pathname": "/chat/completions",
+      "stream": true,
+      "limits": {
+        "max_tokens": 384000
+      },
+      "rewritten": false,
+      "status": 200,
+      "stopSignals": [
+        "tool_calls"
+      ],
+      "maxReportedOutputTokens": 82,
+      "responseHasToolCall": true,
+      "responseHasVisibleText": false,
+      "errorBody": null,
+      "usage": {
+        "inputTotal": 8261,
+        "cacheRead": 7680,
+        "cacheWrite": 0,
+        "output": 82
+      },
+      "strictInjected": false,
+      "mode": null
+    },
+    {
+      "index": 6,
+      "phase": "T1",
+      "host": "api.deepseek.com",
+      "pathname": "/chat/completions",
+      "stream": true,
+      "limits": {
+        "max_tokens": 384000
+      },
+      "rewritten": false,
+      "status": 200,
+      "stopSignals": [
+        "tool_calls"
+      ],
+      "maxReportedOutputTokens": 82,
+      "responseHasToolCall": true,
+      "responseHasVisibleText": false,
+      "errorBody": null,
+      "usage": {
+        "inputTotal": 8841,
+        "cacheRead": 8320,
+        "cacheWrite": 0,
+        "output": 82
+      },
+      "strictInjected": false,
+      "mode": null
+    },
+    {
+      "index": 7,
+      "phase": "T1",
+      "host": "api.deepseek.com",
+      "pathname": "/chat/completions",
+      "stream": true,
+      "limits": {
+        "max_tokens": 384000
+      },
+      "rewritten": false,
+      "status": 200,
+      "stopSignals": [
+        "tool_calls"
+      ],
+      "maxReportedOutputTokens": 82,
+      "responseHasToolCall": true,
+      "responseHasVisibleText": false,
+      "errorBody": null,
+      "usage": {
+        "inputTotal": 9421,
+        "cacheRead": 8832,
+        "cacheWrite": 0,
+        "output": 82
+      },
+      "strictInjected": false,
+      "mode": null
+    },
+    {
+      "index": 8,
+      "phase": "T1",
+      "host": "api.deepseek.com",
+      "pathname": "/chat/completions",
+      "stream": true,
+      "limits": {
+        "max_tokens": 384000
+      },
+      "rewritten": false,
+      "status": 200,
+      "stopSignals": [
+        "stop"
+      ],
+      "maxReportedOutputTokens": 2,
+      "responseHasToolCall": false,
+      "responseHasVisibleText": true,
+      "errorBody": null,
+      "usage": {
+        "inputTotal": 10001,
+        "cacheRead": 9472,
+        "cacheWrite": 0,
+        "output": 2
+      },
+      "strictInjected": false,
+      "mode": null
+    },
+    {
+      "index": 9,
+      "phase": "T2",
+      "host": "api.deepseek.com",
+      "pathname": "/chat/completions",
+      "stream": true,
+      "limits": {
+        "max_tokens": 384000
+      },
+      "rewritten": false,
+      "status": 200,
+      "stopSignals": [
+        "tool_calls"
+      ],
+      "maxReportedOutputTokens": 82,
+      "responseHasToolCall": true,
+      "responseHasVisibleText": false,
+      "errorBody": null,
+      "usage": {
+        "inputTotal": 10034,
+        "cacheRead": 9856,
+        "cacheWrite": 0,
+        "output": 82
+      },
+      "strictInjected": false,
+      "mode": null
+    }
+  ]
+}

@@ -296,10 +296,6 @@ export function useProviderApiKeySectionRuntime() {
         'settings.components.settings.ProviderAPIKeyManager.api_key_saved_successfully',
         { provider: providerLabel },
       ), 'success')
-      if (providerId === 'AUTOBYTEUS') {
-        void store.ensureProviderModelCatalog(PROVIDER_SETTINGS_RUNTIME_KIND, providerId)
-          .catch(() => undefined)
-      }
       return true
     } catch (error) {
       console.error('Failed to save API key:', error)

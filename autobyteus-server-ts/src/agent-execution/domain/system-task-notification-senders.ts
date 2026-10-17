@@ -4,3 +4,9 @@
  * produces it, and agent memory, which records only this producer's notices.
  */
 export const CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID = "system.claude_background_task";
+
+/**
+ * `sender_id` of the platform notice that tells a run a skill it uses changed on disk. Shared by
+ * the skill update notice service, which produces it, and agent memory, which records it.
+ */
+export const SKILL_UPDATE_NOTICE_SENDER_ID = "system.skill_update_notifier";

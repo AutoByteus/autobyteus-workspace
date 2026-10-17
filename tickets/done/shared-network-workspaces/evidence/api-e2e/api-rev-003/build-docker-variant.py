@@ -1,0 +1,8 @@
+from pathlib import Path
+import subprocess as sp,json,hashlib,time
+R=Path.cwd();E=Path(__file__).resolve().parent;S=Path((E/'scratch-path.txt').read_text().strip());image=json.loads((E/'linux-docker-prepare-result.json').read_text())['engineImage'];candidate=R/'autobyteus-nfs/out/ir005-local-candidate/engine-candidate';copy=S/'candidate-source';r={'commands':[],'engineImage':image,'scope':'Same exact retained engine/current source, only test-loopback image metadata variant; no publication'}
+env={'PATH':'/usr/bin:/bin:/usr/sbin:/sbin','HOME':str(S/'home'),'TMPDIR':str(S/'tmp'),'GOTOOLCHAIN':'local','GOOS':'linux','GOARCH':'arm64','CGO_ENABLED':'0','PYTHONDONTWRITEBYTECODE':'1'}
+def c(a,cwd):
+ p=sp.run(a,cwd=cwd,env=env,capture_output=True,text=True,timeout=150);r['commands'].append({'argv':a,'cwd':str(cwd),'rc':p.returncode,'stdout':p.stdout,'stderr':p.stderr});assert p.returncode==0;return p.stdout
+meta=json.loads(c(['python3','autobyteus-nfs/packaging/release.py','--tag','v'+json.loads((R/'autobyteus-web/package.json').read_text())['version'],'--engine-manifest',str(candidate/'engine-manifest.json'),'--engine-image',image],R));assert meta['qualifiedTargets']==[] and meta['sourceHash']=='5563645d23aaac13aaa26948490d68dfc12fef31775bb66156185f9052ab0acc';r['metadata']=meta;(copy/'cmd/autobyteus-nfs/release.json').write_text(json.dumps(meta,indent=2)+'\n')
+b=S/'autobyteus-nfs-docker-linux-arm64';c([str(S/'go/bin/go'),'build','-trimpath','-o',str(b),'./cmd/autobyteus-nfs'],copy);r['binary']={'path':str(b),'sha256':hashlib.sha256(b.read_bytes()).hexdigest(),'size':b.stat().st_size};r['result']='Ready';(E/'build-docker-result.json').write_text(json.dumps(r,indent=2)+'\n');print(json.dumps({'result':r['result'],'binary':r['binary']}))

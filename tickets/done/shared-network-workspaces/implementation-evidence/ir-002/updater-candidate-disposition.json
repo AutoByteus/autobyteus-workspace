@@ -1,0 +1,17 @@
+{
+  "candidateOnly": true,
+  "includedInNfsSource": false,
+  "files": [
+    {
+      "path": "autobyteus-web/electron/updater/appUpdateErrorClassifier.ts",
+      "candidateSha256": "899250553d00c1cf267edad467db1e80e6b952bd3ad17eef0becabd925b3ddc0",
+      "restoredReviewedSha256": "53c98145bca1d9c0dd61969a9e3d5456b93454ddfd18761824766822737d4eb0"
+    },
+    {
+      "path": "autobyteus-web/electron/updater/__tests__/appUpdateErrorClassifier.spec.ts",
+      "candidateSha256": "ca4b44bc6a72937c4c87c9586d56f2aa0a53d9f13de418bc13ff803730214ccb",
+      "restoredReviewedSha256": "b6db485ccfae05c11e66bc0b1b2535f5e614a38fff6a78cdbc3f3918fe47ea01"
+    }
+  ],
+  "restoredToReviewedSource": true
+}

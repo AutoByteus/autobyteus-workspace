@@ -1,0 +1,22 @@
+Existing run model-config probe failed with 12 failure(s). Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/tickets/in-progress/collaboration-model-contract/evidence/probes/existing-run-model-config/existing-run-model-config-evidence.json
+- GRAPHQL-HARNESS: Unexpected GraphQL operation 'DelegatedLaunchModelOptions'
+- GRAPHQL-HARNESS: Unexpected GraphQL operation 'DelegatedLaunchModelOptions'
+- GRAPHQL-HARNESS: Unexpected GraphQL operation 'GetAgentRunCollaboration'
+- API-E2E-004-A: locator.waitFor: Timeout 90000ms exceeded.
+Call log:
+  - waiting for locator('[data-test="existing-run-root-card"]').locator('[data-test="chat-thinking-trigger"]') to be visible
+
+- GRAPHQL-HARNESS: Unexpected GraphQL operation 'DelegatedLaunchModelOptions'
+- GRAPHQL-HARNESS: Unexpected GraphQL operation 'DelegatedLaunchModelOptions'
+- GRAPHQL-HARNESS: Unexpected GraphQL operation 'GetAgentRunCollaboration'
+- API-E2E-004-D: locator.waitFor: Timeout 90000ms exceeded.
+Call log:
+  - waiting for locator('[data-test="existing-run-root-card"]').locator('[data-test="chat-thinking-trigger"]') to be visible
+
+- GRAPHQL-HARNESS: Unexpected GraphQL operation 'DelegatedLaunchModelOptions'
+- GRAPHQL-HARNESS: Unexpected GraphQL operation 'GetAgentRunCollaboration'
+- API-E2E-004-E: locator.waitFor: Timeout 90000ms exceeded.
+Call log:
+  - waiting for locator('[data-test="existing-run-root-card"]').locator('[data-test="chat-thinking-trigger"]') to be visible
+
+- GRAPHQL-HARNESS: Unexpected GraphQL operation 'DelegatedLaunchModelOptions'

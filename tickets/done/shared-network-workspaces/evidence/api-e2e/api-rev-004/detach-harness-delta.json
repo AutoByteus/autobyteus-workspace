@@ -1,0 +1,15 @@
+{
+  "classification": "Local harness normalization correction",
+  "original": "drained-detach-result.json",
+  "publicDetach": "Pass rc0; subsequent equality assertion only",
+  "onlyUnexpectedHostConfigDelta": {
+    "OomKillDisable": {
+      "before": null,
+      "after": false
+    }
+  },
+  "primarySource": "https://raw.githubusercontent.com/moby/moby/docker-v29.1.3/daemon/daemon_unix.go",
+  "basis": "adaptContainerSettings initializes nil OomKillDisable to false; semantically identical disabled-override default, no enabling of OOMKillDisable. Compare every other field exactly after removal of two owned NFS mounts. Preserve raw null/false evidence.",
+  "initialSourceFetch": "v29.1.3 path404, correct tag docker-v29.1.3 fetched",
+  "noProductionMutation": true
+}

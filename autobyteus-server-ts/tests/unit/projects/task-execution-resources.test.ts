@@ -45,18 +45,17 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     const task = await tasks.createTask({ projectId, description: "A" });
     await expect(fs.access(layout.taskExecutionResourcesFile(projectId, task.taskId))).rejects.toThrow();
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, assignedBy: "manager", hostRoot, execution: { teamRunId: "team-1" }, teamCoordinatorAgentRunId: "lead-1" });
-    await tasks.linkNewTaskExecution({ role: "broughtIn", creator: { teamRunId: "team-1" }, hostRoot, execution: { agentRunId: "helper-1" } });
+    await tasks.linkNewTaskExecution({ role: "delegated", creator: { teamRunId: "team-1" }, hostRoot, execution: { agentRunId: "helper-1" } });
     await tasks.markStarted({ teamRunId: "team-1" });
     await tasks.markFailed({ agentRunId: "helper-1" }, { code: "TASK_DISPATCH_FAILED", message: "no\nnewlines" });
     await tasks.markStarted({ agentRunId: "helper-1" });
     expect(await resourcesFile(task.taskId)).toEqual({ taskId: task.taskId, agentRunResources: [
       { role: "assigned", assignedBy: "manager", hostRoot: { kind: "agent", runId: "manager-root" },
         agentRun: { kind: "team", teamRunId: "team-1", coordinatorAgentRunId: "lead-1" }, linkedAt: expect.any(String), start: "started", closedAt: null },
-      { role: "broughtIn", hostRoot: { kind: "agent", runId: "manager-root" }, agentRun: { kind: "agent", agentRunId: "helper-1" },
+      { role: "delegated", hostRoot: { kind: "agent", runId: "manager-root" }, agentRun: { kind: "agent", agentRunId: "helper-1" },
         linkedAt: expect.any(String), start: "failed", startError: { code: "TASK_DISPATCH_FAILED", message: "no newlines" }, closedAt: null },
     ] });
     expect(tasks.ownerOf([{ agentRunId: "helper-1" }])).toEqual({ taskId: task.taskId, execution: { agentRunId: "helper-1" }, open: true });
-    expect(tasks.openTaskExecutions(task.taskId, "broughtIn")).toEqual([{ agentRunId: "helper-1" }]);
     expect(await tasks.assignments([task.taskId])).toEqual(new Map([[task.taskId, { open: [
       { kind: "team", teamRunId: "team-1", teamCoordinatorAgentRunId: "lead-1", assignedBy: "manager", outcome: "accepted" }], closed: [] }]]));
   });
@@ -147,7 +146,7 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     ]);
     expect(results[1].status).toBe("fulfilled");
     expect(tasks.isOpen({ agentRunId: "child" })).toBe(false);
-    await expect(tasks.linkNewTaskExecution({ role: "broughtIn", creator: { agentRunId: "worker" }, hostRoot, execution: { agentRunId: "late" } }))
+    await expect(tasks.linkNewTaskExecution({ role: "delegated", creator: { agentRunId: "worker" }, hostRoot, execution: { agentRunId: "late" } }))
       .rejects.toMatchObject({ code: "TASK_AGENT_RESOURCE_CLOSED" });
     expect((await resourcesFile(a.taskId)).agentRunResources.every((e: { closedAt: string | null }) => e.closedAt)).toBe(true);
   });
@@ -166,6 +165,20 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     expect(restarted.ownerOf([{ agentRunId: "old-worker" }])).toMatchObject({ taskId: a.taskId, open: false });
     expect(restarted.ownerOf([{ agentRunId: "new-worker" }])).toMatchObject({ open: true });
     expect(restarted.ownerOf([{ agentRunId: "never-linked" }])).toBeNull();
+  });
+
+  it("stored legacy `broughtIn` entries stay readable, count as owned work and close with their Task (DEC-007)", async () => {
+    const task = await tasks.createTask({ projectId, description: "A" });
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, assignedBy: "manager", hostRoot, execution: { agentRunId: "worker" } });
+    const file = layout.taskExecutionResourcesFile(projectId, task.taskId);
+    const stored = JSON.parse(await fs.readFile(file, "utf8"));
+    stored.agentRunResources.push({ role: "broughtIn", hostRoot: { kind: "agent", runId: "manager-root" }, agentRun: { kind: "agent", agentRunId: "old-helper" },
+      linkedAt: new Date().toISOString(), start: "started", closedAt: null });
+    await fs.writeFile(file, JSON.stringify(stored));
+    const restarted = await boot();
+    expect(restarted.ownerOf([{ agentRunId: "old-helper" }])).toEqual({ taskId: task.taskId, execution: { agentRunId: "old-helper" }, open: true });
+    await restarted.updateTask({ projectId, taskId: task.taskId, status: "DONE" });
+    expect(restarted.isOpen({ agentRunId: "old-helper" })).toBe(false);
   });
 
   it("a damaged file fails closed for its Task and for unknown copies only; the app starts and other Tasks work (Q-3)", async () => {
@@ -204,7 +217,7 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     const c = await tasks.createTask({ projectId, description: "C" });
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: a.taskId, assignedBy: "manager", hostRoot, execution: { teamRunId: "a-team" }, teamCoordinatorAgentRunId: "a-lead" });
     await tasks.linkNewTaskExecution({ role: "delegated", creator: { teamRunId: "a-team" }, hostRoot, execution: { agentRunId: "a-sub" } });
-    await tasks.linkNewTaskExecution({ role: "broughtIn", creator: { teamRunId: "a-team" }, hostRoot, execution: { agentRunId: "a-helper" } });
+    await tasks.linkNewTaskExecution({ role: "delegated", creator: { teamRunId: "a-team" }, hostRoot, execution: { agentRunId: "a-helper" } });
     await assign(b.taskId, "b-worker");
     await assign(c.taskId, "c-elsewhere", otherRoot);
     expect(tasks.closedTaskExecutionsIn(hostRoot)).toEqual([]);

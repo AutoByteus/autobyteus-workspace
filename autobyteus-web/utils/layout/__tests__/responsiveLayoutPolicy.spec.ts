@@ -107,7 +107,7 @@ describe('responsiveLayoutPolicy', () => {
     expect(state.rightPanel.stripActivation).toBeNull()
   })
 
-  it('yields to the responsive right strip when the compact candidate first exceeds capacity', () => {
+  it('bounds an oversized preference to the compact candidate instead of yielding tools', () => {
     const viewportWidth = 768
     const rightPanelWidth = viewportWidth
       - LEFT_PANEL_STRIP_WIDTH_PX
@@ -121,10 +121,11 @@ describe('responsiveLayoutPolicy', () => {
     })
 
     expect(state.leftPanel.presentation).toBe('strip')
-    expect(state.rightPanel.presentation).toBe('strip')
-    expect(state.rightPanel.centerProtectionMode).toBe('responsive-yield')
+    expect(state.rightPanel.presentation).toBe('docked')
+    expect(state.rightPanel.preferredWidth).toBe(rightPanelWidth)
+    expect(state.rightPanel.centerProtectionMode).toBe('user-override')
     expect(state.rightPanel.effectiveCenterMinWidth).toBe(USER_RESIZE_CENTER_MIN_WIDTH_PX)
-    expect(state.rightPanel.stripActivation).toBe('open-drawer')
+    expect(state.rightPanel.stripActivation).toBeNull()
   })
 
   it('emits symmetric redock activation for fitting wide user strips', () => {
@@ -281,5 +282,64 @@ describe('responsiveLayoutPolicy', () => {
     expect(recovered.rightPanel.resizeIntent).toBe('user-sized')
     expect(recovered.rightPanel.centerProtectionMode).toBe('user-override')
     expect(recovered.rightPanel.effectiveCenterMinWidth).toBe(200)
+  })
+
+  // AC-001..003: capacity belongs to the prospective complete layout, not its
+  // previous divider position. The raw preference remains the input throughout.
+  it.each([1000, 1280, 1440])('reclaims right width when Workspaces redocks at %ipx', (viewportWidth) => {
+    const input = { viewportWidth, rightPanelPreferredWidth: viewportWidth - 254, rightPanelResizeIntent: 'user-sized' as const }
+    for (let cycle = 0; cycle < 3; cycle++) {
+      const collapsed = resolve({ ...input, leftPanelPreference: 'hidden-by-user' })
+      expect(collapsed.rightPanel.presentation).toBe('docked')
+      expect(collapsed.leftPanel.stripActivation).toBe('redock-panel')
+      expect(collapsed.rightPanel.preferredWidth).toBe(input.rightPanelPreferredWidth)
+      const docked = resolve(input)
+      expect(docked.leftPanel.presentation).toBe('docked')
+      expect(docked.rightPanel.presentation).toBe('docked')
+      expect(docked.rightPanel.preferredWidth).toBe(viewportWidth - 530)
+      expect(docked.rightPanel.consumedWidth).toBe(docked.rightPanel.preferredWidth)
+      expect(docked.rightPanel.effectiveCenterMinWidth).toBe(200)
+    }
+  })
+
+  it.each([260, 320, 520])('uses the actual %ipx navigation width at the drag capacity boundary', (leftPanelPreferredWidth) => {
+    const minimum = leftPanelPreferredWidth + 6 + 400 + 4 + 200
+    for (const delta of [-1, 0, 1]) {
+      const input = { viewportWidth: minimum + delta, leftPanelPreferredWidth, rightPanelPreferredWidth: 1600, rightPanelResizeIntent: 'user-sized' as const }
+      const collapsed = resolve({ ...input, leftPanelPreference: 'hidden-by-user' })
+      expect(collapsed.rightPanel.presentation).toBe('docked')
+      expect(collapsed.leftPanel.stripActivation).toBe(delta < 0 ? 'open-drawer' : 'redock-panel')
+      const expanded = resolve(input)
+      expect(expanded.leftPanel.presentation).toBe('docked')
+      expect(expanded.rightPanel.presentation).toBe(delta < 0 ? 'strip' : 'docked')
+      if (delta >= 0) expect(expanded.rightPanel.preferredWidth).toBe(400 + delta)
+    }
+  })
+
+  it.each([1209, 1210, 1211, 1259, 1260])('preserves automatic allocation and its 480px floor at %ipx', (viewportWidth) => {
+    const state = resolve({ viewportWidth })
+    expect(state.rightPanel.presentation).toBe(viewportWidth < 1210 ? 'strip' : 'docked')
+    if (viewportWidth >= 1210) {
+      expect(state.rightPanel.preferredWidth).toBe(Math.min(450, viewportWidth - 810))
+      expect(state.rightPanel.effectiveCenterMinWidth).toBe(480)
+      expect(state.rightPanel.centerProtectionMode).toBe('automatic')
+    }
+    const collapsed = resolve({ viewportWidth, leftPanelPreference: 'hidden-by-user' })
+    expect(collapsed.leftPanel.stripActivation).toBe(viewportWidth < 1210 ? 'open-drawer' : 'redock-panel')
+  })
+
+  it('retains raw preference through shrink, narrow/short fallbacks and recovery', () => {
+    const input = { rightPanelPreferredWidth: 1186, rightPanelResizeIntent: 'user-sized' as const }
+    expect(resolve(input).rightPanel.preferredWidth).toBe(910)
+    expect(resolve({ ...input, viewportWidth: 930 }).rightPanel.preferredWidth).toBe(400)
+    for (const constraints of [{ viewportWidth: 929 }, { viewportWidth: 767 }, { viewportHeight: 480 }]) {
+      const state = resolve({ ...input, ...constraints })
+      expect(state.rightPanel.presentation).toBe('strip')
+      expect(state.rightPanel.preferredWidth).toBe(1186)
+      expect(state.rightPanel.resizeIntent).toBe('user-sized')
+    }
+    expect(resolve({ ...input, leftPanelPreference: 'hidden-by-user' }).rightPanel.preferredWidth).toBe(1186)
+    expect(resolve({ ...input, viewportWidth: 1720 }).rightPanel.preferredWidth).toBe(1186)
+    expect(input.rightPanelPreferredWidth).toBe(1186)
   })
 })

@@ -15,7 +15,7 @@ import { getApolloClient } from '~/utils/apolloClient';
 
 /**
  * Whose active trace a page reads. A standalone run's host is a top-level run (`run`); its
- * collaborators and collaborator-Team members live in its package (`standaloneMember`).
+ * delegated copies and copy-Team members live in its package (`standaloneMember`).
  */
 export type EventMonitorActiveTraceBrowseSubject =
   | { kind: 'run'; runId: string }

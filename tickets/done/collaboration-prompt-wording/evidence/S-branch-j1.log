@@ -1,0 +1,4 @@
+{"sample":1,"journey":"j1","runtime":"claude_agent_sdk","model":"claude-haiku-5-5","delegated":true,"agentStarted":false,"taskMessage":null,"sendMessageCalls":[],"sendMessageResults":[],"reportedByIdSucceeded":false,"addressInAnyCall":false,"plainAnswerOnly":false}
+{"sample":2,"journey":"j1","runtime":"claude_agent_sdk","model":"claude-haiku-5-5","delegated":true,"agentStarted":false,"taskMessage":null,"sendMessageCalls":[],"sendMessageResults":[],"reportedByIdSucceeded":false,"addressInAnyCall":false,"plainAnswerOnly":false}
+{"sample":3,"journey":"j1","runtime":"claude_agent_sdk","model":"claude-haiku-5-5","delegated":true,"agentStarted":false,"taskMessage":null,"sendMessageCalls":[],"sendMessageResults":[],"reportedByIdSucceeded":false,"addressInAnyCall":false,"plainAnswerOnly":false}
+SUMMARY {"journey":"j1","runtime":"claude_agent_sdk","model":"claude-haiku-5-5","n":3,"delegated":3,"reportedByIdSucceeded":0,"addressInAnyCall":0,"plainAnswerOnly":0}

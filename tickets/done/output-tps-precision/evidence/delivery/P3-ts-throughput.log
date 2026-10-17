@@ -1,0 +1,15 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/output-tps-precision/autobyteus-ts
+
+stdout | tests/unit/agent/loop/llm-call-throughput.test.ts > LlmPhase reports each call TPS with its usage > a single-call plain-text turn carries a generation reading (AC-001)
+AgentRuntimeState initialized for agent_id 'tps-agent'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='tps', role='writer'.
+AgentContext composed for agent_id 'tps-agent'. Config and State linked.
+
+ ✓ tests/unit/agent/loop/llm-call-throughput.test.ts (7 tests) 19ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  11:52:23
+   Duration  637ms (transform 366ms, setup 16ms, import 509ms, tests 19ms, environment 0ms)
+

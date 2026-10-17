@@ -1,9 +1,8 @@
 import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
+import { ROOT_NOT_ACTIVE_MESSAGE } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { resolveMemberCollaborationScope, type MemberHostTeam } from "../../agent-collaboration/execution/domain/member-instance-scope.js";
 import { RootAgentExecutionRegistry } from "../../agent-collaboration/execution/backends/root-agent-execution-registry.js";
 import { RootTeamExecutionDirectory } from "../../agent-collaboration/execution/backends/root-team-execution-directory.js";
-import { prepareCollaboratorHandles } from "../../agent-collaboration/execution/backends/collaborator-handle-preparation.js";
-import type { ConfiguredAgentActivationMode } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
 import { CollaborationAgentActivationError } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
 import {
   MemberCollaborationContext,
@@ -68,7 +67,7 @@ export class StandaloneRootBuilder {
     let run: StandaloneAgentRunRoot | null = null;
     const retained: Array<Parameters<FlatTeamExecutionCallbacks["publishAgentEvent"]>> = [];
     const requireRun = (): StandaloneAgentRunRoot => {
-      if (!run?.isActive()) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", "The collaboration root of this run is not active.");
+      if (!run?.isActive()) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", ROOT_NOT_ACTIVE_MESSAGE);
       return run;
     };
     const callbacks: FlatTeamExecutionCallbacks = Object.freeze({
@@ -92,7 +91,7 @@ export class StandaloneRootBuilder {
           throw error;
         }
       },
-      // Application-owned runs never host collaborators.
+      // Application-owned runs never host delegated copies.
       applicationExecutionContext: () => null,
     });
     const persistence = new StandaloneRootPersistenceCoordinator({
@@ -113,11 +112,6 @@ export class StandaloneRootBuilder {
       workspaceManager: this.dependencies.workspaceManager,
     });
     const teams = new RootTeamExecutionDirectory(this.dependencies.flatTeamExecutionFactory);
-    // Member contexts read the live tree, so one callback set serves collaborator Teams too.
-    const prepareCollaborators = (entries: StandaloneRootTreeSnapshot["collaborators"], mode: ConfiguredAgentActivationMode) =>
-      prepareCollaboratorHandles({ root, rootAgents, teams, teamCallbacks: callbacks, entries, mode });
-    // Collaborators are restored with the root, without preparing a runtime.
-    const restored = await prepareCollaborators(input.tree.collaborators, "restore");
     run = new StandaloneAgentRunRoot({
       root,
       tree: input.tree,
@@ -127,7 +121,6 @@ export class StandaloneRootBuilder {
       rootAgents,
       teams,
       callbacks,
-      prepareCollaboratorHandles: (entries) => prepareCollaborators(entries, "fresh"),
       persistence,
       publisher: new RootEventPublisher<StandaloneRootEvent>(),
       taskExecutionIdentity: this.dependencies.taskExecutionIdentity,
@@ -137,17 +130,15 @@ export class StandaloneRootBuilder {
       collaboratorAdmission: this.dependencies.collaboratorAdmission,
       onTerminated: () => { if (run) input.onTerminated(run); },
     });
-    restored.commitAfterDurability();
     run.activate();
     retained.splice(0).forEach(([identity, event]) => run!.onAgentExecutionEvent(identity, event));
     return run;
   }
 
   /**
-   * A child directly under the root (a collaborator Agent or any Agent copy) belongs to no Team
-   * (no handoff rules); a member of its hosting Team instance (a collaborator Team or any copy,
-   * including a catalog copy prepared from its recorded source) is Team-scoped with that
-   * instance's handoffs and instructions (REQ-007).
+   * A child directly under the root (an Agent copy) belongs to no Team (no handoff rules); a
+   * member of its hosting Team instance (a Team copy prepared from its recorded source) is
+   * Team-scoped with that instance's handoffs and instructions (REQ-007).
    */
   private async buildChildContext(input: Readonly<{
     identity: CollaborationMemberExecutionIdentity;
@@ -159,8 +150,9 @@ export class StandaloneRootBuilder {
     // CR-001: the one owner; an Agent root has no configured placements, handoffs or instruction of its own.
     const scope = resolveMemberCollaborationScope({
       memberAddress: input.identity.memberAddress,
+      agentRunId: input.identity.agentRunId,
       hostTeam: input.hostTeam,
-      root: { configuredRootAddresses: [], handoffs: [], definition: null },
+      root: { configured: null, handoffs: [], definition: null },
     });
     const instruction = scope.instructionDefinition
       ? (await this.dependencies.teamDefinitions.getDefinitionById(scope.instructionDefinition.definitionId).catch(() => null))?.instructions?.trim() || null
@@ -168,6 +160,7 @@ export class StandaloneRootBuilder {
     return new MemberExecutionContext({
       identity: input.identity,
       teamScoped,
+      collaborationRole: scope.role,
       authoredEnclosingScopeInstruction: instruction,
       collaboration: new MemberCollaborationContext({
         outgoingHandoffs: scope.outgoingHandoffs,

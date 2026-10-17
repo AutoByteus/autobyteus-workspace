@@ -250,6 +250,21 @@ describe("AppConfig", () => {
     await fsPromises.rm(configDir, { recursive: true, force: true });
   });
 
+  it("returns every registered agent package root, including missing ones, absolute and deduplicated", async () => {
+    const configDir = await createTempConfigDir("AUTOBYTEUS_SERVER_HOST=http://localhost:8000\n");
+    const sourceA = path.join(configDir, "source-a");
+    const missing = path.join(configDir, "moved-away");
+    await fsPromises.mkdir(sourceA, { recursive: true });
+
+    process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS = `${sourceA},relative-source,${missing},${sourceA}`;
+    const config = new AppConfig();
+
+    expect(config.getRegisteredAgentPackageRoots()).toEqual([sourceA, missing]);
+    expect(config.getAdditionalAgentPackageRoots()).toEqual([sourceA]);
+
+    await fsPromises.rm(configDir, { recursive: true, force: true });
+  });
+
   it("returns additional application package roots that are absolute, existing, and deduplicated", async () => {
     const configDir = await createTempConfigDir("AUTOBYTEUS_SERVER_HOST=http://localhost:8000\n");
     const packageRootA = path.join(configDir, "application-root-a");

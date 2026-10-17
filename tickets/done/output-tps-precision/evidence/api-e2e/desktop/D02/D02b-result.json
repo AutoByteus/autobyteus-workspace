@@ -1,0 +1,66 @@
+{
+  "journey": "D02b team selection",
+  "newest": {
+    "tps_coordinator_0ffc914e69254b9c95b49a02e08e506a": {
+      "method": "end_to_end",
+      "output_tokens": 157,
+      "duration_ms": 3351
+    },
+    "tps_worker_ea3414c2787541bc824ac37f902da6d5": {
+      "method": "end_to_end",
+      "output_tokens": 223,
+      "duration_ms": 2860
+    },
+    "tps_worker_92e79b2ad7c949b3aeabb1b361cf53c9": {
+      "method": "end_to_end",
+      "output_tokens": 222,
+      "duration_ms": 4708
+    }
+  },
+  "checks": [
+    {
+      "target": "coordinator (Team member)",
+      "runId": "tps_coordinator_0ffc914e69254b9c95b49a02e08e506a",
+      "reading": {
+        "method": "end_to_end",
+        "output_tokens": 157,
+        "duration_ms": 3351
+      },
+      "shown": {
+        "value": "46.9 tokens/s",
+        "methodHelp": "Output tokens of the latest model call ÷ time from sending the request to its end (157 tokens in 3.35 s). Includes waiting for the first token, so it reads lower than pure generation speed.",
+        "header": ""
+      }
+    },
+    {
+      "target": "worker (Team member)",
+      "runId": "tps_worker_ea3414c2787541bc824ac37f902da6d5",
+      "reading": {
+        "method": "end_to_end",
+        "output_tokens": 223,
+        "duration_ms": 2860
+      },
+      "shown": {
+        "value": "78.0 tokens/s",
+        "methodHelp": "Output tokens of the latest model call ÷ time from sending the request to its end (223 tokens in 2.86 s). Includes waiting for the first token, so it reads lower than pure generation speed.",
+        "header": ""
+      }
+    },
+    {
+      "target": "worker (delegated copy)",
+      "runId": "tps_worker_92e79b2ad7c949b3aeabb1b361cf53c9",
+      "reading": {
+        "method": "end_to_end",
+        "output_tokens": 222,
+        "duration_ms": 4708
+      },
+      "shown": {
+        "value": "47.2 tokens/s",
+        "methodHelp": "Output tokens of the latest model call ÷ time from sending the request to its end (222 tokens in 4.71 s). Includes waiting for the first token, so it reads lower than pure generation speed.",
+        "header": ""
+      }
+    }
+  ],
+  "errors": [],
+  "status": "pass"
+}

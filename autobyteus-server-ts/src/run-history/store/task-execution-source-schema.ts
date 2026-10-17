@@ -15,10 +15,11 @@ import {
   requiredArray,
   requiredString,
 } from "./run-execution-tree-shared-record-schemas.js";
+import { parseOptionalLaunchFields } from "./launch-configuration-source-schema.js";
 
 /**
  * `source` of a catalog task copy is optional: its absence truthfully means the copy's source
- * is the configured placement or collaborator at its address (every record written before
+ * is the configured placement at its address (every record written before
  * catalog copies existed). Present values are validated and projected exactly.
  */
 export const parseTaskAgentExecutionSource = (
@@ -34,6 +35,7 @@ export const parseTaskAgentExecutionSource = (
       kind: "agent",
       agentDefinitionId: requiredString(source.agentDefinitionId, `${label}.source.agentDefinitionId`),
       launchConfiguration: parseLaunchConfiguration(source.launchConfiguration, `${label}.source.launchConfiguration`),
+      ...parseOptionalLaunchFields(source, { source: "launchSource" }, `${label}.source`),
     },
   };
 };
@@ -57,7 +59,11 @@ export const parseTaskTeamExecutionSource = (
     if (getParentAgentTeamAddress(address) !== teamAddress) {
       throw new Error(`${at}.members[${index}].address '${address}' is not a direct member of '${teamAddress}'.`);
     }
-    return { address, agentDefinitionId: requiredString(member.agentDefinitionId, `${at}.members[${index}].agentDefinitionId`) };
+    return {
+      address,
+      agentDefinitionId: requiredString(member.agentDefinitionId, `${at}.members[${index}].agentDefinitionId`),
+      ...parseOptionalLaunchFields(member, { launch: "launchConfiguration", source: "launchSource" }, `${at}.members[${index}]`),
+    };
   });
   const memberAddresses = new Set<string>(members.map((member) => member.address));
   if (memberAddresses.size !== members.length || members.length === 0) throw new Error(`${at}.members must be distinct and non-empty.`);
@@ -77,6 +83,7 @@ export const parseTaskTeamExecutionSource = (
       members,
       handoffs,
       defaultLaunchConfiguration: parseLaunchConfiguration(source.defaultLaunchConfiguration, `${at}.defaultLaunchConfiguration`),
+      ...parseOptionalLaunchFields(source, { source: "defaultLaunchSource" }, at),
     },
   };
 };

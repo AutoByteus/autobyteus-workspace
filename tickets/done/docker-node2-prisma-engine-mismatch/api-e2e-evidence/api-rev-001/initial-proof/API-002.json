@@ -1,0 +1,80 @@
+[
+  {
+    "command": [
+      "docker",
+      "create",
+      "--pull",
+      "never",
+      "--name",
+      "api-o1-prisma-026a3138ea3f",
+      "--label",
+      "autobyteus.api-o1=docker-node2-prisma-engine-mismatch",
+      "-p",
+      "127.0.0.1::8000",
+      "--tmpfs",
+      "/root:rw,mode=0700",
+      "--tmpfs",
+      "/home/autobyteus/data:rw,mode=0700",
+      "-e",
+      "AUTOBYTEUS_SKIP_SYNC=1",
+      "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1"
+    ],
+    "exit": 0,
+    "output": "4b10b2cd6efab29b705dce16ef7825e7838a85c900d3a1c75e423e521f5eb64a\n"
+  },
+  {
+    "command": [
+      "docker",
+      "cp",
+      "api-o1-prisma-026a3138ea3f:/etc/supervisor/conf.d/supervisor-autobyteus-server.conf",
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-o1-owned-hwrkdyhi/original.conf"
+    ],
+    "exit": 0,
+    "output": ""
+  },
+  {
+    "command": [
+      "docker",
+      "cp",
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-o1-owned-hwrkdyhi/paused.conf",
+      "api-o1-prisma-026a3138ea3f:/etc/supervisor/conf.d/supervisor-autobyteus-server.conf"
+    ],
+    "exit": 0,
+    "output": ""
+  },
+  {
+    "command": [
+      "docker",
+      "start",
+      "api-o1-prisma-026a3138ea3f"
+    ],
+    "exit": 0,
+    "output": "api-o1-prisma-026a3138ea3f\n"
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "-e",
+      "PRISMA_QUERY_ENGINE_LIBRARY=/app/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/libquery_engine-linux-arm64-openssl-3.0.x.so.node",
+      "-e",
+      "PRISMA_SCHEMA_ENGINE_BINARY=/app/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/schema-engine-linux-arm64-openssl-3.0.x",
+      "-i",
+      "api-o1-prisma-026a3138ea3f",
+      "node"
+    ],
+    "exit": 0,
+    "output": "{\n  \"platform\": \"linux\",\n  \"arch\": \"arm64\",\n  \"cliVersion\": \"5.22.0\",\n  \"expectedRevision\": \"605197351a3c8bdd595af2d2a9bc3025bca48ea2\",\n  \"schemaVersion\": \"schema-engine-cli 605197351a3c8bdd595af2d2a9bc3025bca48ea2\",\n  \"queryVersion\": {\n    \"commit\": \"605197351a3c8bdd595af2d2a9bc3025bca48ea2\",\n    \"version\": \"0.1.0\"\n  },\n  \"pair\": {\n    \"queryEngineLibrary\": \"/app/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/libquery_engine-linux-arm64-openssl-3.0.x.so.node\",\n    \"schemaEngineBinary\": \"/app/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/schema-engine-linux-arm64-openssl-3.0.x\",\n    \"source\": \"existing-env\",\n    \"sourcePath\": \"process.env\"\n  },\n  \"canonicalDatabaseOverride\": true,\n  \"retainedSentinel\": true,\n  \"rpc\": {\n    \"jsonrpc\": \"2.0\",\n    \"result\": {\n      \"migrations\": [\n        \"20260203074245_init\",\n        \"20260208094000_add_external_channel_tables\",\n        \"20260209174500_add_channel_message_receipt_turn_id\",\n        \"20260209213000_remove_agent_conversation_tables\",\n        \"20260210101500_add_agent_avatar\",\n        \"20260210192000_add_agent_team_avatar\",\n        \"20260211214500_add_sync_columns_and_tombstones\",\n        \"20260212070000_remove_workflow_definition\",\n        \"20260309103000_add_channel_binding_launch_preset\",\n        \"20260310153000_add_channel_binding_team_definition_id\",\n        \"20260331102000_remove_channel_bindings_table\",\n        \"20260331130000_receipt_lifecycle_and_remove_channel_idempotency\",\n        \"20260517090000_add_app_data_migration_records\",\n        \"20260624090000_add_token_usage_ledger_events\",\n        \"20260625193000_token_usage_component_pricing_explainability\",\n        \"20260629120000_add_token_usage_display_fields\",\n        \"20260702093000_token_usage_execution_address\",\n        \"20260726090000_add_secret_vault\",\n        \"20260730090000_add_token_usage_provider_name\",\n        \"20260801090000_token_usage_member_display_name\",\n        \"20260814090000_team_run_execution_tree_v1\",\n        \"20260819090000_add_token_usage_run_records\",\n        \"20260820090000_redesign_app_data_migration_summary\",\n        \"20260822090000_add_token_usage_analytics\",\n        \"20260923130000_add_claude_sdk_usage_state\",\n        \"20260924120000_remove_external_channel_tables\",\n        \"20261009120000_token_meter_context_readings\"\n      ]\n    },\n    \"id\": 1\n  }\n}\n"
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "api-o1-prisma-026a3138ea3f",
+      "--format",
+      "{{json .Mounts}}"
+    ],
+    "exit": 0,
+    "output": "[]\n"
+  }
+]

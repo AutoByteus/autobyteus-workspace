@@ -1,0 +1,30 @@
+{
+  "reviewedBasis": "65b0e6e57a0f93d8343ccbefc1b5227642d7e557",
+  "files": [
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/requirements-doc.md",
+      "equalsReviewedBasis": true,
+      "sha256": "62ea50f35b12843a61b287602b843b5050a88b4261de2999d70381bb6755470d"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/approval-record-sr018.md",
+      "equalsReviewedBasis": true,
+      "sha256": "64399a81bda50aadd8f883930fa9c9fef1c6a3dd46c87fe74e2ed5b38223e249"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/approval-record-sr017.md",
+      "equalsReviewedBasis": true,
+      "sha256": "dc033fc3641b80e13d3de052eed4e289ee4a3f36b9870f317a72ed102660ebbf"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/design-spec.md",
+      "equalsReviewedBasis": true,
+      "sha256": "2627e9acec44a7c21c09601a868593804319edc47524616ddb6ac1890a0d8564"
+    },
+    {
+      "path": "tickets/in-progress/shared-network-workspaces/design-review-report.md",
+      "equalsReviewedBasis": true,
+      "sha256": "fb1687991301bafee18e68c7fd1f1aea583acc9814fd235acdd52f9f934a2f5e"
+    }
+  ]
+}

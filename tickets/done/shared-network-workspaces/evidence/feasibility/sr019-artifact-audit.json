@@ -1,0 +1,174 @@
+{
+  "revision": "SR019",
+  "approval_basis": "Approved SR018 unchanged",
+  "date": "2026-10-13",
+  "scope": "Read-only source/hash and design-document consistency; not product test, independent review or live-resource audit",
+  "checks": {
+    "eleven_source_hashes_match": true,
+    "requirements_approvals_review_implementation_evidence_unchanged": true,
+    "ready_SR019_approved_SR018": true,
+    "classification_large_high": true,
+    "private_links_selected": true,
+    "old_positive_pinning_instruction_absent": true,
+    "source_authority_independent": true,
+    "agy_restore_retained": true,
+    "no_copy_fallback": true,
+    "copied_fixture_proof_limit_explicit": true,
+    "peer_stop_and_outage_scope_preserved": true,
+    "IR001_and_prior_review_indexed": true,
+    "only_owned_docs_modified": true,
+    "scoped_diff_check": true
+  },
+  "source_hashes": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/src/skills/services/skill-service.ts",
+      "sha256": "fab3cf74214f20ffd34eb1792d7b10b6c5114d244bdb83a67326674041222309",
+      "matches_IR001": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/src/skills/services/skill-source-service.ts",
+      "sha256": "4bd0ba7adcd170fa11241ac33af8349102094aff6ce830a9e130b3c7c1693ccf",
+      "matches_IR001": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/src/skills/installers/github-skill-repository.ts",
+      "sha256": "169fd2f6b69d027c89790e64338e8b4e122da51046797b1a517372ab09583e46",
+      "matches_IR001": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/src/agent-execution/backends/shared/workspace-skill-materializer.ts",
+      "sha256": "a9fa041841be99cef9d34bfdd841cbf9f25090c0130d9b9dceb13821a9f3160e",
+      "matches_IR001": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/src/agent-execution/backends/antigravity/capsule/agy-configured-skill-linker.ts",
+      "sha256": "a82620bea21cf9e818a0739572d12237dfc52adca66ca381b5895c3259f380dd",
+      "matches_IR001": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/src/agent-execution/backends/antigravity/capsule/agy-run-capsule.ts",
+      "sha256": "2e7bd4e17251cf203155435f77f15e2ac2ecb760f78e44e5da56e3bc26d6c779",
+      "matches_IR001": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/docs/modules/skills.md",
+      "sha256": "d642ebc6b2b93b37b0e9ab79c172e9455854ff1582e5a1cee1c61bd9c98bfdfe",
+      "matches_IR001": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts",
+      "sha256": "3d4a576452d882ee2555a5ef306c810999695000ec8b1625f2d70e9aebcdc86a",
+      "matches_IR001": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/components/skills/SkillSourcesModal.vue",
+      "sha256": "3a21f272c3a37229ff1026eee151dcc336f112c455ec340f6a573bcf3a532c15",
+      "matches_IR001": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/stores/skillSourcesStore.ts",
+      "sha256": "19d6ced803544c7a5c7f7c877130f1a3a84dc5fe367f8866161b11249519546b",
+      "matches_IR001": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/src/api/graphql/types/skills.ts",
+      "sha256": "fe994e555b384bb8da7a19c0ad3073f475e33a5c5f8b2ce249b380af0e1f189b",
+      "matches_IR001": true
+    }
+  ],
+  "protected_artifacts": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/requirements-doc.md",
+      "sha256": "62ea50f35b12843a61b287602b843b5050a88b4261de2999d70381bb6755470d",
+      "unchanged_from_incoming_commit": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/approval-record-sr018.md",
+      "sha256": "64399a81bda50aadd8f883930fa9c9fef1c6a3dd46c87fe74e2ed5b38223e249",
+      "unchanged_from_incoming_commit": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/approval-record-sr017.md",
+      "sha256": "dc033fc3641b80e13d3de052eed4e289ee4a3f36b9870f317a72ed102660ebbf",
+      "unchanged_from_incoming_commit": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/architecture-review-scope-feedback.md",
+      "sha256": "f87c31f89d9da0437a7c87d3271c77af75a31daa88861c2ecd7cfb7c3f78e360",
+      "unchanged_from_incoming_commit": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/design-review-report.md",
+      "sha256": "eafedf4e2b14d540196597603596f3ae36ad17a9dc54895bb7fdbb0d1a9f53a9",
+      "unchanged_from_incoming_commit": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/architecture-review-revision-record.md",
+      "sha256": "ca69bf39f99acf19dd107ccd742003da51aeb2bc90599c93816a85b7e201ff93",
+      "unchanged_from_incoming_commit": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-handoff.md",
+      "sha256": "1b25a5ba22604b8c5e2959623a29987d15772e9ed2c6be08861d76a92a9a180f",
+      "unchanged_from_incoming_commit": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-revision-record.md",
+      "sha256": "8edb51d3eabc049d62d3318134b22e55dc41304029ec574c268ba4b6d459cc27",
+      "unchanged_from_incoming_commit": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-001/source-lease-design-impact.md",
+      "sha256": "b162b1d47736d3f8c36845f30828bf92b44d2a767c11d89e6d4b79ec1c83bd56",
+      "unchanged_from_incoming_commit": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-001/source-audit.json",
+      "sha256": "a9a633f6b51a9976fe91137cc1d5c1e7ce477fd6664bd0b976088e4d3f0eeae5",
+      "unchanged_from_incoming_commit": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/feasibility/experiment-index.json",
+      "sha256": "812f6c541b1158a02b5f4dd5fc82cb43ac410fc97eb30f9cc0da2e77261c3f08",
+      "unchanged_from_incoming_commit": true
+    }
+  ],
+  "owned_document_sha256": {
+    "design-spec.md": "2627e9acec44a7c21c09601a868593804319edc47524616ddb6ac1890a0d8564",
+    "investigation-notes.md": "546c92768ff460db555e4382b4972e44e5ec6fdedd5684aad4f8a21b5bc50a98",
+    "solution-revision-record.md": "6d31cf361579cf9316aa3c4dcd50690d9ac56f2965f17ac1fc9f69e74c1cca3e",
+    "solution-design-handoff.md": "3bc089ff875f55909eda9a8aab214cf7ea743e86460994e3700b2b9ba6244cf4"
+  },
+  "diff_check": {
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "route": {
+    "lookup": "fresh get_handoff_rules after completed revised package persisted",
+    "outcome": "Architecture Design Complete",
+    "task_size": "Large",
+    "architectural_risk": "High",
+    "recipient_address": "/software_engineering_team/architecture_reviewer",
+    "delivery": "Not asserted; subsequent tool receipt authoritative"
+  },
+  "product_tests_run": false,
+  "live_resources_touched": false,
+  "limits": [
+    "Private links are selected, not newly native-runtime proven in this round. FR014/020 used copied fixtures.",
+    "Prior ARCH-REV-002 Pass applies to SR018, not SR019. IMP-D001 corrected in design only.",
+    "Profile lifetime is not source-byte retention; no new policy/approval or outage hardening."
+  ],
+  "repository_artifact_hygiene": {
+    "command": "python3 scripts/check_repository_artifact_hygiene.py",
+    "exit_code": 0,
+    "tracked_files_scanned": 61824,
+    "path_length_threshold": 200,
+    "longest_tracked_path_chars": 200
+  },
+  "staged_diff_check": {
+    "command": "git diff --cached --check",
+    "exit_code": 0
+  },
+  "staged_file_count": 5
+}

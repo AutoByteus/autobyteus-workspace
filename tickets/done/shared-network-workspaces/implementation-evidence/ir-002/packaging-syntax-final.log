@@ -1,0 +1,3 @@
+ruby -ryaml parse release-nfs.yml; bash -n public NFS installer/launcher modules
+YAML syntax parsed
+PASS

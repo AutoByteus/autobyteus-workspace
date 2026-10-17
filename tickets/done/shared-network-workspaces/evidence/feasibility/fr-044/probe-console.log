@@ -1,0 +1,3 @@
+FAIL native nonroot pinned UNFS3 server uses chosen APFS folder without Docker or OS nfsd changes RuntimeError("owned VM command failed ('exec', 'ab-sf-fr043-macos', '/usr/bin/sudo'): ")
+PROBE FAILURE RuntimeError("owned VM command failed ('exec', 'ab-sf-fr043-macos', '/usr/bin/sudo'): ")
+{"run": "ab-sf-fr044-4d455b07", "passes": 0, "fatal": "RuntimeError(\"owned VM command failed ('exec', 'ab-sf-fr043-macos', '/usr/bin/sudo'): \")"}

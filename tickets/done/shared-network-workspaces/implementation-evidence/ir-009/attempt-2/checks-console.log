@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-009/run-local-checks.py", line 25, in <module>
+    dest=S/('test-binaries-'+system+'-'+arch);dest.mkdir()
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/pathlib.py", line 1313, in mkdir
+    self._accessor.mkdir(self, mode)
+FileExistsError: [Errno 17] File exists: '/tmp/nfs-ir009-zbuj4d3x/test-binaries-darwin-amd64'

@@ -1,0 +1,430 @@
+[
+  {
+    "case": "CCR-E2E-001",
+    "name": "CCR-E2E-001: Opus 5.5 compacts with a cached summary request (>= 90 % cache read), continues, and meters the call",
+    "state": "fail",
+    "errors": [
+      "expected false to be true // Object.is equality"
+    ],
+    "details": {
+      "triggerSettings": {
+        "AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE": "255224",
+        "AUTOBYTEUS_COMPACTION_TRIGGER_RATIO": "0.2125"
+      },
+      "compactionSite": "before_parent_request (T4)",
+      "modes": [
+        "cached"
+      ],
+      "summaryCalls": [
+        {
+          "index": 31,
+          "phase": "CCR1-T4",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "end_turn"
+          ],
+          "maxReportedOutputTokens": 2522,
+          "responseHasToolCall": false,
+          "responseHasVisibleText": true,
+          "errorBody": null,
+          "usage": {
+            "inputTotal": 36057,
+            "cacheRead": 34839,
+            "cacheWrite": 1217,
+            "output": 2522
+          },
+          "strictInjected": false,
+          "cacheShare": 0.9662201514269074,
+          "thinkingBlocks": 12
+        }
+      ],
+      "lastAgentCallBefore": {
+        "index": 30,
+        "phase": "CCR1-T3",
+        "host": "api.anthropic.com",
+        "pathname": "/v1/messages",
+        "stream": true,
+        "limits": {
+          "max_tokens": 128000
+        },
+        "rewritten": false,
+        "status": 200,
+        "stopSignals": [
+          "end_turn"
+        ],
+        "maxReportedOutputTokens": 92,
+        "responseHasToolCall": false,
+        "responseHasVisibleText": true,
+        "errorBody": null,
+        "usage": {
+          "inputTotal": 34841,
+          "cacheRead": 33762,
+          "cacheWrite": 1077,
+          "output": 92
+        },
+        "strictInjected": false,
+        "thinkingBlocks": 12
+      },
+      "firstAgentCallAfter": {
+        "index": 32,
+        "phase": "CCR1-T4",
+        "host": "api.anthropic.com",
+        "pathname": "/v1/messages",
+        "stream": true,
+        "limits": {
+          "max_tokens": 128000
+        },
+        "rewritten": false,
+        "status": 200,
+        "stopSignals": [
+          "tool_use"
+        ],
+        "maxReportedOutputTokens": 111,
+        "responseHasToolCall": true,
+        "responseHasVisibleText": false,
+        "errorBody": null,
+        "usage": {
+          "inputTotal": 16198,
+          "cacheRead": 8616,
+          "cacheWrite": 7580,
+          "output": 111
+        },
+        "strictInjected": false
+      },
+      "compactionFrames": [
+        {
+          "type": "COMPACTION_STATUS",
+          "phase": "requested",
+          "turn_id": "turn_0003",
+          "compaction_operation_id": "compaction_operation_mv3qg8ch_1",
+          "requested_turn_id": "turn_0003"
+        },
+        {
+          "type": "COMPACTION_STATUS",
+          "turn_id": "turn_0004",
+          "compaction_operation_id": "compaction_operation_mv3qg8ch_1",
+          "requested_turn_id": "turn_0003",
+          "execution_turn_id": "turn_0004",
+          "selected_block_count": 26,
+          "raw_trace_count": 72,
+          "phase": "started"
+        },
+        {
+          "type": "COMPACTION_STATUS",
+          "turn_id": "turn_0004",
+          "compaction_operation_id": "compaction_operation_mv3qg8ch_1",
+          "requested_turn_id": "turn_0003",
+          "execution_turn_id": "turn_0004",
+          "selected_block_count": 26,
+          "raw_trace_count": 72,
+          "compaction_model_identifier": "claude-sonnet-5",
+          "summarizer_provider": "ANTHROPIC",
+          "compaction_invocation_id": "compaction_compaction_operation_mv3qg8ch_1_1",
+          "completion_status": "complete",
+          "completion_reason": "end_turn",
+          "summary_char_count": 6073,
+          "summary_token_count": 1532,
+          "phase": "completed",
+          "compacted_block_count": 26
+        }
+      ],
+      "meterFrames": [
+        {
+          "usage_event_id": "61defc3c-a405-49c5-86f6-9e37725b32b0",
+          "idempotency_key": "compaction_cache_auditor_5cd8dfb4_cb88be3119d9426189c6b1495088fe69:turn_0004:compaction:compaction_operation_mv3qg8ch_1:1",
+          "observed_at": "2026-10-11T11:22:09.578Z",
+          "run_id": "compaction_cache_auditor_5cd8dfb4_cb88be3119d9426189c6b1495088fe69",
+          "root_team_run_id": null,
+          "turn_id": "turn_0004",
+          "llm_call_id": "turn_0004:compaction:compaction_operation_mv3qg8ch_1:1",
+          "call_sequence": null,
+          "agent_definition_id": "compaction-cache-auditor-5cd8dfb4",
+          "workspace_id": "agent_ws_9b37de8cd603c026bc632643600737469b04f6b7aa075e572db293db1f7781e3",
+          "task_id": null,
+          "team_name": null,
+          "agent_name": "compaction-cache-auditor-5cd8dfb4",
+          "run_summary": "Audit chunk-01.txt through chunk-12.txt using the read_file tool, one file per tool call, in orde...",
+          "run_created_at": "2026-10-11T11:19:31.383Z",
+          "member_display_name": null,
+          "runtime_kind": "autobyteus",
+          "model_provider": "ANTHROPIC",
+          "provider_name": "Anthropic",
+          "model_identifier": "claude-sonnet-5",
+          "model_value": "claude-sonnet-5",
+          "selected_match_state": null,
+          "selected_model_value": null,
+          "selected_resolved_raw_model_id": null,
+          "claude_sdk_model_usage": [],
+          "claude_sdk_session_id": null,
+          "claude_sdk_query_kind": null,
+          "claude_sdk_main_loop_usage": null,
+          "ingestion_kind": "autobyteus_compaction",
+          "usage_scope": "per_call",
+          "snapshot_series_key": null,
+          "previous_snapshot_event_id": null,
+          "input_token_semantic": "base_excludes_cache",
+          "reported_input_tokens": 1,
+          "reported_output_tokens": 2522,
+          "reported_total_tokens": 2523,
+          "accounting_input_tokens": 36057,
+          "accounting_output_tokens": 2522,
+          "accounting_total_tokens": 38579,
+          "standard_input_tokens": 1,
+          "cache_miss_input_tokens": 1,
+          "cache_read_input_tokens": 34839,
+          "cache_creation_input_tokens": 1217,
+          "cache_creation_5m_input_tokens": 0,
+          "cache_creation_1h_input_tokens": 1217,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 0,
+          "billable_input_tokens": 36057,
+          "billable_output_tokens": 2522,
+          "cost_basis": "api_price_estimate",
+          "currency": "USD",
+          "input_price_per_million": 2,
+          "output_price_per_million": 10,
+          "cached_input_read_price_per_million": 0.2,
+          "cached_input_write_price_per_million": null,
+          "cached_input_write_5m_price_per_million": 2.5,
+          "cached_input_write_1h_price_per_million": 4,
+          "pricing_source": "autobyteus_model_catalog",
+          "pricing_status": "trusted",
+          "pricing_missing_reason": null,
+          "pricing_snapshot_json": {
+            "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:claude-sonnet-5",
+            "price_config_id": "autobyteus_model_catalog:ANTHROPIC:claude-sonnet-5",
+            "model_provider": "ANTHROPIC",
+            "model_identifier": "claude-sonnet-5",
+            "model_value": "claude-sonnet-5",
+            "canonical_name": "claude-sonnet-5",
+            "currency": "USD",
+            "input_price_per_million": 2,
+            "output_price_per_million": 10,
+            "cached_input_read_price_per_million": 0.2,
+            "cached_input_write_price_per_million": null,
+            "cached_input_write_5m_price_per_million": 2.5,
+            "cached_input_write_1h_price_per_million": 4,
+            "input_price_tiers": [],
+            "pricing_status": "trusted",
+            "trusted_dimensions": {
+              "input": true,
+              "output": true,
+              "cached_input_read": true,
+              "cached_input_write": false,
+              "cached_input_write_5m": true,
+              "cached_input_write_1h": true
+            },
+            "missing_reason": null,
+            "source": "autobyteus_model_catalog",
+            "effective_from": null,
+            "effective_to": null,
+            "version": null,
+            "pricing_schedule_id": null,
+            "pricing_schedule_period_id": null,
+            "pricing_schedule_effective_from": null,
+            "pricing_schedule_window_timezone": null,
+            "pricing_schedule_peak_days": null,
+            "pricing_schedule_peak_days_timezone": null
+          },
+          "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:claude-sonnet-5",
+          "selected_pricing_tier_id": null,
+          "missing_price_dimensions": [],
+          "estimated_api_input_cost": 0.0118378,
+          "estimated_api_standard_input_cost": 0.000002,
+          "estimated_api_cache_read_input_cost": 0.0069678000000000006,
+          "estimated_api_cache_creation_input_cost": 0.004868,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": 0.004868,
+          "estimated_api_output_cost": 0.02522,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": 0.0370578,
+          "api_cost_status": "estimated",
+          "meter_delta_input_tokens": 36057,
+          "meter_delta_output_tokens": 2522,
+          "meter_delta_total_tokens": 38579,
+          "run_summary_after_event": {
+            "run_id": "compaction_cache_auditor_5cd8dfb4_cb88be3119d9426189c6b1495088fe69",
+            "root_team_run_id": null,
+            "agent_definition_id": "compaction-cache-auditor-5cd8dfb4",
+            "workspace_id": "agent_ws_9b37de8cd603c026bc632643600737469b04f6b7aa075e572db293db1f7781e3",
+            "gross_input_tokens": 721102,
+            "standard_input_tokens": 63,
+            "cache_miss_input_tokens": 63,
+            "cache_read_input_tokens": 684983,
+            "cache_creation_input_tokens": 36056,
+            "cache_creation_5m_input_tokens": 0,
+            "cache_creation_1h_input_tokens": 36056,
+            "output_tokens": 9686,
+            "reasoning_output_tokens": 1973,
+            "billable_output_tokens": 9686,
+            "total_tokens": 730788,
+            "cache_read_input_token_rate": 0.9499113856292175,
+            "standard_input_token_rate": 0.00008736628105316585,
+            "cache_creation_input_token_rate": 0.05000124808972933,
+            "cache_state": "positive",
+            "estimated_api_input_cost": 0.2813466,
+            "estimated_api_standard_input_cost": 0.000126,
+            "estimated_api_cache_read_input_cost": 0.1369966,
+            "estimated_api_cache_creation_input_cost": 0.144224,
+            "estimated_api_cache_creation_5m_input_cost": null,
+            "estimated_api_cache_creation_1h_input_cost": 0.144224,
+            "estimated_api_output_cost": 0.09686,
+            "estimated_api_reasoning_output_cost": 0.01973,
+            "estimated_api_total_cost": 0.3782065999999999,
+            "currency": "USD",
+            "api_cost_status": "estimated",
+            "missing_price_dimensions": [],
+            "pricing_policy_key": "autobyteus_model_catalog:ANTHROPIC:claude-sonnet-5",
+            "selected_pricing_tier_id": null,
+            "unit_prices": {
+              "standard_input": {
+                "status": "single",
+                "price_per_million": 2
+              },
+              "cache_read_input": {
+                "status": "single",
+                "price_per_million": 0.2
+              },
+              "cache_creation_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_5m_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_1h_input": {
+                "status": "single",
+                "price_per_million": 4
+              },
+              "output": {
+                "status": "single",
+                "price_per_million": 10
+              },
+              "reasoning_output": {
+                "status": "single",
+                "price_per_million": 10
+              }
+            },
+            "usage_report_count": 32,
+            "updated_at": "2026-10-11T11:22:09.578Z",
+            "latest_prompt_tokens": null,
+            "effective_context_window_tokens": 255224,
+            "context_window_usage_percent": null,
+            "latest_model_provider": "ANTHROPIC",
+            "latest_model_identifier": "claude-sonnet-5",
+            "latest_runtime_kind": "autobyteus",
+            "latest_selected_raw_model_id": null,
+            "has_cache_write_rate_assumption": false
+          },
+          "latest_prompt_tokens": null,
+          "effective_context_window_tokens": 255224,
+          "context_window_usage_percent": null,
+          "raw_usage_json": {
+            "events": [
+              {
+                "input_tokens": 1,
+                "cache_creation_input_tokens": 1217,
+                "cache_read_input_tokens": 34839,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 1217
+                },
+                "output_tokens": 8,
+                "service_tier": "standard",
+                "inference_geo": "global"
+              },
+              {
+                "input_tokens": 1,
+                "cache_creation_input_tokens": 1217,
+                "cache_read_input_tokens": 34839,
+                "output_tokens": 2522,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                }
+              }
+            ]
+          },
+          "raw_event_json": {
+            "usage": {
+              "input_tokens": 1,
+              "output_tokens": 2522,
+              "total_tokens": 2523,
+              "usage_scope": "per_call",
+              "model_provider": "ANTHROPIC",
+              "provider_name": "Anthropic",
+              "model_identifier": "claude-sonnet-5",
+              "model_value": "claude-sonnet-5",
+              "input_token_semantic": "base_excludes_cache",
+              "cache_state": "positive",
+              "standard_input_tokens": 1,
+              "cache_miss_input_tokens": null,
+              "cache_read_input_tokens": 34839,
+              "cache_creation_input_tokens": 1217,
+              "cache_creation_5m_input_tokens": 0,
+              "cache_creation_1h_input_tokens": 1217,
+              "reasoning_output_tokens": 0,
+              "billable_input_tokens": null,
+              "billable_output_tokens": null,
+              "raw_usage_json": {
+                "events": [
+                  {
+                    "input_tokens": 1,
+                    "cache_creation_input_tokens": 1217,
+                    "cache_read_input_tokens": 34839,
+                    "cache_creation": {
+                      "ephemeral_5m_input_tokens": 0,
+                      "ephemeral_1h_input_tokens": 1217
+                    },
+                    "output_tokens": 8,
+                    "service_tier": "standard",
+                    "inference_geo": "global"
+                  },
+                  {
+                    "input_tokens": 1,
+                    "cache_creation_input_tokens": 1217,
+                    "cache_read_input_tokens": 34839,
+                    "output_tokens": 2522,
+                    "output_tokens_details": {
+                      "thinking_tokens": 0
+                    }
+                  }
+                ]
+              },
+              "quality_flags": []
+            },
+            "turn_id": "turn_0004",
+            "llm_call_id": "turn_0004:compaction:compaction_operation_mv3qg8ch_1:1",
+            "runtime_kind": "autobyteus",
+            "ingestion_kind": "autobyteus_compaction",
+            "idempotency_key": "compaction_cache_auditor_5cd8dfb4_cb88be3119d9426189c6b1495088fe69:turn_0004:compaction:compaction_operation_mv3qg8ch_1:1",
+            "latest_prompt_tokens": null,
+            "effective_context_window_tokens": 255224,
+            "context_window_usage_percent": null,
+            "observed_at": "2026-10-11T11:22:09.578Z"
+          },
+          "quality_flags": []
+        }
+      ],
+      "runSummary": {
+        "usageReportCount": 36,
+        "standardInputTokens": 71,
+        "cacheReadInputTokens": 744653,
+        "cacheCreationInputTokens": 46277,
+        "outputTokens": 10837,
+        "estimatedApiTotalCost": 0.4425505999999999,
+        "apiCostStatus": "estimated",
+        "cacheState": "positive"
+      },
+      "providerCalls": 36
+    },
+    "at": "2026-10-11T11:22:21.447Z"
+  }
+]

@@ -1,0 +1,27 @@
+{
+  "time": "2026-10-14T08:12:12.462321+00:00",
+  "result": "Pass reviewer artifact checks; product remains Fail",
+  "revisionPrefixBytes": 40281,
+  "revisionPrefixPreserved": true,
+  "priorBaseline": "CRR001 retained; CRR001-007 byte prefix unchanged",
+  "incomingReferences": 625,
+  "outgoingReferences": 641,
+  "missingLinks": [],
+  "whitespace": {
+    "command": "git diff --check",
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "trackedChanges": [
+    "tickets/in-progress/shared-network-workspaces/code-review-report.md",
+    "tickets/in-progress/shared-network-workspaces/code-review-revision-record.md"
+  ],
+  "ownedNewDirectory": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/code-review-evidence/crr-008",
+  "noProductionOrDurableTestChanges": true,
+  "noResourcesCreated": true,
+  "receiptPending": false,
+  "receiptConfirmed": true,
+  "reviewCommit": "89bbedc47ec0fdbf407d6831c2b9d1f199b965be",
+  "stagedWhitespaceRC": 0
+}

@@ -1,0 +1,6 @@
+{
+  "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir011-56e6kcki",
+  "sourceCommit": "a4afd758a9766274b08f675c04952b19913fff0c",
+  "excluded": "tickets/ historical evidence only; all other tracked source from git archive",
+  "env": "clean PATH/HOME/TMPDIR/CI; no provider keys, credentials or user app data"
+}

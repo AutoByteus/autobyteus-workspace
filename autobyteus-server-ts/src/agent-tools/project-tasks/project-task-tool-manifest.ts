@@ -77,7 +77,7 @@ export async function executeProjectTaskTool(name: ProjectTaskToolName, raw: unk
   // fabricated acknowledgement nor a rollback claim is safe without its result.
   const localContextFiles = (input.context_files as string[] | undefined) ?? [];
   try {
-    if (Object.hasOwn(input, "task_id")) {
+    if (name === "update_task") {
       const ack = await getProjectTaskService().updateTaskById({ taskId: input.task_id as string,
         ...(Object.hasOwn(input, "description") ? { description: input.description as string } : {}),
         ...(Object.hasOwn(input, "status") ? { status: input.status as ProjectTaskStatus } : {}),

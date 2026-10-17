@@ -1,0 +1,305 @@
+{
+  "event": "READY",
+  "initialization": {
+    "userAgent": "autobyteus-owned-private-skill-probe/0.162.1 (Ubuntu 24.4.0; aarch64) unknown (autobyteus-owned-private-skill-probe; 0.0.1)",
+    "codexHome": "/root/.codex",
+    "platformFamily": "unix",
+    "platformOs": "linux"
+  },
+  "extraRootsResult": {},
+  "discovered": {
+    "data": [
+      {
+        "cwd": "/home/autobyteus/shared/project",
+        "skills": [
+          {
+            "name": "read-proof",
+            "description": "Owned private native Codex fixture for shared-workspace capability.",
+            "path": "/home/autobyteus/data/native-fixtures/b-resumed/read-proof/SKILL.md",
+            "scope": "user",
+            "enabled": true,
+            "pluginId": null
+          },
+          {
+            "name": "imagegen",
+            "description": "Generate or edit raster images when the task benefits from AI-created bitmap visuals such as photos, illustrations, textures, sprites, mockups, or transparent-background cutouts. Use when Codex should create a brand-new image, transform an existing image, or derive visual variants from references, and the output should be a bitmap asset rather than repo-native code or vector. Do not use when the task is better handled by editing existing SVG/vector/code-native assets, extending an established icon or logo system, or building the visual directly in HTML/CSS/canvas.",
+            "interface": {
+              "displayName": "Image Gen",
+              "shortDescription": "Generate or edit images for websites, games, and more",
+              "iconSmall": "/root/.codex/skills/.system/imagegen/assets/imagegen-small.svg",
+              "iconLarge": "/root/.codex/skills/.system/imagegen/assets/imagegen.png",
+              "iconSmallUrl": null,
+              "iconLargeUrl": null,
+              "brandColor": null,
+              "defaultPrompt": "Use $imagegen to make or edit an image for this project."
+            },
+            "path": "/root/.codex/skills/.system/imagegen/SKILL.md",
+            "scope": "system",
+            "enabled": true,
+            "pluginId": null
+          },
+          {
+            "name": "openai-docs",
+            "description": "Use for Codex models/pricing, scheduled tasks, skills, settings, setup, troubleshooting, customization, automations, and self-knowledge\u2014including 'you,' 'your,' 'this app,' or 'this coding agent' when they refer to Codex\u2014and for OpenAI APIs/products and ChatGPT Work. Also use for model choice/migration, prompting, SDKs, Responses, Realtime, agents, evals, and Chat/Work/Codex comparisons. Do not use for generic app/software tasks that merely mention Codex.",
+            "shortDescription": "Codex models/pricing, scheduled tasks, skills, settings, setup, troubleshooting, and self-knowledge; OpenAI APIs and ChatGPT Work. 'You'/'this app' means Codex only.",
+            "interface": {
+              "displayName": "OpenAI Docs",
+              "shortDescription": "OpenAI and Codex docs for models, skills, tasks, and setup",
+              "iconSmall": "/root/.codex/skills/.system/openai-docs/assets/openai-small.svg",
+              "iconLarge": "/root/.codex/skills/.system/openai-docs/assets/openai.png",
+              "iconSmallUrl": null,
+              "iconLargeUrl": null,
+              "brandColor": null,
+              "defaultPrompt": "Use OpenAI Docs for official docs lookup, questions about Codex itself or Codex surfaces, model selection, model migration, and prompt-upgrade work."
+            },
+            "path": "/root/.codex/skills/.system/openai-docs/SKILL.md",
+            "scope": "system",
+            "enabled": true,
+            "pluginId": null
+          },
+          {
+            "name": "review-agent",
+            "description": "Perform a read-only, defect-first review of a specified code change and return every actionable finding. Use when another agent delegates review of uncommitted changes, a base-branch diff, a commit, or custom review instructions.",
+            "interface": {
+              "displayName": "Review Agent",
+              "shortDescription": "Find actionable bugs in code changes",
+              "iconSmall": null,
+              "iconLarge": null,
+              "iconSmallUrl": null,
+              "iconLargeUrl": null,
+              "brandColor": null,
+              "defaultPrompt": "Use $review-agent to review the requested code changes and return actionable findings."
+            },
+            "path": "/root/.codex/skills/.system/review-agent/SKILL.md",
+            "scope": "system",
+            "enabled": true,
+            "pluginId": null
+          },
+          {
+            "name": "skill-creator",
+            "description": "Create or update a Codex skill with appropriately scoped instructions and any needed supporting resources.",
+            "shortDescription": "Create or update a skill",
+            "interface": {
+              "displayName": "Skill Creator",
+              "shortDescription": "Create or update a skill",
+              "iconSmall": "/root/.codex/skills/.system/skill-creator/assets/skill-creator-small.svg",
+              "iconLarge": "/root/.codex/skills/.system/skill-creator/assets/skill-creator.png",
+              "iconSmallUrl": null,
+              "iconLargeUrl": null,
+              "brandColor": null,
+              "defaultPrompt": null
+            },
+            "path": "/root/.codex/skills/.system/skill-creator/SKILL.md",
+            "scope": "system",
+            "enabled": true,
+            "pluginId": null
+          },
+          {
+            "name": "skill-installer",
+            "description": "Install Codex skills into $CODEX_HOME/skills from a curated list or a GitHub repo path. Use when a user asks to list installable skills, install a curated skill, or install a skill from another repo (including private repos).",
+            "shortDescription": "Install curated skills from openai/skills or other repos",
+            "interface": {
+              "displayName": "Skill Installer",
+              "shortDescription": "Install curated skills from openai/skills or other repos",
+              "iconSmall": "/root/.codex/skills/.system/skill-installer/assets/skill-installer-small.svg",
+              "iconLarge": "/root/.codex/skills/.system/skill-installer/assets/skill-installer.png",
+              "iconSmallUrl": null,
+              "iconLargeUrl": null,
+              "brandColor": null,
+              "defaultPrompt": null
+            },
+            "path": "/root/.codex/skills/.system/skill-installer/SKILL.md",
+            "scope": "system",
+            "enabled": true,
+            "pluginId": null
+          }
+        ],
+        "errors": []
+      }
+    ]
+  },
+  "thread": {
+    "id": "01a1341b-d40c-7993-8498-f3c7ae6c84d9",
+    "environments": [
+      {
+        "environmentId": "local",
+        "cwd": "/home/autobyteus/shared/project",
+        "runtimeWorkspaceRoots": [
+          "/home/autobyteus/shared/project"
+        ]
+      }
+    ],
+    "extra": null,
+    "sessionId": "01a1341b-d40c-7993-8498-f3c7ae6c84d9",
+    "forkedFromId": null,
+    "parentThreadId": null,
+    "preview": "Use $read-proof. Print pwd and freshly read codex-private-roundtrip.txt in cwd, printing actual contents (not supplied here). Freshly read and print your private skill proof.txt, then append its exact bytes including one newline to that existing project file. Preserve previous bytes. Use actual native filesystem commands.",
+    "ephemeral": false,
+    "section": null,
+    "sectionEnteredAt": null,
+    "projectId": null,
+    "historyMode": "paginated",
+    "modelProvider": "openai",
+    "model": "gpt-5.6-luna",
+    "reasoningEffort": null,
+    "createdAt": 1791875601,
+    "updatedAt": 1791875628,
+    "recencyAt": 1791875621,
+    "status": {
+      "type": "idle"
+    },
+    "path": "/root/.codex/sessions/2026/10/13/rollout-2026-10-13T07-13-21-01a1341b-d40c-7993-8498-f3c7ae6c84d9.jsonl",
+    "cwd": "/home/autobyteus/shared/project",
+    "cliVersion": "0.162.1",
+    "originator": "autobyteus-owned-private-skill-probe",
+    "source": "vscode",
+    "canAcceptDirectInput": true,
+    "threadSource": null,
+    "agentNickname": null,
+    "agentRole": null,
+    "gitInfo": null,
+    "name": null,
+    "daybreakEnabled": null,
+    "turns": [
+      {
+        "id": "01a1341b-ef01-7261-ab5f-4041292126e6",
+        "rootTurnId": "01a1341b-ef01-7261-ab5f-4041292126e6",
+        "items": [
+          {
+            "type": "userMessage",
+            "id": "01a1341b-f0e6-7c42-b167-340778c64ada",
+            "clientId": null,
+            "content": [
+              {
+                "type": "text",
+                "text": "Use $read-proof. Print pwd and freshly read codex-private-roundtrip.txt in cwd, printing actual contents (not supplied here). Freshly read and print your private skill proof.txt, then append its exact bytes including one newline to that existing project file. Preserve previous bytes. Use actual native filesystem commands.",
+                "text_elements": []
+              },
+              {
+                "type": "skill",
+                "name": "read-proof",
+                "path": "/home/autobyteus/data/native-fixtures/b/read-proof/SKILL.md"
+              }
+            ]
+          },
+          {
+            "type": "reasoning",
+            "id": "rs_0274ba4e5df7e00a016acdda1c01b0819193cf9509bcb890ea",
+            "summary": [],
+            "content": []
+          },
+          {
+            "type": "commandExecution",
+            "id": "exec-824f40d8-68e9-4bfc-8a67-b7ad2c740d45",
+            "pluginId": null,
+            "scriptPath": null,
+            "command": "/bin/bash -lc \"pwd; printf '%s\\\\n' '--- codex-private-roundtrip.txt ---'; cat -- codex-private-roundtrip.txt; printf '%s\\\\n' '--- private proof.txt ---'; cat -- /home/autobyteus/data/native-fixtures/b/read-proof/proof.txt; cat -- /home/autobyteus/data/native-fixtures/b/read-proof/proof.txt >> codex-private-roundtrip.txt\"",
+            "cwd": "/home/autobyteus/shared/project",
+            "processId": "31877",
+            "source": "unifiedExecStartup",
+            "status": "completed",
+            "commandActions": [
+              {
+                "type": "unknown",
+                "command": "pwd; printf '%s\\n' '--- codex-private-roundtrip.txt ---'; cat -- codex-private-roundtrip.txt; printf '%s\\n' '--- private proof.txt ---'; cat -- /home/autobyteus/data/native-fixtures/b/read-proof/proof.txt; cat -- /home/autobyteus/data/native-fixtures/b/read-proof/proof.txt >> codex-private-roundtrip.txt"
+              }
+            ],
+            "aggregatedOutput": "/home/autobyteus/shared/project\n--- codex-private-roundtrip.txt ---\nCODEX_PRIVATE_7b6581ea27954b188b5dd062bd05c8c0\n--- private proof.txt ---\nCODEX_PRIVATE_4a15953420b9440488aefbcc17414e09\n",
+            "exitCode": 0,
+            "durationMs": 0
+          },
+          {
+            "type": "agentMessage",
+            "id": "msg_0274ba4e5df7e00a016acdda1f4d588191a7aadd6ca0ab2e0d",
+            "text": "Done. Printed `pwd`, read both files, and appended the exact private proof bytes\u2014including its terminal newline\u2014to `codex-private-roundtrip.txt`.",
+            "phase": "final_answer",
+            "memoryCitation": null,
+            "delivery": null,
+            "questions": null
+          }
+        ],
+        "itemsView": "full",
+        "status": "completed",
+        "error": null,
+        "startedAt": 1791875608,
+        "completedAt": 1791875615,
+        "durationMs": 7342
+      },
+      {
+        "id": "01a1341c-21f9-72e2-b426-6e6536624ed5",
+        "rootTurnId": "01a1341c-21f9-72e2-b426-6e6536624ed5",
+        "items": [
+          {
+            "type": "userMessage",
+            "id": "01a1341c-223b-7e50-a0e2-707bbe75dc0b",
+            "clientId": null,
+            "content": [
+              {
+                "type": "text",
+                "text": "Use $read-proof again after the peer has stopped. Print pwd; freshly read and print the previously unread supporting after-stop.txt from your private skill package. Copy its exact bytes including one newline to codex-peer-stopped.txt in cwd, using native filesystem commands. No asset content is supplied here.",
+                "text_elements": []
+              },
+              {
+                "type": "skill",
+                "name": "read-proof",
+                "path": "/home/autobyteus/data/native-fixtures/b/read-proof/SKILL.md"
+              }
+            ]
+          },
+          {
+            "type": "reasoning",
+            "id": "rs_0274ba4e5df7e00a016acdda2856408191a9af117e27e59260",
+            "summary": [],
+            "content": []
+          },
+          {
+            "type": "commandExecution",
+            "id": "exec-25ed8d8a-41ec-4d25-a922-7db3bf6afa88",
+            "pluginId": null,
+            "scriptPath": null,
+            "command": "/bin/bash -lc 'pwd; cat -- /home/autobyteus/data/native-fixtures/b/read-proof/after-stop.txt | tee codex-peer-stopped.txt'",
+            "cwd": "/home/autobyteus/shared/project",
+            "processId": "77363",
+            "source": "unifiedExecStartup",
+            "status": "completed",
+            "commandActions": [
+              {
+                "type": "unknown",
+                "command": "pwd; cat -- /home/autobyteus/data/native-fixtures/b/read-proof/after-stop.txt | tee codex-peer-stopped.txt"
+              }
+            ],
+            "aggregatedOutput": "/home/autobyteus/shared/project\nCODEX_AFTER_STOP_6bd127a1ae944103a39fadf64b400e1e\n",
+            "exitCode": 0,
+            "durationMs": 0
+          },
+          {
+            "type": "agentMessage",
+            "id": "msg_0274ba4e5df7e00a016acdda2a2fec8191a6de00dd53ce3e8d",
+            "text": "Done. Printed `pwd`, read and printed `after-stop.txt`, and copied its exact bytes\u2014including the terminal newline\u2014to `codex-peer-stopped.txt`.",
+            "phase": "final_answer",
+            "memoryCitation": null,
+            "delivery": null,
+            "questions": null
+          }
+        ],
+        "itemsView": "full",
+        "status": "completed",
+        "error": null,
+        "startedAt": 1791875621,
+        "completedAt": 1791875627,
+        "durationMs": 5787
+      }
+    ]
+  },
+  "privateSkill": "/home/autobyteus/data/native-fixtures/b-resumed/read-proof/SKILL.md",
+  "model": "gpt-5.6-luna",
+  "advertisedModelIds": [
+    "gpt-6.1-sol",
+    "gpt-6-astra",
+    "gpt-6-sol",
+    "gpt-6-luna",
+    "gpt-5.6-sol",
+    "gpt-5.6-terra",
+    "gpt-5.6-luna"
+  ]
+}

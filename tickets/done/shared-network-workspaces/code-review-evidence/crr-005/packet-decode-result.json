@@ -1,0 +1,8 @@
+{
+  "input": "linux-dir-packets.log",
+  "limits": "single complete IPv4 TCP RPC record; only SEQUENCE/PUTFH/GET_DIR_DELEGATION prefix; no general reassembly",
+  "packetBlocks": 0,
+  "unsupportedOrTruncated": 0,
+  "directoryCalls": [],
+  "matchingErrorPairs": []
+}

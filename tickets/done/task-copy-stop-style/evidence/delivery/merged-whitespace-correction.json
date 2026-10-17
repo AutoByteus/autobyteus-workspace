@@ -1,0 +1,20 @@
+{
+  "failedLocalMerge": "c1ba081a6032614960368f95357e135f864dba09",
+  "targetNotPushed": true,
+  "failure": "git diff --check 99d5c2b03 HEAD exit 2; two upstream log EOF lines",
+  "corrections": [
+    {
+      "path": "tickets/done/task-copy-stop-style/evidence/implementation-unit-final.log",
+      "beforeSha256": "e679e7742a5befa26c26a3904f120554fa6ca40acb57790517b5fe1a9087a4f1",
+      "afterSha256": "f3c0c289c25c04020c5de97aeafa868001e24ee4a5b164be83ff8a24e57978d0",
+      "change": "Only blank EOF normalized; all test result/diagnostic text retained"
+    },
+    {
+      "path": "tickets/done/task-copy-stop-style/evidence/implementation-unit-first.log",
+      "beforeSha256": "870fabe59a52f48413a94e2b79de9f2f78a9d71b0611c76fe13072c75700d7a9",
+      "afterSha256": "fcaa58db9fee36ba0cf255186305fd06d162a2ad937b7d5242b2fe67d96c08e3",
+      "change": "Only blank EOF normalized; all test result/diagnostic text retained"
+    }
+  ],
+  "rawOriginalsOutsideGit": "/home/autobyteus/workspace/.codex/delivery-records/task-copy-stop-style"
+}

@@ -1,0 +1,7 @@
+{
+  "result": "Incomplete",
+  "classification": "Test-environment download timeout, not product failure",
+  "attempt": "prepare-guest.py public Ubuntu image clone exceeded900s; no guest was started",
+  "next": "resume-guest.py same exact owned cache/clone/digest with1800s; no additional VM or permissions",
+  "originalLog": "guest-console.log"
+}

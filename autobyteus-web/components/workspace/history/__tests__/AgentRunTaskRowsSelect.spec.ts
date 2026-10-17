@@ -1,6 +1,6 @@
-import { mount } from '@vue/test-utils'
+import { enableAutoUnmount, mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
 import { AgentStatus } from '~/types/agent/AgentStatus'
 
@@ -15,6 +15,9 @@ vi.mock('~/stores/agentRunCollaborationStore', () => ({
 }))
 
 import AgentRunTaskRows from '../AgentRunTaskRows.vue'
+
+// Dispose summary/feed watchers before Nuxt tears down the DOM environment.
+enableAutoUnmount(afterEach)
 
 const row = (agentRunId: string): RunHistoryTransientExecutionRow => ({ kind: 'transient_execution', transientKind: 'task_agent', rowKey: `agent:${agentRunId}`,
   teamRunId: 'host-run', memberAddress: `/${agentRunId}`, agentRunId, teamRunIdForNode: null, memberKind: 'agent', displayName: agentRunId,

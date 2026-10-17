@@ -1,0 +1,17 @@
+Started ordinary actual healthy state before Stop
+ordinary actual healthy state before Stop: Pass
+Started current public launcher Stop on successfully running selected node
+current public launcher Stop on successfully running selected node: Pass
+Started ordinary Stop state and read-only status
+ordinary Stop state and read-only status: Pass
+Observe two existing30-second service ticks after normal Stop
+Started normal Stop preserved across service ticks
+normal Stop preserved across service ticks: Pass
+Started confirmed public reconnect does not override normal Stop
+confirmed public reconnect does not override normal Stop: Pass
+Started normal Stop preserved after confirmed reconnect
+normal Stop preserved after confirmed reconnect: Pass
+Started normal unless-stopped Stop remains stopped after whole-host reboot and ticks
+normal unless-stopped Stop remains stopped after whole-host reboot and ticks: Pass
+Normal-running Stop / ticks / confirmed reconnect / ordinary reboot veto PASS. No failed-stop policy control inferred.
+{"result": "Pass", "fatal": null}

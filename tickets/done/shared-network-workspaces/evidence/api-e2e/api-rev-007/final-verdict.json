@@ -1,0 +1,23 @@
+{
+  "result": "Fail",
+  "confidence": 82.14,
+  "scores": [
+    50,
+    95,
+    95,
+    95,
+    95,
+    50,
+    95
+  ],
+  "caseGroups": {
+    "Pass": 24,
+    "Fail": 2
+  },
+  "finding": "API-F007-UNSAVED",
+  "cleanup": "Complete",
+  "sourceChanged": false,
+  "newDurableTest": "autobyteus-web/components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts",
+  "testReview": "Failure-origin review requested; not successful-test review",
+  "broaderValidation": "Required and executed"
+}

@@ -1,0 +1,37 @@
+{
+  "at": "2026-10-13T07:15:39.542189+00:00",
+  "instanceId": "iso-61565-91a4",
+  "pid": 38517,
+  "stopReceipt": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "stop",
+    "result": {
+      "instanceId": "iso-61565-91a4",
+      "wasRunning": true,
+      "forced": false,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8HQ8NV",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    }
+  },
+  "portsFree": {
+    "61565": true,
+    "61566": true,
+    "61604": true,
+    "61626": true
+  },
+  "processGroupAbsent": true,
+  "privateRootAbsent": true,
+  "ownRecordAbsent": true,
+  "normalAppDataAndOtherInstancesUntouched": true,
+  "action": "Only exact own isolated-app stop; no global signals or other-instance lifecycle operations",
+  "userAcceptance": "Direct current-task verified/finalize + no new version correction",
+  "result": "Completed",
+  "embeddedServerPid39483Absent": true,
+  "internalBrowserBridge61604Free": true,
+  "internalServerListener61626Free": true,
+  "supplementalAt": "2026-10-13T07:17:39.730218+00:00"
+}

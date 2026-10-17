@@ -1,0 +1,276 @@
+{
+  "sourceImplementation": "cd685b6407cd847db52b4a2d7a45b486287fac52",
+  "finalHarnessHead": "74889c1ed82ace4174861c6833be4334dbadfd56",
+  "changedSinceImplementation": [
+    "autobyteus-web/package.json",
+    "autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs",
+    "autobyteus-web/tests/e2e/fixtures/settings-refresh-desktop.mjs",
+    "autobyteus-web/tests/e2e/settings-saved-model-refresh-cases.mjs"
+  ],
+  "platform": "ProductName:\t\tmacOS\nProductVersion:\t\t26.5.2\nBuildVersion:\t\t25F84\n",
+  "node": "v22.23.1",
+  "attempts": [
+    {
+      "attempt": "desktop-01",
+      "summary": {
+        "pass": 4,
+        "fail": 4
+      },
+      "browserErrors": [],
+      "cleanup": [
+        {
+          "desktop": {
+            "instanceId": "iso-59252-bcc2",
+            "wasRunning": true,
+            "forced": false,
+            "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-us9pNf",
+            "dataRootRemoved": true,
+            "controlPortReleased": true,
+            "serverPortReleased": true,
+            "logPath": null
+          }
+        },
+        {
+          "pid": 69486,
+          "stop": "SIGTERM"
+        },
+        {
+          "pid": 39349,
+          "stop": "already-exited"
+        },
+        {
+          "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-31UYDy"
+        }
+      ],
+      "ownedRootExists": false,
+      "nodeAndFrontendPorts": [
+        {
+          "port": 59003,
+          "listeningNow": false
+        }
+      ],
+      "identity": {
+        "head": "cd685b6407cd847db52b4a2d7a45b486287fac52",
+        "asarSha256": "55749a6189e5680f13bf5b2c254e50a6096a07ba1904dcc728055fab4116bc4b"
+      },
+      "instanceId": "iso-59252-bcc2",
+      "desktopRootExists": false
+    },
+    {
+      "attempt": "desktop-02",
+      "summary": {
+        "pass": 6,
+        "fail": 2
+      },
+      "browserErrors": [],
+      "cleanup": [
+        {
+          "desktop": {
+            "instanceId": "iso-59834-9b3a",
+            "wasRunning": true,
+            "forced": false,
+            "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-BdpQsg",
+            "dataRootRemoved": true,
+            "controlPortReleased": true,
+            "serverPortReleased": true,
+            "logPath": null
+          }
+        },
+        {
+          "pid": 91080,
+          "stop": "SIGTERM"
+        },
+        {
+          "pid": 82351,
+          "stop": "already-exited"
+        },
+        {
+          "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-0OaZ6j"
+        }
+      ],
+      "ownedRootExists": false,
+      "nodeAndFrontendPorts": [
+        {
+          "port": 59819,
+          "listeningNow": false
+        }
+      ],
+      "identity": {
+        "head": "cd685b6407cd847db52b4a2d7a45b486287fac52",
+        "asarSha256": "55749a6189e5680f13bf5b2c254e50a6096a07ba1904dcc728055fab4116bc4b"
+      },
+      "instanceId": "iso-59834-9b3a",
+      "desktopRootExists": false
+    },
+    {
+      "attempt": "desktop-03",
+      "summary": {
+        "pass": 2,
+        "fail": 1
+      },
+      "browserErrors": [],
+      "cleanup": [
+        {
+          "desktop": {
+            "instanceId": "iso-60250-d35b",
+            "wasRunning": true,
+            "forced": false,
+            "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-k6OhKE",
+            "dataRootRemoved": true,
+            "controlPortReleased": true,
+            "serverPortReleased": true,
+            "logPath": null
+          }
+        },
+        {
+          "pid": 94885,
+          "stop": "SIGTERM"
+        },
+        {
+          "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-P7z8KT"
+        }
+      ],
+      "ownedRootExists": false,
+      "nodeAndFrontendPorts": [
+        {
+          "port": 60233,
+          "listeningNow": false
+        }
+      ],
+      "identity": {
+        "head": "cd685b6407cd847db52b4a2d7a45b486287fac52",
+        "asarSha256": "55749a6189e5680f13bf5b2c254e50a6096a07ba1904dcc728055fab4116bc4b"
+      },
+      "instanceId": "iso-60250-d35b",
+      "desktopRootExists": false
+    },
+    {
+      "attempt": "desktop-04",
+      "summary": {
+        "pass": 2,
+        "fail": 0
+      },
+      "browserErrors": [],
+      "cleanup": [
+        {
+          "desktop": {
+            "instanceId": "iso-60438-b50d",
+            "wasRunning": true,
+            "forced": false,
+            "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-vHluvT",
+            "dataRootRemoved": true,
+            "controlPortReleased": true,
+            "serverPortReleased": true,
+            "logPath": null
+          }
+        },
+        {
+          "pid": 2913,
+          "stop": "SIGTERM"
+        },
+        {
+          "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qjAI4y"
+        }
+      ],
+      "ownedRootExists": false,
+      "nodeAndFrontendPorts": [
+        {
+          "port": 60424,
+          "listeningNow": false
+        }
+      ],
+      "identity": {
+        "head": "cd685b6407cd847db52b4a2d7a45b486287fac52",
+        "asarSha256": "55749a6189e5680f13bf5b2c254e50a6096a07ba1904dcc728055fab4116bc4b"
+      },
+      "instanceId": "iso-60438-b50d",
+      "desktopRootExists": false
+    },
+    {
+      "attempt": "browser-01",
+      "summary": {
+        "pass": 6,
+        "fail": 0
+      },
+      "browserErrors": [],
+      "cleanup": [
+        {
+          "pid": 12843,
+          "stop": "SIGTERM"
+        },
+        {
+          "pid": 12832,
+          "stop": "SIGTERM"
+        },
+        {
+          "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-QmtoUN"
+        }
+      ],
+      "ownedRootExists": false,
+      "nodeAndFrontendPorts": [
+        {
+          "port": 60613,
+          "listeningNow": false
+        },
+        {
+          "port": 60614,
+          "listeningNow": false
+        }
+      ]
+    },
+    {
+      "attempt": "desktop-final",
+      "summary": {
+        "pass": 9,
+        "fail": 0
+      },
+      "browserErrors": [],
+      "cleanup": [
+        {
+          "desktop": {
+            "instanceId": "iso-61113-cfed",
+            "wasRunning": true,
+            "forced": false,
+            "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-iXJsGL",
+            "dataRootRemoved": true,
+            "controlPortReleased": true,
+            "serverPortReleased": true,
+            "logPath": null
+          }
+        },
+        {
+          "pid": 44335,
+          "stop": "SIGTERM"
+        },
+        {
+          "pid": 32837,
+          "stop": "already-exited"
+        },
+        {
+          "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-MrAgFz"
+        }
+      ],
+      "ownedRootExists": false,
+      "nodeAndFrontendPorts": [
+        {
+          "port": 61097,
+          "listeningNow": false
+        }
+      ],
+      "identity": {
+        "head": "74889c1ed82ace4174861c6833be4334dbadfd56",
+        "asarSha256": "55749a6189e5680f13bf5b2c254e50a6096a07ba1904dcc728055fab4116bc4b"
+      },
+      "instanceId": "iso-61113-cfed",
+      "desktopRootExists": false
+    }
+  ],
+  "ownedInstancesRemaining": false,
+  "apiFixtureDirectories": [
+    {
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-e2e-Yre2R7",
+      "exists": false
+    }
+  ],
+  "allCleanupAssertionsPassed": true
+}

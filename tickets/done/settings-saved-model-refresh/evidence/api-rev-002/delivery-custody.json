@@ -1,0 +1,35 @@
+{
+  "checks": [
+    {
+      "path": "tickets/in-progress/settings-saved-model-refresh/release-deployment-report.md",
+      "byteIdenticalTo": "24562de063",
+      "pass": true
+    },
+    {
+      "path": "tickets/in-progress/settings-saved-model-refresh/delivery-revision-record.md",
+      "byteIdenticalTo": "24562de063",
+      "pass": true
+    },
+    {
+      "path": "tickets/in-progress/settings-saved-model-refresh/docs-sync-report.md",
+      "byteIdenticalTo": "24562de063",
+      "pass": true
+    },
+    {
+      "path": "tickets/in-progress/settings-saved-model-refresh/handoff-summary.md",
+      "byteIdenticalTo": "24562de063",
+      "pass": true
+    },
+    {
+      "path": "tickets/in-progress/settings-saved-model-refresh/evidence/delivery/initial-integration-conflict.patch",
+      "byteIdenticalTo": "24562de063",
+      "pass": true
+    },
+    {
+      "path": "tickets/in-progress/settings-saved-model-refresh/evidence/delivery/initial-integration.json",
+      "byteIdenticalTo": "24562de063",
+      "pass": true
+    }
+  ],
+  "result": "Pass"
+}

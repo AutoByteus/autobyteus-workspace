@@ -1,0 +1,13 @@
+{
+  "beforeSHA256": "3d7a40b5bf62946dabe0d03e2d060ab7b04de36895c29a7a415850036d44ade9",
+  "mutantSHA256": "4142907772344d89f0a9e96206dbe8d44024f895fda76f3a7bbd24587bac6e5d",
+  "mutation": "append string-to-number assignment, read by void; no runtime executed",
+  "expectedCompilerExit": 2,
+  "expectedDiagnostic": "TS2322",
+  "restored": true,
+  "actualCompilerExit": 2,
+  "diagnosticLines": [
+    "tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts(885,7): error TS2322: Type 'string' is not assignable to type 'number'."
+  ],
+  "afterSHA256": "3d7a40b5bf62946dabe0d03e2d060ab7b04de36895c29a7a415850036d44ade9"
+}

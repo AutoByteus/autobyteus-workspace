@@ -1,6 +1,8 @@
 import { Arg, Field, InputType, Mutation, ObjectType, Query, Resolver, registerEnumType } from "type-graphql";
 import { GraphQLError } from "graphql";
 import { getStudioAgentOrgDefinitionService, getStudioDefinitionAdmissionService } from "../studio-application-api-services.js";
+import { DefinitionLoadIssueEntry, toGraphqlDefinitionLoadIssueEntries } from "./definition-problems.js";
+import type { DefinitionLoadIssueEntry as DomainDefinitionLoadIssueEntry } from "../../../agent-package-definitions/domain/agent-package-definition-types.js";
 import { AgentOrgDefinition as DomainOrg, AgentOrgDefinitionUpdate, AgentOrgMember as DomainMember } from "../../../agent-org-definition/domain/agent-org-definition.js";
 import { GraphqlDefaultLaunchConfig, GraphqlDefaultLaunchConfigInput, toDomainDefaultLaunchConfig, toGraphqlDefaultLaunchConfig } from "./default-launch-config.js";
 
@@ -34,6 +36,9 @@ registerEnumType(AgentOrgMemberScope, { name: "AgentOrgMemberScope" });
   @Field(() => String, { nullable: true }) avatarUrl!: string | null;
   @Field(() => GraphqlDefaultLaunchConfig, { nullable: true }) defaultLaunchConfig!: GraphqlDefaultLaunchConfig | null;
   @Field(() => String, { nullable: true }) revision!: string | null;
+  /** Set when the AgentOrg is served from its last working version; names the file and reason. */
+  /** Every load issue in this Org's definition folder: the Org first, then its org-owned definitions in path order. */
+  @Field(() => [DefinitionLoadIssueEntry]) loadIssues!: DefinitionLoadIssueEntry[];
 }
 @InputType() class CreateAgentOrgDefinitionInput {
   @Field(() => String) name!: string;
@@ -86,7 +91,8 @@ const member = (value: AgentOrgMemberInput): DomainMember => new DomainMember({
   refType: value.refType === AgentOrgMemberType.AGENT ? "agent" : "agent_team",
   refScope: toDomainScope(value.refScope),
 });
-const project = (value: DomainOrg): AgentOrgDefinition => ({
+const project = (value: DomainOrg, issues: readonly DomainDefinitionLoadIssueEntry[] = []): AgentOrgDefinition => ({
+  loadIssues: toGraphqlDefinitionLoadIssueEntries(issues),
   id: value.id ?? "", name: value.name, description: value.description, instructions: value.instructions,
   category: value.category, avatarUrl: value.avatarUrl, revision: value.revision,
   defaultLaunchConfig: toGraphqlDefaultLaunchConfig(value.defaultLaunchConfig),
@@ -105,13 +111,15 @@ const graphError = (error: unknown): GraphQLError => new GraphQLError(error inst
 export class AgentOrgDefinitionResolver {
   private readonly service = getStudioAgentOrgDefinitionService();
   @Query(() => [AgentOrgDefinition]) async agentOrgDefinitions(): Promise<AgentOrgDefinition[]> {
+    const issues = await this.service.listFolderLoadIssues();
     return (await getStudioDefinitionAdmissionService().scan())
       .flatMap((result) => result.status === "available" && result.subjectKind === "agent_org" ? [result.definition] : [])
-      .filter((definition): definition is DomainOrg => "members" in definition).map(project);
+      .filter((definition): definition is DomainOrg => "members" in definition)
+      .map((definition) => project(definition, issues.get(definition.id ?? "") ?? []));
   }
   @Query(() => AgentOrgDefinition, { nullable: true }) async agentOrgDefinition(@Arg("id", () => String) id: string): Promise<AgentOrgDefinition | null> {
     const admitted = await getStudioDefinitionAdmissionService().requireAvailable("agent_org", id).catch(() => null);
-    return admitted && "members" in admitted.definition ? project(admitted.definition) : null;
+    return admitted && "members" in admitted.definition ? project(admitted.definition, await this.service.getFolderLoadIssues(id)) : null;
   }
   @Query(() => DefinitionEndpointCatalog) async agentOrgEndpointCatalog(@Arg("id", () => String) id: string): Promise<DefinitionEndpointCatalog> {
     await getStudioDefinitionAdmissionService().requireAvailable("agent_org", id);

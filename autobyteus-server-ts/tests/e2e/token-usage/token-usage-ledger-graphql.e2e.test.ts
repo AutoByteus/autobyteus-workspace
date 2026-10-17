@@ -85,6 +85,7 @@ const buildEvent = (input: {
       runtime_kind: input.runtimeKind ?? 'codex_app_server',
       ingestion_kind: input.ingestionKind ?? 'codex_thread_token_usage',
       usage_scope: 'per_turn',
+      reports_model_call: true,
       model_provider: input.modelProvider ?? 'OPENAI',
       provider_name: input.providerName ?? null,
       model_identifier: input.model ?? 'gpt-5.4-mini',

@@ -1,0 +1,448 @@
+{
+  "observedAt": "2026-10-13T12:33:43.848300+00:00",
+  "autobyteus-server-0": {
+    "platform": "linux",
+    "arch": "arm64",
+    "cli": {
+      "path": "/app/autobyteus-server-ts/node_modules/prisma/build/index.js",
+      "realPath": "/app/node_modules/.pnpm/prisma@5.22.0/node_modules/prisma/build/index.js",
+      "size": 2235214,
+      "mtime": "2026-10-13T05:39:40.000Z",
+      "ctime": "2026-10-13T11:44:35.894Z",
+      "birthtime": "2026-10-13T11:44:35.887Z",
+      "sha256": "ff0102cdfadfecb884c5f0b6e43661f4ef2a31917dbfad3157236ba8e8532388"
+    },
+    "resolver": {
+      "path": "/app/autobyteus-server-ts/dist/startup/migrations.js",
+      "realPath": "/app/autobyteus-server-ts/dist/startup/migrations.js",
+      "size": 10348,
+      "mtime": "2026-10-13T05:49:07.000Z",
+      "ctime": "2026-10-13T11:44:38.820Z",
+      "birthtime": "2026-10-13T11:44:38.819Z",
+      "sha256": "a0d3064ae6cd9f65b4ee7a1016626644bed97f3c4e64d03edfecb4d02dd98f07"
+    },
+    "packageCandidates": [
+      {
+        "name": "prisma/package.json",
+        "path": "/app/node_modules/.pnpm/prisma@5.22.0/node_modules/prisma/package.json",
+        "realPath": "/app/node_modules/.pnpm/prisma@5.22.0/node_modules/prisma/package.json",
+        "version": "5.22.0",
+        "dependencies": {
+          "@prisma/engines": "5.22.0"
+        },
+        "scripts": {
+          "prisma": "tsx src/bin.ts",
+          "platform": "tsx src/bin.ts platform --early-access",
+          "pm": "tsx src/bin.ts platform --early-access",
+          "dev": "DEV=true tsx helpers/build.ts",
+          "build": "tsx helpers/build.ts",
+          "test": "dotenv -e ../../.db.env -- tsx helpers/run-tests.ts",
+          "test:platform": "dotenv -e ../../.db.env -- tsx helpers/run-tests.ts src/platform",
+          "tsc": "tsc -d -p tsconfig.build.json",
+          "preinstall": "node scripts/preinstall-entry.js"
+        }
+      },
+      {
+        "name": "@prisma/engines/package.json",
+        "error": "MODULE_NOT_FOUND"
+      },
+      {
+        "name": "@prisma/engines-version/package.json",
+        "error": "MODULE_NOT_FOUND"
+      }
+    ],
+    "cache": [
+      {
+        "revision": "605197351a3c8bdd595af2d2a9bc3025bca48ea2",
+        "target": "darwin",
+        "files": [
+          {
+            "path": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin/libquery-engine",
+            "realPath": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin/libquery-engine",
+            "size": 19296992,
+            "mtime": "2026-10-13T06:35:10.387Z",
+            "ctime": "2026-10-13T06:35:10.387Z",
+            "birthtime": "2026-06-18T13:54:56.425Z",
+            "sha256": "cb40e11603feae53a9039b230d9730310facffbbf22761168aecbb795522b0fc"
+          },
+          {
+            "path": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin/libquery-engine.gz.sha256",
+            "realPath": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin/libquery-engine.gz.sha256",
+            "size": 64,
+            "mtime": "2026-06-18T13:54:56.434Z",
+            "ctime": "2026-06-18T13:54:56.434Z",
+            "birthtime": "2026-06-18T13:54:56.434Z",
+            "sha256": "4d120e84aa0ea36447fb04e4b03ef28612db88716126225c6c3ecd74466750ef"
+          },
+          {
+            "path": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin/libquery-engine.sha256",
+            "realPath": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin/libquery-engine.sha256",
+            "size": 64,
+            "mtime": "2026-06-18T13:54:56.434Z",
+            "ctime": "2026-06-18T13:54:56.434Z",
+            "birthtime": "2026-06-18T13:54:56.434Z",
+            "sha256": "40738dddd657cbd9c2147adb8007fee51d2525b41547744204f4c01a7021dad4"
+          }
+        ]
+      },
+      {
+        "revision": "605197351a3c8bdd595af2d2a9bc3025bca48ea2",
+        "target": "darwin-arm64",
+        "files": [
+          {
+            "path": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64/libquery-engine",
+            "realPath": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64/libquery-engine",
+            "size": 17251592,
+            "mtime": "2026-10-13T06:35:10.373Z",
+            "ctime": "2026-10-13T06:35:10.373Z",
+            "birthtime": "2026-06-18T13:54:56.380Z",
+            "sha256": "e0f4077c48e80b36425e6b0295803593eed753988c5f31adfab966b739d4809d"
+          },
+          {
+            "path": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64/libquery-engine.gz.sha256",
+            "realPath": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64/libquery-engine.gz.sha256",
+            "size": 64,
+            "mtime": "2026-06-18T13:54:56.391Z",
+            "ctime": "2026-06-18T13:54:56.391Z",
+            "birthtime": "2026-06-18T13:54:56.390Z",
+            "sha256": "1c5d5daf38cf79a38a939fc9ff56bf3f3e497dc2570196ec1ef54db2c32091cd"
+          },
+          {
+            "path": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64/libquery-engine.sha256",
+            "realPath": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64/libquery-engine.sha256",
+            "size": 64,
+            "mtime": "2026-06-18T13:54:56.390Z",
+            "ctime": "2026-06-18T13:54:56.390Z",
+            "birthtime": "2026-06-18T13:54:56.390Z",
+            "sha256": "3468d03b97917f1e1045e8fea2523cc06ee2090d0a62dbbe4a028744d758686a"
+          }
+        ]
+      },
+      {
+        "revision": "605197351a3c8bdd595af2d2a9bc3025bca48ea2",
+        "target": "debian-openssl-1.1.x",
+        "files": [
+          {
+            "path": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/debian-openssl-1.1.x/libquery-engine",
+            "realPath": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/debian-openssl-1.1.x/libquery-engine",
+            "size": 16161048,
+            "mtime": "2026-10-13T06:35:10.367Z",
+            "ctime": "2026-10-13T06:35:10.367Z",
+            "birthtime": "2026-06-18T13:54:56.665Z",
+            "sha256": "bc2976be96a9f6abeeb9e2d6626aa5cb2837d852bb61816c2c84c13ec13387b4"
+          },
+          {
+            "path": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/debian-openssl-1.1.x/libquery-engine.gz.sha256",
+            "realPath": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/debian-openssl-1.1.x/libquery-engine.gz.sha256",
+            "size": 64,
+            "mtime": "2026-06-18T13:54:56.673Z",
+            "ctime": "2026-06-18T13:54:56.673Z",
+            "birthtime": "2026-06-18T13:54:56.673Z",
+            "sha256": "a645b7299d3719032e0ff29514a3234b76cb5a417425fa75be7b9d26fc0495dd"
+          },
+          {
+            "path": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/debian-openssl-1.1.x/libquery-engine.sha256",
+            "realPath": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/debian-openssl-1.1.x/libquery-engine.sha256",
+            "size": 64,
+            "mtime": "2026-06-18T13:54:56.672Z",
+            "ctime": "2026-06-18T13:54:56.672Z",
+            "birthtime": "2026-06-18T13:54:56.672Z",
+            "sha256": "f44bdbaa19ec8f776949fda466cc690187855b1c1804476179d66aba4fab812f"
+          },
+          {
+            "path": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/debian-openssl-1.1.x/schema-engine",
+            "realPath": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/debian-openssl-1.1.x/schema-engine",
+            "size": 18802752,
+            "mtime": "2026-06-18T14:42:09.502Z",
+            "ctime": "2026-06-18T14:42:09.503Z",
+            "birthtime": "2026-06-18T14:42:09.493Z",
+            "sha256": "cc1d058973ea5d87654672511060a77db1c697487ff64fe28395ca16c1c3b90c"
+          },
+          {
+            "path": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/debian-openssl-1.1.x/schema-engine.gz.sha256",
+            "realPath": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/debian-openssl-1.1.x/schema-engine.gz.sha256",
+            "size": 64,
+            "mtime": "2026-06-18T14:42:09.504Z",
+            "ctime": "2026-06-18T14:42:09.504Z",
+            "birthtime": "2026-06-18T14:42:09.504Z",
+            "sha256": "0012172554e0ad26731f22aa58bb3d693c449a01311ac17ef165e48a65098765"
+          },
+          {
+            "path": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/debian-openssl-1.1.x/schema-engine.sha256",
+            "realPath": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/debian-openssl-1.1.x/schema-engine.sha256",
+            "size": 64,
+            "mtime": "2026-06-18T14:42:09.504Z",
+            "ctime": "2026-06-18T14:42:09.504Z",
+            "birthtime": "2026-06-18T14:42:09.503Z",
+            "sha256": "813a1de1c118b5ec079c4b1735c76f0d3a0f555f5be50da2fbb51701a018d18c"
+          }
+        ]
+      },
+      {
+        "revision": "605197351a3c8bdd595af2d2a9bc3025bca48ea2",
+        "target": "debian-openssl-3.0.x",
+        "files": [
+          {
+            "path": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/debian-openssl-3.0.x/libquery-engine",
+            "realPath": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/debian-openssl-3.0.x/libquery-engine",
+            "size": 16161048,
+            "mtime": "2026-10-13T06:35:10.368Z",
+            "ctime": "2026-10-13T06:35:10.367Z",
+            "birthtime": "2026-06-18T13:54:57.001Z",
+            "sha256": "35860a5c0fb2f79e7b38c40747c4d212318d97e1910ca528b133c802716de0b8"
+          },
+          {
+            "path": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/debian-openssl-3.0.x/libquery-engine.gz.sha256",
+            "realPath": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/debian-openssl-3.0.x/libquery-engine.gz.sha256",
+            "size": 64,
+            "mtime": "2026-06-18T13:54:57.009Z",
+            "ctime": "2026-06-18T13:54:57.009Z",
+            "birthtime": "2026-06-18T13:54:57.009Z",
+            "sha256": "eade919d16e21ad3679e9b36dce5591be575906fd3f30d9c82e51f1d6ae7077b"
+          },
+          {
+            "path": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/debian-openssl-3.0.x/libquery-engine.sha256",
+            "realPath": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/debian-openssl-3.0.x/libquery-engine.sha256",
+            "size": 64,
+            "mtime": "2026-06-18T13:54:57.009Z",
+            "ctime": "2026-06-18T13:54:57.009Z",
+            "birthtime": "2026-06-18T13:54:57.008Z",
+            "sha256": "cd222414ea80533633155f5f2016c5b83341d59d23e53a493b10848903ff6a09"
+          },
+          {
+            "path": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/debian-openssl-3.0.x/schema-engine",
+            "realPath": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/debian-openssl-3.0.x/schema-engine",
+            "size": 18802864,
+            "mtime": "2026-06-18T14:42:09.368Z",
+            "ctime": "2026-06-18T14:42:09.369Z",
+            "birthtime": "2026-06-18T14:42:09.354Z",
+            "sha256": "cedeae04739cfa085493da2bafb5d1e4da0247fc74f2995a51ee24f20c9890be"
+          },
+          {
+            "path": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/debian-openssl-3.0.x/schema-engine.gz.sha256",
+            "realPath": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/debian-openssl-3.0.x/schema-engine.gz.sha256",
+            "size": 64,
+            "mtime": "2026-06-18T14:42:09.371Z",
+            "ctime": "2026-06-18T14:42:09.371Z",
+            "birthtime": "2026-06-18T14:42:09.371Z",
+            "sha256": "f494d72a7be66a4b6bd5a6ac73575a7a094008e31cd7f7a84fcf70885dca3511"
+          },
+          {
+            "path": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/debian-openssl-3.0.x/schema-engine.sha256",
+            "realPath": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/debian-openssl-3.0.x/schema-engine.sha256",
+            "size": 64,
+            "mtime": "2026-06-18T14:42:09.371Z",
+            "ctime": "2026-06-18T14:42:09.371Z",
+            "birthtime": "2026-06-18T14:42:09.369Z",
+            "sha256": "00b9db9657a98813f756c455a503c007967defdabe8156dee01e3bc6dc11e9c6"
+          }
+        ]
+      },
+      {
+        "revision": "605197351a3c8bdd595af2d2a9bc3025bca48ea2",
+        "target": "linux-arm64-openssl-3.0.x",
+        "files": [
+          {
+            "path": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x/libquery-engine",
+            "realPath": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x/libquery-engine",
+            "size": 14149792,
+            "mtime": "2026-10-13T06:35:10.014Z",
+            "ctime": "2026-10-13T06:35:10.014Z",
+            "birthtime": "2026-06-18T13:51:59.159Z",
+            "sha256": "78f117413e51c2f9ec32bfd70e6afbd07f511ed63310fe61984f759f6f320c4f"
+          },
+          {
+            "path": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x/libquery-engine.gz.sha256",
+            "realPath": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x/libquery-engine.gz.sha256",
+            "size": 64,
+            "mtime": "2026-06-18T13:51:59.175Z",
+            "ctime": "2026-06-18T13:51:59.175Z",
+            "birthtime": "2026-06-18T13:51:59.175Z",
+            "sha256": "9749f8228aae6321ca3e6c92b300c5602fed9204e8d2658d8abc9b5c3da83fa0"
+          },
+          {
+            "path": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x/libquery-engine.sha256",
+            "realPath": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x/libquery-engine.sha256",
+            "size": 64,
+            "mtime": "2026-06-18T13:51:59.175Z",
+            "ctime": "2026-06-18T13:51:59.175Z",
+            "birthtime": "2026-06-18T13:51:59.175Z",
+            "sha256": "d15c1acd1c09d45dc6c184a566233f096d672a615cc73d82345597ae9e9e80f5"
+          },
+          {
+            "path": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x/schema-engine",
+            "realPath": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x/schema-engine",
+            "size": 18024104,
+            "mtime": "2026-10-03T05:15:04.162Z",
+            "ctime": "2026-10-03T05:15:04.162Z",
+            "birthtime": "2026-06-18T13:51:59.758Z",
+            "sha256": "0d727c44880c7bead5e676e48df87f92a586015f82ca4c0a6c6bc9bf28d6caf1"
+          },
+          {
+            "path": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x/schema-engine.gz.sha256",
+            "realPath": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x/schema-engine.gz.sha256",
+            "size": 64,
+            "mtime": "2026-06-18T13:51:59.771Z",
+            "ctime": "2026-06-18T13:51:59.771Z",
+            "birthtime": "2026-06-18T13:51:59.771Z",
+            "sha256": "f9b18349045c06beda55d754123ab0d77271c0e7aff96574676572e89dc0540f"
+          },
+          {
+            "path": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x/schema-engine.sha256",
+            "realPath": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x/schema-engine.sha256",
+            "size": 64,
+            "mtime": "2026-06-18T13:51:59.771Z",
+            "ctime": "2026-06-18T13:51:59.771Z",
+            "birthtime": "2026-06-18T13:51:59.771Z",
+            "sha256": "a89f8fdb6abdd4539ed45abbf7b92eaabe5e6b89121ddd34f9d9ba7afd5c414e"
+          }
+        ]
+      }
+    ],
+    "overrideEnvironment": {
+      "HOME": "/root",
+      "PRISMA_SCHEMA_ENGINE_BINARY": null,
+      "PRISMA_QUERY_ENGINE_LIBRARY": null,
+      "PRISMA_QUERY_ENGINE_BINARY": null
+    },
+    "bundledError": "MODULE_NOT_FOUND",
+    "selected": {
+      "queryEngineLibrary": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x/libquery-engine",
+      "schemaEngineBinary": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x/schema-engine",
+      "source": "cache",
+      "sourcePath": "/root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x"
+    }
+  },
+  "autobyteus-server-2": {
+    "platform": "linux",
+    "arch": "arm64",
+    "cli": {
+      "path": "/app/autobyteus-server-ts/node_modules/prisma/build/index.js",
+      "realPath": "/app/node_modules/.pnpm/prisma@5.22.0/node_modules/prisma/build/index.js",
+      "size": 2235214,
+      "mtime": "2026-10-13T05:39:40.000Z",
+      "ctime": "2026-10-13T11:44:35.894Z",
+      "birthtime": "2026-10-13T11:44:35.887Z",
+      "sha256": "ff0102cdfadfecb884c5f0b6e43661f4ef2a31917dbfad3157236ba8e8532388"
+    },
+    "resolver": {
+      "path": "/app/autobyteus-server-ts/dist/startup/migrations.js",
+      "realPath": "/app/autobyteus-server-ts/dist/startup/migrations.js",
+      "size": 10348,
+      "mtime": "2026-10-13T05:49:07.000Z",
+      "ctime": "2026-10-13T11:44:38.820Z",
+      "birthtime": "2026-10-13T11:44:38.819Z",
+      "sha256": "a0d3064ae6cd9f65b4ee7a1016626644bed97f3c4e64d03edfecb4d02dd98f07"
+    },
+    "packageCandidates": [
+      {
+        "name": "prisma/package.json",
+        "path": "/app/node_modules/.pnpm/prisma@5.22.0/node_modules/prisma/package.json",
+        "realPath": "/app/node_modules/.pnpm/prisma@5.22.0/node_modules/prisma/package.json",
+        "version": "5.22.0",
+        "dependencies": {
+          "@prisma/engines": "5.22.0"
+        },
+        "scripts": {
+          "prisma": "tsx src/bin.ts",
+          "platform": "tsx src/bin.ts platform --early-access",
+          "pm": "tsx src/bin.ts platform --early-access",
+          "dev": "DEV=true tsx helpers/build.ts",
+          "build": "tsx helpers/build.ts",
+          "test": "dotenv -e ../../.db.env -- tsx helpers/run-tests.ts",
+          "test:platform": "dotenv -e ../../.db.env -- tsx helpers/run-tests.ts src/platform",
+          "tsc": "tsc -d -p tsconfig.build.json",
+          "preinstall": "node scripts/preinstall-entry.js"
+        }
+      },
+      {
+        "name": "@prisma/engines/package.json",
+        "error": "MODULE_NOT_FOUND"
+      },
+      {
+        "name": "@prisma/engines-version/package.json",
+        "error": "MODULE_NOT_FOUND"
+      }
+    ],
+    "cache": [
+      {
+        "revision": "605197351a3c8bdd595af2d2a9bc3025bca48ea2",
+        "target": "linux-arm64-openssl-3.0.x",
+        "files": []
+      },
+      {
+        "revision": "c2990dca591cba766e3b7ef5d9e8a84796e47ab7",
+        "target": "linux-arm64-openssl-3.0.x",
+        "files": [
+          {
+            "path": "/root/.cache/prisma/master/c2990dca591cba766e3b7ef5d9e8a84796e47ab7/linux-arm64-openssl-3.0.x/libquery-engine",
+            "realPath": "/root/.cache/prisma/master/c2990dca591cba766e3b7ef5d9e8a84796e47ab7/linux-arm64-openssl-3.0.x/libquery-engine",
+            "size": 15606128,
+            "mtime": "2026-10-13T09:35:58.304Z",
+            "ctime": "2026-10-13T09:35:58.304Z",
+            "birthtime": "2026-10-13T07:32:01.688Z",
+            "sha256": "3de76598179b95c6910e28547ee3af9236d978cd3e0917b63a3b531f84bfb8d0"
+          },
+          {
+            "path": "/root/.cache/prisma/master/c2990dca591cba766e3b7ef5d9e8a84796e47ab7/linux-arm64-openssl-3.0.x/libquery-engine.gz.sha256",
+            "realPath": "/root/.cache/prisma/master/c2990dca591cba766e3b7ef5d9e8a84796e47ab7/linux-arm64-openssl-3.0.x/libquery-engine.gz.sha256",
+            "size": 64,
+            "mtime": "2026-10-13T07:32:01.705Z",
+            "ctime": "2026-10-13T07:32:01.705Z",
+            "birthtime": "2026-10-13T07:32:00.464Z",
+            "sha256": "e90ce784ae7b6014374f8551a1df3632867b15fef7decce3fc15a48885a7f59f"
+          },
+          {
+            "path": "/root/.cache/prisma/master/c2990dca591cba766e3b7ef5d9e8a84796e47ab7/linux-arm64-openssl-3.0.x/libquery-engine.sha256",
+            "realPath": "/root/.cache/prisma/master/c2990dca591cba766e3b7ef5d9e8a84796e47ab7/linux-arm64-openssl-3.0.x/libquery-engine.sha256",
+            "size": 64,
+            "mtime": "2026-10-13T07:32:01.704Z",
+            "ctime": "2026-10-13T07:32:01.704Z",
+            "birthtime": "2026-10-13T07:32:00.463Z",
+            "sha256": "42ef71178cd0525a88f2c6638ceac2acde3ff12508d6f692de5be1d5d9ecd065"
+          },
+          {
+            "path": "/root/.cache/prisma/master/c2990dca591cba766e3b7ef5d9e8a84796e47ab7/linux-arm64-openssl-3.0.x/schema-engine",
+            "realPath": "/root/.cache/prisma/master/c2990dca591cba766e3b7ef5d9e8a84796e47ab7/linux-arm64-openssl-3.0.x/schema-engine",
+            "size": 19151512,
+            "mtime": "2026-10-13T09:35:56.286Z",
+            "ctime": "2026-10-13T09:35:56.286Z",
+            "birthtime": "2026-10-13T07:32:02.678Z",
+            "sha256": "95ebf7a1c1b2378d66c9e0974e929736344381f82e0a1fb1b9a7e7fef91cef22"
+          },
+          {
+            "path": "/root/.cache/prisma/master/c2990dca591cba766e3b7ef5d9e8a84796e47ab7/linux-arm64-openssl-3.0.x/schema-engine.gz.sha256",
+            "realPath": "/root/.cache/prisma/master/c2990dca591cba766e3b7ef5d9e8a84796e47ab7/linux-arm64-openssl-3.0.x/schema-engine.gz.sha256",
+            "size": 64,
+            "mtime": "2026-10-13T07:32:02.694Z",
+            "ctime": "2026-10-13T07:32:02.694Z",
+            "birthtime": "2026-10-13T07:32:00.485Z",
+            "sha256": "e9936b845d832f0eeb5a83aa8d637e1d19efcd723b3ffd289504694559ece9db"
+          },
+          {
+            "path": "/root/.cache/prisma/master/c2990dca591cba766e3b7ef5d9e8a84796e47ab7/linux-arm64-openssl-3.0.x/schema-engine.sha256",
+            "realPath": "/root/.cache/prisma/master/c2990dca591cba766e3b7ef5d9e8a84796e47ab7/linux-arm64-openssl-3.0.x/schema-engine.sha256",
+            "size": 64,
+            "mtime": "2026-10-13T07:32:02.694Z",
+            "ctime": "2026-10-13T07:32:02.694Z",
+            "birthtime": "2026-10-13T07:32:00.485Z",
+            "sha256": "972e7c8e74c88695bb2078c2de2efce8572da9d0e6d673ff023bdfb3bd04b88e"
+          }
+        ]
+      }
+    ],
+    "overrideEnvironment": {
+      "HOME": "/root",
+      "PRISMA_SCHEMA_ENGINE_BINARY": null,
+      "PRISMA_QUERY_ENGINE_LIBRARY": null,
+      "PRISMA_QUERY_ENGINE_BINARY": null
+    },
+    "bundledError": "MODULE_NOT_FOUND",
+    "selected": {
+      "queryEngineLibrary": "/root/.cache/prisma/master/c2990dca591cba766e3b7ef5d9e8a84796e47ab7/linux-arm64-openssl-3.0.x/libquery-engine",
+      "schemaEngineBinary": "/root/.cache/prisma/master/c2990dca591cba766e3b7ef5d9e8a84796e47ab7/linux-arm64-openssl-3.0.x/schema-engine",
+      "source": "cache",
+      "sourcePath": "/root/.cache/prisma/master/c2990dca591cba766e3b7ef5d9e8a84796e47ab7/linux-arm64-openssl-3.0.x"
+    }
+  }
+}

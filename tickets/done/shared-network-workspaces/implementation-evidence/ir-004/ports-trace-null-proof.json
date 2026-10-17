@@ -1,0 +1,62 @@
+{
+  "source": "ports-trace-packets-rpc.json",
+  "firstReplies": [
+    {
+      "line": 2599,
+      "time": "2026-10-13 20:06:48.044608",
+      "flow": "192.168.128.2.990 > 192.168.128.2.2049: Flags [P.], seq 1:45, ack 1, win 6380, options [nop,nop,TS val 3995759959 ecr 4080900407], length 44: NFS request xid 3291949086 40 null",
+      "xid": "0xc437281e",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 0
+    },
+    {
+      "line": 2619,
+      "time": "2026-10-13 20:06:48.044679",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.990: Flags [P.], seq 1:29, ack 45, win 32768, options [nop,nop,TS val 4080900408 ecr 3995759959], length 28: NFS reply xid 3291949086 reply ok 24 null",
+      "xid": "0xc437281e",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": ""
+    },
+    {
+      "line": 2745,
+      "time": "2026-10-13 20:06:48.049264",
+      "flow": "192.168.128.2.988 > 192.168.128.2.20048: Flags [P.], seq 1:45, ack 1, win 6380, options [nop,nop,TS val 3613202647 ecr 2458746716], length 44",
+      "xid": "0xab70834c",
+      "kind": "call",
+      "program": 100005,
+      "version": 3,
+      "procedure": 0
+    },
+    {
+      "line": 2759,
+      "time": "2026-10-13 20:06:48.049359",
+      "flow": "192.168.128.2.20048 > 192.168.128.2.988: Flags [P.], seq 1:29, ack 45, win 6380, options [nop,nop,TS val 2458746716 ecr 3613202647], length 28",
+      "xid": "0xab70834c",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": ""
+    },
+    {
+      "line": 2928,
+      "time": "2026-10-13 20:06:48.089110",
+      "flow": "192.168.128.2.987 > 192.168.128.2.2049: Flags [P.], seq 1:69, ack 1, win 65535, options [nop,nop,TS val 4214385989 ecr 1340618904], length 68: NFS request xid 3908403203 64 null",
+      "xid": "0xe8f58003",
+      "kind": "call",
+      "program": 100003,
+      "version": 3,
+      "procedure": 0
+    },
+    {
+      "line": 2944,
+      "time": "2026-10-13 20:06:48.089162",
+      "flow": "192.168.128.2.2049 > 192.168.128.2.987: Flags [P.], seq 1:29, ack 69, win 32768, options [nop,nop,TS val 1340618915 ecr 4214385989], length 28: NFS reply xid 3908403203 reply ok 24 null",
+      "xid": "0xe8f58003",
+      "kind": "accepted-reply",
+      "status": 0,
+      "resultsHex": ""
+    }
+  ]
+}

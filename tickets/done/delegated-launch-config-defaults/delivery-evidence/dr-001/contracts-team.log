@@ -1,0 +1,84 @@
+
+> @autobyteus/team-stream-contracts@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults/autobyteus-team-stream-contracts
+> pnpm build && node --test tests/*.test.mjs
+
+
+> @autobyteus/team-stream-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-launch-config-defaults/autobyteus-team-stream-contracts
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: SEND_MESSAGE accepts optional mentions
+ok 1 - SEND_MESSAGE accepts optional mentions
+  ---
+  duration_ms: 1.918333
+  type: 'test'
+  ...
+# Subtest: the Team tree carries collaborators and COLLABORATOR_ADDED carries one entry
+ok 2 - the Team tree carries collaborators and COLLABORATOR_ADDED carries one entry
+  ---
+  duration_ms: 1.865792
+  type: 'test'
+  ...
+# Subtest: collaborator and copy DTOs carry optional per-member launch values and sources
+ok 3 - collaborator and copy DTOs carry optional per-member launch values and sources
+  ---
+  duration_ms: 3.776625
+  type: 'test'
+  ...
+# Subtest: records written before sources existed still parse
+ok 4 - records written before sources existed still parse
+  ---
+  duration_ms: 0.227459
+  type: 'test'
+  ...
+# Subtest: the effective member launch is the member's own, else the Team's; the source likewise, null when not recorded
+ok 5 - the effective member launch is the member's own, else the Team's; the source likewise, null when not recorded
+  ---
+  duration_ms: 0.092541
+  type: 'test'
+  ...
+# Subtest: the Team snapshot requires its closed task executions beside the unfiltered tree
+ok 6 - the Team snapshot requires its closed task executions beside the unfiltered tree
+  ---
+  duration_ms: 3.555084
+  type: 'test'
+  ...
+# Subtest: TASK_EXECUTIONS_CLOSED is sequenced, strict and non-empty
+ok 7 - TASK_EXECUTIONS_CLOSED is sequenced, strict and non-empty
+  ---
+  duration_ms: 0.597542
+  type: 'test'
+  ...
+# Subtest: TASK_EXECUTIONS_REOPENED mirrors the closed event: sequenced, strict and non-empty
+ok 8 - TASK_EXECUTIONS_REOPENED mirrors the closed event: sequenced, strict and non-empty
+  ---
+  duration_ms: 0.445792
+  type: 'test'
+  ...
+# Subtest: validates and preserves the exact cumulative summary on a team token event
+ok 9 - validates and preserves the exact cumulative summary on a team token event
+  ---
+  duration_ms: 3.186583
+  type: 'test'
+  ...
+# Subtest: requires a non-negative safe-integer report generation
+ok 10 - requires a non-negative safe-integer report generation
+  ---
+  duration_ms: 0.603083
+  type: 'test'
+  ...
+# Subtest: team stream carries background-task snapshots with execution identity and rejects to-do messages
+ok 11 - team stream carries background-task snapshots with execution identity and rejects to-do messages
+  ---
+  duration_ms: 0.472625
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 128.66525

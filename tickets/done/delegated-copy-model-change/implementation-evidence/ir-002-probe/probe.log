@@ -1,0 +1,6 @@
+
+> autobyteus@1.5.3-beta.3 test:e2e:delegated-copy-model-change /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-model-change/autobyteus-web
+> node tests/e2e/delegated-launch-defaults-probe.mjs --cases DCP-001 --output-dir /tmp/dcm-probe-ir002
+
+DCP-001 Pass delegated-copy-model-change AC-001/002/004/011, DEC-010: a running copy is locked with a stop icon; Stop from the sidebar; its model changed in Settings and saved; the next message resumes it on that model
+Summary: 1 Pass, 0 Fail

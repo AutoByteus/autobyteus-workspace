@@ -48,7 +48,7 @@ server's centralized encrypted vault:
 API Keys starts the credential read and local catalog snapshot independently,
 but it awaits only the credential read before rendering provider navigation and
 the selected credential editor. Static providers show curated rows immediately
-and never show Reload. `AUTOBYTEUS`, `OLLAMA`, `LMSTUDIO`, and saved custom
+and never show Reload. `OLLAMA`, `LMSTUDIO`, and saved custom
 providers are `DISCOVERED`: selecting a cold source starts only that provider's
 `ensureProviderModelCatalog` operation. A later read reuses its in-process
 snapshot; only provider-local Reload forces `reloadProviderModelCatalog`. There
@@ -76,11 +76,16 @@ operation fails, the UI keeps the committed configured state rather than
 relabeling the save as failed. The removed `qwen3.8-max-preview` value must not
 reappear after save, catalog read, or recovery.
 
-An ordinary AutoByteus credential save returns after the vault commit. The
-server invalidates and starts only the AutoByteus LLM/audio/image sources in the
-background, and the mounted client separately starts or joins the matching
-non-forcing ensure after it has published credential success. Neither side
-turns the credential command into an awaited global refresh.
+A built-in provider credential save returns after the vault commit and starts
+no model-catalog operation on either side.
+
+The remote AutoByteus LLM provider has been removed: Settings shows no
+`AutoByteus` provider row and no "AutoByteus LLM Hosts" endpoint card. A saved
+model selection that names one of its former models stays visible as
+unavailable until the user picks another model. A leftover
+`AUTOBYTEUS_LLM_SERVER_HOSTS` value appears under Server Settings as an ordinary
+custom setting that can be deleted. The native AutoByteus runtime and the
+"AutoByteus VNC Hosts" card are unaffected.
 
 Custom OpenAI-compatible provider drafts still accept an API key for the probe
 and create transaction, but only non-secret provider metadata is persisted in
@@ -89,9 +94,7 @@ readable ID from the normalized name (for example `provider_alibaba_cloud`) and
 atomically rejects invalid names or canonical-name/ID collisions; the browser
 does not submit an ID. The credential is stored separately, and deleting the
 custom provider through the provider-entity lifecycle removes both its
-credential and metadata. AutoByteus gateway models retain their downstream
-display provider while credential configuration remains owned by the
-`AUTOBYTEUS` gateway provider.
+credential and metadata.
 
 An upgrade from legacy UUID providers deliberately resets provider records,
 Base URLs, and credentials after migrating only exact allowlisted selector
@@ -112,28 +115,22 @@ contracts.
 
 Settings -> Server Settings -> Basics contains the node-bound Compaction card:
 
-- optional model selection and generation configuration are one persisted JSON
-  tuple, `AUTOBYTEUS_COMPACTION_MODEL_SETTINGS` (`modelIdentifier`, `llmConfig`);
-- null/missing model means the then-current parent model identifier; null config
-  means selected-model defaults, not a copy of the parent's mutable LLM instance;
-- trigger ratio, active-context token override and detailed logs remain separate
-  existing settings.
+- trigger ratio, active-context token override and detailed logs are the card's
+  settings;
+- there is no compaction model choice: compaction always summarizes with the
+  agent's own model, because a different model can never reuse the agent's prompt
+  cache. A value saved earlier under `AUTOBYTEUS_COMPACTION_MODEL_SETTINGS` has no
+  effect and is not shown on this card.
 
-Reading an absent tuple or saving unrelated controls does not materialize model
-settings. Editing/saving or clearing model selection is explicit. Model/config
-validation follows the bound server catalog; stale node responses must not
-replace current drafts. A failed initial settings read exposes Retry rather than
-claiming a clean usable configuration.
+Stale node responses must not replace current drafts. A failed initial settings
+read exposes Retry rather than claiming a clean usable configuration.
 
 Save sends changed valid fields sequentially through the existing per-setting
 mutation, stopping on the first failure. Prior successful writes remain saved;
 failed/unsent fields stay dirty for remaining-only retry. This is not a transaction
-across all controls. The model/config pair is saved as a single setting value.
+across all controls.
 
-There is no strategy or compactor-agent selector. The server creates a fresh
-isolated tool-free LLM for each direct summary attempt and enforces its prompt,
-output cap and request controls; credential-bearing values are not accepted as
-arbitrary model overrides. The active-context token override has an explicit
+There is no strategy or compactor-agent selector. The active-context token override has an explicit
 public numeric-setting exception; other credential-name checks stay in force.
 Old strategy settings and old Memory Compactor files are not imported/deleted.
 The card retains full-width controls and stacked navigation on narrow screens.
@@ -244,6 +241,26 @@ always available on desktop (see `projects.md`). Both share one mechanism:
 Add a new per-node feature capability as another factory instance plus a card
 wrapper, never as a copied store or card. See `applications.md` and
 `projects.md` for feature-specific behavior.
+
+## Settings: Agent Packages Auto-Refresh
+
+`components/settings/AgentPackagesManager.vue` shows each package row's
+auto-refresh state from `AgentPackage.autoRefresh`:
+
+| State | Label | Meaning and user action |
+| --- | --- | --- |
+| `WATCHING` | Auto-refreshing | Edits to agent, team and org definition files in the folder appear without Reload |
+| `FOLDER_MISSING` | Folder not found | The folder was moved or deleted. Its definitions stay usable on their last loaded version (cards show "Package folder unavailable"), and auto-refresh resumes when the folder is back |
+| `UNAVAILABLE` | Not auto-refreshing — *reason* | Watching failed, for example because the `agents`, `agent-teams` or `agent-orgs` folder is unreadable or a system watch limit was reached. The reason is shown inline and as the tooltip. Use the row's **Reload** after edits |
+
+No label is shown when the server reports no state (`autoRefresh: null`).
+GitHub-managed rows are watched too; they change only through **Update**, and
+the folder swap during Update is re-armed automatically. `agentPackagesStore`
+reloads its rows when the server announces the `agent_packages` list on
+`/ws/agent-package-definitions`, so a state change appears without reopening Settings.
+Skills inside a package are not watched; skill edits are read by new runs
+directly. See [Agent Packages](../../autobyteus-server-ts/docs/modules/agent_packages.md)
+and the [agent package definitions](../../autobyteus-server-ts/docs/modules/agent_package_definitions.md).
 
 The data flow follows a top-down approach:
 
@@ -465,7 +482,7 @@ ordinary tree-row style: no border or tint at rest, `gray-50` hover, a 2px
 `indigo-500` `:focus-visible` ring, and the same selected treatment as a member
 row. A transient task-Team row uses an unboxed 16px `slate-500` filled
 people-group icon (`heroicons:user-group-20-solid`) and a semibold name. Team
-identity uses this group glyph regardless of configured, collaborator or delegated
+identity uses this group glyph regardless of configured or delegated
 role; existing image-first Team avatars remain unchanged. Project/Temp Task Team
 workers and Memory Team groups use the same glyph, retaining their existing sizes
 and Memory task-role boxes/colors. Unrelated capability icons, including the model
@@ -483,6 +500,9 @@ the depth-first execution projection and derives sibling continuation metadata.
 `WorkspaceHierarchyBranches.vue` renders continuous ancestor rails and a
 right-only current elbow from that metadata; the current vertical continues to
 the next sibling or stops at the current row midpoint for the last sibling.
+A two-line Task-worker row (with its [Task summary](./projects.md#task-summaries-in-the-workspaces-tree))
+uses `anchor="name-line"`: the elbow, and a last sibling's vertical, meet the
+name line instead of the row midpoint.
 These branches are presentation-only and do not create or rewrite topology.
 Selecting either a stable or transient Workspaces row uses the existing
 team-member inspection path. `TeamExecutionViewState` is the sole authority for
@@ -999,6 +1019,90 @@ The saved-run view uses the start surfaces' visual language:
   models.
 - **Members** list for Teams and Orgs. Changing the team- or org-wide model
   updates every non-customized member, including members of placed teams.
+- **Delegated copies**, for Agent, Team and Org runs that have
+  any: a second `RunMembersSection` under Members, with the description "Started
+  by agents in this run. Stop one to change its model; its next message resumes it
+  on the new model."
+  - **Rows.** The rows come from `utils/runSettings/delegatedLaunchRows.ts`
+    (`teamDelegatedLaunchNodes`, `collaborationDelegatedLaunchNodes`), which builds
+    `RunMemberNode`s with `runMemberTree.memberNode`. They are drawn with the same
+    `RunMemberRow` as Members, so a copy looks like the run's own Members list.
+  - **Collapsed by default.** Each open delegated copy is one
+    row. Expansion is local to the section and starts empty. It looks the same
+    for a running and a stopped run.
+  - **Row content.** A row shows a Delegated copy badge. Its
+    summary is `model · runtime · approval`, followed by its source label. A row
+    whose model the user chose (its own choice, or its Team's for a member that
+    follows the Team) shows its model like any edited member, with no source label.
+  - **Notes on a collapsed Team.** A collapsed Team copy whose
+    agents have fallback notes also shows "Notes: N".
+  - **Opening a Team** shows its settings card, then its Members:
+    - the copy's coordinator carries the Coordinator chip;
+    - a team-level fallback note is shown once, on the Team;
+    - each member shows only its own notes;
+    - each member opens to its settings card.
+  - **Opening an Agent** shows its settings card.
+  - These cards are locked while the copy runs and editable while it is stopped
+    (see Editing below).
+  - **Keys and names.** Rows are keyed `<address>@<run ID>`, because one address
+    can hold several copies. Names follow Members: the role,
+    else the last address segment.
+  - **Source labels:**
+    - Agent default;
+    - Team default;
+    - Inherited from the run;
+    - As configured in this run: a copy of a configured placement. It has no
+      recorded source and shows the in-run placement's launch;
+    - Source not recorded: a record from before sources were recorded.
+  - **Fallback line.** A skipped default shows "{layer} {model} was not used:
+    {detail}".
+  - **Effective values.** Values come from the contract packages' copy launch
+    rule (`teamCopyAgentLaunch`, `collaborationCopyAgentLaunch`): the agent's own
+    choice, else its Team's when it follows the Team (`teamMemberFollowsTeam`;
+    for a copy of a configured Team, equal runtime, model and settings), else its
+    started value. This edit's choices are applied as they are made. A member's
+    source is its own, else its Team's.
+  - **Stop.** A running copy (any of its agents not offline) has
+    the run's red stop icon on its own row, never on one member of a Team. It
+    calls `delegatedLaunchDraftStore.stop` (`stopDelegatedExecution`): the copy and
+    the copies it started stop and stay restorable; the run keeps running. The same
+    action is on the copy's sidebar row (`DelegatedStopButton`), whose enabled
+    icon is red at rest, darker red on pale red when hovered, and red again on
+    leave, like all sidebar root Stops. Disabled/pending sidebar icons are muted
+    gray without the enabled-hover accent. Settings stop styling is unchanged.
+  - **Editing (SR-007).** While a copy is stopped (stopped by the user, idled out,
+    or the run is stopped), its rows edit the model and its settings like a stopped
+    run's member (`RunSettingsCard`; runtime, approval and workspace locked); a
+    Team row edits the Team's choice. While it runs, its model is locked with the
+    hint "Stop this copy to change its model." There is no separate reset: the
+    user picks the model again. Model menus list the copy's options
+    (`delegatedLaunchModelOptions`).
+  - **Save.** The changes join the run's Save bar
+    (`delegatedLaunchDraftStore`). On a stopped run they are saved with the run's
+    own changed models in one request (`updateDelegatedLaunchSelections` with
+    `configuredPatches`); a workspace change is saved on its own. A copy woken
+    before Save refuses the Save ("This copy is running. Stop it, then change its
+    model."). Right after Save the rows show the saved choice: Settings reads the
+    run's canonical settings again. A stopped Agent also rereads its collaboration
+    tree and closed-task list into the Settings snapshot; it does not depend on
+    an old live collaboration view. The current editor and expanded rows stay
+    mounted while the accepted model/config and Team followers are refreshed.
+    Save remains pending until that readback completes. A live run also publishes
+    the choice to its views (`DELEGATED_LAUNCH_SELECTIONS_CHANGED` on the Team stream,
+    `delegated_launch_selections_changed` on Org and Agent streams). The Team view
+    records it in place; Org and Agent views reload. Member conversations then
+    show the model the copy runs on.
+  - **Save recovery.** A rejected or failed write retains the edits for correction
+    or retry. If the write succeeds but canonical readback fails, Settings says
+    "Settings were saved, but could not be refreshed. Refresh before making more
+    changes." It locks editing and offers **Refresh** rather than showing stale
+    "Saved" or treating committed changes as unsaved. Refresh rereads the same
+    canonical snapshot without another Save or starting/resuming the run. Cancel
+    before Save writes nothing; repeated edits start from the accepted values.
+  - **Closed copies.** Copies whose Task is DONE or CANCELLED, and everything
+    under them, are left out.
+  - **Refresh.** For a saved Team or Org run, a copy started while Settings is
+    open appears after Refresh or reopening.
 - **Save bar** only when there are changes: "Unsaved changes · they apply when
   this run resumes · Cancel · Save". Cancel calls
   `existingRunConfigStore.discardChanges()`. Save shows "Saving…", then "Saved.
@@ -1249,7 +1353,7 @@ the UI must not imply improver completion proves downstream improvement.
 
 **+** on a run starts another run like it, through `useRunStart`:
 
-- **Agent** (the Chat run view, including an `@` collaborator child's view):
+- **Agent** (the Chat run view, including a delegated child's view):
   `copyAgentFromConfig(displayed config)` opens New chat for the agent on
   screen, prefilled with its workspace (temp when it has none), runtime, model,
   `llmConfig` (thinking and other model settings) and tool approval.
@@ -1532,9 +1636,11 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - `Gross input` is cumulative input sent to provider context and may include discounted cache-hit tokens. It is distinct from `latestPromptTokens`, which is the latest model-call prompt/context size used for the latest prompt progress bar.
     - `Input breakdown` renders server-owned uncached/full-price input, cache hits/discounted input, cache writes, input cache rate, and component costs only when meaningful; zero/unknown rows remain hidden instead of fabricated.
     - `Calculation details` is the explicit unit-price disclosure. It shows component rows with tokens, server-provided unit price, cost, and the formula `tokens ÷ 1,000,000 × unit price`; mixed, missing, partial-missing, and local/no-bill unit-price states render as labels such as `varies by call`, `unpriced`, `partially missing`, or `Local / no API bill` instead of a frontend price table or blended rate.
-    - `Usage reports` in pricing details is `usageReportCount`, usually model calls or model turns. It is not user messages, chat rows, or a raw primary `events` label.
+    - After a completed compaction on the native runtime or the Claude Agent SDK (whose new context size arrives only with the next model call), the `Latest prompt` value and bar stay at the previous reading, greyed, with the note `Compacted — updates on the next model call`. The mark is live-session state in `tokenUsageCompactionMarks.ts` (owned by `tokenUsageMeterStore`), set by `agentStatusHandler` on a newly completed `COMPACTION_STATUS` (failed or stopped compactions never mark). Only that run's next live token-usage event with `reports_model_call` clears it; fetched or hydrated summaries and reading-only events (Codex post-compaction size, Claude turn-end remainder) do not. Codex shows no note because it reports its post-compaction size directly. A native compaction summary call counts as a model call with tokens and cost but carries no reading, so it never changes the displayed reading.
+    - `Usage reports` in pricing details is `usageReportCount`, the number of model calls (reading-only updates such as a Codex post-compaction size and Claude SDK turn-end reconciliation do not count). It is not user messages, chat rows, or a raw primary `events` label.
     - Reasoning output appears only inside the Output card and only when the server summary reports positive reasoning output tokens. The copy states that thinking tokens are included in output tokens and estimated output cost; calculation details show the reasoning unit price as the output price / included in output cost so users do not double-count thinking.
-    - The `Latest prompt` block renders when latest-prompt tokens are present. Known context capacity shows percentage/progress; unknown capacity shows the prompt-token count with explicit `contextLimitUnavailable` copy and never fabricates a denominator or percentage.
+    - The `Latest prompt` block renders when latest-prompt tokens are present. It is the runtime's own count of tokens in context for its latest model call, measured against the window that runtime uses (server-owned `latestPromptTokens`, `effectiveContextWindowTokens`, `contextWindowUsagePercent`); it drops after a compaction. Known context capacity shows percentage/progress; unknown capacity (AGY, Grok) shows the prompt-token count with explicit `contextLimitUnavailable` copy and never fabricates a denominator or percentage.
+    - When the runtime reports its auto-compaction threshold (`contextCompactionThresholdTokens`: Claude Agent SDK, and the native runtime when automatic compaction is enabled), the bar shows a marker at threshold ÷ window and an `Auto-compacts at <tokens>` label. A runtime's own reading can exceed its window (Codex just before it compacts, the Claude SDK after a failed compaction): the percentage shows the true value, the bar stays clamped at 100 % in amber, and `Over the runtime's window` is shown. See `autobyteus-server-ts/docs/modules/token_usage.md` for each runtime's source.
     - Browser-facing proof should validate clean agent/team headers with no token chip and validate the Token tab against server/GraphQL-backed summaries, including focused member primary selection, the scoped horizontally scrollable grouped Team table at constrained widths, absence of a standalone Cost column, the `Total` grouped metric column remaining reachable and row-associated, normal estimated rows omitting repeated status copy, subordinate final-row team total, price-missing, partial-price, local/no-bill, mixed-currency, cache-positive, unit-price calculation details, reasoning-token included-in-output copy, model/runtime, usage-report, and latest-prompt display where present.
     - Live store coverage must preserve the complete strict cumulative snapshot from server events, including Codex-style cache/reasoning tokens/cost, component unit prices, latest runtime/ingestion/model metadata, and latest prompt/context-window fields used by the Token Meter. Post-persist event snapshots and hydrated GraphQL summaries converge to the same display shape and generation rules. The durable Team transport regression must construct its snapshot through the production observation/fold/record/aggregate/public-summary builders and parse the final strict stream message, proving both complete field preservation and absence of aggregate-only diagnostics.
     - Current durable regression coverage includes GraphQL E2E for cached gross input, provider-specific semantics, local/no-bill, custom missing price, mixed currency, runtime field names, unit-price hydration across run/team/member/statistics summaries, and built-process restart reads of existing current records. Frontend store/component tests cover null/partial live events before reopen hydration, exact Team/member identity, higher-only individual generations, stable single-flight Team refresh, focused team member primary selection, grouped Team table headers/rows, paired token+cost metric cells, absence of a standalone Cost column, scoped table-scroll hooks, clean header rendering, Token Meter hierarchy, calculation details, cache-aware rows, price-status labels, localization catalog coverage, and latest prompt fields. Latest visual evidence for the cache-aware Token Meter is under `tickets/token-input-prompt-discrepancy-analysis/implementation-evidence/`.

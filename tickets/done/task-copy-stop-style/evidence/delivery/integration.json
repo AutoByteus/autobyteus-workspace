@@ -1,0 +1,45 @@
+{
+  "candidate": "edf5e434b40094b70effe4448e75465d8219e771",
+  "base": "99d5c2b03a1fbf97d598b33d0c4128ec7679b198",
+  "priorValidated": "5d921266d",
+  "bootstrapBase": "e22245f09",
+  "integration": "merge edf5e434b; no conflicts; source/test/backend/lockfile unchanged by base integration",
+  "startedAt": "2026-10-13T15:26:57.682653+00:00",
+  "outerHome": "/tmp/task-copy-stop-delivery-home-c9h4ub75",
+  "commands": [
+    {
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "test:nuxt",
+        "components/workspace/history/__tests__/DelegatedStopButton.spec.ts",
+        "stores/__tests__/delegatedLaunchDraftStore.spec.ts",
+        "components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts",
+        "components/workspace/history/__tests__/WorkspaceTransientExecutionRow.spec.ts",
+        "--run",
+        "--maxWorkers=2"
+      ],
+      "log": "unit.log",
+      "exitCode": 0,
+      "finishedAt": "2026-10-13T15:27:20.858490+00:00"
+    },
+    {
+      "argv": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "test:e2e:delegated-launch-defaults",
+        "--cases",
+        "DCP-001,DCP-002",
+        "--output-dir",
+        "/home/autobyteus/workspace/.codex/worktrees/task-copy-stop-style/tickets/in-progress/task-copy-stop-style/evidence/delivery/browser-integrated"
+      ],
+      "log": "browser.log",
+      "exitCode": 0,
+      "finishedAt": "2026-10-13T15:29:44.807713+00:00"
+    }
+  ],
+  "outerHomeRemoved": true,
+  "completedAt": "2026-10-13T15:29:44.852567+00:00"
+}

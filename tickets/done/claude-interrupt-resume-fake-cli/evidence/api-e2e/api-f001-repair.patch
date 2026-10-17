@@ -1,0 +1,27 @@
+diff --git a/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts b/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+index d3f1306bc0..5b0d438d6c 100644
+--- a/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+@@ -28,6 +28,7 @@ import { ClaudeAgentRunBackend } from "../../../src/agent-execution/backends/cla
+ import { ClaudeAgentRunContext } from "../../../src/agent-execution/backends/claude/backend/claude-agent-run-context.js";
+ import { buildClaudeSessionConfig } from "../../../src/agent-execution/backends/claude/session/claude-session-config.js";
+ import { ClaudeSessionManager } from "../../../src/agent-execution/backends/claude/session/claude-session-manager.js";
++import type { AgentToolMcpRunSessionAuthority } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
+ import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
+ import { composeSharedCarpenterPrompt } from "../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
+ import { AgentStreamHandler } from "../../../src/services/agent-streaming/agent-stream-handler.js";
+@@ -229,8 +230,13 @@ const createClaudeAgentRun = async (input: {
+     modelIdentifier: input.modelIdentifier,
+     workspaceRoot: input.workspaceRoot,
+   });
++  const agentToolMcpRunSessions: AgentToolMcpRunSessionAuthority = {
++    activateForRun: () => ({ kind: "not_exposed" }),
++    // No exposed tools means this fixture creates no MCP entries to deactivate.
++    deactivateForRun: () => 0,
++  };
+   const sessionManager = new ClaudeSessionManager(
+-    { activateForRun: () => ({ kind: "not_exposed" as const }) } as never,
++    agentToolMcpRunSessions,
+     {} as never,
+     input.sdkClient,
+     { cleanupMaterializedWorkspaceSkills: async () => undefined } as never,

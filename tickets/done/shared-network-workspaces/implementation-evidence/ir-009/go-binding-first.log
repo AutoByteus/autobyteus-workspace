@@ -1,0 +1,124 @@
+=== RUN   TestDetachSelectedNodePublicationFailureAndRetry
+=== RUN   TestDetachSelectedNodePublicationFailureAndRetry/before-publication
+=== RUN   TestDetachSelectedNodePublicationFailureAndRetry/after-detach-before-unpublish
+=== RUN   TestDetachSelectedNodePublicationFailureAndRetry/different-daemon
+--- PASS: TestDetachSelectedNodePublicationFailureAndRetry (0.10s)
+    --- PASS: TestDetachSelectedNodePublicationFailureAndRetry/before-publication (0.06s)
+    --- PASS: TestDetachSelectedNodePublicationFailureAndRetry/after-detach-before-unpublish (0.02s)
+    --- PASS: TestDetachSelectedNodePublicationFailureAndRetry/different-daemon (0.02s)
+=== RUN   TestHostedConfigStatusRefusesBeforeReadiness
+=== RUN   TestHostedConfigStatusRefusesBeforeReadiness/ganesha-native/missing
+=== RUN   TestHostedConfigStatusRefusesBeforeReadiness/ganesha-native/old
+=== RUN   TestHostedConfigStatusRefusesBeforeReadiness/ganesha-native/different
+=== RUN   TestHostedConfigStatusRefusesBeforeReadiness/ganesha-native/malformed
+=== RUN   TestHostedConfigStatusRefusesBeforeReadiness/ganesha-native/current
+=== RUN   TestHostedConfigStatusRefusesBeforeReadiness/ganesha-docker/missing
+=== RUN   TestHostedConfigStatusRefusesBeforeReadiness/ganesha-docker/old
+=== RUN   TestHostedConfigStatusRefusesBeforeReadiness/ganesha-docker/different
+=== RUN   TestHostedConfigStatusRefusesBeforeReadiness/ganesha-docker/malformed
+=== RUN   TestHostedConfigStatusRefusesBeforeReadiness/ganesha-docker/current
+--- PASS: TestHostedConfigStatusRefusesBeforeReadiness (0.42s)
+    --- PASS: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-native/missing (0.04s)
+    --- PASS: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-native/old (0.04s)
+    --- PASS: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-native/different (0.04s)
+    --- PASS: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-native/malformed (0.04s)
+    --- PASS: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-native/current (0.04s)
+    --- PASS: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-docker/missing (0.04s)
+    --- PASS: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-docker/old (0.04s)
+    --- PASS: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-docker/different (0.04s)
+    --- PASS: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-docker/malformed (0.04s)
+    --- PASS: TestHostedConfigStatusRefusesBeforeReadiness/ganesha-docker/current (0.04s)
+=== RUN   TestHostedConfigDetachPreflightsBeforeEffects
+=== RUN   TestHostedConfigDetachPreflightsBeforeEffects/ganesha-native/old/saved
+=== RUN   TestHostedConfigDetachPreflightsBeforeEffects/ganesha-native/different/saved
+=== RUN   TestHostedConfigDetachPreflightsBeforeEffects/ganesha-native/malformed/saved
+=== RUN   TestHostedConfigDetachPreflightsBeforeEffects/ganesha-native/old/pending
+=== RUN   TestHostedConfigDetachPreflightsBeforeEffects/ganesha-native/different/pending
+=== RUN   TestHostedConfigDetachPreflightsBeforeEffects/ganesha-native/malformed/pending
+=== RUN   TestHostedConfigDetachPreflightsBeforeEffects/ganesha-docker/old/saved
+=== RUN   TestHostedConfigDetachPreflightsBeforeEffects/ganesha-docker/different/saved
+=== RUN   TestHostedConfigDetachPreflightsBeforeEffects/ganesha-docker/malformed/saved
+=== RUN   TestHostedConfigDetachPreflightsBeforeEffects/ganesha-docker/old/pending
+=== RUN   TestHostedConfigDetachPreflightsBeforeEffects/ganesha-docker/different/pending
+=== RUN   TestHostedConfigDetachPreflightsBeforeEffects/ganesha-docker/malformed/pending
+--- PASS: TestHostedConfigDetachPreflightsBeforeEffects (0.45s)
+    --- PASS: TestHostedConfigDetachPreflightsBeforeEffects/ganesha-native/old/saved (0.04s)
+    --- PASS: TestHostedConfigDetachPreflightsBeforeEffects/ganesha-native/different/saved (0.04s)
+    --- PASS: TestHostedConfigDetachPreflightsBeforeEffects/ganesha-native/malformed/saved (0.04s)
+    --- PASS: TestHostedConfigDetachPreflightsBeforeEffects/ganesha-native/old/pending (0.03s)
+    --- PASS: TestHostedConfigDetachPreflightsBeforeEffects/ganesha-native/different/pending (0.03s)
+    --- PASS: TestHostedConfigDetachPreflightsBeforeEffects/ganesha-native/malformed/pending (0.03s)
+    --- PASS: TestHostedConfigDetachPreflightsBeforeEffects/ganesha-docker/old/saved (0.04s)
+    --- PASS: TestHostedConfigDetachPreflightsBeforeEffects/ganesha-docker/different/saved (0.05s)
+    --- PASS: TestHostedConfigDetachPreflightsBeforeEffects/ganesha-docker/malformed/saved (0.04s)
+    --- PASS: TestHostedConfigDetachPreflightsBeforeEffects/ganesha-docker/old/pending (0.03s)
+    --- PASS: TestHostedConfigDetachPreflightsBeforeEffects/ganesha-docker/different/pending (0.04s)
+    --- PASS: TestHostedConfigDetachPreflightsBeforeEffects/ganesha-docker/malformed/pending (0.04s)
+=== RUN   TestHostedConfigDetachCurrentOrPartialRetryReachesExistingChecks
+=== RUN   TestHostedConfigDetachCurrentOrPartialRetryReachesExistingChecks/ganesha-native/current
+=== RUN   TestHostedConfigDetachCurrentOrPartialRetryReachesExistingChecks/ganesha-native/missing
+=== RUN   TestHostedConfigDetachCurrentOrPartialRetryReachesExistingChecks/ganesha-docker/current
+=== RUN   TestHostedConfigDetachCurrentOrPartialRetryReachesExistingChecks/ganesha-docker/missing
+--- PASS: TestHostedConfigDetachCurrentOrPartialRetryReachesExistingChecks (0.12s)
+    --- PASS: TestHostedConfigDetachCurrentOrPartialRetryReachesExistingChecks/ganesha-native/current (0.03s)
+    --- PASS: TestHostedConfigDetachCurrentOrPartialRetryReachesExistingChecks/ganesha-native/missing (0.03s)
+    --- PASS: TestHostedConfigDetachCurrentOrPartialRetryReachesExistingChecks/ganesha-docker/current (0.03s)
+    --- PASS: TestHostedConfigDetachCurrentOrPartialRetryReachesExistingChecks/ganesha-docker/missing (0.03s)
+=== RUN   TestHostedConfigChecksLeaveAppleAndConnectOnlyUnchanged
+--- PASS: TestHostedConfigChecksLeaveAppleAndConnectOnlyUnchanged (0.05s)
+=== RUN   TestReconnectSelectedSetIsBoundedAndIndependent
+--- PASS: TestReconnectSelectedSetIsBoundedAndIndependent (0.06s)
+=== RUN   TestDeclineNeverChangesResources
+--- PASS: TestDeclineNeverChangesResources (0.00s)
+=== RUN   TestPendingReceiptDoesNotDuplicatePrivateContainerSnapshot
+--- PASS: TestPendingReceiptDoesNotDuplicatePrivateContainerSnapshot (0.00s)
+=== RUN   TestBackgroundReconnectDoesNotResumePendingNodeMutation
+--- PASS: TestBackgroundReconnectDoesNotResumePendingNodeMutation (0.01s)
+=== RUN   TestBoundPendingReuseAndReplacementRefusal
+=== RUN   TestBoundPendingReuseAndReplacementRefusal/false
+=== RUN   TestBoundPendingReuseAndReplacementRefusal/true
+--- PASS: TestBoundPendingReuseAndReplacementRefusal (0.04s)
+    --- PASS: TestBoundPendingReuseAndReplacementRefusal/false (0.02s)
+    --- PASS: TestBoundPendingReuseAndReplacementRefusal/true (0.02s)
+=== RUN   TestPendingUnboundAndInvalidForms
+=== RUN   TestPendingUnboundAndInvalidForms/existing-unbound
+=== RUN   TestPendingUnboundAndInvalidForms/absent-unbound
+=== RUN   TestPendingUnboundAndInvalidForms/old
+=== RUN   TestPendingUnboundAndInvalidForms/partial
+=== RUN   TestPendingUnboundAndInvalidForms/zero-not-new
+=== RUN   TestPendingUnboundAndInvalidForms/mixed
+=== RUN   TestPendingUnboundAndInvalidForms/hosted-unbound
+--- PASS: TestPendingUnboundAndInvalidForms (0.16s)
+    --- PASS: TestPendingUnboundAndInvalidForms/existing-unbound (0.02s)
+    --- PASS: TestPendingUnboundAndInvalidForms/absent-unbound (0.03s)
+    --- PASS: TestPendingUnboundAndInvalidForms/old (0.02s)
+    --- PASS: TestPendingUnboundAndInvalidForms/partial (0.02s)
+    --- PASS: TestPendingUnboundAndInvalidForms/zero-not-new (0.02s)
+    --- PASS: TestPendingUnboundAndInvalidForms/mixed (0.02s)
+    --- PASS: TestPendingUnboundAndInvalidForms/hosted-unbound (0.03s)
+=== RUN   TestCreatedSourceBindingSurvivesProbeFailure
+--- PASS: TestCreatedSourceBindingSurvivesProbeFailure (0.06s)
+=== RUN   TestBindingSaveFailureStopsAndUnboundRetryPersists
+--- PASS: TestBindingSaveFailureStopsAndUnboundRetryPersists (0.05s)
+=== RUN   TestCompletedBindingValidationAndReconnectNoEffects
+=== RUN   TestCompletedBindingValidationAndReconnectNoEffects/old
+=== RUN   TestCompletedBindingValidationAndReconnectNoEffects/zero
+=== RUN   TestCompletedBindingValidationAndReconnectNoEffects/changed-inode
+=== RUN   TestCompletedBindingValidationAndReconnectNoEffects/changed-uuid
+=== RUN   TestCompletedBindingValidationAndReconnectNoEffects/missing-source
+--- PASS: TestCompletedBindingValidationAndReconnectNoEffects (0.10s)
+    --- PASS: TestCompletedBindingValidationAndReconnectNoEffects/old (0.02s)
+    --- PASS: TestCompletedBindingValidationAndReconnectNoEffects/zero (0.02s)
+    --- PASS: TestCompletedBindingValidationAndReconnectNoEffects/changed-inode (0.02s)
+    --- PASS: TestCompletedBindingValidationAndReconnectNoEffects/changed-uuid (0.02s)
+    --- PASS: TestCompletedBindingValidationAndReconnectNoEffects/missing-source (0.02s)
+=== RUN   TestDetachDoesNotRequireLiveSource
+--- PASS: TestDetachDoesNotRequireLiveSource (0.02s)
+=== RUN   TestPlanCapturesExistingAndQualifiesNewParent
+=== RUN   TestPlanCapturesExistingAndQualifiesNewParent/false
+=== RUN   TestPlanCapturesExistingAndQualifiesNewParent/true
+--- PASS: TestPlanCapturesExistingAndQualifiesNewParent (0.00s)
+    --- PASS: TestPlanCapturesExistingAndQualifiesNewParent/false (0.00s)
+    --- PASS: TestPlanCapturesExistingAndQualifiesNewParent/true (0.00s)
+PASS
+ok  	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/setup	2.056s

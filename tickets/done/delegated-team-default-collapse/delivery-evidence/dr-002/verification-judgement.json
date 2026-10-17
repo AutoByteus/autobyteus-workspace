@@ -1,0 +1,136 @@
+{
+  "recordedAt": "2026-10-13T12:30:25.538889+00:00",
+  "judgement": "Sufficient \u2014 Verified from evidence",
+  "criticalAC": [
+    "AC-001",
+    "AC-002",
+    "AC-003",
+    "AC-004",
+    "AC-005",
+    "AC-006"
+  ],
+  "nativeCases": {
+    "B-001": {
+      "result": "Pass",
+      "description": "Fresh stored manager: seven collapsed Teams, 42 hydrated child identities"
+    },
+    "P-001": {
+      "result": "Pass",
+      "description": "Cold frontend-store and warm reselection three-stage readiness"
+    },
+    "B-002": {
+      "result": "Pass",
+      "description": "Independent disclosure button, exact copy/member, body and Enter/Space coordinator"
+    },
+    "B-003": {
+      "result": "Pass",
+      "description": "Host reselection preserves manual choices; second same-address host isolated; fresh page restart resets"
+    },
+    "B-004": {
+      "result": "Pass",
+      "description": "Actual Project Task-root click reveals only requested Team and selects its coordinator"
+    },
+    "B-006": {
+      "result": "Pass",
+      "description": "Disclosure writes no persistent data or stop/cancel commands; Tasks/conversations unchanged"
+    },
+    "B-005": {
+      "result": "Pass",
+      "description": "Real live Task checkpoint, added hosted Team, reconnect and closure preserve choices/status/conversation"
+    }
+  },
+  "nativeErrors": 0,
+  "nativeFailedRequests": 0,
+  "finalRestart": {
+    "oldPid": 84546,
+    "newPid": 86932,
+    "sameInstance": true,
+    "samePorts": true,
+    "rows": 8,
+    "collapsed": 8
+  },
+  "upstreamCleanup": {
+    "ownedUid": 24019,
+    "ownedUidProcessesRemaining": 0,
+    "canonicalInstanceId": "iso-39201-ab83",
+    "canonicalStop": {
+      "instanceId": "iso-39201-ab83",
+      "wasRunning": true,
+      "forced": false,
+      "dataRoot": "/tmp/collapse-api-rev002.ots9s6/tmp/autobyteus-isolated-root-I1faSf",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    },
+    "ownedRegistryEmpty": true,
+    "ownedAutoDataRootRemoved": true,
+    "privateHomeBinTmpRuntimeRemoved": true,
+    "privateNamespaceSessionExit": 0,
+    "privateShmAfterUsedBytes": 0,
+    "parentMountUnchanged": true,
+    "parentNamespaceUnchanged": true,
+    "sandboxOrGlobalSecurityChanged": false,
+    "userAppDataOrCredentialsTouched": false,
+    "buildDependenciesWorktreeRetained": true
+  },
+  "sourceEqualsCanonicalPassedHashes": {
+    "autobyteus-web/stores/agentRunCollaborationStore.ts": "f2cf4d68dd2d4641d3a379d314753a527edd7d07369d800f61f50c2efc2696d0",
+    "autobyteus-web/services/agentCollaboration/agentRunCollaborationStreamingService.ts": "c6942f27487b87fec87062ce4f9a866d3a32633bf875b4daea9608a6cb8bccd6",
+    "autobyteus-web/tests/e2e/delegated-team-default-collapse-probe.mjs": "cd073545c7c28c7a72c3f9c3f719de174309068cb6d44eba56fb085da06baf2d"
+  },
+  "openedEvidenceSha256": {
+    "api-e2e-evidence/api-rev-002/native-shm512/journey/evidence.json": "41e72622bf5f84ead15ef1dccb94520f6788e7f7ba551ff99370524ad7b3e91f",
+    "api-e2e-evidence/api-rev-002/native-shm512/desktop-receipt.json": "2638895a6383111a16df0fdfbe548df50f5e6adca07e4266a0f3110386faaf8d",
+    "api-e2e-evidence/api-rev-002/native-shm512/resource-receipt.json": "937e977ff439794087210489d33bc2cac6d4490453a99c822af4ae05d75fcec8",
+    "api-e2e-evidence/api-rev-002/cleanup-receipt.json": "6e0a2492e143fc1048c3d1578fce5a2f4bcfd9f3da5f58f5a150127df473e347",
+    "api-e2e-evidence/api-rev-002/native-performance-summary.json": "5ab3f0dec667c0180d562e8556e199f27a5a4ece3f3e2c73c28e54161f0e353c",
+    "api-e2e-evidence/api-rev-001/performance-comparison.json": "0422938cc87aa8ff8296fc94ac69d39a6eaef96e8d45118d9a95e7093972a6d5",
+    "api-e2e-evidence/api-rev-001/browser-current/evidence.json": "2b48512dfdd5e870fe259246b2c144bb0b1c6c730968dd1a236effa493bb7674",
+    "api-e2e-evidence/api-rev-002/unchanged-input-receipt.json": "dcec9cce0fc0180a0c0d936aabca79fddd7a189bf35f2f619215f47c12b8975a",
+    "api-e2e-evidence/api-rev-002/unchanged-output-receipt.json": "19a501c2fa7bc5fa1d6cfd13bcf860fc3ac98d2fd2e344d28a3a87991ca9c447"
+  },
+  "visuallyInspected": [
+    "journey/initial.png",
+    "journey/member.png",
+    "journey/task-root.png",
+    "actual-restart.png"
+  ],
+  "validationConfidence": {
+    "overall": 95.71,
+    "categories": [
+      95,
+      100,
+      95,
+      95,
+      95,
+      95,
+      95
+    ],
+    "targetOverall": 95,
+    "minimumCategoryTarget": 90
+  },
+  "integratedState": "c0a4c04af3d5ae1c3b00175f0b96fc81506affff",
+  "verifiedBase": "a609de982a22925299d550bea4084e578cc5cd60",
+  "integratedRerun": {
+    "files": 15,
+    "tests": 89,
+    "result": "Pass",
+    "unhandledErrors": 0,
+    "reference": "delivery-evidence/dr-001/integrated-tests.log"
+  },
+  "finalizationFetch": "git fetch origin personal \u2014 unchanged a609de982; no further integration/rerun needed",
+  "mockedOrScripted": "Provider inference scripted AGY only; real APIs/scoped delegation tools/Tasks/UI/WS/native shell/restarts; no fixture HTTP/WS routes in canonical journeys",
+  "notClaimed": [
+    "actual user OS/version",
+    "speedup or wait-cause",
+    "native baseline timing comparison",
+    "every OS-shell integration",
+    "inference quality"
+  ],
+  "userCheckNeeded": false,
+  "reasonNoUserCheck": "All critical bounded criteria directly proven on real owned surfaces; no unreachable user-account/node dependency and no user-requested repeat check. Updated authoritative skill removes mandatory user recheck.",
+  "releaseDecision": "No release",
+  "userDirection": "do you have enough evidence, if yes. then finalize no need to release a new version",
+  "skillSha256": "e399f2269e3a45da1e611148e6a0831e3a2d3c8e6244281431c83dcea04f036b"
+}

@@ -796,7 +796,7 @@ describeLive("Live delegated-child resource lifecycle across AutoByteus, Codex a
       return { result: toolResult(done.payload), startIndex };
     };
 
-    // AC-009 / REQ-017: delegate to a mounted flat Team; the result is the fresh task Team coordinator's run ID.
+    // AC-009 / REQ-017: delegate to a mounted flat Team; the result is the fresh task Team coordinator's run id.
     const teamRecall = `RECALL_SQUAD_${org.unique}`;
     const teamAck = `ACK_SQUAD_${org.unique}`;
     const teamSpawn = await coordinatorCall("delegate_task", {
@@ -848,7 +848,7 @@ describeLive("Live delegated-child resource lifecycle across AutoByteus, Codex a
     await expectShutdownAfterGrace(connection, plannerSpawn.startIndex, plannerRunId, "delegating child");
     expect(await orgHasOpenWork()).toBe(false);
 
-    // AC-009: a message to the task Team coordinator's run ID restores the team; the coordinator recalls its packet.
+    // AC-009: a message to the task Team coordinator's run id restores the team; the coordinator recalls its packet.
     const teamWake = await coordinatorCall("send_message_to", {
       target_agent_run_id: leadRunId,
       content: "Follow-up from your delegator: call send_message_to exactly once with recipient_address \"/coordinator\" and content made of " +

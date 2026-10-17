@@ -16,7 +16,6 @@ const API_KEY_BINDINGS: Readonly<Record<string, string>> = Object.freeze({
   GLM: "provider.glm.api-key",
   MINIMAX: "provider.minimax.api-key",
   LMSTUDIO: "provider.lmstudio.api-key",
-  AUTOBYTEUS: "provider.autobyteus.api-key",
 });
 
 const SEARCH_BINDINGS: Readonly<Record<string, string>> = Object.freeze({
@@ -37,16 +36,6 @@ export class ProviderCredentialCatalog {
       const mapped = SEARCH_BINDINGS[consumer.providerId.toLowerCase()];
       if (!mapped) throw new Error("SECRET_CONSUMER_NOT_AUTHORIZED");
       return secretId(mapped);
-    }
-    if (consumer.kind === "modelDiscovery") {
-      if (
-        ["llm", "audio", "image"].includes(consumer.modelKind)
-        && consumer.providerId === "AUTOBYTEUS"
-        && consumer.credentialSlot === "apiKey"
-      ) {
-        return secretId("provider.autobyteus.api-key");
-      }
-      throw new Error("SECRET_CONSUMER_NOT_AUTHORIZED");
     }
 
     const providerId = consumer.providerId.trim();
@@ -70,11 +59,8 @@ export class ProviderCredentialCatalog {
     if (!mapped || consumer.credentialSlot !== "apiKey") {
       throw new Error("SECRET_CONSUMER_NOT_AUTHORIZED");
     }
-    if (consumer.kind === "media") {
-      const normalized = providerId.toUpperCase();
-      const allowed = normalized === "OPENAI"
-        || (normalized === "AUTOBYTEUS" && consumer.mediaKind !== "video");
-      if (!allowed) throw new Error("SECRET_CONSUMER_NOT_AUTHORIZED");
+    if (consumer.kind === "media" && providerId.toUpperCase() !== "OPENAI") {
+      throw new Error("SECRET_CONSUMER_NOT_AUTHORIZED");
     }
     return secretId(mapped);
   }

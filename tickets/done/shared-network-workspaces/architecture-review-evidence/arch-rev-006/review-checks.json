@@ -1,0 +1,134 @@
+{
+  "round": "ARCH-REV-006",
+  "date": "2026-10-15T09:25:34.456699+00:00",
+  "input": "4c66567ccacf6552e0f21af5c4e7f177c312f5c4",
+  "scope": "Personal static source, raw-receipt and integrity audit only. No reviewer build/test/VM or live resource operation. Inherited experiment is dependency feasibility, not public correction qualification.",
+  "referenceCount": 1036,
+  "incomingRetained": 1003,
+  "protectedDesignerInputPaths": 997,
+  "trackedInputPathsCompared": 1034,
+  "retainedCandidateFiles": 15,
+  "approvedBasisUnchanged": true,
+  "exactEngineMembers": 6,
+  "sourceArchiveSHA256": "eed35ab4b732ac05d2afc3531e70cdc27031fb414fdb52a0daf093f33daaec0a",
+  "primarySources": [
+    {
+      "url": "https://raw.githubusercontent.com/nfs-ganesha/nfs-ganesha/V4.3/src/doc/man/ganesha-export-config.rst",
+      "file": "export-contract.txt",
+      "sha256": "8eac6acae21e9f664046dd31fe4380c85db6d00d705e7408525f3339bd0e4ae9"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nfs-ganesha/nfs-ganesha/V4.3/src/FSAL/Stackable_FSALs/FSAL_MDCACHE/mdcache_int.h",
+      "file": "cache-validity.txt",
+      "sha256": "ad8e25c6672f19d217e3568e1c8f10a6796d6a50688beed869b081985848f1b4"
+    }
+  ],
+  "prototypeObservationRows": 127,
+  "prototypePhases": [
+    {
+      "phase": "baseline-default",
+      "case": "inplace-1024",
+      "firstExact": [
+        null,
+        null
+      ],
+      "rows": 57
+    },
+    {
+      "phase": "candidate-zero",
+      "case": "inplace-1024",
+      "firstExact": [
+        0.0006673159999976974,
+        0.0010465220000028808
+      ],
+      "rows": 1
+    },
+    {
+      "phase": "candidate-zero",
+      "case": "inplace-1MiB",
+      "firstExact": [
+        0.0035181129999983796,
+        0.005311409000000822
+      ],
+      "rows": 1
+    },
+    {
+      "phase": "candidate-zero",
+      "case": "atomic-replace",
+      "firstExact": [
+        0.001075292999999533,
+        0.0015703209999955448
+      ],
+      "rows": 1
+    },
+    {
+      "phase": "candidate-zero",
+      "case": "create-after-negative",
+      "firstExact": [
+        0.925438401000001,
+        0.9266383190000056
+      ],
+      "rows": 10
+    },
+    {
+      "phase": "restored-default",
+      "case": "inplace-1024",
+      "firstExact": [
+        null,
+        null
+      ],
+      "rows": 57
+    }
+  ],
+  "sourceIdentity": "64769:577887:1000:109:755",
+  "storageUUID": "904e2af2-e1db-4d23-9322-f86d50469290",
+  "prototypeCleanup": "Complete receipt; private scratch absent",
+  "api004FailureRows": 243,
+  "api004Trials": [
+    {
+      "file": "visibility-d3f108eedd3f48ebb44f9b86c3155066.bin",
+      "freshAt": {
+        "native": 61.149,
+        "http": 61.149
+      },
+      "rows": 122
+    },
+    {
+      "file": "visibility-930e44580b2c41aeaf35874512eec797.bin",
+      "freshAt": {
+        "native": 60.975,
+        "http": 60.975
+      },
+      "rows": 121
+    }
+  ],
+  "api004Boots": [
+    {
+      "oldBoot": "9a636284-fbe5-4dcd-b94f-a7793ef5a44a",
+      "newBoot": "00af6ecc-edd1-47e9-931a-c006e0acef2e",
+      "secondsToObservedReady": 60.879
+    },
+    {
+      "oldBoot": "00af6ecc-edd1-47e9-931a-c006e0acef2e",
+      "newBoot": "205e3fda-ddb8-4eeb-a3b2-ccd41c9fa8a0",
+      "secondsToObservedReady": 59.991
+    }
+  ],
+  "api004NoManualStartReconnectInTwoBoots": true,
+  "api004HostConfigDifference": "Only Dns null -> []; preserved semantic empty-DNS normalization already explicit in raw harness, not byte equality",
+  "api004PriorControls": {
+    "normal-stop": "Pass",
+    "policy-veto": "Pass",
+    "node-upgrade": "Pass",
+    "drained-detach-confirm": "Pass"
+  },
+  "productionAggregate": "968f6d000d4b6c2cc3c66cd3add5845cb30385cdad752fe831b564823db9b764",
+  "currentApiResult": "API004 Fail57.14% / broader Required",
+  "currentSourceReview": "CRR010 Fail",
+  "changedTracked": [
+    "tickets/in-progress/shared-network-workspaces/architecture-review-revision-record.md",
+    "tickets/in-progress/shared-network-workspaces/design-review-report.md"
+  ],
+  "priorHistoryPreservedExceptCurrentIndexAddition": true,
+  "pass": true
+}

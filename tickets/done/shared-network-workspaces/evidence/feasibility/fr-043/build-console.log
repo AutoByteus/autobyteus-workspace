@@ -1,0 +1,5 @@
+/opt/homebrew/bin/brew
+/Library/Developer/CommandLineTools/usr/bin/clang
+
+NATIVE MAC UNFS BUILD PASS
+{"nativeBuildPassed": true, "fatal": null}

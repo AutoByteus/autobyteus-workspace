@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "F39CBF24AEE7CEC3D3F97A2834E38841",
+    "--script",
+    "() => {const t=document.body.innerText.replaceAll(\"\\u00a0\",\" \");if(!t.includes(\"external-added.txt\")||!t.includes(\"API004 UNSAVED BUFFER\")||!t.includes(\"API004 healthy mounted preview original\")||t.includes(\"API004 EXTERNAL SOURCE CHANGE\"))throw Error(\"reload tree/unsaved buffer incorrect\");return {externalEntry:true,unsavedBufferPreserved:true,originalBufferPreserved:true,externalFileNotOverwrittenIntoBuffer:true,text:t}}"
+  ],
+  "rc": 5,
+  "stdout": "{\"schema_version\":\"1\",\"ok\":false,\"command\":\"run-script\",\"error\":{\"code\":\"SCRIPT_FAILED\",\"message\":\"The JavaScript evaluation failed.\",\"retryable\":false,\"details\":{\"tab_id\":\"F39CBF24AEE7CEC3D3F97A2834E38841\"}}}\n",
+  "stderr": ""
+}

@@ -1,0 +1,21 @@
+Started L17 LN repeated actual status and explicit reconnect preserve source UUID
+L17 LN repeated actual status and explicit reconnect preserve source UUID: Pass
+Started L18 LN ordinary whole-host boot automatic both node readiness before any manual reconnect
+L18 LN ordinary whole-host boot automatic both node readiness before any manual reconnect: Pass
+Started L18 LN automatic same ID image config private/source and reciprocal bytes
+L18 LN automatic same ID image config private/source and reciprocal bytes: Pass
+Started L18 LN separate explicit reconnect after automatic proof
+L18 LN separate explicit reconnect after automatic proof: Pass
+Started L19 LN public launcher normal Stop on healthy node A
+L19 LN public launcher normal Stop on healthy node A: Pass
+Started L19 LN stopped A healthy B immediate
+L19 LN stopped A healthy B immediate: Fail
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/run-lifecycle.py", line 82, in <module>
+    case('L19 '+MODE+' stopped A healthy B immediate',stopped)
+  File "<string>", line 23, in case
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/run-lifecycle.py", line 81, in stopped
+    return [z,preserved(before)]
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-007/run-lifecycle.py", line 44, in preserved
+    assert a['NetworkSettings']['Ports']==b['NetworkSettings']['Ports']
+AssertionError

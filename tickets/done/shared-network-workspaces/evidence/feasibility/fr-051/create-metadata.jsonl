@@ -1,0 +1,25 @@
+{"event": "READY"}
+{"name": "race-0", "createMode": 2, "verifier": "17c116540000529d", "sourceIp": "172.29.0.1", "sourcePort": 1021, "xid": 3111615987}
+{"name": "race-0", "createMode": 2, "verifier": "17c11654000052aa", "sourceIp": "172.29.0.1", "sourcePort": 1021, "xid": 3128393203}
+{"name": "race-1", "createMode": 2, "verifier": "17c11716000052ed", "sourceIp": "172.29.0.1", "sourcePort": 1021, "xid": 3229056499}
+{"name": "race-1", "createMode": 2, "verifier": "17c11716000052ec", "sourceIp": "172.29.0.1", "sourcePort": 1021, "xid": 3279388147}
+{"name": "race-2", "createMode": 2, "verifier": "17c117d200005336", "sourceIp": "172.29.0.1", "sourcePort": 1021, "xid": 3380051443}
+{"name": "race-2", "createMode": 2, "verifier": "17c117d20000532d", "sourceIp": "172.29.0.1", "sourcePort": 1021, "xid": 3396828659}
+{"name": "race-3", "createMode": 2, "verifier": "17c118750000537c", "sourceIp": "172.29.0.1", "sourcePort": 1021, "xid": 3480714739}
+{"name": "race-3", "createMode": 2, "verifier": "17c118770000537b", "sourceIp": "172.29.0.1", "sourcePort": 1021, "xid": 3564600819}
+{"name": "race-4", "createMode": 2, "verifier": "17c1191c000053c5", "sourceIp": "172.29.0.1", "sourcePort": 1021, "xid": 3631709683}
+{"name": "race-4", "createMode": 2, "verifier": "17c1191d000053c3", "sourceIp": "172.29.0.1", "sourcePort": 1021, "xid": 3682041331}
+{"name": "race-5", "createMode": 2, "verifier": "17c119d60000540e", "sourceIp": "172.29.0.1", "sourcePort": 1021, "xid": 3782704627}
+{"name": "race-5", "createMode": 2, "verifier": "17c119d60000540c", "sourceIp": "172.29.0.1", "sourcePort": 1021, "xid": 3799481843}
+{"name": "race-6", "createMode": 2, "verifier": "17c11a8300005454", "sourceIp": "172.29.0.1", "sourcePort": 1021, "xid": 3883367923}
+{"name": "race-6", "createMode": 2, "verifier": "17c11a8500005455", "sourceIp": "172.29.0.1", "sourcePort": 1021, "xid": 3967254003}
+{"name": "race-7", "createMode": 2, "verifier": "17c11b36000054a0", "sourceIp": "172.29.0.1", "sourcePort": 1021, "xid": 4051140083}
+{"name": "race-7", "createMode": 2, "verifier": "17c11b36000054a1", "sourceIp": "172.29.0.1", "sourcePort": 1021, "xid": 4067917299}
+{"name": "race-8", "createMode": 2, "verifier": "17c11bdb000054e8", "sourceIp": "172.29.0.1", "sourcePort": 1021, "xid": 4151803379}
+{"name": "race-8", "createMode": 2, "verifier": "17c11bde000054e3", "sourceIp": "172.29.0.1", "sourcePort": 1021, "xid": 4235689459}
+{"name": "race-9", "createMode": 2, "verifier": "17c11c850000552f", "sourceIp": "172.29.0.1", "sourcePort": 1021, "xid": 24673779}
+{"name": "race-9", "createMode": 2, "verifier": "17c11c860000552d", "sourceIp": "172.29.0.1", "sourcePort": 1021, "xid": 41450995}
+{"name": "race-10", "createMode": 2, "verifier": "17c11d4f00005577", "sourceIp": "172.29.0.1", "sourcePort": 1021, "xid": 158891507}
+{"name": "race-10", "createMode": 2, "verifier": "17c11d4f00005579", "sourceIp": "172.29.0.1", "sourcePort": 1021, "xid": 175668723}
+{"name": "race-11", "createMode": 2, "verifier": "17c11e00000055be", "sourceIp": "172.29.0.1", "sourcePort": 1021, "xid": 293109235}
+{"name": "race-11", "createMode": 2, "verifier": "17c11e00000055bd", "sourceIp": "172.29.0.1", "sourcePort": 1021, "xid": 309886451}

@@ -26,14 +26,10 @@ const remember = (runId: string): string => {
 const cleanup = async () => {
   await rootPrismaClient.tokenUsageRunRecord.deleteMany({ where: { runId: { in: [...runIds] } } });
   runIds.clear();
-  await rootPrismaClient.tokenUsageAnalyticsDailyFacet.deleteMany({
-    where: {
-      OR: [
-        { modelIdentifier: { startsWith: PREFIX } },
-        { modelIdentifier: HISTORICAL_GEMINI_MODEL },
-      ],
-    },
-  });
+  // The cases assert global range aggregates, so they need the whole facet table to themselves:
+  // other files sharing this test database leave facets in the same date ranges (for example a
+  // 1,000,000-output DeepSeek facet on 2026-08-29 and an unsafe-integer facet on 2026-06-25).
+  await rootPrismaClient.tokenUsageAnalyticsDailyFacet.deleteMany();
   await rootPrismaClient.tokenUsageAnalyticsCoverage.deleteMany();
 };
 

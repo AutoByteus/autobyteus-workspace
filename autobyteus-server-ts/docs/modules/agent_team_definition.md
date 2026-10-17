@@ -54,12 +54,46 @@ sources, but they still cannot contain Teams.
 | Shared `agent-teams/<id>/` | Standalone reusable Team | Shared Team provider |
 | Application `applications/<app>/agent-teams/<id>/` | Application-owned Team, also inspectable in the Team UI | Owning writable application bundle |
 | Org package-owned Team | Exact scoped read, excluded from public Team catalog | Existing Org-owned package authority; no independent write permission inferred |
-| Registered external package root | Admitted when supported Team fields and scoped references are valid | Read-only to this repository/process unless that package owner updates it |
+| Registered agent package root (local folder or GitHub install) | Admitted when supported Team fields and scoped references are valid | Writable like the package's Agents: saves and deletes go into the package folder (source class `registered_package`, owner `package_author`) through the same atomic save, revision check and filesystem check; a later GitHub package update overwrites local edits |
+
+`assertDefinitionSourceWritableByRuntime` lets the app write `server_data` and
+`registered_package` sources and refuses only `implementation_repository`
+sources. A folder the disk will not write still fails with "… is read-only at
+source path …". An Org-owned Team is still changed only through its Org's save.
+
+The atomic save (`collaboration-definition-admission/providers/definition-package-transaction.ts`)
+copies the definition folder to a staging folder, writes there, then renames it
+into place behind a backup. It copies symlinks verbatim (`verbatimSymlinks: true`),
+so relative links inside a package stay relative after a save. The first save
+writes the files the app owns in their normalized form. For example, it drops a
+legacy `refType` and the trailing newline of `team.md`, so a package checkout
+shows a one-time diff. A process whose working directory is inside the swapped
+folder is left in the replaced directory.
 
 Org-owned Team exact reads and their Team-local Agent reads share the indexed
 owner/source lookup. An unavailable owner does not fall back to a same-named
-shared Team, and exact reads do not populate the public Team cache. See
+shared Team, and org-owned Teams never enter the public Team list. See
 [Org-owned source resolution](./agent_orgs.md#exact-org-owned-team-and-team-local-agent-reads).
+
+### Agent Package Definitions And Load Issues
+
+Teams from agent packages are served from the
+[agent package definitions](./agent_package_definitions.md) as **definition folders**:
+the Team plus its Team-local Agents. File edits are detected and applied
+automatically. Each definition keeps its last working version when a later edit
+is invalid, so a broken Team-local Agent does not make its Team unavailable.
+
+- `AgentTeamDefinition.loadIssues` lists every load issue in the definition
+  folder: the Team first, then its Team-local Agents. Each entry has `kind`, `definitionId`,
+  `name`, `code`, `reason`, `definitionPath`, `packageRoot` and
+  `usingLastGood`. The list is empty when the folder is clean.
+- A Team ID present in more than one registered agent package is unusable
+  (`DEFINITION_IDENTITY_DUPLICATED`). Every reader treats it as unavailable:
+  the Teams list, launch, `list_available_agents` and `@`.
+- Admission lists the Team folders plus application-package Team sources.
+  Application-package Teams are read on demand for the Team list; a malformed
+  one is logged and skipped. `definitionProblems(kind: AGENT_TEAM)` lists the Teams that cannot be
+  used and the reason.
 
 Normal Team input readers extract supported root/member/handoff/default fields and
 ignore unused metadata, including `schemaVersion` and member `refType`. Missing
@@ -109,12 +143,31 @@ remain run-configuration concerns rather than definition-default fields. Skills
 are neither: each member's own agent definition (`skillScope` / `skillNames`)
 is the only skill authority, and no Team or run setting changes it.
 
-When a Team is mounted in an AgentOrg, its definition defaults do not silently
-override the Org run configuration. Effective Org launch resolution is:
+Each member's own agent default comes before the Team default. The order is the
+same wherever a Team is started:
+
+```text
+member agent default -> Team default -> starting run (or the launch form's root)
+```
+
+- **User start (New chat, mobile, Org launch page).** The web form seeds the
+  root from the Team or Org default as before, and seeds every member row, and
+  each Org placed Team, from its own usable default. The user can change or
+  reset any row before Run. What the form holds at Run is what runs, so the
+  server receives ordinary per-member overrides.
+- **Delegated Team copy.** The server resolves each member by
+  the same order, with the run root's settings as the last layer. See
+  [Launch configuration of catalog copies](./agent_communication.md#launch-configuration-of-catalog-copies).
+
+The server's effective Org launch resolution is unchanged. A definition default
+reaches an Org run only through the rows the launch form seeded:
 
 ```text
 exact Agent placement override -> mounted Team placement override -> Org root
 ```
+
+Application launch baselines keep their own order (Team default before agent
+default); aligning them is a separate follow-up.
 
 ## Runtime Relationship
 

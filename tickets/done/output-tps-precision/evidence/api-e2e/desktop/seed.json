@@ -1,0 +1,10 @@
+{
+  "model": "gpt-5.6-luna",
+  "writer": "tps-writer",
+  "coordinator": "tps-coordinator",
+  "worker": "tps-worker",
+  "team": "tps-desktop-team",
+  "runA": "tps_writer_36f352d214ca48ad97496b7094a6191d",
+  "runB": "tps_writer_0dccd87da6954f379ee2d0f4e7283f46",
+  "teamRunId": "tps_desktop_team_59070180912f47158c7d60197672fdbc"
+}

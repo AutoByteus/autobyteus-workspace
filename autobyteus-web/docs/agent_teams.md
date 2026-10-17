@@ -45,9 +45,24 @@ registration is not a count of available Teams. The UI must not offer deeper
 configured composition. See the [Team input and write contract](../../autobyteus-server-ts/docs/modules/agent_team_definition.md).
 
 Shared Teams can be created, updated, and deleted through the shared provider.
+Teams from a registered agent package (a local folder or a GitHub install) are
+edited, saved and deleted like the package's Agents: the save, including the
+default runtime/model, is written into the package folder. Edits to a GitHub
+install are overwritten by a later package update. Org-owned Teams are changed
+through their Org.
 Application-owned Teams are inspectable and editable only when the owning
 bundle source is writable; generic deletion does not bypass source ownership.
 Team-local private Agents remain discoverable through their owning Team detail.
+
+### Definition Detail Layout
+
+Every Team detail uses `AgentTeamDetail.vue`, including Teams reached from an
+Org. Its sections appear in reading order: **Description → Members →
+Instructions → Handoffs**. Members retain their definition order, count,
+coordinator badge and View links, so long instructions or handoff rules do not
+precede the roster. The cards keep the existing two-column wide / one-column
+narrow layout. Header actions, instruction disclosure and ownership-scoped
+navigation remain unchanged; this placement does not alter membership or routing.
 
 ## Handoffs
 
@@ -90,6 +105,52 @@ the shared readiness rule (`utils/runSettings/launchReadiness.ts`) when the Team
 is gone, any member's effective runtime is unavailable, or any member has no
 model. See [Org readiness](./agent_orgs.md#readiness) for the shared rule; this
 does not change Team coordinator/focus semantics.
+
+### Member Launch Defaults
+
+Every Team start that does not copy a run's member settings seeds each member
+from its own agent default (`utils/runSettings/memberLaunchDefaults.ts`,
+`seedMemberLaunchDefaults`, run by `chatDraftStore.seedTeamMembers`):
+
+| Start | Root | Members |
+| --- | --- | --- |
+| **Run** on a Team (fresh), mobile run setup | Team default → last chat model → default runtime | Seeded and pinned |
+| New chat heading switcher → a Team (`retarget`) | Kept from the composer | Member overrides reset, then the new Team's members seeded and pinned |
+| Org page heading switcher → a Team (carried `startForDefinition`) | Carried | Seeded and pinned |
+| **+** on a Team run (`copied`) | Copied | Copied as recorded, not seeded |
+
+`seedTeamMembers` loads the Team's definitions itself. After its catalog checks it
+re-checks that the draft is still open and still on the same Team. It never
+overwrites a row the user changed meanwhile. A quick switch to another target
+leaves no late seeds. A failed definition or catalog read is logged, and the rows
+then follow the root. The order is the member's agent default, then the root's
+settings:
+
+- A member whose default is usable gets it as its row's own runtime, model and
+  model settings, taken together. The row counts as customized. Usable follows
+  the start-default rule (`usableStartCandidate` in `startModelDefaults.ts`): it
+  names a runtime and a model, the runtime is available, and the model is
+  offered. Unlike a root start, there is no "first model of the default runtime"
+  fallback for a member.
+- A member without a default follows the root.
+- A member whose default cannot be used follows the root, and its row shows
+  "Its default (…) can't be used: <reason>. It follows the settings above."
+- Seeded rows are pinned (`normalizeMemberOverride(…, { pinnedModel })`):
+  changing the root model does not move them, even when the root is set to the
+  same model. A pin is released only by resetting that member's model, the row,
+  or **Reset all**. The member then follows the root.
+- **+** (copy settings from a run) keeps the run's recorded member settings,
+  including a member that was reset to follow the root. It is never seeded or
+  pinned.
+- Mobile setup has no member rows. It applies the seeds asynchronously, only to
+  the draft it was computed for and only while the same Team is still selected,
+  and shows no note.
+
+What the form holds at Run is what runs: seeded rows are sent as ordinary member
+overrides. Delegated Team copies that an agent starts resolve
+their members on the server with the same order; see the server
+`docs/modules/agent_communication.md` ("Launch configuration of catalog
+copies").
 
 Fresh definition-based standalone Team setup starts the root automatic-approval
 setting **on**, on desktop (New chat) and mobile and after application restart. Members
@@ -241,29 +302,19 @@ No-context history still shows configured members only. This does not add
 nested configured-Team authoring or change Agent Orgs, delegation, identity, or
 persisted data.
 
-A collaborator (a shared Agent or Agent Team brought into the run by the user's
-`@` or by an agent's first `send_message_to` to its listed address) is
-one hosted instance per entry in `root_team.collaborators`. The views show it
-with the task-row look, Offline until its first message, ahead of the root's
-delegated children: `teamExecutionTreeSelectors.withCollaboratorExecutions`
-projects each entry (and a collaborator Team's members and own
-`task_executions`) into the view tree only and never persists it. The Team
-view applies `COLLABORATOR_ADDED` by adding the entry, its locations and its
-member contexts at once, and a collaborator Team row opens once when it
-appears (`opensOnAppear`). Contexts take the definition and launch settings
-from the entry (`services/collaborators/agentSourceSelectors.ts`). Rows and
-tab labels use `utils/collaboration/memberDisplayName.ts`. An extra copy that
-`delegate_task` starts at a collaborator address is an ordinary task row.
-A **catalog copy** (`delegate_task` to a listed catalog Agent or Team that is
-not in the run) is also an ordinary task row, but no configured member or
-collaborator entry describes it. Its task DTO carries `source`, so the view
-reads the definition and launch settings from there:
+A **catalog copy** (`delegate_task` to a listed catalog Agent or Team that is not in the
+run) is an ordinary task row, Offline until its first message. The Team view has no collaborator
+concept: runs that earlier releases recorded as collaborators were converted at startup into
+these rows. No configured member describes a catalog copy, so its task DTO carries `source`,
+and the view reads the definition and launch settings from there:
 - `agentSourceSelectors.teamCatalogAgentSourceAt` for the copy and its members;
 - `source.coordinator_address` for a Team copy's coordinator.
 
-Rows for collaborator and catalog-copy addresses use the display-name formatter
-(`readsAsDisplayName`). Copies are placed by address (REQ-012): a teammate copy
-inside the delegator's own Team instance, any other copy at the run's top level.
+A new copy arrives as `TASK_EXECUTION_STARTED`. Rows and tab labels use
+`utils/collaboration/memberDisplayName.ts`; rows for catalog-copy addresses use the
+display-name formatter (`readsAsDisplayName`). New copies are always placed at the run's
+top level (CM-1: delegation to the sender's own team is refused on the server); copies already
+stored inside a Team instance keep their recorded host.
 See [Chat](./chat.md#-in-a-live-run-delegation).
 
 ## History, Restore, Stop, And Delete
@@ -305,6 +356,27 @@ Agent, Team, and AgentOrg catalogs together. External/local package ownership
 remains source-authoritative; catalog refresh does not copy definitions between
 nodes or activate legacy formats.
 
+The Teams list also refreshes **live**. When Team or Agent definition files
+change in a registered agent package, the server announces the `agent_teams`
+list on `/ws/agent-package-definitions` (an agent change names it too), and a loaded Teams
+list reloads without Reload. A Team written before its member Agents appears
+first as not available, then becomes available once the Agents arrive. See
+[Agent Management](./agent_management.md#live-agent-package-definition-refresh).
+
+- **Card issue badge.** `AgentTeamCard.vue` passes `teamDef.loadIssues` to
+  `DefinitionLoadIssueBadge.vue`. The list covers the Team and every
+  Team-local Agent, because Team-local Agents have no Agents-page card. The
+  badge shows the count. Its text is "Using last working version" when every
+  entry still has a working version, and "Some members couldn't be loaded" when
+  any entry has none. Expanding it lists each entry's name or folder, file and
+  reason. A Team with a broken Team-local Agent stays usable on that Agent's
+  last working version.
+- **List notice.** `AgentTeamList.vue` shows `DefinitionProblemsNotice.vue`
+  for `AGENT_TEAM`: "N team definition(s) are not available", with each Team's
+  reason and, for unavailable dependencies, "Depends on: …". This includes a
+  Team whose ID exists in more than one package. Such a Team is unavailable
+  everywhere and is not offered in `@` or `list_available_agents`.
+
 ### Agent Teams Reload And Member Inspection
 
 After a completed edit to a registered local package, **Reload** on the Agent
@@ -314,9 +386,10 @@ instructions, descriptions, and tools available, including already-viewed
 Team-local and shared Agents. No separate Agents-page Reload or app restart is
 needed. Member IDs, navigation, source ownership, and private scopes are unchanged.
 
-The explicit refresh action performs the existing Team catalog refresh mutation,
-then awaits the Agent store's network-only reload before reading and publishing
-the Team catalog. It does not issue a second Agent refresh mutation. The separate
+The explicit refresh action performs the `reloadAgentPackageDefinitions` mutation
+(one full reload covering agents, Teams and Orgs), then awaits the Agent store's
+network-only reload before reading and publishing the Team list. It does not
+issue a second reload mutation. The separate
 query-only Team reload used by package operations remains query-only; ordinary
 first-load discovery is unchanged.
 
@@ -326,11 +399,12 @@ If the Agent read fails, the Team read does not proceed. If a later Team read
 fails, Agent data may already be fresh; there is no cross-catalog rollback or
 transactional snapshot guarantee. Retry uses the same Reload control.
 
-This is **definition-catalog freshness**, not live instruction hot reload.
+This is **agent package definition freshness**, not live instruction hot reload.
 Reload does not rewrite package source/configuration or saved run/history state,
-and it does not replace instructions in existing executions. It does not watch
-files automatically, download GitHub changes, or guarantee one point-in-time
-snapshot when files are edited concurrently with Reload.
+and it does not replace instructions in existing executions. Reload is now the
+manual fallback: watched agent packages already apply file edits automatically.
+Neither path downloads GitHub changes. Reload does not guarantee one
+point-in-time snapshot when files are edited concurrently with it.
 
 ## Featured Teams
 

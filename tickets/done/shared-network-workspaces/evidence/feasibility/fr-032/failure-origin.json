@@ -1,0 +1,6 @@
+{
+  "classification": "Retained fixture mount-location prerequisite",
+  "actual": "Existing target directory from previous owned lifecycle VM means fresh-mount setup refuses to create it;3 setup passes/exit1 before additional lifecycle execution.",
+  "notProved": "No repeat cleanup/rootcause/reboot-success inference. This is not a current user folder and it is not forcibly mounted over.",
+  "next": "Delete entire stopped credential-free clone31, start cached immutable public baseline clone33; preserve failure and safe occupied-target boundary."
+}

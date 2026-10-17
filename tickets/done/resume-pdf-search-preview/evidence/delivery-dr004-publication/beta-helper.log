@@ -1,0 +1,13 @@
+From https://github.com/AutoByteus/autobyteus-workspace
+ * [new branch]          codex/agent-team-members-after-description -> origin/codex/agent-team-members-after-description
+ * [new branch]          codex/agy-docker-node-availability-diagnostics -> origin/codex/agy-docker-node-availability-diagnostics
+ * [new branch]          codex/claude-interrupt-resume-fake-cli -> origin/codex/claude-interrupt-resume-fake-cli
+ * [new branch]          codex/claude-interrupt-resume-fixture-types -> origin/codex/claude-interrupt-resume-fixture-types
+ * [new branch]          codex/fix-legacy-docker-workspace-builds -> origin/codex/fix-legacy-docker-workspace-builds
+Updating autobyteus-web/package.json: 1.5.3-beta.2 -> 1.5.3-beta.3
+[finalize/resume-pdf-search-preview 8d52dc4eb] chore(release): bump workspace release version to 1.5.3-beta.3
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Release prepared locally (not pushed).
+To push later:
+  git push origin finalize/resume-pdf-search-preview
+  git push origin v1.5.3-beta.3

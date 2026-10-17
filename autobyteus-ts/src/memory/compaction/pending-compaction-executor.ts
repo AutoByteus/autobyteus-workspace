@@ -4,7 +4,8 @@ import { CompactionRuntimeReporter, type CompactionStatusPayload } from '../../a
 import type { MemoryManager } from '../memory-manager.js';
 import { CompactionContentBuilder } from './compaction-content-builder.js';
 import { validateCompactionSummaryBody } from './compaction-summary-parser.js';
-import type { CompressionStrategyFactory } from './memory-compaction-configuration.js';
+import { CompactionSummarizer } from './compaction-summarizer.js';
+import type { ConversationSummaryPort } from './conversation-summary-port.js';
 import { WorkingContextMessageWindowPlanner } from './working-context-message-window-planner.js';
 import { WorkingContextCompactionOutputValidator } from './working-context-compaction-output-validator.js';
 import { estimateMessagesTokens } from './message-budget-strategy.js';
@@ -13,24 +14,28 @@ import { Message, MessageRole } from '../../llm/utils/messages.js';
 export type PendingCompactionExecutionInput = {
   executionSite: CompactionExecutionSite;
   turnId: string;
-  getParentModelIdentifier: () => string; signal: AbortSignal;
+  signal: AbortSignal;
 };
 export type PendingCompactionExecutorOptions = {
-  createCompressionStrategy: CompressionStrategyFactory;
+  /** The agent's request capability; the summary always uses the agent's own model. */
+  summaryPort: ConversationSummaryPort;
   maxItemChars?: number;
   onRecoveryStateChanged?: (previous: CompactionRecoveryBlock | null) => void;
   planner?: WorkingContextMessageWindowPlanner;
   outputValidator?: WorkingContextCompactionOutputValidator;
+  summarizer?: CompactionSummarizer;
   reporter?: CompactionRuntimeReporter | null;
 };
 
 export class PendingCompactionExecutor {
   private readonly planner: WorkingContextMessageWindowPlanner;
   private readonly validator: WorkingContextCompactionOutputValidator;
+  private readonly summarizer: CompactionSummarizer;
   constructor(private readonly memoryManager: MemoryManager,
     private readonly options: PendingCompactionExecutorOptions) {
     this.planner = options.planner ?? new WorkingContextMessageWindowPlanner();
     this.validator = options.outputValidator ?? new WorkingContextCompactionOutputValidator();
+    this.summarizer = options.summarizer ?? new CompactionSummarizer(options.summaryPort);
   }
 
   async executeIfAuthorized(input: PendingCompactionExecutionInput): Promise<boolean> {
@@ -65,9 +70,10 @@ export class PendingCompactionExecutor {
         raw_trace_count: plan.rawTraceIdsToArchive.length };
       this.emit({ ...status, phase: 'started' });
       const content = new CompactionContentBuilder().build(plan.compactableUnits, { maxItemChars: this.options.maxItemChars });
-      const strategy = this.options.createCompressionStrategy({
-        operationId: pending.operationId, executionTurnId: input.turnId,
-        signal: input.signal, getParentModelIdentifier: input.getParentModelIdentifier,
+      input.signal.throwIfAborted();
+      const result = await this.summarizer.summarize({
+        baselineMessages: source.buildMessages(), transcriptContent: content,
+        operationId: pending.operationId, executionTurnId: input.turnId, signal: input.signal,
         observe: (event) => {
           const metadata = event.execution;
           if (metadata) status = { ...status, compaction_model_identifier: metadata.modelIdentifier,
@@ -75,8 +81,6 @@ export class PendingCompactionExecutor {
             completion_status: metadata.completionStatus, completion_reason: metadata.completionReason };
         },
       });
-      input.signal.throwIfAborted();
-      const result = await strategy.compress(content);
       input.signal.throwIfAborted();
       const summary = validateCompactionSummaryBody(result);
       status = { ...status, summary_char_count: summary.length,

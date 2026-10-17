@@ -3,10 +3,12 @@
 ## Scope
 
 Owns the server-side lifecycle for package roots that contribute shared agents,
-team-local agents, and agent teams to the definition catalogs. This module is
-the authoritative boundary for package source identity, import, removal, local
-reload, managed GitHub update checks, managed GitHub update execution, and
-post-mutation cache refresh.
+team-local agents, agent teams, and agent orgs to the
+[agent package definitions](./agent_package_definitions.md). This module is the authoritative
+boundary for package source identity, import, removal, local reload, managed
+GitHub update checks, managed GitHub update execution, the full reload of the
+agent package definitions after each package mutation, and reporting each
+package folder's auto-refresh state.
 
 ## TS Source
 
@@ -25,8 +27,8 @@ post-mutation cache refresh.
 | Source kind | Ownership | Supported lifecycle |
 | --- | --- | --- |
 | `BUILT_IN` | Platform-owned default package root. | Listed for inventory only; not removable, reloadable, checkable, or user-updatable. |
-| `LOCAL_PATH` | User-owned local folder linked into AutoByteus. | Import, remove, and explicit reload/rescan. AutoByteus validates and reads the folder but does not pull Git or mutate the source folder. |
-| `GITHUB_REPOSITORY` | AutoByteus-managed installation copied from a public GitHub repository archive. | Import, remove, update check, and explicit update through archive download/validation/replacement. No system `git` binary is required. |
+| `LOCAL_PATH` | User-owned local folder linked into AutoByteus. | Import, remove, and explicit reload/rescan. Definition edits in the folder are also picked up automatically while the root is watched. AutoByteus validates and reads the folder but does not pull Git or mutate the source folder. |
+| `GITHUB_REPOSITORY` | AutoByteus-managed installation copied from a public GitHub repository archive. | Import, remove, update check, and explicit update through archive download/validation/replacement. No system `git` binary is required. The installed folder is watched like any other root; no polling or automatic download happens. |
 
 ## GitHub Update State
 
@@ -72,13 +74,32 @@ copy. Mutations are thin adapters over `AgentPackageService`:
 - `updateAgentPackage(packageId)` downloads, validates, and replaces a managed
   GitHub package with the latest default-branch archive.
 
-## Runtime And Cache Refresh Invariant
+Each `AgentPackage` row also carries `autoRefresh { state, message }`, the
+package folder's watch state from `AgentPackageFolderWatcher`:
+
+| State | Web label | Meaning |
+| --- | --- | --- |
+| `WATCHING` | Auto-refreshing | Definition edits in the folder are applied automatically |
+| `FOLDER_MISSING` | Folder not found | The folder does not exist; its definitions stay in use from their last working version, and watching resumes when the folder reappears |
+| `UNAVAILABLE` | Not auto-refreshing | Watching failed (for example an unreadable `agents`, `agent-teams` or `agent-orgs` folder, or a watch limit); `message` has the reason; Reload still works |
+
+`autoRefresh` is `null` when no folder watcher runs (the standalone application host).
+
+## Reload Invariant
 
 Every successful package import, removal, local reload, or managed GitHub update
-must refresh the package-derived agent definition and agent team definition
-caches before returning the latest package inventory. Frontend stores then
-refresh Applications, Agents, and Agent Teams so source mutations are visible in
-the same session.
+runs one full reload of the agent package definitions (`reloadAgentPackageDefinitions`,
+covering agents, teams and orgs) before returning the latest package inventory.
+The reload also re-syncs the folder watcher: new packages are watched, removed
+ones are released, and a folder replaced in place by Update is re-armed. The
+change is announced on `/ws/agent-package-definitions`, so loaded web lists update without a
+separate client refresh. Frontend stores additionally refresh Applications,
+Agents, and Agent Teams after a package mutation.
+
+Outside package actions, changes to definition files in any registered package
+folder are detected and applied automatically. Reload remains the manual
+fallback for package folders that are not being watched. See
+[Agent Package Definitions](./agent_package_definitions.md).
 
 ## Package-Contained Configured Skills
 
@@ -158,10 +179,10 @@ preserving the owning agent/team context for package-contained skills.
 - GitHub update checks never modify package files. Check failures persist
   `CHECK_FAILED` metadata and preserve the previous package state.
 - GitHub updates stage the new archive materialization, validate package shape,
-  update registry metadata, refresh caches, and then commit the replacement.
-  If metadata fetch, staging, validation, registry write, cache refresh, or
-  replacement commit fails, the previous package record/files remain available
-  and `UPDATE_FAILED` metadata records the error.
+  update registry metadata, reload the agent package definitions, and then commit
+  the replacement. If metadata fetch, staging, validation, registry write,
+  reload, or replacement commit fails, the previous package
+  record/files remain available and `UPDATE_FAILED` metadata records the error.
 
 ## Notes
 
@@ -172,5 +193,7 @@ preserving the owning agent/team context for package-contained skills.
   prefer repository identity for GitHub packages and the selected local path for
   local packages.
 - Agent and team definition modules own definition parsing, identity, and
-  edit-time invariants; Agent Packages owns package source lifecycle and cache
-  refresh coordination.
+  edit-time invariants; the agent package definitions own the loaded
+  definitions, folder watching and last working versions; Agent Packages owns
+  package source lifecycle and triggers their full reload after package
+  mutations.

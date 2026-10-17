@@ -6,6 +6,9 @@ import type { TaskExecutionReference } from "./task-execution-reference.js";
  * business Task; `taskId` is opaque to the runtime (equality/dedupe only). The runtime stores no
  * Task facts: it asks this port, which answers from the Task side's loaded agent run resources.
  */
+/** Refusal text when someone other than the assigner tries to continue a closed task agent (wording §7.3). */
+export const ASSIGNER_ONLY_REACTIVATION_MESSAGE = "This task agent's Task is closed. Only the agent that assigned the Task can continue it: "
+  + "set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id).";
 export type TaskExecutionRole = "assigned" | "delegated" | "broughtIn";
 export type TaskExecutionOwner = Readonly<{ taskId: string; execution: TaskExecutionReference; open: boolean }>;
 /** The text of a Task with no Project that an assignment creates (description-only delegation by an unowned sender). */
@@ -19,7 +22,7 @@ export type NewTaskExecutionLinkInput = Readonly<{
 }> & (
   | (Readonly<{ role: "assigned"; assignedBy: string; /** The address delegated to (the root's display name). */ recipientAddress: string }>
     & TaskExecutionAssignmentTarget)
-  | Readonly<{ role: "delegated" | "broughtIn"; creator: TaskExecutionReference }>
+  | Readonly<{ role: "delegated"; creator: TaskExecutionReference }>
 );
 
 /**
@@ -49,7 +52,6 @@ export interface TaskExecutionResourcePort {
   ownerOf(chain: readonly TaskExecutionReference[]): TaskExecutionOwner | null;
   /** The copy's current Task entry is open. */
   isOpen(execution: TaskExecutionReference): boolean;
-  openTaskExecutions(taskId: string, role: TaskExecutionRole): readonly TaskExecutionReference[];
   /** Every copy hosted by this root whose current Task entry is closed; an unreadable Task contributes none. Never throws. */
   closedTaskExecutionsIn(hostRoot: RootExecutionIdentity): readonly TaskExecutionReference[];
   /** Rejects TASK_AGENT_RESOURCES_UNAVAILABLE while any Task's resource data is unreadable. */

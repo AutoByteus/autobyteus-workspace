@@ -7,6 +7,7 @@ import { localizationRuntime } from '~/localization/runtime/localizationRuntime'
 import { useAgentOrgDefinitionStore, type AgentOrgDefinition } from '~/stores/agentOrgDefinitionStore'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
+import { useDefinitionProblemsStore } from '~/stores/definitionProblemsStore'
 
 const io = vi.hoisted(() => ({ query: vi.fn(), mutate: vi.fn(), push: vi.fn(), route: null as any }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io }))
@@ -26,6 +27,9 @@ beforeEach(() => {
   setActivePinia(createPinia()); vi.resetAllMocks(); io.route = reactive({ query: { view: 'org-list' } })
   useAgentOrgDefinitionStore().definitions = [structuredClone(org)]
   vi.spyOn(useAgentOrgDefinitionStore(), 'fetchAll').mockResolvedValue(undefined)
+  vi.spyOn(useAgentOrgDefinitionStore(), 'refreshAndReload').mockResolvedValue(undefined)
+  // The unavailable-Org notice reads diagnostics, not member references or the catalog.
+  vi.spyOn(useDefinitionProblemsStore(), 'ensureLoaded').mockResolvedValue(undefined)
   vi.spyOn(useAgentDefinitionStore(), 'fetchAllAgentDefinitions').mockResolvedValue(undefined)
   vi.spyOn(useAgentTeamDefinitionStore(), 'fetchAllAgentTeamDefinitions').mockResolvedValue(undefined)
 })
@@ -50,7 +54,8 @@ describe('Agent Org catalog role labels', () => {
     await wrapper.findAll('button').find(button => button.text() === 'Reload')!.trigger('click'); await flushPromises()
     expect(wrapper.findAll('[data-test^="org-member-"]').map(chip => chip.text()))
       .toEqual(['Research Group', 'lead agent', 'shared group', 'sharedWorker'])
-    expect(useAgentOrgDefinitionStore().fetchAll).toHaveBeenCalledWith(true)
+    // Reload asks the server to reconcile its catalog (notifying other clients), then re-reads.
+    expect(useAgentOrgDefinitionStore().refreshAndReload).toHaveBeenCalledOnce()
     expect(io.query).not.toHaveBeenCalled()
     await wrapper.findAll('button').find(button => button.text() === 'Run')!.trigger('click')
     expect(io.push).toHaveBeenCalledWith({ path: '/workspace', query: { rootSubjectKind: 'agent_org', definitionId: 'alpha', mode: 'configuration' } })

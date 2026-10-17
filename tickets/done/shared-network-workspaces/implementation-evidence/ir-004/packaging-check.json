@@ -1,0 +1,16 @@
+{
+  "allStagedDiffCheckRC": 2,
+  "rawLogWhitespaceFiles": [
+    "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-004/baseline-trace-packets.log",
+    "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-004/candidate-1/go-race.log",
+    "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-004/candidate-2/go-race.log",
+    "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-004/fixed-trace-packets.log",
+    "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-004/go-race.log",
+    "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-004/ports-confirm-trace-packets.log",
+    "tickets/in-progress/shared-network-workspaces/implementation-evidence/ir-004/ports-trace-packets.log"
+  ],
+  "rawLogsPreservedByteForByte": true,
+  "allOtherStagedFilesDiffCheckRC": 0,
+  "sourceCommitDiffCheckRC": 0,
+  "reason": "Retain native tcpdump/test output exactly; raw log whitespace is evidence formatting, not a source defect."
+}

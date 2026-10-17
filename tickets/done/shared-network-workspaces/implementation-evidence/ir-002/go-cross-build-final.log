@@ -1,0 +1,7 @@
+go version go1.27.2 darwin/arm64
+/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-cross-build-k4m_gh_9/darwin-arm64: Mach-O 64-bit executable arm64
+/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-cross-build-k4m_gh_9/darwin-amd64: Mach-O 64-bit executable x86_64
+/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-cross-build-k4m_gh_9/linux-arm64: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), statically linked, Go BuildID=Oml3YRV9PfD5T9szNBz-/UL2sX_BTM4untVDitiN5/O6cP9QkFbTTKAGfN5kO5/9esuoTPA7s3f0KByCc8y, BuildID[sha1]=cd8720b67fc9f5aea35bfcfc4ced278675cc9690, with debug_info, not stripped
+/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-cross-build-k4m_gh_9/linux-amd64: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, Go BuildID=ohbAxw-V9LunM0_V8NEE/zjORnfejXUCLATnhATM_/qpo00BU1vjZN8qVvC0X3/UUCVhII5TCRQZS0BFJWN, BuildID[sha1]=dbe06fc401ccc7c33711a0847892f7ba0916868d, with debug_info, not stripped
+AutoByteus NFS incomplete: this release has not qualified the current computer/CPU; no installation performed
+PASS native version; unqualified release refused; four cross-targets compiled (foreign binaries not executed)

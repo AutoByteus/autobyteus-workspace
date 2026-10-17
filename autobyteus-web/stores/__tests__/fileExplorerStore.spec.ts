@@ -19,6 +19,37 @@ describe('fileExplorerStore', () => {
     vi.clearAllMocks();
   });
 
+  it('search retains loaded tree object identity and creates relative lazy results in server order', async () => {
+    const store = useFileExplorerStore();
+    const id = 'search-workspace';
+    const state = store._getOrCreateWorkspaceState(id);
+    const loaded = new TreeNode('resume-notes.md', 'resume-notes.md', true, [], 'loaded', true);
+    state.tree = new TreeNode('root', '', false, [loaded], 'root', true);
+    queryMock.mockResolvedValue({ data: { searchFiles: ['nested/resume sample.pdf', 'resume-notes.md'] } });
+    await store.searchFiles('resume', id);
+    const results = store.getSearchResults(id);
+    expect(results.map(node => node.path)).toEqual(['nested/resume sample.pdf', 'resume-notes.md']);
+    expect(results[1]).toBe(state.tree.children[0]);
+    expect(results[0].id).toBe('search-nested/resume sample.pdf');
+    expect(results[0].is_file).toBe(true);
+    expect(state.openFolders).toEqual({});
+    expect(store.getSearchResults('different-workspace')).toEqual([]);
+  });
+
+  it('ignores superseded search completion during ordinary query changes', async () => {
+    const store = useFileExplorerStore();
+    const id = 'search-abort';
+    let finishFirst!: (value: any) => void;
+    queryMock.mockImplementationOnce(() => new Promise(resolve => { finishFirst = resolve; }));
+    const first = store.searchFiles('res', id);
+    queryMock.mockResolvedValueOnce({ data: { searchFiles: ['resume-notes.md'] } });
+    await store.searchFiles('resume', id);
+    finishFirst({ data: { searchFiles: ['stale.pdf'] } });
+    await first;
+    expect(store.getSearchResults(id).map(node => node.path)).toEqual(['resume-notes.md']);
+    expect(store.isSearchLoading(id)).toBe(false);
+  });
+
   it('deleteFileOrFolder removes file state and applies the file-explorer tree update', async () => {
     const store = useFileExplorerStore();
     const workspaceId = 'ws-1';

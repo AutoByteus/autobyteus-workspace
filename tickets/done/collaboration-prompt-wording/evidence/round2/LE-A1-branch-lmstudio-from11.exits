@@ -1,0 +1,11 @@
+branch lmstudio run 11 exit 1
+branch lmstudio run 12 exit 1
+branch lmstudio run 13 exit 1
+branch lmstudio run 14 exit 1
+branch lmstudio run 15 exit 0
+branch lmstudio run 16 exit 1
+branch lmstudio run 17 exit 1
+branch lmstudio run 18 exit 1
+branch lmstudio run 19 exit 1
+branch lmstudio run 20 exit 1
+done

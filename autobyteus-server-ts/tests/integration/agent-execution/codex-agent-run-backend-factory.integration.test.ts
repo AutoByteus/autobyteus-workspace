@@ -252,7 +252,6 @@ const createFactory = async (input: {
         lifecycle: inert,
       },
       waitForIdle: inert,
-      compactionLlmFactory: inert,
     },
     codex: {
       workspaceSkillMaterializer: {

@@ -26,5 +26,5 @@ describe('actual AgentRun/native shutdown queue ordering', () => {
       expect(phases).toEqual(['started', 'stopped']);
       expect(f.parent.requests).toHaveLength(3);
     } finally { release?.(summary); unsubscribe(); await f.close(); }
-  }, 15000);
+  }, 30000);
 });

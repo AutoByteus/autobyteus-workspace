@@ -1,0 +1,473 @@
+{
+  "run": "ab-sf-fr052-2ecf19a0",
+  "scope": "patched UNFS3 root daemon with all-squashed data serves chosen Mac bind to actual native Mac and two Docker clients; exact per-process Git trust and concurrent create; one physical Mac only, no agents/NLM/final product proof",
+  "engineCommit": "ec1660ba33c80d5c67131e163e68834c1a10e243",
+  "prototypePatch": "FR050 binary CREATE verifier correction",
+  "daemonMode": "root without -s; data all_squash=10001:10001",
+  "source": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr052-owned-y34fx4y_/source",
+  "mount": "/Volumes/autobyteus-shared",
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "clone",
+        "ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377",
+        "ab-sf-fr052-macos"
+      ],
+      "rc": 0,
+      "seconds": 1.02,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "set",
+        "ab-sf-fr052-macos",
+        "--cpu",
+        "2",
+        "--memory",
+        "4096"
+      ],
+      "rc": 0,
+      "seconds": 0.024,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr052-macos",
+        "/usr/bin/sw_vers"
+      ],
+      "rc": 2,
+      "seconds": 0.026,
+      "stdout": "",
+      "stderr": "VM \"ab-sf-fr052-macos\" is not running\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr052-macos",
+        "/usr/bin/sw_vers"
+      ],
+      "rc": 0,
+      "seconds": 3.049,
+      "stdout": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "ip",
+        "ab-sf-fr052-macos"
+      ],
+      "rc": 0,
+      "seconds": 0.025,
+      "stdout": "192.168.128.2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr052-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/usr/sbin/ipconfig getifaddr en0"
+      ],
+      "rc": 0,
+      "seconds": 0.185,
+      "stdout": "192.168.128.2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr052-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "uname -sm; id; sw_vers"
+      ],
+      "rc": 0,
+      "seconds": 0.147,
+      "stdout": "Darwin arm64\nuid=501(admin) gid=20(staff) groups=20(staff),12(everyone),61(localaccounts),79(_appserverusr),80(admin),81(_appserveradm),264(_webdeveloper),701(com.apple.sharepoint.group.1),33(_appstore),98(_lpadmin),100(_lpoperator),204(_developer),250(_analyticsusers),395(com.apple.access_ftp),398(com.apple.access_screensharing),399(com.apple.access_ssh),400(com.apple.access_remote_ae)\nProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "inspect",
+        "bridge",
+        "--format",
+        "{{(index .IPAM.Config 0).Gateway}}"
+      ],
+      "rc": 0,
+      "stdout": "172.17.0.1\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "ab-sf-fr050-unfs:probe",
+        "--format",
+        "{{.Id}}"
+      ],
+      "rc": 0,
+      "stdout": "sha256:feb18a8f02a7470eb5427abac1dc8794da707ff6fbcbc14cdb850c28fbcf977b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr052-2ecf19a0-server",
+        "--label",
+        "org.autobyteus.probe=fr-052",
+        "--user",
+        "0:0",
+        "-p",
+        "127.0.0.1::2049",
+        "--mount",
+        "type=bind,src=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr052-owned-y34fx4y_/source,dst=/export",
+        "--mount",
+        "type=bind,src=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr052-owned-y34fx4y_/config,dst=/config,readonly",
+        "sha256:feb18a8f02a7470eb5427abac1dc8794da707ff6fbcbc14cdb850c28fbcf977b",
+        "-d",
+        "-p",
+        "-t",
+        "-n",
+        "2049",
+        "-m",
+        "2049",
+        "-e",
+        "/config/exports"
+      ],
+      "rc": 0,
+      "stdout": "e95a8475dc158db5e44db6b3d3b2a38ef933274629f296b31d29a7e8df2b87b2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "inspect",
+        "ab-sf-fr052-2ecf19a0-server",
+        "--format",
+        "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}"
+      ],
+      "rc": 0,
+      "stdout": "172.17.0.6\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "port",
+        "ab-sf-fr052-2ecf19a0-server",
+        "2049/tcp"
+      ],
+      "rc": 0,
+      "stdout": "127.0.0.1:56053\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "port",
+        "ab-sf-fr052-2ecf19a0-server",
+        "2049/tcp"
+      ],
+      "rc": 0,
+      "stdout": "127.0.0.1:56053\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr052-2ecf19a0-server",
+        "node",
+        "-e",
+        "const f=require('fs');console.log(JSON.stringify({uid:process.getuid(),source:f.readFileSync('/export/project/preexisting.txt','utf8'),owner:f.statSync('/export').uid}))"
+      ],
+      "rc": 0,
+      "stdout": "{\"uid\":0,\"source\":\"KEEP_MAC_BIND_SOURCE\",\"owner\":0}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.probe=fr-052",
+        "--driver",
+        "local",
+        "--opt",
+        "type=nfs",
+        "--opt",
+        "device=:/export",
+        "--opt",
+        "o=addr=172.17.0.6,vers=3,proto=tcp,mountproto=tcp,mountvers=3,port=2049,mountport=2049,nolock,hard,timeo=50,retrans=2,actimeo=1,nosharecache",
+        "ab-sf-fr052-2ecf19a0-nfs-a"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr052-2ecf19a0-nfs-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr052-2ecf19a0-client-a",
+        "--label",
+        "org.autobyteus.probe=fr-052",
+        "--user",
+        "10001:10001",
+        "--entrypoint",
+        "tail",
+        "--mount",
+        "type=volume,src=ab-sf-fr052-2ecf19a0-nfs-a,dst=/Volumes/autobyteus-shared,volume-nocopy",
+        "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1",
+        "-f",
+        "/dev/null"
+      ],
+      "rc": 125,
+      "stdout": "",
+      "stderr": "docker: Error response from daemon: No such image: sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1\n\nRun 'docker run --help' for more information\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr052-2ecf19a0-client-a"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr052-2ecf19a0-client-a\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr052-2ecf19a0-nfs-a"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr052-2ecf19a0-nfs-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "logs",
+        "ab-sf-fr052-2ecf19a0-server"
+      ],
+      "rc": 0,
+      "stdout": "UNFS3 unfsd 0.11.0 (C) 2003-2025, various authors\n/export: ip ::ffff:172.17.0.1/128 options 22\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr052-2ecf19a0-server"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr052-2ecf19a0-server\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr052-2ecf19a0-server"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr052-2ecf19a0-server\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr052-2ecf19a0-client-a"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr052-2ecf19a0-client-a\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr052-2ecf19a0-nfs-a"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr052-2ecf19a0-nfs-a: no such volume\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "stop",
+        "ab-sf-fr052-macos",
+        "--timeout",
+        "10"
+      ],
+      "rc": 0,
+      "seconds": 0.229,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "delete",
+        "ab-sf-fr052-macos"
+      ],
+      "rc": 0,
+      "seconds": 0.136,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "cases": [
+    {
+      "name": "patched UNFS3 squashed-data daemon directly serves selected Mac source without file handles",
+      "status": "PASS",
+      "result": {
+        "node": "ab-sf-fr052-2ecf19a0-server",
+        "ip": "172.17.0.6",
+        "uid": 0,
+        "privateLoopbackPublication": "127.0.0.1:56053",
+        "source": "KEEP_MAC_BIND_SOURCE",
+        "containerSource": "/export",
+        "clientAllowlist": [
+          "172.17.0.1"
+        ],
+        "notEncrypted": true,
+        "owner": 0
+      },
+      "seconds": 0.093
+    },
+    {
+      "name": "two independent Linux daemon mounts share same Mac-bound storage identity at agreed path",
+      "status": "FAIL",
+      "error": "RuntimeError(\"docker: Error response from daemon: No such image: sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1\\n\\nRun 'docker run --help' for more information\\n\")",
+      "seconds": 0.048
+    }
+  ],
+  "cleanup": [
+    {
+      "container": "ab-sf-fr052-2ecf19a0-client-a",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr052-2ecf19a0-nfs-a",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr052-2ecf19a0-server",
+      "rc": 0
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr052-2ecf19a0-server",
+      "absent": true
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr052-2ecf19a0-client-a",
+      "absent": true
+    },
+    {
+      "kind": "volume",
+      "name": "ab-sf-fr052-2ecf19a0-nfs-a",
+      "absent": true
+    },
+    {
+      "exactVmStopRc": 0
+    },
+    {
+      "exactOwnedVmProcessExited": true
+    },
+    {
+      "exactOwnedCloneDeleteRc": 0,
+      "node": "ab-sf-fr052-macos"
+    },
+    {
+      "ownedHostScratchRemoved": true
+    }
+  ],
+  "ownedCloneCreated": true,
+  "nativeMacVm": {
+    "node": "ab-sf-fr052-macos",
+    "hostUid": 501,
+    "runArgv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "run",
+      "ab-sf-fr052-macos",
+      "--no-graphics",
+      "--no-audio",
+      "--no-clipboard",
+      "--no-usb-accessories",
+      "--net-host"
+    ],
+    "hostProcessPid": 48598,
+    "hostShares": false,
+    "guestProviderCredentials": false,
+    "ip": "192.168.128.2",
+    "gateway": "192.168.128.1",
+    "identity": "Darwin arm64\nuid=501(admin) gid=20(staff) groups=20(staff),12(everyone),61(localaccounts),79(_appserverusr),80(admin),81(_appserveradm),264(_webdeveloper),701(com.apple.sharepoint.group.1),33(_appstore),98(_lpadmin),100(_lpoperator),204(_developer),250(_analyticsusers),395(com.apple.access_ftp),398(com.apple.access_screensharing),399(com.apple.access_ssh),400(com.apple.access_remote_ae)\nProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n"
+  },
+  "vmHostOnlyRoute": {
+    "ownedGuestIp": "192.168.128.2",
+    "hostInterface": "bridge100",
+    "hostAddress": "192.168.128.1",
+    "noDefaultGatewayRequired": true,
+    "hostRoute": "   route to: 192.168.128.2\ndestination: 192.168.128.2\n  interface: bridge100\n      flags: <UP,HOST,DONE,LLINFO,WASCLONED,IFSCOPE,IFREF>\n recvpipe  sendpipe  ssthresh  rtt,msec    rttvar  hopcount      mtu     expire\n       0         0         0         0         0         0      1500      1174 \n",
+    "hostInterfaceInfo": "bridge100: flags=8a63<UP,BROADCAST,SMART,RUNNING,ALLMULTI,SIMPLEX,MULTICAST> mtu 1500\n\toptions=63<RXCSUM,TXCSUM,TSO4,TSO6>\n\tether be:d0:74:32:81:64\n\tinet 192.168.128.1 netmask 0xffffff00 broadcast 192.168.128.255\n\tinet6 fe80::bcd0:74ff:fe32:8164%bridge100 prefixlen 64 scopeid 0x1a \n\tinet6 fd88:b29f:b1ba:498e:1c46:41e:af05:ac07 prefixlen 64 autoconf secured \n\tConfiguration:\n\t\tid 0:0:0:0:0:0 priority 0 hellotime 0 fwddelay 0\n\t\tmaxage 0 holdcnt 0 proto stp maxaddr 100 timeout 1200\n\t\troot id 0:0:0:0:0:0 priority 0 ifcost 0 port 0\n\t\tipfilter disabled flags 0x0\n\tmember: vmenet0 flags=20003<LEARNING,DISCOVER,VIRTIO>\n\t        ifmaxaddr 0 port 25 priority 0 path cost 0\n\tAddress cache:\n\t\t72:76:f4:5e:d8:14 Vlan1 vmenet0 1198 flags=0<>\n\tnd6 options=201<PERFORMNUD,DAD>\n\tmedia: autoselect\n\tstatus: active\n"
+  },
+  "engineImage": "sha256:feb18a8f02a7470eb5427abac1dc8794da707ff6fbcbc14cdb850c28fbcf977b",
+  "server": {
+    "node": "ab-sf-fr052-2ecf19a0-server",
+    "ip": "172.17.0.6",
+    "uid": 0,
+    "privateLoopbackPublication": "127.0.0.1:56053",
+    "source": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr052-owned-y34fx4y_/source",
+    "containerSource": "/export",
+    "clientAllowlist": [
+      "172.17.0.1"
+    ],
+    "notEncrypted": true
+  },
+  "fatal": "RuntimeError(\"docker: Error response from daemon: No such image: sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1\\n\\nRun 'docker run --help' for more information\\n\")",
+  "serverLog": "UNFS3 unfsd 0.11.0 (C) 2003-2025, various authors\n/export: ip ::ffff:172.17.0.1/128 options 22\n",
+  "credentialFreeCloneDisposition": "deleted"
+}

@@ -1,4 +1,3 @@
-import { WORK_REQUEST_EXECUTION_LLM_INSTRUCTION } from "../../../../../../src/agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
 import { describe, expect, it, vi } from "vitest";
 import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../../src/agent-execution/domain/agent-run-context.js";
@@ -81,8 +80,8 @@ describe("ClaudeSessionBootstrapper", () => {
     expect(runContext.config.memberExecutionContext).toBe(memberExecutionContext);
     expect(runContext.runtimeContext.carpenterSystemPrompt).toContain("## Agent Identity");
     expect(runContext.runtimeContext.carpenterSystemPrompt).toContain("## AgentTeam Addressing");
-    expect(runContext.runtimeContext.carpenterSystemPrompt).toContain("## AgentTeam Collaboration");
-    expect(runContext.runtimeContext.carpenterSystemPrompt.split(WORK_REQUEST_EXECUTION_LLM_INSTRUCTION)).toHaveLength(2);
+    expect(runContext.runtimeContext.carpenterSystemPrompt).toContain("## Working With Other Agents");
+    expect(runContext.runtimeContext.carpenterSystemPrompt.split("On receiving a request, follow your own instructions and skills.")).toHaveLength(2);
     expect(runContext.runtimeContext.carpenterSystemPrompt).not.toContain("## Team Runtime");
     expect(runContext.runtimeContext.carpenterSystemPrompt).not.toContain("## Working Environment");
     expect(runContext.runtimeContext.carpenterSystemPrompt).not.toContain("## Bash Operating Practice");

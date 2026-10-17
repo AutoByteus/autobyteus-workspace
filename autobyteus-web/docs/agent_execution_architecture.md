@@ -96,6 +96,29 @@ The Pinia stores act as the primary interface for the UI components to interact 
   - `postToolExecutionApproval()`: Sends user decisions (Approve/Deny) for "Awaiting Approval" tool calls through the backend active-runtime approval command; it is not a restore or turn-starting operation.
   - `closeAgent()`: Cleans up local state and unsubscribes.
 
+### `agentRunCollaborationStore.ts` (Standalone Agent-run children)
+
+This store owns collaboration contexts, exact child selection and ephemeral
+Team disclosure beneath standalone Agent runs. Disclosure is keyed by
+`hostRunId` and `teamRunId`, not a displayed name or shared logical address.
+An absent choice means collapsed. Stored inspection and stream publication never open member lists; explicit
+toggles retain their choices across same-session refresh/reselection. Fresh
+frontend sessions start collapsed again. There is no automatic-opening helper,
+suppression Set or policy callback.
+
+`AgentRunTaskRows` uses the existing exact disclosure/selection actions;
+`useTaskRootNavigation` deliberately reveals only its target Team and selects
+its coordinator. Status, closure recovery, conversations and execution remain
+separate from disclosure. Agent Team and Agent Org roots keep their own policies.
+
+Collapsing does not defer child hydration. Stored inspection and stream
+snapshots still stage complete child contexts before publication, fetching each
+child's projection and artifact state through the existing hydration owners.
+Compact rows are not evidence of fewer reads or a host-selection speedup;
+host selection, collaboration publication and member readiness are distinct
+boundaries. See [Projects](./projects.md#delegated-team-disclosure-under-agent-runs)
+for the user interaction contract.
+
 ### `agentTeamRunStore.ts` (Agent Teams)
 
 - **Role**: Owns Team launch, restore, exact execution focus, Team stream
@@ -493,7 +516,7 @@ ordinary tree-row style: no border or tint at rest, `gray-50` hover, a 2px
 `indigo-500` `:focus-visible` ring, and the same selected treatment as a member
 row. A transient task-Team row uses an unboxed 16px `slate-500` filled
 people-group icon (`heroicons:user-group-20-solid`) and a semibold name. Team
-identity uses this group glyph regardless of configured, collaborator or delegated
+identity uses this group glyph regardless of configured or delegated
 role; existing image-first Team avatars remain unchanged. Project/Temp Task Team
 workers and Memory Team groups use the same glyph, retaining their existing sizes
 and Memory task-role boxes/colors. Unrelated capability icons, including the model
@@ -505,6 +528,23 @@ direct delegated task-Agent or task-Team row ("Started by <delegator>",
 resolved through the tree) is kept in its aria-label only; a child without a
 recorded `delegatorAgentRunId` (created before the resource lifecycle) has no
 starter. Branch lines run straight through member and task rows.
+
+A delegated task-Agent or task-Team row in a live run has a small stop icon
+(`DelegatedStopButton`) while the copy runs. All actionable sidebar Stops—Agent,
+Team and Org roots as well as Agent and whole-Team copies—are red at rest
+(`text-red-500`, `#ef4444`), darker red on a pale-red background on hover
+(`hover:text-red-600 hover:bg-red-50`), and red again on pointer leave.
+Disabled/pending sidebar Stops are muted (`text-gray-400`, project `#999999`)
+with their existing reduced opacity and cursor; even on hover they remain gray
+on a transparent background. Each control keeps its existing transition and
+native button semantics: roots retain native focus, copies their focus-visible
+ring, pending pulse and reduced-motion override. This applies under Agent,
+Team and Org roots (`WorkspaceTransientExecutionRow`,
+`WorkspaceAgentOrgHistoryCollection`). It stops only that copy and the copies it
+started (`delegatedLaunchDraftStore.stop` → `stopDelegatedExecution`). The copy
+stays restorable and the run keeps running. Task-Team child rows have no icon,
+because a Team copy is stopped as a whole. Its Settings row has the same action.
+See [Settings → Existing Run Configuration](./settings.md#existing-run-configuration).
 
 In the AgentOrg Workspaces rows, a delegated task-Team row with children has the
 mounted-Team chevron and `aria-expanded`. It starts expanded, and a row click
@@ -518,6 +558,9 @@ the depth-first execution projection and derives sibling continuation metadata.
 `WorkspaceHierarchyBranches.vue` renders continuous ancestor rails and a
 right-only current elbow from that metadata; the current vertical continues to
 the next sibling or stops at the current row midpoint for the last sibling.
+A two-line Task-worker row (with its [Task summary](./projects.md#task-summaries-in-the-workspaces-tree))
+uses `anchor="name-line"`: the elbow, and a last sibling's vertical, meet the
+name line instead of the row midpoint.
 These branches are presentation-only and do not create or rewrite topology.
 Selecting either a stable or transient Workspaces row uses the existing
 team-member inspection path. `TeamExecutionViewState` is the sole authority for
@@ -1210,7 +1253,7 @@ Org-root/addressed-member and saved-config owners retain draft, registration,
 locking and explicit Send/Run/Save policy. Saved roots do not become editable.
 This replaces the shared form's text-only presentation, not its owners or the
 retired configuration-form stack. See [workspace settings](./settings.md#run-workspace-choice-on-start-surfaces)
-and the [native-picker regression runbook](../../TESTING.md#native-workspace-folder-picker-regression)
+and the [native-picker regression probe](../tests/e2e/workspace-folder-picker-probe.mjs)
 for user behavior and the separate native/controlled test boundaries.
 
 The Existing workspace picker used elsewhere is the shared
@@ -1236,6 +1279,24 @@ intents. `existingRunConfigStore.discardChanges()` backs Cancel, and
 (`useRunStopAction`, the same per-kind terminate action as the workspace tree). Cached
 history lifecycle state may conservatively relock the current target but cannot
 unlock it or supersede the Settings-owned read.
+
+For a stopped standalone Agent, `readAgentCanonical` reads resume metadata and
+`readAgentRunCollaboration` through the existing read-only network client. The
+Settings draft retains only `execution_tree` and `closed_task_executions` as its
+`delegatedSnapshot`; it does not hydrate child conversations or attach a runtime.
+`ExistingRunConfigEditor` builds stopped delegated rows from that snapshot,
+not the cached live collaboration view. Active Agent rows retain their live-view
+owner; Team/Org rows retain their existing canonical tree path. Root-only Agent
+results preserve the same-root snapshot, never another run's snapshot.
+
+Delegated Save waits for `reloadCanonical(true)` before announcing success.
+The save lock covers mutation and readback, and same-target refresh preserves
+the mounted editor/disclosures. Failed writes retain edits; accepted writes
+with failed readback clear committed drafts but require read-only Refresh before
+more editing. Retry uses the same complete canonical read, including when the
+initial draft is unavailable. Request IDs and window-node binding revisions
+reject stale completions after root/node changes. No persistence format,
+launch-default policy, conversation identity or stop/resume contract changes.
 
 Existing-run editing is intentionally narrow. Runtime kind,
 workspace, automatic-tool policy, definition/provider identity, concrete run
@@ -1401,7 +1462,7 @@ other); choosing another model resets both. Thinking semantics stay in
 `llmThinkingConfigAdapter`; `service_tier` is not a thinking key.
 
 `ModelConfigSection` / `RuntimeModelConfigFields` remain only for mobile run
-setup, definition launch preferences and compaction model settings.
+setup and definition launch preferences.
 
 
 ### Skill Improvement Manual Composer Action
@@ -1450,7 +1511,7 @@ the UI must not imply improver completion proves downstream improvement.
 
 **+** on a run starts another run like it, through `useRunStart`:
 
-- **Agent** (the Chat run view, including an `@` collaborator child's view):
+- **Agent** (the Chat run view, including a delegated child's view):
   `copyAgentFromConfig(displayed config)` opens New chat for the agent on
   screen, prefilled with its workspace (temp when it has none), runtime, model,
   `llmConfig` (thinking and other model settings) and tool approval.
@@ -1675,6 +1736,7 @@ for that evidence-free case.
 
 - **`handleSystemTaskNotification`**: Preserves backend-authored `SYSTEM_TASK_NOTIFICATION` payload content and sender identity by appending a `system_task_notification` segment to the current AI message. The frontend must not rewrite task-delegation display copy or convert these notifications into user/member input rows.
 - `AIMessage.vue` delegates `system_task_notification` segments to `SystemTaskNotificationSegment.vue`. That component renders the content through the normal markdown message renderer while retaining semantic hooks (`system-task-notification`, test id, `role="note"`, and an accessible label). The default presentation should read like ordinary chat content rather than a prominent alert card.
+- **Skill update notices** use the same segment. When the sender is `system.skill_update_notifier`, or the content starts with `[Platform notice — skill updated]` (replayed history), the segment shows the label and aria-label **Skill updated**. The key is `workspace.components.conversation.segments.SystemTaskNotificationSegment.skillUpdated` (en "Skill updated", zh-CN "技能已更新"). The user's message that carried the notice still renders as typed. See the server's [Skill Update Notices](../../autobyteus-server-ts/docs/modules/skill_update_notices.md).
 
 #### `toolLifecycleHandler.ts`
 
@@ -1756,22 +1818,25 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
 4.  **Token Usage Meter (`TokenUsageMeterStore`)**:
     - Listens to live `TOKEN_USAGE_UPDATED` events through the standalone/team handlers and hydrates reopened/focused subjects through current-run-record GraphQL summary queries. An individual live update becomes display-ready only from the strict post-persist `run_summary_after_event` cumulative snapshot; raw meter deltas are not treated as durable hydration.
     - The server summary builder narrows the broader statistics aggregate to the exact public cumulative-summary contract before either transport branches. Statistics-only `observed_*` diagnostics must never leak into standalone or Team events; strict transport parsing remains fail-closed rather than loosening the DTO to admit internal aggregate fields.
-    - Maintains record-backed standalone summaries by exact AgentRun id and Team-member summaries by the compound TeamRun/AgentRun identity. Missing, malformed, unsafe, or identity-mismatched cumulative snapshots are not admitted, so a partial live event cannot suppress the GraphQL fallback. Higher-only `usageReportCount` admission prevents an equal or older GraphQL/live result from replacing a newer cumulative summary.
+    - Maintains record-backed standalone summaries by exact AgentRun id and Team-member summaries by the compound TeamRun/AgentRun identity. Missing, malformed, unsafe, or identity-mismatched cumulative snapshots are not admitted, so a partial live event cannot suppress the GraphQL fallback. Higher-only `revision` admission for exact-run and Team-member summaries prevents an equal or older GraphQL/live result from replacing a newer cumulative summary; model-call count alone cannot order context-only updates.
     - Team aggregates use explicit `live_partial`, `refresh_required`, and `record_backed` states. Persisted Team events may extend a provisional aggregate before hydration; after a record-backed aggregate exists, a later event marks it refresh-required instead of blindly adding a delta to a result that may already include that event. The store permits at most one aggregate request at a time and repeats the GraphQL refresh sequentially until no Team event arrived during the request; only the stable response marks the Team total hydrated.
     - Preserves gross input, standard/uncached input, cache-read/cache-write input, cache state, cache hit rates, output/reasoning/billable output, nullable component costs, server-provided component `unitPrices`, `apiCostStatus` (`estimated`, `price_missing`, `partial_price_missing`, `local_no_api_bill`, or `mixed`), missing price dimensions, latest prompt/context-window fields, latest model/runtime, and `usageReportCount`.
     - Missing price data is rendered as price missing/partial rather than `$0`; local runtime rows are rendered as `Local / no API bill`; mixed-currency/provider aggregates keep token totals but no fake aggregate monetary total.
     - Powers the right-side `Token` tab (`TokenUsageMeterPanel.vue`). The internal tab id may remain `usage`; the user-visible label is token-oriented. Workspace headers intentionally do not render token/cost chips; token usage detail belongs in the Token tab rather than the agent/team top header.
-    - `useTokenUsageWorkspaceScope.ts` owns the Token tab subject boundary. Single-agent workspaces resolve the selected agent run as the primary summary; team workspaces resolve the focused leaf member's agent run as the primary summary. Team aggregates must not override a focused member primary summary; if a focused route is not a leaf run, the panel shows a focused-run unavailable state instead of falling back to the aggregate.
-    - `TokenUsageMeterPanel.vue` is presentation-only: it renders the approved focused-run Token Meter hierarchy (`Latest prompt`, `Gross input`, `Output`, `Total estimate`, `Input breakdown`, `Pricing details`, and collapsed `Calculation details`) and never imports provider pricing metadata or recalculates model prices.
+    - `useTokenUsageWorkspaceScope.ts` owns the Token tab subject boundary. Single-agent workspaces display the selected host's standalone usage/cost roll-up, which may include its delegated copies; team workspaces resolve the focused leaf member's agent run as the primary summary. TPS uses the exact selected run separately, never that roll-up. Team aggregates must not override a focused member primary summary; if a focused route is not a leaf run, the panel shows a focused-run unavailable state instead of falling back to the aggregate.
+    - `TokenUsageMeterPanel.vue` is presentation-only: it renders the `TPS` card independently of totals availability, followed by the existing hierarchy (`Latest prompt`, `Gross input`, `Output`, `Total estimate`, `Input breakdown`, `Pricing details`, and collapsed `Calculation details`). It never imports provider pricing metadata or recalculates model prices.
+    - TPS is a real-time fact of each model call, not accounting or a Team aggregate. The runtime integration measures the call and its usage event carries `output_throughput` (method, output tokens, integer duration ms), already accepted or nulled on the server. `tokenUsageThroughput.ts`, private to the meter, keeps the newest TPS per run: both live intakes record it right after the seen-key de-duplication (so Team's two effects record one value), independent of the summary. `getRunTps` and the scope composable use the selected target's exact `context.state.runId`, even where the cost summary rolls up other agents. The card shows "TPS", the value, the call's reported model and, for end-to-end readings only, "incl. time to first token"; with no received value (including after reload and for history) it shows "—". See [TPS](token_meter.md) for the methods per runtime. The unchanged empty Team summary builder lives in `tokenUsageTeamAggregate.ts`.
     - For Claude Agent SDK runs, the server's selected-model-only canonical and raw identity, configured API-equivalent estimate, and cache-write-rate assumption flow through the strict cumulative DTO into `TokenUsageMeterStore`. The panel labels this as a configured estimate rather than a subscription charge, shows the selected raw model, and visibly marks any cache writes priced at the assumed 1-hour rate. Auxiliary-model usage is not silently merged into the selected run meter; the browser does not recompute the price or infer the cache duration.
     - `TeamTokenUsageSummary.vue` renders the subordinate team comparison as one semantic grouped-metric table for team workspaces. The table keeps `Member`, `Gross input`, `Output`, and `Total` columns available at all widths; each metric cell pairs the token count with its matching API cost subline, the Team subtitle explains once that costs are estimated and that Total cost is input plus output cost, horizontal scrolling is scoped to the Team table region when the right-side panel is too narrow, visible focused-member state is preserved, and the explicitly labeled `Team total` aggregate remains the final row when available.
     - `Gross input` is cumulative input sent to provider context and may include discounted cache-hit tokens. It is distinct from `latestPromptTokens`, which is the latest model-call prompt/context size used for the latest prompt progress bar.
     - `Input breakdown` renders server-owned uncached/full-price input, cache hits/discounted input, cache writes, input cache rate, and component costs only when meaningful; zero/unknown rows remain hidden instead of fabricated.
     - `Calculation details` is the explicit unit-price disclosure. It shows component rows with tokens, server-provided unit price, cost, and the formula `tokens ÷ 1,000,000 × unit price`; mixed, missing, partial-missing, and local/no-bill unit-price states render as labels such as `varies by call`, `unpriced`, `partially missing`, or `Local / no API bill` instead of a frontend price table or blended rate.
-    - `Usage reports` in pricing details is `usageReportCount`, usually model calls or model turns. It is not user messages, chat rows, or a raw primary `events` label.
+    - After a completed compaction on the native runtime or the Claude Agent SDK (whose new context size arrives only with the next model call), the `Latest prompt` value and bar stay at the previous reading, greyed, with the note `Compacted — updates on the next model call`. The mark is live-session state in `tokenUsageCompactionMarks.ts` (owned by `tokenUsageMeterStore`), set by `agentStatusHandler` on a newly completed `COMPACTION_STATUS` (failed or stopped compactions never mark). Only that run's next live token-usage event with `reports_model_call` clears it; fetched or hydrated summaries and reading-only events (Codex post-compaction size, Claude turn-end remainder) do not. Codex shows no note because it reports its post-compaction size directly. A native compaction summary call counts as a model call with tokens and cost but carries no reading, so it never changes the displayed reading.
+    - `Usage reports` in pricing details is `usageReportCount`, the number of model calls (reading-only updates such as a Codex post-compaction size and Claude SDK turn-end reconciliation do not count). It is not user messages, chat rows, or a raw primary `events` label.
     - Reasoning output appears only inside the Output card and only when the server summary reports positive reasoning output tokens. The copy states that thinking tokens are included in output tokens and estimated output cost; calculation details show the reasoning unit price as the output price / included in output cost so users do not double-count thinking.
-    - The `Latest prompt` block renders when latest-prompt tokens are present. Known context capacity shows percentage/progress; unknown capacity shows the prompt-token count with explicit `contextLimitUnavailable` copy and never fabricates a denominator or percentage.
-    - For a Claude SDK result, the server derives the full latest prompt from base input plus both cache buckets and uses only the selected raw model's positive reported context window. It supplies exact percentage/progress (`100 × prompt ÷ capacity`) to the strict stream/GraphQL summary; an older valid same-record prompt/capacity with null stored percentage is read-derived without SQL mutation. The panel's existing one-decimal label and exact progress width render that server value (for example, `22,135 / 1,000,000` displays `2.2%` with `2.2135%` progress). Missing/zero/unsafe capacity remains unavailable; no `[1m]` model-name assumption, cross-record stitching, or frontend price/context recomputation is allowed.
+    - The `Latest prompt` block renders when latest-prompt tokens are present. It is the runtime's own count of tokens in context for its latest model call, measured against the window that runtime uses (server-owned `latestPromptTokens`, `effectiveContextWindowTokens`, `contextWindowUsagePercent`); it drops after a compaction. Known context capacity shows percentage/progress; unknown capacity (AGY, Grok) shows the prompt-token count with explicit `contextLimitUnavailable` copy and never fabricates a denominator or percentage.
+    - When the runtime reports its auto-compaction threshold (`contextCompactionThresholdTokens`: Claude Agent SDK, and the native runtime when automatic compaction is enabled), the bar shows a marker at threshold ÷ window and an `Auto-compacts at <tokens>` label. A runtime's own reading can exceed its window (Codex just before it compacts, the Claude SDK after a failed compaction): the percentage shows the true value, the bar stays clamped at 100 % in amber, and `Over the runtime's window` is shown. See `autobyteus-server-ts/docs/modules/token_usage.md` for each runtime's source.
+    - For Claude Agent SDK runs, the server publishes every main-loop model call live during the turn with the SDK's own context reading (`getContextUsage()`: tokens in context, raw window, auto-compaction threshold) and supplies the exact percentage (`100 × prompt ÷ window`) in the strict stream/GraphQL summary; the turn-end result only reconciles totals. The panel's one-decimal label and exact progress width render that server value (for example, `22,135 / 1,000,000` displays `2.2%` with `2.2135%` progress). Readings of Claude SDK rows written before the token-meter-accuracy change were cleared once (they summed every call of a turn) and show as unavailable until the next call. Missing/zero/unsafe capacity remains unavailable; no `[1m]` model-name assumption, cross-record stitching, or frontend price/context recomputation is allowed.
     - Browser-facing proof should validate clean agent/team headers with no token chip and validate the Token tab against server/GraphQL-backed summaries, including focused member primary selection, the scoped horizontally scrollable grouped Team table at constrained widths, absence of a standalone Cost column, the `Total` grouped metric column remaining reachable and row-associated, normal estimated rows omitting repeated status copy, subordinate final-row team total, price-missing, partial-price, local/no-bill, mixed-currency, cache-positive, unit-price calculation details, reasoning-token included-in-output copy, model/runtime, usage-report, and latest-prompt display where present.
     - Live store coverage must preserve the complete strict cumulative snapshot from server events, including Codex-style cache/reasoning tokens/cost, component unit prices, latest runtime/ingestion/model metadata, and latest prompt/context-window fields used by the Token Meter. Post-persist event snapshots and hydrated GraphQL summaries converge to the same display shape and generation rules. The durable Team transport regression must construct its snapshot through the production observation/fold/record/aggregate/public-summary builders and parse the final strict stream message, proving both complete field preservation and absence of aggregate-only diagnostics.
     - Current durable regression coverage includes GraphQL E2E for cached gross input, provider-specific semantics, local/no-bill, custom missing price, mixed currency, runtime field names, unit-price hydration across run/team/member/statistics summaries, and built-process restart reads of existing current records. Frontend store/component tests cover null/partial live events before reopen hydration, exact Team/member identity, higher-only individual generations, stable single-flight Team refresh, focused team member primary selection, grouped Team table headers/rows, paired token+cost metric cells, absence of a standalone Cost column, scoped table-scroll hooks, clean header rendering, Token Meter hierarchy, calculation details, cache-aware rows, price-status labels, localization catalog coverage, and latest prompt fields. Latest visual evidence for the cache-aware Token Meter is under `tickets/token-input-prompt-discrepancy-analysis/implementation-evidence/`.

@@ -1,0 +1,18 @@
+{
+  "result": "Pass for artifact consistency only, NOT product/API Pass",
+  "sourceReviewResult": "CRR-005 Fail / Design Impact",
+  "checks": {
+    "unchangedRelevantSourceAndAuthorities": true,
+    "historyPrefixPreserved": true,
+    "jsonPythonParse": true,
+    "stagedWhitespacePass": true,
+    "bothVMsAndRootsAbsent": true,
+    "zeroWireProofNotPromoted": true,
+    "singleExactRuleRecipient": true
+  },
+  "unchangedPathCountExcludingReviewerReports": 27,
+  "cumulativeReferenceCount": 306,
+  "noRerunOfRepositoryOrPublicCLI": true,
+  "diagnosticSource": "Python same-boundary replay, manual test-owned setup; original API public failures authoritative",
+  "productionHash": "497efd6abb0c2cfa4c740a87f005c529cbf026a6fa218b3acd345826f4a923da"
+}

@@ -2,6 +2,7 @@ import type { TranslationCatalog } from "../../runtime/types";
 
 const messages = {
   "workspace.components.conversation.SkillRequestChips.sentToTheAgentAs": "发送给智能体的内容",
+  "workspace.components.conversation.segments.SystemTaskNotificationSegment.skillUpdated": "技能已更新",
   "fileExplorer.workspaceUnavailable": "工作目录信息暂不可用。请刷新或重新打开设置以加载已保存的工作目录。",
   "workspace.teamCopy.loading": "正在读取已保存的团队配置…",
   "workspace.runModelConfig.modelRequired": "启动前请选择模型。",
@@ -231,6 +232,8 @@ const messages = {
   "workspace.history.hierarchy.tree_label": "{{name}}组织树",
   "workspace.history.hierarchy.role.agent_team": "智能体团队",
   "workspace.history.hierarchy.role.agent": "智能体",
+  "workspace.history.copyTask.locate": "在项目中显示任务：{{title}}",
+  "workspace.history.copyTask.accessible": "任务：{{title}}",
   "workspace.history.hierarchy.role.temporary_task_team": "临时任务团队",
   "workspace.history.hierarchy.role.temporary_task_agent": "临时任务智能体",
   "workspace.history.hierarchy.identity": "{{role}} · {{name}} · {{address}}",

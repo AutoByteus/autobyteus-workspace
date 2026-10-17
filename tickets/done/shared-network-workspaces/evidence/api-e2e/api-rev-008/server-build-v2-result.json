@@ -1,0 +1,192 @@
+{
+  "tag": "ab-nfs-api008-server:current",
+  "context": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api008-0frlwk0o/server-build-context-v2",
+  "inputHead": "c01dbfdcb6032a26177a2f92bb487aa95c39d422",
+  "result": "Ready",
+  "trackedContextCount": 6490,
+  "credentialNamedFiles": [
+    "autobyteus-web/.env",
+    "autobyteus-web/.env.production"
+  ],
+  "publicConfigAudit": [
+    {
+      "path": "autobyteus-web/.env",
+      "sha256": "cf559f0364b7ddf10b554da7b9b9549228cce442665a5f21aebee210934b933e",
+      "keys": [
+        "BACKEND_GRAPHQL_BASE_URL",
+        "BACKEND_REST_BASE_URL",
+        "BACKEND_GRAPHQL_WS_ENDPOINT",
+        "BACKEND_TRANSCRIPTION_WS_ENDPOINT",
+        "BACKEND_TERMINAL_WS_ENDPOINT"
+      ],
+      "classification": "Tracked public loopback-only endpoint defaults; no credentials"
+    },
+    {
+      "path": "autobyteus-web/.env.production",
+      "sha256": "b683969dd44163e07457ae6dae6080cd4f2892bb2aba029048aa91fa7af04866",
+      "keys": [
+        "NUXT_PUBLIC_GRAPHQL_BASE_URL",
+        "NUXT_PUBLIC_REST_BASE_URL",
+        "NUXT_PUBLIC_WS_BASE_URL",
+        "NUXT_PUBLIC_TRANSCRIPTION_WS_ENDPOINT"
+      ],
+      "classification": "Tracked public loopback-only endpoint defaults; no credentials"
+    }
+  ],
+  "archivePaths": [
+    ".dockerignore",
+    "pnpm-workspace.yaml",
+    "pnpm-lock.yaml",
+    "package.json",
+    "LICENSE",
+    "LICENSING.md",
+    "NOTICE",
+    "autobyteus-ts",
+    "autobyteus-application-sdk-contracts",
+    "autobyteus-application-backend-sdk",
+    "autobyteus-agent-presentation-contracts",
+    "autobyteus-collaboration-stream-contracts",
+    "autobyteus-team-stream-contracts",
+    "autobyteus-server-ts",
+    "autobyteus-web"
+  ],
+  "contextArchiveSHA256": "e1d557bea7eca420b98a23788c6e212e2b7f965cf0a2232095c17df77a4e77aa",
+  "argv": [
+    "docker",
+    "build",
+    "--platform",
+    "linux/arm64",
+    "-f",
+    "autobyteus-server-ts/docker/Dockerfile.monorepo",
+    "-t",
+    "ab-nfs-api008-server:current",
+    "."
+  ],
+  "rc": 0,
+  "seconds": 195.226,
+  "image": [
+    {
+      "Id": "sha256:985611996d6b29b173e3ce228ac88b4a03d277d37f45bd0c3469bc416d5981d2",
+      "RepoTags": [
+        "ab-nfs-api008-server:current"
+      ],
+      "RepoDigests": [
+        "ab-nfs-api008-server@sha256:985611996d6b29b173e3ce228ac88b4a03d277d37f45bd0c3469bc416d5981d2"
+      ],
+      "Comment": "buildkit.dockerfile.v0",
+      "Created": "2026-10-15T15:20:21.520269878Z",
+      "Config": {
+        "ExposedPorts": {
+          "5900/tcp": {},
+          "6080/tcp": {},
+          "8000/tcp": {},
+          "9223/tcp": {}
+        },
+        "Env": [
+          "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "USER_UID=1000",
+          "USER_GID=1000",
+          "IMAGE_VARIANT=default",
+          "DEBIAN_FRONTEND=noninteractive",
+          "DISPLAY=:99",
+          "SCREEN_RESOLUTION=1920x1080x24",
+          "XDG_RUNTIME_DIR=/run/user/1000",
+          "GTK_IM_MODULE=fcitx",
+          "QT_IM_MODULE=fcitx",
+          "XMODIFIERS=@im=fcitx",
+          "SDL_IM_MODULE=fcitx",
+          "LANG=en_US.UTF-8",
+          "LANGUAGE=en_US:en",
+          "LC_ALL=en_US.UTF-8",
+          "NODE_ENV=production",
+          "BROWSER=/usr/local/bin/open-vnc-browser-url.sh",
+          "HOME=/root",
+          "AUTOBYTEUS_BIND_HOST=0.0.0.0",
+          "AUTOBYTEUS_SERVER_PORT=8000",
+          "AUTOBYTEUS_DATA_DIR=/home/autobyteus/data"
+        ],
+        "Entrypoint": [
+          "/usr/local/bin/entrypoint.sh"
+        ],
+        "WorkingDir": "/app",
+        "Labels": {
+          "org.opencontainers.image.licenses": "AGPL-3.0-only",
+          "org.opencontainers.image.version": "24.04"
+        }
+      },
+      "Architecture": "arm64",
+      "Os": "linux",
+      "Size": 2448278447,
+      "RootFS": {
+        "Type": "layers",
+        "Layers": [
+          "sha256:8edaba05454265cd17270d38ec146446c640d1d25637413c3da64a3eff296c36",
+          "sha256:0a6faf9004fe0e2f082aa679cd0fdd04e8f2214164bd0d36d50e08d0083de2bf",
+          "sha256:4e29fb3d7cf2aeafe253968937594e8c18d369cfaaad456845a09b1972e83cb6",
+          "sha256:bfdc7a8e4053c29967878fa4d9ca776a91931a13bb5833215abfd9f1f629c626",
+          "sha256:46f1b9636cf9d159133f44a57d0087949394c85cc3256a2697a8da753dd25a0b",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "sha256:7c9503120f9b28be708cd56d20acae9e2fa4347708996eb4ef3e2bd0a4400188",
+          "sha256:3cb7fc6d09034bef4748ea873a209ae871fa7a52596821a1c5333a802842225b",
+          "sha256:982c11de681e8a237f69c21ed29f9b14625ce62a3b3c35daa9b9fcefb83df440",
+          "sha256:f4e5a04b277f779e41f1e33a22e6eee2375a5f2266bc2e9320ea08be7d1c49d6",
+          "sha256:bda2b77da71af0fd7e7aa4fb614e5d28abd34fdd8658e51bc284ee1db356f548",
+          "sha256:6e80ec3ee46c7ebf78df32fd200f1011f1446e5cbc7a994f8b052282a5bf311c",
+          "sha256:66ebbb62d6c4bb7bd0c116dd077b2ba236683c2d35f98caeb805a043e84d88e2",
+          "sha256:3438fb3e914b7eec4f5c11d759bce472f213381ad27b92cab2d61f76ba07654b",
+          "sha256:e716cc382ecbe6adbf6841016c1a7713f0acc3d9ef7ab2c905e40e63ba00a29d",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "sha256:73901430933a953f7eefaf21c90715d2081b28c23a7c8e8fda9c1377908af017",
+          "sha256:85162ee2d6b1f6dbc636ffc07119caa5a0007b1a1c542e169e1e6dcb666a29f2",
+          "sha256:503b828895d92da766d7cf23fca8eddc5e6df1fa1e703a07dbff0cd5e0721b3d",
+          "sha256:c9517c2bd85765ae79dba4a7f15f3357793c772b3d013754ea321c248e5ccd21",
+          "sha256:a808488faba3acb677b2fa02f69a5231218e109f206402d0b975f00c61327339",
+          "sha256:86918b38d2d50c4ffea690cb67351335f4e74e19c2ab564a620cc09bd5b32705",
+          "sha256:2d88ade8d2d46842d835b97e34dd76f3883255b544f8c38a28bfd0911578a8b8",
+          "sha256:0920e1b2b80ecd0972b7b8a2e3c34085cdf7019b2a6040304bb2a0ad9b9b03e9",
+          "sha256:551b94912e5b18c30071aa47cb3cb56a9b8e3e09e145e6ef580830b6a71cc2be",
+          "sha256:c373b2c2fb3f72c8a0901af592f9626327b33ece7bded2f34d0ba996e0c47134",
+          "sha256:a79b9b6ea45b99939847d50c24cadf8a1b0d69a3acf6bb2629eb16433a5c33ae",
+          "sha256:b1ea33c6cd3da4485e2f8300e94ad68ae26cbc8d7efb34b06484693cb9d04ae7",
+          "sha256:6d344a25d1eabbe7ebaaeff380cdfd3934a381e971cb437854063ca6256d1369",
+          "sha256:9f6559b3b3121f30ceff6c7af76a2843cfc1d0a44d5099e63d2737dd57a8a201",
+          "sha256:d946fe8c91b8ef4a3ba0c7321449c59782a6045c2b0f87c292a1ff36b42be599",
+          "sha256:5e2fe4fe3b0009060664a4b59868a9edea6714e9a2d369eafd903569b6ad0649",
+          "sha256:232340a5fea63dc70c7d5a8f4e22230f5e729b3a82eed56c266ad2401097b0e0",
+          "sha256:f42f082e60a877f4e3ef0b00753d10a7b783f262bf9690eb0f9531e58656db23",
+          "sha256:6bdd1fc60bf4182058cf9c59b7343e51ebe4021980f2189c8ac068b951f43e2d",
+          "sha256:4e67a27fb9bdfbe52aab437251e2a019786a7dcd7f9fb61da19af498aee3e245",
+          "sha256:c72ab95b7a52ad499b9e993d31e4e129a2f7da6147d7d64c10d7a9612380befc",
+          "sha256:23635c3e0c0c7890984afcc111116a2eb8cdf050779562c269f9d381e1da3fde",
+          "sha256:b06485639c0cc0cb0e85f98766134a4b162b0179589469e69f86dded039a25b3",
+          "sha256:4878901e7d50231e44a0e2534fe25980d3c7a6adbb1f40b48c726604a4dd3c7b",
+          "sha256:3a222529908a67b324c4d68c4e2f9857d9565889258dd57786fb59dea34ef56b",
+          "sha256:a3de624fefb96032cb1d7591a5931a4cfa163e0b46fdd8a375983cd6d4ab78f1",
+          "sha256:57f898d27daa3e585f899f0905820fd82afdffb74b86ff3ef19828b5ee2e9904",
+          "sha256:a8bf6302aaac5c0d6f728f223fac0a3f4711a6d5cfc7767ff604a9f871fdd62e",
+          "sha256:14b5f28cb2740f297b484b5c57da42e2103aa333ecb31ba76ee73e96030e4daf",
+          "sha256:78962cdf470b6839dbfdb11a43bb78a576ddff849dfcd34db216f9d5b90d34f6",
+          "sha256:d6769a070bb870ca9f6e4351dba68a6abc12eefff0a97277ba6f7d92cdafe988",
+          "sha256:2994af4d27fd3b5bc3a5eea0ef844b24d84edbb2c632ab1e01ea28f7d2e0b9f2",
+          "sha256:98346c0947b845a059712e93a395e68bd77dd1321d53ff652c0abbd170452323",
+          "sha256:8feacd3da66593538eae4d6452de43bc11efa24d3fae562adad9600776ee12fa",
+          "sha256:adbbe62cea4d75f8d81e9b43a8fa4e9cc8fc9fa20df07a420424b289032caf95",
+          "sha256:cc6c103b180d85bc899fa393920443034559cfba2250da0a8af08a5f9e6aa0b6",
+          "sha256:83b99dab0d0312815ae917c248631a6b1bb68e9e16e9d19fd1a990a164382dc7",
+          "sha256:911e0e5c597ff55b2365752ed430acb7d07c6315111b1c69f16854c0db521df0",
+          "sha256:e10f49c9d6a05d99a002ac8aee5d47ad9477307ba85539c7de3a645292800e13",
+          "sha256:fac1b135fa3716b508d299451f49fd17d2a20d783de314e942ad814e22c4fa26",
+          "sha256:96b3d9d41d141c9b3b742dc015cdddcead452aa0967f49fa9f6a5974e9df93bd"
+        ]
+      },
+      "Metadata": {
+        "LastTagTime": "2026-10-15T15:21:03.492025758Z"
+      },
+      "Descriptor": {
+        "mediaType": "application/vnd.oci.image.index.v1+json",
+        "digest": "sha256:985611996d6b29b173e3ce228ac88b4a03d277d37f45bd0c3469bc416d5981d2",
+        "size": 857
+      }
+    }
+  ]
+}

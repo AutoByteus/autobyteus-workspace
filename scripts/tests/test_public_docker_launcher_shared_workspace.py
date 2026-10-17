@@ -1,8 +1,18 @@
+"""Fake-Docker launcher regressions (repository-root unittest invocation).
+
+Run: python3 -m unittest scripts/tests/test_public_docker_launcher_shared_workspace.py -v
+Python 3.9+; PowerShell parsing requires pwsh. Preferred-port policy cases own a
+scoped bind-query double, not host listeners; random allocation and launcher
+policy remain real. The native collision case can skip on an occupied host.
+The macOS system-Bash apostrophe regression is retained after its baseline fix.
+"""
+import json
 import os
 import shutil
 import shlex
 import socket
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -17,8 +27,10 @@ POWERSHELL_MODULE_DIR = REPO_ROOT / "scripts/public/docker/autobyteus-docker.d/p
 BASH_LAUNCHER_SOURCES = [
     BASH_LAUNCHER,
     BASH_MODULE_DIR / "core.sh",
+    BASH_MODULE_DIR / "container-config.sh",
     BASH_MODULE_DIR / "docker-runtime.sh",
     BASH_MODULE_DIR / "commands.sh",
+    BASH_MODULE_DIR / "nfs-attachment.sh",
 ]
 POWERSHELL_LAUNCHER_SOURCES = [
     POWERSHELL_LAUNCHER,
@@ -530,7 +542,7 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             self.assertNotIn("# >>> autobyteus-docker PATH >>>", profile_text)
 
     def test_new_containers_prefer_sequential_friendly_ports(self) -> None:
-        with fake_docker_environment() as env:
+        with fake_docker_environment(controlled_busy_ports=()) as env:
             for _ in range(3):
                 run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "v1")
 
@@ -541,9 +553,16 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
                 ("8002:8000", "5909:5900", "6081:6080", "9229:9223"),
                 ("8003:8000", "5910:5900", "6082:6080", "9230:9223"),
             ]
-            for record, mappings in zip(records, expected_mappings, strict=True):
+            self.assertEqual(len(records), len(expected_mappings))
+            self.assertEqual([r[r.index("--name") + 1] for r in records],
+                             [f"autobyteus-server-{i}" for i in range(3)])
+            for record, mappings in zip(records, expected_mappings):
                 for mapping in mappings:
                     self.assertIn(mapping, record)
+            queries = assert_port_probe_receipts(self, env)
+            self.assertEqual([int(mapping.split(":")[0]) for mappings in expected_mappings for mapping in mappings],
+                             [query["port"] for query in queries])
+            self.assertTrue(all(query["available"] for query in queries))
 
     def test_preferred_port_collision_falls_back_for_that_service(self) -> None:
         with fake_docker_environment() as env:
@@ -565,7 +584,7 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             self.assertIn("9228:9223", run_args)
 
     def test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt(self) -> None:
-        with fake_docker_environment() as env:
+        with fake_docker_environment(controlled_busy_ports=()) as env:
             env["FAKE_DOCKER_FAIL_FIRST_RUN_BIND"] = "1"
 
             result = run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "v1")
@@ -576,6 +595,50 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             for mapping in ("8001:8000", "5908:5900", "6080:6080", "9228:9223"):
                 self.assertIn(mapping, records[0])
                 self.assertNotIn(mapping, records[1])
+            self.assertEqual([r[r.index("--name") + 1] for r in records], ["autobyteus-server-0"] * 2)
+            queries = assert_port_probe_receipts(self, env)
+            self.assertEqual(8, len(queries))
+            self.assertEqual([8001, 5908, 6080, 9228], [query["port"] for query in queries[:4]])
+            retry_ports = [int(records[1][i + 1].split(":")[0]) for i, arg in enumerate(records[1]) if arg == "-p"]
+            self.assertEqual(retry_ports, [query["port"] for query in queries[4:]])
+            self.assertEqual(4, sum(r["kind"] == "random-delegated" for r in read_port_probe_receipts(env)))
+
+    def test_controlled_busy_preferred_port_uses_real_random_fallback(self) -> None:
+        with fake_docker_environment(controlled_busy_ports=(8001,)) as env:
+            run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "v1")
+            records = read_run_arg_records(env)
+            self.assertEqual(1, len(records))
+            self.assertEqual("autobyteus-server-0", records[0][records[0].index("--name") + 1])
+            state = state_path(env, "autobyteus-server-0").read_text(encoding="utf-8")
+            backend_port = int(read_state_value(state, "BACKEND_PORT"))
+            self.assertNotEqual(8001, backend_port)
+            self.assertIn(f"{backend_port}:8000", records[0])
+            for mapping in ("5908:5900", "6080:6080", "9228:9223"):
+                self.assertIn(mapping, records[0])
+            queries = assert_port_probe_receipts(self, env)
+            self.assertEqual([8001, backend_port, 5908, 6080, 9228], [q["port"] for q in queries])
+            self.assertEqual([False, True, True, True, True], [q["available"] for q in queries])
+            self.assertEqual(1, sum(r["kind"] == "random-delegated" for r in read_port_probe_receipts(env)))
+
+    def test_port_probe_double_delegates_python_and_rejects_probe_drift(self) -> None:
+        with fake_docker_environment(controlled_busy_ports=()) as env:
+            probe = Path(env["FAKE_DOCKER_ROOT"]).parent / "bin/python3"
+            delegated = subprocess.run([str(probe), "-c", "import sys; print(sys.executable)"],
+                                       env=env, text=True, capture_output=True, check=True)
+            self.assertEqual(Path(sys.executable).resolve(), Path(delegated.stdout.strip()).resolve())
+            other_python = subprocess.run([str(probe), "-c", "import sys; print(sys.argv[1])", "8001"],
+                                          env=env, text=True, capture_output=True, check=True)
+            self.assertEqual("8001", other_python.stdout.strip())
+            subprocess.run([str(probe), "-c", PORT_BIND_PROBE, "8001"], env=env, check=True)
+            self.assertEqual([8001], [q["port"] for q in assert_port_probe_receipts(self, env)])
+            for args in (("-c", PORT_BIND_PROBE.replace("s.bind(", "s.connect("), "8001"),
+                         ("-c", PORT_BIND_PROBE, "8001", "unexpected")):
+                result = subprocess.run([str(probe), *args], env=env, text=True, capture_output=True)
+                self.assertEqual(93, result.returncode)
+                self.assertIn("Port availability probe drift", result.stderr)
+            self.assertEqual(2, sum(r["kind"] == "drift" for r in read_port_probe_receipts(env)))
+            with self.assertRaisesRegex(AssertionError, "Port availability probe drift"):
+                assert_port_probe_receipts(self, env)
 
     def test_read_only_discovery_commands_default_to_all_nodes(self) -> None:
         with fake_docker_environment() as env:
@@ -856,7 +919,64 @@ def read_call_records(env: dict[str, str]) -> list[list[str]]:
     return [[arg.decode("utf-8") for arg in record.split(b"\0") if arg] for record in records]
 
 
+# Exact external Python invocations used by the unchanged launcher. Unknown
+# bind-query drift fails the controlled fixture, never falls back to the host.
+PORT_BIND_PROBE = ('import socket, sys\ns = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\n'
+                   'try:\n    s.bind(("127.0.0.1", int(sys.argv[1])))\n'
+                   'except OSError:\n    sys.exit(1)\nfinally:\n    s.close()')
+PORT_RANDOM_PROBE = ('import socket; s = socket.socket(socket.AF_INET, socket.SOCK_STREAM); '
+                     's.bind(("127.0.0.1", 0)); print(s.getsockname()[1]); s.close()')
+
+
+def write_port_probe_double(path: Path, receipts: Path, busy_ports: tuple[int, ...]) -> None:
+    real_python = str(Path(sys.executable).resolve())
+    receipts.write_text("", encoding="utf-8")
+    path.write_text(f'''#!{real_python}
+import json, os, sys
+BIND_PROBE = {PORT_BIND_PROBE!r}
+RANDOM_PROBE = {PORT_RANDOM_PROBE!r}
+args = sys.argv[1:]
+def record(item):
+    with open({str(receipts)!r}, "a") as file:
+        file.write(json.dumps(item) + "\\n")
+def drift():
+    record({{"kind": "drift", "args": args}})
+    print("Port availability probe drift", file=sys.stderr)
+    sys.exit(93)
+if args[:2] == ["-c", BIND_PROBE]:
+    if len(args) != 3 or not args[2].isdigit() or not 0 < int(args[2]) < 65536:
+        drift()
+    port = int(args[2])
+    available = port not in {busy_ports!r}
+    record({{"kind": "availability", "port": port, "available": available}})
+    sys.exit(0 if available else 1)
+if args[:1] == ["-c"] and len(args) > 1:
+    if ("socket" in args[1] and ("bind" in args[1] or "sys.argv" in args[1])
+            and args[1] != RANDOM_PROBE):
+        drift()
+record({{"kind": "random-delegated" if args == ["-c", RANDOM_PROBE] else "python-delegated"}})
+os.execv({real_python!r}, [{real_python!r}, *args])
+''', encoding="utf-8")
+    path.chmod(0o755)
+
+
+def read_port_probe_receipts(env: dict[str, str]) -> list[dict]:
+    path = Path(env["FAKE_DOCKER_ROOT"]).parent / "port-probe.jsonl"
+    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
+
+
+def assert_port_probe_receipts(test: unittest.TestCase, env: dict[str, str]) -> list[dict]:
+    receipts = read_port_probe_receipts(env)
+    test.assertFalse(any(r["kind"] == "drift" for r in receipts), "Port availability probe drift")
+    queries = [r for r in receipts if r["kind"] == "availability"]
+    test.assertTrue(queries, "Controlled availability query was not used")
+    return queries
+
+
 class fake_docker_environment:
+    def __init__(self, controlled_busy_ports: Optional[tuple[int, ...]] = None) -> None:
+        self.controlled_busy_ports = controlled_busy_ports
+
     def __enter__(self) -> dict[str, str]:
         self._tmp = tempfile.TemporaryDirectory(prefix="autobyteus-launcher-test-")
         root = Path(self._tmp.name)
@@ -869,6 +989,8 @@ class fake_docker_environment:
         fake_bin.mkdir()
         home.mkdir()
         write_fake_docker(fake_bin / "docker")
+        if self.controlled_busy_ports is not None:
+            write_port_probe_double(fake_bin / "python3", root / "port-probe.jsonl", self.controlled_busy_ports)
         env = os.environ.copy()
         env.update(
             {

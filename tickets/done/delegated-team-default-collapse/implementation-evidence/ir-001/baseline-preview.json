@@ -1,0 +1,90 @@
+{
+  "label": "baseline",
+  "runtime": "linux-arm64",
+  "browser": "153.0.8010.52",
+  "samples": [
+    {
+      "boundary": "fresh-store preview disclosure click to collaboration rows",
+      "ms": 220.71770899999956,
+      "rows": 49,
+      "requests": {
+        "GetAgentRunCollaboration": 1,
+        "GetAgentRunCollaborationMemberProjection": 42,
+        "GetRunFileChanges": 42
+      }
+    },
+    {
+      "boundary": "warm collaboration refresh to published rows",
+      "ms": 120.67670799999996,
+      "rows": 49,
+      "requests": {
+        "GetAgentRunCollaboration": 1,
+        "GetAgentRunCollaborationMemberProjection": 42,
+        "GetRunFileChanges": 42
+      }
+    }
+  ],
+  "errors": [],
+  "requests": {
+    "GetAgentRunCollaboration": 1,
+    "GetAgentRunCollaborationMemberProjection": 42,
+    "GetRunFileChanges": 42
+  },
+  "limitation": "Mock GraphQL/Projects feed; host button is preview-only, not actual role/run open; timings are collaboration inspection plus render, not real manager selection latency.",
+  "state": {
+    "selections": 0,
+    "rows": [
+      "team:software-team-0",
+      "agent:software-team-0-member-0",
+      "agent:software-team-0-member-1",
+      "agent:software-team-0-member-2",
+      "agent:software-team-0-member-3",
+      "agent:software-team-0-member-4",
+      "agent:software-team-0-member-5",
+      "team:software-team-1",
+      "agent:software-team-1-member-0",
+      "agent:software-team-1-member-1",
+      "agent:software-team-1-member-2",
+      "agent:software-team-1-member-3",
+      "agent:software-team-1-member-4",
+      "agent:software-team-1-member-5",
+      "team:software-team-2",
+      "agent:software-team-2-member-0",
+      "agent:software-team-2-member-1",
+      "agent:software-team-2-member-2",
+      "agent:software-team-2-member-3",
+      "agent:software-team-2-member-4",
+      "agent:software-team-2-member-5",
+      "team:software-team-3",
+      "agent:software-team-3-member-0",
+      "agent:software-team-3-member-1",
+      "agent:software-team-3-member-2",
+      "agent:software-team-3-member-3",
+      "agent:software-team-3-member-4",
+      "agent:software-team-3-member-5",
+      "team:software-team-4",
+      "agent:software-team-4-member-0",
+      "agent:software-team-4-member-1",
+      "agent:software-team-4-member-2",
+      "agent:software-team-4-member-3",
+      "agent:software-team-4-member-4",
+      "agent:software-team-4-member-5",
+      "team:software-team-5",
+      "agent:software-team-5-member-0",
+      "agent:software-team-5-member-1",
+      "agent:software-team-5-member-2",
+      "agent:software-team-5-member-3",
+      "agent:software-team-5-member-4",
+      "agent:software-team-5-member-5",
+      "team:software-team-6",
+      "agent:software-team-6-member-0",
+      "agent:software-team-6-member-1",
+      "agent:software-team-6-member-2",
+      "agent:software-team-6-member-3",
+      "agent:software-team-6-member-4",
+      "agent:software-team-6-member-5"
+    ],
+    "error": null
+  },
+  "browserClosed": true
+}

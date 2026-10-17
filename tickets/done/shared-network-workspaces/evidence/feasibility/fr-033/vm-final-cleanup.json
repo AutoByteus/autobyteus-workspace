@@ -1,0 +1,21 @@
+{
+  "checkedUtc": "2026-10-13T09:51:14.108332+00:00",
+  "deletedExactClone": "ab-sf-fr033-macos",
+  "deleteRc": 0,
+  "privateTartInventory": [
+    {
+      "Disk": 50,
+      "State": "stopped",
+      "Name": "ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377",
+      "Size": 33,
+      "Running": false,
+      "Accessed": "2026-10-13T09:47:58Z",
+      "Source": "OCI"
+    }
+  ],
+  "noOwnedLocalVmClonesRemain": true,
+  "immutablePublicBaseCacheRetained": true,
+  "taskToolsPrivateScratchRetained": "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK",
+  "hostMountNeverCreated": true,
+  "noGlobalPrune": true
+}

@@ -1,3 +1,4 @@
+import type { DelegatedLaunchChange } from "../../agent-collaboration/domain/delegated-launch-selection.js";
 import type { AgentOrgRunExecutionTreeFile } from "./agent-org-run-execution-tree.js";
 import type { RunModelConfigEditability, RunModelConfigUpdateResult } from "../../run-history/domain/run-model-config.js";
 import type { RunModelOptions } from "../../llm-management/domain/run-model-selection.js";
@@ -37,4 +38,6 @@ export type UpdateStoppedAgentOrgRunConfig = Readonly<{
   orgRunId: string;
   modelPatches: readonly AgentOrgRunModelConfigPatch[];
   teamWorkspacePatches: readonly TeamWorkspacePatch[];
+  /** AR-004: user model choices of delegated copies, saved with the rest in one write. */
+  delegatedChanges?: readonly DelegatedLaunchChange[];
 }>;

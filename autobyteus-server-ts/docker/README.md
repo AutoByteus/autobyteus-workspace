@@ -323,6 +323,14 @@ keyring-backed login durability. Follow the official
 [Antigravity installation and authentication guide](https://antigravity.google/docs/cli/install/)
 for browser sign-in or Gemini API-key configuration.
 
+If the chat model menu lists Antigravity CLI as **Unavailable** with "Not
+signed in on this node. Run `agy` to sign in.", the CLI is installed but that
+node has no Antigravity sign-in. Open that node's Terminal (root), run `agy`
+and finish sign-in, then reopen the model menu: it re-checks unavailable
+runtimes each time it opens, so no app reload is needed. Each node's `/root`
+volume keeps its own sign-in, so sign in separately on every node; the sign-in
+survives image updates as long as that volume is kept.
+
 Grok uses `/root/.grok` by default (including `config.toml`); this image does not
 set a runtime `GROK_HOME`. Start `grok` for browser sign-in, or supply your own
 `XAI_API_KEY` at runtime as described in the
@@ -503,7 +511,7 @@ Workflow file: `.github/workflows/release-server-docker.yml`
 What it does:
 - Triggers on Git tags (e.g. `v1.2.3`).
 - Runs the licensing release gate `python3 scripts/check_licensing.py` right after checking out the release ref. The release fails before any build if it fails.
-- Builds `docker/Dockerfile.monorepo` for `linux/amd64,linux/arm64`. The runtime image contains `/app/LICENSE`, `/app/LICENSING.md` and `/app/NOTICE` and carries the label `org.opencontainers.image.licenses="AGPL-3.0-only"`. The same files and label are declared in `docker/Dockerfile.allinone`, `docker/Dockerfile.remote-server` and `autobyteus-message-gateway/docker/Dockerfile`.
+- Builds `autobyteus-server-ts/docker/Dockerfile.monorepo` for `linux/amd64,linux/arm64` from the repository root. The runtime image contains `/app/LICENSE`, `/app/LICENSING.md` and `/app/NOTICE` and carries the label `org.opencontainers.image.licenses="AGPL-3.0-only"`. The same files and label are declared in the separate `autobyteus-message-gateway/docker/Dockerfile`.
 - Push-tag releases publish only the default runtime image.
 - Stable default releases publish:
   - `<image>:<version>`

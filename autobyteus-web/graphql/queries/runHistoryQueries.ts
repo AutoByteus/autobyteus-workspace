@@ -193,7 +193,7 @@ export const GetTeamMemberEventMonitorActiveTracePage = gql`
   ${activeTracePageFields}
 `;
 
-/** A standalone run's collaborator or collaborator-Team member (its host keeps the run query). */
+/** A standalone run's delegated copy or copy-Team member (its host keeps the run query). */
 export const GetAgentRunCollaborationMemberEventMonitorActiveTracePage = gql`
   query GetAgentRunCollaborationMemberEventMonitorActiveTracePage(
     $hostRunId: String!, $memberAddress: String!, $agentRunId: String!, $beforeCursor: String

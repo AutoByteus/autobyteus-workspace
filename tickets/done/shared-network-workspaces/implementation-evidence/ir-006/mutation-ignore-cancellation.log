@@ -1,0 +1,65 @@
+test_build_only_runs_all_build_gates_without_publishing (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) ... ok
+test_each_gate_rejects_bad_direct_needs_and_cancellation (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) ... test_existing_candidate_skip_rebuild_reaches_publication (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) ... ok
+test_failed_or_skipped_applicable_prerequisites_block_dependents (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) ... ok
+test_qualification_candidate_and_signing_gates_remain_required (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) ... ok
+
+======================================================================
+FAIL: test_each_gate_rejects_bad_direct_needs_and_cancellation (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) (publish=False, job='engine-inputs', cancelled=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/scripts/tests/test_nfs_release_workflow.py", line 123, in test_each_gate_rejects_bad_direct_needs_and_cancellation
+    self.assertFalse(eligible(self.jobs, name, results, publish, cancelled=True))
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_each_gate_rejects_bad_direct_needs_and_cancellation (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) (publish=False, job='engine', cancelled=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/scripts/tests/test_nfs_release_workflow.py", line 123, in test_each_gate_rejects_bad_direct_needs_and_cancellation
+    self.assertFalse(eligible(self.jobs, name, results, publish, cancelled=True))
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_each_gate_rejects_bad_direct_needs_and_cancellation (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) (publish=False, job='binaries', cancelled=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/scripts/tests/test_nfs_release_workflow.py", line 123, in test_each_gate_rejects_bad_direct_needs_and_cancellation
+    self.assertFalse(eligible(self.jobs, name, results, publish, cancelled=True))
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_each_gate_rejects_bad_direct_needs_and_cancellation (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) (publish=True, job='engine-inputs', cancelled=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/scripts/tests/test_nfs_release_workflow.py", line 123, in test_each_gate_rejects_bad_direct_needs_and_cancellation
+    self.assertFalse(eligible(self.jobs, name, results, publish, cancelled=True))
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_each_gate_rejects_bad_direct_needs_and_cancellation (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) (publish=True, job='engine', cancelled=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/scripts/tests/test_nfs_release_workflow.py", line 123, in test_each_gate_rejects_bad_direct_needs_and_cancellation
+    self.assertFalse(eligible(self.jobs, name, results, publish, cancelled=True))
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_each_gate_rejects_bad_direct_needs_and_cancellation (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) (publish=True, job='binaries', cancelled=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/scripts/tests/test_nfs_release_workflow.py", line 123, in test_each_gate_rejects_bad_direct_needs_and_cancellation
+    self.assertFalse(eligible(self.jobs, name, results, publish, cancelled=True))
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_each_gate_rejects_bad_direct_needs_and_cancellation (scripts.tests.test_nfs_release_workflow.ReleaseWorkflowGatesTest) (publish=True, job='publish', cancelled=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/scripts/tests/test_nfs_release_workflow.py", line 123, in test_each_gate_rejects_bad_direct_needs_and_cancellation
+    self.assertFalse(eligible(self.jobs, name, results, publish, cancelled=True))
+AssertionError: True is not false
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.010s
+
+FAILED (failures=7)

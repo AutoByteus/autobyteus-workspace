@@ -1,14 +1,19 @@
 import path from "node:path";
 
+/**
+ * Where a definition is read from: the app's own data folder, the implementation repository
+ * (built-in, read-only), or a registered agent package (a local folder or a GitHub install). The
+ * app writes app data and registered packages; edits to a package go into its folder.
+ */
 export type DefinitionSourceClass =
   | "server_data"
   | "implementation_repository"
-  | "external_read_only";
+  | "registered_package";
 
 export type DefinitionMutationOwner =
   | "server_definition_migration_and_provider"
   | "implementation_change"
-  | "external_project";
+  | "package_author";
 
 export type DefinitionSourceDescriptor = Readonly<{
   sourceClass: DefinitionSourceClass;
@@ -31,7 +36,7 @@ export const createDefinitionSourceDescriptor = (input: {
     ? "server_definition_migration_and_provider"
     : input.sourceClass === "implementation_repository"
       ? "implementation_change"
-      : "external_project";
+      : "package_author";
   return Object.freeze({
     sourceClass: input.sourceClass,
     mutationOwner,
@@ -40,15 +45,16 @@ export const createDefinitionSourceDescriptor = (input: {
   });
 };
 
+/**
+ * App data and registered packages are written by the app (as Agents already are); the
+ * implementation repository is not. The filesystem check still refuses a folder the disk will not write.
+ */
 export const assertDefinitionSourceWritableByRuntime = (
   source: DefinitionSourceDescriptor,
 ): void => {
-  if (
-    source.sourceClass !== "server_data"
-    || source.mutationOwner !== "server_definition_migration_and_provider"
-  ) {
+  if (source.sourceClass === "implementation_repository") {
     throw new Error(
-      `Definition source '${source.definitionPath}' is ${source.sourceClass} and cannot be written by the server runtime.`,
+      `Definition source '${source.definitionPath}' is part of the app's implementation and cannot be changed from the app.`,
     );
   }
 };

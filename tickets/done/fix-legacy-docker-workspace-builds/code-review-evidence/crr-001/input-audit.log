@@ -1,0 +1,57 @@
+Cumulative source delta at HEAD 6f9d5d08827ab9bf1be15730a87ccdf12f1e5586
+M	.gitignore
+M	README.md
+M	autobyteus-server-ts/docker/README.md
+D	docker/.gitignore
+D	docker/Dockerfile.allinone
+D	docker/Dockerfile.remote-server
+D	docker/README.md
+D	docker/allinone-start-server.sh
+D	docker/allinone-start-web.sh
+D	docker/compose.personal-test.yml
+D	docker/remote-server-entrypoint.sh
+D	docker/supervisor-allinone.conf
+D	scripts/personal-docker.sh
+D	scripts/seed-personal-test-fixtures.py
+M	scripts/tests/test_docker_build_context_sources.py
+M	scripts/tests/test_public_docker_launcher_shared_workspace.py
+PASS exact 11 deletions / 5 modifications; all other tracked production files byte-identical by complete diff allowlist.
+PASS no tracked root-harness assets remain; ignored saved-state contents not read.
+UNCHANGED autobyteus-server-ts/docker/Dockerfile.monorepo 28ba38691af0ea7c328e1a048e031eff62f2f749d58852f170bee20c97863213
+UNCHANGED autobyteus-server-ts/docker/build.sh 57220d8e6efd5ebdfe19ec6a5f5d79117e2308f006e1c26915cb7f8fff00178b
+UNCHANGED autobyteus-server-ts/docker/build-multi-arch.sh 11419ae586a21257928fd04bd76063631f37afd235743a8f97999f79a8eee799
+UNCHANGED autobyteus-server-ts/docker/docker-start.sh b05d4f3f9277a76db01115b66262eb31821b2982f5499d85c24908438d15f5b7
+UNCHANGED autobyteus-server-ts/docker/docker-compose.yml 1411f127873c16f4c8492de3014fe60633ee12f0f15b155156b7f1cda1558fc6
+UNCHANGED .github/workflows/release-server-docker.yml 85e34c4b90c88c66f922309709fddaeea6dd6505f636ddc604ed19e33f0ed450
+UNCHANGED .dockerignore 09b45e127b653696b059856f70a85fe86964ae3f479a4920c9b6a109e120b295
+UNCHANGED LICENSE 0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0
+UNCHANGED LICENSING.md ff416568ab01c60e62b28a570f078ed83b61dbc154262fd2bc1f80c16a42fb1f
+UNCHANGED NOTICE c781cf26b278b2dd15b79f96e210c200a195480464f0801888fc7026eccbdca2
+UNCHANGED package.json 7f8df829919449c370a855f9d6dcb92b91d5f8805d09720f24c86b49e2918ac0
+UNCHANGED pnpm-lock.yaml 739054d84cd9c64520ca7d194aa76679a6adddfbd74680869ba11bad0e68652e
+UNCHANGED pnpm-workspace.yaml 334c01a6e5e3d1a20eef38b66370c73767b4399a337a4cbaf55eacc743524d89
+UNCHANGED scripts/public/docker/autobyteus-docker.d/bash/commands.sh 0cd7a12df19071f93af87c70a60cfb027fbf5d7e5c3463e0f2263145196e563b
+UNCHANGED scripts/public/docker/autobyteus-docker.d/bash/core.sh 6defb71cde9493426bb1fd7b326d099074f5a246c52066fce939d90343604610
+UNCHANGED scripts/public/docker/autobyteus-docker.d/bash/docker-runtime.sh bc64dfcb79bdc4b20e8868ede2400776897ee60aadd028e1c4a316b77e6cba10
+UNCHANGED scripts/public/docker/autobyteus-docker.d/powershell/Commands.ps1 b098e8fd3a31f465cc06ffb16ed4841f4ec6fa145f9fba16de0d6f196bf6ca2f
+UNCHANGED scripts/public/docker/autobyteus-docker.d/powershell/Core.ps1 fc43bfafd78485bceb1c2d27d2b05e035ebf97fbf099dd6f234674aa2ba82a71
+UNCHANGED scripts/public/docker/autobyteus-docker.d/powershell/DockerRuntime.ps1 959dabd6cda84d8cf23cbd04daf417ce536b1826b001abd15b12b1a1dc6db162
+UNCHANGED scripts/public/docker/autobyteus-docker.ps1 93756ebbe7038eef3797d9044ca8d3fdcdee4900d4e039fbb26fcd9cae568f30
+UNCHANGED scripts/public/docker/autobyteus-docker.sh e7d4c195e14419e0614ce08b2101fd9f1c76cee5030152c85116be0b7bfef187
+PASS IR-001/historical supplements unchanged after original IR evidence commit.
+PASS concurrent coordinator record preserved unchanged by reviewer.
+
+$ ['git', 'grep', '-n', '-I', '-E', 'Dockerfile\\.(allinone|remote-server)|compose.personal-test|personal-docker|seed-personal-test|allinone-start|remote-server-entrypoint|supervisor-allinone', '--', '.', ':!tickets', ':!test-results']
+scripts/tests/test_docker_build_context_sources.py:26:    "docker/Dockerfile.allinone",
+scripts/tests/test_docker_build_context_sources.py:27:    "docker/Dockerfile.remote-server",
+scripts/tests/test_docker_build_context_sources.py:29:    "docker/allinone-start-server.sh",
+scripts/tests/test_docker_build_context_sources.py:30:    "docker/allinone-start-web.sh",
+scripts/tests/test_docker_build_context_sources.py:31:    "docker/compose.personal-test.yml",
+scripts/tests/test_docker_build_context_sources.py:32:    "docker/remote-server-entrypoint.sh",
+scripts/tests/test_docker_build_context_sources.py:33:    "docker/supervisor-allinone.conf",
+scripts/tests/test_docker_build_context_sources.py:34:    "scripts/personal-docker.sh",
+scripts/tests/test_docker_build_context_sources.py:35:    "scripts/seed-personal-test-fixtures.py",
+PASS all remaining active retired identifiers are intentional absence expectations.
+PASS relative guide link README.md -> autobyteus-server-ts/docker/README.md
+PASS direct monorepo COPY inputs are independent of retired asset closure; documentation broad COPY may change layer bytes.
+PASS apostrophe installer body/assertions byte-identical and default fixture has no controller. Owner-created default fixture cleaned.

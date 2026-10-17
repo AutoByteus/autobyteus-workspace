@@ -1,0 +1,20 @@
+{
+  "timestampUTC": "2026-10-14T04:08:39.661718+00:00",
+  "inputHead": "e1081e95db56c8f4b4a028404ab0365b70ad8308",
+  "sourceDeltaHashesRechecked": 5,
+  "unchangedInventoryRecheckedAfterPoweroffExcludingCurrentReviewerAuthorities": 904,
+  "historicalCRR001002003EntriesPreservedVerbatim": true,
+  "featureBaseNFSModuleAbsent": true,
+  "localLinksChecked": 57,
+  "artifactJSONParse": "Pass",
+  "diffCheck": {
+    "rc": 0,
+    "stdout": ""
+  },
+  "noProductDeltaByReviewer": true,
+  "optionalRuntimeCommandsExecuted": 0,
+  "reviewerScratchRootsAbsent": true,
+  "reviewerProcessRemaining": false,
+  "apiVerdictUnchanged": "API-REV001 Fail / 57.14%",
+  "sourceVerdict": "CRR-004 Pass"
+}

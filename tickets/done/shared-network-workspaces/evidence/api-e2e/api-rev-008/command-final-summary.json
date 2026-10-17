@@ -1,0 +1,107 @@
+{
+  "result": "Pass",
+  "scope": "User-directed command-only filesystem validation, ONE Linux VM/TWO generic command containers, LN then LD",
+  "finalConfidence": 95,
+  "categories": [
+    95,
+    95,
+    95,
+    95,
+    95,
+    95,
+    95
+  ],
+  "broaderValidation": "Required and executed",
+  "cases": {
+    "FS01": {
+      "result": "Pass",
+      "evidenceKind": "fresh LN/LD"
+    },
+    "FS02": {
+      "result": "Pass",
+      "evidenceKind": "fresh LN/LD"
+    },
+    "FS03": {
+      "result": "Pass",
+      "evidenceKind": "fresh LN/LD"
+    },
+    "FS04": {
+      "result": "Pass",
+      "evidenceKind": "fresh LN/LD"
+    },
+    "FS05": {
+      "result": "Pass",
+      "evidenceKind": "fresh LN/LD"
+    },
+    "FS06": {
+      "result": "Pass",
+      "evidenceKind": "fresh LN/LD"
+    },
+    "FS07": {
+      "result": "Pass",
+      "evidenceKind": "fresh LN/LD"
+    },
+    "FS08": {
+      "result": "Pass",
+      "evidenceKind": "fresh LN/LD"
+    },
+    "FS09": {
+      "result": "Pass",
+      "evidenceKind": "fresh LN/LD"
+    },
+    "FS10": {
+      "result": "Pass",
+      "evidenceKind": "fresh LN/LD"
+    },
+    "FS11": {
+      "result": "Pass",
+      "evidenceKind": "fresh LN/LD"
+    },
+    "FS12": {
+      "result": "Pass",
+      "evidenceKind": "fresh LN/LD"
+    },
+    "FS13": {
+      "result": "Pass",
+      "evidenceKind": "audited scoped API007 carry"
+    },
+    "FS14": {
+      "result": "Pass",
+      "evidenceKind": "audited scoped API007 carry"
+    },
+    "FS15": {
+      "result": "Pass",
+      "evidenceKind": "audited scoped API007 carry"
+    },
+    "FS16": {
+      "result": "Pass",
+      "evidenceKind": "fresh detach plus carried refusal"
+    },
+    "FS17": {
+      "result": "Pass",
+      "evidenceKind": "fresh cleanup"
+    }
+  },
+  "counts": {
+    "LN": {
+      "passedSubcases": 13,
+      "commandsRecorded": 187,
+      "visibilitySamples": 24,
+      "maximumVisibilitySeconds": 0.060969295000006696,
+      "concurrentIndependentFiles": 80,
+      "atomicReplacements": 200,
+      "atomicCompleteReads": 5899
+    },
+    "LD": {
+      "passedSubcases": 13,
+      "commandsRecorded": 187,
+      "visibilitySamples": 24,
+      "maximumVisibilitySeconds": 0.05631738299999256,
+      "concurrentIndependentFiles": 80,
+      "atomicReplacements": 200,
+      "atomicCompleteReads": 7132
+    }
+  },
+  "applicationVerdict": "Not issued; application checks are not filesystem gates; no new live IR010 editor closure",
+  "cleanup": "Complete"
+}

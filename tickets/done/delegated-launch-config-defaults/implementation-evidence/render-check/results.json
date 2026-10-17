@@ -1,0 +1,106 @@
+{
+  "observations": [
+    {
+      "key": "newChat.root",
+      "value": "claude-haiku-5-5\nClaude SDK"
+    },
+    {
+      "key": "newChat.membersLine",
+      "value": "1 of 3 customized · Edit · Reset"
+    },
+    {
+      "key": "drawer.seeded",
+      "value": {
+        "lead": {
+          "customized": "false",
+          "summary": "claude-haiku-5-5 · Claude SDK · Auto-approve",
+          "note": null
+        },
+        "engineer": {
+          "customized": "true",
+          "summary": "Customized · claude-sonnet-5-5 · Claude SDK · Auto-approve",
+          "note": null
+        },
+        "reviewer": {
+          "customized": "false",
+          "summary": "claude-haiku-5-5 · Claude SDK · Auto-approve",
+          "note": "Its default (Claude SDK · no-such-model) can't be used: the model is not offered. It follows the settings above."
+        }
+      }
+    },
+    {
+      "key": "afterRootSonnet.root",
+      "value": "claude-sonnet-4-6\nClaude SDK"
+    },
+    {
+      "key": "afterRootSonnet",
+      "value": {
+        "lead": {
+          "customized": "false",
+          "summary": "claude-sonnet-4-6 · Claude SDK · Auto-approve",
+          "note": null
+        },
+        "engineer": {
+          "customized": "true",
+          "summary": "Customized · claude-sonnet-5-5 · Claude SDK · Auto-approve",
+          "note": null
+        }
+      }
+    },
+    {
+      "key": "afterEngineerReset",
+      "value": {
+        "engineer": {
+          "customized": "false",
+          "summary": "claude-sonnet-4-6 · Claude SDK · Auto-approve",
+          "note": null
+        }
+      }
+    },
+    {
+      "key": "org.membersLine",
+      "value": "3 of 4 customized · Edit · Reset"
+    },
+    {
+      "key": "org.writer",
+      "value": {
+        "customized": "true",
+        "summary": "Customized · claude-sonnet-5-5 · Claude SDK · Auto-approve",
+        "note": null
+      }
+    },
+    {
+      "key": "org.build",
+      "value": {
+        "customized": "true",
+        "summary": "Customized · Temp workspace · claude-haiku-5-5 · Claude SDK · Auto-approve",
+        "note": null
+      }
+    },
+    {
+      "key": "org.build.members",
+      "value": {
+        "engineer": {
+          "customized": "true",
+          "summary": "Customized · claude-sonnet-5-5 · Claude SDK · Auto-approve",
+          "note": null
+        },
+        "reviewer": {
+          "customized": "false",
+          "summary": "claude-haiku-5-5 · Claude SDK · Auto-approve",
+          "note": "Its default (Claude SDK · no-such-model) can't be used: the model is not offered. It follows the settings above."
+        },
+        "lead": {
+          "customized": "false",
+          "summary": "claude-haiku-5-5 · Claude SDK · Auto-approve",
+          "note": null
+        }
+      }
+    },
+    {
+      "key": "browserErrors",
+      "value": []
+    }
+  ],
+  "browserErrors": []
+}

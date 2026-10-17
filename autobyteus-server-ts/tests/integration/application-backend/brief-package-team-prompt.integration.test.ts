@@ -34,6 +34,7 @@ describe("Brief package team prompt authority", () => {
         getAgentTeamsDir: () => path.join(packageRoot, ".test-only", "agent-teams"),
         getAgentOrgsDir: () => path.join(packageRoot, ".test-only", "agent-orgs"),
         getAdditionalAgentPackageRoots: () => [],
+        getRegisteredAgentPackageRoots: () => [],
       } as never,
       bundleService: validated.bundleService,
     });
@@ -165,8 +166,8 @@ describe("Brief package team prompt authority", () => {
     expect(prompt).toContain("## Team Instruction");
     expect(prompt).toContain(packageTeam.instructions.trim());
     expect(prompt).toContain("## AgentTeam Addressing");
-    expect(prompt).toContain("Your Agent address is:\n\n/researcher");
-    expect(prompt).toContain("## AgentTeam Collaboration");
+    expect(prompt).not.toContain("Your Agent address is");
+    expect(prompt).toContain("## Working With Other Agents");
     expect(prompt).not.toContain("## Team Runtime");
     expect(prompt).toContain("writer");
     expect(activateForRun).toHaveBeenCalledWith(expect.objectContaining({

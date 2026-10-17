@@ -1,0 +1,63 @@
+{
+  "scope": "SR017 owned solution-artifact consistency, not source/build or downstream validation",
+  "files": [
+    {
+      "path": "requirements-doc.md",
+      "exists": true,
+      "sha256": "10d20468dd257539df2cf42d65841ff64fe3d2918fe0666aa0aaf8e4a4863f20"
+    },
+    {
+      "path": "approval-record-sr017.md",
+      "exists": true,
+      "sha256": "dc033fc3641b80e13d3de052eed4e289ee4a3f36b9870f317a72ed102660ebbf"
+    },
+    {
+      "path": "design-spec.md",
+      "exists": true,
+      "sha256": "cafcd9b2c0e024cebbc0769beb8cfc419c499604913597094369db1acb143751"
+    },
+    {
+      "path": "investigation-notes.md",
+      "exists": true,
+      "sha256": "cf1969787865c88ddf64978e2425ea051e3746a929d586d491586accca0b595f"
+    },
+    {
+      "path": "solution-revision-record.md",
+      "exists": true,
+      "sha256": "b798c59bf7fbead03ae0a127c044d29280f5c76fe1e3d3159bab2432aff518c9"
+    },
+    {
+      "path": "solution-design-handoff.md",
+      "exists": true,
+      "sha256": "9cd7cecf89f9258b5cdac8874fd161e0b568bd4cfe1e2ff435186dd97c6936f8"
+    },
+    {
+      "path": "requirements-approval-request.md",
+      "exists": true,
+      "sha256": "cef8816c82e03fe7bd04960d76b9cdc365d80fae459fa92b3ed6a91e9d01e31a"
+    },
+    {
+      "path": "evidence/feasibility/sr017-selection-report.md",
+      "exists": true,
+      "sha256": "4766046e7206390f2fa5b8ced2c25f4bbd6c6f0a6bb5e3092a3d5da8fc2a4ee6"
+    },
+    {
+      "path": "evidence/feasibility/experiment-index.json",
+      "exists": true,
+      "sha256": "812f6c541b1158a02b5f4dd5fc82cb43ac410fc97eb30f9cc0da2e77261c3f08"
+    },
+    {
+      "path": "evidence/feasibility/sr017-resource-artifact-audit.json",
+      "exists": true,
+      "sha256": "50e22c3809a85dfc8539ea596af5970e698dc9ae11993e30ca1a1aec73971cfb"
+    }
+  ],
+  "referencedEvidenceReportsExist": true,
+  "reqAc001to020Present": true,
+  "behavior001to007Mapped": true,
+  "currentRequirements": "Approved SR017",
+  "currentDesign": "Ready",
+  "task_size": "Large",
+  "architectural_risk": "High",
+  "selectedRoute": "/software_engineering_team/architecture_reviewer"
+}

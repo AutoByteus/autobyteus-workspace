@@ -1,0 +1,11 @@
+{
+  "ownedScratchRemoved": "/tmp/nfs-ir008-09yknj95",
+  "absent": true,
+  "retainedCandidate": "autobyteus-nfs/out/ir008-local-candidate",
+  "retainedCurrentFiles": 4,
+  "unchangedIR005IR007Files": 15,
+  "liveUserResourcesTouched": false,
+  "vmOrDockerOrMountCreated": false,
+  "providerCalls": false,
+  "oldDistTreesTouched": false
+}

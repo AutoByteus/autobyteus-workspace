@@ -1,0 +1,19 @@
+{
+  "case": "L19 bounded carry only",
+  "sourceBefore": "d65aeda24fc4b9a534a3941b194dd4a55b88c00c",
+  "sourceCurrent": "d3c88f37c30ee74a89a95a4f6906992667c9b875",
+  "pathsChecked": [
+    "autobyteus-nfs/internal/docker",
+    "autobyteus-nfs/internal/service",
+    "autobyteus-nfs/internal/setup/reconnect_nodes.go",
+    "autobyteus-nfs/internal/setup/detach_nodes.go",
+    "scripts/public/docker"
+  ],
+  "changedPaths": [],
+  "evidence": "../api-rev-005/policy-veto-result.json",
+  "result": "Carried Pass: failed-start rawStop is no-op; current restart=no suppresses automatic start/reconnect/ordinary reboot",
+  "mode": "LD on Ubuntu24.04 arm64, one selected managed application node; not new two-node or independent-kernel evidence",
+  "unchangedBoundary": "Docker start/recovery classifier, supervised completion, current restart policy veto, public launcher stop guidance. IR009 source binding/identity revision separately tested by current fresh source setup and L21.",
+  "currentProof": "API007 fresh two-node normal Stop/reconnect/boots separately required, never inferred from this carry",
+  "limitations": "API005 failure injection held only owned service to obtain a real failed pre-start; not v1 forced-outage hardening, credential/native-agent or independent-host proof"
+}

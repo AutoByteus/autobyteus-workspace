@@ -65,7 +65,7 @@
               <button
                 v-if="run.isActive"
                 type="button"
-                class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
+                class="inline-flex h-5 w-5 items-center justify-center rounded text-red-500 hover:bg-red-50 hover:text-red-600 disabled:text-gray-400 disabled:hover:text-gray-400 disabled:hover:bg-transparent disabled:cursor-not-allowed disabled:opacity-50"
                 :title="t('workspace.agentOrg.history.stopLabel')"
                 :aria-label="t('workspace.agentOrg.history.stopLabel')"
                 :disabled="isTerminating(run.rootRunId)"
@@ -147,24 +147,31 @@
                 <Icon icon="heroicons:user-group-20-solid" class="mr-1.5 h-4 w-4 text-gray-500" />
                 <span class="truncate font-semibold">{{ label(display.row.address) }}</span>
               </button>
-              <button type="button" v-else-if="display.row.kind === 'task_agent'" @click="actions.onInspectAgentOrgExecution?.(run, display.row.agentRunId, display.row.address)" :aria-selected="isMemberSelected(run.rootRunId, display.row.address, display.row.agentRunId)" class="org-execution-row relative flex min-h-7 w-full items-center rounded-md text-left text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" :class="isMemberSelected(run.rootRunId, display.row.address, display.row.agentRunId) ? 'is-selected text-indigo-900' : 'text-gray-600 hover:bg-gray-50'" :title="`${display.row.address} · ${display.row.agentRunId}`" :style="rowStyle(display.row.depth)" :aria-label="agentRowLabel(display.row)" :aria-level="display.row.depth + 1" :data-test="`agent-org-task-agent-row-${display.row.agentRunId}`" :data-agent-run-id="display.row.agentRunId" :data-status="display.row.status" role="treeitem">
-                <WorkspaceHierarchyBranches :depth="display.row.depth" :continuing-ancestor-depths="display.continuingAncestorDepths" :has-following-sibling="display.hasFollowingSibling" />
-                <span class="ml-2 mr-1 h-3.5 w-3.5 flex-none" aria-hidden="true" />
-                <!-- A task Agent shows the same solid status dot and initials as a member; no visible
-                     "Started by" line. The starter stays in the accessible label. -->
-                <StatusDot class="mr-1.5 flex-none" :status="display.row.status" />
-                <span class="mr-1.5 inline-flex h-4 w-4 flex-none items-center justify-center rounded-full bg-gray-200 text-[0.5625rem] font-semibold text-gray-600" data-test="agent-org-task-agent-avatar">{{ initials(display.row.address) }}</span>
-                <span class="truncate">{{ label(display.row.address) }}</span>
-              </button>
-              <button type="button" v-else @click="selectTaskTeam(run, display.row)" class="org-execution-row relative flex min-h-7 w-full items-center rounded-md text-left text-sm text-gray-600 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" :title="`${display.row.address} · ${display.row.teamRunId}`" :aria-label="taskTeamRowLabel(display.row)" :aria-expanded="display.row.hasChildren ? display.row.expanded : undefined" :style="rowStyle(display.row.depth)" :aria-level="display.row.depth + 1" :data-test="`agent-org-task-team-row-${display.row.teamRunId}`" role="treeitem">
-                <WorkspaceHierarchyBranches :depth="display.row.depth" :continuing-ancestor-depths="display.continuingAncestorDepths" :has-following-sibling="display.hasFollowingSibling" />
-                <Icon v-if="display.row.hasChildren" icon="heroicons:chevron-down-20-solid" class="ml-2 mr-1 h-3.5 w-3.5 flex-none text-gray-400" :class="display.row.expanded ? '' : '-rotate-90'" :data-test="`agent-org-task-team-disclosure-${display.row.teamRunId}`" aria-hidden="true" />
-                <span v-else class="ml-2 mr-1 h-3.5 w-3.5 flex-none" aria-hidden="true" />
-                <TeamAggregateStatusDot class="mr-1.5 flex-none" :status="display.row.status" />
-                <!-- Teams share the people-group identity, in the tree's slate. -->
-                <Icon icon="heroicons:user-group-20-solid" class="mr-1.5 h-4 w-4 flex-none text-slate-500" data-team-icon="temporary-task-team" />
-                <span class="truncate font-semibold">{{ label(display.row.address) }}</span>
-              </button>
+              <!-- SR-007: a running copy has the stop icon beside its row (never inside the row's button). -->
+              <div v-else-if="display.row.kind === 'task_agent'" class="relative">
+                <button type="button" @click="actions.onInspectAgentOrgExecution?.(run, display.row.agentRunId, display.row.address)" :aria-selected="isMemberSelected(run.rootRunId, display.row.address, display.row.agentRunId)" class="org-execution-row relative flex min-h-7 w-full items-center rounded-md text-left text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" :class="isMemberSelected(run.rootRunId, display.row.address, display.row.agentRunId) ? 'is-selected text-indigo-900' : 'text-gray-600 hover:bg-gray-50'" :title="`${display.row.address} · ${display.row.agentRunId}`" :style="rowStyle(display.row.depth)" :aria-label="agentRowLabel(display.row)" :aria-level="display.row.depth + 1" :data-test="`agent-org-task-agent-row-${display.row.agentRunId}`" :data-agent-run-id="display.row.agentRunId" :data-status="display.row.status" role="treeitem">
+                  <WorkspaceHierarchyBranches :depth="display.row.depth" :continuing-ancestor-depths="display.continuingAncestorDepths" :has-following-sibling="display.hasFollowingSibling" />
+                  <span class="ml-2 mr-1 h-3.5 w-3.5 flex-none" aria-hidden="true" />
+                  <!-- A task Agent shows the same solid status dot and initials as a member; no visible
+                       "Started by" line. The starter stays in the accessible label. -->
+                  <StatusDot class="mr-1.5 flex-none" :status="display.row.status" />
+                  <span class="mr-1.5 inline-flex h-4 w-4 flex-none items-center justify-center rounded-full bg-gray-200 text-[0.5625rem] font-semibold text-gray-600" data-test="agent-org-task-agent-avatar">{{ initials(display.row.address) }}</span>
+                  <span class="truncate">{{ label(display.row.address) }}</span>
+                </button>
+                <DelegatedStopButton class="absolute right-1 top-1/2 -translate-y-1/2" :root="orgRoot(run)" :reference="{ agentRunId: display.row.agentRunId }" :name="label(display.row.address)" />
+              </div>
+              <div v-else class="relative">
+                <button type="button" @click="selectTaskTeam(run, display.row)" class="org-execution-row relative flex min-h-7 w-full items-center rounded-md text-left text-sm text-gray-600 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" :title="`${display.row.address} · ${display.row.teamRunId}`" :aria-label="taskTeamRowLabel(display.row)" :aria-expanded="display.row.hasChildren ? display.row.expanded : undefined" :style="rowStyle(display.row.depth)" :aria-level="display.row.depth + 1" :data-test="`agent-org-task-team-row-${display.row.teamRunId}`" role="treeitem">
+                  <WorkspaceHierarchyBranches :depth="display.row.depth" :continuing-ancestor-depths="display.continuingAncestorDepths" :has-following-sibling="display.hasFollowingSibling" />
+                  <Icon v-if="display.row.hasChildren" icon="heroicons:chevron-down-20-solid" class="ml-2 mr-1 h-3.5 w-3.5 flex-none text-gray-400" :class="display.row.expanded ? '' : '-rotate-90'" :data-test="`agent-org-task-team-disclosure-${display.row.teamRunId}`" aria-hidden="true" />
+                  <span v-else class="ml-2 mr-1 h-3.5 w-3.5 flex-none" aria-hidden="true" />
+                  <TeamAggregateStatusDot class="mr-1.5 flex-none" :status="display.row.status" />
+                  <!-- Teams share the people-group identity, in the tree's slate. -->
+                  <Icon icon="heroicons:user-group-20-solid" class="mr-1.5 h-4 w-4 flex-none text-slate-500" data-team-icon="temporary-task-team" />
+                  <span class="truncate font-semibold">{{ label(display.row.address) }}</span>
+                </button>
+                <DelegatedStopButton class="absolute right-1 top-1/2 -translate-y-1/2" :root="orgRoot(run)" :reference="{ teamRunId: display.row.teamRunId }" :name="label(display.row.address)" />
+              </div>
             </template>
           </TransitionGroup>
         </div>
@@ -179,6 +186,8 @@ import { Icon } from '@iconify/vue'
 import StatusDot from '~/components/workspace/common/StatusDot.vue'
 import TeamAggregateStatusDot from './TeamAggregateStatusDot.vue'
 import WorkspaceHierarchyBranches from './WorkspaceHierarchyBranches.vue'
+import DelegatedStopButton from './DelegatedStopButton.vue'
+import type { DelegatedRoot } from '~/services/runConfigEditing/delegatedLaunchSelectionClient'
 import type { WorkspaceHistoryAvatarBindings, WorkspaceHistorySectionActions, WorkspaceHistorySectionState } from './workspaceHistorySectionContracts'
 import { useLocalization } from '~/composables/useLocalization'
 import { agentOrgGroupArchiveKey } from '~/composables/useWorkspaceHistoryGroupArchive'
@@ -246,6 +255,7 @@ const selectTeam = (run: AgentOrgRunHistoryItem, address: string) => {
   props.state.toggleAgentOrgTeam?.(run.rootRunId, address)
   return props.actions.onSelectAgentOrgMember?.(run, address)
 }
+const orgRoot = (run: AgentOrgRunHistoryItem): DelegatedRoot => ({ rootKind: 'AGENT_ORG', rootRunId: run.rootRunId })
 const selectTaskTeam = (run: AgentOrgRunHistoryItem, row: AgentOrgHistoryTaskTeamRow) => {
   if (row.hasChildren) props.state.toggleAgentOrgTaskTeam?.(run.rootRunId, row.teamRunId)
   return props.actions.onInspectAgentOrgExecution?.(run, row.coordinatorAgentRunId, row.coordinatorAddress)

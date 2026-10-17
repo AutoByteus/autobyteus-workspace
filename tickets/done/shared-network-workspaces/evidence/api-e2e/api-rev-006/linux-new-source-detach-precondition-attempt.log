@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-006/finish-linux-new-source.py", line 2, in <module>
+    E=Path(__file__).resolve().parent;RESULT='linux-new-source-detach-result.json';exec((E/'common.py').read_text());p=json.loads((E/'linux-new-source-result.json').read_text());assert p['result'].startswith('Pass');SRC=p['source'];r.update(source=SRC,connection=p['connection'],bindingBytes=p['bindingBytes'],identity=p['identity']);STATE='/var/lib/autobyteus-nfs'
+AssertionError

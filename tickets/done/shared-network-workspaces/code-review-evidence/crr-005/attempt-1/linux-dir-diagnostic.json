@@ -1,0 +1,301 @@
+{
+  "kind": "boundary diagnostic, not public create or fix validation",
+  "scratch": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr005-1rpx2kaj",
+  "vm": "ab-nfs-crr005-d5103a0c",
+  "image": "ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e",
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "clone",
+        "ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e",
+        "ab-nfs-crr005-d5103a0c"
+      ],
+      "rc": 0,
+      "seconds": 303.762,
+      "stdout": "pulling manifest...\npulling disk (3.1 GB compressed)...\n0%\n\u001b[1A\r\u001b[J2%\n\u001b[1A\r\u001b[J4%\n\u001b[1A\r\u001b[J5%\n\u001b[1A\r\u001b[J6%\n\u001b[1A\r\u001b[J7%\n\u001b[1A\r\u001b[J8%\n\u001b[1A\r\u001b[J9%\n\u001b[1A\r\u001b[J11%\n\u001b[1A\r\u001b[J13%\n\u001b[1A\r\u001b[J15%\n\u001b[1A\r\u001b[J16%\n\u001b[1A\r\u001b[J17%\n\u001b[1A\r\u001b[J18%\n\u001b[1A\r\u001b[J19%\n\u001b[1A\r\u001b[J20%\n\u001b[1A\r\u001b[J21%\n\u001b[1A\r\u001b[J22%\n\u001b[1A\r\u001b[J23%\n\u001b[1A\r\u001b[J24%\n\u001b[1A\r\u001b[J25%\n\u001b[1A\r\u001b[J26%\n\u001b[1A\r\u001b[J27%\n\u001b[1A\r\u001b[J28%\n\u001b[1A\r\u001b[J30%\n\u001b[1A\r\u001b[J31%\n\u001b[1A\r\u001b[J32%\n\u001b[1A\r\u001b[J34%\n\u001b[1A\r\u001b[J35%\n\u001b[1A\r\u001b[J36%\n\u001b[1A\r\u001b[J37%\n\u001b[1A\r\u001b[J38%\n\u001b[1A\r\u001b[J39%\n\u001b[1A\r\u001b[J40%\n\u001b[1A\r\u001b[J41%\n\u001b[1A\r\u001b[J43%\n\u001b[1A\r\u001b[J45%\n\u001b[1A\r\u001b[J46%\n\u001b[1A\r\u001b[J47%\n\u001b[1A\r\u001b[J48%\n\u001b[1A\r\u001b[J49%\n\u001b[1A\r\u001b[J50%\n\u001b[1A\r\u001b[J51%\n\u001b[1A\r\u001b[J52%\n\u001b[1A\r\u001b[J53%\n\u001b[1A\r\u001b[J54%\n\u001b[1A\r\u001b[J55%\n\u001b[1A\r\u001b[J56%\n\u001b[1A\r\u001b[J57%\n\u001b[1A\r\u001b[J58%\n\u001b[1A\r\u001b[J59%\n\u001b[1A\r\u001b[J60%\n\u001b[1A\r\u001b[J61%\n\u001b[1A\r\u001b[J62%\n\u001b[1A\r\u001b[J63%\n\u001b[1A\r\u001b[J64%\n\u001b[1A\r\u001b[J65%\n\u001b[1A\r\u001b[J66%\n\u001b[1A\r\u001b[J67%\n\u001b[1A\r\u001b[J69%\n\u001b[1A\r\u001b[J70%\n\u001b[1A\r\u001b[J71%\n\u001b[1A\r\u001b[J72%\n\u001b[1A\r\u001b[J73%\n\u001b[1A\r\u001b[J74%\n\u001b[1A\r\u001b[J75%\n\u001b[1A\r\u001b[J76%\n\u001b[1A\r\u001b[J78%\n\u001b[1A\r\u001b[J79%\n\u001b[1A\r\u001b[J80%\n\u001b[1A\r\u001b[J81%\n\u001b[1A\r\u001b[J82%\n\u001b[1A\r\u001b[J83%\n\u001b[1A\r\u001b[J84%\n\u001b[1A\r\u001b[J85%\n\u001b[1A\r\u001b[J86%\n\u001b[1A\r\u001b[J87%\n\u001b[1A\r\u001b[J88%\n\u001b[1A\r\u001b[J89%\n\u001b[1A\r\u001b[J91%\n\u001b[1A\r\u001b[J92%\n\u001b[1A\r\u001b[J93%\n\u001b[1A\r\u001b[J94%\n\u001b[1A\r\u001b[J95%\n\u001b[1A\r\u001b[J96%\n\u001b[1A\r\u001b[J97%\n\u001b[1A\r\u001b[J98%\n\u001b[1A\r\u001b[J99%\npulling NVRAM...\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "set",
+        "ab-nfs-crr005-d5103a0c",
+        "--cpu",
+        "2",
+        "--memory",
+        "4096"
+      ],
+      "rc": 0,
+      "seconds": 0.023,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-crr005-d5103a0c",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "id; uname -a; cat /etc/os-release; findmnt -no FSTYPE /; ip -4 -j addr show scope global"
+      ],
+      "rc": 2,
+      "seconds": 0.015,
+      "stdout": "",
+      "stderr": "VM \"ab-nfs-crr005-d5103a0c\" is not running\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-crr005-d5103a0c",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "id; uname -a; cat /etc/os-release; findmnt -no FSTYPE /; ip -4 -j addr show scope global"
+      ],
+      "timeout": 5,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-crr005-d5103a0c",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "id; uname -a; cat /etc/os-release; findmnt -no FSTYPE /; ip -4 -j addr show scope global"
+      ],
+      "rc": 0,
+      "seconds": 0.738,
+      "stdout": "uid=1000(admin) gid=109(admin) groups=109(admin)\nLinux ubuntu 7.0.0-38-generic #38~24.04.4-Ubuntu SMP PREEMPT_DYNAMIC Mon Sep 14 17:12:37 UTC 2 aarch64 aarch64 aarch64 GNU/Linux\nPRETTY_NAME=\"Ubuntu 24.04.5 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.5 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\next4\n[{\"ifindex\":2,\"ifname\":\"enp0s1\",\"flags\":[\"BROADCAST\",\"MULTICAST\",\"UP\",\"LOWER_UP\"],\"mtu\":1500,\"qdisc\":\"fq_codel\",\"operstate\":\"UP\",\"group\":\"default\",\"txqlen\":1000,\"addr_info\":[{\"family\":\"inet\",\"local\":\"192.168.64.4\",\"prefixlen\":24,\"metric\":100,\"broadcast\":\"192.168.64.255\",\"scope\":\"global\",\"dynamic\":true,\"label\":\"enp0s1\",\"valid_life_time\":3594,\"preferred_life_time\":3594}]}]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-crr005-d5103a0c",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "ip -4 -j addr show scope global"
+      ],
+      "rc": 0,
+      "seconds": 0.065,
+      "stdout": "[{\"ifindex\":2,\"ifname\":\"enp0s1\",\"flags\":[\"BROADCAST\",\"MULTICAST\",\"UP\",\"LOWER_UP\"],\"mtu\":1500,\"qdisc\":\"fq_codel\",\"operstate\":\"UP\",\"group\":\"default\",\"txqlen\":1000,\"addr_info\":[{\"family\":\"inet\",\"local\":\"192.168.64.4\",\"prefixlen\":24,\"metric\":100,\"broadcast\":\"192.168.64.255\",\"scope\":\"global\",\"dynamic\":true,\"label\":\"enp0s1\",\"valid_life_time\":3594,\"preferred_life_time\":3594}]}]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-crr005-d5103a0c",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "test \"$(id -u)\" = 1000; test \"$(id -g)\" = 109; test \"$(findmnt -no FSTYPE /)\" = ext4; sudo -n true; test ! -e /var/lib/autobyteus-nfs; test ! -e /Volumes/autobyteus-shared"
+      ],
+      "rc": 0,
+      "seconds": 0.053,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-crr005-d5103a0c",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n apt-get update -qq && sudo -n env DEBIAN_FRONTEND=noninteractive apt-get install -y nfs-common=1:2.6.4-3ubuntu5.1 nfs-ganesha=4.3-8ubuntu1 nfs-ganesha-vfs=4.3-8ubuntu1 tcpdump strace"
+      ],
+      "rc": 0,
+      "seconds": 15.077,
+      "stdout": "Reading package lists...\nBuilding dependency tree...\nReading state information...\ntcpdump is already the newest version (4.99.4-3ubuntu4.24.04.1).\ntcpdump set to manually installed.\nstrace is already the newest version (6.8-0ubuntu2).\nstrace set to manually installed.\nThe following additional packages will be installed:\n  keyutils libnfsidmap1 libntirpc4.3t64 libwbclient0 rpcbind\nSuggested packages:\n  watchdog\nThe following NEW packages will be installed:\n  keyutils libnfsidmap1 libntirpc4.3t64 libwbclient0 nfs-common nfs-ganesha\n  nfs-ganesha-vfs rpcbind\n0 upgraded, 8 newly installed, 0 to remove and 33 not upgraded.\nNeed to get 1245 kB of archives.\nAfter this operation, 4797 kB of additional disk space will be used.\nGet:1 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libnfsidmap1 arm64 1:2.6.4-3ubuntu5.1 [48.2 kB]\nGet:2 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 rpcbind arm64 1.2.6-7ubuntu2 [46.1 kB]\nGet:3 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 keyutils arm64 1.6.3-3build1 [56.3 kB]\nGet:4 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 nfs-common arm64 1:2.6.4-3ubuntu5.1 [247 kB]\nGet:5 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 libntirpc4.3t64 arm64 4.3-3.1build2 [113 kB]\nGet:6 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libwbclient0 arm64 2:4.19.5+dfsg-4ubuntu9.8 [73.0 kB]\nGet:7 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 nfs-ganesha arm64 4.3-8ubuntu1 [614 kB]\nGet:8 http://ports.ubuntu.com/ubuntu-ports noble/universe arm64 nfs-ganesha-vfs arm64 4.3-8ubuntu1 [46.6 kB]\nFetched 1245 kB in 1s (922 kB/s)\nSelecting previously unselected package libnfsidmap1:arm64.\r\n(Reading database ... \r(Reading database ... 5%\r(Reading database ... 10%\r(Reading database ... 15%\r(Reading database ... 20%\r(Reading database ... 25%\r(Reading database ... 30%\r(Reading database ... 35%\r(Reading database ... 40%\r(Reading database ... 45%\r(Reading database ... 50%\r(Reading database ... 55%\r(Reading database ... 60%\r(Reading database ... 65%\r(Reading database ... 70%\r(Reading database ... 75%\r(Reading database ... 80%\r(Reading database ... 85%\r(Reading database ... 90%\r(Reading database ... 95%\r(Reading database ... 100%\r(Reading database ... 131560 files and directories currently installed.)\r\nPreparing to unpack .../0-libnfsidmap1_1%3a2.6.4-3ubuntu5.1_arm64.deb ...\r\nUnpacking libnfsidmap1:arm64 (1:2.6.4-3ubuntu5.1) ...\r\nSelecting previously unselected package rpcbind.\r\nPreparing to unpack .../1-rpcbind_1.2.6-7ubuntu2_arm64.deb ...\r\nUnpacking rpcbind (1.2.6-7ubuntu2) ...\r\nSelecting previously unselected package keyutils.\r\nPreparing to unpack .../2-keyutils_1.6.3-3build1_arm64.deb ...\r\nUnpacking keyutils (1.6.3-3build1) ...\r\nSelecting previously unselected package nfs-common.\r\nPreparing to unpack .../3-nfs-common_1%3a2.6.4-3ubuntu5.1_arm64.deb ...\r\nUnpacking nfs-common (1:2.6.4-3ubuntu5.1) ...\r\nSelecting previously unselected package libntirpc4.3t64:arm64.\r\nPreparing to unpack .../4-libntirpc4.3t64_4.3-3.1build2_arm64.deb ...\r\nUnpacking libntirpc4.3t64:arm64 (4.3-3.1build2) ...\r\nSelecting previously unselected package libwbclient0:arm64.\r\nPreparing to unpack .../5-libwbclient0_2%3a4.19.5+dfsg-4ubuntu9.8_arm64.deb ...\r\nUnpacking libwbclient0:arm64 (2:4.19.5+dfsg-4ubuntu9.8) ...\r\nSelecting previously unselected package nfs-ganesha.\r\nPreparing to unpack .../6-nfs-ganesha_4.3-8ubuntu1_arm64.deb ...\r\nUnpacking nfs-ganesha (4.3-8ubuntu1) ...\r\nSelecting previously unselected package nfs-ganesha-vfs:arm64.\r\nPreparing to unpack .../7-nfs-ganesha-vfs_4.3-8ubuntu1_arm64.deb ...\r\nUnpacking nfs-ganesha-vfs:arm64 (4.3-8ubuntu1) ...\r\nSetting up libnfsidmap1:arm64 (1:2.6.4-3ubuntu5.1) ...\r\nSetting up rpcbind (1.2.6-7ubuntu2) ...\r\nCreated symlink /etc/systemd/system/multi-user.target.wants/rpcbind.service -> /usr/lib/systemd/system/rpcbind.service.\r\r\nCreated symlink /etc/systemd/system/sockets.target.wants/rpcbind.socket -> /usr/lib/systemd/system/rpcbind.socket.\r\r\nSetting up libntirpc4.3t64:arm64 (4.3-3.1build2) ...\r\nSetting up libwbclient0:arm64 (2:4.19.5+dfsg-4ubuntu9.8) ...\r\nSetting up keyutils (1.6.3-3build1) ...\r\nSetting up nfs-common (1:2.6.4-3ubuntu5.1) ...\r\n\r\nCreating config file /etc/idmapd.conf with new version\r\n\r\nCreating config file /etc/nfs.conf with new version\r\ninfo: Selecting UID from range 100 to 999 ...\r\n\r\ninfo: Adding system user `statd' (UID 109) ...\r\ninfo: Adding new user `statd' (UID 109) with group `nogroup' ...\r\ninfo: Not creating home directory `/var/lib/nfs'.\r\nCreated symlink /etc/systemd/system/multi-user.target.wants/nfs-client.target -> /usr/lib/systemd/system/nfs-client.target.\r\r\nCreated symlink /etc/systemd/system/remote-fs.target.wants/nfs-client.target -> /usr/lib/systemd/system/nfs-client.target.\r\r\nauth-rpcgss-module.service is a disabled or a static unit, not starting it.\r\nnfs-idmapd.service is a disabled or a static unit, not starting it.\r\nnfs-utils.service is a disabled or a static unit, not starting it.\r\nproc-fs-nfsd.mount is a disabled or a static unit, not starting it.\r\nrpc-gssd.service is a disabled or a static unit, not starting it.\r\nrpc-statd-notify.service is a disabled or a static unit, not starting it.\r\nrpc-statd.service is a disabled or a static unit, not starting it.\r\nrpc-svcgssd.service is a disabled or a static unit, not starting it.\r\nSetting up nfs-ganesha (4.3-8ubuntu1) ...\r\nCreated symlink /etc/systemd/system/nfs-ganesha.service.wants/nfs-ganesha-lock.service -> /usr/lib/systemd/system/nfs-ganesha-lock.service.\r\r\nCreated symlink /etc/systemd/system/nfs-server.service.wants/nfs-ganesha-lock.service -> /usr/lib/systemd/system/nfs-ganesha-lock.service.\r\r\nUnit /usr/lib/systemd/system/nfs-ganesha-lock.service is added as a dependency to a non-existent unit nfs-server.service.\r\r\nCreated symlink /etc/systemd/system/multi-user.target.wants/nfs-ganesha.service -> /usr/lib/systemd/system/nfs-ganesha.service.\r\r\nUnit /usr/lib/systemd/system/nfs-ganesha-lock.service is added as a dependency to a non-existent unit nfs-server.service.\r\r\nnfs-ganesha-config.service is a disabled or a static unit, not starting it.\r\nSetting up nfs-ganesha-vfs:arm64 (4.3-8ubuntu1) ...\r\nProcessing triggers for libc-bin (2.39-0ubuntu8.9) ...\r\nProcessing triggers for man-db (2.12.0-4build2) ...\r\nProcessing triggers for dbus (1.14.10-4ubuntu4.1) ...\r\n",
+      "stderr": "\nRunning kernel seems to be up-to-date.\n\nNo services need to be restarted.\n\nNo containers need to be restarted.\n\nNo user sessions are running outdated binaries.\n\nNo VM guests are running outdated hypervisor (qemu) binaries on this host.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-crr005-d5103a0c",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "dpkg-query -W nfs-common nfs-ganesha nfs-ganesha-vfs; uname -r"
+      ],
+      "rc": 0,
+      "seconds": 0.311,
+      "stdout": "nfs-common\t1:2.6.4-3ubuntu5.1\nnfs-ganesha\t4.3-8ubuntu1\nnfs-ganesha-vfs:arm64\t4.3-8ubuntu1\n7.0.0-38-generic\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-crr005-d5103a0c",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "umask 022; mkdir /home/admin/ab-crr005-source; mkdir /home/admin/ab-crr005-source/.autobyteus-nfs; printf ORIGINAL_CRR005 > /home/admin/ab-crr005-source/original.txt; printf '{\"storageId\": \"4e631794-d643-4d0c-98e2-95573112afdb\"}\n' > /home/admin/ab-crr005-source/.autobyteus-nfs/storage.json; sudo -n install -d -m700 /var/lib/autobyteus-nfs/ganesha/recovery; sudo -n install -d -m555 /Volumes/autobyteus-shared"
+      ],
+      "rc": 0,
+      "seconds": 0.045,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "-i",
+        "ab-nfs-crr005-d5103a0c",
+        "/bin/sh",
+        "-c",
+        "umask 077; cat > /home/admin/ab-crr005-ganesha.conf"
+      ],
+      "rc": 0,
+      "seconds": 0.064,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-crr005-d5103a0c",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n install -m600 /home/admin/ab-crr005-ganesha.conf /var/lib/autobyteus-nfs/ganesha/ganesha.conf; sudo -n systemctl is-active nfs-ganesha.service"
+      ],
+      "rc": 0,
+      "seconds": 0.052,
+      "stdout": "active\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-crr005-d5103a0c",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n systemd-run --unit=ab-crr005-ganesha --property=UMask=0077 /usr/bin/ganesha.nfsd -F -f /var/lib/autobyteus-nfs/ganesha/ganesha.conf -L /var/lib/autobyteus-nfs/ganesha/engine.log -p /var/lib/autobyteus-nfs/ganesha/ganesha.pid"
+      ],
+      "rc": 0,
+      "seconds": 0.045,
+      "stdout": "",
+      "stderr": "Running as unit: ab-crr005-ganesha.service; invocation ID: 3de71210f45449799f91c978ca231705\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-crr005-d5103a0c",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n mount -t nfs -o hard,tcp,vers=4.1,actimeo=1,timeo=50,retrans=2 192.168.64.4:/autobyteus/4e631794-d643-4d0c-98e2-95573112afdb /Volumes/autobyteus-shared"
+      ],
+      "rc": 32,
+      "seconds": 0.231,
+      "stdout": "",
+      "stderr": "mount.nfs: mounting 192.168.64.4:/autobyteus/4e631794-d643-4d0c-98e2-95573112afdb failed, reason given by server: No such file or directory\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "stop",
+        "ab-nfs-crr005-d5103a0c"
+      ],
+      "rc": 0,
+      "seconds": 0.121,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "delete",
+        "ab-nfs-crr005-d5103a0c"
+      ],
+      "rc": 0,
+      "seconds": 0.045,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "list",
+        "--format",
+        "json"
+      ],
+      "rc": 0,
+      "seconds": 0.02,
+      "stdout": "[\n  {\n    \"Source\" : \"OCI\",\n    \"Running\" : false,\n    \"Size\" : 5,\n    \"Name\" : \"ghcr.io\\/cirruslabs\\/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e\",\n    \"State\" : \"stopped\",\n    \"Accessed\" : \"2026-10-14T04:49:41Z\",\n    \"Disk\" : 20\n  }\n]\n",
+      "stderr": ""
+    }
+  ],
+  "result": "Diagnostic Incomplete",
+  "vmPid": 9796,
+  "endpoint": "192.168.64.4",
+  "packages": "nfs-common\t1:2.6.4-3ubuntu5.1\nnfs-ganesha\t4.3-8ubuntu1\nnfs-ganesha-vfs:arm64\t4.3-8ubuntu1\n7.0.0-38-generic\n",
+  "source": "/home/admin/ab-crr005-source",
+  "storageId": "4e631794-d643-4d0c-98e2-95573112afdb",
+  "config": "NFS_CORE_PARAM {\n Protocols = 4;\n NFS_Port = 2049;\n Enable_NLM = false;\n Enable_RQUOTA = false;\n Enable_UDP = false;\n}\nNFSv4 {\n Minor_Versions = 1;\n RecoveryBackend = fs;\n RecoveryRoot = \"/var/lib/autobyteus-nfs/ganesha/recovery\";\n}\nEXPORT {\n Export_Id = 1;\n Path = \"/home/admin/ab-crr005-source\";\n Pseudo = \"/autobyteus/4e631794-d643-4d0c-98e2-95573112afdb\";\n Protocols = 4;\n Transports = TCP;\n SecType = sys;\n Access_Type = None;\n Squash = All_Squash;\n Anonymous_uid = 1000;\n Anonymous_gid = 109;\n CLIENT {\n  Clients = 192.168.64.4;\n  Access_Type = RW;\n  Squash = All_Squash;\n }\n FSAL { Name = VFS; }\n}\n",
+  "configTemplateSha256": "f2f6b81f73a03788f32f39296ff3d16e6217a33f77a0f1c0d4ae63f258a84e45",
+  "error": "RuntimeError('mount.nfs: mounting 192.168.64.4:/autobyteus/4e631794-d643-4d0c-98e2-95573112afdb failed, reason given by server: No such file or directory\\n')"
+}

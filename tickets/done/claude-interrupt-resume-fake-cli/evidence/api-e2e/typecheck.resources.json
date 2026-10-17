@@ -1,0 +1,81 @@
+{
+  "seconds": 20.833,
+  "exit": 0,
+  "timedout": false,
+  "privateRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-claude-validation-le5mtc_2",
+  "privateStateEntryCountBeforeRemoval": 1322,
+  "privateTopLevelStateBeforeRemoval": [
+    "home",
+    "home/.cache",
+    "tmp",
+    "tmp/node-compile-cache"
+  ],
+  "privateTmpNonCacheStateBeforeRemoval": [],
+  "ownedGroupRemaining": [],
+  "fixtureChildrenObserved": [],
+  "ownedProcessesObserved": [
+    {
+      "pid": 66506,
+      "ppid": 65885,
+      "pgid": 66506,
+      "command": "node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm -C autobyteus-server-ts typecheck"
+    },
+    {
+      "pid": 66548,
+      "ppid": 66506,
+      "pgid": 66506,
+      "command": "(node)"
+    },
+    {
+      "pid": 66582,
+      "ppid": 66548,
+      "pgid": 66506,
+      "command": "(node)"
+    },
+    {
+      "pid": 66613,
+      "ppid": 66582,
+      "pgid": 66506,
+      "command": "(node)"
+    },
+    {
+      "pid": 66644,
+      "ppid": 66582,
+      "pgid": 66506,
+      "command": "sh -c node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs"
+    },
+    {
+      "pid": 66645,
+      "ppid": 66644,
+      "pgid": 66506,
+      "command": "(node)"
+    },
+    {
+      "pid": 66653,
+      "ppid": 66644,
+      "pgid": 66506,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-ts/node_modules/.bin/../typescript/bin/tsc -p tsconfig.build.json"
+    },
+    {
+      "pid": 66755,
+      "ppid": 66644,
+      "pgid": 66506,
+      "command": "node ./scripts/verify-runtime-dependencies.mjs"
+    },
+    {
+      "pid": 66786,
+      "ppid": 66582,
+      "pgid": 66506,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-application-backend-sdk/node_modules/.bin/../typescript/bin/tsc -p tsconfig.build.json"
+    },
+    {
+      "pid": 66820,
+      "ppid": 66506,
+      "pgid": 66506,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/node_modules/.bin/../typescript/bin/tsc -p tsconfig.build.json --noEmit"
+    }
+  ],
+  "privateRootRemoved": true,
+  "unhandledErrorMarker": false,
+  "testWorkspaceRemnants": []
+}

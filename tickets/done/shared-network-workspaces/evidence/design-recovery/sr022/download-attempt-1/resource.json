@@ -1,0 +1,16 @@
+{
+  "vm": "ab-nfs-sr022-4d97877e",
+  "image": "ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e",
+  "scratch": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-sr022-ls5vlmt7",
+  "tart": "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+  "env": {
+    "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+    "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-sr022-ls5vlmt7/home",
+    "TART_HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-sr022-ls5vlmt7/tart",
+    "TART_NO_AUTO_PRUNE": "1"
+  },
+  "commands": [],
+  "result": "Incomplete",
+  "scope": "Dependency experiment only; no host-root or host network change",
+  "error": "TimeoutExpired(['/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart', 'clone', 'ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e', 'ab-nfs-sr022-4d97877e'], 599.999921625)"
+}

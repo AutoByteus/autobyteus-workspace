@@ -1,0 +1,14 @@
+DR-003 initial latest-base refresh2026-10-13: fetch completed before any delivery-owned edits; base remaineddec0f562ce6f26a09d1e6f59d59e838142cb4865. Intakeba6cf714b10e4a441ff800f66dc95877185811ec31ahead/0behind, latest base ancestor.
+$ git rev-parse HEAD origin/personal
+ba6cf714b10e4a441ff800f66dc95877185811ec
+dec0f562ce6f26a09d1e6f59d59e838142cb4865
+exit=0
+$ git merge-base --is-ancestor origin/personal HEAD
+exit=0
+$ git rev-list --left-right --count HEAD...origin/personal
+31	0
+exit=0
+$ git diff --exit-code e7a5c20c HEAD -- autobyteus-server-ts/src autobyteus-web/components autobyteus-web/stores pnpm-lock.yaml test-support/file-explorer/resume-preview.pdf
+exit=0
+Already current, no new remote base integrated; no checkpoint/merge/executable rerun required. Scoped approved removal/docs synchronization only; API-REV00351NodePass supports removal scope, not fresh PDF/build/recipe-runtime evidence.
+Five protected dirty Delivery-file hashes exactly match API before/after/final receipt before Delivery edits. DR002integration log/raw prior run evidence left untouched. No host/acceptance retry or new external facts.

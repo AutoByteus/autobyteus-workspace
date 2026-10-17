@@ -32,7 +32,8 @@ import { localizationRuntime } from '~/localization/runtime/localizationRuntime'
 import { autoExecuteForNewRuntimeSelection, withNewRuntimeOverridePolicy } from '~/utils/agentRunRuntimeDraftPolicy'
 import { readChatLastModel } from '~/utils/chat/chatLastModelPreference'
 import { TEMP_WORKSPACE_ID } from '~/utils/chat/chatDefaults'
-import { editMemberOverride, normalizeMemberOverride, resetMemberOverride, type MemberOverrideDeps } from '~/utils/runSettings/memberOverrides'
+import { editMemberOverride, normalizeMemberOverride, releasesMemberPin, resetMemberOverride, type MemberOverrideDeps } from '~/utils/runSettings/memberOverrides'
+import { orgMemberSeedTargets, seedMemberLaunchDefaults, seededAddresses, type MemberLaunchNote } from '~/utils/runSettings/memberLaunchDefaults'
 import { buildOrgMemberTree, findRunMember, type OrgMemberTree, type RunMemberNode } from '~/utils/runSettings/runMemberTree'
 import { definitionStartOrder, loadStartRuntimes, resolveStartModel } from '~/utils/runSettings/startModelDefaults'
 import { normalizeModelConfig } from '~/utils/teamRunConfigUtils'
@@ -66,6 +67,10 @@ export interface OrgLaunchDraft {
   teamWorkspaces: Record<AgentTeamAddress, RunWorkspaceChoice>
   /** Direct agents and placed-team members. */
   agentOverrides: Record<AgentTeamAddress, AgentConfigOverride>
+  /** Placed teams and agents seeded from their own default on a fresh start; they keep their model until reset (DS-006). */
+  pinnedMemberAddresses: AgentTeamAddress[]
+  /** Placed teams and agents whose own default could not be used on a fresh start; they follow their parent. */
+  memberLaunchNotes: Record<AgentTeamAddress, MemberLaunchNote>
 }
 
 export type OrgLaunchReadiness = LaunchReadiness
@@ -114,6 +119,8 @@ export const useAgentOrgLaunchDraftStore = defineStore('agentOrgLaunchDraft', ()
       teamOverrides: {},
       teamWorkspaces: {},
       agentOverrides: {},
+      pinnedMemberAddresses: [],
+      memberLaunchNotes: {},
     }
     const current = draft.value
     void prepare(current, Boolean(carried?.llmModelIdentifier))
@@ -159,8 +166,10 @@ export const useAgentOrgLaunchDraftStore = defineStore('agentOrgLaunchDraft', ()
         return
       }
       if (copied) Object.assign(target, copied)
-      if (copied || modelCarried) await loadCarriedRuntimes(target)
-      else await applyDefaultModel(target, selected)
+      // An Org run "+" keeps its members; a switcher start carries only the root, so members are seeded (SR-005).
+      if (copied) await loadCarriedRuntimes(target)
+      else if (modelCarried) await Promise.all([loadCarriedRuntimes(target), seedMembers(target, selected, references)])
+      else await Promise.all([applyDefaultModel(target, selected), seedMembers(target, selected, references)])
     } catch (error) {
       console.warn('Failed to prepare the Org launch page:', error)
       if (isCurrent(target) && !target.references) target.unavailable = true
@@ -232,6 +241,25 @@ export const useAgentOrgLaunchDraftStore = defineStore('agentOrgLaunchDraft', ()
     }
   }
 
+  /**
+   * REQ-009 on a fresh Org launch: placed teams from their team default, agents from their agent
+   * default (agent > its team > Org); usable ones become pinned rows, unusable ones get a note.
+   */
+  const seedMembers = async (target: OrgLaunchDraft, org: AgentOrgDefinition, references: AgentOrgDefinitionReferences) => {
+    const seed = await seedMemberLaunchDefaults({
+      ...orgMemberSeedTargets(org, references),
+      getAgentDefault: (id) => normalizeDefaultLaunchConfig(references.agents[id]?.defaultLaunchConfig),
+      getTeamDefault: (id) => normalizeDefaultLaunchConfig(references.teams[id]?.defaultLaunchConfig),
+      catalog: startModelCatalog(),
+      modelConfigFor: (choice) => explicitChatModelConfig(schemaFor(choice.runtimeKind, choice.llmModelIdentifier), choice.llmConfig),
+    })
+    if (!isCurrent(target)) return
+    target.teamOverrides = { ...seed.teamOverrides }
+    target.agentOverrides = { ...seed.agentOverrides }
+    target.pinnedMemberAddresses = seededAddresses(seed)
+    target.memberLaunchNotes = { ...seed.notes }
+  }
+
   const editable = (): OrgLaunchDraft | null => (draft.value?.phase === 'ready' ? draft.value : null)
 
   /** The Org card. */
@@ -283,6 +311,8 @@ export const useAgentOrgLaunchDraftStore = defineStore('agentOrgLaunchDraft', ()
       teamOverrides: current.teamOverrides,
       teamWorkspaces: current.teamWorkspaces,
       agentOverrides: current.agentOverrides,
+      pinnedAddresses: current.pinnedMemberAddresses,
+      launchNotes: current.memberLaunchNotes,
     }, { schemaFor, sameWorkspace: sameRunWorkspaceChoice })
   })
   const memberNodes = computed<readonly RunMemberNode[]>(() => (memberTree.value?.status === 'ready' ? memberTree.value.nodes : []))
@@ -301,9 +331,11 @@ export const useAgentOrgLaunchDraftStore = defineStore('agentOrgLaunchDraft', ()
       return
     }
     const overrides = node.kind === 'team' ? current.teamOverrides : current.agentOverrides
-    const next = editMemberOverride(overrides[address], node.parentValues, change, memberOverrideDeps)
+    const next = editMemberOverride(overrides[address], node.parentValues, change, memberOverrideDeps, pinOf(current, address))
     storeOverride(current, node.kind, address, next)
   }
+
+  const pinOf = (current: OrgLaunchDraft, address: AgentTeamAddress) => ({ pinnedModel: current.pinnedMemberAddresses.includes(address) })
 
   /** Per-field Reset, a row's reset (`all`). */
   const resetMember = (address: AgentTeamAddress, reset: RunMemberSettingReset) => {
@@ -318,7 +350,10 @@ export const useAgentOrgLaunchDraftStore = defineStore('agentOrgLaunchDraft', ()
       if (reset.field === 'workspace') return
     }
     const overrides = node.kind === 'team' ? current.teamOverrides : current.agentOverrides
-    storeOverride(current, node.kind, address, resetMemberOverride(overrides[address], node.parentValues, reset, memberOverrideDeps))
+    storeOverride(current, node.kind, address,
+      resetMemberOverride(overrides[address], node.parentValues, reset, memberOverrideDeps, pinOf(current, address)))
+    // A model or row reset makes a seeded row follow its parent again (REQ-010).
+    if (releasesMemberPin(reset)) current.pinnedMemberAddresses = current.pinnedMemberAddresses.filter((pinned) => pinned !== address)
   }
 
   const storeOverride = (current: OrgLaunchDraft, kind: 'agent' | 'team', address: AgentTeamAddress, override: AgentConfigOverride | null) => {
@@ -336,6 +371,7 @@ export const useAgentOrgLaunchDraftStore = defineStore('agentOrgLaunchDraft', ()
     current.teamOverrides = {}
     current.teamWorkspaces = {}
     current.agentOverrides = {}
+    current.pinnedMemberAddresses = []
   }
 
   // A broken topology blocks Run (see `readiness`); its details go to the console once, when found.
@@ -374,7 +410,7 @@ export const useAgentOrgLaunchDraftStore = defineStore('agentOrgLaunchDraft', ()
         orgDefinitionId: current.orgDefinitionId,
         root: { ...current.root },
         teamOverrides: Object.fromEntries(Object.entries(current.teamOverrides)
-          .map(([address, override]) => [address, normalizeMemberOverride(override, current.root) ?? {}])),
+          .map(([address, override]) => [address, normalizeMemberOverride(override, current.root, pinOf(current, address)) ?? {}])),
         teamWorkspaces: { ...current.teamWorkspaces },
         agentOverrides: { ...current.agentOverrides },
       })

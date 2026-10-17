@@ -1,0 +1,35 @@
+diff --git a/autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts b/autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts
+index 6ccfd9cf33..1992d58675 100644
+--- a/autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts
+@@ -44,17 +44,19 @@ describe("workspace content REST boundary e2e", () => {
+     }
+   }, 60_000);
+ 
+-  beforeEach(async () => {
++  beforeEach(() => {
+     initialIds = new Set(workspaceManager.getAllWorkspaces().map((workspace) => workspace.workspaceId));
+     tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-workspace-rest-e2e-"));
+     workspaceRoot = path.join(tempRoot, "workspace");
+     siblingRoot = path.join(tempRoot, "workspace-sibling");
+     fs.mkdirSync(workspaceRoot, { recursive: true });
+     fs.mkdirSync(siblingRoot, { recursive: true });
+-
+   });
+ 
+   afterEach(async () => {
++    // Keep the composed process authorities alive for public removal. Unlike a
++    // route-only fixture, this suite must not close the app per test or bypass
++    // removal by mutating the manager's private maps. afterAll owns app.close().
+     try {
+       for (const workspace of workspaceManager.getAllWorkspaces()) {
+         if (!initialIds.has(workspace.workspaceId)) {
+@@ -64,6 +66,8 @@ describe("workspace content REST boundary e2e", () => {
+             workspaceId: workspace.workspaceId,
+             workspaceRootPath: workspace.getBasePath(),
+           });
++          expect(workspaceManager.getWorkspaceById(workspace.workspaceId)).toBeUndefined();
++          expect(await workspaceManager.getRegisteredWorkspaceRootPath(workspace.workspaceId)).toBeNull();
+         }
+       }
+     } finally {

@@ -1,0 +1,10 @@
+{
+  "command": [
+    "node",
+    "tickets/in-progress/claude-interrupt-resume-fixture-types/evidence/implementation/verify-preservation.cjs"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types",
+  "started": "2026-10-13T04:30:40.632015+00:00",
+  "environment": "PATH/private temporary HOME/TMPDIR only; removed after exit",
+  "basis": "SR-003 / IR-002"
+}

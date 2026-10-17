@@ -1,0 +1,8 @@
+{
+  "removedOwnedSuiteDatabaseFiles": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+  ],
+  "diagnosticCopyAbsent": true,
+  "generatedDist": "Preserved unstaged build prerequisites; no broad clean",
+  "userResourcesTouched": false
+}

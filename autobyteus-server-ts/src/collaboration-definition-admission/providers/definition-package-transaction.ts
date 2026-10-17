@@ -87,7 +87,8 @@ export class DefinitionPackageTransaction {
       const backupPath = `${canonicalPath}.backup.${suffix}`;
       const journalPath = this.journalPath(canonicalPath);
       await fs.mkdir(path.dirname(canonicalPath), { recursive: true });
-      if (currentExists) await fs.cp(canonicalPath, stagePath, { recursive: true, errorOnExist: true });
+      // Copy links as authored: a relative link inside a package (as in a git checkout) must stay relative.
+      if (currentExists) await fs.cp(canonicalPath, stagePath, { recursive: true, errorOnExist: true, verbatimSymlinks: true });
       else await fs.mkdir(stagePath, { recursive: false });
       try {
         for (const [relativePath, content] of Object.entries(input.files)) {

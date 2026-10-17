@@ -1,0 +1,9 @@
+{
+  "origin": "owned backend-launch harness contract",
+  "observation": "Mac release app.js takes --data-dir; AUTOBYTEUS_DATA_DIR env alone ignored. Config requires .env in chosen private data root. No correct port/host CLI flags were supplied.",
+  "backendLog": "mac-backend.log",
+  "actualInstructedAgentsExecuted": false,
+  "credentialsTransferred": false,
+  "noFilesystemFailureClaim": true,
+  "next": "repeat separately with documented --data-dir/--host/--port and empty non-secret test-owned data .env; do not patch production/source package"
+}

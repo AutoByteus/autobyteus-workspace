@@ -1,0 +1,16 @@
+{
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli",
+  "argv": [
+    "pnpm",
+    "-C",
+    "autobyteus-server-ts",
+    "exec",
+    "vitest",
+    "run",
+    "tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts",
+    "--no-watch"
+  ],
+  "environment": "PATH + new HOME/private TMPDIR + TEST_DELIVERY_EXECUTION; AGY_ERROR_EVIDENCE_DIR for target only; no inherited app variables/keys",
+  "gate": "RUN_CLAUDE_E2E absent",
+  "revision": "26887250676ffc79f54c190936bbda7bc4fe1837"
+}

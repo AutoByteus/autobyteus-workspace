@@ -1,0 +1,75 @@
+{
+  "startedAt": "2026-10-15T14:57:48.221Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "S01": {
+      "title": "AC-005 / SCN-004 (collaboration-model-contract): a send_message_to to an outside catalog address is not found and creates nothing; the guidance names delegate_task; delegating then starts a copy with an ad-hoc Task, reached by its run ID",
+      "result": "Pass",
+      "ms": 28121,
+      "details": {
+        "runId": "research_assistant_56b39a98b3da4de6a6b86fd5977de6d5",
+        "copiesAfterMessage": 0,
+        "tasksAfterMessage": 0,
+        "noCollaboratorsKey": true,
+        "copy": {
+          "runId": "code_reviewer_1a262851ad3d43de85f2a318043356e1",
+          "address": "/code_reviewer"
+        },
+        "tasksForCopy": [
+          "ad_hoc_task_74542b3e-5971-474a-b82a-0a982bd4ca53"
+        ],
+        "copiesAfter": [
+          "code_reviewer_1a262851ad3d43de85f2a318043356e1"
+        ]
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 40837
+    },
+    {
+      "label": "frontend",
+      "pid": 40871
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 40871,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 40837,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-TVTqF2"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-TVTqF2",
+  "backendUrl": "http://127.0.0.1:61629",
+  "frontUrl": "http://127.0.0.1:61630",
+  "definitions": {
+    "research": "research-assistant",
+    "reviewer": "code-reviewer",
+    "researcher": "researcher",
+    "writer": "writer",
+    "analyst": "analyst",
+    "noteTaker": "note-taker",
+    "tempHelper": "temp-helper",
+    "prototyper": "product-prototyper",
+    "bootstrapper": "prototype-bootstrapper",
+    "productTeam": "product-team",
+    "reviewTeam": "review-team",
+    "org": "launch-org"
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 1,
+    "fail": 0,
+    "notApplicable": 0
+  },
+  "completedAt": "2026-10-15T14:58:39.161Z"
+}

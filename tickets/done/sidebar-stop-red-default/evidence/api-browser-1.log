@@ -1,0 +1,9 @@
+
+> autobyteus@1.5.3-beta.4 test:e2e:delegated-launch-defaults /home/autobyteus/workspace/.codex/worktrees/sidebar-stop-red-default/autobyteus-web
+> node tests/e2e/delegated-launch-defaults-probe.mjs --cases DCP-001,DCP-002,DCP-003 --output-dir /home/autobyteus/workspace/.codex/worktrees/sidebar-stop-red-default/tickets/in-progress/sidebar-stop-red-default/evidence/api-browser-1 --ledger-file /home/autobyteus/workspace/.codex/worktrees/sidebar-stop-red-default/tickets/in-progress/sidebar-stop-red-default/api-e2e-test-case-ledger.md
+
+DCP-001 Pass delegated-copy-model-change AC-001/002/004/011, DEC-010: a running copy is locked with a stop icon; Stop from the sidebar; its model changed in Settings and saved; the next message resumes it on that model
+DCP-002 Pass delegated-copy-model-change AC-002/003, IR-002 (Team root, UI): a Team copy stopped from its sidebar row; its Team model changed and saved; the copy lead's "+" shows the choice without a reload; the next message resumes the lead on it
+DCP-003 Pass delegated-copy-model-change AC-001/002 (Org root, UI): a copy stopped from its Settings row (its Org sidebar stop icon goes away); its model changed and saved; the next message resumes it on that model
+Summary: 3 Pass, 0 Fail
+outer_HOME_removed=/tmp/sidebar-stop-red-api-home-YsYaqd exit=0

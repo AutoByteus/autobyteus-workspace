@@ -1,0 +1,8 @@
+
+ Test Files  74 passed (74)
+      Tests  524 passed (524)
+   Start at  12:25:05
+   Duration  3.65s (transform 3.92s, setup 526ms, import 20.48s, tests 793ms, environment 8ms)
+
+vitest exit=0
+tsc exit=0

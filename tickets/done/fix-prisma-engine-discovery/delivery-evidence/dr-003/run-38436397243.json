@@ -1,0 +1,842 @@
+{
+  "conclusion": "success",
+  "createdAt": "2026-10-13T17:09:41Z",
+  "databaseId": 38436397243,
+  "event": "push",
+  "headSha": "abfd379059a7bc1c392a6a2137d27e32427cda26",
+  "jobs": [
+    {
+      "completedAt": "2026-10-13T17:11:03Z",
+      "conclusion": "success",
+      "databaseId": 115431391047,
+      "name": "Resolve Release Metadata",
+      "startedAt": "2026-10-13T17:09:43Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-13T17:09:44Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-13T17:09:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:09:45Z",
+          "conclusion": "success",
+          "name": "Resolve release metadata",
+          "number": 2,
+          "startedAt": "2026-10-13T17:09:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:10:59Z",
+          "conclusion": "success",
+          "name": "Checkout release ref",
+          "number": 3,
+          "startedAt": "2026-10-13T17:09:45Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:10:59Z",
+          "conclusion": "success",
+          "name": "Check repository artifact hygiene",
+          "number": 4,
+          "startedAt": "2026-10-13T17:10:59Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:11:00Z",
+          "conclusion": "success",
+          "name": "Check licensing consistency",
+          "number": 5,
+          "startedAt": "2026-10-13T17:10:59Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:11:00Z",
+          "conclusion": "success",
+          "name": "Validate workspace package versions match release tag",
+          "number": 6,
+          "startedAt": "2026-10-13T17:11:00Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:11:00Z",
+          "conclusion": "success",
+          "name": "Resolve release commit SHA",
+          "number": 7,
+          "startedAt": "2026-10-13T17:11:00Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:11:00Z",
+          "conclusion": "success",
+          "name": "Post Checkout release ref",
+          "number": 14,
+          "startedAt": "2026-10-13T17:11:00Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:11:00Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 15,
+          "startedAt": "2026-10-13T17:11:00Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38436397243/job/115431391047"
+    },
+    {
+      "completedAt": "2026-10-13T17:23:51Z",
+      "conclusion": "success",
+      "databaseId": 115432042987,
+      "name": "Build Windows x64",
+      "startedAt": "2026-10-13T17:11:05Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-13T17:11:07Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-13T17:11:06Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:12:13Z",
+          "conclusion": "success",
+          "name": "Checkout workspace + submodules",
+          "number": 2,
+          "startedAt": "2026-10-13T17:11:07Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:12:16Z",
+          "conclusion": "success",
+          "name": "Setup pnpm",
+          "number": 3,
+          "startedAt": "2026-10-13T17:12:13Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:12:24Z",
+          "conclusion": "success",
+          "name": "Setup Node",
+          "number": 4,
+          "startedAt": "2026-10-13T17:12:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:12:48Z",
+          "conclusion": "success",
+          "name": "Install workspace dependencies",
+          "number": 5,
+          "startedAt": "2026-10-13T17:12:24Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:12:55Z",
+          "conclusion": "success",
+          "name": "Install Python setuptools for node-gyp",
+          "number": 6,
+          "startedAt": "2026-10-13T17:12:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:23:26Z",
+          "conclusion": "success",
+          "name": "Build Electron Windows x64",
+          "number": 7,
+          "startedAt": "2026-10-13T17:12:55Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:23:35Z",
+          "conclusion": "success",
+          "name": "Upload Windows artifacts",
+          "number": 8,
+          "startedAt": "2026-10-13T17:23:26Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:23:48Z",
+          "conclusion": "success",
+          "name": "Post Setup Node",
+          "number": 14,
+          "startedAt": "2026-10-13T17:23:35Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:23:48Z",
+          "conclusion": "success",
+          "name": "Post Setup pnpm",
+          "number": 15,
+          "startedAt": "2026-10-13T17:23:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:23:50Z",
+          "conclusion": "success",
+          "name": "Post Checkout workspace + submodules",
+          "number": 16,
+          "startedAt": "2026-10-13T17:23:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:23:50Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 17,
+          "startedAt": "2026-10-13T17:23:50Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38436397243/job/115432042987"
+    },
+    {
+      "completedAt": "2026-10-13T17:31:30Z",
+      "conclusion": "success",
+      "databaseId": 115432042995,
+      "name": "Build macOS Intel x64",
+      "startedAt": "2026-10-13T17:11:09Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-13T17:11:12Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-13T17:11:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:12:33Z",
+          "conclusion": "success",
+          "name": "Checkout workspace + submodules",
+          "number": 2,
+          "startedAt": "2026-10-13T17:11:12Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:12:34Z",
+          "conclusion": "success",
+          "name": "Setup pnpm",
+          "number": 3,
+          "startedAt": "2026-10-13T17:12:33Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:12:35Z",
+          "conclusion": "success",
+          "name": "Setup Node",
+          "number": 4,
+          "startedAt": "2026-10-13T17:12:34Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:13:13Z",
+          "conclusion": "success",
+          "name": "Install workspace dependencies",
+          "number": 5,
+          "startedAt": "2026-10-13T17:12:35Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:13:16Z",
+          "conclusion": "success",
+          "name": "Install Python setuptools for node-gyp",
+          "number": 6,
+          "startedAt": "2026-10-13T17:13:13Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:13:17Z",
+          "conclusion": "success",
+          "name": "Import Apple code signing certificate",
+          "number": 7,
+          "startedAt": "2026-10-13T17:13:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:29:55Z",
+          "conclusion": "success",
+          "name": "Build Electron macOS Intel x64",
+          "number": 8,
+          "startedAt": "2026-10-13T17:13:17Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:29:56Z",
+          "conclusion": "success",
+          "name": "Verify bundled Prisma x64 engine target",
+          "number": 9,
+          "startedAt": "2026-10-13T17:29:55Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:29:57Z",
+          "conclusion": "success",
+          "name": "Verify packaged terminal runtime x64",
+          "number": 10,
+          "startedAt": "2026-10-13T17:29:56Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:30:18Z",
+          "conclusion": "success",
+          "name": "Verify macOS signing policy x64",
+          "number": 11,
+          "startedAt": "2026-10-13T17:29:57Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:30:53Z",
+          "conclusion": "success",
+          "name": "Upload macOS Intel artifacts",
+          "number": 12,
+          "startedAt": "2026-10-13T17:30:18Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:31:25Z",
+          "conclusion": "success",
+          "name": "Post Setup Node",
+          "number": 22,
+          "startedAt": "2026-10-13T17:30:53Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:31:25Z",
+          "conclusion": "success",
+          "name": "Post Setup pnpm",
+          "number": 23,
+          "startedAt": "2026-10-13T17:31:25Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:31:26Z",
+          "conclusion": "success",
+          "name": "Post Checkout workspace + submodules",
+          "number": 24,
+          "startedAt": "2026-10-13T17:31:25Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:31:28Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 25,
+          "startedAt": "2026-10-13T17:31:26Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38436397243/job/115432042995"
+    },
+    {
+      "completedAt": "2026-10-13T17:15:45Z",
+      "conclusion": "success",
+      "databaseId": 115432043096,
+      "name": "Build Linux x64",
+      "startedAt": "2026-10-13T17:11:05Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-13T17:11:08Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-13T17:11:06Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:11:59Z",
+          "conclusion": "success",
+          "name": "Checkout workspace + submodules",
+          "number": 2,
+          "startedAt": "2026-10-13T17:11:08Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:12:00Z",
+          "conclusion": "success",
+          "name": "Setup pnpm",
+          "number": 3,
+          "startedAt": "2026-10-13T17:11:59Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:12:01Z",
+          "conclusion": "success",
+          "name": "Setup Node",
+          "number": 4,
+          "startedAt": "2026-10-13T17:12:00Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:12:20Z",
+          "conclusion": "success",
+          "name": "Install Linux build deps",
+          "number": 5,
+          "startedAt": "2026-10-13T17:12:01Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:12:38Z",
+          "conclusion": "success",
+          "name": "Install workspace dependencies",
+          "number": 6,
+          "startedAt": "2026-10-13T17:12:20Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:15:19Z",
+          "conclusion": "success",
+          "name": "Build Electron Linux x64",
+          "number": 7,
+          "startedAt": "2026-10-13T17:12:38Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:15:19Z",
+          "conclusion": "success",
+          "name": "Verify Linux x64 AppImage and updater metadata",
+          "number": 8,
+          "startedAt": "2026-10-13T17:15:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:15:20Z",
+          "conclusion": "success",
+          "name": "Verify Linux x64 Prisma engines",
+          "number": 9,
+          "startedAt": "2026-10-13T17:15:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:15:22Z",
+          "conclusion": "success",
+          "name": "Verify Linux x64 packaged server startup",
+          "number": 10,
+          "startedAt": "2026-10-13T17:15:20Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:15:35Z",
+          "conclusion": "success",
+          "name": "Upload Linux x64 artifacts",
+          "number": 11,
+          "startedAt": "2026-10-13T17:15:22Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:15:42Z",
+          "conclusion": "success",
+          "name": "Post Setup Node",
+          "number": 20,
+          "startedAt": "2026-10-13T17:15:35Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:15:42Z",
+          "conclusion": "success",
+          "name": "Post Setup pnpm",
+          "number": 21,
+          "startedAt": "2026-10-13T17:15:42Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:15:42Z",
+          "conclusion": "success",
+          "name": "Post Checkout workspace + submodules",
+          "number": 22,
+          "startedAt": "2026-10-13T17:15:42Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:15:42Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 23,
+          "startedAt": "2026-10-13T17:15:42Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38436397243/job/115432043096"
+    },
+    {
+      "completedAt": "2026-10-13T17:15:33Z",
+      "conclusion": "success",
+      "databaseId": 115432043115,
+      "name": "Build Linux ARM64",
+      "startedAt": "2026-10-13T17:11:07Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-13T17:11:09Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-13T17:11:08Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:11:52Z",
+          "conclusion": "success",
+          "name": "Checkout workspace + submodules",
+          "number": 2,
+          "startedAt": "2026-10-13T17:11:09Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:11:53Z",
+          "conclusion": "success",
+          "name": "Setup pnpm",
+          "number": 3,
+          "startedAt": "2026-10-13T17:11:52Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:11:57Z",
+          "conclusion": "success",
+          "name": "Setup Node",
+          "number": 4,
+          "startedAt": "2026-10-13T17:11:53Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:12:11Z",
+          "conclusion": "success",
+          "name": "Install Linux build deps",
+          "number": 5,
+          "startedAt": "2026-10-13T17:11:57Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:12:29Z",
+          "conclusion": "success",
+          "name": "Install workspace dependencies",
+          "number": 6,
+          "startedAt": "2026-10-13T17:12:11Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:15:10Z",
+          "conclusion": "success",
+          "name": "Build Electron Linux ARM64",
+          "number": 7,
+          "startedAt": "2026-10-13T17:12:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:15:10Z",
+          "conclusion": "success",
+          "name": "Verify Linux ARM64 AppImage and updater metadata",
+          "number": 8,
+          "startedAt": "2026-10-13T17:15:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:15:10Z",
+          "conclusion": "success",
+          "name": "Verify Linux ARM64 Prisma engines",
+          "number": 9,
+          "startedAt": "2026-10-13T17:15:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:15:14Z",
+          "conclusion": "success",
+          "name": "Verify Linux ARM64 packaged server startup",
+          "number": 10,
+          "startedAt": "2026-10-13T17:15:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:15:26Z",
+          "conclusion": "success",
+          "name": "Upload Linux ARM64 artifacts",
+          "number": 11,
+          "startedAt": "2026-10-13T17:15:14Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:15:31Z",
+          "conclusion": "success",
+          "name": "Post Setup Node",
+          "number": 20,
+          "startedAt": "2026-10-13T17:15:26Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:15:31Z",
+          "conclusion": "success",
+          "name": "Post Setup pnpm",
+          "number": 21,
+          "startedAt": "2026-10-13T17:15:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:15:31Z",
+          "conclusion": "success",
+          "name": "Post Checkout workspace + submodules",
+          "number": 22,
+          "startedAt": "2026-10-13T17:15:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:15:31Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 23,
+          "startedAt": "2026-10-13T17:15:31Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38436397243/job/115432043115"
+    },
+    {
+      "completedAt": "2026-10-13T17:30:25Z",
+      "conclusion": "success",
+      "databaseId": 115432043154,
+      "name": "Build macOS ARM64",
+      "startedAt": "2026-10-13T17:11:08Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-13T17:11:10Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-13T17:11:08Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:12:50Z",
+          "conclusion": "success",
+          "name": "Checkout workspace + submodules",
+          "number": 2,
+          "startedAt": "2026-10-13T17:11:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:12:52Z",
+          "conclusion": "success",
+          "name": "Setup pnpm",
+          "number": 3,
+          "startedAt": "2026-10-13T17:12:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:12:53Z",
+          "conclusion": "success",
+          "name": "Setup Node",
+          "number": 4,
+          "startedAt": "2026-10-13T17:12:52Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:13:28Z",
+          "conclusion": "success",
+          "name": "Install workspace dependencies",
+          "number": 5,
+          "startedAt": "2026-10-13T17:12:53Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:13:30Z",
+          "conclusion": "success",
+          "name": "Install Python setuptools for node-gyp",
+          "number": 6,
+          "startedAt": "2026-10-13T17:13:28Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:13:30Z",
+          "conclusion": "success",
+          "name": "Import Apple code signing certificate",
+          "number": 7,
+          "startedAt": "2026-10-13T17:13:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:29:08Z",
+          "conclusion": "success",
+          "name": "Build Electron macOS ARM64",
+          "number": 8,
+          "startedAt": "2026-10-13T17:13:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:29:09Z",
+          "conclusion": "success",
+          "name": "Verify bundled Prisma ARM64 engine target",
+          "number": 9,
+          "startedAt": "2026-10-13T17:29:08Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:29:11Z",
+          "conclusion": "success",
+          "name": "Verify packaged terminal runtime ARM64",
+          "number": 10,
+          "startedAt": "2026-10-13T17:29:09Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:29:26Z",
+          "conclusion": "success",
+          "name": "Verify macOS signing policy ARM64",
+          "number": 11,
+          "startedAt": "2026-10-13T17:29:11Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:29:53Z",
+          "conclusion": "success",
+          "name": "Upload macOS artifacts",
+          "number": 12,
+          "startedAt": "2026-10-13T17:29:26Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:30:21Z",
+          "conclusion": "success",
+          "name": "Post Setup Node",
+          "number": 22,
+          "startedAt": "2026-10-13T17:29:53Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:30:22Z",
+          "conclusion": "success",
+          "name": "Post Setup pnpm",
+          "number": 23,
+          "startedAt": "2026-10-13T17:30:21Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:30:22Z",
+          "conclusion": "success",
+          "name": "Post Checkout workspace + submodules",
+          "number": 24,
+          "startedAt": "2026-10-13T17:30:22Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:30:24Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 25,
+          "startedAt": "2026-10-13T17:30:22Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38436397243/job/115432043154"
+    },
+    {
+      "completedAt": "2026-10-13T17:34:59Z",
+      "conclusion": "success",
+      "databaseId": 115441558271,
+      "name": "Publish GitHub Release",
+      "startedAt": "2026-10-13T17:31:33Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-13T17:31:35Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-13T17:31:34Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:32:26Z",
+          "conclusion": "success",
+          "name": "Checkout workspace + submodules",
+          "number": 2,
+          "startedAt": "2026-10-13T17:31:35Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:34:16Z",
+          "conclusion": "success",
+          "name": "Download build artifacts",
+          "number": 3,
+          "startedAt": "2026-10-13T17:32:26Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:34:16Z",
+          "conclusion": "success",
+          "name": "Merge macOS updater metadata",
+          "number": 4,
+          "startedAt": "2026-10-13T17:34:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:34:16Z",
+          "conclusion": "success",
+          "name": "Validate merged macOS updater metadata",
+          "number": 5,
+          "startedAt": "2026-10-13T17:34:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:34:16Z",
+          "conclusion": "success",
+          "name": "Validate Linux updater metadata",
+          "number": 6,
+          "startedAt": "2026-10-13T17:34:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:34:16Z",
+          "conclusion": "success",
+          "name": "Resolve release notes mode",
+          "number": 7,
+          "startedAt": "2026-10-13T17:34:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:34:16Z",
+          "conclusion": "skipped",
+          "name": "Publish release assets with curated notes",
+          "number": 8,
+          "startedAt": "2026-10-13T17:34:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:34:56Z",
+          "conclusion": "success",
+          "name": "Publish release assets with generated notes fallback",
+          "number": 9,
+          "startedAt": "2026-10-13T17:34:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:34:56Z",
+          "conclusion": "success",
+          "name": "Post Checkout workspace + submodules",
+          "number": 18,
+          "startedAt": "2026-10-13T17:34:56Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-13T17:34:56Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 19,
+          "startedAt": "2026-10-13T17:34:56Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38436397243/job/115441558271"
+    }
+  ],
+  "status": "completed",
+  "updatedAt": "2026-10-13T17:35:00Z",
+  "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/38436397243",
+  "workflowName": "Desktop Release"
+}

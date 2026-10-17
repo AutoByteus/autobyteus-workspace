@@ -1,4 +1,5 @@
-import { OpenAICompatibleLLM } from './openai-compatible-llm.js';
+import { OPENAI_CHAT_FINISH_TABLE, OpenAICompatibleLLM } from './openai-compatible-llm.js';
+import type { LlmFinishTable } from '../utils/llm-response-finish.js';
 import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
 import { LLMProvider } from '../providers.js';
@@ -29,6 +30,15 @@ function normalizeGlmExtraParams(extraParams?: Record<string, unknown>): Record<
 }
 
 export class GlmLLM extends OpenAICompatibleLLM {
+  /** The provider's chat API documents `max_tokens` only (no `max_completion_tokens`). */
+  protected override readonly outputLimitParameter = 'max_tokens' as const;
+  /** Z.ai documents `sensitive` (content filtered) and `model_context_window_exceeded`. */
+  protected override readonly finishTable: LlmFinishTable = {
+    ...OPENAI_CHAT_FINISH_TABLE,
+    sensitive: 'content_filter',
+    model_context_window_exceeded: 'context_window_exceeded',
+  };
+
   constructor(model: LLMModel, config: LLMConfig, apiKeyResolver: ProviderApiKeyResolver) {
     super(model, 'https://open.bigmodel.cn/api/coding/paas/v4/', config, apiKeyResolver, LLMProvider.GLM);
 

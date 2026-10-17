@@ -31,7 +31,7 @@
         {{ filePreviewStatus }}
       </p>
       <slot name="composerContext" />
-      <!-- A collaborator that could not be brought into this run (REQ-008); hidden otherwise. -->
+      <!-- A mentioned unit that could not be involved in this run (REQ-008); hidden otherwise. -->
       <CollaboratorAddFailureNotice />
       <slot name="composer">
         <AgentUserInputForm :before-send="beforeSend" :skill-tagging="skillTagging" :placeholder="composerPlaceholder" />

@@ -1,0 +1,82 @@
+[
+  {
+    "name": "ordinary-mounted-read-and-source-identity",
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-api002-linux-5336c36d",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/home/admin",
+      "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "set -e; id; stat -c \"%d:%i:%u:%g:%a\" /home/admin/ab-nfs-api002-linux-5336c36d-source; sha256sum /home/admin/ab-nfs-api002-linux-5336c36d-source/project/preexisting.txt /Volumes/autobyteus-shared/project/preexisting.txt; cat /home/admin/ab-nfs-api002-linux-5336c36d-source/.autobyteus-nfs/storage.json; cat /Volumes/autobyteus-shared/.autobyteus-nfs/storage.json; sudo -n stat -c \"%u %g %a %n\" /var/lib/autobyteus-nfs /var/lib/autobyteus-nfs/attachment.json; sha256sum /usr/local/bin/autobyteus-nfs"
+    ],
+    "rc": 1,
+    "seconds": 0.57,
+    "stdout": "uid=1000(admin) gid=109(admin) groups=109(admin)\n64769:577887:1000:109:755\nca408b84600659e3878b8bcdb27362694d8494fc85df5ecf41c8bde880c103e7  /home/admin/ab-nfs-api002-linux-5336c36d-source/project/preexisting.txt\nca408b84600659e3878b8bcdb27362694d8494fc85df5ecf41c8bde880c103e7  /Volumes/autobyteus-shared/project/preexisting.txt\n{\"storageId\":\"7f00baa9-8f2c-4163-aebf-59f03f3b7087\"}\n{\"storageId\":\"7f00baa9-8f2c-4163-aebf-59f03f3b7087\"}\n0 0 700 /var/lib/autobyteus-nfs\n0 0 600 /var/lib/autobyteus-nfs/attachment.json\n",
+    "stderr": "sha256sum: /usr/local/bin/autobyteus-nfs: No such file or directory\n"
+  },
+  {
+    "name": "strace-internal-probe-source",
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-api002-linux-5336c36d",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/home/admin",
+      "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/var/empty PATH=/usr/bin:/bin LANG=C /usr/bin/strace -f -s 200 -e trace=openat,openat2,newfstatat,statx,readlinkat,close /usr/local/bin/autobyteus-nfs internal-probe /home/admin/ab-nfs-api002-linux-5336c36d-source 7f00baa9-8f2c-4163-aebf-59f03f3b7087"
+    ],
+    "rc": 1,
+    "seconds": 0.075,
+    "stdout": "",
+    "stderr": "/usr/bin/strace: Cannot stat '/usr/local/bin/autobyteus-nfs': No such file or directory\n"
+  },
+  {
+    "name": "strace-internal-probe-mount",
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-api002-linux-5336c36d",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/home/admin",
+      "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/var/empty PATH=/usr/bin:/bin LANG=C /usr/bin/strace -f -s 200 -e trace=openat,openat2,newfstatat,statx,readlinkat,close /usr/local/bin/autobyteus-nfs internal-probe /Volumes/autobyteus-shared 7f00baa9-8f2c-4163-aebf-59f03f3b7087"
+    ],
+    "rc": 1,
+    "seconds": 0.036,
+    "stdout": "",
+    "stderr": "/usr/bin/strace: Cannot stat '/usr/local/bin/autobyteus-nfs': No such file or directory\n"
+  },
+  {
+    "name": "public-reconnect-fresh-repro",
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-api002-linux-5336c36d",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/home/admin",
+      "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "/home/admin/ab-nfs-api002-linux-5336c36d-binary reconnect --yes --json"
+    ],
+    "rc": 1,
+    "seconds": 0.599,
+    "stdout": "",
+    "stderr": "Resuming the same source/UUID. Any recovery restores configuration only, NOT storage bytes.\n - Ganesha NFSv4.1 TCP2049 only; persistent private recovery state\n - Export chosen source in place: /home/admin/ab-nfs-api002-linux-5336c36d-source\n - Map ALL clients to nonroot 1000:109; no recursive ownership change\n - Trust private hosts/subnets: 192.168.64.5\n - Attach 192.168.64.5:/autobyteus/7f00baa9-8f2c-4163-aebf-59f03f3b7087 at /Volumes/autobyteus-shared\n - Install fixed root-owned launchd/systemd service; publish nonsecret binding descriptor\n - NFS is unencrypted host trust, NOT individual-user authentication; no router or firewall rules changed\n - Hard NFS may stall file operations, previews and unrelated work; no local fallback or outage deadline\n - Install exact Ubuntu NFS package versions from this release, if needed\nAutoByteus NFS incomplete: nonroot storage check incomplete: exit status 1: AutoByteus NFS incomplete: statat .autobyteus-nfs/storage.json: remote I/O error\n\nAutoByteus NFS incomplete: exit status 1\n"
+  }
+]

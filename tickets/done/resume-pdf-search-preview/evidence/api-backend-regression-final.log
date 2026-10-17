@@ -1,0 +1,1557 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts
+App data directory: /tmp/resume-pdf-api.RwYhMo/data
+
+[90mstdout[2m | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts[2m > [22m[2mworkspace content REST boundary e2e[2m > [22m[2mserves encoded image paths through a real FileSystemWorkspace
+[22m[39mCreating new workspace for rootPath: /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-workspace-rest-e2e-PyLtpV/workspace
+Created metadata-only FileSystemWorkspace at /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-workspace-rest-e2e-PyLtpV/workspace.
+
+[90mstdout[2m | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts[2m > [22m[2mworkspace content REST boundary e2e[2m > [22m[2mserves encoded image paths through a real FileSystemWorkspace
+[22m[39mCreated and registered workspace ID: agent_ws_d6ab123d4d668557ca4a84b73f10e6cda05d7aea744e37a73f39d751b8e91d7b
+
+[90mstdout[2m | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts[2m > [22m[2mworkspace content REST boundary e2e[2m > [22m[2mserves encoded image paths through a real FileSystemWorkspace
+[22m[39mClosing FileSystemWorkspace agent_ws_d6ab123d4d668557ca4a84b73f10e6cda05d7aea744e37a73f39d751b8e91d7b
+
+[90mstdout[2m | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts[2m > [22m[2mworkspace content REST boundary e2e[2m > [22m[2mserves SVG bytes with the image/svg+xml content boundary through a real FileSystemWorkspace
+[22m[39mCreating new workspace for rootPath: /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-workspace-rest-e2e-bUJGJF/workspace
+Created metadata-only FileSystemWorkspace at /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-workspace-rest-e2e-bUJGJF/workspace.
+
+[90mstdout[2m | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts[2m > [22m[2mworkspace content REST boundary e2e[2m > [22m[2mserves SVG bytes with the image/svg+xml content boundary through a real FileSystemWorkspace
+[22m[39mCreated and registered workspace ID: agent_ws_c82dc5147e1dedd939bf3d74bad8ad2b286c2e33c8a400fcb6b3931ba012f050
+
+[90mstdout[2m | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts[2m > [22m[2mworkspace content REST boundary e2e[2m > [22m[2mserves SVG bytes with the image/svg+xml content boundary through a real FileSystemWorkspace
+[22m[39mClosing FileSystemWorkspace agent_ws_c82dc5147e1dedd939bf3d74bad8ad2b286c2e33c8a400fcb6b3931ba012f050
+
+[90mstdout[2m | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts[2m > [22m[2mworkspace content REST boundary e2e[2m > [22m[2mrejects a same-prefix sibling traversal through FileSystemWorkspace
+[22m[39mCreating new workspace for rootPath: /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-workspace-rest-e2e-Q0Bqrv/workspace
+Created metadata-only FileSystemWorkspace at /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-workspace-rest-e2e-Q0Bqrv/workspace.
+
+[90mstdout[2m | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts[2m > [22m[2mworkspace content REST boundary e2e[2m > [22m[2mrejects a same-prefix sibling traversal through FileSystemWorkspace
+[22m[39mCreated and registered workspace ID: agent_ws_b726e60d23f593411a292cef5b3ad4c6ec02d7bd7b8d1b1dc024475fae6550b1
+
+[90mstderr[2m | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts[2m > [22m[2mworkspace content REST boundary e2e[2m > [22m[2mrejects a same-prefix sibling traversal through FileSystemWorkspace
+[22m[39mSecurity error accessing path ../workspace-sibling/leak.png in workspace agent_ws_b726e60d23f593411a292cef5b3ad4c6ec02d7bd7b8d1b1dc024475fae6550b1: Access denied: Path resolves outside the workspace boundary.
+
+[90mstdout[2m | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts[2m > [22m[2mworkspace content REST boundary e2e[2m > [22m[2mrejects a same-prefix sibling traversal through FileSystemWorkspace
+[22m[39mClosing FileSystemWorkspace agent_ws_b726e60d23f593411a292cef5b3ad4c6ec02d7bd7b8d1b1dc024475fae6550b1
+
+[90mstdout[2m | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts[2m > [22m[2mworkspace content REST boundary e2e[2m > [22m[2mrejects an absolute candidate through FileSystemWorkspace
+[22m[39mCreating new workspace for rootPath: /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-workspace-rest-e2e-GKsDvg/workspace
+Created metadata-only FileSystemWorkspace at /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-workspace-rest-e2e-GKsDvg/workspace.
+
+[90mstdout[2m | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts[2m > [22m[2mworkspace content REST boundary e2e[2m > [22m[2mrejects an absolute candidate through FileSystemWorkspace
+[22m[39mCreated and registered workspace ID: agent_ws_d7080ec1f27889047f288d0c5c39fc560374c816b060cf12bc37e51d9e29cecd
+
+[90mstderr[2m | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts[2m > [22m[2mworkspace content REST boundary e2e[2m > [22m[2mrejects an absolute candidate through FileSystemWorkspace
+[22m[39mSecurity error accessing path /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-workspace-rest-e2e-GKsDvg/absolute.png in workspace agent_ws_d7080ec1f27889047f288d0c5c39fc560374c816b060cf12bc37e51d9e29cecd: Access denied: Path resolves outside the workspace boundary.
+
+[90mstdout[2m | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts[2m > [22m[2mworkspace content REST boundary e2e[2m > [22m[2mrejects an absolute candidate through FileSystemWorkspace
+[22m[39mClosing FileSystemWorkspace agent_ws_d7080ec1f27889047f288d0c5c39fc560374c816b060cf12bc37e51d9e29cecd
+
+[90mstdout[2m | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts[2m > [22m[2mworkspace content REST boundary e2e[2m > [22m[2mrejects an absolute candidate through the static workspace route
+[22m[39mCreating new workspace for rootPath: /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-workspace-rest-e2e-LSIuXr/workspace
+Created metadata-only FileSystemWorkspace at /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-workspace-rest-e2e-LSIuXr/workspace.
+
+[90mstdout[2m | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts[2m > [22m[2mworkspace content REST boundary e2e[2m > [22m[2mrejects an absolute candidate through the static workspace route
+[22m[39mCreated and registered workspace ID: agent_ws_1ee5f692f907641fefed714215060dc21fd12c7452dc19922717964f65f8f601
+
+[90mstderr[2m | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts[2m > [22m[2mworkspace content REST boundary e2e[2m > [22m[2mrejects an absolute candidate through the static workspace route
+[22m[39mSecurity error accessing path /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-workspace-rest-e2e-LSIuXr/absolute.html in workspace agent_ws_1ee5f692f907641fefed714215060dc21fd12c7452dc19922717964f65f8f601: Access denied: Path resolves outside the workspace boundary.
+
+[90mstdout[2m | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts[2m > [22m[2mworkspace content REST boundary e2e[2m > [22m[2mrejects an absolute candidate through the static workspace route
+[22m[39mClosing FileSystemWorkspace agent_ws_1ee5f692f907641fefed714215060dc21fd12c7452dc19922717964f65f8f601
+
+ [32m✓[39m tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 66[2mms[22m[39m
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts
+App data directory: /tmp/resume-pdf-api.RwYhMo/data
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mCreating new workspace for rootPath: /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-pqgAF1
+Created metadata-only FileSystemWorkspace at /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-pqgAF1.
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mCreated and registered workspace ID: agent_ws_ae6d534a7c9f64040a21fc7299f1f13ebcd8fe9d3d3917dbe28d0c7c9c185d4e
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mCreated WorkspaceFileExplorer for agent_ws_ae6d534a7c9f64040a21fc7299f1f13ebcd8fe9d3d3917dbe28d0c7c9c185d4e (e2e-search-snapshot).
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-pqgAF1' with max_depth=null
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-pqgAF1' completed in 0.0040 seconds.
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39m[Search] Trying strategy: FuzzysortSearchStrategy for query 'alpha'
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39m[Search] FuzzysortSearchStrategy completed in 0.67ms, found 1 results (total: 0.73ms)
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mFileSystemWatcher initialized for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-pqgAF1' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mStarted filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-pqgAF1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mAcquired file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-pqgAF1 (file-explorer-websocket); active leases: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mFileExplorerSession created: ff77da9d-d5bf-49b2-9e3e-55cebbf6b84b for workspace agent_ws_ae6d534a7c9f64040a21fc7299f1f13ebcd8fe9d3d3917dbe28d0c7c9c185d4e
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mCreated file explorer session ff77da9d-d5bf-49b2-9e3e-55cebbf6b84b for workspace agent_ws_ae6d534a7c9f64040a21fc7299f1f13ebcd8fe9d3d3917dbe28d0c7c9c185d4e. Active sessions: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mFile explorer WebSocket connected: ff77da9d-d5bf-49b2-9e3e-55cebbf6b84b for workspace agent_ws_ae6d534a7c9f64040a21fc7299f1f13ebcd8fe9d3d3917dbe28d0c7c9c185d4e
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mFile explorer websocket attached for workspace agent_ws_ae6d534a7c9f64040a21fc7299f1f13ebcd8fe9d3d3917dbe28d0c7c9c185d4e
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mAcquired file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-pqgAF1 (file-explorer-websocket); active leases: 2
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mFileExplorerSession created: 5b7fd8bc-4787-42e3-96da-f8f43c6fb4f5 for workspace agent_ws_ae6d534a7c9f64040a21fc7299f1f13ebcd8fe9d3d3917dbe28d0c7c9c185d4e
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mCreated file explorer session 5b7fd8bc-4787-42e3-96da-f8f43c6fb4f5 for workspace agent_ws_ae6d534a7c9f64040a21fc7299f1f13ebcd8fe9d3d3917dbe28d0c7c9c185d4e. Active sessions: 2
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mFile explorer WebSocket connected: 5b7fd8bc-4787-42e3-96da-f8f43c6fb4f5 for workspace agent_ws_ae6d534a7c9f64040a21fc7299f1f13ebcd8fe9d3d3917dbe28d0c7c9c185d4e
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mFile explorer websocket attached for workspace agent_ws_ae6d534a7c9f64040a21fc7299f1f13ebcd8fe9d3d3917dbe28d0c7c9c185d4e
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mWatcher detected creation: /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-pqgAF1/live-added.txt
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mReleased file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-pqgAF1 (file-explorer-websocket); active leases: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mFileExplorerSession closed: ff77da9d-d5bf-49b2-9e3e-55cebbf6b84b
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mClosed file explorer session ff77da9d-d5bf-49b2-9e3e-55cebbf6b84b. Active sessions: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mFile explorer WebSocket disconnected: ff77da9d-d5bf-49b2-9e3e-55cebbf6b84b
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mReleased file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-pqgAF1 (file-explorer-websocket); active leases: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mLogically stopped filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-pqgAF1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mFileExplorerSession closed: 5b7fd8bc-4787-42e3-96da-f8f43c6fb4f5
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mClosed file explorer session 5b7fd8bc-4787-42e3-96da-f8f43c6fb4f5. Active sessions: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mFile explorer WebSocket disconnected: 5b7fd8bc-4787-42e3-96da-f8f43c6fb4f5
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mkeeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[22m[39mClosing FileSystemWorkspace agent_ws_ae6d534a7c9f64040a21fc7299f1f13ebcd8fe9d3d3917dbe28d0c7c9c185d4e
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mCreating new workspace for rootPath: /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-0VUA1F
+Created metadata-only FileSystemWorkspace at /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-0VUA1F.
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mCreated and registered workspace ID: agent_ws_19bc9bf1ba42fa268777af86059a8121e01a064d901b5b223d11ea8a5455d77e
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mCreated WorkspaceFileExplorer for agent_ws_19bc9bf1ba42fa268777af86059a8121e01a064d901b5b223d11ea8a5455d77e (file-explorer-websocket).
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mFileSystemWatcher initialized for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-0VUA1F' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mStarted filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-0VUA1F
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mAcquired file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-0VUA1F (file-explorer-websocket); active leases: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mFileExplorerSession created: 2f2055b3-74d0-4c90-ac43-2f9d4cd6dd53 for workspace agent_ws_19bc9bf1ba42fa268777af86059a8121e01a064d901b5b223d11ea8a5455d77e
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mCreated file explorer session 2f2055b3-74d0-4c90-ac43-2f9d4cd6dd53 for workspace agent_ws_19bc9bf1ba42fa268777af86059a8121e01a064d901b5b223d11ea8a5455d77e. Active sessions: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mFile explorer WebSocket connected: 2f2055b3-74d0-4c90-ac43-2f9d4cd6dd53 for workspace agent_ws_19bc9bf1ba42fa268777af86059a8121e01a064d901b5b223d11ea8a5455d77e
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mReleased file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-0VUA1F (file-explorer-websocket); active leases: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mLogically stopped filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-0VUA1F
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mFileExplorerSession closed: 2f2055b3-74d0-4c90-ac43-2f9d4cd6dd53
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mClosed file explorer session 2f2055b3-74d0-4c90-ac43-2f9d4cd6dd53. Active sessions: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mFile explorer WebSocket disconnected: 2f2055b3-74d0-4c90-ac43-2f9d4cd6dd53
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mFileSystemWatcher initialized for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-0VUA1F' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mStarted filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-0VUA1F
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mAcquired file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-0VUA1F (file-explorer-websocket); active leases: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mFileExplorerSession created: 355713c9-7e81-4c54-b420-18a384ba16f0 for workspace agent_ws_19bc9bf1ba42fa268777af86059a8121e01a064d901b5b223d11ea8a5455d77e
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mCreated file explorer session 355713c9-7e81-4c54-b420-18a384ba16f0 for workspace agent_ws_19bc9bf1ba42fa268777af86059a8121e01a064d901b5b223d11ea8a5455d77e. Active sessions: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mFile explorer WebSocket connected: 355713c9-7e81-4c54-b420-18a384ba16f0 for workspace agent_ws_19bc9bf1ba42fa268777af86059a8121e01a064d901b5b223d11ea8a5455d77e
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mReleased file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-0VUA1F (file-explorer-websocket); active leases: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mLogically stopped filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-0VUA1F
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mFileExplorerSession closed: 355713c9-7e81-4c54-b420-18a384ba16f0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mClosed file explorer session 355713c9-7e81-4c54-b420-18a384ba16f0. Active sessions: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mFile explorer WebSocket disconnected: 355713c9-7e81-4c54-b420-18a384ba16f0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mFileSystemWatcher initialized for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-0VUA1F' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mStarted filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-0VUA1F
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mAcquired file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-0VUA1F (file-explorer-websocket); active leases: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mFileExplorerSession created: 06a801c1-91b5-4c9d-b67f-f70e17d42c48 for workspace agent_ws_19bc9bf1ba42fa268777af86059a8121e01a064d901b5b223d11ea8a5455d77e
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mCreated file explorer session 06a801c1-91b5-4c9d-b67f-f70e17d42c48 for workspace agent_ws_19bc9bf1ba42fa268777af86059a8121e01a064d901b5b223d11ea8a5455d77e. Active sessions: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mFile explorer WebSocket connected: 06a801c1-91b5-4c9d-b67f-f70e17d42c48 for workspace agent_ws_19bc9bf1ba42fa268777af86059a8121e01a064d901b5b223d11ea8a5455d77e
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mReleased file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-0VUA1F (file-explorer-websocket); active leases: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mLogically stopped filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-0VUA1F
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mFileExplorerSession closed: 06a801c1-91b5-4c9d-b67f-f70e17d42c48
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mClosed file explorer session 06a801c1-91b5-4c9d-b67f-f70e17d42c48. Active sessions: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mFile explorer WebSocket disconnected: 06a801c1-91b5-4c9d-b67f-f70e17d42c48
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mFileSystemWatcher initialized for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-0VUA1F' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mStarted filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-0VUA1F
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mAcquired file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-0VUA1F (file-explorer-websocket); active leases: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mFileExplorerSession created: 9b09b650-28f7-4063-bddb-fe476987ab80 for workspace agent_ws_19bc9bf1ba42fa268777af86059a8121e01a064d901b5b223d11ea8a5455d77e
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mCreated file explorer session 9b09b650-28f7-4063-bddb-fe476987ab80 for workspace agent_ws_19bc9bf1ba42fa268777af86059a8121e01a064d901b5b223d11ea8a5455d77e. Active sessions: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mFile explorer WebSocket connected: 9b09b650-28f7-4063-bddb-fe476987ab80 for workspace agent_ws_19bc9bf1ba42fa268777af86059a8121e01a064d901b5b223d11ea8a5455d77e
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mReleased file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-0VUA1F (file-explorer-websocket); active leases: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mLogically stopped filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-0VUA1F
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mFileExplorerSession closed: 9b09b650-28f7-4063-bddb-fe476987ab80
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mClosed file explorer session 9b09b650-28f7-4063-bddb-fe476987ab80. Active sessions: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mFile explorer WebSocket disconnected: 9b09b650-28f7-4063-bddb-fe476987ab80
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mFileSystemWatcher initialized for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-0VUA1F' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mStarted filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-0VUA1F
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mAcquired file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-0VUA1F (file-explorer-websocket); active leases: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mFileExplorerSession created: 4afde170-8d2b-4472-986b-89b4dd49537a for workspace agent_ws_19bc9bf1ba42fa268777af86059a8121e01a064d901b5b223d11ea8a5455d77e
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mCreated file explorer session 4afde170-8d2b-4472-986b-89b4dd49537a for workspace agent_ws_19bc9bf1ba42fa268777af86059a8121e01a064d901b5b223d11ea8a5455d77e. Active sessions: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mFile explorer WebSocket connected: 4afde170-8d2b-4472-986b-89b4dd49537a for workspace agent_ws_19bc9bf1ba42fa268777af86059a8121e01a064d901b5b223d11ea8a5455d77e
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mReleased file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-0VUA1F (file-explorer-websocket); active leases: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mLogically stopped filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-0VUA1F
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mFileExplorerSession closed: 4afde170-8d2b-4472-986b-89b4dd49537a
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mClosed file explorer session 4afde170-8d2b-4472-986b-89b4dd49537a. Active sessions: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mFile explorer WebSocket disconnected: 4afde170-8d2b-4472-986b-89b4dd49537a
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2mdoes not leak watcher leases when sockets close before CONNECTED is observed
+[22m[39mClosing FileSystemWorkspace agent_ws_19bc9bf1ba42fa268777af86059a8121e01a064d901b5b223d11ea8a5455d77e
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mCreating new workspace for rootPath: /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv
+Created metadata-only FileSystemWorkspace at /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv.
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mCreated and registered workspace ID: agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mCreated WorkspaceFileExplorer for agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954 (file-explorer-websocket).
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFileSystemWatcher initialized for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mStarted filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mAcquired file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv (file-explorer-websocket); active leases: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFileExplorerSession created: 5dccde19-5ae5-436f-87d0-b008ebc98986 for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mCreated file explorer session 5dccde19-5ae5-436f-87d0-b008ebc98986 for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954. Active sessions: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFile explorer WebSocket connected: 5dccde19-5ae5-436f-87d0-b008ebc98986 for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFile explorer websocket attached for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mReleased file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv (file-explorer-websocket); active leases: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mLogically stopped filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFileExplorerSession closed: 5dccde19-5ae5-436f-87d0-b008ebc98986
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mClosed file explorer session 5dccde19-5ae5-436f-87d0-b008ebc98986. Active sessions: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFile explorer WebSocket disconnected: 5dccde19-5ae5-436f-87d0-b008ebc98986
+
+[90mstderr[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mReplacing stale watcher runtime client for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv; killing previous child
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFileSystemWatcher initialized for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mStarted filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mAcquired file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv (file-explorer-websocket); active leases: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFileExplorerSession created: 8e36c52b-0bb3-4c5a-9d76-24ab3eec548e for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mCreated file explorer session 8e36c52b-0bb3-4c5a-9d76-24ab3eec548e for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954. Active sessions: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFile explorer WebSocket connected: 8e36c52b-0bb3-4c5a-9d76-24ab3eec548e for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFile explorer websocket attached for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mReleased file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv (file-explorer-websocket); active leases: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mLogically stopped filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFileExplorerSession closed: 8e36c52b-0bb3-4c5a-9d76-24ab3eec548e
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mClosed file explorer session 8e36c52b-0bb3-4c5a-9d76-24ab3eec548e. Active sessions: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFile explorer WebSocket disconnected: 8e36c52b-0bb3-4c5a-9d76-24ab3eec548e
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFileSystemWatcher initialized for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstderr[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mReplacing stale watcher runtime client for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv; killing previous child
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mStarted filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mAcquired file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv (file-explorer-websocket); active leases: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFileExplorerSession created: cd4bb9c5-32b9-4a21-b6a2-4bb98b3d3ac6 for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mCreated file explorer session cd4bb9c5-32b9-4a21-b6a2-4bb98b3d3ac6 for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954. Active sessions: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFile explorer WebSocket connected: cd4bb9c5-32b9-4a21-b6a2-4bb98b3d3ac6 for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFile explorer websocket attached for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mReleased file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv (file-explorer-websocket); active leases: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mLogically stopped filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFileExplorerSession closed: cd4bb9c5-32b9-4a21-b6a2-4bb98b3d3ac6
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mClosed file explorer session cd4bb9c5-32b9-4a21-b6a2-4bb98b3d3ac6. Active sessions: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFile explorer WebSocket disconnected: cd4bb9c5-32b9-4a21-b6a2-4bb98b3d3ac6
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFileSystemWatcher initialized for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstderr[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mReplacing stale watcher runtime client for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv; killing previous child
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mStarted filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mAcquired file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv (file-explorer-websocket); active leases: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFileExplorerSession created: f0aff654-cacd-41c9-b90b-80907c98cda4 for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mCreated file explorer session f0aff654-cacd-41c9-b90b-80907c98cda4 for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954. Active sessions: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFile explorer WebSocket connected: f0aff654-cacd-41c9-b90b-80907c98cda4 for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFile explorer websocket attached for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mReleased file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv (file-explorer-websocket); active leases: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mLogically stopped filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFileExplorerSession closed: f0aff654-cacd-41c9-b90b-80907c98cda4
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mClosed file explorer session f0aff654-cacd-41c9-b90b-80907c98cda4. Active sessions: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFile explorer WebSocket disconnected: f0aff654-cacd-41c9-b90b-80907c98cda4
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFileSystemWatcher initialized for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstderr[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mReplacing stale watcher runtime client for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv; killing previous child
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mStarted filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mAcquired file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv (file-explorer-websocket); active leases: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFileExplorerSession created: 6f6fdd0a-d19e-485c-bb14-975636faa135 for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mCreated file explorer session 6f6fdd0a-d19e-485c-bb14-975636faa135 for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954. Active sessions: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFile explorer WebSocket connected: 6f6fdd0a-d19e-485c-bb14-975636faa135 for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFile explorer websocket attached for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mReleased file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv (file-explorer-websocket); active leases: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mLogically stopped filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFileExplorerSession closed: 6f6fdd0a-d19e-485c-bb14-975636faa135
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mClosed file explorer session 6f6fdd0a-d19e-485c-bb14-975636faa135. Active sessions: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFile explorer WebSocket disconnected: 6f6fdd0a-d19e-485c-bb14-975636faa135
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFileSystemWatcher initialized for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstderr[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mReplacing stale watcher runtime client for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv; killing previous child
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mStarted filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mAcquired file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv (file-explorer-websocket); active leases: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFileExplorerSession created: 9da26d5d-c734-4e7d-a27b-453f940aec9a for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mCreated file explorer session 9da26d5d-c734-4e7d-a27b-453f940aec9a for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954. Active sessions: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFile explorer WebSocket connected: 9da26d5d-c734-4e7d-a27b-453f940aec9a for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFile explorer websocket attached for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mReleased file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv (file-explorer-websocket); active leases: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mLogically stopped filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFileExplorerSession closed: 9da26d5d-c734-4e7d-a27b-453f940aec9a
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mClosed file explorer session 9da26d5d-c734-4e7d-a27b-453f940aec9a. Active sessions: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFile explorer WebSocket disconnected: 9da26d5d-c734-4e7d-a27b-453f940aec9a
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFileSystemWatcher initialized for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstderr[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mReplacing stale watcher runtime client for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv; killing previous child
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mStarted filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mAcquired file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv (file-explorer-websocket); active leases: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFileExplorerSession created: 5c2ef82c-aaba-4a29-97e3-c7daaf1d1fd6 for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mCreated file explorer session 5c2ef82c-aaba-4a29-97e3-c7daaf1d1fd6 for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954. Active sessions: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFile explorer WebSocket connected: 5c2ef82c-aaba-4a29-97e3-c7daaf1d1fd6 for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFile explorer websocket attached for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mReleased file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv (file-explorer-websocket); active leases: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mLogically stopped filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFileExplorerSession closed: 5c2ef82c-aaba-4a29-97e3-c7daaf1d1fd6
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mClosed file explorer session 5c2ef82c-aaba-4a29-97e3-c7daaf1d1fd6. Active sessions: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFile explorer WebSocket disconnected: 5c2ef82c-aaba-4a29-97e3-c7daaf1d1fd6
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFileSystemWatcher initialized for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstderr[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mReplacing stale watcher runtime client for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv; killing previous child
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mStarted filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mAcquired file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv (file-explorer-websocket); active leases: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFileExplorerSession created: 8c8f5609-faf1-4ab1-aa00-82ac55a727ea for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mCreated file explorer session 8c8f5609-faf1-4ab1-aa00-82ac55a727ea for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954. Active sessions: 1
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFile explorer WebSocket connected: 8c8f5609-faf1-4ab1-aa00-82ac55a727ea for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFile explorer websocket attached for workspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mReleased file watcher lease for /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv (file-explorer-websocket); active leases: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mLogically stopped filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ws-e2e-4svQDv
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFileExplorerSession closed: 8c8f5609-faf1-4ab1-aa00-82ac55a727ea
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mClosed file explorer session 8c8f5609-faf1-4ab1-aa00-82ac55a727ea. Active sessions: 0
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mFile explorer WebSocket disconnected: 8c8f5609-faf1-4ab1-aa00-82ac55a727ea
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts[2m > [22m[2mFile explorer websocket lifecycle e2e[2m > [22m[2msurvives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+[22m[39mClosing FileSystemWorkspace agent_ws_72e33063d59c35c6c3c0b4719f092571e2aa46f44c9e3934082265f573929954
+
+ [32m✓[39m tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 1559[2mms[22m[39m
+     [33m[2m✓[22m[39m keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers [33m 622[2mms[22m[39m
+     [33m[2m✓[22m[39m does not leak watcher leases when sockets close before CONNECTED is observed [33m 305[2mms[22m[39m
+     [33m[2m✓[22m[39m survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy [33m 615[2mms[22m[39m
+[90mstdout[2m | tests/e2e/file-explorer/search-content-http.e2e.test.ts
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts
+App data directory: /tmp/resume-pdf-api.RwYhMo/data
+
+[90mstdout[2m | tests/e2e/file-explorer/search-content-http.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:22596) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/file-explorer/search-content-http.e2e.test.ts[2m > [22m[2msearch to protected content over real HTTP
+[22m[39mCustom app data directory set to: /tmp/resume-pdf-api.RwYhMo/tmp/search-content-http-2OF4Ci/data
+Config file not found in new data directory: Error: Configuration file not found: /tmp/resume-pdf-api.RwYhMo/tmp/search-content-http-2OF4Ci/data/.env
+
+[90mstdout[2m | tests/e2e/file-explorer/search-content-http.e2e.test.ts[2m > [22m[2msearch to protected content over real HTTP
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/resume-pdf-api.RwYhMo/tmp/search-content-http-2OF4Ci/workspace
+Created metadata-only FileSystemWorkspace at /tmp/resume-pdf-api.RwYhMo/tmp/search-content-http-2OF4Ci/workspace.
+
+[90mstdout[2m | tests/e2e/file-explorer/search-content-http.e2e.test.ts[2m > [22m[2msearch to protected content over real HTTP
+[22m[39mCreated and registered workspace ID: agent_ws_f9bfac2c2cf7e76926a6786beba9ad6b98995a9e81d1feca3ade51306364a38c
+
+[90mstdout[2m | tests/e2e/file-explorer/search-content-http.e2e.test.ts[2m > [22m[2msearch to protected content over real HTTP[2m > [22m[2mreturns exact relative locators and full PDF bytes without expanding parent folders
+[22m[39mCreated WorkspaceFileExplorer for agent_ws_f9bfac2c2cf7e76926a6786beba9ad6b98995a9e81d1feca3ade51306364a38c (graphql-search).
+
+[90mstdout[2m | tests/e2e/file-explorer/search-content-http.e2e.test.ts[2m > [22m[2msearch to protected content over real HTTP[2m > [22m[2mreturns exact relative locators and full PDF bytes without expanding parent folders
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/search-content-http-2OF4Ci/workspace' with max_depth=null
+
+[90mstdout[2m | tests/e2e/file-explorer/search-content-http.e2e.test.ts[2m > [22m[2msearch to protected content over real HTTP[2m > [22m[2mreturns exact relative locators and full PDF bytes without expanding parent folders
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/search-content-http-2OF4Ci/workspace' completed in 0.0030 seconds.
+
+[90mstdout[2m | tests/e2e/file-explorer/search-content-http.e2e.test.ts[2m > [22m[2msearch to protected content over real HTTP[2m > [22m[2mreturns exact relative locators and full PDF bytes without expanding parent folders
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/e2e/file-explorer/search-content-http.e2e.test.ts[2m > [22m[2msearch to protected content over real HTTP[2m > [22m[2mreturns exact relative locators and full PDF bytes without expanding parent folders
+[22m[39m[Search] Trying strategy: FuzzysortSearchStrategy for query 'resume'
+
+[90mstdout[2m | tests/e2e/file-explorer/search-content-http.e2e.test.ts[2m > [22m[2msearch to protected content over real HTTP[2m > [22m[2mreturns exact relative locators and full PDF bytes without expanding parent folders
+[22m[39m[Search] FuzzysortSearchStrategy completed in 0.64ms, found 2 results (total: 0.66ms)
+
+[90mstdout[2m | tests/e2e/file-explorer/search-content-http.e2e.test.ts[2m > [22m[2msearch to protected content over real HTTP[2m > [22m[2muses identical text/tree/search locators through the normal GraphQL reader
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/search-content-http-2OF4Ci/workspace' with max_depth=null
+
+[90mstdout[2m | tests/e2e/file-explorer/search-content-http.e2e.test.ts[2m > [22m[2msearch to protected content over real HTTP[2m > [22m[2muses identical text/tree/search locators through the normal GraphQL reader
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/search-content-http-2OF4Ci/workspace' completed in 0.0020 seconds.
+
+[90mstdout[2m | tests/e2e/file-explorer/search-content-http.e2e.test.ts[2m > [22m[2msearch to protected content over real HTTP[2m > [22m[2muses identical text/tree/search locators through the normal GraphQL reader
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/e2e/file-explorer/search-content-http.e2e.test.ts[2m > [22m[2msearch to protected content over real HTTP[2m > [22m[2muses identical text/tree/search locators through the normal GraphQL reader
+[22m[39m[Search] Trying strategy: FuzzysortSearchStrategy for query 'resume-notes'
+
+[90mstdout[2m | tests/e2e/file-explorer/search-content-http.e2e.test.ts[2m > [22m[2msearch to protected content over real HTTP[2m > [22m[2muses identical text/tree/search locators through the normal GraphQL reader
+[22m[39m[Search] FuzzysortSearchStrategy completed in 0.42ms, found 1 results (total: 0.47ms)
+
+[90mstderr[2m | tests/e2e/file-explorer/search-content-http.e2e.test.ts[2m > [22m[2msearch to protected content over real HTTP[2m > [22m[2mdenies absolute in-root with existing400 and no fixture/outside bytes
+[22m[39mSecurity error accessing path /tmp/resume-pdf-api.RwYhMo/tmp/search-content-http-2OF4Ci/workspace/applications/nested/resume sample.pdf in workspace agent_ws_f9bfac2c2cf7e76926a6786beba9ad6b98995a9e81d1feca3ade51306364a38c: Access denied: Path resolves outside the workspace boundary.
+
+[90mstderr[2m | tests/e2e/file-explorer/search-content-http.e2e.test.ts[2m > [22m[2msearch to protected content over real HTTP[2m > [22m[2mdenies absolute outside with existing400 and no fixture/outside bytes
+[22m[39mSecurity error accessing path /tmp/resume-pdf-api.RwYhMo/tmp/search-content-http-2OF4Ci/outside.txt in workspace agent_ws_f9bfac2c2cf7e76926a6786beba9ad6b98995a9e81d1feca3ade51306364a38c: Access denied: Path resolves outside the workspace boundary.
+
+[90mstderr[2m | tests/e2e/file-explorer/search-content-http.e2e.test.ts[2m > [22m[2msearch to protected content over real HTTP[2m > [22m[2mdenies parent traversal with existing400 and no fixture/outside bytes
+[22m[39mSecurity error accessing path ../outside.txt in workspace agent_ws_f9bfac2c2cf7e76926a6786beba9ad6b98995a9e81d1feca3ade51306364a38c: Access denied: Path resolves outside the workspace boundary.
+
+[90mstderr[2m | tests/e2e/file-explorer/search-content-http.e2e.test.ts[2m > [22m[2msearch to protected content over real HTTP[2m > [22m[2mdenies same-prefix sibling with existing400 and no fixture/outside bytes
+[22m[39mSecurity error accessing path ../workspace-sibling/leak.txt in workspace agent_ws_f9bfac2c2cf7e76926a6786beba9ad6b98995a9e81d1feca3ade51306364a38c: Access denied: Path resolves outside the workspace boundary.
+
+[90mstdout[2m | tests/e2e/file-explorer/search-content-http.e2e.test.ts[2m > [22m[2msearch to protected content over real HTTP
+[22m[39mClosing FileSystemWorkspace agent_ws_f9bfac2c2cf7e76926a6786beba9ad6b98995a9e81d1feca3ade51306364a38c
+
+ [32m✓[39m tests/e2e/file-explorer/search-content-http.e2e.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 203[2mms[22m[39m
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts
+App data directory: /tmp/resume-pdf-api.RwYhMo/data
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:22660) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts[2m > [22m[2mFile explorer GraphQL path-boundary e2e[2m > [22m[2mrejects ignored folder projections before cached tree mutation
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-path-boundary-e2e-oJQbOg/ignored_ws
+Created metadata-only FileSystemWorkspace at /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-path-boundary-e2e-oJQbOg/ignored_ws.
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts[2m > [22m[2mFile explorer GraphQL path-boundary e2e[2m > [22m[2mrejects ignored folder projections before cached tree mutation
+[22m[39mCreated and registered workspace ID: agent_ws_8ff24a85b8398f80bad805df9c35ab307f33771df9f26c2c4fe83b26e67f3efc
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts[2m > [22m[2mFile explorer GraphQL path-boundary e2e[2m > [22m[2mrejects ignored folder projections before cached tree mutation
+[22m[39mCreated WorkspaceFileExplorer for agent_ws_8ff24a85b8398f80bad805df9c35ab307f33771df9f26c2c4fe83b26e67f3efc (graphql-folder-children).
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts[2m > [22m[2mFile explorer GraphQL path-boundary e2e[2m > [22m[2mrejects ignored folder projections before cached tree mutation
+[22m[39mClosing FileSystemWorkspace agent_ws_8ff24a85b8398f80bad805df9c35ab307f33771df9f26c2c4fe83b26e67f3efc
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts[2m > [22m[2mFile explorer GraphQL path-boundary e2e[2m > [22m[2mrejects same-prefix sibling escapes through folder, read, write, and rename APIs
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-path-boundary-e2e-ZAMK2u/ws
+Created metadata-only FileSystemWorkspace at /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-path-boundary-e2e-ZAMK2u/ws.
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts[2m > [22m[2mFile explorer GraphQL path-boundary e2e[2m > [22m[2mrejects same-prefix sibling escapes through folder, read, write, and rename APIs
+[22m[39mCreated and registered workspace ID: agent_ws_bb2ab5d73d484a59d7ccddf0462dee9b2e58967a1b86bc60dea3883b62f9240a
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts[2m > [22m[2mFile explorer GraphQL path-boundary e2e[2m > [22m[2mrejects same-prefix sibling escapes through folder, read, write, and rename APIs
+[22m[39mCreated WorkspaceFileExplorer for agent_ws_bb2ab5d73d484a59d7ccddf0462dee9b2e58967a1b86bc60dea3883b62f9240a (graphql-folder-children).
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts[2m > [22m[2mFile explorer GraphQL path-boundary e2e[2m > [22m[2mrejects same-prefix sibling escapes through folder, read, write, and rename APIs
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-path-boundary-e2e-ZAMK2u/ws' with max_depth=null
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts[2m > [22m[2mFile explorer GraphQL path-boundary e2e[2m > [22m[2mrejects same-prefix sibling escapes through folder, read, write, and rename APIs
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-path-boundary-e2e-ZAMK2u/ws' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts[2m > [22m[2mFile explorer GraphQL path-boundary e2e[2m > [22m[2mrejects same-prefix sibling escapes through folder, read, write, and rename APIs
+[22m[39mClosing FileSystemWorkspace agent_ws_bb2ab5d73d484a59d7ccddf0462dee9b2e58967a1b86bc60dea3883b62f9240a
+
+ [32m✓[39m tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 125[2mms[22m[39m
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts
+App data directory: /tmp/resume-pdf-api.RwYhMo/data
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:22672) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts[2m > [22m[2mFile explorer GraphQL e2e[2m > [22m[2mreturns immediate children for folderChildren
+[22m[39mCreating new workspace for rootPath: /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-LdrKcY
+Created metadata-only FileSystemWorkspace at /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-LdrKcY.
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts[2m > [22m[2mFile explorer GraphQL e2e[2m > [22m[2mreturns immediate children for folderChildren
+[22m[39mCreated and registered workspace ID: agent_ws_b49acf87935086ecbf98ee3cb5ef65c6030abdc62b8c2af6452d6f9f5873df8c
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts[2m > [22m[2mFile explorer GraphQL e2e[2m > [22m[2mreturns immediate children for folderChildren
+[22m[39mCreated WorkspaceFileExplorer for agent_ws_b49acf87935086ecbf98ee3cb5ef65c6030abdc62b8c2af6452d6f9f5873df8c (graphql-folder-children).
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts[2m > [22m[2mFile explorer GraphQL e2e[2m > [22m[2mreturns immediate children for folderChildren
+[22m[39mClosing FileSystemWorkspace agent_ws_b49acf87935086ecbf98ee3cb5ef65c6030abdc62b8c2af6452d6f9f5873df8c
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts[2m > [22m[2mFile explorer GraphQL e2e[2m > [22m[2mkeeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-93J6Oo/graphql_snapshot_ws
+Created metadata-only FileSystemWorkspace at /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-93J6Oo/graphql_snapshot_ws.
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts[2m > [22m[2mFile explorer GraphQL e2e[2m > [22m[2mkeeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+[22m[39mCreated and registered workspace ID: agent_ws_a61ca4b6e1bb713e0a122aaca2a70f2072373a441195e5319fc632a3f478657a
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts[2m > [22m[2mFile explorer GraphQL e2e[2m > [22m[2mkeeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+[22m[39mCreated WorkspaceFileExplorer for agent_ws_a61ca4b6e1bb713e0a122aaca2a70f2072373a441195e5319fc632a3f478657a (graphql-folder-children).
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts[2m > [22m[2mFile explorer GraphQL e2e[2m > [22m[2mkeeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-93J6Oo/graphql_snapshot_ws' with max_depth=null
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts[2m > [22m[2mFile explorer GraphQL e2e[2m > [22m[2mkeeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-93J6Oo/graphql_snapshot_ws' completed in 0.0020 seconds.
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts[2m > [22m[2mFile explorer GraphQL e2e[2m > [22m[2mkeeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts[2m > [22m[2mFile explorer GraphQL e2e[2m > [22m[2mkeeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+[22m[39m[Search] Trying strategy: FuzzysortSearchStrategy for query 'beta-search-target'
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts[2m > [22m[2mFile explorer GraphQL e2e[2m > [22m[2mkeeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+[22m[39m[Search] FuzzysortSearchStrategy completed in 0.51ms, found 1 results (total: 0.54ms)
+
+[90mstdout[2m | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts[2m > [22m[2mFile explorer GraphQL e2e[2m > [22m[2mkeeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+[22m[39mClosing FileSystemWorkspace agent_ws_a61ca4b6e1bb713e0a122aaca2a70f2072373a441195e5319fc632a3f478657a
+
+ [32m✓[39m tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 115[2mms[22m[39m
+[90mstdout[2m | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts
+App data directory: /tmp/resume-pdf-api.RwYhMo/data
+
+[90mstdout[2m | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:22713) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts[2m > [22m[2mFile operations GraphQL e2e[2m > [22m[2mhandles file lifecycle via GraphQL
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-ops-pvIc8F/file_ops_ws
+Created metadata-only FileSystemWorkspace at /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-ops-pvIc8F/file_ops_ws.
+
+[90mstdout[2m | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts[2m > [22m[2mFile operations GraphQL e2e[2m > [22m[2mhandles file lifecycle via GraphQL
+[22m[39mCreated and registered workspace ID: agent_ws_e5b644db72aee1206a9db7d3a85d60ef55845dc7e047fa23c6d3b4ed7c28cc55
+
+[90mstdout[2m | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts[2m > [22m[2mFile operations GraphQL e2e[2m > [22m[2mhandles file lifecycle via GraphQL
+[22m[39mCreated WorkspaceFileExplorer for agent_ws_e5b644db72aee1206a9db7d3a85d60ef55845dc7e047fa23c6d3b4ed7c28cc55 (graphql-write-file).
+
+[90mstdout[2m | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts[2m > [22m[2mFile operations GraphQL e2e[2m > [22m[2mhandles file lifecycle via GraphQL
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-ops-pvIc8F/file_ops_ws' with max_depth=null
+
+[90mstdout[2m | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts[2m > [22m[2mFile operations GraphQL e2e[2m > [22m[2mhandles file lifecycle via GraphQL
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-ops-pvIc8F/file_ops_ws' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts[2m > [22m[2mFile operations GraphQL e2e[2m > [22m[2mhandles file lifecycle via GraphQL
+[22m[39mClosing FileSystemWorkspace agent_ws_e5b644db72aee1206a9db7d3a85d60ef55845dc7e047fa23c6d3b4ed7c28cc55
+
+[90mstdout[2m | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts[2m > [22m[2mFile operations GraphQL e2e[2m > [22m[2mcreates and renames a file
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-ops-yqZR2R/rename_ws
+Created metadata-only FileSystemWorkspace at /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-ops-yqZR2R/rename_ws.
+
+[90mstdout[2m | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts[2m > [22m[2mFile operations GraphQL e2e[2m > [22m[2mcreates and renames a file
+[22m[39mCreated and registered workspace ID: agent_ws_7d94f8f1b53e6b60e20140e536c0e7fcfbd7b1f490d2dc1548bdd3c6af57e026
+
+[90mstdout[2m | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts[2m > [22m[2mFile operations GraphQL e2e[2m > [22m[2mcreates and renames a file
+[22m[39mCreated WorkspaceFileExplorer for agent_ws_7d94f8f1b53e6b60e20140e536c0e7fcfbd7b1f490d2dc1548bdd3c6af57e026 (graphql-create-file).
+
+[90mstdout[2m | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts[2m > [22m[2mFile operations GraphQL e2e[2m > [22m[2mcreates and renames a file
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-ops-yqZR2R/rename_ws' with max_depth=null
+
+[90mstdout[2m | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts[2m > [22m[2mFile operations GraphQL e2e[2m > [22m[2mcreates and renames a file
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-ops-yqZR2R/rename_ws' completed in 0.0000 seconds.
+
+[90mstdout[2m | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts[2m > [22m[2mFile operations GraphQL e2e[2m > [22m[2mcreates and renames a file
+[22m[39mClosing FileSystemWorkspace agent_ws_7d94f8f1b53e6b60e20140e536c0e7fcfbd7b1f490d2dc1548bdd3c6af57e026
+
+ [32m✓[39m tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 102[2mms[22m[39m
+[90mstdout[2m | tests/unit/file-explorer/file-system-watcher-runtime.test.ts
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts
+App data directory: /tmp/resume-pdf-api.RwYhMo/data
+
+[90mstdout[2m | tests/unit/file-explorer/file-system-watcher-runtime.test.ts[2m > [22m[2mFileSystemWatcher runtime boundary[2m > [22m[2mlogical stop returns after requesting child stop without waiting for child stopped
+[22m[39mFileSystemWatcher initialized for '/tmp/resume-pdf-api.RwYhMo/tmp/watcher-runtime-unit-rwvDsm' with ignore strategies: 
+
+[90mstdout[2m | tests/unit/file-explorer/file-system-watcher-runtime.test.ts[2m > [22m[2mFileSystemWatcher runtime boundary[2m > [22m[2mlogical stop returns after requesting child stop without waiting for child stopped
+[22m[39mStarted filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/watcher-runtime-unit-rwvDsm
+
+[90mstdout[2m | tests/unit/file-explorer/file-system-watcher-runtime.test.ts[2m > [22m[2mFileSystemWatcher runtime boundary[2m > [22m[2mlogical stop returns after requesting child stop without waiting for child stopped
+[22m[39mLogically stopped filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/watcher-runtime-unit-rwvDsm
+
+[90mstdout[2m | tests/unit/file-explorer/file-system-watcher-runtime.test.ts[2m > [22m[2mFileSystemWatcher runtime boundary[2m > [22m[2mignores raw events whose watcher generation is stale
+[22m[39mFileSystemWatcher initialized for '/tmp/resume-pdf-api.RwYhMo/tmp/watcher-runtime-unit-4C2iF3' with ignore strategies: 
+
+[90mstdout[2m | tests/unit/file-explorer/file-system-watcher-runtime.test.ts[2m > [22m[2mFileSystemWatcher runtime boundary[2m > [22m[2mignores raw events whose watcher generation is stale
+[22m[39mStarted filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/watcher-runtime-unit-4C2iF3
+
+[90mstdout[2m | tests/unit/file-explorer/file-system-watcher-runtime.test.ts[2m > [22m[2mFileSystemWatcher runtime boundary[2m > [22m[2mignores raw events whose watcher generation is stale
+[22m[39mLogically stopped filesystem watcher for workspace /tmp/resume-pdf-api.RwYhMo/tmp/watcher-runtime-unit-4C2iF3
+
+ [32m✓[39m tests/unit/file-explorer/file-system-watcher-runtime.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 62[2mms[22m[39m
+[90mstdout[2m | tests/unit/file-explorer/search-strategy/search-strategies.test.ts
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts
+App data directory: /tmp/resume-pdf-api.RwYhMo/data
+
+[90mstdout[2m | tests/unit/file-explorer/search-strategy/search-strategies.test.ts[2m > [22m[2mRipgrepSearchStrategy[2m > [22m[2mreports availability based on rg presence
+[22m[39mFound bundled ripgrep at: /usr/bin/rg
+
+[90mstdout[2m | tests/unit/file-explorer/search-strategy/search-strategies.test.ts[2m > [22m[2mRipgrepSearchStrategy[2m > [22m[2mfinds matching files
+[22m[39mFound bundled ripgrep at: /usr/bin/rg
+
+[90mstdout[2m | tests/unit/file-explorer/search-strategy/search-strategies.test.ts[2m > [22m[2mRipgrepSearchStrategy[2m > [22m[2mreturns absolute paths
+[22m[39mFound bundled ripgrep at: /usr/bin/rg
+
+[90mstdout[2m | tests/unit/file-explorer/search-strategy/search-strategies.test.ts[2m > [22m[2mRipgrepSearchStrategy[2m > [22m[2mrespects max results
+[22m[39mFound bundled ripgrep at: /usr/bin/rg
+
+[90mstderr[2m | tests/unit/file-explorer/search-strategy/search-strategies.test.ts[2m > [22m[2mFuzzysortSearchStrategy[2m > [22m[2mreturns empty list for empty index
+[22m[39mFile index is empty, cannot perform search
+
+[90mstdout[2m | tests/unit/file-explorer/search-strategy/search-strategies.test.ts[2m > [22m[2mCompositeSearchStrategy[2m > [22m[2muses the first available strategy
+[22m[39mStrategy Object not available, skipping
+[Search] Trying strategy: Object for query 'test'
+
+[90mstdout[2m | tests/unit/file-explorer/search-strategy/search-strategies.test.ts[2m > [22m[2mCompositeSearchStrategy[2m > [22m[2muses the first available strategy
+[22m[39m[Search] Object completed in 0.13ms, found 1 results (total: 0.45ms)
+
+[90mstdout[2m | tests/unit/file-explorer/search-strategy/search-strategies.test.ts[2m > [22m[2mCompositeSearchStrategy[2m > [22m[2mfalls back when a strategy fails
+[22m[39m[Search] Trying strategy: Object for query 'test'
+
+[90mstdout[2m | tests/unit/file-explorer/search-strategy/search-strategies.test.ts[2m > [22m[2mCompositeSearchStrategy[2m > [22m[2mfalls back when a strategy fails
+[22m[39m[Search] Trying strategy: Object for query 'test'
+
+[90mstderr[2m | tests/unit/file-explorer/search-strategy/search-strategies.test.ts[2m > [22m[2mCompositeSearchStrategy[2m > [22m[2mfalls back when a strategy fails
+[22m[39mStrategy Object failed: Error: Search failed, trying next
+
+[90mstdout[2m | tests/unit/file-explorer/search-strategy/search-strategies.test.ts[2m > [22m[2mCompositeSearchStrategy[2m > [22m[2mfalls back when a strategy fails
+[22m[39m[Search] Object completed in 0.05ms, found 1 results (total: 0.27ms)
+
+ [32m✓[39m tests/unit/file-explorer/search-strategy/search-strategies.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 35[2mms[22m[39m
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts
+App data directory: /tmp/resume-pdf-api.RwYhMo/data
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mreturns root-relative locators usable by the protected workspace path owner
+[22m[39mCreated metadata-only FileSystemWorkspace at /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-search-zmwq4X.
+
+[90mstderr[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mreturns root-relative locators usable by the protected workspace path owner
+[22m[39mFileSystemWorkspace.initialize() is metadata-only for search-test-workspace; file explorer acquisition is explicit.
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mreturns root-relative locators usable by the protected workspace path owner
+[22m[39mCreated WorkspaceFileExplorer for search-test-workspace (integration-search).
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mreturns root-relative locators usable by the protected workspace path owner
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-search-zmwq4X' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mreturns root-relative locators usable by the protected workspace path owner
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-search-zmwq4X' completed in 0.0040 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mreturns root-relative locators usable by the protected workspace path owner
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mreturns root-relative locators usable by the protected workspace path owner
+[22m[39mFileNameIndexer refreshed snapshot index with 2 entries
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mreturns root-relative locators usable by the protected workspace path owner
+[22m[39m[Search] Trying strategy: FuzzysortSearchStrategy for query 'alpha'
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mreturns root-relative locators usable by the protected workspace path owner
+[22m[39m[Search] FuzzysortSearchStrategy completed in 0.47ms, found 1 results (total: 0.50ms)
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mreturns root-relative locators usable by the protected workspace path owner
+[22m[39mClosing FileSystemWorkspace search-test-workspace
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mfinds an unexpanded nested file with the same tree identity and reads it unchanged
+[22m[39mCreated metadata-only FileSystemWorkspace at /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-search-g8EWjp.
+
+[90mstderr[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mfinds an unexpanded nested file with the same tree identity and reads it unchanged
+[22m[39mFileSystemWorkspace.initialize() is metadata-only for search-test-workspace; file explorer acquisition is explicit.
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mfinds an unexpanded nested file with the same tree identity and reads it unchanged
+[22m[39mCreated WorkspaceFileExplorer for search-test-workspace (integration-search).
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mfinds an unexpanded nested file with the same tree identity and reads it unchanged
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-search-g8EWjp' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mfinds an unexpanded nested file with the same tree identity and reads it unchanged
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-search-g8EWjp' completed in 0.0020 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mfinds an unexpanded nested file with the same tree identity and reads it unchanged
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mfinds an unexpanded nested file with the same tree identity and reads it unchanged
+[22m[39mFileNameIndexer refreshed snapshot index with 2 entries
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mfinds an unexpanded nested file with the same tree identity and reads it unchanged
+[22m[39m[Search] Trying strategy: FuzzysortSearchStrategy for query 'resume'
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mfinds an unexpanded nested file with the same tree identity and reads it unchanged
+[22m[39m[Search] FuzzysortSearchStrategy completed in 0.13ms, found 1 results (total: 0.14ms)
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mfinds an unexpanded nested file with the same tree identity and reads it unchanged
+[22m[39mClosing FileSystemWorkspace search-test-workspace
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mpreserves absolute, parent traversal and sibling-prefix denial after search
+[22m[39mCreated metadata-only FileSystemWorkspace at /tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-search-52tOD6.
+
+[90mstderr[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mpreserves absolute, parent traversal and sibling-prefix denial after search
+[22m[39mFileSystemWorkspace.initialize() is metadata-only for search-test-workspace; file explorer acquisition is explicit.
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mpreserves absolute, parent traversal and sibling-prefix denial after search
+[22m[39mCreated WorkspaceFileExplorer for search-test-workspace (integration-search).
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mpreserves absolute, parent traversal and sibling-prefix denial after search
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-search-52tOD6' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mpreserves absolute, parent traversal and sibling-prefix denial after search
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-search-52tOD6' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mpreserves absolute, parent traversal and sibling-prefix denial after search
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mpreserves absolute, parent traversal and sibling-prefix denial after search
+[22m[39mFileNameIndexer refreshed snapshot index with 2 entries
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mpreserves absolute, parent traversal and sibling-prefix denial after search
+[22m[39m[Search] Trying strategy: FuzzysortSearchStrategy for query 'resume'
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mpreserves absolute, parent traversal and sibling-prefix denial after search
+[22m[39m[Search] FuzzysortSearchStrategy completed in 0.17ms, found 1 results (total: 0.19ms)
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mpreserves absolute, parent traversal and sibling-prefix denial after search
+[22m[39mClosing FileSystemWorkspace search-test-workspace
+
+ [32m✓[39m tests/integration/file-explorer/file-search.integration.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 34[2mms[22m[39m
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-explorer.test.ts
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts
+App data directory: /tmp/resume-pdf-api.RwYhMo/data
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mstarts watcher when first watcher lease is acquired
+[22m[39mAcquired file watcher lease for /fake/path (test); active leases: 1
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mstarts watcher when first watcher lease is acquired
+[22m[39mReleased file watcher lease for /fake/path (test); active leases: 0
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mshares one watcher across multiple leases and stops after the final release
+[22m[39mAcquired file watcher lease for /fake/path (first); active leases: 1
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mshares one watcher across multiple leases and stops after the final release
+[22m[39mAcquired file watcher lease for /fake/path (second); active leases: 2
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mshares one watcher across multiple leases and stops after the final release
+[22m[39mReleased file watcher lease for /fake/path (first); active leases: 1
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mshares one watcher across multiple leases and stops after the final release
+[22m[39mReleased file watcher lease for /fake/path (second); active leases: 0
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mmakes watcher lease release idempotent
+[22m[39mAcquired file watcher lease for /fake/path (test); active leases: 1
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mmakes watcher lease release idempotent
+[22m[39mReleased file watcher lease for /fake/path (test); active leases: 0
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mreturns events from the active watcher
+[22m[39mAcquired file watcher lease for /fake/path (test); active leases: 1
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mreturns events from the active watcher
+[22m[39mReleased file watcher lease for /fake/path (test); active leases: 0
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mcloses active watcher once and clears future subscriptions
+[22m[39mAcquired file watcher lease for /fake/path (test); active leases: 1
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mrenames files with valid leaf names
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-rename-leaf-eDVWaF' with max_depth=null
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mrenames files with valid leaf names
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-rename-leaf-eDVWaF' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mrejects path-like rename names before filesystem mutation
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-rename-boundary-sBCoFC/ws' with max_depth=null
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mrejects path-like rename names before filesystem mutation
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-rename-boundary-sBCoFC/ws' completed in 0.0010 seconds.
+
+ [32m✓[39m tests/unit/file-explorer/workspace-file-explorer.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 29[2mms[22m[39m
+[90mstdout[2m | tests/integration/file-explorer/file-explorer.integration.test.ts
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts
+App data directory: /tmp/resume-pdf-api.RwYhMo/data
+
+[90mstdout[2m | tests/integration/file-explorer/file-explorer.integration.test.ts[2m > [22m[2mWorkspaceFileExplorer integration[2m > [22m[2mbuilds a tree with workspace-relative file identity
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-server-ts-C1vqwy' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-explorer.integration.test.ts[2m > [22m[2mWorkspaceFileExplorer integration[2m > [22m[2mbuilds a tree with workspace-relative file identity
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-server-ts-C1vqwy' completed in 0.0020 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-explorer.integration.test.ts[2m > [22m[2mWorkspaceFileExplorer integration[2m > [22m[2mwrites new file and emits ADD change
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-server-ts-gvhbiy' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-explorer.integration.test.ts[2m > [22m[2mWorkspaceFileExplorer integration[2m > [22m[2mwrites new file and emits ADD change
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-server-ts-gvhbiy' completed in 0.0020 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-explorer.integration.test.ts[2m > [22m[2mWorkspaceFileExplorer integration[2m > [22m[2mmodifies existing file and emits MODIFY change
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-server-ts-sX6kHd' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-explorer.integration.test.ts[2m > [22m[2mWorkspaceFileExplorer integration[2m > [22m[2mmodifies existing file and emits MODIFY change
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-server-ts-sX6kHd' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-explorer.integration.test.ts[2m > [22m[2mWorkspaceFileExplorer integration[2m > [22m[2mrenames file and emits RENAME change
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-server-ts-3AQ8MA' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-explorer.integration.test.ts[2m > [22m[2mWorkspaceFileExplorer integration[2m > [22m[2mrenames file and emits RENAME change
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-server-ts-3AQ8MA' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-explorer.integration.test.ts[2m > [22m[2mWorkspaceFileExplorer integration[2m > [22m[2mmoves file and emits MOVE change
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-server-ts-gSQJh0' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-explorer.integration.test.ts[2m > [22m[2mWorkspaceFileExplorer integration[2m > [22m[2mmoves file and emits MOVE change
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-server-ts-gSQJh0' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-explorer.integration.test.ts[2m > [22m[2mWorkspaceFileExplorer integration[2m > [22m[2mremoves file and emits DELETE change
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-server-ts-3TpcC6' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-explorer.integration.test.ts[2m > [22m[2mWorkspaceFileExplorer integration[2m > [22m[2mremoves file and emits DELETE change
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-server-ts-3TpcC6' completed in 0.0010 seconds.
+
+ [32m✓[39m tests/integration/file-explorer/file-explorer.integration.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 30[2mms[22m[39m
+[90mstdout[2m | tests/unit/file-explorer/file-explorer.test.ts
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts
+App data directory: /tmp/resume-pdf-api.RwYhMo/data
+
+[90mstdout[2m | tests/unit/file-explorer/file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mbuilds the workspace directory tree
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-kQLe3x' with max_depth=null
+
+[90mstdout[2m | tests/unit/file-explorer/file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mbuilds the workspace directory tree
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-kQLe3x' completed in 0.0030 seconds.
+
+[90mstdout[2m | tests/unit/file-explorer/file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mreads file content within size limits
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-68IgW4' with max_depth=null
+
+[90mstdout[2m | tests/unit/file-explorer/file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mreads file content within size limits
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-68IgW4' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/unit/file-explorer/file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mreads file content within size limits
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-68IgW4' with max_depth=null
+
+[90mstdout[2m | tests/unit/file-explorer/file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mreads file content within size limits
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-68IgW4' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/unit/file-explorer/file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mthrows when reading a file that exceeds max size
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-VZcD8V' with max_depth=null
+
+[90mstdout[2m | tests/unit/file-explorer/file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mthrows when reading a file that exceeds max size
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-VZcD8V' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/unit/file-explorer/file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mthrows when reading a file that exceeds max size
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-VZcD8V' with max_depth=null
+
+[90mstdout[2m | tests/unit/file-explorer/file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mthrows when reading a file that exceeds max size
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-VZcD8V' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/unit/file-explorer/file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mreturns the root tree node
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-3OBqaz' with max_depth=null
+
+[90mstdout[2m | tests/unit/file-explorer/file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mreturns the root tree node
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-3OBqaz' completed in 0.0000 seconds.
+
+[90mstdout[2m | tests/unit/file-explorer/file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mserializes the live tree to JSON with workspace-relative identity
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ZPeXno' with max_depth=null
+
+[90mstdout[2m | tests/unit/file-explorer/file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mserializes the live tree to JSON with workspace-relative identity
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ZPeXno' completed in 0.0000 seconds.
+
+[90mstdout[2m | tests/unit/file-explorer/file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mserializes the live tree to JSON with workspace-relative identity
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ZPeXno' with max_depth=null
+
+[90mstdout[2m | tests/unit/file-explorer/file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mserializes the live tree to JSON with workspace-relative identity
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-ZPeXno' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/unit/file-explorer/file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mkeeps an unloaded snapshot's tree JSON null
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-kaj1ve' with max_depth=null
+
+[90mstdout[2m | tests/unit/file-explorer/file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mkeeps an unloaded snapshot's tree JSON null
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-kaj1ve' completed in 0.0000 seconds.
+
+[90mstdout[2m | tests/unit/file-explorer/file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mrejects reading files outside the workspace
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-1uw9WT' with max_depth=null
+
+[90mstdout[2m | tests/unit/file-explorer/file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mrejects reading files outside the workspace
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-1uw9WT' completed in 0.0000 seconds.
+
+[90mstdout[2m | tests/unit/file-explorer/file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mprojects the live tree with limited depth and relative paths
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-QpYBw3' with max_depth=null
+
+[90mstdout[2m | tests/unit/file-explorer/file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mprojects the live tree with limited depth and relative paths
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-QpYBw3' completed in 0.0000 seconds.
+
+[90mstdout[2m | tests/unit/file-explorer/file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mprojects the live tree with limited depth and relative paths
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-QpYBw3' with max_depth=null
+
+[90mstdout[2m | tests/unit/file-explorer/file-explorer.test.ts[2m > [22m[2mWorkspaceFileExplorer[2m > [22m[2mprojects the live tree with limited depth and relative paths
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-file-explorer-QpYBw3' completed in 0.0010 seconds.
+
+ [32m✓[39m tests/unit/file-explorer/file-explorer.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts
+App data directory: /tmp/resume-pdf-api.RwYhMo/data
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mconverts fuzzy candidates once without changing order
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-search-locators-J8Qc1u' with max_depth=null
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mconverts fuzzy candidates once without changing order
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-search-locators-J8Qc1u' completed in 0.0020 seconds.
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mconverts fuzzy candidates once without changing order
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mconverts fuzzy candidates once without changing order
+[22m[39mFileNameIndexer refreshed snapshot index with 0 entries
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mconverts fuzzy candidates once without changing order
+[22m[39m[Search] Trying strategy: FuzzysortSearchStrategy for query 'resume'
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mconverts fuzzy candidates once without changing order
+[22m[39m[Search] FuzzysortSearchStrategy completed in 0.11ms, found 3 results (total: 0.15ms)
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mconverts ripgrep candidates once without changing order
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-search-locators-UDKiFm' with max_depth=null
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mconverts ripgrep candidates once without changing order
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-search-locators-UDKiFm' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mconverts ripgrep candidates once without changing order
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mconverts ripgrep candidates once without changing order
+[22m[39mFileNameIndexer refreshed snapshot index with 0 entries
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mconverts ripgrep candidates once without changing order
+[22m[39m[Search] Trying strategy: FuzzysortSearchStrategy for query 'resume'
+
+[90mstderr[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mconverts ripgrep candidates once without changing order
+[22m[39mStrategy FuzzysortSearchStrategy failed: Error: fuzzy unavailable for test, trying next
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mconverts ripgrep candidates once without changing order
+[22m[39m[Search] Trying strategy: RipgrepSearchStrategy for query 'resume'
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mconverts ripgrep candidates once without changing order
+[22m[39m[Search] RipgrepSearchStrategy completed in 0.04ms, found 3 results (total: 0.44ms)
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mkeeps an empty search result empty
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-search-locators-MUgzpA' with max_depth=null
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mkeeps an empty search result empty
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-search-locators-MUgzpA' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mkeeps an empty search result empty
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mkeeps an empty search result empty
+[22m[39mFileNameIndexer refreshed snapshot index with 0 entries
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mkeeps an empty search result empty
+[22m[39m[Search] Trying strategy: FuzzysortSearchStrategy for query 'missing'
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mkeeps an empty search result empty
+[22m[39m[Search] FuzzysortSearchStrategy completed in 0.06ms, found 0 results (total: 0.19ms)
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mdoes not publish a same-prefix sibling candidate as a workspace locator
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-search-locators-dfhhHq' with max_depth=null
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mdoes not publish a same-prefix sibling candidate as a workspace locator
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-search-locators-dfhhHq' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mdoes not publish a same-prefix sibling candidate as a workspace locator
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mdoes not publish a same-prefix sibling candidate as a workspace locator
+[22m[39mFileNameIndexer refreshed snapshot index with 0 entries
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mdoes not publish a same-prefix sibling candidate as a workspace locator
+[22m[39m[Search] Trying strategy: FuzzysortSearchStrategy for query 'resume'
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mdoes not publish a same-prefix sibling candidate as a workspace locator
+[22m[39m[Search] FuzzysortSearchStrategy completed in 0.03ms, found 2 results (total: 0.03ms)
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mpreserves abort while waiting for candidates and does not convert a late result
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-search-locators-ilajWc' with max_depth=null
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mpreserves abort while waiting for candidates and does not convert a late result
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-search-locators-ilajWc' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mpreserves abort while waiting for candidates and does not convert a late result
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mpreserves abort while waiting for candidates and does not convert a late result
+[22m[39mFileNameIndexer refreshed snapshot index with 0 entries
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mpreserves abort while waiting for candidates and does not convert a late result
+[22m[39m[Search] Trying strategy: FuzzysortSearchStrategy for query 'resume'
+
+[90mstdout[2m | tests/unit/file-explorer/workspace-file-search.test.ts[2m > [22m[2mWorkspaceFileExplorer public search locators[2m > [22m[2mpreserves abort while waiting for candidates and does not convert a late result
+[22m[39m[Search] FuzzysortSearchStrategy completed in 0.38ms, found 1 results (total: 0.39ms)
+
+ [32m✓[39m tests/unit/file-explorer/workspace-file-search.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+[90mstdout[2m | tests/integration/file-explorer/file-name-indexer.integration.test.ts
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts
+App data directory: /tmp/resume-pdf-api.RwYhMo/data
+
+[90mstdout[2m | tests/integration/file-explorer/file-name-indexer.integration.test.ts[2m > [22m[2mFileNameIndexer integration[2m > [22m[2mindexes existing files from the current snapshot
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-server-ts-index-WpzMLN' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-name-indexer.integration.test.ts[2m > [22m[2mFileNameIndexer integration[2m > [22m[2mindexes existing files from the current snapshot
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-server-ts-index-WpzMLN' completed in 0.0030 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-name-indexer.integration.test.ts[2m > [22m[2mFileNameIndexer integration[2m > [22m[2mindexes existing files from the current snapshot
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/integration/file-explorer/file-name-indexer.integration.test.ts[2m > [22m[2mFileNameIndexer integration[2m > [22m[2mindexes existing files from the current snapshot
+[22m[39mFileNameIndexer refreshed snapshot index with 1 entries
+
+[90mstdout[2m | tests/integration/file-explorer/file-name-indexer.integration.test.ts[2m > [22m[2mFileNameIndexer integration[2m > [22m[2mupdates only after the snapshot is rebuilt and refreshed
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-server-ts-index-78eZ1g' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-name-indexer.integration.test.ts[2m > [22m[2mFileNameIndexer integration[2m > [22m[2mupdates only after the snapshot is rebuilt and refreshed
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-server-ts-index-78eZ1g' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-name-indexer.integration.test.ts[2m > [22m[2mFileNameIndexer integration[2m > [22m[2mupdates only after the snapshot is rebuilt and refreshed
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/integration/file-explorer/file-name-indexer.integration.test.ts[2m > [22m[2mFileNameIndexer integration[2m > [22m[2mupdates only after the snapshot is rebuilt and refreshed
+[22m[39mFileNameIndexer refreshed snapshot index with 1 entries
+
+[90mstdout[2m | tests/integration/file-explorer/file-name-indexer.integration.test.ts[2m > [22m[2mFileNameIndexer integration[2m > [22m[2mupdates only after the snapshot is rebuilt and refreshed
+[22m[39mStarting directory traversal for: '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-server-ts-index-78eZ1g' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-name-indexer.integration.test.ts[2m > [22m[2mFileNameIndexer integration[2m > [22m[2mupdates only after the snapshot is rebuilt and refreshed
+[22m[39mDirectory traversal for '/tmp/resume-pdf-api.RwYhMo/tmp/autobyteus-server-ts-index-78eZ1g' completed in 0.0020 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-name-indexer.integration.test.ts[2m > [22m[2mFileNameIndexer integration[2m > [22m[2mupdates only after the snapshot is rebuilt and refreshed
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/integration/file-explorer/file-name-indexer.integration.test.ts[2m > [22m[2mFileNameIndexer integration[2m > [22m[2mupdates only after the snapshot is rebuilt and refreshed
+[22m[39mFileNameIndexer refreshed snapshot index with 2 entries
+
+ [32m✓[39m tests/integration/file-explorer/file-name-indexer.integration.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+[90mstdout[2m | tests/unit/file-explorer/watcher/event-batcher.test.ts
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts
+App data directory: /tmp/resume-pdf-api.RwYhMo/data
+
+ [32m✓[39m tests/unit/file-explorer/watcher/event-batcher.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+[90mstdout[2m | tests/unit/file-explorer/workspace-search-snapshot-controller.test.ts
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts
+App data directory: /tmp/resume-pdf-api.RwYhMo/data
+
+ [32m✓[39m tests/unit/file-explorer/workspace-search-snapshot-controller.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+[90mstdout[2m | tests/unit/file-explorer/tree-node.test.ts
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts
+App data directory: /tmp/resume-pdf-api.RwYhMo/data
+
+ [32m✓[39m tests/unit/file-explorer/tree-node.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+[90mstdout[2m | tests/unit/file-explorer/file-system-changes.test.ts
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts
+App data directory: /tmp/resume-pdf-api.RwYhMo/data
+
+ [32m✓[39m tests/unit/file-explorer/file-system-changes.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+[90mstdout[2m | tests/unit/file-explorer/file-name-indexer.test.ts
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts
+App data directory: /tmp/resume-pdf-api.RwYhMo/data
+
+[90mstdout[2m | tests/unit/file-explorer/file-name-indexer.test.ts[2m > [22m[2mFileNameIndexer[2m > [22m[2mbuilds the snapshot index on refresh
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/unit/file-explorer/file-name-indexer.test.ts[2m > [22m[2mFileNameIndexer[2m > [22m[2mbuilds the snapshot index on refresh
+[22m[39mFileNameIndexer refreshed snapshot index with 1 entries
+
+[90mstdout[2m | tests/unit/file-explorer/file-name-indexer.test.ts[2m > [22m[2mFileNameIndexer[2m > [22m[2mdoes not acquire a watcher lease when refreshing the snapshot index
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/unit/file-explorer/file-name-indexer.test.ts[2m > [22m[2mFileNameIndexer[2m > [22m[2mdoes not acquire a watcher lease when refreshing the snapshot index
+[22m[39mFileNameIndexer refreshed snapshot index with 1 entries
+
+[90mstdout[2m | tests/unit/file-explorer/file-name-indexer.test.ts[2m > [22m[2mFileNameIndexer[2m > [22m[2mreplaces stale index entries on each refresh
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/unit/file-explorer/file-name-indexer.test.ts[2m > [22m[2mFileNameIndexer[2m > [22m[2mreplaces stale index entries on each refresh
+[22m[39mFileNameIndexer refreshed snapshot index with 1 entries
+
+[90mstdout[2m | tests/unit/file-explorer/file-name-indexer.test.ts[2m > [22m[2mFileNameIndexer[2m > [22m[2mreplaces stale index entries on each refresh
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/unit/file-explorer/file-name-indexer.test.ts[2m > [22m[2mFileNameIndexer[2m > [22m[2mreplaces stale index entries on each refresh
+[22m[39mFileNameIndexer refreshed snapshot index with 1 entries
+
+[90mstdout[2m | tests/unit/file-explorer/file-name-indexer.test.ts[2m > [22m[2mFileNameIndexer[2m > [22m[2muses an empty index when the current tree is unavailable
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstderr[2m | tests/unit/file-explorer/file-name-indexer.test.ts[2m > [22m[2mFileNameIndexer[2m > [22m[2muses an empty index when the current tree is unavailable
+[22m[39mTree not available for FileNameIndexer, using empty index.
+
+[90mstdout[2m | tests/unit/file-explorer/file-name-indexer.test.ts[2m > [22m[2mFileNameIndexer[2m > [22m[2muses an empty index when the current tree is unavailable
+[22m[39mFileNameIndexer refreshed snapshot index with 0 entries
+
+ [32m✓[39m tests/unit/file-explorer/file-name-indexer.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/converters/workspace-converter.test.ts
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts
+App data directory: /tmp/resume-pdf-api.RwYhMo/data
+
+[90mstdout[2m | tests/unit/api/graphql/converters/workspace-converter.test.ts[2m > [22m[2mWorkspaceConverter[2m > [22m[2mmaps a regular workspace's metadata with isTemp false
+[22m[39mCreated metadata-only FileSystemWorkspace at /path/to/ws.
+
+[90mstdout[2m | tests/unit/api/graphql/converters/workspace-converter.test.ts[2m > [22m[2mWorkspaceConverter[2m > [22m[2mmaps the temp workspace with its fixed id and isTemp true
+[22m[39mCreated metadata-only FileSystemWorkspace at /path/to/temp.
+Initialized TempWorkspace at /path/to/temp with fixed ID 'temp_ws_default'
+
+ [32m✓[39m tests/unit/api/graphql/converters/workspace-converter.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+[90mstdout[2m | tests/unit/workspaces/workspace-path-utils.test.ts
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts
+App data directory: /tmp/resume-pdf-api.RwYhMo/data
+
+ [32m✓[39m tests/unit/workspaces/workspace-path-utils.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+[90mstdout[2m | tests/unit/file-explorer/watcher-runtime-protocol.test.ts
+[22m[39mPlatform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts
+App data directory: /tmp/resume-pdf-api.RwYhMo/data
+
+ [32m✓[39m tests/unit/file-explorer/watcher-runtime-protocol.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m22 passed[39m[22m[90m (22)[39m
+[2m      Tests [22m [1m[32m108 passed[39m[22m[90m (108)[39m
+[2m   Start at [22m 16:23:50
+[2m   Duration [22m 24.34s[2m (transform 5.90s, setup 754ms, import 17.67s, tests 2.46s, environment 2ms)[22m
+

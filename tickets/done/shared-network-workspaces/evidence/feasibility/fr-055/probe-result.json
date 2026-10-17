@@ -1,0 +1,1019 @@
+{
+  "run": "ab-sf-fr055-a6d40941",
+  "scope": "patched UNFS3 root daemon with all-squashed data serves chosen Mac bind to actual native Mac and two Docker clients; exact per-process Git trust and concurrent create; one physical Mac only, no agents/NLM/final product proof",
+  "engineCommit": "ec1660ba33c80d5c67131e163e68834c1a10e243",
+  "prototypePatch": "FR050 binary CREATE verifier correction",
+  "clientImage": "sha256:feb18a8f02a7470eb5427abac1dc8794da707ff6fbcbc14cdb850c28fbcf977b",
+  "clientImageScope": "full public-source probe image derived from historical app base; no live agents/current-source validation",
+  "daemonMode": "root without -s; data all_squash=10001:10001",
+  "source": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr055-owned-e082dhch/source",
+  "mount": "/Volumes/autobyteus-shared",
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "clone",
+        "ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377",
+        "ab-sf-fr055-macos"
+      ],
+      "rc": 0,
+      "seconds": 0.725,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "set",
+        "ab-sf-fr055-macos",
+        "--cpu",
+        "2",
+        "--memory",
+        "4096"
+      ],
+      "rc": 0,
+      "seconds": 0.019,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr055-macos",
+        "/usr/bin/sw_vers"
+      ],
+      "rc": 2,
+      "seconds": 0.015,
+      "stdout": "",
+      "stderr": "VM \"ab-sf-fr055-macos\" is not running\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr055-macos",
+        "/usr/bin/sw_vers"
+      ],
+      "rc": 0,
+      "seconds": 1.733,
+      "stdout": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "ip",
+        "ab-sf-fr055-macos"
+      ],
+      "rc": 0,
+      "seconds": 0.026,
+      "stdout": "192.168.128.2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr055-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/usr/sbin/ipconfig getifaddr en0"
+      ],
+      "rc": 0,
+      "seconds": 0.725,
+      "stdout": "192.168.128.2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr055-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "uname -sm; id; sw_vers"
+      ],
+      "rc": 0,
+      "seconds": 0.169,
+      "stdout": "Darwin arm64\nuid=501(admin) gid=20(staff) groups=20(staff),12(everyone),61(localaccounts),79(_appserverusr),80(admin),81(_appserveradm),264(_webdeveloper),701(com.apple.sharepoint.group.1),33(_appstore),98(_lpadmin),100(_lpoperator),204(_developer),250(_analyticsusers),395(com.apple.access_ftp),398(com.apple.access_screensharing),399(com.apple.access_ssh),400(com.apple.access_remote_ae)\nProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "inspect",
+        "bridge",
+        "--format",
+        "{{(index .IPAM.Config 0).Gateway}}"
+      ],
+      "rc": 0,
+      "stdout": "172.17.0.1\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "ab-sf-fr055-unfs:probe",
+        "--format",
+        "{{.Id}}"
+      ],
+      "rc": 0,
+      "stdout": "sha256:fc831a3b615b70d6cb7c1672c7ed5365bee3f02c296c389797a52b7eac5704cf\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr055-a6d40941-server",
+        "--label",
+        "org.autobyteus.probe=fr-055",
+        "--user",
+        "0:0",
+        "-p",
+        "127.0.0.1::2049",
+        "--mount",
+        "type=bind,src=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr055-owned-e082dhch/source,dst=/export",
+        "--mount",
+        "type=bind,src=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr055-owned-e082dhch/config,dst=/config,readonly",
+        "sha256:fc831a3b615b70d6cb7c1672c7ed5365bee3f02c296c389797a52b7eac5704cf",
+        "-d",
+        "-p",
+        "-t",
+        "-n",
+        "2049",
+        "-m",
+        "2049",
+        "-e",
+        "/config/exports"
+      ],
+      "rc": 0,
+      "stdout": "7dbc9a1e444a575cb79215aba8b9613da70b1eaeb1d4c5a2d5dd5c545b957530\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "inspect",
+        "ab-sf-fr055-a6d40941-server",
+        "--format",
+        "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}"
+      ],
+      "rc": 0,
+      "stdout": "172.17.0.6\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "port",
+        "ab-sf-fr055-a6d40941-server",
+        "2049/tcp"
+      ],
+      "rc": 0,
+      "stdout": "127.0.0.1:57470\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "port",
+        "ab-sf-fr055-a6d40941-server",
+        "2049/tcp"
+      ],
+      "rc": 0,
+      "stdout": "127.0.0.1:57470\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr055-a6d40941-server",
+        "node",
+        "-e",
+        "const f=require('fs');console.log(JSON.stringify({uid:process.getuid(),source:f.readFileSync('/export/project/preexisting.txt','utf8'),owner:f.statSync('/export').uid}))"
+      ],
+      "rc": 0,
+      "stdout": "{\"uid\":0,\"source\":\"KEEP_MAC_BIND_SOURCE\",\"owner\":0}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.probe=fr-055",
+        "--driver",
+        "local",
+        "--opt",
+        "type=nfs",
+        "--opt",
+        "device=:/export",
+        "--opt",
+        "o=addr=172.17.0.6,vers=3,proto=tcp,mountproto=tcp,mountvers=3,port=2049,mountport=2049,nolock,hard,timeo=50,retrans=2,actimeo=1,nosharecache",
+        "ab-sf-fr055-a6d40941-nfs-a"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr055-a6d40941-nfs-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr055-a6d40941-client-a",
+        "--label",
+        "org.autobyteus.probe=fr-055",
+        "--user",
+        "10001:10001",
+        "--entrypoint",
+        "tail",
+        "--mount",
+        "type=volume,src=ab-sf-fr055-a6d40941-nfs-a,dst=/Volumes/autobyteus-shared,volume-nocopy",
+        "sha256:feb18a8f02a7470eb5427abac1dc8794da707ff6fbcbc14cdb850c28fbcf977b",
+        "-f",
+        "/dev/null"
+      ],
+      "rc": 0,
+      "stdout": "33569530f7bdd6274c86586ee650c9c02612a17628b04957503a07b61d3fb2e8\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr055-a6d40941-client-a",
+        "node",
+        "-e",
+        "console.log(JSON.stringify(JSON.parse(require('fs').readFileSync(\"/Volumes/autobyteus-shared/storage.json\",'utf8'))))"
+      ],
+      "rc": 0,
+      "stdout": "{\"storageId\":\"a4e202bb8ae941afa61880edfc02d8ed\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "create",
+        "--label",
+        "org.autobyteus.probe=fr-055",
+        "--driver",
+        "local",
+        "--opt",
+        "type=nfs",
+        "--opt",
+        "device=:/export",
+        "--opt",
+        "o=addr=172.17.0.6,vers=3,proto=tcp,mountproto=tcp,mountvers=3,port=2049,mountport=2049,nolock,hard,timeo=50,retrans=2,actimeo=1,nosharecache",
+        "ab-sf-fr055-a6d40941-nfs-b"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr055-a6d40941-nfs-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "ab-sf-fr055-a6d40941-client-b",
+        "--label",
+        "org.autobyteus.probe=fr-055",
+        "--user",
+        "10001:10001",
+        "--entrypoint",
+        "tail",
+        "--mount",
+        "type=volume,src=ab-sf-fr055-a6d40941-nfs-b,dst=/Volumes/autobyteus-shared,volume-nocopy",
+        "sha256:feb18a8f02a7470eb5427abac1dc8794da707ff6fbcbc14cdb850c28fbcf977b",
+        "-f",
+        "/dev/null"
+      ],
+      "rc": 0,
+      "stdout": "37a0acefe0613524059d4016c66a732bbcdad5a7110fe503e82f23bdf6aa9da7\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr055-a6d40941-client-b",
+        "node",
+        "-e",
+        "console.log(JSON.stringify(JSON.parse(require('fs').readFileSync(\"/Volumes/autobyteus-shared/storage.json\",'utf8'))))"
+      ],
+      "rc": 0,
+      "stdout": "{\"storageId\":\"a4e202bb8ae941afa61880edfc02d8ed\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr055-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "test ! -e /Volumes/autobyteus-shared; sudo -n /bin/mkdir /Volumes/autobyteus-shared"
+      ],
+      "rc": 0,
+      "seconds": 0.354,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr055-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "sudo -n /sbin/mount -t nfs -o vers=3,tcp,hard,actimeo=1,locallocks,resvport,retrycnt=0,port=57471,mountport=57471 192.168.128.1:/export /Volumes/autobyteus-shared"
+      ],
+      "rc": 0,
+      "seconds": 0.113,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr055-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "cat /Volumes/autobyteus-shared/storage.json"
+      ],
+      "rc": 0,
+      "seconds": 0.089,
+      "stdout": "{\"storageId\": \"a4e202bb8ae941afa61880edfc02d8ed\"}",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr055-a6d40941-client-a",
+        "node",
+        "-e",
+        "console.log(JSON.stringify(require('fs').readFileSync(\"/Volumes/autobyteus-shared/project/roundtrip.txt\",'utf8')))"
+      ],
+      "rc": 0,
+      "stdout": "\"HOST_SOURCE_a163c142225e4df2acae351ea13a62f2\\n\"\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr055-a6d40941-client-b",
+        "node",
+        "-e",
+        "console.log(JSON.stringify(require('fs').readFileSync(\"/Volumes/autobyteus-shared/project/roundtrip.txt\",'utf8')))"
+      ],
+      "rc": 0,
+      "stdout": "\"HOST_SOURCE_a163c142225e4df2acae351ea13a62f2\\n\"\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr055-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/bin/cat /Volumes/autobyteus-shared/project/roundtrip.txt"
+      ],
+      "rc": 0,
+      "seconds": 0.145,
+      "stdout": "HOST_SOURCE_a163c142225e4df2acae351ea13a62f2\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr055-a6d40941-client-b",
+        "node",
+        "-e",
+        "const f=require('fs');let q=f.openSync(\"/Volumes/autobyteus-shared/project/roundtrip.txt\",'a');f.writeSync(q,\"CLIENT_B_26e5544d199d4702a3fc41335f705c84\\n\");f.fsyncSync(q);f.closeSync(q)"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr055-a6d40941-client-a",
+        "node",
+        "-e",
+        "console.log(JSON.stringify(require('fs').readFileSync(\"/Volumes/autobyteus-shared/project/roundtrip.txt\",'utf8')))"
+      ],
+      "rc": 0,
+      "stdout": "\"HOST_SOURCE_a163c142225e4df2acae351ea13a62f2\\nCLIENT_B_26e5544d199d4702a3fc41335f705c84\\n\"\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr055-a6d40941-client-b",
+        "node",
+        "-e",
+        "console.log(JSON.stringify(require('fs').readFileSync(\"/Volumes/autobyteus-shared/project/roundtrip.txt\",'utf8')))"
+      ],
+      "rc": 0,
+      "stdout": "\"HOST_SOURCE_a163c142225e4df2acae351ea13a62f2\\nCLIENT_B_26e5544d199d4702a3fc41335f705c84\\n\"\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr055-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/bin/cat /Volumes/autobyteus-shared/project/roundtrip.txt"
+      ],
+      "rc": 0,
+      "seconds": 0.407,
+      "stdout": "HOST_SOURCE_a163c142225e4df2acae351ea13a62f2\nCLIENT_B_26e5544d199d4702a3fc41335f705c84\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr055-a6d40941-client-a",
+        "node",
+        "-e",
+        "const f=require('fs'),p=\"/Volumes/autobyteus-shared/project\";f.mkdirSync(p+'/dir');f.writeFileSync(p+'/dir/temp','RENAMED');f.renameSync(p+'/dir/temp',p+'/renamed');f.symlinkSync('roundtrip.txt',p+'/link');f.writeFileSync(p+'/exclusive','KEEP',{flag:'wx'});f.writeFileSync(p+'/exec.sh','#!/bin/sh\\necho UNFS_BIND_OK\\n');f.chmodSync(p+'/exec.sh',0o755)"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr055-a6d40941-client-b",
+        "node",
+        "-e",
+        "const f=require('fs'),p=\"/Volumes/autobyteus-shared/project\";let denied=false;try{f.openSync(p+'/exclusive','wx')}catch(e){denied=e.code==='EEXIST'};console.log(JSON.stringify({renamed:f.readFileSync(p+'/renamed','utf8'),link:f.readFileSync(p+'/link','utf8'),exec:require('child_process').execFileSync(p+'/exec.sh',{encoding:'utf8'}),denied,preserved:f.readFileSync(p+'/preexisting.txt','utf8')}))"
+      ],
+      "rc": 0,
+      "stdout": "{\"renamed\":\"RENAMED\",\"link\":\"HOST_SOURCE_a163c142225e4df2acae351ea13a62f2\\nCLIENT_B_26e5544d199d4702a3fc41335f705c84\\n\",\"exec\":\"UNFS_BIND_OK\\n\",\"denied\":true,\"preserved\":\"KEEP_MAC_BIND_SOURCE\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr055-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/python3",
+        "-c",
+        "import os;p='/Volumes/autobyteus-shared/project/roundtrip.txt';f=open(p,'a');f.write('NATIVE_MAC_ec4dab83734841908f4315558de4f336\\n');f.flush();os.fsync(f.fileno());f.close()"
+      ],
+      "rc": 0,
+      "seconds": 0.246,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr055-a6d40941-client-a",
+        "node",
+        "-e",
+        "console.log(JSON.stringify(require('fs').readFileSync(\"/Volumes/autobyteus-shared/project/roundtrip.txt\",'utf8')))"
+      ],
+      "rc": 0,
+      "stdout": "\"HOST_SOURCE_a163c142225e4df2acae351ea13a62f2\\nCLIENT_B_26e5544d199d4702a3fc41335f705c84\\nNATIVE_MAC_ec4dab83734841908f4315558de4f336\\n\"\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr055-a6d40941-client-b",
+        "node",
+        "-e",
+        "console.log(JSON.stringify(require('fs').readFileSync(\"/Volumes/autobyteus-shared/project/roundtrip.txt\",'utf8')))"
+      ],
+      "rc": 0,
+      "stdout": "\"HOST_SOURCE_a163c142225e4df2acae351ea13a62f2\\nCLIENT_B_26e5544d199d4702a3fc41335f705c84\\nNATIVE_MAC_ec4dab83734841908f4315558de4f336\\n\"\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr055-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/bin/cat /Volumes/autobyteus-shared/project/roundtrip.txt"
+      ],
+      "rc": 0,
+      "seconds": 0.271,
+      "stdout": "HOST_SOURCE_a163c142225e4df2acae351ea13a62f2\nCLIENT_B_26e5544d199d4702a3fc41335f705c84\nNATIVE_MAC_ec4dab83734841908f4315558de4f336\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr055-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "cd /Volumes/autobyteus-shared/project && export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=safe.directory GIT_CONFIG_VALUE_0=/Volumes/autobyteus-shared/project; /usr/bin/git init --quiet && /usr/bin/git -c user.name=Probe -c user.email=probe@example.invalid add preexisting.txt && /usr/bin/git -c user.name=Probe -c user.email=probe@example.invalid commit --quiet -m NativeMac && /usr/bin/git rev-parse HEAD"
+      ],
+      "rc": 128,
+      "seconds": 0.639,
+      "stdout": "",
+      "stderr": "error: could not write config file /Volumes/autobyteus-shared/project/.git/config: Stale NFS file handle\nfatal: could not set 'core.logallrefupdates' to 'true'\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "ab-sf-fr055-a6d40941-server",
+        "find",
+        "/export/project/.git",
+        "-maxdepth",
+        "1",
+        "-printf",
+        "%D %i %u %g %m %p\n"
+      ],
+      "rc": 0,
+      "stdout": "48 305 root root 755 /export/project/.git\n48 326 10001 10001 644 /export/project/.git/config\n48 306 root root 755 /export/project/.git/info\n48 308 root root 644 /export/project/.git/description\n48 309 root root 755 /export/project/.git/hooks\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr055-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "/bin/ls -lin /Volumes/autobyteus-shared/project/.git"
+      ],
+      "rc": 0,
+      "seconds": 0.684,
+      "stdout": "total 4\n326 -rw-r--r--   1 10001  10001   67 Oct 13 15:11 config\n308 -rw-r--r--   1 0      0       73 Oct 13 15:11 description\n309 drwxr-xr-x  16 10001  10001  512 Oct 13 15:11 hooks\n306 drwxr-xr-x   3 10001  10001   96 Oct 13 15:11 info\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-sf-fr055-macos",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/bin/sh",
+        "-c",
+        "sudo -n /sbin/umount /Volumes/autobyteus-shared"
+      ],
+      "rc": 0,
+      "seconds": 0.068,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr055-a6d40941-client-b"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr055-a6d40941-client-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr055-a6d40941-client-a"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr055-a6d40941-client-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr055-a6d40941-nfs-b"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr055-a6d40941-nfs-b\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "rm",
+        "ab-sf-fr055-a6d40941-nfs-a"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr055-a6d40941-nfs-a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "logs",
+        "ab-sf-fr055-a6d40941-server"
+      ],
+      "rc": 0,
+      "stdout": "UNFS3 unfsd 0.11.0 (C) 2003-2025, various authors\n/export: ip ::ffff:172.17.0.1/128 options 22\n",
+      "stderr": "ABTRACE proc=19 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=20 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=19 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=298 path=/export/storage.json\nABTRACE proc=6 uid=0 dev=48 ino=298 path=/export/storage.json\nABTRACE proc=19 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=20 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=19 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=298 path=/export/storage.json\nABTRACE proc=6 uid=0 dev=48 ino=298 path=/export/storage.json\nABTRACE proc=1 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=19 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=20 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=18 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=18 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=298 path=/export/storage.json\nABTRACE proc=6 uid=0 dev=48 ino=298 path=/export/storage.json\nABTRACE proc=4 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=3 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=4 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=6 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=4 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=3 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=4 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=6 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=3 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=4 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=6 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=4 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=1 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=4 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=7 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=4 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=1 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=4 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=6 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=4 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=1 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=4 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=1 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=1 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=1 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=1 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=6 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=4 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=9 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=4 uid=0 dev=48 ino=300 path=/export/project/dir\nABTRACE proc=8 uid=0 dev=48 ino=300 path=/export/project/dir\nABTRACE proc=7 uid=0 dev=48 ino=301 path=/export/project/dir/temp\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=4 uid=0 dev=48 ino=300 path=/export/project/dir\nABTRACE proc=14 uid=0 dev=48 ino=300 path=/export/project/dir\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=10 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=8 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=2 uid=0 dev=48 ino=303 path=/export/project/exclusive\nABTRACE proc=7 uid=0 dev=48 ino=303 path=/export/project/exclusive\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=8 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=7 uid=0 dev=48 ino=304 path=/export/project/exec.sh\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=2 uid=0 dev=48 ino=304 path=/export/project/exec.sh\nABTRACE proc=4 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=8 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=3 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=4 uid=0 dev=48 ino=301 path=/export/project/renamed\nABTRACE proc=6 uid=0 dev=48 ino=301 path=/export/project/renamed\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=3 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=5 uid=0 dev=48 ino=302 path=/export/project/link\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=3 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=4 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=3 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=4 uid=0 dev=48 ino=304 path=/export/project/exec.sh\nABTRACE proc=6 uid=0 dev=48 ino=304 path=/export/project/exec.sh\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=1 uid=0 dev=48 ino=304 path=/export/project/exec.sh\nABTRACE proc=4 uid=0 dev=48 ino=304 path=/export/project/exec.sh\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=3 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=4 uid=0 dev=48 ino=297 path=/export/project/preexisting.txt\nABTRACE proc=6 uid=0 dev=48 ino=297 path=/export/project/preexisting.txt\nABTRACE proc=1 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=1 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=3 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=1 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=7 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=21 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=1 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=4 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=1 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=4 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=6 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=4 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=1 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=4 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=6 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=18 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=3 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=9 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=3 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=1 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=9 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=1 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=4 uid=0 dev=48 ino=306 path=/export/project/.git/info\nABTRACE proc=3 uid=0 dev=48 ino=306 path=/export/project/.git/info\nABTRACE proc=8 uid=0 dev=48 ino=306 path=/export/project/.git/info\nABTRACE proc=3 uid=0 dev=48 ino=306 path=/export/project/.git/info\nABTRACE proc=2 uid=0 dev=48 ino=307 path=/export/project/.git/info/exclude\nABTRACE proc=7 uid=0 dev=48 ino=307 path=/export/project/.git/info/exclude\nABTRACE proc=21 uid=0 dev=48 ino=307 path=/export/project/.git/info/exclude\nABTRACE proc=1 uid=0 dev=48 ino=307 path=/export/project/.git/info/exclude\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=8 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=2 uid=0 dev=48 ino=308 path=/export/project/.git/description\nABTRACE proc=7 uid=0 dev=48 ino=308 path=/export/project/.git/description\nABTRACE proc=21 uid=0 dev=48 ino=308 path=/export/project/.git/description\nABTRACE proc=1 uid=0 dev=48 ino=308 path=/export/project/.git/description\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=9 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=4 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=310 path=/export/project/.git/hooks/commit-msg.sample\nABTRACE proc=7 uid=0 dev=48 ino=310 path=/export/project/.git/hooks/commit-msg.sample\nABTRACE proc=21 uid=0 dev=48 ino=310 path=/export/project/.git/hooks/commit-msg.sample\nABTRACE proc=1 uid=0 dev=48 ino=310 path=/export/project/.git/hooks/commit-msg.sample\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=311 path=/export/project/.git/hooks/pre-rebase.sample\nABTRACE proc=7 uid=0 dev=48 ino=311 path=/export/project/.git/hooks/pre-rebase.sample\nABTRACE proc=21 uid=0 dev=48 ino=311 path=/export/project/.git/hooks/pre-rebase.sample\nABTRACE proc=1 uid=0 dev=48 ino=311 path=/export/project/.git/hooks/pre-rebase.sample\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=312 path=/export/project/.git/hooks/sendemail-validate.sample\nABTRACE proc=7 uid=0 dev=48 ino=312 path=/export/project/.git/hooks/sendemail-validate.sample\nABTRACE proc=21 uid=0 dev=48 ino=312 path=/export/project/.git/hooks/sendemail-validate.sample\nABTRACE proc=1 uid=0 dev=48 ino=312 path=/export/project/.git/hooks/sendemail-validate.sample\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=313 path=/export/project/.git/hooks/pre-commit.sample\nABTRACE proc=7 uid=0 dev=48 ino=313 path=/export/project/.git/hooks/pre-commit.sample\nABTRACE proc=21 uid=0 dev=48 ino=313 path=/export/project/.git/hooks/pre-commit.sample\nABTRACE proc=1 uid=0 dev=48 ino=313 path=/export/project/.git/hooks/pre-commit.sample\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=314 path=/export/project/.git/hooks/applypatch-msg.sample\nABTRACE proc=7 uid=0 dev=48 ino=314 path=/export/project/.git/hooks/applypatch-msg.sample\nABTRACE proc=21 uid=0 dev=48 ino=314 path=/export/project/.git/hooks/applypatch-msg.sample\nABTRACE proc=1 uid=0 dev=48 ino=314 path=/export/project/.git/hooks/applypatch-msg.sample\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=315 path=/export/project/.git/hooks/fsmonitor-watchman.sample\nABTRACE proc=7 uid=0 dev=48 ino=315 path=/export/project/.git/hooks/fsmonitor-watchman.sample\nABTRACE proc=21 uid=0 dev=48 ino=315 path=/export/project/.git/hooks/fsmonitor-watchman.sample\nABTRACE proc=1 uid=0 dev=48 ino=315 path=/export/project/.git/hooks/fsmonitor-watchman.sample\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=316 path=/export/project/.git/hooks/pre-receive.sample\nABTRACE proc=7 uid=0 dev=48 ino=316 path=/export/project/.git/hooks/pre-receive.sample\nABTRACE proc=21 uid=0 dev=48 ino=316 path=/export/project/.git/hooks/pre-receive.sample\nABTRACE proc=1 uid=0 dev=48 ino=316 path=/export/project/.git/hooks/pre-receive.sample\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=317 path=/export/project/.git/hooks/prepare-commit-msg.sample\nABTRACE proc=7 uid=0 dev=48 ino=317 path=/export/project/.git/hooks/prepare-commit-msg.sample\nABTRACE proc=21 uid=0 dev=48 ino=317 path=/export/project/.git/hooks/prepare-commit-msg.sample\nABTRACE proc=1 uid=0 dev=48 ino=317 path=/export/project/.git/hooks/prepare-commit-msg.sample\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=318 path=/export/project/.git/hooks/post-update.sample\nABTRACE proc=7 uid=0 dev=48 ino=318 path=/export/project/.git/hooks/post-update.sample\nABTRACE proc=21 uid=0 dev=48 ino=318 path=/export/project/.git/hooks/post-update.sample\nABTRACE proc=1 uid=0 dev=48 ino=318 path=/export/project/.git/hooks/post-update.sample\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=319 path=/export/project/.git/hooks/pre-merge-commit.sample\nABTRACE proc=7 uid=0 dev=48 ino=319 path=/export/project/.git/hooks/pre-merge-commit.sample\nABTRACE proc=21 uid=0 dev=48 ino=319 path=/export/project/.git/hooks/pre-merge-commit.sample\nABTRACE proc=1 uid=0 dev=48 ino=319 path=/export/project/.git/hooks/pre-merge-commit.sample\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=320 path=/export/project/.git/hooks/pre-applypatch.sample\nABTRACE proc=7 uid=0 dev=48 ino=320 path=/export/project/.git/hooks/pre-applypatch.sample\nABTRACE proc=21 uid=0 dev=48 ino=320 path=/export/project/.git/hooks/pre-applypatch.sample\nABTRACE proc=1 uid=0 dev=48 ino=320 path=/export/project/.git/hooks/pre-applypatch.sample\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=321 path=/export/project/.git/hooks/pre-push.sample\nABTRACE proc=7 uid=0 dev=48 ino=321 path=/export/project/.git/hooks/pre-push.sample\nABTRACE proc=21 uid=0 dev=48 ino=321 path=/export/project/.git/hooks/pre-push.sample\nABTRACE proc=1 uid=0 dev=48 ino=321 path=/export/project/.git/hooks/pre-push.sample\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=322 path=/export/project/.git/hooks/update.sample\nABTRACE proc=7 uid=0 dev=48 ino=322 path=/export/project/.git/hooks/update.sample\nABTRACE proc=21 uid=0 dev=48 ino=322 path=/export/project/.git/hooks/update.sample\nABTRACE proc=1 uid=0 dev=48 ino=322 path=/export/project/.git/hooks/update.sample\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=323 path=/export/project/.git/hooks/push-to-checkout.sample\nABTRACE proc=7 uid=0 dev=48 ino=323 path=/export/project/.git/hooks/push-to-checkout.sample\nABTRACE proc=21 uid=0 dev=48 ino=323 path=/export/project/.git/hooks/push-to-checkout.sample\nABTRACE proc=1 uid=0 dev=48 ino=323 path=/export/project/.git/hooks/push-to-checkout.sample\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=8 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=2 uid=0 dev=48 ino=324 path=/export/project/.git/config.lock\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=7 uid=0 dev=48 ino=324 path=/export/project/.git/config.lock\nABTRACE proc=21 uid=0 dev=48 ino=324 path=/export/project/.git/config.lock\nABTRACE proc=1 uid=0 dev=48 ino=324 path=/export/project/.git/config.lock\nABTRACE proc=4 uid=0 dev=48 ino=324 path=/export/project/.git/config.lock\nABTRACE proc=14 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=2 uid=0 dev=48 ino=324 path=/export/project/.git/config\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=2 uid=0 dev=48 ino=324 path=/export/project/.git/config\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=4 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=8 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=2 uid=0 dev=48 ino=325 path=/export/project/.git/config.lock\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=1 uid=0 dev=48 ino=325 path=/export/project/.git/config.lock\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=4 uid=0 dev=48 ino=324 path=/export/project/.git/config\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=2 uid=0 dev=48 ino=324 path=/export/project/.git/config\nABTRACE proc=2 uid=0 dev=48 ino=325 path=/export/project/.git/config.lock\nABTRACE proc=7 uid=0 dev=48 ino=325 path=/export/project/.git/config.lock\nABTRACE proc=21 uid=0 dev=48 ino=325 path=/export/project/.git/config.lock\nABTRACE proc=1 uid=0 dev=48 ino=325 path=/export/project/.git/config.lock\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=4 uid=0 dev=48 ino=325 path=/export/project/.git/config.lock\nABTRACE proc=14 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=8 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=2 uid=0 dev=48 ino=326 path=/export/project/.git/config.lock\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=2 uid=0 dev=48 ino=325 path=/export/project/.git/config\nABTRACE proc=2 uid=0 dev=48 ino=326 path=/export/project/.git/config.lock\nABTRACE proc=7 uid=0 dev=48 ino=326 path=/export/project/.git/config.lock\nABTRACE proc=21 uid=0 dev=48 ino=326 path=/export/project/.git/config.lock\nABTRACE proc=1 uid=0 dev=48 ino=326 path=/export/project/.git/config.lock\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=4 uid=0 dev=48 ino=326 path=/export/project/.git/config.lock\nABTRACE proc=14 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=8 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=2 uid=0 dev=48 ino=327 path=/export/project/.git/config.lock\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=2 uid=0 dev=48 ino=326 path=/export/project/.git/config\nABTRACE proc=2 uid=0 dev=48 ino=327 path=/export/project/.git/config.lock\nABTRACE proc=7 uid=0 dev=48 ino=327 path=NULL\nABTRACE proc=1 uid=0 dev=48 ino=327 path=NULL\nABTRACE proc=7 uid=0 dev=48 ino=327 path=NULL\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=4 uid=0 dev=48 ino=328 path=/export/project/.git/config.lock\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=12 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=1 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=16 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "-v",
+        "ab-sf-fr055-a6d40941-server"
+      ],
+      "rc": 0,
+      "stdout": "ab-sf-fr055-a6d40941-server\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr055-a6d40941-server"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr055-a6d40941-server\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr055-a6d40941-client-a"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr055-a6d40941-client-a\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr055-a6d40941-client-b"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: No such container: ab-sf-fr055-a6d40941-client-b\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr055-a6d40941-nfs-a"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr055-a6d40941-nfs-a: no such volume\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr055-a6d40941-nfs-b"
+      ],
+      "rc": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: get ab-sf-fr055-a6d40941-nfs-b: no such volume\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "stop",
+        "ab-sf-fr055-macos",
+        "--timeout",
+        "10"
+      ],
+      "rc": 0,
+      "seconds": 0.332,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "delete",
+        "ab-sf-fr055-macos"
+      ],
+      "rc": 0,
+      "seconds": 0.302,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "cases": [
+    {
+      "name": "patched UNFS3 squashed-data daemon directly serves selected Mac source without file handles",
+      "status": "PASS",
+      "result": {
+        "node": "ab-sf-fr055-a6d40941-server",
+        "ip": "172.17.0.6",
+        "uid": 0,
+        "privateLoopbackPublication": "127.0.0.1:57470",
+        "source": "KEEP_MAC_BIND_SOURCE",
+        "containerSource": "/export",
+        "clientAllowlist": [
+          "172.17.0.1"
+        ],
+        "notEncrypted": true,
+        "owner": 0
+      },
+      "seconds": 0.099
+    },
+    {
+      "name": "two independent Linux daemon mounts share same Mac-bound storage identity at agreed path",
+      "status": "PASS",
+      "result": {
+        "nodes": [
+          "ab-sf-fr055-a6d40941-client-a",
+          "ab-sf-fr055-a6d40941-client-b"
+        ],
+        "sameStorageId": "a4e202bb8ae941afa61880edfc02d8ed",
+        "mount": "/Volumes/autobyteus-shared",
+        "project": "/Volumes/autobyteus-shared/project",
+        "nolockExplicit": true
+      },
+      "seconds": 0.568
+    },
+    {
+      "name": "native Mac kernel client mounts same Mac-bound UNFS3 folder at identical path",
+      "status": "PASS",
+      "result": {
+        "node": "ab-sf-fr055-macos",
+        "mount": "/Volumes/autobyteus-shared",
+        "project": "/Volumes/autobyteus-shared/project",
+        "sameStorageId": "a4e202bb8ae941afa61880edfc02d8ed",
+        "localLocksOnly": true,
+        "testOnlyRawTCPRelay": true,
+        "noHostMountOrShare": true
+      },
+      "seconds": 0.558
+    },
+    {
+      "name": "ordinary Mac host-folder write is exact in both Linux NFS clients within five seconds",
+      "status": "PASS",
+      "result": {
+        "allExact": true,
+        "seconds": 0.329,
+        "nodes": [
+          "ab-sf-fr055-a6d40941-client-a",
+          "ab-sf-fr055-a6d40941-client-b"
+        ],
+        "hostSource": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr055-owned-e082dhch/source/project/roundtrip.txt"
+      },
+      "seconds": 0.33
+    },
+    {
+      "name": "Linux mounted append reaches original Mac source and peer without copying",
+      "status": "PASS",
+      "result": {
+        "allExact": true,
+        "seconds": 0.603,
+        "nodes": [
+          "ab-sf-fr055-a6d40941-client-a",
+          "ab-sf-fr055-a6d40941-client-b"
+        ],
+        "hostSource": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr055-owned-e082dhch/source/project/roundtrip.txt"
+      },
+      "seconds": 0.704
+    },
+    {
+      "name": "cross-client rename relative symlink executable exclusive-create and existing-source preservation",
+      "status": "PASS",
+      "result": {
+        "renamed": "RENAMED",
+        "link": "HOST_SOURCE_a163c142225e4df2acae351ea13a62f2\nCLIENT_B_26e5544d199d4702a3fc41335f705c84\n",
+        "exec": "UNFS_BIND_OK\n",
+        "denied": true,
+        "preserved": "KEEP_MAC_BIND_SOURCE"
+      },
+      "seconds": 0.185
+    },
+    {
+      "name": "native Mac mounted append reaches original Mac source and both Linux mounted clients",
+      "status": "PASS",
+      "result": {
+        "allExact": true,
+        "seconds": 0.462,
+        "nodes": [
+          "ab-sf-fr055-a6d40941-client-a",
+          "ab-sf-fr055-a6d40941-client-b"
+        ],
+        "hostSource": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr055-owned-e082dhch/source/project/roundtrip.txt"
+      },
+      "seconds": 0.709
+    },
+    {
+      "name": "squashed-data backend permits coordinated native Mac and Linux Git with exact native-process-only project trust",
+      "status": "FAIL",
+      "error": "RuntimeError(\"owned VM command failed ('exec', 'ab-sf-fr055-macos', '/usr/bin/sudo'): error: could not write config file /Volumes/autobyteus-shared/project/.git/config: Stale NFS file handle\\nfatal: could not set 'core.logallrefupdates' to 'true'\\n\")",
+      "seconds": 0.64
+    }
+  ],
+  "cleanup": [
+    {
+      "nativeUnmountRc": 0
+    },
+    {
+      "container": "ab-sf-fr055-a6d40941-client-b",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr055-a6d40941-client-a",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr055-a6d40941-nfs-b",
+      "rc": 0
+    },
+    {
+      "volume": "ab-sf-fr055-a6d40941-nfs-a",
+      "rc": 0
+    },
+    {
+      "container": "ab-sf-fr055-a6d40941-server",
+      "rc": 0
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr055-a6d40941-server",
+      "absent": true
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr055-a6d40941-client-a",
+      "absent": true
+    },
+    {
+      "kind": "container",
+      "name": "ab-sf-fr055-a6d40941-client-b",
+      "absent": true
+    },
+    {
+      "kind": "volume",
+      "name": "ab-sf-fr055-a6d40941-nfs-a",
+      "absent": true
+    },
+    {
+      "kind": "volume",
+      "name": "ab-sf-fr055-a6d40941-nfs-b",
+      "absent": true
+    },
+    {
+      "exactVmStopRc": 0
+    },
+    {
+      "exactOwnedVmProcessExited": true
+    },
+    {
+      "exactOwnedCloneDeleteRc": 0,
+      "node": "ab-sf-fr055-macos"
+    },
+    {
+      "ownedHostScratchRemoved": true
+    }
+  ],
+  "ownedCloneCreated": true,
+  "nativeMacVm": {
+    "node": "ab-sf-fr055-macos",
+    "hostUid": 501,
+    "runArgv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "run",
+      "ab-sf-fr055-macos",
+      "--no-graphics",
+      "--no-audio",
+      "--no-clipboard",
+      "--no-usb-accessories",
+      "--net-host"
+    ],
+    "hostProcessPid": 91004,
+    "hostShares": false,
+    "guestProviderCredentials": false,
+    "ip": "192.168.128.2",
+    "gateway": "192.168.128.1",
+    "identity": "Darwin arm64\nuid=501(admin) gid=20(staff) groups=20(staff),12(everyone),61(localaccounts),79(_appserverusr),80(admin),81(_appserveradm),264(_webdeveloper),701(com.apple.sharepoint.group.1),33(_appstore),98(_lpadmin),100(_lpoperator),204(_developer),250(_analyticsusers),395(com.apple.access_ftp),398(com.apple.access_screensharing),399(com.apple.access_ssh),400(com.apple.access_remote_ae)\nProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n"
+  },
+  "vmHostOnlyRoute": {
+    "ownedGuestIp": "192.168.128.2",
+    "hostInterface": "bridge100",
+    "hostAddress": "192.168.128.1",
+    "noDefaultGatewayRequired": true,
+    "hostRoute": "   route to: 192.168.128.2\ndestination: 192.168.128.2\n  interface: bridge100\n      flags: <UP,HOST,DONE,LLINFO,WASCLONED,IFSCOPE,IFREF>\n recvpipe  sendpipe  ssthresh  rtt,msec    rttvar  hopcount      mtu     expire\n       0         0         0         0         0         0      1500      1167 \n",
+    "hostInterfaceInfo": "bridge100: flags=8a63<UP,BROADCAST,SMART,RUNNING,ALLMULTI,SIMPLEX,MULTICAST> mtu 1500\n\toptions=63<RXCSUM,TXCSUM,TSO4,TSO6>\n\tether be:d0:74:32:81:64\n\tinet 192.168.128.1 netmask 0xffffff00 broadcast 192.168.128.255\n\tinet6 fe80::bcd0:74ff:fe32:8164%bridge100 prefixlen 64 scopeid 0x1a \n\tinet6 fd88:b29f:b1ba:498e:1c46:41e:af05:ac07 prefixlen 64 autoconf secured \n\tConfiguration:\n\t\tid 0:0:0:0:0:0 priority 0 hellotime 0 fwddelay 0\n\t\tmaxage 0 holdcnt 0 proto stp maxaddr 100 timeout 1200\n\t\troot id 0:0:0:0:0:0 priority 0 ifcost 0 port 0\n\t\tipfilter disabled flags 0x0\n\tmember: vmenet0 flags=20003<LEARNING,DISCOVER,VIRTIO>\n\t        ifmaxaddr 0 port 25 priority 0 path cost 0\n\tAddress cache:\n\t\t72:76:f4:5e:d8:14 Vlan1 vmenet0 1195 flags=0<>\n\tnd6 options=201<PERFORMNUD,DAD>\n\tmedia: autoselect\n\tstatus: active\n"
+  },
+  "engineImage": "sha256:fc831a3b615b70d6cb7c1672c7ed5365bee3f02c296c389797a52b7eac5704cf",
+  "server": {
+    "node": "ab-sf-fr055-a6d40941-server",
+    "ip": "172.17.0.6",
+    "uid": 0,
+    "privateLoopbackPublication": "127.0.0.1:57470",
+    "source": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-sf-fr055-owned-e082dhch/source",
+    "containerSource": "/export",
+    "clientAllowlist": [
+      "172.17.0.1"
+    ],
+    "notEncrypted": true
+  },
+  "clientNodes": [
+    "ab-sf-fr055-a6d40941-client-a",
+    "ab-sf-fr055-a6d40941-client-b"
+  ],
+  "testTransport": {
+    "guestOnlyListener": "192.168.128.1:57471",
+    "allowedPeer": "192.168.128.2",
+    "upstream": "127.0.0.1:57470",
+    "scope": "NFS TCP transport relay only, no file-level copying, not production or LAN deployment"
+  },
+  "diagnosticSource": "48 305 root root 755 /export/project/.git\n48 326 10001 10001 644 /export/project/.git/config\n48 306 root root 755 /export/project/.git/info\n48 308 root root 644 /export/project/.git/description\n48 309 root root 755 /export/project/.git/hooks\n",
+  "nativeGitFiles": "total 4\n326 -rw-r--r--   1 10001  10001   67 Oct 13 15:11 config\n308 -rw-r--r--   1 0      0       73 Oct 13 15:11 description\n309 drwxr-xr-x  16 10001  10001  512 Oct 13 15:11 hooks\n306 drwxr-xr-x   3 10001  10001   96 Oct 13 15:11 info\n",
+  "fatal": "RuntimeError(\"owned VM command failed ('exec', 'ab-sf-fr055-macos', '/usr/bin/sudo'): error: could not write config file /Volumes/autobyteus-shared/project/.git/config: Stale NFS file handle\\nfatal: could not set 'core.logallrefupdates' to 'true'\\n\")",
+  "serverLog": "UNFS3 unfsd 0.11.0 (C) 2003-2025, various authors\n/export: ip ::ffff:172.17.0.1/128 options 22\nABTRACE proc=19 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=20 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=19 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=298 path=/export/storage.json\nABTRACE proc=6 uid=0 dev=48 ino=298 path=/export/storage.json\nABTRACE proc=19 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=20 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=19 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=298 path=/export/storage.json\nABTRACE proc=6 uid=0 dev=48 ino=298 path=/export/storage.json\nABTRACE proc=1 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=19 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=20 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=18 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=18 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=298 path=/export/storage.json\nABTRACE proc=6 uid=0 dev=48 ino=298 path=/export/storage.json\nABTRACE proc=4 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=3 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=4 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=6 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=4 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=3 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=4 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=6 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=3 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=4 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=6 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=4 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=1 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=4 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=7 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=4 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=1 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=4 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=6 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=4 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=1 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=4 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=1 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=1 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=1 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=1 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=6 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=4 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=9 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=4 uid=0 dev=48 ino=300 path=/export/project/dir\nABTRACE proc=8 uid=0 dev=48 ino=300 path=/export/project/dir\nABTRACE proc=7 uid=0 dev=48 ino=301 path=/export/project/dir/temp\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=4 uid=0 dev=48 ino=300 path=/export/project/dir\nABTRACE proc=14 uid=0 dev=48 ino=300 path=/export/project/dir\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=10 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=8 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=2 uid=0 dev=48 ino=303 path=/export/project/exclusive\nABTRACE proc=7 uid=0 dev=48 ino=303 path=/export/project/exclusive\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=8 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=7 uid=0 dev=48 ino=304 path=/export/project/exec.sh\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=2 uid=0 dev=48 ino=304 path=/export/project/exec.sh\nABTRACE proc=4 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=8 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=3 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=4 uid=0 dev=48 ino=301 path=/export/project/renamed\nABTRACE proc=6 uid=0 dev=48 ino=301 path=/export/project/renamed\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=3 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=5 uid=0 dev=48 ino=302 path=/export/project/link\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=3 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=4 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=3 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=4 uid=0 dev=48 ino=304 path=/export/project/exec.sh\nABTRACE proc=6 uid=0 dev=48 ino=304 path=/export/project/exec.sh\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=1 uid=0 dev=48 ino=304 path=/export/project/exec.sh\nABTRACE proc=4 uid=0 dev=48 ino=304 path=/export/project/exec.sh\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=3 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=4 uid=0 dev=48 ino=297 path=/export/project/preexisting.txt\nABTRACE proc=6 uid=0 dev=48 ino=297 path=/export/project/preexisting.txt\nABTRACE proc=1 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=1 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=3 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=1 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=7 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=21 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=1 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=3 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=4 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=1 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=4 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=6 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=4 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=1 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=4 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=6 uid=0 dev=48 ino=299 path=/export/project/roundtrip.txt\nABTRACE proc=18 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=3 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=9 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=3 uid=0 dev=48 ino=296 path=/export/project\nABTRACE proc=1 uid=0 dev=48 ino=293 path=/export\nABTRACE proc=4 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=9 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=1 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=4 uid=0 dev=48 ino=306 path=/export/project/.git/info\nABTRACE proc=3 uid=0 dev=48 ino=306 path=/export/project/.git/info\nABTRACE proc=8 uid=0 dev=48 ino=306 path=/export/project/.git/info\nABTRACE proc=3 uid=0 dev=48 ino=306 path=/export/project/.git/info\nABTRACE proc=2 uid=0 dev=48 ino=307 path=/export/project/.git/info/exclude\nABTRACE proc=7 uid=0 dev=48 ino=307 path=/export/project/.git/info/exclude\nABTRACE proc=21 uid=0 dev=48 ino=307 path=/export/project/.git/info/exclude\nABTRACE proc=1 uid=0 dev=48 ino=307 path=/export/project/.git/info/exclude\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=8 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=2 uid=0 dev=48 ino=308 path=/export/project/.git/description\nABTRACE proc=7 uid=0 dev=48 ino=308 path=/export/project/.git/description\nABTRACE proc=21 uid=0 dev=48 ino=308 path=/export/project/.git/description\nABTRACE proc=1 uid=0 dev=48 ino=308 path=/export/project/.git/description\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=9 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=4 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=310 path=/export/project/.git/hooks/commit-msg.sample\nABTRACE proc=7 uid=0 dev=48 ino=310 path=/export/project/.git/hooks/commit-msg.sample\nABTRACE proc=21 uid=0 dev=48 ino=310 path=/export/project/.git/hooks/commit-msg.sample\nABTRACE proc=1 uid=0 dev=48 ino=310 path=/export/project/.git/hooks/commit-msg.sample\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=311 path=/export/project/.git/hooks/pre-rebase.sample\nABTRACE proc=7 uid=0 dev=48 ino=311 path=/export/project/.git/hooks/pre-rebase.sample\nABTRACE proc=21 uid=0 dev=48 ino=311 path=/export/project/.git/hooks/pre-rebase.sample\nABTRACE proc=1 uid=0 dev=48 ino=311 path=/export/project/.git/hooks/pre-rebase.sample\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=312 path=/export/project/.git/hooks/sendemail-validate.sample\nABTRACE proc=7 uid=0 dev=48 ino=312 path=/export/project/.git/hooks/sendemail-validate.sample\nABTRACE proc=21 uid=0 dev=48 ino=312 path=/export/project/.git/hooks/sendemail-validate.sample\nABTRACE proc=1 uid=0 dev=48 ino=312 path=/export/project/.git/hooks/sendemail-validate.sample\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=313 path=/export/project/.git/hooks/pre-commit.sample\nABTRACE proc=7 uid=0 dev=48 ino=313 path=/export/project/.git/hooks/pre-commit.sample\nABTRACE proc=21 uid=0 dev=48 ino=313 path=/export/project/.git/hooks/pre-commit.sample\nABTRACE proc=1 uid=0 dev=48 ino=313 path=/export/project/.git/hooks/pre-commit.sample\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=314 path=/export/project/.git/hooks/applypatch-msg.sample\nABTRACE proc=7 uid=0 dev=48 ino=314 path=/export/project/.git/hooks/applypatch-msg.sample\nABTRACE proc=21 uid=0 dev=48 ino=314 path=/export/project/.git/hooks/applypatch-msg.sample\nABTRACE proc=1 uid=0 dev=48 ino=314 path=/export/project/.git/hooks/applypatch-msg.sample\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=315 path=/export/project/.git/hooks/fsmonitor-watchman.sample\nABTRACE proc=7 uid=0 dev=48 ino=315 path=/export/project/.git/hooks/fsmonitor-watchman.sample\nABTRACE proc=21 uid=0 dev=48 ino=315 path=/export/project/.git/hooks/fsmonitor-watchman.sample\nABTRACE proc=1 uid=0 dev=48 ino=315 path=/export/project/.git/hooks/fsmonitor-watchman.sample\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=316 path=/export/project/.git/hooks/pre-receive.sample\nABTRACE proc=7 uid=0 dev=48 ino=316 path=/export/project/.git/hooks/pre-receive.sample\nABTRACE proc=21 uid=0 dev=48 ino=316 path=/export/project/.git/hooks/pre-receive.sample\nABTRACE proc=1 uid=0 dev=48 ino=316 path=/export/project/.git/hooks/pre-receive.sample\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=317 path=/export/project/.git/hooks/prepare-commit-msg.sample\nABTRACE proc=7 uid=0 dev=48 ino=317 path=/export/project/.git/hooks/prepare-commit-msg.sample\nABTRACE proc=21 uid=0 dev=48 ino=317 path=/export/project/.git/hooks/prepare-commit-msg.sample\nABTRACE proc=1 uid=0 dev=48 ino=317 path=/export/project/.git/hooks/prepare-commit-msg.sample\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=318 path=/export/project/.git/hooks/post-update.sample\nABTRACE proc=7 uid=0 dev=48 ino=318 path=/export/project/.git/hooks/post-update.sample\nABTRACE proc=21 uid=0 dev=48 ino=318 path=/export/project/.git/hooks/post-update.sample\nABTRACE proc=1 uid=0 dev=48 ino=318 path=/export/project/.git/hooks/post-update.sample\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=319 path=/export/project/.git/hooks/pre-merge-commit.sample\nABTRACE proc=7 uid=0 dev=48 ino=319 path=/export/project/.git/hooks/pre-merge-commit.sample\nABTRACE proc=21 uid=0 dev=48 ino=319 path=/export/project/.git/hooks/pre-merge-commit.sample\nABTRACE proc=1 uid=0 dev=48 ino=319 path=/export/project/.git/hooks/pre-merge-commit.sample\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=320 path=/export/project/.git/hooks/pre-applypatch.sample\nABTRACE proc=7 uid=0 dev=48 ino=320 path=/export/project/.git/hooks/pre-applypatch.sample\nABTRACE proc=21 uid=0 dev=48 ino=320 path=/export/project/.git/hooks/pre-applypatch.sample\nABTRACE proc=1 uid=0 dev=48 ino=320 path=/export/project/.git/hooks/pre-applypatch.sample\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=321 path=/export/project/.git/hooks/pre-push.sample\nABTRACE proc=7 uid=0 dev=48 ino=321 path=/export/project/.git/hooks/pre-push.sample\nABTRACE proc=21 uid=0 dev=48 ino=321 path=/export/project/.git/hooks/pre-push.sample\nABTRACE proc=1 uid=0 dev=48 ino=321 path=/export/project/.git/hooks/pre-push.sample\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=322 path=/export/project/.git/hooks/update.sample\nABTRACE proc=7 uid=0 dev=48 ino=322 path=/export/project/.git/hooks/update.sample\nABTRACE proc=21 uid=0 dev=48 ino=322 path=/export/project/.git/hooks/update.sample\nABTRACE proc=1 uid=0 dev=48 ino=322 path=/export/project/.git/hooks/update.sample\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=8 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=3 uid=0 dev=48 ino=309 path=/export/project/.git/hooks\nABTRACE proc=2 uid=0 dev=48 ino=323 path=/export/project/.git/hooks/push-to-checkout.sample\nABTRACE proc=7 uid=0 dev=48 ino=323 path=/export/project/.git/hooks/push-to-checkout.sample\nABTRACE proc=21 uid=0 dev=48 ino=323 path=/export/project/.git/hooks/push-to-checkout.sample\nABTRACE proc=1 uid=0 dev=48 ino=323 path=/export/project/.git/hooks/push-to-checkout.sample\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=8 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=2 uid=0 dev=48 ino=324 path=/export/project/.git/config.lock\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=7 uid=0 dev=48 ino=324 path=/export/project/.git/config.lock\nABTRACE proc=21 uid=0 dev=48 ino=324 path=/export/project/.git/config.lock\nABTRACE proc=1 uid=0 dev=48 ino=324 path=/export/project/.git/config.lock\nABTRACE proc=4 uid=0 dev=48 ino=324 path=/export/project/.git/config.lock\nABTRACE proc=14 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=2 uid=0 dev=48 ino=324 path=/export/project/.git/config\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=2 uid=0 dev=48 ino=324 path=/export/project/.git/config\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=4 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=8 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=2 uid=0 dev=48 ino=325 path=/export/project/.git/config.lock\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=1 uid=0 dev=48 ino=325 path=/export/project/.git/config.lock\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=4 uid=0 dev=48 ino=324 path=/export/project/.git/config\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=2 uid=0 dev=48 ino=324 path=/export/project/.git/config\nABTRACE proc=2 uid=0 dev=48 ino=325 path=/export/project/.git/config.lock\nABTRACE proc=7 uid=0 dev=48 ino=325 path=/export/project/.git/config.lock\nABTRACE proc=21 uid=0 dev=48 ino=325 path=/export/project/.git/config.lock\nABTRACE proc=1 uid=0 dev=48 ino=325 path=/export/project/.git/config.lock\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=4 uid=0 dev=48 ino=325 path=/export/project/.git/config.lock\nABTRACE proc=14 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=8 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=2 uid=0 dev=48 ino=326 path=/export/project/.git/config.lock\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=2 uid=0 dev=48 ino=325 path=/export/project/.git/config\nABTRACE proc=2 uid=0 dev=48 ino=326 path=/export/project/.git/config.lock\nABTRACE proc=7 uid=0 dev=48 ino=326 path=/export/project/.git/config.lock\nABTRACE proc=21 uid=0 dev=48 ino=326 path=/export/project/.git/config.lock\nABTRACE proc=1 uid=0 dev=48 ino=326 path=/export/project/.git/config.lock\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=4 uid=0 dev=48 ino=326 path=/export/project/.git/config.lock\nABTRACE proc=14 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=8 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=2 uid=0 dev=48 ino=327 path=/export/project/.git/config.lock\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=2 uid=0 dev=48 ino=326 path=/export/project/.git/config\nABTRACE proc=2 uid=0 dev=48 ino=327 path=/export/project/.git/config.lock\nABTRACE proc=7 uid=0 dev=48 ino=327 path=NULL\nABTRACE proc=1 uid=0 dev=48 ino=327 path=NULL\nABTRACE proc=7 uid=0 dev=48 ino=327 path=NULL\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=4 uid=0 dev=48 ino=328 path=/export/project/.git/config.lock\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=12 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=1 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=16 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\nABTRACE proc=3 uid=0 dev=48 ino=305 path=/export/project/.git\n",
+  "credentialFreeCloneDisposition": "deleted"
+}

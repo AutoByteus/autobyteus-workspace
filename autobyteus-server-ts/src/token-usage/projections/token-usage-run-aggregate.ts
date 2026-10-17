@@ -53,26 +53,21 @@ const latestRecord = (records: readonly TokenUsageRunRecord[]): TokenUsageRunRec
     !latest || compareAdmissionMarkers(record.latestObservation, latest.latestObservation) > 0 ? record : latest
   ), null);
 
-const safeClaudeMetric = (value: bigint | null): number | null =>
-  value !== null && value >= 0n && value <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(value) : null;
+const nullableSafeNumber = (value: bigint | null, field: string): number | null =>
+  value === null ? null : tokenUsageSafeNumber(value, field);
 
 const latestContext = (record: TokenUsageRunRecord | null): {
-  prompt: number | null; capacity: number | null; percent: number | null;
-} => {
-  if (!record) return { prompt: null, capacity: null, percent: null };
-  if (record.latestRuntimeKind !== "claude_agent_sdk") return {
-    prompt: record.latestPromptTokens === null ? null : tokenUsageSafeNumber(record.latestPromptTokens, "latest_prompt_tokens"),
-    capacity: record.effectiveContextWindowTokens === null ? null
-      : tokenUsageSafeNumber(record.effectiveContextWindowTokens, "effective_context_window_tokens"),
-    percent: record.contextWindowUsagePercent,
-  };
-  const prompt = safeClaudeMetric(record.latestPromptTokens);
-  const rawCapacity = safeClaudeMetric(record.effectiveContextWindowTokens);
-  const capacity = rawCapacity !== null && rawCapacity > 0 ? rawCapacity : null;
-  const savedPercent = record.contextWindowUsagePercent;
-  return { prompt, capacity, percent: savedPercent !== null && Number.isFinite(savedPercent)
-    ? savedPercent : prompt !== null && capacity !== null ? 100 * (prompt / capacity) : null };
-};
+  prompt: number | null; capacity: number | null; percent: number | null; threshold: number | null;
+} => ({
+  prompt: nullableSafeNumber(record?.latestPromptTokens ?? null, "latest_prompt_tokens"),
+  capacity: nullableSafeNumber(record?.effectiveContextWindowTokens ?? null, "effective_context_window_tokens"),
+  percent: record?.contextWindowUsagePercent ?? null,
+  threshold: nullableSafeNumber(record?.contextCompactionThresholdTokens ?? null, "context_compaction_threshold_tokens"),
+});
+
+/** D-9: records are never deleted and roll-up membership only grows, so the sum only grows. */
+const summedRevision = (records: readonly TokenUsageRunRecord[]): number =>
+  tokenUsageSafeNumber(records.reduce((sum, record) => sum + record.revision, 0n), "revision");
 
 export const buildTokenUsageRunAggregate = (
   records: readonly TokenUsageRunRecord[],
@@ -128,15 +123,16 @@ export const buildTokenUsageRunSummaryFromRecords = (input: {
     selected_pricing_tier_id: aggregate.selected_pricing_tier_id,
     unit_prices: aggregate.unit_prices,
     usage_report_count: aggregate.usage_report_count,
+    revision: summedRevision(input.records),
     updated_at: aggregate.updated_at,
     latest_prompt_tokens: context.prompt,
     effective_context_window_tokens: context.capacity,
     context_window_usage_percent: context.percent,
+    context_compaction_threshold_tokens: context.threshold,
     latest_model_provider: latest?.latestModelProvider ?? null,
     latest_model_identifier: latest?.latestModelIdentifier ?? null,
     latest_runtime_kind: latest?.latestRuntimeKind ?? null,
-    latest_selected_raw_model_id: latest?.latestRuntimeKind === "claude_agent_sdk"
-      ? latestSelectedClaudeSdkRawIdFromState(latest.claudeSdkUsageStateJson) : null,
+    latest_selected_raw_model_id: latestSelectedClaudeSdkRawIdFromState(latest?.claudeSdkUsageStateJson ?? null),
     has_cache_write_rate_assumption: input.records.some((record) =>
       record.qualityFlags.includes("claude_sdk_cache_write_1h_assumed")),
   };
@@ -144,7 +140,7 @@ export const buildTokenUsageRunSummaryFromRecords = (input: {
 
 /**
  * A standalone run's roll-up (REQ-006): the totals cover every given record (the host and its
- * collaborators, collaborator-Team members and task copies), while the latest prompt, context
+ * delegated copies, including converted collaborators), while the latest prompt, context
  * window, model and run identity stay those of the run's own agent (the host record), so the
  * context meter keeps describing the agent the user is talking to.
  */
@@ -165,6 +161,7 @@ export const buildStandaloneRunTokenUsageSummaryFromRecords = (input: {
     latest_prompt_tokens: host.latest_prompt_tokens,
     effective_context_window_tokens: host.effective_context_window_tokens,
     context_window_usage_percent: host.context_window_usage_percent,
+    context_compaction_threshold_tokens: host.context_compaction_threshold_tokens,
     latest_model_provider: host.latest_model_provider,
     latest_model_identifier: host.latest_model_identifier,
     latest_runtime_kind: host.latest_runtime_kind,

@@ -28,6 +28,7 @@
       :depth="row.depth"
       :continuing-ancestor-depths="continuingAncestorDepths"
       :has-following-sibling="hasFollowingSibling"
+      :anchor="task ? 'name-line' : 'center'"
     />
 
     <button
@@ -37,6 +38,7 @@
       data-test="workspace-team-transient-disclosure"
       :data-team-run-id="row.teamRunId"
       :data-member-address="row.memberAddress"
+      :class="task ? 'mt-[0.4375rem] self-start' : ''"
       :aria-expanded="expanded"
       :aria-label="disclosureLabel"
       :title="disclosureLabel"
@@ -91,6 +93,7 @@
       <!-- No visible "Started by" line; the starter stays in the accessible label. -->
       <span class="min-w-0 flex-1" :class="{ 'font-semibold': row.memberKind === 'agent_team' }">
         <span class="block truncate">{{ row.displayName }}</span>
+        <TaskWorkerTaskSummary v-if="task" :task="task" :selected="isSelected" @locate="emit('locate-task', task)" />
         <span
           v-if="inspectionAttempt?.state === 'loading'"
           class="mt-0.5 block text-[0.6875rem] font-medium text-indigo-700"
@@ -111,6 +114,14 @@
         </span>
       </span>
     </div>
+    <!-- SR-007: a running copy has the same stop icon as a running run. -->
+    <DelegatedStopButton
+      v-if="stopRoot && stopReference"
+      class="mr-1 self-center"
+      :root="stopRoot"
+      :reference="stopReference"
+      :name="row.displayName"
+    />
     <span
       class="hierarchy-identity-tooltip pointer-events-none absolute left-2 right-2 top-full z-50 hidden break-words rounded-md bg-slate-900 px-2 py-1.5 text-left text-[0.6875rem] font-medium leading-4 text-white shadow-lg"
       role="tooltip"
@@ -124,9 +135,14 @@ import { Icon } from '@iconify/vue';
 import StatusDot from '~/components/workspace/common/StatusDot.vue';
 import TeamAggregateStatusDot from '~/components/workspace/history/TeamAggregateStatusDot.vue';
 import WorkspaceHierarchyBranches from '~/components/workspace/history/WorkspaceHierarchyBranches.vue';
+import TaskWorkerTaskSummary from '~/components/workspace/history/TaskWorkerTaskSummary.vue';
+import DelegatedStopButton from '~/components/workspace/history/DelegatedStopButton.vue';
+import type { DelegatedReference, DelegatedRoot } from '~/services/runConfigEditing/delegatedLaunchSelectionClient';
 import { useLocalization } from '~/composables/useLocalization';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes';
+import type { TaskWorkerTask } from '~/types/project';
+import { taskSummaryLabel } from '~/utils/projects/taskSummary';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import type { TeamStatus } from '~/utils/workspaceTeamAggregateStatus';
 
@@ -139,18 +155,25 @@ const props = withDefaults(defineProps<{
   expanded?: boolean;
   continuingAncestorDepths?: number[];
   hasFollowingSibling?: boolean;
+  /** The Task worker's current Task: shown as a summary line under the name (delegated-copy-task-locator). */
+  task?: TaskWorkerTask | null;
+  /** The run this copy belongs to, when its rows offer the per-copy stop icon (SR-007). */
+  stopRoot?: DelegatedRoot | null;
 }>(), {
   teamStatus: AgentStatus.Offline,
+  stopRoot: null,
   isSelected: false,
   hasChildren: false,
   expanded: false,
   continuingAncestorDepths: () => [],
   hasFollowingSibling: false,
+  task: null,
 });
 
 const emit = defineEmits<{
   (e: 'select', row: RunHistoryTransientExecutionRow): void;
   (e: 'toggle', row: RunHistoryTransientExecutionRow): void;
+  (e: 'locate-task', task: TaskWorkerTask): void;
 }>();
 
 const { t } = useLocalization();
@@ -181,13 +204,18 @@ const identityLabel = computed(() => t('workspace.history.hierarchy.identity', {
   address: props.row.memberAddress,
 }));
 
-const accessibleLabel = computed(() => t('workspace.history.hierarchy.tree_item', {
-  role: roleLabel.value,
-  name: props.row.displayName,
-  address: props.row.memberAddress,
-  level: props.row.depth + 1,
-  status: startedByLabel.value ? `${statusLabel.value}, ${startedByLabel.value}` : statusLabel.value,
-}));
+const accessibleLabel = computed(() => {
+  const label = t('workspace.history.hierarchy.tree_item', {
+    role: roleLabel.value,
+    name: props.row.displayName,
+    address: props.row.memberAddress,
+    level: props.row.depth + 1,
+    status: startedByLabel.value ? `${statusLabel.value}, ${startedByLabel.value}` : statusLabel.value,
+  });
+  return props.task
+    ? `${label}, ${t('workspace.history.copyTask.accessible', { title: taskSummaryLabel(props.task.description) })}`
+    : label;
+});
 
 const disclosureLabel = computed(() => t(
   props.expanded
@@ -204,6 +232,13 @@ const rowClasses = computed(() => ({
   'is-selected text-indigo-900': props.isSelected,
   'text-gray-600 hover:bg-gray-50': !props.isSelected,
 }));
+
+/** A copy itself (an Agent or a whole Team), never one member of a Team copy. */
+const stopReference = computed<DelegatedReference | null>(() => {
+  if (props.row.transientKind === 'task_agent' && props.row.agentRunId) return { agentRunId: props.row.agentRunId };
+  if (props.row.transientKind === 'task_team' && props.row.teamRunIdForNode) return { teamRunId: props.row.teamRunIdForNode };
+  return null;
+});
 
 const activateRow = (): void => {
   if (props.hasChildren) emit('toggle', props.row);

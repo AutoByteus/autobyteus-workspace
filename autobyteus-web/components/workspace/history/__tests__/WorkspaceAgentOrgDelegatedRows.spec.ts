@@ -88,18 +88,9 @@ describe('Org history delegated rows', () => {
     expect(teamRow.get('.font-semibold').text()).toContain('team');
   });
 
-  it('uses the same group for a brought-in collaborator, a delegated copy and a configured Team (restore-team-group-icon AC-001)', () => {
-    const wrapper = mountOrg(false, (tree) => {
-      tree.rootOrg.collaborators = [{
-        kind: 'agent_team', address: '/product_team', teamDefinitionId: 'product-team', teamRunId: 'product-run',
-        coordinatorAddress: '/product_team/lead',
-        members: [{ address: '/product_team/lead', agentDefinitionId: 'lead', agentRunId: 'product-lead', platformAgentRunId: null }],
-        handoffs: [], defaultLaunchConfiguration: tree.rootOrg.defaultLaunchConfiguration,
-        taskExecutions: [], addedAt: tree.createdAt, addedViaAgentRunId: 'agent-director',
-      }];
-      return tree;
-    });
-    for (const testId of ['agent-org-task-team-row-product-run', 'agent-org-task-team-row-team-task', 'agent-org-team-row-team-configured']) {
+  it('uses the same group for a delegated Team copy and a configured Team (restore-team-group-icon AC-001)', () => {
+    const wrapper = mountOrg(false);
+    for (const testId of ['agent-org-task-team-row-team-task', 'agent-org-team-row-team-configured']) {
       const team = wrapper.get(`[data-test="${testId}"]`);
       expect(team.findAll('[data-icon="heroicons:user-group-20-solid"]')).toHaveLength(1);
       expect(team.find('[data-icon="heroicons:bolt-20-solid"]').exists()).toBe(false);

@@ -1,0 +1,24 @@
+{
+  "timestampUTC": "2026-10-13T19:38:21Z",
+  "inputHead": "3b7dd9a2895f4b8fedc5e1bcdd00c913d97fae2f",
+  "testCommit": "af9f23df93a63ca6c8305f51439a855acc2133c7",
+  "committedDeltaPaths": [
+    "autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts"
+  ],
+  "authorityAndSupplementFilesVerified": 64,
+  "missingReferences": [],
+  "brokenReportLinks": [],
+  "criteriaRows": 20,
+  "jsonParseAndRunnerSyntax": "Pass",
+  "VMResultAndCleanupAssertions": "Pass",
+  "reconnectReadinessAssertion": "Pass (does not erase first-create failure)",
+  "roundResult": "Fail",
+  "openFinding": "API-F001",
+  "confidence": 57.14,
+  "broaderValidation": "Required",
+  "criticalProofComplete": false,
+  "artifactsManifestEntries": 38,
+  "state": "Evidence audit before committing canonical reports; no successful handoff claimed yet",
+  "runtimeSourceAndTestReferencesVerified": 10,
+  "gitDiffCachedCheck": "Pass after recorded evidence whitespace normalization"
+}

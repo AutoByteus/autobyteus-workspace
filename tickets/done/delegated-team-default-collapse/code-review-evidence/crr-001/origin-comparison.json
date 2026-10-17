@@ -1,0 +1,143 @@
+{
+  "native-repro-1": {
+    "journeyResult": "Fail",
+    "caseResults": {
+      "B-001": "Fail"
+    },
+    "instanceId": "iso-34599-db5e",
+    "uid": 24018,
+    "browser": "148.0.7778.265",
+    "failedRequests": 63,
+    "errors": 63,
+    "failureOperations": {
+      "GetRunFileChanges": 35,
+      "GetAgentRunCollaborationMemberProjection": 28
+    },
+    "shmBytes": 67108864,
+    "minimumFree": 516096,
+    "peakUsed": 66592768,
+    "minimumAt": 1791875857822,
+    "firstCdpFailureAt": 1791875858009,
+    "maxObservedInflight": 97,
+    "stop": {
+      "instanceId": "iso-34599-db5e",
+      "wasRunning": true,
+      "forced": false,
+      "dataRoot": "/tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-02oSDP",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    },
+    "listAfter": {
+      "instances": []
+    },
+    "ownedDataRootAbsent": true,
+    "finalRestart": null,
+    "probeGraphqlCounts": {
+      "GetSkills": 2,
+      "GetAgentDefinitions": 2,
+      "GetAgentTeamDefinitions": 2,
+      "GetAgentOrgDefinitions": 2,
+      "GetAllWorkspaces": 2,
+      "ListWorkspaceRunHistory": 14,
+      "ListCollaborationRootHistory": 14,
+      "GetApplicationsCapability": 2,
+      "GetRuntimeAvailabilityKinds": 1,
+      "GetRuntimeAvailability": 5,
+      "GetProviderModelCatalogSnapshots": 1,
+      "GetServerSettings": 1,
+      "GetWorkspaceRunHistory": 1,
+      "GetAgentRunCollaboration": 3,
+      "GetAgentRunCollaborationMemberProjection": 90,
+      "GetRunFileChanges": 91,
+      "GetTaskWorkerTasks": 2,
+      "GetRunProjection": 1,
+      "GetAgentRunResumeConfig": 1,
+      "GetSkillImprovementCapability": 1
+    }
+  },
+  "native-shm512": {
+    "journeyResult": "Pass",
+    "caseResults": {
+      "B-001": "Pass",
+      "P-001": "Pass",
+      "B-002": "Pass",
+      "B-003": "Pass",
+      "B-004": "Pass",
+      "B-006": "Pass",
+      "B-005": "Pass"
+    },
+    "instanceId": "iso-33677-4dfc",
+    "uid": 24018,
+    "browser": "148.0.7778.265",
+    "failedRequests": 0,
+    "errors": 0,
+    "failureOperations": {},
+    "shmBytes": 536870912,
+    "minimumFree": 335880192,
+    "peakUsed": 200990720,
+    "minimumAt": 1791876037503,
+    "firstCdpFailureAt": null,
+    "maxObservedInflight": 108,
+    "stop": {
+      "instanceId": "iso-33677-4dfc",
+      "wasRunning": true,
+      "forced": false,
+      "dataRoot": "/tmp/collapse-review-crr001.1GB4Pg/tmp/autobyteus-isolated-root-HZT3D4",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    },
+    "listAfter": {
+      "instances": []
+    },
+    "ownedDataRootAbsent": true,
+    "finalRestart": {
+      "oldPid": 81258,
+      "newPid": 83588,
+      "sameInstance": true,
+      "samePorts": true,
+      "rows": 8,
+      "collapsed": 8
+    },
+    "probeGraphqlCounts": {
+      "GetSkills": 6,
+      "GetAgentDefinitions": 6,
+      "GetAgentTeamDefinitions": 6,
+      "GetAgentOrgDefinitions": 6,
+      "GetAllWorkspaces": 6,
+      "ListWorkspaceRunHistory": 6,
+      "ListCollaborationRootHistory": 6,
+      "GetApplicationsCapability": 6,
+      "GetRuntimeAvailabilityKinds": 1,
+      "GetRuntimeAvailability": 5,
+      "GetProviderModelCatalogSnapshots": 1,
+      "GetServerSettings": 5,
+      "GetWorkspaceRunHistory": 5,
+      "GetAgentRunCollaboration": 16,
+      "GetAgentRunCollaborationMemberProjection": 636,
+      "GetRunFileChanges": 666,
+      "GetTaskWorkerTasks": 19,
+      "GetRunProjection": 30,
+      "GetAgentRunResumeConfig": 30,
+      "GetSkillImprovementCapability": 5,
+      "GetProject": 1,
+      "GetProjectTasks": 1
+    }
+  },
+  "unchangedSourceReceipt": {
+    "HEAD": "c7bb4ac1bc6af0305db1bff52eacdae1f01ed412",
+    "production": "b9cbb749182d95a63750f70369ec08956018c5e8",
+    "baseline": "3230db73f172690c4c8eb08f1cc5891c62ffcdbd",
+    "sha256": {
+      "autobyteus-web/stores/agentRunCollaborationStore.ts": "f2cf4d68dd2d4641d3a379d314753a527edd7d07369d800f61f50c2efc2696d0",
+      "autobyteus-web/services/agentCollaboration/agentRunCollaborationStreamingService.ts": "c6942f27487b87fec87062ce4f9a866d3a32633bf875b4daea9608a6cb8bccd6",
+      "autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus": "23e010547985b386ee3fe4a311949a5dbecf5eeb41cbf8427b8a61cdf69840cb",
+      "autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar": "e13d6c1a9403d5c00e5111f5c2c7c487355959c62e0f46b8cb15cc3447094dc0",
+      "autobyteus-web/tests/e2e/delegated-team-default-collapse-probe.mjs": "cd073545c7c28c7a72c3f9c3f719de174309068cb6d44eba56fb085da06baf2d",
+      "tickets/in-progress/delegated-team-default-collapse/code-review-evidence/crr-001/diagnostic-probe.mjs": "c227be47219e93b165d54920c08f370915cdbbed20590709c4e0844fd1f71bac"
+    }
+  }
+}

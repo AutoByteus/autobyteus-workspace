@@ -1,0 +1,55 @@
+{
+  "at": "2026-10-14T08:40:17.073205+00:00",
+  "head": "f540ab9bde90c77f468f7cd90d85ae1fb9248772",
+  "basis": "f540ab9bde90c77f468f7cd90d85ae1fb9248772",
+  "branch": "codex/shared-network-workspaces",
+  "incomingCount": 641,
+  "incomingMissing": [],
+  "protectedCount": 637,
+  "protectedChanges": [],
+  "retainedCandidateCount": 11,
+  "retainedCandidateChanges": [],
+  "trackedChangedPaths": [
+    "tickets/in-progress/shared-network-workspaces/design-spec.md",
+    "tickets/in-progress/shared-network-workspaces/investigation-notes.md",
+    "tickets/in-progress/shared-network-workspaces/solution-design-handoff.md",
+    "tickets/in-progress/shared-network-workspaces/solution-revision-record.md"
+  ],
+  "unexpectedTrackedChanges": [],
+  "historyPrefixPreserved": true,
+  "whitespace": {
+    "exit": 0,
+    "output": ""
+  },
+  "productionAggregate": {
+    "exit": 0,
+    "actual": "4568593b99bb3dff263e9824ceb7176e04a95ec90e3cd14a9f7421b4e43055ac",
+    "expected": "4568593b99bb3dff263e9824ceb7176e04a95ec90e3cd14a9f7421b4e43055ac",
+    "stderr": ""
+  },
+  "ownedHashes": {
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/design-spec.md": "4eda01117e100ae1be419c03005ad35c65dc1015f5f235f8cf23608cb26c596f",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/investigation-notes.md": "d916b8044e245e298c7074ceab3b6fc6c2ef6050809e557aff3f9889d62bf6d1",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/solution-design-handoff.md": "f649bee51648894ef7e4d484c64466cb111286b2dde2d1697221a4b53f4199aa",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/solution-revision-record.md": "ef29dca59422b1fa8fefc4f0a5f7eea90b57bbc315f5e0ddf8d72ea8ec62b0ee"
+  },
+  "extraSourceHashes": {
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/internal/cli/inputs.go": "d94cc5791fd8b683015d1979fec682ff7a8633fbf48fd6c4c39665e5f7d13419",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/internal/cli/launcher.go": "87c232ffd410661804af0d0610adda5b4a2792591b54c42ea6335c63bb55f54b",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/internal/config/store.go": "50851f3c5beea87e2e482eca287daa6d41f45c13223cf0de1993e1130d47b250",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/internal/docker/client.go": "618f09a83d9bd63ea930513af68415baf8452948f928a1c90c3a356f64d4029a",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/internal/docker/ownership.go": "516fe147e46982a43781de4e1bf95bb11e1ea64826ac158d59a08a0c956b52fc",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/internal/docker/recovery.go": "bd648fb6fa0d053cb6dbacdc0922eb05fa3655ebed328a564a6cfba7a932dc5f",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/internal/docker/exec.go": "a136ef244da1bdca1856527fe42bded90a23ae77c9284aa0f6326a8bf48b821a",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/internal/setup/pending.go": "d39d9c1de4be3eb0bde29a50f4acc9c8d1294191a2fa7e40512e82dda1f5ad14",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/internal/setup/detach_nodes.go": "2136c50138bd823505f23d62accec10eae5f94e8fc9296baebca6085de1ce495",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/scripts/public/docker/autobyteus-docker.d/bash/commands.sh": "0cd7a12df19071f93af87c70a60cfb027fbf5d7e5c3463e0f2263145196e563b",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/scripts/public/docker/autobyteus-docker.d/bash/nfs-attachment.sh": "cbb5e72436196241196bd5572e11d0897bd561bf573f95713deeed391aa14652"
+  },
+  "referenceCount": 667,
+  "status": " M tickets/in-progress/shared-network-workspaces/design-spec.md\n M tickets/in-progress/shared-network-workspaces/investigation-notes.md\n M tickets/in-progress/shared-network-workspaces/solution-design-handoff.md\n M tickets/in-progress/shared-network-workspaces/solution-revision-record.md\n?? applications/brief-studio/dist/\n?? autobyteus-application-backend-sdk/dist/\n?? autobyteus-application-devkit/dist/\n?? autobyteus-application-frontend-sdk/dist/\n?? autobyteus-application-sdk-contracts/dist/\n?? tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr021/\n",
+  "runtimeValidation": "Not run by Solution Designer in SR021; inherited API003 evidence remains scoped to its owner.",
+  "liveResources": "None created or modified by SR021; no cleanup required.",
+  "scope": "Owned canonical design/investigation/history/handoff plus evidence only. No production/test/requirements/approval/specialist edit, build, provider, release, merge, push or Task completion.",
+  "pass": true
+}

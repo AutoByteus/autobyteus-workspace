@@ -1,0 +1,52 @@
+{
+  "aiStudio": {
+    "agent": {
+      "error": "ApiError: {\"error\":{\"message\":\"{\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"Quota exceeded for quota metric 'Generate Content API requests per minute' and limit 'GenerateContent request limit per minute for a region' of service 'generativelanguage.googleapis.com' for consumer 'project_number:303290304011'.\\\",\\n    \\\"status\\\": \\\"RESOURCE_EXHAUSTED\\\",\\n    \\\"details\\\": [\\n      {\\n     "
+    },
+    "transcript": {
+      "error": "CompactionInvocationError: {\"error\":{\"message\":\"{\\n  \\\"error\\\": {\\n    \\\"code\\\": 429,\\n    \\\"message\\\": \\\"Quota exceeded for quota metric 'Generate Content API requests per minute' and limit 'GenerateContent request limit per minute for a region' of service 'generativelanguage.googleapis.com' for consumer 'project_number:303290304011'.\\\",\\n    \\\"status\\\": \\\"RESOURCE_EXHAUSTED\\\",\\n    \\\"details\\\": "
+    },
+    "agentBodies": [],
+    "transcriptBodies": [],
+    "statuses": [
+      "aiStudio-agent:429",
+      "aiStudio-agent:429",
+      "aiStudio-agent:429",
+      "aiStudio-agent:429",
+      "aiStudio-transcript:429",
+      "aiStudio-transcript:429",
+      "aiStudio-transcript:429",
+      "aiStudio-transcript:429"
+    ]
+  },
+  "vertexExpress": {
+    "agent": {
+      "reply": "ok"
+    },
+    "transcript": {
+      "parsed": true,
+      "parseError": null,
+      "completion": "complete",
+      "summary": "<compaction_summary>\n## Task and constraints\n- Rename `autobyteus-ts/src/tools/old-name.ts` to `new-name.ts` and update imports.\n- Constraint: Do not touch tests.\n- Instruction: Check docs later, but stop work for now.\n\n## Requests and instructions received\n- User: \"Thanks. Also check the docs later; for now stop here.\" (latest) — open (doc check deferred; stop command active).\n- User: \"Please rename autobyteus-ts/src/tools/old-name.ts to new-name.ts and update the imports. Do not touch tests.\" — partially done.\n\n## Decisions and findings\n- Used `git mv` to rename `autobyteus-ts/src/tools/old-name.ts` to `autobyteus-ts/src/tools/new-name.ts`.\n- Updated the import reference in `autobyteus-ts/src/tools/index.ts`.\n\n## Unverified points and open conflicts\n- Assumption that nothing else imports `old-name.ts` has not been checked; needs a search across the codebase (excluding tests).\n\n## Files created or changed\n- `autobyteus-ts/src/tools/old-name.ts` — original tool file — renamed/moved to `new-name.ts`.\n- `autobyteus-ts/src/tools/new-name.ts` — renamed tool file — renamed from `old-name.ts`.\n- `autobyteus-ts/src/tools/index.ts` — tools index file — updated 1 line to import `new-name`.\n\n## Completed work\n- Renamed `autobyteus-ts/src/tools/old-name.ts` to `autobyteus-ts/src/tools/new-name.ts` (`git mv` exited 0).\n- Edited `autobyteus-ts/src/tools/index.ts` (`edit_file` edited 1 line).\n\n## Current state\n- Work stopped per user request (\"for now stop here\").\n\n## Open work and next steps\n- Search codebase for any remaining imports of `old-name` outside of tests.\n- Check documentation for references to `old-name` as requested.\n\n## Essential references\n- `autobyteus-ts/src/tools/old-name.ts`\n- `autobyteus-ts/src/tools/new-name.ts`\n- `autobyteus-ts/src/tools/index.ts`\n</compaction_summary>"
+    },
+    "agentBodies": [
+      {
+        "host": "aiplatform.googleapis.com",
+        "systemInstructionIsAgentPrompt": true,
+        "contents": 1
+      }
+    ],
+    "transcriptBodies": [
+      {
+        "host": "aiplatform.googleapis.com",
+        "systemInstructionIsSummaryPrompt": true,
+        "systemInstructionStart": "You summarize the conversation history of a target agent so the target agent can",
+        "contents": 1
+      }
+    ],
+    "statuses": [
+      "vertexExpress-agent:200",
+      "vertexExpress-transcript:200"
+    ]
+  }
+}

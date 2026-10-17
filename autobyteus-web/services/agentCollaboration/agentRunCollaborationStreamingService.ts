@@ -51,8 +51,6 @@ export class AgentRunCollaborationStreamingService {
     publish(context: AgentRunCollaborationContext, commit: () => void): void
     onInactive(): void
     reportError(message: string): void
-    /** A collaborator was added in place (its new Team opens once). */
-    onCollaboratorAdded?(context: AgentRunCollaborationContext): void
     /** Task executions were closed in place (Task DONE); a selected one leaves with its rows. */
     onTaskExecutionsClosed?(context: AgentRunCollaborationContext): void
   }>) {}
@@ -73,9 +71,9 @@ export class AgentRunCollaborationStreamingService {
       this.socket = null
       this.phase = 'disconnected'
       this.rejectPending('The Agent collaboration stream closed before command acknowledgement.')
-      // 4004: this run cannot host collaborators; retrying cannot help.
+      // 4004: this run cannot host delegated copies; retrying cannot help.
       if (!this.intentionalClose && event.code !== 4004) this.scheduleRecovery('The Agent collaboration stream closed.')
-      else if (event.code === 4004) this.settleReadiness(new Error('This run cannot host collaborators.'))
+      else if (event.code === 4004) this.settleReadiness(new Error('This run cannot host delegated copies.'))
     }
   }
 
@@ -205,8 +203,6 @@ export class AgentRunCollaborationStreamingService {
         // A new child: reconnect for a fresh snapshot that includes its context.
         this.closeSocket('Agent collaboration reload')
         this.connect()
-      } else if (message.payload.event.kind === 'collaborator_added') {
-        this.options.onCollaboratorAdded?.(this.context)
       } else if (message.payload.event.kind === 'task_executions_closed') {
         this.options.onTaskExecutionsClosed?.(this.context)
       }

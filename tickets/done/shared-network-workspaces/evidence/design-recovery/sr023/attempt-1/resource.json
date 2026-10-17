@@ -1,0 +1,53 @@
+{
+  "clone": "ab-nfs-sr023-8fd5ad2f",
+  "image": "ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377",
+  "scratch": "/private/tmp/nfs-sr023-gc5go40z",
+  "env": {
+    "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+    "HOME": "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/driver-home",
+    "TART_HOME": "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tart-state",
+    "TART_NO_AUTO_PRUNE": "1"
+  },
+  "tart": "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "list"
+      ],
+      "rc": 0,
+      "stdout": "Source Name                                                                                                        Disk  Size  Accessed       State  \nOCI    ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377 50\u00a0GB 33\u00a0GB vor 39 Minuten stopped\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "clone",
+        "ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377",
+        "ab-nfs-sr023-8fd5ad2f"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "set",
+        "ab-nfs-sr023-8fd5ad2f",
+        "--cpu",
+        "2",
+        "--memory",
+        "4096"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "result": "Incomplete",
+  "noHostShares": true,
+  "noCredentials": true,
+  "vmPid": 70817,
+  "error": "TypeError(\"extractall() got an unexpected keyword argument 'filter'\")"
+}

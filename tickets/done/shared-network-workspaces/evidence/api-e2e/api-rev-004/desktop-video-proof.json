@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "F39CBF24AEE7CEC3D3F97A2834E38841",
+    "--script",
+    "async () => {const v=document.querySelector(\"video\");if(!v)throw Error(\"no video\");if(v.readyState<2)await new Promise((ok,no)=>{v.addEventListener(\"loadeddata\",ok,{once:true});setTimeout(()=>no(Error(\"load timeout\")),10000)});v.muted=true;await v.play();const start=v.currentTime;await new Promise(ok=>setTimeout(ok,600));v.pause();if(v.error||v.videoWidth!==160||v.videoHeight!==90||v.currentTime<=start||v.duration!==4)throw Error(\"video not playing\");return {src:v.currentSrc,width:v.videoWidth,height:v.videoHeight,duration:v.duration,start,end:v.currentTime,readyState:v.readyState,error:v.error}}"
+  ],
+  "rc": 0,
+  "stdout": "{\"schema_version\":\"1\",\"ok\":true,\"command\":\"run-script\",\"result\":{\"tab_id\":\"F39CBF24AEE7CEC3D3F97A2834E38841\",\"url\":\"file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat\",\"output_mode\":\"inline\",\"result\":{\"src\":\"http://127.0.0.1:61478/rest/workspaces/agent_ws_acd2adb3f1ecb577c2c71043e0e315aafdf71d10dd6921d0788c219f19036c1d/content?path=clip.mp4\",\"width\":160,\"height\":90,\"duration\":4,\"start\":0.000232,\"end\":0.601257,\"readyState\":4,\"error\":null}}}\n",
+  "stderr": ""
+}

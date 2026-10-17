@@ -24,7 +24,7 @@ export class AgyStreamProcess {
 
   async start(input: {
     capsulePath: string; agentName: string; workspacePath: string;
-    model: string; conversationId: string | null;
+    model: string; conversationId: string | null; env?: NodeJS.ProcessEnv;
   }): Promise<Extract<AgyStreamMessage, { event: "init" }>> {
     if (this.child) throw new Error("AGY_PROCESS_ALREADY_STARTED");
     const argv = [
@@ -38,7 +38,7 @@ export class AgyStreamProcess {
     const promise = new Promise<Extract<AgyStreamMessage, { event: "init" }>>((resolve, reject) => {
       this.startupResolve = resolve; this.startupReject = reject;
     });
-    const child = spawn(antigravityCommand(), argv, { cwd: input.capsulePath, shell: false, stdio: ["pipe", "pipe", "pipe"] });
+    const child = spawn(antigravityCommand(), argv, { cwd: input.capsulePath, env: input.env, shell: false, stdio: ["pipe", "pipe", "pipe"] });
     this.child = child;
     child.stdout.setEncoding("utf8");
     child.stderr.setEncoding("utf8");

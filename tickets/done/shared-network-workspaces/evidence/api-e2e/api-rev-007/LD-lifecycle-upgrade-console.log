@@ -1,0 +1,10 @@
+Started L20 LD already-current public upgrade preserves both IDs/config
+L20 LD already-current public upgrade preserves both IDs/config: Pass
+Started L20 LD public launcher upgrade --all immutable current worktree image
+L20 LD public launcher upgrade --all immutable current worktree image: Pass
+Started L20 LD current replacement references and actual peer bytes
+L20 LD current replacement references and actual peer bytes: Pass
+Started L20 LD ordinary boot resolves new current references not stale IDs
+L20 LD ordinary boot resolves new current references not stale IDs: Pass
+Started L20 LD current reference image private and original source preserved
+L20 LD current reference image private and original source preserved: Pass

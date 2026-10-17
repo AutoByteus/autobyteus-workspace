@@ -1,0 +1,21 @@
+Started L19 LN stopped A healthy B immediate corrected observation
+L19 LN stopped A healthy B immediate corrected observation: Pass
+L19 LN observing two normal30-second supervisor ticks
+Started L19 LN normal Stop persists through ticks and explicit reconnect
+L19 LN normal Stop persists through ticks and explicit reconnect: Pass
+Started L19 LN ordinary boot while A intentionally stopped
+L19 LN ordinary boot while A intentionally stopped: Pass
+Started L19 LN stopped A persists after boot while B automatically healthy
+L19 LN stopped A persists after boot while B automatically healthy: Pass
+Started L20 LN explicit operator starts A then ordinary node restart both
+L20 LN explicit operator starts A then ordinary node restart both: Pass
+Started L20 LN ordinary restart preserved both selected nodes
+L20 LN ordinary restart preserved both selected nodes: Pass
+Started L20 LN public launcher upgrade --all immutable current worktree image
+L20 LN public launcher upgrade --all immutable current worktree image: Pass
+Started L20 LN current replacement references and actual peer bytes
+L20 LN current replacement references and actual peer bytes: Pass
+Started L20 LN ordinary boot resolves new current references not stale IDs
+L20 LN ordinary boot resolves new current references not stale IDs: Pass
+Started L20 LN current reference image private and original source preserved
+L20 LN current reference image private and original source preserved: Pass

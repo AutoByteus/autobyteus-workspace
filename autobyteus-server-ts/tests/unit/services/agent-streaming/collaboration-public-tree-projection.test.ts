@@ -57,7 +57,7 @@ describe.each(["agent", "agent_org"] as const)("%s camel-case public projection"
     expect(before).not.toContain("taskLifetime");
     expect(JSON.stringify(current.tree)).toBe(JSON.stringify(setup(kind, false).tree));
   });
-  it.each(["solo-copy", "packet-copy", "nested-task-team", "nested-helper", "follow-on-agent", "follow-on-team", "review-helper", "shared-helper"])("projects the actual indexed started execution %s", id => {
+  it.each(["solo-copy", "packet-copy", "nested-task-team", "nested-helper", "follow-on-agent", "follow-on-team", "review-helper", "shared-helper", "borrowed-run", "shared-team"])("projects the actual indexed started execution %s", id => {
     const current = setup(kind), unlinked = setup(kind, false);
     const reference = id.endsWith("team") || id === "packet-copy" ? { teamRunId: id } : { agentRunId: id };
     const indexed = current.index.getTaskExecution(reference)!;
@@ -70,21 +70,12 @@ describe.each(["agent", "agent_org"] as const)("%s camel-case public projection"
     } });
     expect(indexed.source).not.toHaveProperty("taskLifetime");
   });
-  it("projects collaborator events recursively without exposing lifetime ownership", () => {
-    const current = setup(kind), unlinked = setup(kind, false);
-    const entries = current.tree.subjectKind === "agent" ? current.tree.collaborators : current.tree.rootOrg.collaborators;
-    const publicEntries = unlinked.tree.subjectKind === "agent" ? unlinked.tree.collaborators : unlinked.tree.rootOrg.collaborators;
-    entries.forEach((collaborator, i) => expect(current.projectEvent({ kind: "collaborator_added", collaborator }))
-      .toMatchObject({ event: { kind: "collaborator_added", collaborator: publicEntries[i] } }));
-  });
   it("still rejects invalid public critical fields and missing started references", () => {
     const current = setup(kind);
     expect(() => current.projectEvent({ kind: "task_execution_started", host: current.index.getTaskExecution({ agentRunId: "solo-copy" })!.host,
       taskExecution: { agentRunId: "absent" } })).toThrow(/not in the current execution tree/);
-    const entries = current.tree.subjectKind === "agent" ? current.tree.collaborators : current.tree.rootOrg.collaborators;
-    expect(() => current.projectEvent({ kind: "collaborator_added", collaborator: { ...entries[0], agentRunId: "" } as never })).toThrow();
   });
-  it("streams stamped snapshot/start/collaborator and reconnect through actual subscription boundary without false close1011", async () => {
+  it("streams stamped snapshot/start and reconnect through actual subscription boundary without false close1011", async () => {
     const current = setup(kind), publisher = new RootEventPublisher<StandaloneRootEvent>();
     const run = { ...current.run, openPackageSnapshotConnection: () => publisher.openSnapshotConnection(() => current.snapshot) };
     const handler = kind === "agent"
@@ -96,12 +87,12 @@ describe.each(["agent", "agent_org"] as const)("%s camel-case public projection"
     expect(session, JSON.stringify(wire)).toBeTruthy();
     const indexed = current.index.getTaskExecution({ teamRunId: "packet-copy" })!;
     publisher.publish({ kind: "task_execution_started", host: indexed.host, taskExecution: { teamRunId: "packet-copy" } });
-    const entries = current.tree.subjectKind === "agent" ? current.tree.collaborators : current.tree.rootOrg.collaborators;
-    publisher.publish({ kind: "collaborator_added", collaborator: entries[1] });
+    const shared = current.index.getTaskExecution({ teamRunId: "shared-team" })!;
+    publisher.publish({ kind: "task_execution_started", host: shared.host, taskExecution: { teamRunId: "shared-team" } });
     await Promise.resolve();
     expect(wire).toHaveLength(5);
     expect(wire.at(-2)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { event: { execution: { teamRunId: "packet-copy" } } } });
-    expect(wire.at(-1)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { event: { collaborator: { teamRunId: "shared-team" } } } });
+    expect(wire.at(-1)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { event: { execution: { teamRunId: "shared-team" } } } });
     expect(close).not.toHaveBeenCalled();
     handler.disconnect(session!);
     const reconnect = await handler.connect(connection, kind === "agent" ? "manager" : "org-root");

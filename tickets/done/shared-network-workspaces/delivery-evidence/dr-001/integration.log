@@ -1,0 +1,4 @@
+Auto-merging autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts
+Auto-merging autobyteus-web/docs/file_explorer.md
+Automatic merge failed; fix conflicts and then commit the result.

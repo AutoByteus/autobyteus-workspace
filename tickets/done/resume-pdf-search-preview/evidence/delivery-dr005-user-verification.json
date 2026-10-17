@@ -1,0 +1,20 @@
+{
+  "recordedAt": "2026-10-13T12:43:33.656440+00:00",
+  "deliveryRevision": "DR-005",
+  "source": "Direct user message to Delivery Engineer",
+  "literalUserMessage": "its already verified. its working",
+  "context": "Reply to the distinction between completed beta publication and the earlier unverified port8001 result",
+  "acceptance": "User explicitly confirms the reported result is verified and working; missing functional confirmation resolved",
+  "verificationLimits": [
+    "No exact manual click sequence asserted",
+    "No independently inspected installed frontend/backend/container/image pin",
+    "No agent-performed host upgrade/restart or live-user test"
+  ],
+  "publishedCandidate": {
+    "tag": "v1.5.3-beta.3",
+    "releaseCommit": "8d52dc4eb378609ae2dca6089eb62678eeafe803",
+    "dockerDigest": "sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1"
+  },
+  "judgement": "Retained real-product/security/integrated evidence proves critical implementation behavior; direct user confirmation resolves the inaccessible user-environment acceptance gate. No repeat check needed.",
+  "additionalAgentHostAction": "Not required\u2014guide rollout is published image (complete); user reports success and requests no further disruptive upgrade."
+}

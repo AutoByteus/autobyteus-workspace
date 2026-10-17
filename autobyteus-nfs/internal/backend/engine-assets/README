@@ -1,0 +1,3 @@
+Generated matching-architecture engine .deb payloads go here at release build time.
+No packages in a development checkout: Linux hosting fails closed, never installs
+stock Ganesha. This sentinel keeps go:embed valid on Mac and development builds.

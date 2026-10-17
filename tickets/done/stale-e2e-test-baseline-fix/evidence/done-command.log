@@ -1,0 +1,215 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/stale-e2e-test-fix/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/stale-e2e-test-fix/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:95400) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent team definitions GraphQL e2e
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/stale-e2e-test-fix/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/stale-e2e-test-fix/autobyteus-server-ts
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent team definitions GraphQL e2e[2m > [22m[2mTDG-001 creates, updates, keeps and clears the default, lists templates and deletes a Team
+[22m[39mInitialized server settings service with 19 predefined settings
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent team definitions GraphQL e2e[2m > [22m[2mTDG-001 creates, updates, keeps and clears the default, lists templates and deletes a Team
+[22m[39mAgent Team Definition created successfully with ID: team-team-def-1791997182038-71ef5490802c
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent team definitions GraphQL e2e[2m > [22m[2mTDG-001 creates, updates, keeps and clears the default, lists templates and deletes a Team
+[22m[39mAgent Team Definition with ID team-team-def-1791997182038-71ef5490802c updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent team definitions GraphQL e2e[2m > [22m[2mTDG-001 creates, updates, keeps and clears the default, lists templates and deletes a Team
+[22m[39mAgent Team Definition with ID team-team-def-1791997182038-71ef5490802c updated successfully.
+
+[90mstderr[2m | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent team definitions GraphQL e2e[2m > [22m[2mTDG-001 creates, updates, keeps and clears the default, lists templates and deletes a Team
+[22m[39mError updating agent team definition: CollaborationContractError: Team-local endpoint '/missing' was not found.
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent team definitions GraphQL e2e[2m > [22m[2mTDG-001 creates, updates, keeps and clears the default, lists templates and deletes a Team
+[22m[39mAgent Team Definition with ID team-team-def-1791997182038-71ef5490802c updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent team definitions GraphQL e2e[2m > [22m[2mTDG-001 creates, updates, keeps and clears the default, lists templates and deletes a Team
+[22m[39mAgent Team Definition with ID team-team-def-1791997182038-71ef5490802c deleted successfully.
+
+[90mstdout[2m | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent team definitions GraphQL e2e[2m > [22m[2mTDG-002 reads a file-authored Team with a team-local member and saves a swap between team-local and shared members
+[22m[39mAgent Team Definition with ID team_local_team_local_graphql_1791997182123_1f16cd9ad3bc8 updated successfully.
+
+[90mstderr[2m | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts[2m > [22m[2mAgent team definitions GraphQL e2e[2m > [22m[2mTDG-004 refuses a coordinator that is not a member
+[22m[39mError creating agent team definition: Error: Coordinator member name must match one of nodes.memberName values.
+
+ [32m✓[39m tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 204[2mms[22m[39m
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:95412) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/stale-e2e-test-fix/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/stale-e2e-test-fix/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-skills-data-RUAUE9
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-skills-data-RUAUE9/.env
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mpasses imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[22m[39mResolved skill 'autobyteus_single_1791997183708_15d1963eaada3' to path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791997183708_15d1963eaada3-KONqeT/agents/autobyteus-single-agent-1791997183708_15d1963eaada3/skills/autobyteus_single_1791997183708_15d1963eaada3
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mpasses imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[22m[39mTool 'run_bash' defined in agent definition 'AutoByteus Runtime Single Private Skill Agent' not found in registry. Skipping.
+Tool 'read_file' defined in agent definition 'AutoByteus Runtime Single Private Skill Agent' not found in registry. Skipping.
+Tool 'edit_file' defined in agent definition 'AutoByteus Runtime Single Private Skill Agent' not found in registry. Skipping.
+Tool 'write_file' defined in agent definition 'AutoByteus Runtime Single Private Skill Agent' not found in registry. Skipping.
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mpasses imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[22m[39mTool 'run_bash' defined in agent definition 'AutoByteus Runtime Multi Private Skill Agent' not found in registry. Skipping.
+Tool 'read_file' defined in agent definition 'AutoByteus Runtime Multi Private Skill Agent' not found in registry. Skipping.
+Tool 'edit_file' defined in agent definition 'AutoByteus Runtime Multi Private Skill Agent' not found in registry. Skipping.
+Tool 'write_file' defined in agent definition 'AutoByteus Runtime Multi Private Skill Agent' not found in registry. Skipping.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mpasses imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[22m[39mResolved skill 'autobyteus_tone_1791997183708_15d1963eaada3' to path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791997183708_15d1963eaada3-KONqeT/agents/autobyteus-multi-agent-1791997183708_15d1963eaada3/skills/autobyteus_tone_1791997183708_15d1963eaada3
+Resolved skill 'autobyteus_outline_1791997183708_15d1963eaada3' to path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791997183708_15d1963eaada3-KONqeT/agents/autobyteus-multi-agent-1791997183708_15d1963eaada3/skills/autobyteus_outline_1791997183708_15d1963eaada3
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports shared agents with canonical single-skill, multi-skill, one-catalog private, and global fallback skills with catalog visibility
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791997183734_fcb331d5217b5-e2vE8V/agents/shared-single-1791997183734_fcb331d5217b5/skills/single_private_1791997183734_fcb331d5217b5' with max_depth=null
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports shared agents with canonical single-skill, multi-skill, one-catalog private, and global fallback skills with catalog visibility
+[22m[39mCreating on-demand SkillWorkspace for: single_private_1791997183734_fcb331d5217b5
+Creating on-demand SkillWorkspace for: single_private_1791997183734_fcb331d5217b5
+Creating on-demand SkillWorkspace for: tone_1791997183734_fcb331d5217b5
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports shared agents with canonical single-skill, multi-skill, one-catalog private, and global fallback skills with catalog visibility
+[22m[39mCreated metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791997183734_fcb331d5217b5-e2vE8V/agents/shared-single-1791997183734_fcb331d5217b5/skills/single_private_1791997183734_fcb331d5217b5.
+Initialized SkillWorkspace for skill 'single_private_1791997183734_fcb331d5217b5' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791997183734_fcb331d5217b5-e2vE8V/agents/shared-single-1791997183734_fcb331d5217b5/skills/single_private_1791997183734_fcb331d5217b5
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791997183734_fcb331d5217b5-e2vE8V/agents/shared-single-1791997183734_fcb331d5217b5/skills/single_private_1791997183734_fcb331d5217b5.
+Initialized SkillWorkspace for skill 'single_private_1791997183734_fcb331d5217b5' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791997183734_fcb331d5217b5-e2vE8V/agents/shared-single-1791997183734_fcb331d5217b5/skills/single_private_1791997183734_fcb331d5217b5
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791997183734_fcb331d5217b5-e2vE8V/agents/shared-multi-1791997183734_fcb331d5217b5/skills/tone_1791997183734_fcb331d5217b5.
+Initialized SkillWorkspace for skill 'tone_1791997183734_fcb331d5217b5' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791997183734_fcb331d5217b5-e2vE8V/agents/shared-multi-1791997183734_fcb331d5217b5/skills/tone_1791997183734_fcb331d5217b5
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports shared agents with canonical single-skill, multi-skill, one-catalog private, and global fallback skills with catalog visibility
+[22m[39mCreated WorkspaceFileExplorer for skill_ws_single_private_1791997183734_fcb331d5217b5 (graphql-folder-children).
+Created WorkspaceFileExplorer for skill_ws_single_private_1791997183734_fcb331d5217b5 (graphql-file-content).
+Created WorkspaceFileExplorer for skill_ws_tone_1791997183734_fcb331d5217b5 (graphql-file-content).
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports shared agents with canonical single-skill, multi-skill, one-catalog private, and global fallback skills with catalog visibility
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791997183734_fcb331d5217b5-e2vE8V/agents/shared-single-1791997183734_fcb331d5217b5/skills/single_private_1791997183734_fcb331d5217b5' completed in 0.0120 seconds.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports team-local private and team-shared skills through the one catalog plus warn-and-skip guards
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791997183777_bc520ca318ea2-9bhrZX/agent-teams/team-1791997183777_bc520ca318ea2/skills/team_shared_1791997183777_bc520ca318ea2' with max_depth=null
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports team-local private and team-shared skills through the one catalog plus warn-and-skip guards
+[22m[39mCreating on-demand SkillWorkspace for: team_shared_1791997183777_bc520ca318ea2
+Creating on-demand SkillWorkspace for: team_shared_1791997183777_bc520ca318ea2
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports team-local private and team-shared skills through the one catalog plus warn-and-skip guards
+[22m[39mCreated metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791997183777_bc520ca318ea2-9bhrZX/agent-teams/team-1791997183777_bc520ca318ea2/skills/team_shared_1791997183777_bc520ca318ea2.
+Initialized SkillWorkspace for skill 'team_shared_1791997183777_bc520ca318ea2' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791997183777_bc520ca318ea2-9bhrZX/agent-teams/team-1791997183777_bc520ca318ea2/skills/team_shared_1791997183777_bc520ca318ea2
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791997183777_bc520ca318ea2-9bhrZX/agent-teams/team-1791997183777_bc520ca318ea2/skills/team_shared_1791997183777_bc520ca318ea2.
+Initialized SkillWorkspace for skill 'team_shared_1791997183777_bc520ca318ea2' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791997183777_bc520ca318ea2-9bhrZX/agent-teams/team-1791997183777_bc520ca318ea2/skills/team_shared_1791997183777_bc520ca318ea2
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports team-local private and team-shared skills through the one catalog plus warn-and-skip guards
+[22m[39mCreated WorkspaceFileExplorer for skill_ws_team_shared_1791997183777_bc520ca318ea2 (graphql-folder-children).
+Created WorkspaceFileExplorer for skill_ws_team_shared_1791997183777_bc520ca318ea2 (graphql-file-content).
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts[2m > [22m[2mAgent package private skills GraphQL e2e[2m > [22m[2mimports team-local private and team-shared skills through the one catalog plus warn-and-skip guards
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1791997183777_bc520ca318ea2-9bhrZX/agent-teams/team-1791997183777_bc520ca318ea2/skills/team_shared_1791997183777_bc520ca318ea2' completed in 0.0080 seconds.
+
+ [32m✓[39m tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 219[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[32m10 passed[39m[22m[90m (10)[39m
+[2m   Start at [22m 18:59:36
+[2m   Duration [22m 6.85s[2m (transform 3.43s, setup 28ms, import 5.86s, tests 423ms, environment 0ms)[22m
+
+exit 0

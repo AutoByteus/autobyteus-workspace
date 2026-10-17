@@ -1,0 +1,92 @@
+{
+ "exports": [
+  "agentPresentationMessageSchema"
+ ],
+ "out": [
+  {
+   "t": 2730,
+   "evKeys": [
+    "kind",
+    "member_address",
+    "agent_run_id",
+    "message"
+   ],
+   "msgType": "TOKEN_USAGE_UPDATED",
+   "call": true,
+   "prompt": 21310,
+   "window": 1000000,
+   "threshold": 967000,
+   "summaryCount": 1,
+   "summaryRevision": 1,
+   "contract": "ok"
+  },
+  {
+   "t": 4951,
+   "evKeys": [
+    "kind",
+    "member_address",
+    "agent_run_id",
+    "message"
+   ],
+   "msgType": "TOKEN_USAGE_UPDATED",
+   "call": true,
+   "prompt": 21414,
+   "window": 1000000,
+   "threshold": 967000,
+   "summaryCount": 2,
+   "summaryRevision": 2,
+   "contract": "ok"
+  },
+  {
+   "t": 6010,
+   "evKeys": [
+    "kind",
+    "member_address",
+    "agent_run_id",
+    "message"
+   ],
+   "msgType": "TOKEN_USAGE_UPDATED",
+   "call": true,
+   "prompt": 21518,
+   "window": 1000000,
+   "threshold": 967000,
+   "summaryCount": 3,
+   "summaryRevision": 3,
+   "contract": "ok"
+  },
+  {
+   "t": 7232,
+   "evKeys": [
+    "kind",
+    "member_address",
+    "agent_run_id",
+    "message"
+   ],
+   "msgType": "TOKEN_USAGE_UPDATED",
+   "call": true,
+   "prompt": 21622,
+   "window": 1000000,
+   "threshold": 967000,
+   "summaryCount": 4,
+   "summaryRevision": 4,
+   "contract": "ok"
+  },
+  {
+   "t": 7237,
+   "evKeys": [
+    "kind",
+    "member_address",
+    "agent_run_id",
+    "message"
+   ],
+   "msgType": "TOKEN_USAGE_UPDATED",
+   "call": false,
+   "prompt": null,
+   "window": null,
+   "threshold": null,
+   "summaryCount": 4,
+   "summaryRevision": 5,
+   "contract": "ok"
+  }
+ ]
+}

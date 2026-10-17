@@ -1,0 +1,31 @@
+AutoByteus NFS control/service source: AGPL-3.0-only, or commercial licensing
+from AutoByteus. See LICENSE and the repository LICENSING.md.
+
+Go runtime and standard library: BSD-3-Clause. Copyright The Go Authors.
+The Go distribution license is https://go.dev/LICENSE. Release packaging
+includes that license alongside this notice.
+
+Native macOS uses the operating system's Apple NFS client/server; they are not
+redistributed inside the control binary.
+
+Linux uses Ubuntu Noble NFS-Ganesha4.3-8ubuntu1 sources and distro patches/rules,
+with accepted upstream98eb77c4fd94effa6882b214698a77752ec79f6e's two-field
+GET_DIR_DELEGATION correction, packaged as4.3-8ubuntu1+autobyteus1. Upstream fix:
+Suhas Athani; see packaging/engine/get-dir-delegation.patch for provenance.
+Ganesha/VFS retain LGPL-3.0-or-later and their component licenses. nfs-common
+retains GPL-2.0-or-later and its component licenses. The .deb pair is embedded
+as package data in Linux CLIs, not statically linked into Go. Package copyright
+records are appended to the Linux archive notices and retained in the image.
+
+Every engine candidate carries its full corresponding modified Debian source,
+including the original tar, modified Debian delta, dsc, exact patch/build recipe
+and copyright. Versioned autobyteus-nfs-ganesha-source-<version>-<arch>.tar.gz
+artifacts accompany authorized publication. The engine manifest records exact
+source/package/recipe hashes; do not substitute prototype or stock package bytes.
+The image records the same manifest and package inventory under
+/usr/share/autobyteus-nfs/. Stock distro runtime dependencies retain source
+availability through the recorded Ubuntu package versions and archive.
+
+The Ubuntu base image and package dependencies retain their respective
+licenses and notices. Release evidence records its immutable digest; do not
+represent AutoByteus's license as relicensing those operating-system packages.

@@ -24,6 +24,7 @@ import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-c
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import type { CodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { SkillService } from "../../../src/skills/services/skill-service.js";
+import type { ProviderPreparationGuard } from "../../../src/agent-execution/backends/provider-preparation-guard.js";
 import type { AgentToolMcpRunSessionActivator } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 
 const createAgentMd = (name: string, description: string, instructions: string): string =>
@@ -60,7 +61,7 @@ const createTestRootSettingsStore = (defaultRoot: string): AgentPackageRootSetti
   new AgentPackageRootSettingsStore(
     {
       getAppDataDir: () => defaultRoot,
-      getAdditionalAgentPackageRoots: () => parseAdditionalRoots(),
+      getRegisteredAgentPackageRoots: () => parseAdditionalRoots(),
       get: (key: string, defaultValue?: string) => process.env[key] ?? defaultValue,
     },
     {
@@ -260,11 +261,12 @@ const createCodexBootstrapper = (workingDirectory: string): CodexThreadBootstrap
   const workspaceResolver = {
     resolveWorkingDirectory: vi.fn(async () => workingDirectory),
   } as unknown as CodexWorkspaceResolver;
+  // Codex discovers no skills natively here, so every configured skill is exposed in the workspace.
   const clientManager = {
-    acquireClient: vi.fn(async () => ({
-      request: vi.fn(async () => ({ data: [] })),
+    beginAcquire: vi.fn(() => ({
+      acquire: vi.fn(async () => ({ request: vi.fn(async () => ({ data: [] })) })),
+      release: vi.fn(async () => undefined),
     })),
-    releaseClient: vi.fn(async () => undefined),
   } as unknown as CodexAppServerClientManager;
   const agentToolMcpRunSessions = {
     activateForRun: vi.fn(() => ({ kind: "not_exposed" as const })),
@@ -278,6 +280,13 @@ const createCodexBootstrapper = (workingDirectory: string): CodexThreadBootstrap
     clientManager,
   );
 };
+
+/** The enclosing factory owns acquired resources; this probe accepts every acquisition and keeps none. */
+const acceptingPreparationGuard = {
+  assertAccepting: () => undefined,
+  ownSkill: () => undefined,
+  ownCodexClient: () => undefined,
+} satisfies ProviderPreparationGuard;
 
 const expectMaterializedSkillSymlink = async (input: {
   materialized: MaterializedWorkspaceSkill | undefined;
@@ -339,7 +348,6 @@ const createAutoByteusRuntimeProbe = (workspaceRoot: string): {
       listActiveAgentIds: vi.fn(() => Array.from(activeAgents.keys())),
     } as any,
     waitForIdle: vi.fn(async () => undefined),
-    compactionLlmFactory: vi.fn(async () => { throw new Error("Unexpected compaction in config probe"); }),
   });
 
   return { factory, capturedConfigs };
@@ -396,8 +404,8 @@ describe("Agent package private skills GraphQL e2e", () => {
     delete process.env.AUTOBYTEUS_SKILLS_PATHS;
     AgentPackageService.resetInstance();
     SkillService.resetInstance();
-    await AgentDefinitionService.getInstance().refreshCache();
-    await AgentTeamDefinitionService.getInstance().refreshCache();
+    await AgentDefinitionService.getInstance().reloadAgentPackageDefinitions();
+    await AgentTeamDefinitionService.getInstance().reloadAgentPackageDefinitions();
   });
 
   const execGraphql = async <T>(
@@ -486,7 +494,7 @@ describe("Agent package private skills GraphQL e2e", () => {
 
     const imported = await importLocalPackage(execGraphql, externalRoot);
     expect(imported.sharedAgentCount).toBe(2);
-    await AgentDefinitionService.getInstance().refreshCache();
+    await AgentDefinitionService.getInstance().reloadAgentPackageDefinitions();
     SkillService.resetInstance();
 
     const bootstrapper = createCodexBootstrapper(workspaceRoot);
@@ -496,6 +504,7 @@ describe("Agent package private skills GraphQL e2e", () => {
         agentDefinitionId: singleAgentId,
         workspaceId: "runtime_ws_private_skills",
       }),
+      acceptingPreparationGuard,
     );
     expect(singleRunContext.runtimeContext.materializedConfiguredSkills).toHaveLength(1);
     const singleMaterializedByName = new Map(
@@ -514,6 +523,7 @@ describe("Agent package private skills GraphQL e2e", () => {
         agentDefinitionId: multiAgentId,
         workspaceId: "runtime_ws_private_skills",
       }),
+      acceptingPreparationGuard,
     );
     expect(multiRunContext.runtimeContext.materializedConfiguredSkills).toHaveLength(2);
     expect(multiRunContext.runtimeContext.materializedConfiguredSkills.map((skill) => skill.name)).toEqual([
@@ -588,36 +598,38 @@ describe("Agent package private skills GraphQL e2e", () => {
 
     const imported = await importLocalPackage(execGraphql, externalRoot);
     expect(imported.sharedAgentCount).toBe(2);
-    await AgentDefinitionService.getInstance().refreshCache();
+    await AgentDefinitionService.getInstance().reloadAgentPackageDefinitions();
     SkillService.resetInstance();
 
     const { factory, capturedConfigs } = createAutoByteusRuntimeProbe(workspaceRoot);
     const workspaceId = "runtime_ws_private_skills";
 
     const singleRunId = `autobyteus-single-run-${unique}`;
-    const singleBackend = await factory.createBackend(
-      createRuntimeRunConfig({
+    const singleBackend = await factory.beginPreparation({
+      kind: "new",
+      runId: singleRunId,
+      config: createRuntimeRunConfig({
         agentDefinitionId: singleAgentId,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         workspaceId,
         memoryDir: path.join(memoryRoot, singleRunId),
       }),
-      singleRunId,
-    );
+    }).prepare();
     expect(capturedConfigs.get(singleRunId)?.skills).toEqual([path.resolve(singleSkillDir)]);
     expect(singleBackend.getContext().config.workspaceId).toBe(workspaceId);
     await singleBackend.terminate();
 
     const multiRunId = `autobyteus-multi-run-${unique}`;
-    const multiBackend = await factory.createBackend(
-      createRuntimeRunConfig({
+    const multiBackend = await factory.beginPreparation({
+      kind: "new",
+      runId: multiRunId,
+      config: createRuntimeRunConfig({
         agentDefinitionId: multiAgentId,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         workspaceId,
         memoryDir: path.join(memoryRoot, multiRunId),
       }),
-      multiRunId,
-    );
+    }).prepare();
     expect(capturedConfigs.get(multiRunId)?.skills).toEqual([
       path.resolve(toneSkillDir),
       path.resolve(outlineSkillDir),
@@ -685,7 +697,7 @@ describe("Agent package private skills GraphQL e2e", () => {
 
     const imported = await importLocalPackage(execGraphql, externalRoot);
     expect(imported.sharedAgentCount).toBe(3);
-    await AgentDefinitionService.getInstance().refreshCache();
+    await AgentDefinitionService.getInstance().reloadAgentPackageDefinitions();
     SkillService.resetInstance();
 
     await expect(resolveAgentSkillDescriptions(singleAgentId)).resolves.toEqual([
@@ -896,7 +908,7 @@ describe("Agent package private skills GraphQL e2e", () => {
     const imported = await importLocalPackage(execGraphql, externalRoot);
     expect(imported.agentTeamCount).toBe(1);
     expect(imported.teamLocalAgentCount).toBe(5);
-    await AgentDefinitionService.getInstance().refreshCache();
+    await AgentDefinitionService.getInstance().reloadAgentPackageDefinitions();
     SkillService.resetInstance();
 
     const singleDefinitionId = buildTeamLocalAgentDefinitionId(teamId, singleLocalAgentId);

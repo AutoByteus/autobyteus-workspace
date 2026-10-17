@@ -1,6 +1,6 @@
 import path from "node:path";
 import type { GitHubRepositoryRevisionMetadata } from "../../integrations/github/types.js";
-import type { AgentPackage, AgentPackageGitHubSourceMetadata, AgentPackageRecord, AgentPackageSourceMetadata, AgentPackageUpdateInfo } from "../types.js";
+import type { AgentPackage, AgentPackageAutoRefresh, AgentPackageGitHubSourceMetadata, AgentPackageRecord, AgentPackageSourceMetadata, AgentPackageUpdateInfo } from "../types.js";
 import {
   buildGitHubPackageId,
   buildLocalPackageId,
@@ -47,7 +47,7 @@ const localReloadUpdateInfo = (): AgentPackageUpdateInfo => ({
   canCheck: false,
   canUpdate: false,
   canReload: true,
-  message: "Reload after changing this local folder outside AutoByteus.",
+  message: "Changes in this folder are picked up automatically. Use Reload if they are not.",
   installedRevision: null,
   latestRevision: null,
   checkedAt: null,
@@ -125,7 +125,7 @@ const buildGitHubUpdateInfo = (record: AgentPackageRecord): AgentPackageUpdateIn
   };
 };
 
-export const mapBuiltInPackage = (rootPath: string): AgentPackage => ({
+export const mapBuiltInPackage = (rootPath: string, autoRefresh: AgentPackageAutoRefresh | null = null): AgentPackage => ({
   packageId: BUILT_IN_AGENT_PACKAGE_ID,
   displayName: "Built-in Storage",
   path: rootPath,
@@ -136,11 +136,13 @@ export const mapBuiltInPackage = (rootPath: string): AgentPackage => ({
   isRemovable: false,
   managedInstallPath: null,
   updateInfo: notApplicableUpdateInfo("Built-in package is platform managed."),
+  autoRefresh,
 });
 
 export const mapLocalPackage = (
   rootPath: string,
   record?: AgentPackageRecord | null,
+  autoRefresh: AgentPackageAutoRefresh | null = null,
 ): AgentPackage => ({
   packageId: record?.packageId ?? buildLocalPackageId(rootPath),
   displayName: getLocalPackageDisplayName(rootPath),
@@ -152,9 +154,13 @@ export const mapLocalPackage = (
   isRemovable: true,
   managedInstallPath: null,
   updateInfo: localReloadUpdateInfo(),
+  autoRefresh,
 });
 
-export const mapGitHubPackage = (record: AgentPackageRecord): AgentPackage => ({
+export const mapGitHubPackage = (
+  record: AgentPackageRecord,
+  autoRefresh: AgentPackageAutoRefresh | null = null,
+): AgentPackage => ({
   packageId: record.packageId,
   displayName: getGitHubPackageDisplayName(record),
   path: record.rootPath,
@@ -165,4 +171,5 @@ export const mapGitHubPackage = (record: AgentPackageRecord): AgentPackage => ({
   isRemovable: true,
   managedInstallPath: record.managedInstallPath,
   updateInfo: buildGitHubUpdateInfo(record),
+  autoRefresh,
 });

@@ -1,0 +1,1 @@
+{"passes": 0, "fatal": "AssertionError(\"error: unexpected argument '--plugin-dir' found\\n\\n  tip: to pass '--plugin-dir' as a value, use '-- --plugin-dir'\\n\\nUsage: grok [OPTIONS] [PROMPT] [COMMAND]\\n\\nFor more information, try '--help'.\\n\")"}

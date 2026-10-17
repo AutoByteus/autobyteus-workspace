@@ -50,7 +50,7 @@ export type AvailableCollaborator = Readonly<{
   description: string;
 }>;
 
-const RANK_ORDER: readonly InRunPlacement["rank"][] = ["run_agent", "configured", "collaborator", "collaborator_member"];
+const RANK_ORDER: readonly InRunPlacement["rank"][] = ["run_agent", "configured"];
 
 /**
  * AR-002: one in-run placement per definition, by rank, then the lexicographically smallest
@@ -63,7 +63,7 @@ export const preferredInRunPlacement = (placements: readonly InRunPlacement[]): 
   return best ?? null;
 };
 
-/** Daily Assistant (the default chat agent) and the internal helpers are never collaborators. */
+/** Daily Assistant (the default chat agent) and the internal helpers are never `@` or delegation candidates. */
 const EXCLUDED_AGENT_DEFINITION_IDS: ReadonlySet<string> = new Set(BUILT_IN_AGENT_DEFINITIONS.map((entry) => entry.id));
 
 const hasId = <T extends { id?: string | null }>(definition: T): definition is T & { id: string } =>
@@ -74,17 +74,16 @@ const hasId = <T extends { id?: string | null }>(definition: T): definition is T
  * definitions then shared Agent Team definitions, in catalog order. Agent Orgs, the internal
  * built-ins and the viewer's own definition (`port.ownDefinition()`) are never candidates. Two checks: `requireEligible`
  * may be mentioned with `@` (including definitions already in the run, which `@` addresses);
- * `requireAdmissible` may be brought in as a collaborator (not already in the run, unless it
- * is a collaborator whose entry is reused). `list_available_agents` lists every eligible
- * definition once, at its in-run address or at the address it gets when brought in.
+ * `requireAdmissible` may be delegated to as a fresh catalog copy (not already in the run).
+ * `list_available_agents` lists every eligible definition once, at its in-run address or at its
+ * catalog address.
  */
 export class CollaboratorCandidatePolicy {
   constructor(private readonly catalog: CollaboratorDefinitionCatalog) {}
 
   /**
-   * In the run: the viewer's own definition and every in-run placement (the run agent, configured
-   * placements, collaborator entries, which exist only after a successful add, and
-   * collaborator-Team members).
+   * In the run: the viewer's own definition and every in-run placement (the run agent and
+   * configured placements).
    */
   inRunDefinitionIds(port: CollaboratorRootPort): InRunDefinitionIds {
     const agents = new Set<string>();
@@ -169,7 +168,7 @@ export class CollaboratorCandidatePolicy {
    */
   async requireEligible(port: CollaboratorRootPort, mention: CollaboratorMention): Promise<AdmissibleCollaboratorDefinition> {
     if (port.isApplicationBound) {
-      throw new CollaboratorMentionError("COLLABORATOR_MENTION_UNAVAILABLE", "Collaborators cannot be brought into application-owned runs.");
+      throw new CollaboratorMentionError("COLLABORATOR_MENTION_UNAVAILABLE", "Agents and Teams cannot be involved from application-owned runs.");
     }
     const own = port.ownDefinition();
     const resolved: AdmissibleCollaboratorDefinition = mention.kind === "agent"
@@ -180,16 +179,14 @@ export class CollaboratorCandidatePolicy {
   }
 
   /**
-   * Bring-in re-check of one definition: eligible, and not already in the run unless it has a
-   * collaborator entry (admission reuses that entry). Never admits a second instance.
+   * Catalog-copy re-check of one definition: eligible, and not already in the run. Never admits a
+   * second instance of a definition that is in the run.
    */
   async requireAdmissible(port: CollaboratorRootPort, mention: CollaboratorMention): Promise<AdmissibleCollaboratorDefinition> {
     const eligible = await this.requireEligible(port, mention);
-    const existing = port.collaborators().some((entry) => entry.kind === mention.kind
-      && (entry.kind === "agent" ? entry.agentDefinitionId : entry.teamDefinitionId) === mention.definitionId);
     const inRun = this.inRunDefinitionIds(port);
     const inRunIds = eligible.kind === "agent" ? inRun.agentDefinitionIds : inRun.teamDefinitionIds;
-    if (!existing && inRunIds.has(eligible.definition.id)) throw this.alreadyInRun(eligible.definition.name);
+    if (inRunIds.has(eligible.definition.id)) throw this.alreadyInRun(eligible.definition.name);
     return eligible;
   }
 

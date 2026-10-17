@@ -1,0 +1,94 @@
+{
+  "seconds": 27.784,
+  "exit": 0,
+  "timedout": false,
+  "privateRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-claude-validation-humhvxjs",
+  "privateStateEntryCountBeforeRemoval": 1330,
+  "privateTopLevelStateBeforeRemoval": [
+    "home",
+    "home/.cache",
+    "home/Library",
+    "tmp",
+    "tmp/node-compile-cache"
+  ],
+  "privateTmpNonCacheStateBeforeRemoval": [],
+  "ownedGroupRemaining": [],
+  "fixtureChildrenObserved": [],
+  "ownedProcessesObserved": [
+    {
+      "pid": 62308,
+      "ppid": 61586,
+      "pgid": 62308,
+      "command": "node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts tests/unit/runtime-management/claude/client/claude-sdk-real-child-retry.test.ts tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts tests/unit/agent-execution/backends/claude/session/claude-session-cleanup.test.ts --no-watch"
+    },
+    {
+      "pid": 62847,
+      "ppid": 62308,
+      "pgid": 62308,
+      "command": "node ./node_modules/.bin/../vitest/vitest.mjs run tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts tests/unit/runtime-management/claude/client/claude-sdk-real-child-retry.test.ts tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts tests/unit/agent-execution/backends/claude/session/claude-session-cleanup.test.ts --no-watch"
+    },
+    {
+      "pid": 62855,
+      "ppid": 62847,
+      "pgid": 62308,
+      "command": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/node_modules/.pnpm/@esbuild+darwin-arm64@0.27.3/node_modules/@esbuild/darwin-arm64/bin/esbuild --service=0.27.3 --ping"
+    },
+    {
+      "pid": 62858,
+      "ppid": 62847,
+      "pgid": 62308,
+      "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/node_modules/prisma/build/index.js migrate reset --force --skip-generate"
+    },
+    {
+      "pid": 62870,
+      "ppid": 62858,
+      "pgid": 62308,
+      "command": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/schema-engine-darwin-arm64 -d /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/autobyteus-server-ts/prisma/schema.prisma"
+    },
+    {
+      "pid": 62875,
+      "ppid": 62847,
+      "pgid": 62308,
+      "command": "(node)"
+    },
+    {
+      "pid": 62934,
+      "ppid": 62875,
+      "pgid": 62308,
+      "command": "(node)"
+    },
+    {
+      "pid": 64303,
+      "ppid": 62847,
+      "pgid": 62308,
+      "command": "(node)"
+    },
+    {
+      "pid": 64592,
+      "ppid": 62847,
+      "pgid": 62308,
+      "command": "/Users/normy/.hermes/node/bin/node --conditions node --conditions development --experimental-import-meta-resolve --require /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/suppress-warnings.cjs /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/dist/workers/forks.js"
+    },
+    {
+      "pid": 64949,
+      "ppid": 64592,
+      "pgid": 62308,
+      "command": "(node)"
+    },
+    {
+      "pid": 64977,
+      "ppid": 62847,
+      "pgid": 62308,
+      "command": "/Users/normy/.hermes/node/bin/node --conditions node --conditions development --experimental-import-meta-resolve --require /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/suppress-warnings.cjs /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fake-cli/node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/dist/workers/forks.js"
+    },
+    {
+      "pid": 64991,
+      "ppid": 62847,
+      "pgid": 62308,
+      "command": "(node)"
+    }
+  ],
+  "privateRootRemoved": true,
+  "unhandledErrorMarker": false,
+  "testWorkspaceRemnants": []
+}

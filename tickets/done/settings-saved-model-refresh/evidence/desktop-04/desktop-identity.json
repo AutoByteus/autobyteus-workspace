@@ -1,0 +1,22 @@
+{
+  "head": "cd685b6407cd847db52b4a2d7a45b486287fac52",
+  "status": "M package.json\n M tests/e2e/delegated-launch-defaults-probe.mjs\n?? ../autobyteus-application-backend-sdk/dist/\n?? ../autobyteus-application-sdk-contracts/dist/\n?? tests/e2e/fixtures/settings-refresh-desktop.mjs\n?? tests/e2e/settings-saved-model-refresh-cases.mjs\n?? ../tickets/in-progress/settings-saved-model-refresh/api-e2e-coverage-investigation.md\n?? ../tickets/in-progress/settings-saved-model-refresh/api-e2e-test-case-ledger.md\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/api-narrow.log\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/api-server-build.log\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/api-server-e2e.log\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/api-web-regression.log\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/desktop-01-driver.log\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/desktop-01/\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/desktop-02-driver.log\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/desktop-02/\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/desktop-03-driver.log\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/desktop-03/\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/desktop-04-driver.log\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/desktop-04/",
+  "instance": {
+    "instanceId": "iso-60438-b50d",
+    "pid": 2928,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:60439",
+    "graphqlUrl": "http://127.0.0.1:60439/graphql",
+    "controlEndpoint": "http://127.0.0.1:60438",
+    "controlPort": 60438,
+    "serverPort": 60439,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-vHluvT",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-vHluvT/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-60438-b50d.log"
+  },
+  "skipBuild": true,
+  "asar": "/Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar",
+  "asarSha256": "55749a6189e5680f13bf5b2c254e50a6096a07ba1904dcc728055fab4116bc4b"
+}

@@ -1,0 +1,75 @@
+{
+  "actualExit": 0,
+  "expectedExit": 0,
+  "seconds": 13.071,
+  "timedout": false,
+  "unhandledErrorMarker": false,
+  "compilerDiagnosticLines": [],
+  "ownedGroupRemaining": [],
+  "ownedProcessesObserved": [
+    {
+      "pid": 19042,
+      "ppid": 19040,
+      "pgid": 19042,
+      "command": "node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm -C autobyteus-server-ts typecheck:claude-interrupt-resume-e2e"
+    },
+    {
+      "pid": 19079,
+      "ppid": 19042,
+      "pgid": 19042,
+      "command": "sh -c pnpm prepare:shared && tsc -p tsconfig.claude-interrupt-resume-e2e.json --noEmit"
+    },
+    {
+      "pid": 19080,
+      "ppid": 19079,
+      "pgid": 19042,
+      "command": "node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm prepare:shared"
+    },
+    {
+      "pid": 19111,
+      "ppid": 19080,
+      "pgid": 19042,
+      "command": "node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build"
+    },
+    {
+      "pid": 19142,
+      "ppid": 19111,
+      "pgid": 19042,
+      "command": "(node)"
+    },
+    {
+      "pid": 19172,
+      "ppid": 19111,
+      "pgid": 19042,
+      "command": "sh -c node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs"
+    },
+    {
+      "pid": 19173,
+      "ppid": 19172,
+      "pgid": 19042,
+      "command": "node ./scripts/clean-dist.mjs"
+    },
+    {
+      "pid": 19181,
+      "ppid": 19172,
+      "pgid": 19042,
+      "command": "(node)"
+    },
+    {
+      "pid": 19889,
+      "ppid": 19111,
+      "pgid": 19042,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-application-backend-sdk/node_modules/.bin/../../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/tsc -p tsconfig.build.json"
+    },
+    {
+      "pid": 19904,
+      "ppid": 19079,
+      "pgid": 19042,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-server-ts/node_modules/.bin/../../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/tsc -p tsconfig.claude-interrupt-resume-e2e.json --noEmit"
+    }
+  ],
+  "privateRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delivery-fixture-types-nq7x_snc",
+  "privateRootRemoved": true,
+  "tmpNonCacheState": [],
+  "workspaceRemnants": []
+}

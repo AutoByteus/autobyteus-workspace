@@ -1,0 +1,26 @@
+Started explicit operator restores original unless-stopped policy and starts node for restart regression
+explicit operator restores original unless-stopped policy and starts node for restart regression: Pass
+Started restored explicit running state actual API ready
+restored explicit running state actual API ready: Pass
+Started ordinary Docker node restart
+ordinary Docker node restart: Pass
+Started ordinary node restart readiness
+ordinary node restart readiness: Pass
+Started ordinary node restart exact original selected state preservation
+ordinary node restart exact original selected state preservation: Pass
+Started test-only registry and isolated HOME current helper prerequisites
+test-only registry and isolated HOME current helper prerequisites: Pass
+Started actual public launcher upgrade --all against same immutable current worktree image
+actual public launcher upgrade --all against same immutable current worktree image: Pass
+Started explicitly stop unselected fixture again after requested upgrade --all
+explicitly stop unselected fixture again after requested upgrade --all: Pass
+Started current replacement admitted by existing selected node reference
+current replacement admitted by existing selected node reference: Pass
+Started new current container private bytes mounted APIs source and exact state baseline
+new current container private bytes mounted APIs source and exact state baseline: Pass
+Started ordinary reboot resolves current replacement rather than old recreation receipt ID
+ordinary reboot resolves current replacement rather than old recreation receipt ID: Pass
+Started replacement automatic boot same current ID private and mounted data preservation
+replacement automatic boot same current ID private and mounted data preservation: Pass
+Node restart and actual public launcher replacement/current-ref ordinary boot PASS. Upgrade-all has its documented own configuration policy, not unchanged opaque-config proof.
+{"result": "Pass", "fatal": null}

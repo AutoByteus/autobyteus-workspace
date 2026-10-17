@@ -1,0 +1,125 @@
+{
+  "scope": "local actual application API/WS agent proof; not GUI/source-build/LAN/setup signoff",
+  "pairs": [
+    {
+      "pair": "pair1",
+      "a_runtime": "codex_app_server",
+      "b_runtime": "claude_agent_sdk",
+      "workspace": "/home/autobyteus/shared/project",
+      "hash": "d31c4dde4237989225f1c4791d475fdba14b700fb69953910a528aeefadfd179",
+      "native_tools": {
+        "a-write": [
+          "run_bash"
+        ],
+        "b-read": [
+          "Bash"
+        ],
+        "b-modify": [
+          "Bash"
+        ],
+        "a-reopen": [
+          "run_bash",
+          "run_bash"
+        ]
+      },
+      "same_three_hashes": true,
+      "writer_node": "ab-sf-fr009-e70d3907-app-a",
+      "reader_editor_node": "ab-sf-fr009-e70d3907-app-b"
+    },
+    {
+      "pair": "pair2",
+      "a_runtime": "claude_agent_sdk",
+      "b_runtime": "codex_app_server",
+      "workspace": "/home/autobyteus/shared/project",
+      "hash": "b27819b81720b7c9e99b29d1c7029142aa8adb959691b1c7e32a2d46146f5f45",
+      "native_tools": {
+        "a-write": [
+          "Skill",
+          "Bash",
+          "Read",
+          "Bash"
+        ],
+        "b-read": [
+          "run_bash"
+        ],
+        "b-modify": [
+          "run_bash"
+        ],
+        "a-reopen": [
+          "Bash",
+          "Read"
+        ]
+      },
+      "same_three_hashes": true,
+      "writer_node": "ab-sf-fr009-e70d3907-app-a",
+      "reader_editor_node": "ab-sf-fr009-e70d3907-app-b"
+    },
+    {
+      "pair": "pair3",
+      "a_runtime": "codex_app_server",
+      "b_runtime": "codex_app_server",
+      "workspace": "/home/autobyteus/shared/project",
+      "hash": "62b218bba05cc7e5404d091bb678ea5b3464c0a4255dd80956113b41c4e98d81",
+      "native_tools": {
+        "a-write": [
+          "run_bash"
+        ],
+        "b-read": [
+          "run_bash"
+        ],
+        "b-modify": [
+          "run_bash"
+        ],
+        "a-reopen": [
+          "run_bash"
+        ]
+      },
+      "same_three_hashes": true,
+      "writer_node": "ab-sf-fr009-e70d3907-app-a",
+      "reader_editor_node": "ab-sf-fr009-e70d3907-app-b"
+    },
+    {
+      "pair": "pair4",
+      "a_runtime": "claude_agent_sdk",
+      "b_runtime": "claude_agent_sdk",
+      "workspace": "/home/autobyteus/shared/project",
+      "hash": "e2be6048fa0dd46509feead3a52f2d85ac952c7664c66000b188eebf99f03abc",
+      "native_tools": {
+        "a-write": [
+          "Skill",
+          "Bash",
+          "Read",
+          "Bash"
+        ],
+        "b-read": [
+          "Skill",
+          "Bash",
+          "Read",
+          "Read"
+        ],
+        "b-modify": [
+          "Bash"
+        ],
+        "a-reopen": [
+          "Bash",
+          "Read"
+        ]
+      },
+      "same_three_hashes": true,
+      "writer_node": "ab-sf-fr009-e70d3907-app-a",
+      "reader_editor_node": "ab-sf-fr009-e70d3907-app-b"
+    }
+  ],
+  "core_stages_passed": 16,
+  "fresh_agent_runs_terminated": 8,
+  "claude_peer_stop_skill_read_failed": true,
+  "causal_reproductions": 3,
+  "causal_unlink_visibility_seconds": [
+    1.039,
+    1.041,
+    1.039
+  ],
+  "cleanup_all_rounds_verified": true,
+  "obvious_provider_secret_values_found": false,
+  "physical_topology": "two distinct Docker application containers on one Mac Docker Desktop Linux VM; no separate physical LAN machine"
+}

@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "git",
+    "diff",
+    "--cached",
+    "--check"
+  ],
+  "rc": 2,
+  "stdout": "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/go-race.log:116: trailing whitespace.\n+        \ntickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/go-race.log:119: trailing whitespace.\n+        \ntickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/go-race.log:133: trailing whitespace.\n+        \ntickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/go-race.log:134: trailing whitespace.\n+        \n",
+  "stderr": "",
+  "rawLogPolicy": "Raw diagnostic/test logs unchanged; whitespace-only warnings are not changed product/test assertions.",
+  "authoredArtifactCheck": {
+    "argv": [
+      "git",
+      "diff",
+      "--cached",
+      "--check",
+      "--",
+      "<all explicitly staged non-log paths>"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  }
+}

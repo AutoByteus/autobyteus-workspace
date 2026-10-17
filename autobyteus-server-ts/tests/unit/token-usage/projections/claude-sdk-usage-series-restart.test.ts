@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import { buildClaudeTokenUsageEvent } from '../../../../src/agent-execution/backends/claude/session/claude-session-token-usage.js';
 import { createTokenUsageUpdatedPayload } from '../../../../src/agent-execution/domain/agent-run-token-usage.js';
 import { foldTokenUsageObservation } from '../../../../src/token-usage/projections/token-usage-run-fold.js';
-import { selectedClaudeSdkDetailsFromState } from '../../../../src/token-usage/projections/claude-sdk-model-usage-reconciler.js';
 import type { TokenUsageRunRecord } from '../../../../src/token-usage/domain/token-usage-run-record.js';
 import type { ResolvedTokenPricingPolicy } from '../../../../src/token-usage/pricing/token-pricing-policy.js';
 
@@ -63,39 +62,25 @@ const createGeneration = () => {
 };
 
 describe('Claude SDK usage across process generations (SR-012, RSK-007)', () => {
-  it('counts the first turn after a crash restart from origin 0 instead of suppressing it as a regression', () => {
-    const afterCrash = fold(createGeneration(), observation({
-      resultId: 'r1', rows: { [opus]: opusRow(400) }, main: main(400), seriesRestart: true,
-    }));
-
-    expect(afterCrash.authoritativePayload.standard_input_tokens).toBe(400);
-    expect(afterCrash.authoritativePayload.quality_flags).toContain('claude_sdk_series_restart_main_loop_delta');
-    expect(afterCrash.authoritativePayload.quality_flags).not.toContain('claude_sdk_selected_regressed');
-    expect(afterCrash.record!.tokenTotals.standard_input_tokens).toBe(1900n);
-
-    const nextTurn = fold(afterCrash.record, observation({ resultId: 'r2', rows: { [opus]: opusRow(700) }, main: main(300) }));
-    expect(nextTurn.authoritativePayload.standard_input_tokens).toBe(300);
-    expect(nextTurn.authoritativePayload.quality_flags).not.toContain('claude_sdk_series_restart_main_loop_delta');
-  });
-
-  it('counts the full turn when a restore-time origin makes the reset undetectable as a regression', () => {
-    // Restarted from a restore-time total of 1200: 1200 + 400 = 1600 exceeds the old checkpoint (1500).
+  // A resumed process's calls are admitted live per call (D-2); its first result only
+  // re-anchors the checkpoints, whatever origin its cumulative totals restarted from (D-3).
+  it.each([
+    ['a crash restart from origin 0', 400],
+    ['a restore-time origin that hides the reset', 1600],
+    ['a clean restore that continues from the saved total', 1900],
+  ])('admits nothing and re-anchors after %s', (_label, restartedTotal) => {
     const restarted = fold(createGeneration(), observation({
-      resultId: 'r1', rows: { [opus]: opusRow(1600) }, main: main(400), seriesRestart: true,
+      resultId: 'r1', rows: { [opus]: opusRow(restartedTotal) }, main: main(400), seriesRestart: true,
     }));
 
-    expect(restarted.authoritativePayload.standard_input_tokens).toBe(400);
-    const nextTurn = fold(restarted.record, observation({ resultId: 'r2', rows: { [opus]: opusRow(1900) }, main: main(300) }));
+    expect(restarted.authoritativePayload.standard_input_tokens).toBeNull();
+    expect(restarted.authoritativePayload.quality_flags).toContain('claude_sdk_series_restart_rebaselined');
+    expect(restarted.authoritativePayload.quality_flags).not.toContain('claude_sdk_selected_regressed');
+    expect(restarted.record!.tokenTotals.standard_input_tokens).toBe(1500n);
+
+    const nextTurn = fold(restarted.record, observation({ resultId: 'r2', rows: { [opus]: opusRow(restartedTotal + 300) }, main: main(300) }));
     expect(nextTurn.authoritativePayload.standard_input_tokens).toBe(300);
-  });
-
-  it('matches cumulative differencing after a clean restore that continues from the saved total', () => {
-    const restored = fold(createGeneration(), observation({
-      resultId: 'r1', rows: { [opus]: opusRow(1900) }, main: main(400), seriesRestart: true,
-    }));
-
-    expect(restored.authoritativePayload.standard_input_tokens).toBe(400);
-    expect(restored.record!.tokenTotals.standard_input_tokens).toBe(1900n);
+    expect(nextTurn.authoritativePayload.quality_flags).not.toContain('claude_sdk_series_restart_rebaselined');
   });
 
   it('keeps same-process and create-generation observations on cumulative differencing', () => {
@@ -104,14 +89,5 @@ describe('Claude SDK usage across process generations (SR-012, RSK-007)', () => 
 
     expect(sameProcessRegression.authoritativePayload.standard_input_tokens).toBeNull();
     expect(sameProcessRegression.authoritativePayload.quality_flags).toContain('claude_sdk_selected_regressed');
-  });
-
-  it('admits nothing and re-anchors when the restart observation has no main-loop usage', () => {
-    const restarted = fold(createGeneration(), observation({ resultId: 'r1', rows: { [opus]: opusRow(400) }, seriesRestart: true }));
-
-    expect(restarted.authoritativePayload.standard_input_tokens).toBeNull();
-    expect(restarted.authoritativePayload.quality_flags).toContain('claude_sdk_series_restart_main_loop_unavailable');
-    const nextTurn = fold(restarted.record, observation({ resultId: 'r2', rows: { [opus]: opusRow(700) }, main: main(300) }));
-    expect(nextTurn.authoritativePayload.standard_input_tokens).toBe(300);
   });
 });

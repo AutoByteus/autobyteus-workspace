@@ -1,0 +1,19 @@
+OVERVIEW: Execute a command in a running VM
+
+Requires Tart Guest Agent running in a guest VM.
+
+Note that all non-vanilla Cirrus Labs VM images already have the Tart Guest
+Agent installed.
+
+USAGE: tart exec [-i] [-t] <name> <command> ...
+
+ARGUMENTS:
+  <name>                  VM name
+  <command>               Command to execute
+
+OPTIONS:
+  -i                      Attach host's standard input to a remote command
+  -t                      Allocate a remote pseudo-terminal (PTY)
+  --version               Show the version.
+  -h, --help              Show help information.
+

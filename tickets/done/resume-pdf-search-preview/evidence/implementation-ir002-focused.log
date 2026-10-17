@@ -1,0 +1,582 @@
+
+ RUN  v4.0.18 /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/unit/file-explorer/file-system-watcher-runtime.test.ts > FileSystemWatcher runtime boundary > logical stop returns after requesting child stop without waiting for child stopped
+FileSystemWatcher initialized for '/tmp/watcher-runtime-unit-NkGBVv' with ignore strategies:
+
+stdout | tests/unit/file-explorer/file-system-watcher-runtime.test.ts > FileSystemWatcher runtime boundary > logical stop returns after requesting child stop without waiting for child stopped
+Started filesystem watcher for workspace /tmp/watcher-runtime-unit-NkGBVv
+
+stdout | tests/unit/file-explorer/file-system-watcher-runtime.test.ts > FileSystemWatcher runtime boundary > logical stop returns after requesting child stop without waiting for child stopped
+Logically stopped filesystem watcher for workspace /tmp/watcher-runtime-unit-NkGBVv
+
+stdout | tests/unit/file-explorer/file-system-watcher-runtime.test.ts > FileSystemWatcher runtime boundary > ignores raw events whose watcher generation is stale
+FileSystemWatcher initialized for '/tmp/watcher-runtime-unit-cANK5T' with ignore strategies:
+
+stdout | tests/unit/file-explorer/file-system-watcher-runtime.test.ts > FileSystemWatcher runtime boundary > ignores raw events whose watcher generation is stale
+Started filesystem watcher for workspace /tmp/watcher-runtime-unit-cANK5T
+
+stdout | tests/unit/file-explorer/file-system-watcher-runtime.test.ts > FileSystemWatcher runtime boundary > ignores raw events whose watcher generation is stale
+Logically stopped filesystem watcher for workspace /tmp/watcher-runtime-unit-cANK5T
+
+ ✓ tests/unit/file-explorer/file-system-watcher-runtime.test.ts (2 tests) 61ms
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > returns root-relative locators usable by the protected workspace path owner
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-search-6LEibF.
+
+stderr | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > returns root-relative locators usable by the protected workspace path owner
+FileSystemWorkspace.initialize() is metadata-only for search-test-workspace; file explorer acquisition is explicit.
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > returns root-relative locators usable by the protected workspace path owner
+Created WorkspaceFileExplorer for search-test-workspace (integration-search).
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > returns root-relative locators usable by the protected workspace path owner
+Starting directory traversal for: '/tmp/autobyteus-search-6LEibF' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > returns root-relative locators usable by the protected workspace path owner
+Directory traversal for '/tmp/autobyteus-search-6LEibF' completed in 0.0040 seconds.
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > returns root-relative locators usable by the protected workspace path owner
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > returns root-relative locators usable by the protected workspace path owner
+FileNameIndexer refreshed snapshot index with 2 entries
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > returns root-relative locators usable by the protected workspace path owner
+[Search] Trying strategy: FuzzysortSearchStrategy for query 'alpha'
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > returns root-relative locators usable by the protected workspace path owner
+[Search] FuzzysortSearchStrategy completed in 0.54ms, found 1 results (total: 0.56ms)
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > returns root-relative locators usable by the protected workspace path owner
+Closing FileSystemWorkspace search-test-workspace
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > finds an unexpanded nested file with the same tree identity and reads it unchanged
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-search-17iSkX.
+
+stderr | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > finds an unexpanded nested file with the same tree identity and reads it unchanged
+FileSystemWorkspace.initialize() is metadata-only for search-test-workspace; file explorer acquisition is explicit.
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > finds an unexpanded nested file with the same tree identity and reads it unchanged
+Created WorkspaceFileExplorer for search-test-workspace (integration-search).
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > finds an unexpanded nested file with the same tree identity and reads it unchanged
+Starting directory traversal for: '/tmp/autobyteus-search-17iSkX' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > finds an unexpanded nested file with the same tree identity and reads it unchanged
+Directory traversal for '/tmp/autobyteus-search-17iSkX' completed in 0.0020 seconds.
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > finds an unexpanded nested file with the same tree identity and reads it unchanged
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > finds an unexpanded nested file with the same tree identity and reads it unchanged
+FileNameIndexer refreshed snapshot index with 2 entries
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > finds an unexpanded nested file with the same tree identity and reads it unchanged
+[Search] Trying strategy: FuzzysortSearchStrategy for query 'resume'
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > finds an unexpanded nested file with the same tree identity and reads it unchanged
+[Search] FuzzysortSearchStrategy completed in 0.06ms, found 1 results (total: 0.07ms)
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > finds an unexpanded nested file with the same tree identity and reads it unchanged
+Closing FileSystemWorkspace search-test-workspace
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > preserves absolute, parent traversal and sibling-prefix denial after search
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-search-EwbQrp.
+
+stderr | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > preserves absolute, parent traversal and sibling-prefix denial after search
+FileSystemWorkspace.initialize() is metadata-only for search-test-workspace; file explorer acquisition is explicit.
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > preserves absolute, parent traversal and sibling-prefix denial after search
+Created WorkspaceFileExplorer for search-test-workspace (integration-search).
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > preserves absolute, parent traversal and sibling-prefix denial after search
+Starting directory traversal for: '/tmp/autobyteus-search-EwbQrp' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > preserves absolute, parent traversal and sibling-prefix denial after search
+Directory traversal for '/tmp/autobyteus-search-EwbQrp' completed in 0.0020 seconds.
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > preserves absolute, parent traversal and sibling-prefix denial after search
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > preserves absolute, parent traversal and sibling-prefix denial after search
+FileNameIndexer refreshed snapshot index with 2 entries
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > preserves absolute, parent traversal and sibling-prefix denial after search
+[Search] Trying strategy: FuzzysortSearchStrategy for query 'resume'
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > preserves absolute, parent traversal and sibling-prefix denial after search
+[Search] FuzzysortSearchStrategy completed in 0.12ms, found 1 results (total: 0.13ms)
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > preserves absolute, parent traversal and sibling-prefix denial after search
+Closing FileSystemWorkspace search-test-workspace
+
+ ✓ tests/integration/file-explorer/file-search.integration.test.ts (3 tests) 34ms
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > WorkspaceFileExplorer integration > builds a tree with workspace-relative file identity
+Starting directory traversal for: '/tmp/autobyteus-server-ts-2fWX32' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > WorkspaceFileExplorer integration > builds a tree with workspace-relative file identity
+Directory traversal for '/tmp/autobyteus-server-ts-2fWX32' completed in 0.0050 seconds.
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > WorkspaceFileExplorer integration > writes new file and emits ADD change
+Starting directory traversal for: '/tmp/autobyteus-server-ts-hOygxn' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > WorkspaceFileExplorer integration > writes new file and emits ADD change
+Directory traversal for '/tmp/autobyteus-server-ts-hOygxn' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > WorkspaceFileExplorer integration > modifies existing file and emits MODIFY change
+Starting directory traversal for: '/tmp/autobyteus-server-ts-plg20J' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > WorkspaceFileExplorer integration > modifies existing file and emits MODIFY change
+Directory traversal for '/tmp/autobyteus-server-ts-plg20J' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > WorkspaceFileExplorer integration > renames file and emits RENAME change
+Starting directory traversal for: '/tmp/autobyteus-server-ts-ANgit4' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > WorkspaceFileExplorer integration > renames file and emits RENAME change
+Directory traversal for '/tmp/autobyteus-server-ts-ANgit4' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > WorkspaceFileExplorer integration > moves file and emits MOVE change
+Starting directory traversal for: '/tmp/autobyteus-server-ts-avM3vm' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > WorkspaceFileExplorer integration > moves file and emits MOVE change
+Directory traversal for '/tmp/autobyteus-server-ts-avM3vm' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > WorkspaceFileExplorer integration > removes file and emits DELETE change
+Starting directory traversal for: '/tmp/autobyteus-server-ts-mhIHpd' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > WorkspaceFileExplorer integration > removes file and emits DELETE change
+Directory traversal for '/tmp/autobyteus-server-ts-mhIHpd' completed in 0.0010 seconds.
+
+ ✓ tests/integration/file-explorer/file-explorer.integration.test.ts (6 tests) 33ms
+stdout | tests/unit/file-explorer/search-strategy/search-strategies.test.ts > RipgrepSearchStrategy > reports availability based on rg presence
+Found bundled ripgrep at: /usr/bin/rg
+
+stdout | tests/unit/file-explorer/search-strategy/search-strategies.test.ts > RipgrepSearchStrategy > finds matching files
+Found bundled ripgrep at: /usr/bin/rg
+
+stdout | tests/unit/file-explorer/search-strategy/search-strategies.test.ts > RipgrepSearchStrategy > returns absolute paths
+Found bundled ripgrep at: /usr/bin/rg
+
+stdout | tests/unit/file-explorer/search-strategy/search-strategies.test.ts > RipgrepSearchStrategy > respects max results
+Found bundled ripgrep at: /usr/bin/rg
+
+stderr | tests/unit/file-explorer/search-strategy/search-strategies.test.ts > FuzzysortSearchStrategy > returns empty list for empty index
+File index is empty, cannot perform search
+
+stdout | tests/unit/file-explorer/search-strategy/search-strategies.test.ts > CompositeSearchStrategy > uses the first available strategy
+Strategy Object not available, skipping
+[Search] Trying strategy: Object for query 'test'
+
+stdout | tests/unit/file-explorer/search-strategy/search-strategies.test.ts > CompositeSearchStrategy > uses the first available strategy
+[Search] Object completed in 0.07ms, found 1 results (total: 0.14ms)
+
+stdout | tests/unit/file-explorer/search-strategy/search-strategies.test.ts > CompositeSearchStrategy > falls back when a strategy fails
+[Search] Trying strategy: Object for query 'test'
+
+stdout | tests/unit/file-explorer/search-strategy/search-strategies.test.ts > CompositeSearchStrategy > falls back when a strategy fails
+[Search] Trying strategy: Object for query 'test'
+
+stderr | tests/unit/file-explorer/search-strategy/search-strategies.test.ts > CompositeSearchStrategy > falls back when a strategy fails
+Strategy Object failed: Error: Search failed, trying next
+
+stdout | tests/unit/file-explorer/search-strategy/search-strategies.test.ts > CompositeSearchStrategy > falls back when a strategy fails
+[Search] Object completed in 0.07ms, found 1 results (total: 0.52ms)
+
+ ✓ tests/unit/file-explorer/search-strategy/search-strategies.test.ts (11 tests) 31ms
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > starts watcher when first watcher lease is acquired
+Acquired file watcher lease for /fake/path (test); active leases: 1
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > starts watcher when first watcher lease is acquired
+Released file watcher lease for /fake/path (test); active leases: 0
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > shares one watcher across multiple leases and stops after the final release
+Acquired file watcher lease for /fake/path (first); active leases: 1
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > shares one watcher across multiple leases and stops after the final release
+Acquired file watcher lease for /fake/path (second); active leases: 2
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > shares one watcher across multiple leases and stops after the final release
+Released file watcher lease for /fake/path (first); active leases: 1
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > shares one watcher across multiple leases and stops after the final release
+Released file watcher lease for /fake/path (second); active leases: 0
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > makes watcher lease release idempotent
+Acquired file watcher lease for /fake/path (test); active leases: 1
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > makes watcher lease release idempotent
+Released file watcher lease for /fake/path (test); active leases: 0
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > returns events from the active watcher
+Acquired file watcher lease for /fake/path (test); active leases: 1
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > returns events from the active watcher
+Released file watcher lease for /fake/path (test); active leases: 0
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > closes active watcher once and clears future subscriptions
+Acquired file watcher lease for /fake/path (test); active leases: 1
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > renames files with valid leaf names
+Starting directory traversal for: '/tmp/autobyteus-rename-leaf-75xI0C' with max_depth=null
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > renames files with valid leaf names
+Directory traversal for '/tmp/autobyteus-rename-leaf-75xI0C' completed in 0.0010 seconds.
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > rejects path-like rename names before filesystem mutation
+Starting directory traversal for: '/tmp/autobyteus-rename-boundary-5XR0iW/ws' with max_depth=null
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > rejects path-like rename names before filesystem mutation
+Directory traversal for '/tmp/autobyteus-rename-boundary-5XR0iW/ws' completed in 0.0010 seconds.
+
+ ✓ tests/unit/file-explorer/workspace-file-explorer.test.ts (11 tests) 35ms
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > converts fuzzy candidates once without changing order
+Starting directory traversal for: '/tmp/autobyteus-search-locators-cdIx2F' with max_depth=null
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > converts fuzzy candidates once without changing order
+Directory traversal for '/tmp/autobyteus-search-locators-cdIx2F' completed in 0.0020 seconds.
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > converts fuzzy candidates once without changing order
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > converts fuzzy candidates once without changing order
+FileNameIndexer refreshed snapshot index with 0 entries
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > converts fuzzy candidates once without changing order
+[Search] Trying strategy: FuzzysortSearchStrategy for query 'resume'
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > converts fuzzy candidates once without changing order
+[Search] FuzzysortSearchStrategy completed in 0.30ms, found 3 results (total: 0.38ms)
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > converts ripgrep candidates once without changing order
+Starting directory traversal for: '/tmp/autobyteus-search-locators-Qs2iy8' with max_depth=null
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > converts ripgrep candidates once without changing order
+Directory traversal for '/tmp/autobyteus-search-locators-Qs2iy8' completed in 0.0000 seconds.
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > converts ripgrep candidates once without changing order
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > converts ripgrep candidates once without changing order
+FileNameIndexer refreshed snapshot index with 0 entries
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > converts ripgrep candidates once without changing order
+[Search] Trying strategy: FuzzysortSearchStrategy for query 'resume'
+
+stderr | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > converts ripgrep candidates once without changing order
+Strategy FuzzysortSearchStrategy failed: Error: fuzzy unavailable for test, trying next
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > converts ripgrep candidates once without changing order
+[Search] Trying strategy: RipgrepSearchStrategy for query 'resume'
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > converts ripgrep candidates once without changing order
+[Search] RipgrepSearchStrategy completed in 0.05ms, found 3 results (total: 0.26ms)
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > keeps an empty search result empty
+Starting directory traversal for: '/tmp/autobyteus-search-locators-MNz3HW' with max_depth=null
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > keeps an empty search result empty
+Directory traversal for '/tmp/autobyteus-search-locators-MNz3HW' completed in 0.0000 seconds.
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > keeps an empty search result empty
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > keeps an empty search result empty
+FileNameIndexer refreshed snapshot index with 0 entries
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > keeps an empty search result empty
+[Search] Trying strategy: FuzzysortSearchStrategy for query 'missing'
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > keeps an empty search result empty
+[Search] FuzzysortSearchStrategy completed in 0.03ms, found 0 results (total: 0.04ms)
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > does not publish a same-prefix sibling candidate as a workspace locator
+Starting directory traversal for: '/tmp/autobyteus-search-locators-BKUhlM' with max_depth=null
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > does not publish a same-prefix sibling candidate as a workspace locator
+Directory traversal for '/tmp/autobyteus-search-locators-BKUhlM' completed in 0.0000 seconds.
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > does not publish a same-prefix sibling candidate as a workspace locator
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > does not publish a same-prefix sibling candidate as a workspace locator
+FileNameIndexer refreshed snapshot index with 0 entries
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > does not publish a same-prefix sibling candidate as a workspace locator
+[Search] Trying strategy: FuzzysortSearchStrategy for query 'resume'
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > does not publish a same-prefix sibling candidate as a workspace locator
+[Search] FuzzysortSearchStrategy completed in 0.03ms, found 2 results (total: 0.04ms)
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > preserves abort while waiting for candidates and does not convert a late result
+Starting directory traversal for: '/tmp/autobyteus-search-locators-0ijrv0' with max_depth=null
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > preserves abort while waiting for candidates and does not convert a late result
+Directory traversal for '/tmp/autobyteus-search-locators-0ijrv0' completed in 0.0010 seconds.
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > preserves abort while waiting for candidates and does not convert a late result
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > preserves abort while waiting for candidates and does not convert a late result
+FileNameIndexer refreshed snapshot index with 0 entries
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > preserves abort while waiting for candidates and does not convert a late result
+[Search] Trying strategy: FuzzysortSearchStrategy for query 'resume'
+
+stdout | tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > preserves abort while waiting for candidates and does not convert a late result
+[Search] FuzzysortSearchStrategy completed in 0.24ms, found 1 results (total: 0.25ms)
+
+ ✓ tests/unit/file-explorer/workspace-file-search.test.ts (6 tests) 20ms
+stdout | tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > builds the workspace directory tree
+Starting directory traversal for: '/tmp/autobyteus-file-explorer-vyQ01t' with max_depth=null
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > builds the workspace directory tree
+Directory traversal for '/tmp/autobyteus-file-explorer-vyQ01t' completed in 0.0040 seconds.
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > reads file content within size limits
+Starting directory traversal for: '/tmp/autobyteus-file-explorer-sqvKbz' with max_depth=null
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > reads file content within size limits
+Directory traversal for '/tmp/autobyteus-file-explorer-sqvKbz' completed in 0.0010 seconds.
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > reads file content within size limits
+Starting directory traversal for: '/tmp/autobyteus-file-explorer-sqvKbz' with max_depth=null
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > reads file content within size limits
+Directory traversal for '/tmp/autobyteus-file-explorer-sqvKbz' completed in 0.0010 seconds.
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > throws when reading a file that exceeds max size
+Starting directory traversal for: '/tmp/autobyteus-file-explorer-avIQpC' with max_depth=null
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > throws when reading a file that exceeds max size
+Directory traversal for '/tmp/autobyteus-file-explorer-avIQpC' completed in 0.0000 seconds.
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > throws when reading a file that exceeds max size
+Starting directory traversal for: '/tmp/autobyteus-file-explorer-avIQpC' with max_depth=null
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > throws when reading a file that exceeds max size
+Directory traversal for '/tmp/autobyteus-file-explorer-avIQpC' completed in 0.0010 seconds.
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > returns the root tree node
+Starting directory traversal for: '/tmp/autobyteus-file-explorer-xoE4wp' with max_depth=null
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > returns the root tree node
+Directory traversal for '/tmp/autobyteus-file-explorer-xoE4wp' completed in 0.0000 seconds.
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > serializes the live tree to JSON with workspace-relative identity
+Starting directory traversal for: '/tmp/autobyteus-file-explorer-YlgMD1' with max_depth=null
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > serializes the live tree to JSON with workspace-relative identity
+Directory traversal for '/tmp/autobyteus-file-explorer-YlgMD1' completed in 0.0010 seconds.
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > serializes the live tree to JSON with workspace-relative identity
+Starting directory traversal for: '/tmp/autobyteus-file-explorer-YlgMD1' with max_depth=null
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > serializes the live tree to JSON with workspace-relative identity
+Directory traversal for '/tmp/autobyteus-file-explorer-YlgMD1' completed in 0.0010 seconds.
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > keeps an unloaded snapshot's tree JSON null
+Starting directory traversal for: '/tmp/autobyteus-file-explorer-HEcSyb' with max_depth=null
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > keeps an unloaded snapshot's tree JSON null
+Directory traversal for '/tmp/autobyteus-file-explorer-HEcSyb' completed in 0.0000 seconds.
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > rejects reading files outside the workspace
+Starting directory traversal for: '/tmp/autobyteus-file-explorer-dMH7nG' with max_depth=null
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > rejects reading files outside the workspace
+Directory traversal for '/tmp/autobyteus-file-explorer-dMH7nG' completed in 0.0000 seconds.
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > projects the live tree with limited depth and relative paths
+Starting directory traversal for: '/tmp/autobyteus-file-explorer-NMuQVW' with max_depth=null
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > projects the live tree with limited depth and relative paths
+Directory traversal for '/tmp/autobyteus-file-explorer-NMuQVW' completed in 0.0000 seconds.
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > projects the live tree with limited depth and relative paths
+Starting directory traversal for: '/tmp/autobyteus-file-explorer-NMuQVW' with max_depth=null
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > projects the live tree with limited depth and relative paths
+Directory traversal for '/tmp/autobyteus-file-explorer-NMuQVW' completed in 0.0020 seconds.
+
+ ✓ tests/unit/file-explorer/file-explorer.test.ts (8 tests) 24ms
+stdout | tests/integration/file-explorer/file-name-indexer.integration.test.ts > FileNameIndexer integration > indexes existing files from the current snapshot
+Starting directory traversal for: '/tmp/autobyteus-server-ts-index-OdiO4C' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-name-indexer.integration.test.ts > FileNameIndexer integration > indexes existing files from the current snapshot
+Directory traversal for '/tmp/autobyteus-server-ts-index-OdiO4C' completed in 0.0030 seconds.
+
+stdout | tests/integration/file-explorer/file-name-indexer.integration.test.ts > FileNameIndexer integration > indexes existing files from the current snapshot
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/integration/file-explorer/file-name-indexer.integration.test.ts > FileNameIndexer integration > indexes existing files from the current snapshot
+FileNameIndexer refreshed snapshot index with 1 entries
+
+stdout | tests/integration/file-explorer/file-name-indexer.integration.test.ts > FileNameIndexer integration > updates only after the snapshot is rebuilt and refreshed
+Starting directory traversal for: '/tmp/autobyteus-server-ts-index-1FC9g0' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-name-indexer.integration.test.ts > FileNameIndexer integration > updates only after the snapshot is rebuilt and refreshed
+Directory traversal for '/tmp/autobyteus-server-ts-index-1FC9g0' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-name-indexer.integration.test.ts > FileNameIndexer integration > updates only after the snapshot is rebuilt and refreshed
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/integration/file-explorer/file-name-indexer.integration.test.ts > FileNameIndexer integration > updates only after the snapshot is rebuilt and refreshed
+FileNameIndexer refreshed snapshot index with 1 entries
+
+stdout | tests/integration/file-explorer/file-name-indexer.integration.test.ts > FileNameIndexer integration > updates only after the snapshot is rebuilt and refreshed
+Starting directory traversal for: '/tmp/autobyteus-server-ts-index-1FC9g0' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-name-indexer.integration.test.ts > FileNameIndexer integration > updates only after the snapshot is rebuilt and refreshed
+Directory traversal for '/tmp/autobyteus-server-ts-index-1FC9g0' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-name-indexer.integration.test.ts > FileNameIndexer integration > updates only after the snapshot is rebuilt and refreshed
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/integration/file-explorer/file-name-indexer.integration.test.ts > FileNameIndexer integration > updates only after the snapshot is rebuilt and refreshed
+FileNameIndexer refreshed snapshot index with 2 entries
+
+ ✓ tests/integration/file-explorer/file-name-indexer.integration.test.ts (2 tests) 15ms
+ ✓ tests/unit/file-explorer/watcher/event-batcher.test.ts (2 tests) 14ms
+stdout | tests/unit/file-explorer/file-name-indexer.test.ts > FileNameIndexer > builds the snapshot index on refresh
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/unit/file-explorer/file-name-indexer.test.ts > FileNameIndexer > builds the snapshot index on refresh
+FileNameIndexer refreshed snapshot index with 1 entries
+
+stdout | tests/unit/file-explorer/file-name-indexer.test.ts > FileNameIndexer > does not acquire a watcher lease when refreshing the snapshot index
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/unit/file-explorer/file-name-indexer.test.ts > FileNameIndexer > does not acquire a watcher lease when refreshing the snapshot index
+FileNameIndexer refreshed snapshot index with 1 entries
+
+stdout | tests/unit/file-explorer/file-name-indexer.test.ts > FileNameIndexer > replaces stale index entries on each refresh
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/unit/file-explorer/file-name-indexer.test.ts > FileNameIndexer > replaces stale index entries on each refresh
+FileNameIndexer refreshed snapshot index with 1 entries
+
+stdout | tests/unit/file-explorer/file-name-indexer.test.ts > FileNameIndexer > replaces stale index entries on each refresh
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/unit/file-explorer/file-name-indexer.test.ts > FileNameIndexer > replaces stale index entries on each refresh
+FileNameIndexer refreshed snapshot index with 1 entries
+
+stdout | tests/unit/file-explorer/file-name-indexer.test.ts > FileNameIndexer > uses an empty index when the current tree is unavailable
+FileNameIndexer refreshing snapshot index...
+
+stderr | tests/unit/file-explorer/file-name-indexer.test.ts > FileNameIndexer > uses an empty index when the current tree is unavailable
+Tree not available for FileNameIndexer, using empty index.
+
+stdout | tests/unit/file-explorer/file-name-indexer.test.ts > FileNameIndexer > uses an empty index when the current tree is unavailable
+FileNameIndexer refreshed snapshot index with 0 entries
+
+ ✓ tests/unit/file-explorer/file-name-indexer.test.ts (4 tests) 7ms
+ ✓ tests/unit/file-explorer/tree-node.test.ts (10 tests) 6ms
+ ✓ tests/unit/file-explorer/workspace-search-snapshot-controller.test.ts (5 tests) 5ms
+ ✓ tests/unit/file-explorer/file-system-changes.test.ts (9 tests) 9ms
+stdout | tests/unit/api/graphql/converters/workspace-converter.test.ts > WorkspaceConverter > maps a regular workspace's metadata with isTemp false
+Created metadata-only FileSystemWorkspace at /path/to/ws.
+
+stdout | tests/unit/api/graphql/converters/workspace-converter.test.ts > WorkspaceConverter > maps the temp workspace with its fixed id and isTemp true
+Created metadata-only FileSystemWorkspace at /path/to/temp.
+Initialized TempWorkspace at /path/to/temp with fixed ID 'temp_ws_default'
+
+ ✓ tests/unit/api/graphql/converters/workspace-converter.test.ts (2 tests) 3ms
+ ✓ tests/unit/workspaces/workspace-path-utils.test.ts (3 tests) 2ms
+ ✓ tests/unit/file-explorer/watcher-runtime-protocol.test.ts (3 tests) 2ms
+
+ Test Files  16 passed (16)
+      Tests  87 passed (87)
+   Start at  16:05:45
+   Duration  3.92s (transform 413ms, setup 232ms, import 801ms, tests 300ms, environment 1ms)

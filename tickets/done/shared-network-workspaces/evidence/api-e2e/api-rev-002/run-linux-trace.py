@@ -1,0 +1,12 @@
+"""Postfailure diagnostic only. Public create/reconnect failures remain primary evidence."""
+from pathlib import Path
+import json,subprocess as sp,time,shlex
+E=Path(__file__).resolve().parent; S=Path((E/'scratch-path.txt').read_text().strip());C=Path('/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK');cfg=json.loads((E/'linux-repro-resource.json').read_text());v=cfg['clone'];src='/home/admin/'+v+'-source';b='/home/admin/'+v+'-binary';env={'HOME':str(S/'home'),'PATH':'/usr/bin:/bin:/usr/sbin:/sbin','TART_HOME':cfg['privateTartHome'],'TART_NO_AUTO_PRUNE':'1'};r=[]
+def g(name,code):
+ a=[str(C/'tools/tart.app/Contents/MacOS/tart'),'exec',v,'/usr/bin/env','-i','HOME=/home/admin','PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin','LANG=C','/bin/sh','-c',code];t=time.monotonic();p=sp.run(a,env=env,capture_output=True,text=True,timeout=40);d={'name':name,'argv':a,'rc':p.returncode,'seconds':round(time.monotonic()-t,3),'stdout':p.stdout,'stderr':p.stderr};r.append(d);(E/'linux-native-trace.json').write_text(json.dumps(r,indent=2)+'\n');print(name,p.returncode,flush=True);return d
+q=g('ordinary-mounted-read-and-source-identity','set -e; id; stat -c "%d:%i:%u:%g:%a" '+src+'; sha256sum '+src+'/project/preexisting.txt /Volumes/autobyteus-shared/project/preexisting.txt; cat '+src+'/.autobyteus-nfs/storage.json; cat /Volumes/autobyteus-shared/.autobyteus-nfs/storage.json; sudo -n stat -c "%u %g %a %n" /var/lib/autobyteus-nfs /var/lib/autobyteus-nfs/attachment.json; sha256sum /usr/local/bin/autobyteus-nfs')
+storage=json.loads(q['stdout'].splitlines()[4])['storageId']
+for name,path in [('source',src),('mount','/Volumes/autobyteus-shared')]:
+ g('strace-internal-probe-'+name,'sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/var/empty PATH=/usr/bin:/bin LANG=C /usr/bin/strace -f -s 200 -e trace=openat,openat2,newfstatat,statx,readlinkat,close /usr/local/bin/autobyteus-nfs internal-probe '+shlex.quote(path)+' '+storage)
+g('public-reconnect-fresh-repro',b+' reconnect --yes --json')
+with (E.parent.parent.parent/'api-e2e-test-case-ledger.md').open('a') as f:f.write('\n- '+time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime())+' **Round2 V03-repro diagnostic complete** — original/mounted ordinary reads and selected-identity strace, then public reconnect; linux-native-trace.json retained. Internal probe is diagnostic, not a replacement for public failing create.\n')

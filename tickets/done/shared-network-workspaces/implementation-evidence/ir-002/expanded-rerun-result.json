@@ -1,0 +1,51 @@
+{
+  "scope": "implementation self-checks; no live/provider gates",
+  "steps": [
+    {
+      "name": "electron-unit-all-rerun",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "test:electron",
+        "--run",
+        "--maxWorkers=2"
+      ],
+      "temporaryHome": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-rerun-mfrll47u",
+      "pid": 1267,
+      "exitCode": 0,
+      "seconds": 6.298,
+      "temporaryHomeRemoved": true
+    },
+    {
+      "name": "electron-typecheck",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "transpile-electron"
+      ],
+      "temporaryHome": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-rerun-iykai855",
+      "pid": 1408,
+      "exitCode": 0,
+      "seconds": 2.517,
+      "temporaryHomeRemoved": true
+    },
+    {
+      "name": "web-unit-all-rerun",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "test:nuxt",
+        "--run",
+        "--maxWorkers=2"
+      ],
+      "temporaryHome": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-rerun-yqgjmwf2",
+      "pid": 1441,
+      "exitCode": 0,
+      "seconds": 512.786,
+      "temporaryHomeRemoved": true
+    }
+  ]
+}

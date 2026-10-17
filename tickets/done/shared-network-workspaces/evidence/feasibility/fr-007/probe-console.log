@@ -1,0 +1,9 @@
+PASS two fresh real application-image nodes serve independent GraphQL endpoints
+PASS daemon mounts one export into both application nodes; private state and credentials isolated
+PASS each application registers the ordinary mounted project through its public workspace API
+PASS ordinary fs write in A -> application B reads/modifies -> ordinary A sees same file
+PASS application file APIs A -> B -> A use the common project, not copied attachments
+PASS real application terminal shells in selected shared cwd write/read/modify across nodes
+PASS explicit fresh directory/content requests retrieve a file added by other node
+PASS node-private app data stays separate from shared project storage
+{"run": "ab-sf-fr007-23556918", "passes": 8, "fatal": null, "cleanup_ok": true}

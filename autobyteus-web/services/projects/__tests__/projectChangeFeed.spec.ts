@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { ProjectChangeFeed, parseProjectChangeMessage, projectChangeRetryDelayMs } from '../projectChangeFeed'
+import { ProjectChangeFeed, parseProjectChangeMessage } from '../projectChangeFeed'
+import { nodeChangeRetryDelayMs } from '~/services/nodeChangeFeed/nodeChangeFeed'
 import type { ProjectChangeMessage } from '~/types/project'
 
 class FakeSocket {
@@ -87,8 +88,8 @@ describe('ProjectChangeFeed', () => {
     expect(sockets).toEqual([])
   })
 
-  it('caps the retry delay at 10 s and parses messages defensively', () => {
-    expect([0, 1, 2, 3, 4, 9].map(projectChangeRetryDelayMs)).toEqual([1000, 2000, 4000, 8000, 10_000, 10_000])
+  it('uses the shared node-feed backoff capped at 10 s and parses messages defensively', () => {
+    expect([0, 1, 2, 3, 4, 9].map(nodeChangeRetryDelayMs)).toEqual([1000, 2000, 4000, 8000, 10_000, 10_000])
     expect(parseProjectChangeMessage('null')).toBeNull()
     expect(parseProjectChangeMessage('{"type":"project_removed","projectId":"p"}')).toEqual({ type: 'project_removed', projectId: 'p' })
   })

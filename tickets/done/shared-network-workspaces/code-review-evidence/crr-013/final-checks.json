@@ -1,0 +1,23 @@
+{
+  "result": "Pass implementation source CRR013, not API/product closure",
+  "reviewScope": "Full Re-Audit",
+  "score": 100,
+  "source": "d3c88f37c30ee74a89a95a4f6906992667c9b875",
+  "input": "2dfcffbb2fb7df6dfa8d2a672f6c5f3f7690b304",
+  "inputReferencesRetained": 1449,
+  "referenceCount": 1488,
+  "protectedInputPathsVerified": 1379,
+  "oldArtifactsUnchanged": 19,
+  "newArtifactsVerified": 4,
+  "oldDistFilesUnchanged": 286,
+  "priorHistoryPrefixUnchanged": true,
+  "reviewerCheckCommands": 12,
+  "intendedMutationFailures": 3,
+  "sourceWhitespace": "Pass",
+  "rawDiagnosticWhitespaceLines": 4,
+  "cleanup": "Complete",
+  "apiAuthority": "API005 Fail57.14% broader Required unchanged",
+  "productClosure": "Not claimed; public API-F005 FIRST",
+  "productionEdits": false,
+  "releaseOrTaskDoneClaim": false
+}

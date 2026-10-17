@@ -1,0 +1,42 @@
+
+> autobyteus@1.5.4 test:e2e:run-settings-live /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/autobyteus-web
+> node tests/e2e/run-settings-live-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-model-contract/tickets/in-progress/collaboration-model-contract/evidence/probes/run-settings-live
+
+R01 Pass S1 AC-004/006/019: Team Run → New chat; drafter customized (a Codex Fast-mode model, Fast on, Ask first) → the created team run applies it to that member only
+R11 Pass S1 DI-001: the Chat nav and the "new chat" pencil open a fresh plain New chat (Daily Assistant, empty composer)
+R09 Fail S5 AC-019: Agent Run → New chat with Codex, Thinking Low and Fast; the two are independent; the run llmConfig is {reasoning_effort: low, service_tier: fast}; a first-send `@Scout` is admitted — Timed out waiting for Scout delegated
+R12 Pass S6 REQ-001/022 (VIS-020/021/027): New chat with a Codex model (long display name), Thinking and Fast on — the footer controls never overlap at 1512/880/804/390
+  · R13 observation: the unavailable Org page shows an empty heading switcher (no name, chevron only) for an unknown/deleted Org
+R13 Pass S6 AC-017 / UIS-004 / REQ-022 (VIS-017, VIS-023, VIS-014): start-surface tools open docked; the Org card shows the "Fast mode" row for a Codex model; an unknown Org shows the unavailable state
+R04 Blocked S1 AC-008 / SR-009: Agent "+" from the host run and from its delegated copy view → New chat for the agent on screen, prefilled — producer failed: R09
+R05 Pass S1 AC-008: Team "+" → New chat for the team, prefilled with the member override (Codex, Fast, Ask first)
+R02 Pass S2 AC-003: Org Run → Org launch page; Scout customized (Codex + Ask first) and the placed team on a folder → the active Org run config matches
+R03 Fail S2 AC-003: the server rejects the Org launch (its member definition was deleted meanwhile) → "Couldn't start this Agent Org. Try again.", values kept, Run enabled, no run created — locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('[data-test="org-launch-run"]')
+    - locator resolved to <button title="Run" type="button" aria-label="Run" data-test="org-launch-run" class="absolute bottom-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white shadow-sm transition-all duration-200 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:cursor-not-allowed disabled:opacity-50">…</button>
+  - attempting click action
+    - waiting for element to be visible, enabled and stable
+    - element is not stable
+  - retrying click action
+    - waiting for element to be visible, enabled and stable
+    - element is not enabled
+  - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is not enabled
+    - retrying click action
+      - waiting 100ms
+    58 × waiting for element to be visible, enabled and stable
+       - element is not enabled
+     - retrying click action
+       - waiting 500ms
+
+R06 Pass S2 AC-008: Org "+" → the Org launch page prefilled from the run: Scout override and the placed-team workspace
+  · R07 observation (outside the spec's responsive matrix): Saved run (running) root card: controls leave the card at 390px (run-setting-approval:run-setting-locked [187–326 vs card 83–307; text "Auto-approve"]); Saved run (running) member card: controls leave the card at 390px (run-setting-thinking:run-setting-locked [223–323 vs card 119–311; text "Medium"], run-setting-approval:run-setting-locked [223–329 vs card 119–311; text "Ask first"])
+  · R07 observation (outside the spec's responsive matrix): Saved run (stopped) root card: controls leave the card at 390px (run-setting-approval:run-setting-locked [187–326 vs card 83–307; text "Auto-approve"]); Saved run (stopped) member card: controls leave the card at 390px (run-setting-approval:run-setting-locked [223–329 vs card 119–311; text "Ask first"])
+R07 Pass S3 AC-009..011/019: saved Team run: running locks incl. Fast → Terminate team → Stopped; locked-runtime model menu; change → Cancel restores; change → Save; readback; resume keeps the saved config
+R08 Pass S3 AC-009/010: saved Org run: Stop Agent Org → Stopped → change the Org model → Save → readback (placed-team members follow)
+R10 Pass S1/S2 DI-004: with the Codex runtime unavailable, Team "+" and Org "+" copies that keep a Codex member block Send/Run with "Codex is unavailable. Choose another runtime."
+Summary: 10 Pass, 2 Fail, 1 Blocked
+ ELIFECYCLE  Command failed with exit code 1.

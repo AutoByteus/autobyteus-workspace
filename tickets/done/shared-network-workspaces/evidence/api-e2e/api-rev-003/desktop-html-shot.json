@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "screenshot",
+    "--tab-id",
+    "63E82A998089CC78CC6976AF907DBE03",
+    "--output-file",
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-mounted-html.png",
+    "--viewport-only"
+  ],
+  "rc": 0,
+  "stdout": "{\"schema_version\":\"1\",\"ok\":true,\"command\":\"screenshot\",\"result\":{\"tab_id\":\"63E82A998089CC78CC6976AF907DBE03\",\"url\":\"file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat\",\"artifact\":{\"path\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-003/desktop-mounted-html.png\",\"media_type\":\"image/png\",\"bytes_written\":145487}}}\n",
+  "stderr": ""
+}

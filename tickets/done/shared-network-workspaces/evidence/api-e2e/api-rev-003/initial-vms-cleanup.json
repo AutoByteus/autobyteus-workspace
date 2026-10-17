@@ -1,0 +1,62 @@
+[
+  {
+    "vm": "ab-nfs-api003-linux-76c89cd6",
+    "pid": 54251,
+    "commands": [
+      {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "stop",
+          "ab-nfs-api003-linux-76c89cd6",
+          "--timeout",
+          "15"
+        ],
+        "rc": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "delete",
+          "ab-nfs-api003-linux-76c89cd6"
+        ],
+        "rc": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "processAbsent": true,
+    "cloneAbsent": true
+  },
+  {
+    "vm": "ab-nfs-api003-linux-a6db750d",
+    "pid": 58318,
+    "commands": [
+      {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "stop",
+          "ab-nfs-api003-linux-a6db750d",
+          "--timeout",
+          "15"
+        ],
+        "rc": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "delete",
+          "ab-nfs-api003-linux-a6db750d"
+        ],
+        "rc": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "processAbsent": true,
+    "cloneAbsent": true
+  }
+]

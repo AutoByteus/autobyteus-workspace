@@ -16,6 +16,7 @@ const createReadOnlyDefinitionConfig = (packageRoot: string): AppConfig => ({
   getAgentTeamsDir: () => path.join(packageRoot, ".validation-only", "agent-teams"),
   getAgentOrgsDir: () => path.join(packageRoot, ".validation-only", "agent-orgs"),
   getAdditionalAgentPackageRoots: () => [],
+  getRegisteredAgentPackageRoots: () => [],
 }) as unknown as AppConfig;
 
 const visitConfigFiles = async (
@@ -78,13 +79,16 @@ export const validateStandaloneApplicationPackage = async (input: {
     appConfig: createReadOnlyDefinitionConfig(packageRoot),
     bundleService: selectionResult.bundleService,
   });
+  const { agentDefinitionService, agentTeamDefinitionService } = definitionServices;
   const resolver = new ApplicationExecutionResourceResolver({
     applicationBundleService: selectionResult.bundleService,
-    ...definitionServices,
+    agentDefinitionService,
+    agentTeamDefinitionService,
   });
   const baselineBuilder = new ApplicationLaunchResourceBaselineBuilder({
     executionResourceResolver: resolver,
-    ...definitionServices,
+    agentDefinitionService,
+    agentTeamDefinitionService,
   });
   for (const slot of selectionResult.selection.bundle.executionResourceSlots) {
     const defaultRef = slot.defaultExecutionResourceRef ?? null;

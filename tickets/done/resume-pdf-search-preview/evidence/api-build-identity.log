@@ -1,0 +1,11 @@
+4c3734952c4e1219687b71df20ff4f4d00572958
+codex/resume-pdf-search-preview
+v22.23.3
+10.28.2
+Linux aarch64
+8e43f4b98bcf7d8aa02b535fa22ee503beafa399e5dd47b1c647f2a16e78bd4e  autobyteus-server-ts/src/file-explorer/file-explorer.ts
+90b6abe16699570f760c89a8b5d9d266e42344582f815b493a400a2e46abb308  autobyteus-server-ts/dist/file-explorer/file-explorer.js
+c6813e7ab7ebc1eeba3f81b55caf0cf5ef8603e8749f3415b7f9bab451db4f16  autobyteus-web/components/fileExplorer/viewers/PdfViewer.vue
+2ca4dfa1429b61a00f71e9b6715689887b51b1dbf893c22e08a19918b863da1e  autobyteus-web/tests/e2e/search-pdf-preview-probe.mjs
+999bd43e8b679a7f1b65482120948444dca47a1e541122cae3bb27862069e87d  test-support/file-explorer/resume-preview.pdf
+7ede472f9974fa733499efc8b9e9066a6c11cec5d1e36b98982d6126851df2b5  /home/autobyteus/workspace/autobyteus-investor-applications/job-applications/bit-capital-ai-engineer-2026/Yu_Zheng_Resume_2026_Application.pdf

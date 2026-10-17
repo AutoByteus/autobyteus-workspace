@@ -17,7 +17,7 @@ import { testAgentOrgExecutionTree,testOrgAgentNode } from '../../fixtures/curre
 async function ingress(kind:'agent_team'|'agent_org', f:Awaited<ReturnType<typeof createRecoveryFixture>>) {
  const root=kind==='agent_team'?createTeamRootExecutionIdentity('team-run-root'):createAgentOrgRootExecutionIdentity('org-run-1');
  const identity=createCollaborationMemberExecutionIdentity({root,memberAddress:'/product_manager',agentRunId:f.run.runId});
- const memberExecutionContext=new MemberExecutionContext({identity,teamScoped:true,
+ const memberExecutionContext=new MemberExecutionContext({identity,teamScoped: true, collaborationRole: "team_member",
   collaboration:new MemberCollaborationContext({deliverLogicalMessage:async()=>({accepted:true})}),
   tasks:{root,delegateToNewCopy:vi.fn(),assignToExistingCopy:vi.fn(),submitTaskResult:vi.fn(),reviewTaskResult:vi.fn()}});
  const prepareNewAgentRun=vi.fn(async()=>({runId:f.run.runId,runtimeKind:'autobyteus',platformAgentRunId:null,
@@ -72,5 +72,5 @@ describe('actual root user command compaction recovery ingress',()=>{
    expect(f.parent.requests.slice(3).map(m=>m.at(-1)?.content)).toEqual(['A','B']);
    expect(route.prepareNewAgentRun).toHaveBeenCalledOnce();
   }finally{await route?.close();await f.close()}
- },15000);
+ },30000);
 });

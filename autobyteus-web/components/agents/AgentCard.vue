@@ -27,6 +27,7 @@
             {{ ownershipLabel }}
           </p>
         </div>
+        <DefinitionLoadIssueBadge :issues="loadIssues" />
 
         <div class="mt-3 space-y-2">
           <div class="flex items-start gap-2">
@@ -89,6 +90,8 @@
 <script setup lang="ts">
 import { computed, ref, toRefs, watch } from 'vue';
 import type { AgentDefinition } from '~/stores/agentDefinitionStore';
+import type { DefinitionLoadIssueEntry } from '~/types/agentPackageDefinitions';
+import DefinitionLoadIssueBadge from '~/components/definitions/DefinitionLoadIssueBadge.vue';
 import {
   formatApplicationOwnershipLabel,
   normalizeDefinitionOwnershipScope,
@@ -121,6 +124,14 @@ const remainingSkillsCount = computed(() => Math.max(0, totalSkills.value - MAX_
 
 watch(() => agentDef.value.avatarUrl, () => {
   avatarLoadError.value = false;
+});
+
+/** A listed agent is always usable, so its own issue means its last working version is in use. */
+const loadIssues = computed<DefinitionLoadIssueEntry[]>(() => {
+  const issue = agentDef.value.loadIssue;
+  return issue
+    ? [{ kind: 'AGENT', definitionId: agentDef.value.id, name: agentDef.value.name, usingLastGood: true, ...issue }]
+    : [];
 });
 
 const showAvatarImage = computed(() => Boolean(agentDef.value.avatarUrl) && !avatarLoadError.value);

@@ -1,0 +1,18 @@
+PASS two fresh real application-image nodes serve independent GraphQL endpoints
+PASS daemon mounts one export into both application nodes; private state and credentials isolated
+PASS each application registers the ordinary mounted project through its public workspace API
+PASS native macOS guest mounts the same Linux export and reads its independent storage identity
+PASS normal unprivileged macOS file write is read through both registered Linux workspace APIs
+PASS Linux application file modification is freshly read through native macOS mount and peer API
+PASS native macOS same-filesystem replacement publishes ordinary project bytes to both Linux nodes
+PASS Mac-created relative symlink and executable mode are usable by Linux ordinary CLI
+PASS Mac exclusive creation rejects file already created by independent Linux client
+PASS repeat setup-state check reuses one existing native mount and expected storage
+PASS owned nonempty mount location is refused without hiding existing data
+PASS CI Mac UID501 mounts user-owned location natively without root; records capability rather than assuming denial
+PASS guest identity without administrator authorization is denied and not declared ready
+PASS declined fixture Docker disruption leaves the selected owned node unchanged
+PASS approved owned Docker recreation preserves immutable image, port, six mounts and private state
+FAIL native Mac reboot automatically remounts same storage through owned system job and normal file reads TimeoutExpired(['/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart', 'exec', 'ab-sf-fr031-macos', '/usr/bin/sudo', '-n', '/sbin/shutdown', '-r', 'now'], 25)
+PROBE FAILURE TimeoutExpired(['/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart', 'exec', 'ab-sf-fr031-macos', '/usr/bin/sudo', '-n', '/sbin/shutdown', '-r', 'now'], 25)
+{"run": "ab-sf-fr031-69d2eda7", "passes": 15, "fatal": "TimeoutExpired(['/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart', 'exec', 'ab-sf-fr031-macos', '/usr/bin/sudo', '-n', '/sbin/shutdown', '-r', 'now'], 25)", "cleanup_ok": true}

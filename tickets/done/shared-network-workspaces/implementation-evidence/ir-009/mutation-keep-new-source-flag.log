@@ -1,0 +1,5 @@
+--- FAIL: TestCreatedSourceBindingSurvivesProbeFailure (0.06s)
+    source_binding_darwin_test.go:211: binding not persisted before probe {{{a19fe379-be62-4297-9a39-3934cc88214b 192.168.64.7 /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir009-unit-mutations/keep-new-source-flag/internal/setup/.source-binding-test-436592938 3 /Volumes/owned-binding-fixture} a19fe379-be62-4297-9a39-3934cc88214b 501 20 []} 0x49b3fa814750 <nil> []  true []}
+FAIL
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/setup	0.395s
+FAIL

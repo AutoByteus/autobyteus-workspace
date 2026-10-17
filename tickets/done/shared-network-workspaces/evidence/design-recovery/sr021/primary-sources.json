@@ -1,0 +1,48 @@
+{
+  "checkedAt": "2026-10-14T08:21:21.022126+00:00",
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/moby/moby/docker-v29.1.3/daemon/start.go",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr021/moby-start.txt",
+      "sha256": "d0dade1a2b5407a2c3cbae8018902e5b52188a380d6ae6c1bb95492877f72987",
+      "bytes": 11192
+    },
+    {
+      "url": "https://raw.githubusercontent.com/moby/moby/docker-v29.1.3/daemon/stop.go",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr021/moby-stop.txt",
+      "sha256": "b63e94a37c60496d2e922b66adfed89dbae4ec55f53a02fd513ef9a34665ab39",
+      "bytes": 4383
+    },
+    {
+      "url": "https://raw.githubusercontent.com/moby/moby/docker-v29.1.3/daemon/container/state.go",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr021/moby-state.txt",
+      "sha256": "b8934cbdfc7c13fbfd656e2d0fb9b9010a433d7a4d8931b6ce774f1c8e54af25",
+      "bytes": 13098
+    },
+    {
+      "url": "https://raw.githubusercontent.com/moby/moby/docker-v29.1.3/daemon/daemon.go",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr021/moby-restore.txt",
+      "sha256": "1885273985960bfdccdafe54b6d975d92eff7281cac599d3b2e54f05587912b8",
+      "bytes": 65932
+    },
+    {
+      "url": "https://raw.githubusercontent.com/moby/moby/docker-v29.1.3/daemon/volume/local/local_unix.go",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr021/moby-volume.txt",
+      "sha256": "98f3689ef541dc07af862923983fef56c31a6c7b68ecea9a29c422b35493f1f9",
+      "bytes": 6412
+    },
+    {
+      "url": "https://raw.githubusercontent.com/moby/moby/docker-v29.1.3/daemon/kill.go",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr021/moby-kill.txt",
+      "sha256": "ccf76456a3544ec343095bb649428b7c7f24af41a6c5dcd92f1df6d84ec9dab5",
+      "bytes": 6928
+    },
+    {
+      "url": "https://raw.githubusercontent.com/moby/moby/docker-v29.1.3/daemon/container/container.go",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/tickets/in-progress/shared-network-workspaces/evidence/design-recovery/sr021/moby-restart-policy.txt",
+      "sha256": "f09bf508b7d6214840458436f42a4d38ede4b473f562aedc4ccb9b649d527995",
+      "bytes": 29282
+    }
+  ],
+  "limits": "Versioned upstream source, not assertion of installed distro byte equality. Runtime evidence inherited from API003."
+}

@@ -20,10 +20,19 @@ import { AgentRunCommandRegistry } from '../../../src/agent-execution/services/a
 
 export const summary = COMPACTION_SUMMARY_HEADINGS.map(h => `## ${h}\n- Preserve the approved scope; do not deploy.`).join('\n\n');
 export async function eventually(check: () => unknown) {
-  await vi.waitFor(() => expect(check()).toBeTruthy(), { timeout: 6000, interval: 10 });
+  // A failed compaction operation includes the summarizer's transcript backoff (1 s + 2 s).
+  await vi.waitFor(() => expect(check()).toBeTruthy(), { timeout: 12000, interval: 10 });
 }
+const COMPACTION_CONVERSATION = /^compaction_(.+)_(\d+)$/;
+/**
+ * The agent's own LLM. Compaction summary requests (isolated `compaction_<op>_<attempt>` conversations)
+ * are answered from `compress`, called once per compaction execution (attempt 1); later attempts of
+ * the same execution reuse its outcome, so `compress` keeps meaning "one compaction operation".
+ */
 class Parent extends BaseLLM {
   requests: Message[][] = [];
+  readonly compress = vi.fn(async () => summary);
+  private operationOutcome: Promise<string> | null = null;
   constructor(private postResponse: boolean) {
     super(new LLMModel({ name:'parent', value:'parent', provider:LLMProvider.OPENAI, maxContextTokens:12000, activeContextTokens:12000 }),
       new LLMConfig({ maxTokens:200, compactionRatio:0.5, safetyMarginTokens:10 }));
@@ -33,13 +42,22 @@ class Parent extends BaseLLM {
     return { content:`ANSWER-${n}`, usage:buildLlmTokenUsageObservation({ inputTokens:this.postResponse && n===4 ? 7000:200, outputTokens:1, totalTokens:null, rawUsage:null }) };
   }
   protected async _sendMessagesToLLM(messages: Message[]) { return new CompleteResponse(this.response(messages)); }
-  protected async *_streamMessagesToLLM(messages: Message[]) { yield new ChunkResponse({ ...this.response(messages), is_complete:true }); }
+  protected async *_streamMessagesToLLM(messages: Message[], kwargs: Record<string, unknown> = {}) {
+    const compaction = COMPACTION_CONVERSATION.exec(String(kwargs.logicalConversationId ?? ''));
+    if (compaction) {
+      if (compaction[2] === '1' || !this.operationOutcome) this.operationOutcome = this.compress();
+      const body = await this.operationOutcome;
+      yield new ChunkResponse({ content: `<compaction_summary>\n${body}\n</compaction_summary>`, is_complete: true });
+      return;
+    }
+    yield new ChunkResponse({ ...this.response(messages), is_complete:true });
+  }
 }
 export async function createRecoveryFixture(postResponse = false) {
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'server-recovery-'));
-  const parent=new Parent(postResponse), compress=vi.fn(async()=>summary);
+  const parent=new Parent(postResponse), compress=parent.compress;
   const config=new AgentConfig('recovery','tester','test',parent); config.memoryDir=dir;
-  config.memoryCompaction=createEnabledMemoryCompactionConfiguration(new CompactionPolicy(),()=>({compress}));
+  config.memoryCompaction=createEnabledMemoryCompactionConfiguration(new CompactionPolicy());
   const native=new AgentFactory().createAgent(config); native.start();
   await eventually(()=>native.currentStatus==='idle');
   const context=new AgentRunContext({ runId:native.agentId, runtimeContext:native.context,

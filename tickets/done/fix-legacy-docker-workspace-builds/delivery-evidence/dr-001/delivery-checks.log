@@ -1,0 +1,36 @@
+Command: env -i PATH=/usr/bin:/bin HOME=<owned-temp> TMPDIR=<owned-temp> /usr/bin/python3 -m unittest scripts.tests.test_docker_build_context_sources -v
+test_current_guides_keep_supported_paths_and_no_retired_instructions (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_direct_copy_sources_exist_in_repository_root_context (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_entrypath_guard_rejects_broken_build_fixture (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_ignore_guard_rejects_saved_state_protection_loss_fixtures (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_retained_entrypaths_use_monorepo_root_context (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_retired_assets_are_absent (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_retirement_guard_rejects_reintroduced_asset_fixture (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_saved_state_exclusions_remain_effective (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_workspace_contracts_are_built_and_materialized_in_monorepo (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.115s
+
+OK
+source_exit=0
+
+Command: /usr/bin/python3 scripts/check_licensing.py
+Licensing is consistent.
+Tracked files scanned: 6508
+license_exit=0
+
+Command: /usr/bin/python3 scripts/check_repository_artifact_hygiene.py
+Repository artifact hygiene check passed.
+Tracked files scanned: 60996
+Path-length threshold: 200
+Longest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js
+hygiene_exit=0
+
+Command: git diff --check 2756d7b2 HEAD; git diff --check
+cumulative_whitespace_exit=0
+working_whitespace_exit=0
+
+Owned-temp cleanup: initial rmdir refused non-empty Python cache tree; removed only /tmp/legacy-delivery-dr001.sgpwZd with shutil.rmtree; absence verified. No user state touched.
+
+All tracked plus Delivery-owned untracked path portability checks Pass (200-char/Windows/generated-artifact policy); Delivery-owned text trailing-space check Pass; foreign receipt sha256 preserved; no staging, commits or pushes.

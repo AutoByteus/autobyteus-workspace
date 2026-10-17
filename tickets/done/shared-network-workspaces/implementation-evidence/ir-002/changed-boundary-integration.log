@@ -1,0 +1,1167 @@
+COMMAND ["pnpm", "-C", "autobyteus-server-ts", "exec", "vitest", "run", "tests/integration/agent-execution/agent-run-manager.integration.test.ts", "tests/integration/agent-execution/agent-run-service.integration.test.ts", "tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts", "tests/integration/skills/skill-integration.test.ts", "tests/integration/file-explorer/file-explorer.integration.test.ts", "tests/integration/file-explorer/file-name-indexer.integration.test.ts", "tests/integration/file-explorer/file-search.integration.test.ts", "tests/integration/file-explorer/file-system-watcher.integration.test.ts", "tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts", "--no-watch", "--maxWorkers=1"]
+CLEAN_ENV keys=CI,COREPACK_ENABLE_DOWNLOAD_PROMPT,HOME,LANG,LC_ALL,PATH,TMPDIR
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mdoes not emit events for pre-existing root .gitignore excluded directories
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-WgWR33' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mdoes not emit events for pre-existing root .gitignore excluded directories
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-WgWR33' completed in 0.0020 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mdoes not emit events for pre-existing root .gitignore excluded directories
+[22m[39mFileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-WgWR33' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mdoes not emit events for pre-existing root .gitignore excluded directories
+[22m[39mStarted filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-WgWR33
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mdoes not emit events for pre-existing root .gitignore excluded directories
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-9Ylqhg' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mdoes not emit events for pre-existing root .gitignore excluded directories
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-9Ylqhg' completed in 0.0110 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mdoes not emit events for pre-existing root .gitignore excluded directories
+[22m[39mFileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-9Ylqhg' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mdoes not emit events for pre-existing root .gitignore excluded directories
+[22m[39mStarted filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-9Ylqhg
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mdoes not emit events for pre-existing root .gitignore excluded directories
+[22m[39mLogically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-9Ylqhg
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mdoes not emit events for pre-existing root .gitignore excluded directories
+[22m[39mLogically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-WgWR33
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mdoes not emit events for pre-existing nested .gitignore excluded directories
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-ErBM3L' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mdoes not emit events for pre-existing nested .gitignore excluded directories
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-ErBM3L' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mdoes not emit events for pre-existing nested .gitignore excluded directories
+[22m[39mFileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-ErBM3L' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mdoes not emit events for pre-existing nested .gitignore excluded directories
+[22m[39mStarted filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-ErBM3L
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mdoes not emit events for pre-existing nested .gitignore excluded directories
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-ItOmQf' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mdoes not emit events for pre-existing nested .gitignore excluded directories
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-ItOmQf' completed in 0.0020 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mdoes not emit events for pre-existing nested .gitignore excluded directories
+[22m[39mFileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-ItOmQf' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mdoes not emit events for pre-existing nested .gitignore excluded directories
+[22m[39mStarted filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-ItOmQf
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mdoes not emit events for pre-existing nested .gitignore excluded directories
+[22m[39mLogically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-ItOmQf
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mdoes not emit events for pre-existing nested .gitignore excluded directories
+[22m[39mLogically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-ErBM3L
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits add + modify + delete events
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-i6QQct' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits add + modify + delete events
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-i6QQct' completed in 0.0020 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits add + modify + delete events
+[22m[39mFileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-i6QQct' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits add + modify + delete events
+[22m[39mStarted filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-i6QQct
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits add + modify + delete events
+[22m[39mWatcher detected creation: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-i6QQct/watch.txt
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits add + modify + delete events
+[22m[39mWatcher detected modification: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-i6QQct/watch.txt
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits add + modify + delete events
+[22m[39mWatcher detected deletion: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-i6QQct/watch.txt
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits add + modify + delete events
+[22m[39mLogically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-i6QQct
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mreturns one idle event stream without stopping other subscribers
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-ppv7Zr' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mreturns one idle event stream without stopping other subscribers
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-ppv7Zr' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mreturns one idle event stream without stopping other subscribers
+[22m[39mFileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-ppv7Zr' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mreturns one idle event stream without stopping other subscribers
+[22m[39mStarted filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-ppv7Zr
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mreturns one idle event stream without stopping other subscribers
+[22m[39mWatcher detected creation: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-ppv7Zr/second-subscriber-still-live.txt
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mreturns one idle event stream without stopping other subscribers
+[22m[39mLogically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-ppv7Zr
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits move/rename event
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-QqyR5M' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits move/rename event
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-QqyR5M' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits move/rename event
+[22m[39mFileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-QqyR5M' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits move/rename event
+[22m[39mStarted filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-QqyR5M
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits move/rename event
+[22m[39mWatcher detected creation: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-QqyR5M/source.txt
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits move/rename event
+[22m[39mWatcher detected move from /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-QqyR5M/source.txt to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-QqyR5M/renamed.txt
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits move/rename event
+[22m[39mLogically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-QqyR5M
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits file creation event with node metadata
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-UwCfNP' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits file creation event with node metadata
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-UwCfNP' completed in 0.0000 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits file creation event with node metadata
+[22m[39mFileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-UwCfNP' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits file creation event with node metadata
+[22m[39mStarted filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-UwCfNP
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits file creation event with node metadata
+[22m[39mWatcher detected creation: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-UwCfNP/new_file.txt
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits file creation event with node metadata
+[22m[39mLogically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-UwCfNP
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits folder creation and deletion events
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-YxJT1S' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits folder creation and deletion events
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-YxJT1S' completed in 0.0000 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits folder creation and deletion events
+[22m[39mFileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-YxJT1S' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits folder creation and deletion events
+[22m[39mStarted filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-YxJT1S
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits folder creation and deletion events
+[22m[39mWatcher detected creation: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-YxJT1S/new_folder
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits folder creation and deletion events
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-YxJT1S' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits folder creation and deletion events
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-YxJT1S' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits folder creation and deletion events
+[22m[39mWatcher detected deletion: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-YxJT1S/new_folder
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits folder creation and deletion events
+[22m[39mLogically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-YxJT1S
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mignores default strategy paths like __pycache__
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-qCm8ck' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mignores default strategy paths like __pycache__
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-qCm8ck' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mignores default strategy paths like __pycache__
+[22m[39mFileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-qCm8ck' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mignores default strategy paths like __pycache__
+[22m[39mStarted filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-qCm8ck
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mignores default strategy paths like __pycache__
+[22m[39mLogically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-qCm8ck
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mignores specific folders like .git and their contents
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-F0aVuR' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mignores specific folders like .git and their contents
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-F0aVuR' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mignores specific folders like .git and their contents
+[22m[39mFileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-F0aVuR' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mignores specific folders like .git and their contents
+[22m[39mStarted filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-F0aVuR
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mignores specific folders like .git and their contents
+[22m[39mLogically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-F0aVuR
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mrespects nested .gitignore files
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-vJ86j6' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mrespects nested .gitignore files
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-vJ86j6' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mrespects nested .gitignore files
+[22m[39mFileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-vJ86j6' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mrespects nested .gitignore files
+[22m[39mStarted filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-vJ86j6
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mrespects nested .gitignore files
+[22m[39mWatcher detected creation: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-vJ86j6/project
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mrespects nested .gitignore files
+[22m[39mWatcher detected creation: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-vJ86j6/project/.gitignore
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mrespects nested .gitignore files
+[22m[39mWatcher detected creation: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-vJ86j6/project/main.ts
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mrespects nested .gitignore files
+[22m[39mLogically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-vJ86j6
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mrespects root .gitignore files
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-uqFGOS' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mrespects root .gitignore files
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-uqFGOS' completed in 0.0000 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mrespects root .gitignore files
+[22m[39mFileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-uqFGOS' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mrespects root .gitignore files
+[22m[39mStarted filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-uqFGOS
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mrespects root .gitignore files
+[22m[39mWatcher detected creation: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-uqFGOS/.gitignore
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mrespects root .gitignore files
+[22m[39mLogically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-uqFGOS
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mcaptures rapid changes without dropping events
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-1x31dC' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mcaptures rapid changes without dropping events
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-1x31dC' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mcaptures rapid changes without dropping events
+[22m[39mFileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-1x31dC' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mcaptures rapid changes without dropping events
+[22m[39mStarted filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-1x31dC
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mcaptures rapid changes without dropping events
+[22m[39mWatcher detected creation: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-1x31dC/another_folder
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mcaptures rapid changes without dropping events
+[22m[39mWatcher detected creation: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-1x31dC/another_file.txt
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mcaptures rapid changes without dropping events
+[22m[39mLogically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-1x31dC
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mtreats moves into ignored directories as deletes from the visible tree
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-j6r7YY' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mtreats moves into ignored directories as deletes from the visible tree
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-j6r7YY' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mtreats moves into ignored directories as deletes from the visible tree
+[22m[39mFileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-j6r7YY' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mtreats moves into ignored directories as deletes from the visible tree
+[22m[39mStarted filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-j6r7YY
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mtreats moves into ignored directories as deletes from the visible tree
+[22m[39mWatcher detected creation: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-j6r7YY/.gitignore
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mtreats moves into ignored directories as deletes from the visible tree
+[22m[39mWatcher detected creation: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-j6r7YY/main.js
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mtreats moves into ignored directories as deletes from the visible tree
+[22m[39mWatcher detected deletion: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-j6r7YY/main.js
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2mtreats moves into ignored directories as deletes from the visible tree
+[22m[39mLogically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-j6r7YY
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits delete events even if the in-memory node is missing
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-3sL4yG' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits delete events even if the in-memory node is missing
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-3sL4yG' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits delete events even if the in-memory node is missing
+[22m[39mFileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-3sL4yG' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits delete events even if the in-memory node is missing
+[22m[39mStarted filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-3sL4yG
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits delete events even if the in-memory node is missing
+[22m[39mWatcher detected creation: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-3sL4yG/ghost_file.txt
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits delete events even if the in-memory node is missing
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-3sL4yG' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits delete events even if the in-memory node is missing
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-3sL4yG' completed in 0.0030 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits delete events even if the in-memory node is missing
+[22m[39mWatcher detected deletion: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-3sL4yG/ghost_file.txt
+
+[90mstdout[2m | tests/integration/file-explorer/file-system-watcher.integration.test.ts[2m > [22m[2mFileSystemWatcher integration[2m > [22m[2memits delete events even if the in-memory node is missing
+[22m[39mLogically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-watch-3sL4yG
+
+ [32m✓[39m tests/integration/file-explorer/file-system-watcher.integration.test.ts [2m([22m[2m14 tests[22m[2m)[22m[33m 17489[2mms[22m[39m
+     [33m[2m✓[22m[39m does not emit events for pre-existing root .gitignore excluded directories [33m 1195[2mms[22m[39m
+     [33m[2m✓[22m[39m does not emit events for pre-existing nested .gitignore excluded directories [33m 1148[2mms[22m[39m
+     [33m[2m✓[22m[39m emits add + modify + delete events [33m 1636[2mms[22m[39m
+     [33m[2m✓[22m[39m returns one idle event stream without stopping other subscribers [33m 559[2mms[22m[39m
+     [33m[2m✓[22m[39m emits move/rename event [33m 1030[2mms[22m[39m
+     [33m[2m✓[22m[39m emits file creation event with node metadata [33m 534[2mms[22m[39m
+     [33m[2m✓[22m[39m emits folder creation and deletion events [33m 822[2mms[22m[39m
+     [33m[2m✓[22m[39m ignores default strategy paths like __pycache__ [33m 885[2mms[22m[39m
+     [33m[2m✓[22m[39m ignores specific folders like .git and their contents [33m 1683[2mms[22m[39m
+     [33m[2m✓[22m[39m respects nested .gitignore files [33m 2333[2mms[22m[39m
+     [33m[2m✓[22m[39m respects root .gitignore files [33m 1560[2mms[22m[39m
+     [33m[2m✓[22m[39m captures rapid changes without dropping events [33m 356[2mms[22m[39m
+     [33m[2m✓[22m[39m treats moves into ignored directories as deletes from the visible tree [33m 2617[2mms[22m[39m
+     [33m[2m✓[22m[39m emits delete events even if the in-memory node is missing [33m 1128[2mms[22m[39m
+[90mstdout[2m | tests/integration/agent-execution/agent-run-service.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/integration/agent-execution/agent-run-service.integration.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 19[2mms[22m[39m
+[90mstdout[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mcreates and registers an active autobyteus run through the matching backend factory
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mcreates and registers an active codex_app_server run through the matching backend factory
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mcreates and registers an active codex_app_server run through the matching backend factory
+[22m[39m[AgentRunMemoryRecorder] skipping run 'run-codex' because AgentRunConfig.memoryDir is missing.
+
+[90mstdout[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mcreates and registers an active claude_agent_sdk run through the matching backend factory
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mcreates and registers an active claude_agent_sdk run through the matching backend factory
+[22m[39m[AgentRunMemoryRecorder] skipping run 'run-claude' because AgentRunConfig.memoryDir is missing.
+
+[90mstdout[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mrestores a autobyteus run through the matching backend factory
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mrestores a codex_app_server run through the matching backend factory
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mrestores a codex_app_server run through the matching backend factory
+[22m[39m[AgentRunMemoryRecorder] skipping run 'restored-codex_app_server' because AgentRunConfig.memoryDir is missing.
+
+[90mstdout[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mrestores a claude_agent_sdk run through the matching backend factory
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mrestores a claude_agent_sdk run through the matching backend factory
+[22m[39m[AgentRunMemoryRecorder] skipping run 'restored-claude_agent_sdk' because AgentRunConfig.memoryDir is missing.
+
+[90mstdout[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mrestores Claude platform state with auto approval separate from provider permission mode
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mrestores Claude platform state with auto approval separate from provider permission mode
+[22m[39m[AgentRunMemoryRecorder] skipping run 'run-restore-claude-platform' because AgentRunConfig.memoryDir is missing.
+
+[90mstdout[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mevicts inactive runs when queried or listed
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mterminates and unregisters active runs on accepted termination
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mterminates and unregisters active runs on accepted termination
+[22m[39m[AgentRunMemoryRecorder] skipping run 'run-terminate-ok' because AgentRunConfig.memoryDir is missing.
+
+[90mstdout[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mreturns false for missing runs and for unaccepted termination without unregistering
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mreturns false for missing runs and for unaccepted termination without unregistering
+[22m[39m[AgentRunMemoryRecorder] skipping run 'run-terminate-no' because AgentRunConfig.memoryDir is missing.
+
+[90mstdout[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mwraps termination failures in AgentTerminationError
+[22m[39mAgentRunManager initialized.
+
+[90mstderr[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mwraps termination failures in AgentTerminationError
+[22m[39mFailed to terminate agent run 'run-terminate-error': Error: boom
+
+[90mstdout[2m | tests/integration/agent-execution/agent-run-manager.integration.test.ts[2m > [22m[2mAgentRunManager integration[2m > [22m[2mrejects unsupported runtime kinds for create and restore
+[22m[39mAgentRunManager initialized.
+
+ [32m✓[39m tests/integration/agent-execution/agent-run-manager.integration.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mUsing temp workspace (ID: temp_ws_backend_integration) for agent.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mAgentRuntimeState initialized for agent_id 'autobyteus_backend_agent_11111111111111111111111111111111'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': LLM instance 'DummyLLM' and 4 tools prepared and stored in state.
+AgentContext composed for agent_id 'autobyteus_backend_agent_11111111111111111111111111111111'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'autobyteus_backend_agent_11111111111111111111111111111111' with config: 'AutoByteusBackendAgent'.
+AgentWorker initialized for agent_id 'autobyteus_backend_agent_11111111111111111111111111111111'.
+Registered AgentContext for agent_id 'autobyteus_backend_agent_11111111111111111111111111111111'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'autobyteus_backend_agent_11111111111111111111111111111111'. Context registered.
+Agent facade initialized for agent_id 'autobyteus_backend_agent_11111111111111111111111111111111'.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111' created and stored successfully.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111' requesting runtime to start.
+AgentRuntime for 'autobyteus_backend_agent_11111111111111111111111111111111': Starting worker.
+AgentWorker 'autobyteus_backend_agent_11111111111111111111111111111111': Starting...
+AgentWorker 'autobyteus_backend_agent_11111111111111111111111111111111' asyncRun(): Starting.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Runtime init completed (event store initialized).
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Runtime init completed (status deriver initialized).
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Runtime init completed (AgentEventInbox initialized).
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'autobyteus_backend_agent_11111111111111111111111111111111' to become idle (timeout: 30s)...
+AgentEventStream (ID: fc2ba022-1b68-41bd-9a74-775f67a6ae34) initialized for agent_id 'autobyteus_backend_agent_11111111111111111111111111111111'. Subscribed to notifier.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mAgentExternalEventNotifier (NotifierID: 91b97431-de94-4c35-8e12-f398a2450c2b, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mAgent 'autobyteus_backend_agent_11111111111111111111111111111111': Bootstrapper starting direct lifecycle execution.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mAgent 'autobyteus_backend_agent_11111111111111111111111111111111': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Executing SystemPromptProcessingStep.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': No configured skills. Skipping skill catalog.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Final processed system prompt configured and captured. Trace ID: rt_1791916131605_585cf4e1-faf0-41fd-b1d2-ab0decacaf41. Final length: 2647.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mAgent 'autobyteus_backend_agent_11111111111111111111111111111111': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mAgentExternalEventNotifier (NotifierID: 91b97431-de94-4c35-8e12-f398a2450c2b, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mAgentWorker 'autobyteus_backend_agent_11111111111111111111111111111111' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mAgent 'autobyteus_backend_agent_11111111111111111111111111111111' has become idle.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mAgentEventStream (ID: fc2ba022-1b68-41bd-9a74-775f67a6ae34) for 'autobyteus_backend_agent_11111111111111111111111111111111': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mAgentEventStream (ID: 61baec17-2723-4c4d-bc8a-a2d39a3341b0) initialized for agent_id 'autobyteus_backend_agent_11111111111111111111111111111111'. Subscribed to notifier.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mAgentExternalEventNotifier (NotifierID: 91b97431-de94-4c35-8e12-f398a2450c2b, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mAgentExternalEventNotifier (NotifierID: 91b97431-de94-4c35-8e12-f398a2450c2b, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mAgentExternalEventNotifier (NotifierID: 91b97431-de94-4c35-8e12-f398a2450c2b, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mAgentExternalEventNotifier (NotifierID: 91b97431-de94-4c35-8e12-f398a2450c2b, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mAgentExternalEventNotifier (NotifierID: 91b97431-de94-4c35-8e12-f398a2450c2b, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mAgentExternalEventNotifier (NotifierID: 91b97431-de94-4c35-8e12-f398a2450c2b, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mAgentExternalEventNotifier (NotifierID: 91b97431-de94-4c35-8e12-f398a2450c2b, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mAgentExternalEventNotifier (NotifierID: 91b97431-de94-4c35-8e12-f398a2450c2b, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mRemoving agent 'autobyteus_backend_agent_11111111111111111111111111111111'. Attempting graceful shutdown.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111' requesting runtime to stop (timeout: 10s).
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mAgentExternalEventNotifier (NotifierID: 91b97431-de94-4c35-8e12-f398a2450c2b, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mAgentWorker 'autobyteus_backend_agent_11111111111111111111111111111111': Stop requested.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mAgentExternalEventNotifier (NotifierID: 91b97431-de94-4c35-8e12-f398a2450c2b, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mAgentExternalEventNotifier (NotifierID: 91b97431-de94-4c35-8e12-f398a2450c2b, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'autobyteus_backend_agent_11111111111111111111111111111111' asyncRun() loop has finished.
+AgentWorker 'autobyteus_backend_agent_11111111111111111111111111111111': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mAgentWorker 'autobyteus_backend_agent_11111111111111111111111111111111': Shutdown resource cleanup completed successfully.
+AgentWorker 'autobyteus_backend_agent_11111111111111111111111111111111': Shutdown sequence completed.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mUnregistered AgentContext for agent_id 'autobyteus_backend_agent_11111111111111111111111111111111'.
+AgentRuntime for 'autobyteus_backend_agent_11111111111111111111111111111111': Context unregistered.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mAgentRuntime for 'autobyteus_backend_agent_11111111111111111111111111111111' stop() method completed.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mAgentEventStream (ID: 61baec17-2723-4c4d-bc8a-a2d39a3341b0) for 'autobyteus_backend_agent_11111111111111111111111111111111': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mcreates a live backend that can process a turn and terminate cleanly
+[22m[39mAgentEventStream (ID: 61baec17-2723-4c4d-bc8a-a2d39a3341b0) for 'autobyteus_backend_agent_11111111111111111111111111111111': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mUsing temp workspace (ID: temp_ws_backend_integration) for agent.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mAgentRuntimeState initialized for agent_id 'preferred_autobyteus_run_4242'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'preferred_autobyteus_run_4242': LLM instance 'DummyLLM' and 4 tools prepared and stored in state.
+AgentContext composed for agent_id 'preferred_autobyteus_run_4242'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'preferred_autobyteus_run_4242' with config: 'AutoByteusBackendAgent'.
+AgentWorker initialized for agent_id 'preferred_autobyteus_run_4242'.
+Registered AgentContext for agent_id 'preferred_autobyteus_run_4242'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'preferred_autobyteus_run_4242'. Context registered.
+Agent facade initialized for agent_id 'preferred_autobyteus_run_4242'.
+Agent 'preferred_autobyteus_run_4242' created and stored successfully.
+Agent 'preferred_autobyteus_run_4242' requesting runtime to start.
+AgentRuntime for 'preferred_autobyteus_run_4242': Starting worker.
+AgentWorker 'preferred_autobyteus_run_4242': Starting...
+AgentWorker 'preferred_autobyteus_run_4242' asyncRun(): Starting.
+Agent 'preferred_autobyteus_run_4242': Runtime init completed (event store initialized).
+Agent 'preferred_autobyteus_run_4242': Runtime init completed (status deriver initialized).
+Agent 'preferred_autobyteus_run_4242': Runtime init completed (AgentEventInbox initialized).
+Agent 'preferred_autobyteus_run_4242': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'preferred_autobyteus_run_4242' to become idle (timeout: 30s)...
+AgentEventStream (ID: 3f1f4042-76e7-43c1-a6a4-2a11cc4cc559) initialized for agent_id 'preferred_autobyteus_run_4242'. Subscribed to notifier.
+Agent 'preferred_autobyteus_run_4242': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a06d9d2-7c2f-4970-b23e-0030827b4d67, AgentID: preferred_autobyteus_run_4242) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mAgent 'preferred_autobyteus_run_4242': Bootstrapper starting direct lifecycle execution.
+Agent 'preferred_autobyteus_run_4242': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'preferred_autobyteus_run_4242': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mAgent 'preferred_autobyteus_run_4242': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'preferred_autobyteus_run_4242': Executing SystemPromptProcessingStep.
+Agent 'preferred_autobyteus_run_4242': No configured skills. Skipping skill catalog.
+Agent 'preferred_autobyteus_run_4242': Final processed system prompt configured and captured. Trace ID: rt_1791916131687_82ee49a8-0a21-405a-ac97-e4255d3dfe8f. Final length: 2647.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mAgent 'preferred_autobyteus_run_4242': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a06d9d2-7c2f-4970-b23e-0030827b4d67, AgentID: preferred_autobyteus_run_4242) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mAgentWorker 'preferred_autobyteus_run_4242' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mAgent 'preferred_autobyteus_run_4242' has become idle.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mAgentEventStream (ID: 3f1f4042-76e7-43c1-a6a4-2a11cc4cc559) for 'preferred_autobyteus_run_4242': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mAgentEventStream (ID: 7b0a5518-c34b-40b6-8a47-af0317b09fe6) initialized for agent_id 'preferred_autobyteus_run_4242'. Subscribed to notifier.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a06d9d2-7c2f-4970-b23e-0030827b4d67, AgentID: preferred_autobyteus_run_4242) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a06d9d2-7c2f-4970-b23e-0030827b4d67, AgentID: preferred_autobyteus_run_4242) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a06d9d2-7c2f-4970-b23e-0030827b4d67, AgentID: preferred_autobyteus_run_4242) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a06d9d2-7c2f-4970-b23e-0030827b4d67, AgentID: preferred_autobyteus_run_4242) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a06d9d2-7c2f-4970-b23e-0030827b4d67, AgentID: preferred_autobyteus_run_4242) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a06d9d2-7c2f-4970-b23e-0030827b4d67, AgentID: preferred_autobyteus_run_4242) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a06d9d2-7c2f-4970-b23e-0030827b4d67, AgentID: preferred_autobyteus_run_4242) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a06d9d2-7c2f-4970-b23e-0030827b4d67, AgentID: preferred_autobyteus_run_4242) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mAgentEventStream (ID: 7b0a5518-c34b-40b6-8a47-af0317b09fe6) for 'preferred_autobyteus_run_4242': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mRemoving agent 'preferred_autobyteus_run_4242'. Attempting graceful shutdown.
+Agent 'preferred_autobyteus_run_4242' requesting runtime to stop (timeout: 10s).
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a06d9d2-7c2f-4970-b23e-0030827b4d67, AgentID: preferred_autobyteus_run_4242) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mAgentWorker 'preferred_autobyteus_run_4242': Stop requested.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a06d9d2-7c2f-4970-b23e-0030827b4d67, AgentID: preferred_autobyteus_run_4242) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mAgentExternalEventNotifier (NotifierID: 2a06d9d2-7c2f-4970-b23e-0030827b4d67, AgentID: preferred_autobyteus_run_4242) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'preferred_autobyteus_run_4242' asyncRun() loop has finished.
+AgentWorker 'preferred_autobyteus_run_4242': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mAgentWorker 'preferred_autobyteus_run_4242': Shutdown resource cleanup completed successfully.
+AgentWorker 'preferred_autobyteus_run_4242': Shutdown sequence completed.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mUnregistered AgentContext for agent_id 'preferred_autobyteus_run_4242'.
+AgentRuntime for 'preferred_autobyteus_run_4242': Context unregistered.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrespects a preferred run id and provisions the standalone memory directory explicitly
+[22m[39mAgentRuntime for 'preferred_autobyteus_run_4242' stop() method completed.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mUsing temp workspace (ID: temp_ws_backend_integration) for agent.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentRuntimeState initialized for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': LLM instance 'DummyLLM' and 4 tools prepared and stored in state.
+AgentContext composed for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'autobyteus_backend_agent_22222222222222222222222222222222' with config: 'AutoByteusBackendAgent'.
+AgentWorker initialized for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'.
+Registered AgentContext for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'. Context registered.
+Agent facade initialized for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222' created and stored successfully.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222' requesting runtime to start.
+AgentRuntime for 'autobyteus_backend_agent_22222222222222222222222222222222': Starting worker.
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222': Starting...
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222' asyncRun(): Starting.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Runtime init completed (event store initialized).
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Runtime init completed (status deriver initialized).
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Runtime init completed (AgentEventInbox initialized).
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'autobyteus_backend_agent_22222222222222222222222222222222' to become idle (timeout: 30s)...
+AgentEventStream (ID: a83bbfdb-344f-45b6-a6e3-c02b6b3f0e38) initialized for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'. Subscribed to notifier.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentExternalEventNotifier (NotifierID: 4cc92023-1283-477b-a290-80cf8e1a9a11, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgent 'autobyteus_backend_agent_22222222222222222222222222222222': Bootstrapper starting direct lifecycle execution.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgent 'autobyteus_backend_agent_22222222222222222222222222222222': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Executing SystemPromptProcessingStep.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': No configured skills. Skipping skill catalog.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Final processed system prompt configured and captured. Trace ID: rt_1791916131758_05e15c0b-c4bf-44a7-b878-bbe1271a138c. Final length: 2647.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgent 'autobyteus_backend_agent_22222222222222222222222222222222': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentExternalEventNotifier (NotifierID: 4cc92023-1283-477b-a290-80cf8e1a9a11, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgent 'autobyteus_backend_agent_22222222222222222222222222222222' has become idle.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentEventStream (ID: a83bbfdb-344f-45b6-a6e3-c02b6b3f0e38) for 'autobyteus_backend_agent_22222222222222222222222222222222': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentEventStream (ID: c8102357-2f21-4fb1-80f3-14078f88bea8) initialized for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'. Subscribed to notifier.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentExternalEventNotifier (NotifierID: 4cc92023-1283-477b-a290-80cf8e1a9a11, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentExternalEventNotifier (NotifierID: 4cc92023-1283-477b-a290-80cf8e1a9a11, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentExternalEventNotifier (NotifierID: 4cc92023-1283-477b-a290-80cf8e1a9a11, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentExternalEventNotifier (NotifierID: 4cc92023-1283-477b-a290-80cf8e1a9a11, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentExternalEventNotifier (NotifierID: 4cc92023-1283-477b-a290-80cf8e1a9a11, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentExternalEventNotifier (NotifierID: 4cc92023-1283-477b-a290-80cf8e1a9a11, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentExternalEventNotifier (NotifierID: 4cc92023-1283-477b-a290-80cf8e1a9a11, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentExternalEventNotifier (NotifierID: 4cc92023-1283-477b-a290-80cf8e1a9a11, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mRemoving agent 'autobyteus_backend_agent_22222222222222222222222222222222'. Attempting graceful shutdown.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222' requesting runtime to stop (timeout: 10s).
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentExternalEventNotifier (NotifierID: 4cc92023-1283-477b-a290-80cf8e1a9a11, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222': Stop requested.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentExternalEventNotifier (NotifierID: 4cc92023-1283-477b-a290-80cf8e1a9a11, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentExternalEventNotifier (NotifierID: 4cc92023-1283-477b-a290-80cf8e1a9a11, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222' asyncRun() loop has finished.
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222': Shutdown resource cleanup completed successfully.
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222': Shutdown sequence completed.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mUnregistered AgentContext for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'.
+AgentRuntime for 'autobyteus_backend_agent_22222222222222222222222222222222': Context unregistered.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentRuntime for 'autobyteus_backend_agent_22222222222222222222222222222222' stop() method completed.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentEventStream (ID: c8102357-2f21-4fb1-80f3-14078f88bea8) for 'autobyteus_backend_agent_22222222222222222222222222222222': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentEventStream (ID: c8102357-2f21-4fb1-80f3-14078f88bea8) for 'autobyteus_backend_agent_22222222222222222222222222222222': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mUsing temp workspace (ID: temp_ws_backend_integration) for agent.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentRuntimeState initialized for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': LLM instance 'DummyLLM' and 4 tools prepared and stored in state.
+AgentContext composed for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'autobyteus_backend_agent_22222222222222222222222222222222' with config: 'AutoByteusBackendAgent'.
+AgentWorker initialized for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'.
+Registered AgentContext for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'. Context registered.
+Agent facade initialized for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222' restored and stored successfully.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222' requesting runtime to start.
+AgentRuntime for 'autobyteus_backend_agent_22222222222222222222222222222222': Starting worker.
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222': Starting...
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222' asyncRun(): Starting.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Runtime init completed (event store initialized).
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Runtime init completed (status deriver initialized).
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Runtime init completed (AgentEventInbox initialized).
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'autobyteus_backend_agent_22222222222222222222222222222222' to become idle (timeout: 30s)...
+AgentEventStream (ID: 2d9aaefa-8be1-47fb-8540-d58bd6118867) initialized for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'. Subscribed to notifier.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentExternalEventNotifier (NotifierID: 7ff67471-4498-4c6c-9cdd-2f19abaf93a9, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgent 'autobyteus_backend_agent_22222222222222222222222222222222': Bootstrapper starting direct lifecycle execution.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgent 'autobyteus_backend_agent_22222222222222222222222222222222': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Executing SystemPromptProcessingStep.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': No configured skills. Skipping skill catalog.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Final processed system prompt configured and captured. Trace ID: rt_1791916131758_05e15c0b-c4bf-44a7-b878-bbe1271a138c. Final length: 2647.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgent 'autobyteus_backend_agent_22222222222222222222222222222222': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentExternalEventNotifier (NotifierID: 7ff67471-4498-4c6c-9cdd-2f19abaf93a9, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgent 'autobyteus_backend_agent_22222222222222222222222222222222' has become idle.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentEventStream (ID: 2d9aaefa-8be1-47fb-8540-d58bd6118867) for 'autobyteus_backend_agent_22222222222222222222222222222222': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentEventStream (ID: 57f5f334-a915-4000-b06d-5eb05b90dbb8) initialized for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'. Subscribed to notifier.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentExternalEventNotifier (NotifierID: 7ff67471-4498-4c6c-9cdd-2f19abaf93a9, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentExternalEventNotifier (NotifierID: 7ff67471-4498-4c6c-9cdd-2f19abaf93a9, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentExternalEventNotifier (NotifierID: 7ff67471-4498-4c6c-9cdd-2f19abaf93a9, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentExternalEventNotifier (NotifierID: 7ff67471-4498-4c6c-9cdd-2f19abaf93a9, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentExternalEventNotifier (NotifierID: 7ff67471-4498-4c6c-9cdd-2f19abaf93a9, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentExternalEventNotifier (NotifierID: 7ff67471-4498-4c6c-9cdd-2f19abaf93a9, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentExternalEventNotifier (NotifierID: 7ff67471-4498-4c6c-9cdd-2f19abaf93a9, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentExternalEventNotifier (NotifierID: 7ff67471-4498-4c6c-9cdd-2f19abaf93a9, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentEventStream (ID: 57f5f334-a915-4000-b06d-5eb05b90dbb8) for 'autobyteus_backend_agent_22222222222222222222222222222222': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mRemoving agent 'autobyteus_backend_agent_22222222222222222222222222222222'. Attempting graceful shutdown.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222' requesting runtime to stop (timeout: 10s).
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentExternalEventNotifier (NotifierID: 7ff67471-4498-4c6c-9cdd-2f19abaf93a9, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222': Stop requested.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentExternalEventNotifier (NotifierID: 7ff67471-4498-4c6c-9cdd-2f19abaf93a9, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentExternalEventNotifier (NotifierID: 7ff67471-4498-4c6c-9cdd-2f19abaf93a9, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222' asyncRun() loop has finished.
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222': Shutdown resource cleanup completed successfully.
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222': Shutdown sequence completed.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mUnregistered AgentContext for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'.
+AgentRuntime for 'autobyteus_backend_agent_22222222222222222222222222222222': Context unregistered.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrestores a terminated run with the same run id
+[22m[39mAgentRuntime for 'autobyteus_backend_agent_22222222222222222222222222222222' stop() method completed.
+
+[90mstdout[2m | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory integration[2m > [22m[2mrejects fresh create when the standalone run is not fully prepared
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+ [32m✓[39m tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 312[2mms[22m[39m
+[90mstdout[2m | tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts[2m > [22m[2mNested folder move watcher integration[2m > [22m[2mreturns one direct move event and suppresses watcher self-echoes for a nested ticket folder move
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-move-watch-mZQkwV' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts[2m > [22m[2mNested folder move watcher integration[2m > [22m[2mreturns one direct move event and suppresses watcher self-echoes for a nested ticket folder move
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-move-watch-mZQkwV' completed in 0.0160 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts[2m > [22m[2mNested folder move watcher integration[2m > [22m[2mreturns one direct move event and suppresses watcher self-echoes for a nested ticket folder move
+[22m[39mFileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-move-watch-mZQkwV' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+[90mstdout[2m | tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts[2m > [22m[2mNested folder move watcher integration[2m > [22m[2mreturns one direct move event and suppresses watcher self-echoes for a nested ticket folder move
+[22m[39mStarted filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-move-watch-mZQkwV
+
+[90mstdout[2m | tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts[2m > [22m[2mNested folder move watcher integration[2m > [22m[2mreturns one direct move event and suppresses watcher self-echoes for a nested ticket folder move
+[22m[39mLogically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-move-watch-mZQkwV
+
+ [32m✓[39m tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 1311[2mms[22m[39m
+     [33m[2m✓[22m[39m returns one direct move event and suppresses watcher self-echoes for a nested ticket folder move [33m 1310[2mms[22m[39m
+[90mstdout[2m | tests/integration/file-explorer/file-explorer.integration.test.ts[2m > [22m[2mWorkspaceFileExplorer integration[2m > [22m[2mbuilds tree and lists file paths
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-ApNFes' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-explorer.integration.test.ts[2m > [22m[2mWorkspaceFileExplorer integration[2m > [22m[2mbuilds tree and lists file paths
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-ApNFes' completed in 0.0040 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-explorer.integration.test.ts[2m > [22m[2mWorkspaceFileExplorer integration[2m > [22m[2mwrites new file and emits ADD change
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-BxkDes' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-explorer.integration.test.ts[2m > [22m[2mWorkspaceFileExplorer integration[2m > [22m[2mwrites new file and emits ADD change
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-BxkDes' completed in 0.0000 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-explorer.integration.test.ts[2m > [22m[2mWorkspaceFileExplorer integration[2m > [22m[2mmodifies existing file and emits MODIFY change
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-ZOtstT' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-explorer.integration.test.ts[2m > [22m[2mWorkspaceFileExplorer integration[2m > [22m[2mmodifies existing file and emits MODIFY change
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-ZOtstT' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-explorer.integration.test.ts[2m > [22m[2mWorkspaceFileExplorer integration[2m > [22m[2mrenames file and emits RENAME change
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-njGYlZ' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-explorer.integration.test.ts[2m > [22m[2mWorkspaceFileExplorer integration[2m > [22m[2mrenames file and emits RENAME change
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-njGYlZ' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-explorer.integration.test.ts[2m > [22m[2mWorkspaceFileExplorer integration[2m > [22m[2mmoves file and emits MOVE change
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-80KPlr' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-explorer.integration.test.ts[2m > [22m[2mWorkspaceFileExplorer integration[2m > [22m[2mmoves file and emits MOVE change
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-80KPlr' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-explorer.integration.test.ts[2m > [22m[2mWorkspaceFileExplorer integration[2m > [22m[2mremoves file and emits DELETE change
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-HPv89g' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-explorer.integration.test.ts[2m > [22m[2mWorkspaceFileExplorer integration[2m > [22m[2mremoves file and emits DELETE change
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-HPv89g' completed in 0.0000 seconds.
+
+ [32m✓[39m tests/integration/file-explorer/file-explorer.integration.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mfinds files by name after background indexing completes
+[22m[39mCreated metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-search-Y5kcZN.
+
+[90mstderr[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mfinds files by name after background indexing completes
+[22m[39mFileSystemWorkspace.initialize() is metadata-only for search-test-workspace; file explorer acquisition is explicit.
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mfinds files by name after background indexing completes
+[22m[39mCreated WorkspaceFileExplorer for search-test-workspace (integration-search).
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mfinds files by name after background indexing completes
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-search-Y5kcZN' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mfinds files by name after background indexing completes
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-search-Y5kcZN' completed in 0.0020 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mfinds files by name after background indexing completes
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mfinds files by name after background indexing completes
+[22m[39mFileNameIndexer refreshed snapshot index with 2 entries
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mfinds files by name after background indexing completes
+[22m[39m[Search] Trying strategy: FuzzysortSearchStrategy for query 'readme'
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mfinds files by name after background indexing completes
+[22m[39m[Search] FuzzysortSearchStrategy completed in 0.53ms, found 1 results (total: 0.56ms)
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mfinds files by name after background indexing completes
+[22m[39mClosing FileSystemWorkspace search-test-workspace
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mreturns absolute paths for matches
+[22m[39mCreated metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-search-KI4wkD.
+
+[90mstderr[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mreturns absolute paths for matches
+[22m[39mFileSystemWorkspace.initialize() is metadata-only for search-test-workspace; file explorer acquisition is explicit.
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mreturns absolute paths for matches
+[22m[39mCreated WorkspaceFileExplorer for search-test-workspace (integration-search).
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mreturns absolute paths for matches
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-search-KI4wkD' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mreturns absolute paths for matches
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-search-KI4wkD' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mreturns absolute paths for matches
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mreturns absolute paths for matches
+[22m[39mFileNameIndexer refreshed snapshot index with 2 entries
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mreturns absolute paths for matches
+[22m[39m[Search] Trying strategy: FuzzysortSearchStrategy for query 'alpha'
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mreturns absolute paths for matches
+[22m[39m[Search] FuzzysortSearchStrategy completed in 0.05ms, found 1 results (total: 0.06ms)
+
+[90mstdout[2m | tests/integration/file-explorer/file-search.integration.test.ts[2m > [22m[2mFileSystemWorkspace searchFiles integration[2m > [22m[2mreturns absolute paths for matches
+[22m[39mClosing FileSystemWorkspace search-test-workspace
+
+ [32m✓[39m tests/integration/file-explorer/file-search.integration.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+[90mstdout[2m | tests/integration/file-explorer/file-name-indexer.integration.test.ts[2m > [22m[2mFileNameIndexer integration[2m > [22m[2mindexes existing files from the current snapshot
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-index-Jtd3JU' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-name-indexer.integration.test.ts[2m > [22m[2mFileNameIndexer integration[2m > [22m[2mindexes existing files from the current snapshot
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-index-Jtd3JU' completed in 0.0020 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-name-indexer.integration.test.ts[2m > [22m[2mFileNameIndexer integration[2m > [22m[2mindexes existing files from the current snapshot
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/integration/file-explorer/file-name-indexer.integration.test.ts[2m > [22m[2mFileNameIndexer integration[2m > [22m[2mindexes existing files from the current snapshot
+[22m[39mFileNameIndexer refreshed snapshot index with 1 entries
+
+[90mstdout[2m | tests/integration/file-explorer/file-name-indexer.integration.test.ts[2m > [22m[2mFileNameIndexer integration[2m > [22m[2mupdates only after the snapshot is rebuilt and refreshed
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-index-oZEecc' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-name-indexer.integration.test.ts[2m > [22m[2mFileNameIndexer integration[2m > [22m[2mupdates only after the snapshot is rebuilt and refreshed
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-index-oZEecc' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-name-indexer.integration.test.ts[2m > [22m[2mFileNameIndexer integration[2m > [22m[2mupdates only after the snapshot is rebuilt and refreshed
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/integration/file-explorer/file-name-indexer.integration.test.ts[2m > [22m[2mFileNameIndexer integration[2m > [22m[2mupdates only after the snapshot is rebuilt and refreshed
+[22m[39mFileNameIndexer refreshed snapshot index with 1 entries
+
+[90mstdout[2m | tests/integration/file-explorer/file-name-indexer.integration.test.ts[2m > [22m[2mFileNameIndexer integration[2m > [22m[2mupdates only after the snapshot is rebuilt and refreshed
+[22m[39mStarting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-index-oZEecc' with max_depth=null
+
+[90mstdout[2m | tests/integration/file-explorer/file-name-indexer.integration.test.ts[2m > [22m[2mFileNameIndexer integration[2m > [22m[2mupdates only after the snapshot is rebuilt and refreshed
+[22m[39mDirectory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-changed-boundary-integration-k05b0ixe/autobyteus-server-ts-index-oZEecc' completed in 0.0010 seconds.
+
+[90mstdout[2m | tests/integration/file-explorer/file-name-indexer.integration.test.ts[2m > [22m[2mFileNameIndexer integration[2m > [22m[2mupdates only after the snapshot is rebuilt and refreshed
+[22m[39mFileNameIndexer refreshing snapshot index...
+
+[90mstdout[2m | tests/integration/file-explorer/file-name-indexer.integration.test.ts[2m > [22m[2mFileNameIndexer integration[2m > [22m[2mupdates only after the snapshot is rebuilt and refreshed
+[22m[39mFileNameIndexer refreshed snapshot index with 2 entries
+
+ [32m✓[39m tests/integration/file-explorer/file-name-indexer.integration.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m tests/integration/skills/skill-integration.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 8[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m9 passed[39m[22m[90m (9)[39m
+[2m      Tests [22m [1m[32m52 passed[39m[22m[90m (52)[39m
+[2m   Start at [22m 20:28:26
+[2m   Duration [22m 27.20s[2m (transform 3.20s, setup 100ms, import 6.49s, tests 19.21s, environment 1ms)[22m

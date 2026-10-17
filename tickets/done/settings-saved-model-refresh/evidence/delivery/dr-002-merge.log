@@ -1,0 +1,4 @@
+Auto-merging autobyteus-web/package.json
+Auto-merging autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs
+CONFLICT (content): Merge conflict in autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs
+Automatic merge failed; fix conflicts and then commit the result.

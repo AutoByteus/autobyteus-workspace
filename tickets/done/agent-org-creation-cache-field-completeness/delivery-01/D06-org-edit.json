@@ -1,0 +1,506 @@
+{
+  "startedAt": "2026-10-13T06:45:56.200Z",
+  "label": "D06-org-edit",
+  "instanceId": "iso-61565-91a4",
+  "purpose": "Integrated delivery smoke and human-check setup; NOT human acceptance",
+  "events": [],
+  "operations": [
+    {
+      "at": "2026-10-13T06:45:56.292Z",
+      "request": {
+        "operationName": "UpdateAgentOrgDefinition",
+        "variables": {
+          "input": {
+            "id": "cache-fix-verification-org",
+            "expectedRevision": "576ccb423eb74a8be2bd6e0dfff60c50821228d90c0281065c909d865e7f935b",
+            "name": "Cache Fix Verification Org Edited",
+            "description": "User-check Org: two Agents and ordered handoff rules, current cache fix.",
+            "members": [
+              {
+                "memberName": "verification_control_agent",
+                "ref": "verification-control-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              },
+              {
+                "memberName": "cache_fix_verification_agent_edited",
+                "ref": "cache-fix-verification-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              }
+            ],
+            "handoffs": [
+              {
+                "from": "/verification_control_agent",
+                "to": "/cache_fix_verification_agent_edited",
+                "rules": [
+                  "When this review is complete, hand the package to the next member.",
+                  "Preserve the original member identity and rules."
+                ]
+              }
+            ]
+          }
+        },
+        "query": "mutation UpdateAgentOrgDefinition($input: UpdateAgentOrgDefinitionInput!) {\n  updateAgentOrgDefinition(input: $input) {\n    ...AgentOrgDefinitionFields\n    __typename\n  }\n}\n\nfragment AgentOrgDefinitionFields on AgentOrgDefinition {\n  id\n  name\n  description\n  instructions\n  category\n  avatarUrl\n  revision\n  handoffs {\n    from\n    to\n    rules\n    __typename\n  }\n  members {\n    memberName\n    ref\n    refType\n    refScope\n    __typename\n  }\n  defaultLaunchConfig {\n    llmModelIdentifier\n    runtimeKind\n    llmConfig\n    __typename\n  }\n  loadIssues {\n    kind\n    definitionId\n    name\n    code\n    reason\n    definitionPath\n    packageRoot\n    usingLastGood\n    __typename\n  }\n  __typename\n}"
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "updateAgentOrgDefinition": {
+            "id": "cache-fix-verification-org",
+            "name": "Cache Fix Verification Org Edited",
+            "description": "User-check Org: two Agents and ordered handoff rules, current cache fix.",
+            "instructions": "",
+            "category": null,
+            "avatarUrl": null,
+            "revision": "5f342d4d5fd59f331a93a3a8115b0c085c864168b422143254440882d7182866",
+            "handoffs": [
+              {
+                "from": "/verification_control_agent",
+                "to": "/cache_fix_verification_agent_edited",
+                "rules": [
+                  "When this review is complete, hand the package to the next member.",
+                  "Preserve the original member identity and rules."
+                ],
+                "__typename": "AgentOrgHandoff"
+              }
+            ],
+            "members": [
+              {
+                "memberName": "verification_control_agent",
+                "ref": "verification-control-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "cache_fix_verification_agent_edited",
+                "ref": "cache-fix-verification-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "loadIssues": [],
+            "__typename": "AgentOrgDefinition"
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-10-13T06:45:56.313Z",
+      "request": {
+        "operationName": "GetAgentOrgDefinitions",
+        "variables": {},
+        "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    loadIssues {\n      kind\n      definitionId\n      name\n      code\n      reason\n      definitionPath\n      packageRoot\n      usingLastGood\n      __typename\n    }\n    __typename\n  }\n}"
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "agentOrgDefinitions": [
+            {
+              "id": "cache-fix-verification-org",
+              "name": "Cache Fix Verification Org Edited",
+              "description": "User-check Org: two Agents and ordered handoff rules, current cache fix.",
+              "instructions": "",
+              "category": null,
+              "avatarUrl": null,
+              "revision": "5f342d4d5fd59f331a93a3a8115b0c085c864168b422143254440882d7182866",
+              "handoffs": [
+                {
+                  "from": "/verification_control_agent",
+                  "to": "/cache_fix_verification_agent_edited",
+                  "rules": [
+                    "When this review is complete, hand the package to the next member.",
+                    "Preserve the original member identity and rules."
+                  ],
+                  "__typename": "AgentOrgHandoff"
+                }
+              ],
+              "members": [
+                {
+                  "memberName": "verification_control_agent",
+                  "ref": "verification-control-agent",
+                  "refType": "AGENT",
+                  "refScope": "SHARED",
+                  "__typename": "AgentOrgMember"
+                },
+                {
+                  "memberName": "cache_fix_verification_agent_edited",
+                  "ref": "cache-fix-verification-agent",
+                  "refType": "AGENT",
+                  "refScope": "SHARED",
+                  "__typename": "AgentOrgMember"
+                }
+              ],
+              "defaultLaunchConfig": null,
+              "loadIssues": [],
+              "__typename": "AgentOrgDefinition"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "at": "2026-10-13T06:45:56.315Z",
+      "request": {
+        "operationName": "GetDefinitionProblems",
+        "variables": {
+          "kind": "AGENT_ORG"
+        },
+        "query": "query GetDefinitionProblems($kind: DefinitionKind!) {\n  definitionProblems(kind: $kind) {\n    kind\n    definitionId\n    code\n    reason\n    definitionPath\n    packageRoot\n    usingLastGood\n    dependencyChain\n    __typename\n  }\n}"
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "definitionProblems": []
+        }
+      }
+    }
+  ],
+  "pages": {
+    "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-edit&id=cache-fix-verification-org",
+    "headings": [
+      "Edit Cache Fix Verification Org",
+      "Basics",
+      "Members",
+      "Handoffs"
+    ],
+    "buttons": [
+      "Chat",
+      "",
+      "",
+      "Agents",
+      "Agent Teams",
+      "Agent Orgs",
+      "Projects",
+      "Skills",
+      "Memory",
+      "Nodes",
+      "",
+      "Temp Workspace",
+      "Settings",
+      " Back to Agent Orgs",
+      "",
+      "Upload image",
+      " Add member",
+      "",
+      "",
+      " Add handoff",
+      "",
+      "",
+      "Edit",
+      "Delete",
+      "Cancel",
+      "Save changes"
+    ],
+    "links": [],
+    "body": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nBack to Agent Orgs\nEdit Cache Fix Verification Org\n\nAdd Agents and Teams, then configure handoffs.\n\nAvatar (optional)\n\nCF\nUpload image\n\nJPEG, PNG, GIF or WebP. Saved with the Org.\n\nBasics\nName\nDescription\nMembers\nAdd member\nAgents\nVC\n\nVerification Control Agent\n\nCF\n\nCache Fix Verification Agent Edited\n\nTeams\n\nNo Teams added.\n\nHandoffs\nAdd handoff\nEdit\nDelete\n\nFROM\n\nVerification Control Agent\n\nTO\n\nCache Fix Verification Agent Edited\n\nWHEN\n\nWhen this review is complete, hand the package to the next member.\nPreserve the original member identity and rules.\nAgent Org saved.\nCancel\nSave changes"
+  },
+  "details": {
+    "mutation": {
+      "at": "2026-10-13T06:45:56.292Z",
+      "request": {
+        "operationName": "UpdateAgentOrgDefinition",
+        "variables": {
+          "input": {
+            "id": "cache-fix-verification-org",
+            "expectedRevision": "576ccb423eb74a8be2bd6e0dfff60c50821228d90c0281065c909d865e7f935b",
+            "name": "Cache Fix Verification Org Edited",
+            "description": "User-check Org: two Agents and ordered handoff rules, current cache fix.",
+            "members": [
+              {
+                "memberName": "verification_control_agent",
+                "ref": "verification-control-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              },
+              {
+                "memberName": "cache_fix_verification_agent_edited",
+                "ref": "cache-fix-verification-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              }
+            ],
+            "handoffs": [
+              {
+                "from": "/verification_control_agent",
+                "to": "/cache_fix_verification_agent_edited",
+                "rules": [
+                  "When this review is complete, hand the package to the next member.",
+                  "Preserve the original member identity and rules."
+                ]
+              }
+            ]
+          }
+        },
+        "query": "mutation UpdateAgentOrgDefinition($input: UpdateAgentOrgDefinitionInput!) {\n  updateAgentOrgDefinition(input: $input) {\n    ...AgentOrgDefinitionFields\n    __typename\n  }\n}\n\nfragment AgentOrgDefinitionFields on AgentOrgDefinition {\n  id\n  name\n  description\n  instructions\n  category\n  avatarUrl\n  revision\n  handoffs {\n    from\n    to\n    rules\n    __typename\n  }\n  members {\n    memberName\n    ref\n    refType\n    refScope\n    __typename\n  }\n  defaultLaunchConfig {\n    llmModelIdentifier\n    runtimeKind\n    llmConfig\n    __typename\n  }\n  loadIssues {\n    kind\n    definitionId\n    name\n    code\n    reason\n    definitionPath\n    packageRoot\n    usingLastGood\n    __typename\n  }\n  __typename\n}"
+      },
+      "httpStatus": 200,
+      "response": {
+        "data": {
+          "updateAgentOrgDefinition": {
+            "id": "cache-fix-verification-org",
+            "name": "Cache Fix Verification Org Edited",
+            "description": "User-check Org: two Agents and ordered handoff rules, current cache fix.",
+            "instructions": "",
+            "category": null,
+            "avatarUrl": null,
+            "revision": "5f342d4d5fd59f331a93a3a8115b0c085c864168b422143254440882d7182866",
+            "handoffs": [
+              {
+                "from": "/verification_control_agent",
+                "to": "/cache_fix_verification_agent_edited",
+                "rules": [
+                  "When this review is complete, hand the package to the next member.",
+                  "Preserve the original member identity and rules."
+                ],
+                "__typename": "AgentOrgHandoff"
+              }
+            ],
+            "members": [
+              {
+                "memberName": "verification_control_agent",
+                "ref": "verification-control-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              },
+              {
+                "memberName": "cache_fix_verification_agent_edited",
+                "ref": "cache-fix-verification-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED",
+                "__typename": "AgentOrgMember"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "loadIssues": [],
+            "__typename": "AgentOrgDefinition"
+          }
+        }
+      }
+    },
+    "cache": {
+      "cached": {
+        "agentOrgDefinitions": [
+          {
+            "__typename": "AgentOrgDefinition",
+            "id": "cache-fix-verification-org",
+            "name": "Cache Fix Verification Org Edited",
+            "description": "User-check Org: two Agents and ordered handoff rules, current cache fix.",
+            "instructions": "",
+            "category": null,
+            "avatarUrl": null,
+            "revision": "5f342d4d5fd59f331a93a3a8115b0c085c864168b422143254440882d7182866",
+            "handoffs": [
+              {
+                "__typename": "AgentOrgHandoff",
+                "from": "/verification_control_agent",
+                "to": "/cache_fix_verification_agent_edited",
+                "rules": [
+                  "When this review is complete, hand the package to the next member.",
+                  "Preserve the original member identity and rules."
+                ]
+              }
+            ],
+            "members": [
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "verification_control_agent",
+                "ref": "verification-control-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              },
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "cache_fix_verification_agent_edited",
+                "ref": "cache-fix-verification-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "loadIssues": []
+          }
+        ]
+      },
+      "cacheFirst": {
+        "agentOrgDefinitions": [
+          {
+            "__typename": "AgentOrgDefinition",
+            "id": "cache-fix-verification-org",
+            "name": "Cache Fix Verification Org Edited",
+            "description": "User-check Org: two Agents and ordered handoff rules, current cache fix.",
+            "instructions": "",
+            "category": null,
+            "avatarUrl": null,
+            "revision": "5f342d4d5fd59f331a93a3a8115b0c085c864168b422143254440882d7182866",
+            "handoffs": [
+              {
+                "__typename": "AgentOrgHandoff",
+                "from": "/verification_control_agent",
+                "to": "/cache_fix_verification_agent_edited",
+                "rules": [
+                  "When this review is complete, hand the package to the next member.",
+                  "Preserve the original member identity and rules."
+                ]
+              }
+            ],
+            "members": [
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "verification_control_agent",
+                "ref": "verification-control-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              },
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "cache_fix_verification_agent_edited",
+                "ref": "cache-fix-verification-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "loadIssues": []
+          }
+        ]
+      },
+      "store": {
+        "definitions": [
+          {
+            "__typename": "AgentOrgDefinition",
+            "id": "cache-fix-verification-org",
+            "name": "Cache Fix Verification Org Edited",
+            "description": "User-check Org: two Agents and ordered handoff rules, current cache fix.",
+            "instructions": "",
+            "category": null,
+            "avatarUrl": null,
+            "revision": "5f342d4d5fd59f331a93a3a8115b0c085c864168b422143254440882d7182866",
+            "handoffs": [
+              {
+                "__typename": "AgentOrgHandoff",
+                "from": "/verification_control_agent",
+                "to": "/cache_fix_verification_agent_edited",
+                "rules": [
+                  "When this review is complete, hand the package to the next member.",
+                  "Preserve the original member identity and rules."
+                ]
+              }
+            ],
+            "members": [
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "verification_control_agent",
+                "ref": "verification-control-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              },
+              {
+                "__typename": "AgentOrgMember",
+                "memberName": "cache_fix_verification_agent_edited",
+                "ref": "cache-fix-verification-agent",
+                "refType": "AGENT",
+                "refScope": "SHARED"
+              }
+            ],
+            "defaultLaunchConfig": null,
+            "loadIssues": []
+          }
+        ],
+        "loading": false,
+        "error": null
+      },
+      "normalized": {
+        "AgentOrgDefinition:cache-fix-verification-org": {
+          "__typename": "AgentOrgDefinition",
+          "id": "cache-fix-verification-org",
+          "name": "Cache Fix Verification Org Edited",
+          "description": "User-check Org: two Agents and ordered handoff rules, current cache fix.",
+          "instructions": "",
+          "category": null,
+          "avatarUrl": null,
+          "revision": "5f342d4d5fd59f331a93a3a8115b0c085c864168b422143254440882d7182866",
+          "handoffs": [
+            {
+              "__typename": "AgentOrgHandoff",
+              "from": "/verification_control_agent",
+              "to": "/cache_fix_verification_agent_edited",
+              "rules": [
+                "When this review is complete, hand the package to the next member.",
+                "Preserve the original member identity and rules."
+              ]
+            }
+          ],
+          "members": [
+            {
+              "__typename": "AgentOrgMember",
+              "memberName": "verification_control_agent",
+              "ref": "verification-control-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED"
+            },
+            {
+              "__typename": "AgentOrgMember",
+              "memberName": "cache_fix_verification_agent_edited",
+              "ref": "cache-fix-verification-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED"
+            }
+          ],
+          "defaultLaunchConfig": null,
+          "loadIssues": []
+        }
+      }
+    },
+    "persisted": {
+      "agentOrgDefinitions": [
+        {
+          "id": "cache-fix-verification-org",
+          "name": "Cache Fix Verification Org Edited",
+          "description": "User-check Org: two Agents and ordered handoff rules, current cache fix.",
+          "instructions": "",
+          "category": null,
+          "avatarUrl": null,
+          "revision": "5f342d4d5fd59f331a93a3a8115b0c085c864168b422143254440882d7182866",
+          "handoffs": [
+            {
+              "from": "/verification_control_agent",
+              "to": "/cache_fix_verification_agent_edited",
+              "rules": [
+                "When this review is complete, hand the package to the next member.",
+                "Preserve the original member identity and rules."
+              ],
+              "__typename": "AgentOrgHandoff"
+            }
+          ],
+          "members": [
+            {
+              "memberName": "verification_control_agent",
+              "ref": "verification-control-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED",
+              "__typename": "AgentOrgMember"
+            },
+            {
+              "memberName": "cache_fix_verification_agent_edited",
+              "ref": "cache-fix-verification-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED",
+              "__typename": "AgentOrgMember"
+            }
+          ],
+          "defaultLaunchConfig": null,
+          "loadIssues": [],
+          "__typename": "AgentOrgDefinition"
+        }
+      ]
+    }
+  },
+  "result": "Pass",
+  "finishedAt": "2026-10-13T06:45:56.985Z",
+  "finalUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-org-creation-cache-field-completeness/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-orgs?view=org-edit&id=cache-fix-verification-org"
+}

@@ -1,0 +1,11 @@
+== reviewer_1c570dc2dcdb42d2862e620d2005da1
+ USER | "You received a message from the agent with sender address \"/writer\" and sender run id \"writer_1c950840d1b14ccda113349ecd31f46d\".\nmessage:\nPlease review this sentence: \"The sea whispered its ancient secrets to the shore with every returning wave.\""
+ CALL send_message_to | {'recipient_address': '/writer', 'content': 'APPROVED'}
+ RESULT TOOL_EXECUTION_SUCCEEDED | {"accepted":true,"code":"DELIVERED","message":"Delivered message to /writer.","target_agent_run_id":"writer_1c950840d1b14ccda113349ecd31f46d"}
+== writer_1c950840d1b14ccda113349ecd31f46d
+ USER | "Please do your job now."
+ CALL get_handoff_rules | {}
+ RESULT TOOL_EXECUTION_SUCCEEDED | {"handoffs":[{"when":"When you have written the sentence, hand it to the reviewer.","recipient_address":"/reviewer"}]}
+ CALL send_message_to | {'recipient_address': '/reviewer', 'content': 'Please review this sentence: "The sea whispered its ancient secrets to the shore with every returning wave."'}
+ RESULT TOOL_EXECUTION_SUCCEEDED | {"accepted":true,"code":"DELIVERED","message":"Delivered message to /reviewer.","target_agent_run_id":"reviewer_1c570dc2dcdb42d2862e620d2005da18"}
+ USER | "You received a message from the agent with sender address \"/reviewer\" and sender run id \"reviewer_1c570dc2dcdb42d2862e620d2005da18\".\nmessage:\nAPPROVED"

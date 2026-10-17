@@ -1,0 +1,4 @@
+Desktop Release v1.5.1-beta.2 (run 38126968590), job Build Windows x64, step 'Checkout workspace + submodules':
+failure: The process 'C:\Program Files\Git\bin\git.exe' failed with exit code 128
+failure: invalid path 'tickets/done/delegated-copy-task-locator/api-e2e-evidence/repo/audit:localization-literals.log'
+(source: check-run 114433438924 annotations)

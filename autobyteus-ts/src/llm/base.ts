@@ -5,6 +5,7 @@ import { LLMExtension } from './extensions/base-extension.js';
 import { Message, MessageRole } from './utils/messages.js';
 import { LLMUserMessage } from './user-message.js';
 import { CompleteResponse, ChunkResponse } from './utils/response-types.js';
+import { resolveRequestMaxOutputTokens } from './utils/max-output-tokens.js';
 
 export type LLMInvocationOptions = {
   /**
@@ -16,6 +17,11 @@ export type LLMInvocationOptions = {
   retryMode?: 'single_attempt';
   signal?: AbortSignal | null;
   turnId?: string | null;
+  /**
+   * Per-request output limit that replaces the agent's resolved limit for this call only (for
+   * example a compaction summary request). Agent conversation requests never set it.
+   */
+  maxOutputTokens?: number;
 };
 
 export abstract class BaseLLM {
@@ -54,6 +60,14 @@ export abstract class BaseLLM {
 
     this.systemMessage = newSystemPrompt;
     this.config.systemMessage = newSystemPrompt;
+  }
+
+  /**
+   * The request's output limit: the invocation's `maxOutputTokens` override when set, otherwise
+   * the configured limit, else the model maximum; `null` means omit.
+   */
+  protected resolveMaxOutputTokens(options: LLMInvocationOptions): number | null {
+    return options.maxOutputTokens ?? resolveRequestMaxOutputTokens(this.model, this.config);
   }
 
   protected buildUserMessage(userMessage: LLMUserMessage): Message {
@@ -117,15 +131,17 @@ export abstract class BaseLLM {
       if (chunk.content) accumulatedContent += chunk.content;
       if (chunk.reasoning) accumulatedReasoning += chunk.reasoning;
       
+      // Adapters yield exactly one terminal chunk, last, carrying usage and finish.
       if (chunk.is_complete) finalChunk = chunk;
-      
+
       yield chunk;
     }
 
     const completeResponse = new CompleteResponse({
       content: accumulatedContent,
       reasoning: accumulatedReasoning || null,
-      usage: finalChunk?.usage
+      usage: finalChunk?.usage,
+      finish: finalChunk?.finish ?? null,
     });
 
     await this.executeAfterHooks(messages, completeResponse, kwargs);
@@ -197,6 +213,12 @@ export abstract class BaseLLM {
     kwargs?: Record<string, unknown>,
     options?: LLMInvocationOptions
   ): AsyncGenerator<ChunkResponse, void, unknown>;
+
+  /**
+   * Releases one provider-side conversation of this LLM (for example a remote session keyed
+   * by `logicalConversationId`) without cleaning up the LLM itself. Default: nothing to release.
+   */
+  async releaseConversation(_conversationId: string, _options: { signal?: AbortSignal } = {}): Promise<void> {}
 
   async cleanup(_options: { signal?: AbortSignal } = {}): Promise<void> {
     for (const ext of this.extensionRegistry.getAll()) {

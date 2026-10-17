@@ -1,0 +1,81 @@
+[
+  {
+    "name": "server-targeted",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/unit/workspaces/shared-workspace-binding.test.ts",
+      "tests/unit/runtime-management/shared/scoped-project-git-environment.test.ts",
+      "tests/unit/api/rest/workspaces.test.ts",
+      "tests/unit/api/rest/run-file-changes.test.ts",
+      "--no-watch",
+      "--maxWorkers=2"
+    ],
+    "rc": 0,
+    "seconds": 4.17
+  },
+  {
+    "name": "integration-prepare",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "test:integration:prepare"
+    ],
+    "rc": 0,
+    "seconds": 28.138
+  },
+  {
+    "name": "public-contracts",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts",
+      "tests/integration/api/run-file-changes-api.integration.test.ts",
+      "--no-watch",
+      "--maxWorkers=2"
+    ],
+    "rc": 0,
+    "seconds": 12.894
+  },
+  {
+    "name": "guide-unit",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-web",
+      "test:nuxt",
+      "components/settings/__tests__/NodeManager.spec.ts",
+      "components/settings/__tests__/NfsGuideCard.spec.ts",
+      "utils/__tests__/nfsLauncherCommands.spec.ts",
+      "--run",
+      "--maxWorkers=2"
+    ],
+    "rc": 0,
+    "seconds": 14.95
+  },
+  {
+    "name": "terminal-unit",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/unit/tools/terminal",
+      "--no-watch",
+      "--maxWorkers=2"
+    ],
+    "rc": 0,
+    "seconds": 7.053
+  }
+]

@@ -1,0 +1,133 @@
+diff --git a/DESIGN.md b/DESIGN.md
+index 7257d02be9..85184f7f6d 100644
+--- a/DESIGN.md
++++ b/DESIGN.md
+@@ -302,6 +302,13 @@ update it in the same change.
+   users out of startup or new work; prefer tolerant readers over migrations; no
+   schema version fields; never reuse a field name with a new meaning; old shapes
+   live only inside registered migrations.
++- **Agent collaboration and orchestration:** the
++  [Collaboration Model](autobyteus-server-ts/docs/design/collaboration_model.md)
++  is the canonical contract for runs, membership versus delegation,
++  `send_message_to` versus `delegate_task`, Task ownership of delegated runs,
++  coordination, and where each run's memory and messages are stored. Teams,
++  Orgs, standalone collaboration, Project Tasks and run storage changes follow
++  it or update it in the same change.
+ - **Server startup and configuration-dependent services:**
+   [Startup Initialization and Lazy Service Access](autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md).
+ - **Mandatory agent processors:**
+diff --git a/autobyteus-server-ts/docs/design/README.md b/autobyteus-server-ts/docs/design/README.md
+index 9d413424c4..17d73550cd 100644
+--- a/autobyteus-server-ts/docs/design/README.md
++++ b/autobyteus-server-ts/docs/design/README.md
+@@ -4,6 +4,8 @@ This directory contains focused architecture/design decisions for `autobyteus-se
+ 
+ ## Documents
+ 
++- `collaboration_model.md` — canonical model for runs, membership vs delegation, messaging, Task ownership and run storage
++- `data_migration_guideline.md` — canonical policy for persisted app-data migrations
+ - `startup_initialization_and_lazy_services.md`
+ - `agent_websocket_streaming_protocol.md`
+ - `mandatory-processor-defaults.md`
+diff --git a/autobyteus-server-ts/docs/modules/agent_communication.md b/autobyteus-server-ts/docs/modules/agent_communication.md
+index 8b68241171..e51505ffe8 100644
+--- a/autobyteus-server-ts/docs/modules/agent_communication.md
++++ b/autobyteus-server-ts/docs/modules/agent_communication.md
+@@ -263,6 +263,10 @@ context.
+ 
+ ## Communication Versus Task Execution
+ 
++The rules for who may message and who may delegate to whom are defined in the
++[Collaboration Model](../design/collaboration_model.md) (CM-1..CM-9); this
++section describes the mechanics.
++
+ `send_message_to(recipient_address)` reaches **the one instance at that
+ address**: a configured member, a collaborator or its member, or a teammate
+ inside the sender's own team instance. An available catalog Agent or Agent Team
+diff --git a/autobyteus-server-ts/docs/modules/agent_memory.md b/autobyteus-server-ts/docs/modules/agent_memory.md
+index b654c3fdc9..69a30208f0 100644
+--- a/autobyteus-server-ts/docs/modules/agent_memory.md
++++ b/autobyteus-server-ts/docs/modules/agent_memory.md
+@@ -24,6 +24,10 @@ for the scoped primary-key rule used to join new saved and live presentation.
+ 
+ ## Storage Layout
+ 
++The target run storage shape (every run, including a delegated run, in its own
++folder) is defined in the [Collaboration Model](../design/collaboration_model.md#3-run-storage-shape);
++the layout below is the current one.
++
+ Memory files live under the configured memory root:
+ 
+ - Standalone runs: `memory/agents/<runId>/...`
+diff --git a/autobyteus-server-ts/docs/modules/agent_orgs.md b/autobyteus-server-ts/docs/modules/agent_orgs.md
+index acefdb6fa7..7962753357 100644
+--- a/autobyteus-server-ts/docs/modules/agent_orgs.md
++++ b/autobyteus-server-ts/docs/modules/agent_orgs.md
+@@ -262,6 +262,11 @@ queue.
+ 
+ ## Delegated Children, Status, And Lifecycle
+ 
++An Org is a container of independent units: its direct agents and mounted
++Teams may delegate to each other, while inside one mounted Team members only
++message each other ([Collaboration Model](../design/collaboration_model.md)
++CM-1, CM-3).
++
+ - Direct Org Agents and mounted-Team Agents can message and delegate through
+   canonical addresses.
+ - Task Agents and task Teams are delegated children recorded in the execution
+diff --git a/autobyteus-server-ts/docs/modules/agent_team_execution.md b/autobyteus-server-ts/docs/modules/agent_team_execution.md
+index d3acc43ee5..150a7bb5f9 100644
+--- a/autobyteus-server-ts/docs/modules/agent_team_execution.md
++++ b/autobyteus-server-ts/docs/modules/agent_team_execution.md
+@@ -394,6 +394,11 @@ stop-and-delete command, mutation, modal, or transport operation.
+ 
+ ## Server-Owned Task Delegation
+ 
++The delegation rules are defined in the
++[Collaboration Model](../design/collaboration_model.md). Inside a Team,
++members work together by `send_message_to`; `delegate_task` targets independent
++units (CM-1, CM-2). This section describes the mechanics.
++
+ The only first-party delegation tool is `delegate_task`. Delegation is a pure
+ spawn: it starts a fresh child and hands back its ingress run ID. It creates no
+ separate delegation task-record/submission/review/settlement subsystem. Optional
+@@ -487,7 +492,10 @@ so bring-ins and `@` mention resolutions are serialized by the root's
+ adds a catalog placement with a source snapshot after configured and
+ collaborator placements. Copies are placed by address through the shared
+ `resolveTaskCopyHost` (REQ-012; the Team root's rule, now shared by all roots); catalog copies
+-record `source` on their task execution and restore from it.
++record `source` on their task execution and restore from it. A copy of a
++teammate hosted inside the delegator's own Team instance is current behavior
++that the [Collaboration Model](../design/collaboration_model.md#5-current-state-versus-target)
++rule CM-1 forbids; its refusal is pending.
+ `listAvailableAgents(sender)` is read-only and takes no gate.
+ 
+ A successful Agent target creates one task Agent at the logical member's
+diff --git a/autobyteus-server-ts/docs/modules/projects.md b/autobyteus-server-ts/docs/modules/projects.md
+index bbecb705e4..1b1902ae69 100644
+--- a/autobyteus-server-ts/docs/modules/projects.md
++++ b/autobyteus-server-ts/docs/modules/projects.md
+@@ -2,6 +2,9 @@
+ 
+ ## Scope And Ownership
+ 
++Task ownership of delegated runs follows the
++[Collaboration Model](../design/collaboration_model.md) (CM-6, CM-7).
++
+ Projects are durable, node-local work containers. Each has a unique name, an
+ optional string description, and described links to absolute folder paths on the
+ node. It also holds Project Tasks, each with a description, a business status and optional Task-owned context files. Manual authoring and four
+diff --git a/autobyteus-server-ts/docs/modules/standalone_agent_run_root.md b/autobyteus-server-ts/docs/modules/standalone_agent_run_root.md
+index cb1285c188..cc1be6914d 100644
+--- a/autobyteus-server-ts/docs/modules/standalone_agent_run_root.md
++++ b/autobyteus-server-ts/docs/modules/standalone_agent_run_root.md
+@@ -2,6 +2,9 @@
+ 
+ ## Scope
+ 
++The collaboration rules this root implements are defined in the
++[Collaboration Model](../design/collaboration_model.md).
++
+ `src/standalone-agent-run-root/` owns every collaboration-eligible standalone Agent run end to
+ end (root kind `agent`). One `StandaloneAgentRunRoot` owns the run's own agent (the host),
+ its collaborators, their task copies, their messages, the run's lifecycle (start, restore,

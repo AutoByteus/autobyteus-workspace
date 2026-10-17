@@ -1,0 +1,217 @@
+{
+  "instanceId": "iso-56609-2c4d",
+  "agents": [
+    {
+      "id": "solution-designer",
+      "name": "solution_designer"
+    },
+    {
+      "id": "architecture-reviewer",
+      "name": "architecture_reviewer"
+    },
+    {
+      "id": "implementation-engineer",
+      "name": "implementation_engineer"
+    },
+    {
+      "id": "code-reviewer",
+      "name": "code_reviewer"
+    },
+    {
+      "id": "api-e2e-engineer",
+      "name": "api_e2e_engineer"
+    },
+    {
+      "id": "delivery-engineer",
+      "name": "delivery_engineer"
+    }
+  ],
+  "team": {
+    "id": "software-engineering-team-isolated-verification",
+    "name": "Software Engineering Team - Isolated Verification",
+    "nodes": [
+      {
+        "memberName": "solution_designer",
+        "ref": "solution-designer",
+        "refScope": "SHARED"
+      },
+      {
+        "memberName": "architecture_reviewer",
+        "ref": "architecture-reviewer",
+        "refScope": "SHARED"
+      },
+      {
+        "memberName": "implementation_engineer",
+        "ref": "implementation-engineer",
+        "refScope": "SHARED"
+      },
+      {
+        "memberName": "code_reviewer",
+        "ref": "code-reviewer",
+        "refScope": "SHARED"
+      },
+      {
+        "memberName": "api_e2e_engineer",
+        "ref": "api-e2e-engineer",
+        "refScope": "SHARED"
+      },
+      {
+        "memberName": "delivery_engineer",
+        "ref": "delivery-engineer",
+        "refScope": "SHARED"
+      }
+    ],
+    "coordinatorMemberName": "solution_designer",
+    "handoffs": [
+      {
+        "from": "/solution_designer",
+        "to": "/architecture_reviewer",
+        "rules": [
+          "Verification rule 1: preserve the ordered routing content.",
+          "This is test-owned rule text, not a live team configuration."
+        ]
+      },
+      {
+        "from": "/architecture_reviewer",
+        "to": "/implementation_engineer",
+        "rules": [
+          "Verification rule 2: preserve the ordered routing content.",
+          "This is test-owned rule text, not a live team configuration."
+        ]
+      },
+      {
+        "from": "/implementation_engineer",
+        "to": "/code_reviewer",
+        "rules": [
+          "Verification rule 3: preserve the ordered routing content.",
+          "This is test-owned rule text, not a live team configuration."
+        ]
+      },
+      {
+        "from": "/code_reviewer",
+        "to": "/api_e2e_engineer",
+        "rules": [
+          "Verification rule 4: preserve the ordered routing content.",
+          "This is test-owned rule text, not a live team configuration."
+        ]
+      },
+      {
+        "from": "/api_e2e_engineer",
+        "to": "/delivery_engineer",
+        "rules": [
+          "Verification rule 5: preserve the ordered routing content.",
+          "This is test-owned rule text, not a live team configuration."
+        ]
+      },
+      {
+        "from": "/delivery_engineer",
+        "to": "/solution_designer",
+        "rules": [
+          "Verification rule 6: preserve the ordered routing content.",
+          "This is test-owned rule text, not a live team configuration."
+        ]
+      },
+      {
+        "from": "/solution_designer",
+        "to": "/implementation_engineer",
+        "rules": [
+          "Verification rule 7: preserve the ordered routing content.",
+          "This is test-owned rule text, not a live team configuration."
+        ]
+      },
+      {
+        "from": "/implementation_engineer",
+        "to": "/api_e2e_engineer",
+        "rules": [
+          "Verification rule 8: preserve the ordered routing content.",
+          "This is test-owned rule text, not a live team configuration."
+        ]
+      }
+    ]
+  },
+  "alternate": {
+    "id": "research-team-isolated-verification",
+    "name": "Research Team - Isolated Verification",
+    "nodes": [
+      {
+        "memberName": "solution_designer",
+        "ref": "solution-designer",
+        "refScope": "SHARED"
+      },
+      {
+        "memberName": "architecture_reviewer",
+        "ref": "architecture-reviewer",
+        "refScope": "SHARED"
+      }
+    ],
+    "coordinatorMemberName": "solution_designer",
+    "handoffs": []
+  },
+  "instructions": "Instruction 1: inspect the member roster before long instructions and handoffs.\nInstruction 2: inspect the member roster before long instructions and handoffs.\nInstruction 3: inspect the member roster before long instructions and handoffs.\nInstruction 4: inspect the member roster before long instructions and handoffs.\nInstruction 5: inspect the member roster before long instructions and handoffs.\nInstruction 6: inspect the member roster before long instructions and handoffs.\nInstruction 7: inspect the member roster before long instructions and handoffs.\nInstruction 8: inspect the member roster before long instructions and handoffs.\nInstruction 9: inspect the member roster before long instructions and handoffs.\nInstruction 10: inspect the member roster before long instructions and handoffs.\nInstruction 11: inspect the member roster before long instructions and handoffs.\nInstruction 12: inspect the member roster before long instructions and handoffs.\nInstruction 13: inspect the member roster before long instructions and handoffs.\nInstruction 14: inspect the member roster before long instructions and handoffs.\nInstruction 15: inspect the member roster before long instructions and handoffs.\nInstruction 16: inspect the member roster before long instructions and handoffs.\nInstruction 17: inspect the member roster before long instructions and handoffs.\nInstruction 18: inspect the member roster before long instructions and handoffs.\nInstruction 19: inspect the member roster before long instructions and handoffs.\nInstruction 20: inspect the member roster before long instructions and handoffs.\nInstruction 21: inspect the member roster before long instructions and handoffs.\nInstruction 22: inspect the member roster before long instructions and handoffs.\nInstruction 23: inspect the member roster before long instructions and handoffs.\nInstruction 24: inspect the member roster before long instructions and handoffs.\nInstruction 25: inspect the member roster before long instructions and handoffs.\nInstruction 26: inspect the member roster before long instructions and handoffs.\nInstruction 27: inspect the member roster before long instructions and handoffs.\nInstruction 28: inspect the member roster before long instructions and handoffs.\nInstruction 29: inspect the member roster before long instructions and handoffs.\nInstruction 30: inspect the member roster before long instructions and handoffs.\nInstruction 31: inspect the member roster before long instructions and handoffs.\nInstruction 32: inspect the member roster before long instructions and handoffs.\nInstruction 33: inspect the member roster before long instructions and handoffs.\nInstruction 34: inspect the member roster before long instructions and handoffs.",
+  "handoffs": [
+    {
+      "from": "/solution_designer",
+      "to": "/architecture_reviewer",
+      "rules": [
+        "Verification rule 1: preserve the ordered routing content.",
+        "This is test-owned rule text, not a live team configuration."
+      ]
+    },
+    {
+      "from": "/architecture_reviewer",
+      "to": "/implementation_engineer",
+      "rules": [
+        "Verification rule 2: preserve the ordered routing content.",
+        "This is test-owned rule text, not a live team configuration."
+      ]
+    },
+    {
+      "from": "/implementation_engineer",
+      "to": "/code_reviewer",
+      "rules": [
+        "Verification rule 3: preserve the ordered routing content.",
+        "This is test-owned rule text, not a live team configuration."
+      ]
+    },
+    {
+      "from": "/code_reviewer",
+      "to": "/api_e2e_engineer",
+      "rules": [
+        "Verification rule 4: preserve the ordered routing content.",
+        "This is test-owned rule text, not a live team configuration."
+      ]
+    },
+    {
+      "from": "/api_e2e_engineer",
+      "to": "/delivery_engineer",
+      "rules": [
+        "Verification rule 5: preserve the ordered routing content.",
+        "This is test-owned rule text, not a live team configuration."
+      ]
+    },
+    {
+      "from": "/delivery_engineer",
+      "to": "/solution_designer",
+      "rules": [
+        "Verification rule 6: preserve the ordered routing content.",
+        "This is test-owned rule text, not a live team configuration."
+      ]
+    },
+    {
+      "from": "/solution_designer",
+      "to": "/implementation_engineer",
+      "rules": [
+        "Verification rule 7: preserve the ordered routing content.",
+        "This is test-owned rule text, not a live team configuration."
+      ]
+    },
+    {
+      "from": "/implementation_engineer",
+      "to": "/api_e2e_engineer",
+      "rules": [
+        "Verification rule 8: preserve the ordered routing content.",
+        "This is test-owned rule text, not a live team configuration."
+      ]
+    }
+  ]
+}

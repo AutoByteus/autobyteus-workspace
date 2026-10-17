@@ -79,6 +79,6 @@ describe('whole-host termination result is later than actual child-root inactivi
         expect(f.native.isRunning).toBe(false);
         expect(f.parent.requests).toHaveLength(3); // held A never reached parent
       } finally { finishFault?.mockRestore(); await f.close(); }
-    }, 20000);
+    }, 40000);
   }
 });

@@ -160,14 +160,13 @@ describe('AgentFactory', () => {
     const factory = new AgentFactory();
     const config = makeConfig();
     const policy = new CompactionPolicy({ triggerRatio: 0.2 });
-    const createCompressionStrategy = () => ({ compress: vi.fn() });
-    config.memoryCompaction = createEnabledMemoryCompactionConfiguration(policy, createCompressionStrategy);
+    config.memoryCompaction = createEnabledMemoryCompactionConfiguration(policy);
 
     const runtime = (factory as any).createRuntimeWithId('enabled-memory-agent', config) as AgentRuntime;
     const installed = runtime.context.state.memoryManager?.getAutomaticCompactionConfiguration();
 
     expect(installed).toBe(config.memoryCompaction);
-    expect(installed).toMatchObject({ kind: 'enabled', policy, createCompressionStrategy });
+    expect(installed).toMatchObject({ kind: 'enabled', policy });
   });
 
   it('restores agents with existing id', () => {

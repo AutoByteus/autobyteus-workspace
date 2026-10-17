@@ -277,7 +277,7 @@ describe('typed navigation presentation equality', () => {
       .map(field => ['member', field]),
     ...['teamRunId', 'memberAddress', 'agentRunId', 'teamRunIdForNode', 'rowKey', 'memberKind',
       'displayName', 'depth', 'hasChildren'].map(field => ['execution', field]),
-    ...['transientKind', 'currentStatus', 'delegatedBy', 'opensOnAppear'].map(field => ['transient', field]),
+    ...['transientKind', 'currentStatus', 'delegatedBy'].map(field => ['transient', field]),
   ])('does not retain a previous %s with changed %s', (area, field) => {
     const first = buildProjection()
     const old = first.teamNodes.find(team => team.teamRunId === 'team-a')!

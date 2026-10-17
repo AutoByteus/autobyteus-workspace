@@ -1,0 +1,143 @@
+{
+  "kind": "Implementation-only fixture renderer, real Monaco/native keys; GraphQL and event source controlled. No desktop shell/NFS/backend qualification.",
+  "steps": [
+    {
+      "name": "draft-before-peer",
+      "models": [
+        "LOCAL DRAFT"
+      ],
+      "visible": "LOCAL DRAFT",
+      "active": "native-edit-context",
+      "surfaceCount": 1
+    },
+    {
+      "name": "draft-during-loading",
+      "models": [
+        "LOCAL DRAFT"
+      ],
+      "visible": "LOCAL DRAFT",
+      "active": "",
+      "surfaceCount": 1
+    },
+    {
+      "name": "draft-after-peer",
+      "models": [
+        "LOCAL DRAFT"
+      ],
+      "visible": "LOCAL DRAFT",
+      "active": "",
+      "surfaceCount": 1
+    },
+    {
+      "name": "zen-draft",
+      "models": [
+        "LOCAL DRAFT"
+      ],
+      "visible": "LOCAL DRAFT",
+      "active": "monaco-enable-motion underline-links",
+      "surfaceCount": 1
+    },
+    {
+      "name": "saved-control",
+      "models": [
+        "LOCAL DRAFT"
+      ],
+      "visible": "LOCAL DRAFT",
+      "active": "native-edit-context",
+      "surfaceCount": 1
+    },
+    {
+      "name": "clean-refresh",
+      "models": [
+        "FRESH CLEAN READER"
+      ],
+      "visible": "FRESH CLEAN READER",
+      "active": "",
+      "surfaceCount": 1
+    },
+    {
+      "name": "clean-preview",
+      "models": [],
+      "active": "p-1.5 rounded-md transition-all duration-200 focus:outline-none bg-blue-50 text-blue-600",
+      "surfaceCount": 1
+    },
+    {
+      "name": "narrow-draft",
+      "models": [
+        "SECOND DRAFT"
+      ],
+      "visible": "SECOND DRAFT",
+      "active": "p-1.5 rounded-md transition-all duration-200 focus:outline-none bg-blue-50 text-blue-600",
+      "surfaceCount": 1
+    }
+  ],
+  "errors": [],
+  "requests": [
+    {
+      "operation": "GetFileContent",
+      "variables": {
+        "workspaceId": "ir010-owned-fixture",
+        "filePath": "notes.md"
+      }
+    },
+    {
+      "operation": "GetFileContent",
+      "variables": {
+        "workspaceId": "ir010-owned-fixture",
+        "filePath": "other.md"
+      }
+    },
+    {
+      "operation": "GetFileContent",
+      "variables": {
+        "workspaceId": "ir010-owned-fixture",
+        "filePath": "notes.md"
+      }
+    },
+    {
+      "operation": "GetFileContent",
+      "variables": {
+        "workspaceId": "ir010-owned-fixture",
+        "filePath": "other.md"
+      }
+    },
+    {
+      "operation": "GetFileContent",
+      "variables": {
+        "workspaceId": "ir010-owned-fixture",
+        "filePath": "notes.md"
+      }
+    },
+    {
+      "operation": "WriteFileContent",
+      "variables": {
+        "workspaceId": "ir010-owned-fixture",
+        "filePath": "notes.md",
+        "content": "LOCAL DRAFT"
+      }
+    },
+    {
+      "operation": "GetFileContent",
+      "variables": {
+        "workspaceId": "ir010-owned-fixture",
+        "filePath": "notes.md"
+      }
+    },
+    {
+      "operation": "GetFileContent",
+      "variables": {
+        "workspaceId": "ir010-owned-fixture",
+        "filePath": "notes.md"
+      }
+    }
+  ],
+  "cleanup": {
+    "backendStopped": true,
+    "browserClosed": true,
+    "nuxtStopped": true,
+    "fixtureRemoved": true,
+    "scratchRemoved": true
+  },
+  "port": 60574,
+  "result": "Pass"
+}

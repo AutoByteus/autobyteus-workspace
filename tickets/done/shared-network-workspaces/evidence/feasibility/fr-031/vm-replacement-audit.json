@@ -1,0 +1,9 @@
+{
+  "deleted": "ab-sf-fr027-macos",
+  "deleteRc": 0,
+  "reason": "FR-030 unexpected user-owned NFS mount succeeded; failed harness stopped before its side-mount cleanup. VM stopped then entire owned clone deleted, discarding all residual test-only state. No credentials ever imported into this clone.",
+  "created": "ab-sf-fr031-macos",
+  "cloneRc": 0,
+  "source": "ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377",
+  "publicCacheRetained": true
+}

@@ -1,0 +1,13 @@
+{
+  "method": "Disposable independent GIT_INDEX_FILE; no shared checkout/index modification",
+  "parent": "381cadf91a2d771c10ecc520e50f9a3ba19c3232",
+  "pathPolicy": "Exact unchanged project collect_violations against complete final index; Windows names/device/200-char/xcresult/generatedzip",
+  "scope": "Seven report/evidence paths only; full non-ticket diff empty; merged-state license proof remains applicable",
+  "privateBackup": "Outside Git, retained; no new Docker/probe/restart/API/recovery action",
+  "allChecks": "Pass",
+  "finalIndexTrackedPaths": 62836,
+  "gitIndexWhitespace": "Pass",
+  "sourceDelta": "Empty",
+  "privateDataArtifactExclusion": "Pass",
+  "worktreeRemovedBackupRetained": "Pass"
+}

@@ -3,9 +3,12 @@ import { computed, ref } from 'vue'
 import { getApolloClient } from '~/utils/apolloClient'
 import { GetAgentOrgDefinitions } from '~/graphql/queries/agentOrgDefinitionQueries'
 import { CreateAgentOrgDefinition, DeleteAgentOrgDefinition, UpdateAgentOrgDefinition } from '~/graphql/mutations/agentOrgDefinitionMutations'
+import { ReloadAgentPackageDefinitions } from '~/graphql/mutations/agentPackageDefinitionMutations'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import type { DefaultLaunchConfig } from '~/types/launch/defaultLaunchConfig'
 import type { DefinitionHandoff } from '~/types/collaboration/handoffs'
+import type { DefinitionLoadIssueEntry } from '~/types/agentPackageDefinitions'
+import { createLoadedListReloader } from '~/utils/agentPackages/loadedListReloader'
 
 export type AgentOrgMember = {
   __typename?: 'AgentOrgMember'
@@ -25,8 +28,10 @@ export type AgentOrgDefinition = {
   members: AgentOrgMember[]
   handoffs: DefinitionHandoff[]
   defaultLaunchConfig?: DefaultLaunchConfig | null
+  /** Issues of the Org and its org-owned definitions (Org first, then path order); empty when clean. */
+  loadIssues?: DefinitionLoadIssueEntry[]
 }
-export type AgentOrgDefinitionDraft = Omit<AgentOrgDefinition, 'id' | 'revision'>
+export type AgentOrgDefinitionDraft = Omit<AgentOrgDefinition, 'id' | 'revision' | 'loadIssues'>
 
 type AgentOrgMemberInput = Omit<AgentOrgMember, '__typename'>
 
@@ -62,7 +67,21 @@ export const useAgentOrgDefinitionStore = defineStore('agentOrgDefinition', () =
       const { data, errors } = await getApolloClient().query({ query: GetAgentOrgDefinitions, fetchPolicy: force ? 'network-only' : 'cache-first' })
       if (errors?.length) throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
       definitions.value = data.agentOrgDefinitions ?? []
+      listReloader.markLoaded()
     } catch (cause) { error.value = cause; throw cause } finally { loading.value = false }
+  }
+  const listReloader = createLoadedListReloader('agent org definitions', async () => {
+    const { data, errors } = await getApolloClient().query({ query: GetAgentOrgDefinitions, fetchPolicy: 'network-only' })
+    if (errors?.length) throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
+    definitions.value = data.agentOrgDefinitions ?? []
+  })
+  /** An agent package definitions change notification: reload the list in place if this window has loaded it. */
+  const reloadIfLoaded = (): Promise<void> => listReloader.reloadIfLoaded()
+  /** The Orgs page Reload: the server reloads every agent package (and notifies other clients), then the list is re-read. */
+  const refreshAndReload = async (): Promise<void> => {
+    const { errors } = await getApolloClient().mutate({ mutation: ReloadAgentPackageDefinitions })
+    if (errors?.length) throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
+    await fetchAll(true)
   }
   const publish = (id: string, definition: AgentOrgDefinition | null): void => {
     const client = getApolloClient()
@@ -100,5 +119,5 @@ export const useAgentOrgDefinitionStore = defineStore('agentOrgDefinition', () =
     if (deleted) publish(id, null)
     return deleted
   }
-  return { definitions, loading, error, byId, fetchAll, create, update, remove }
+  return { definitions, loading, error, byId, fetchAll, reloadIfLoaded, refreshAndReload, create, update, remove }
 })

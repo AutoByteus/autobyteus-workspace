@@ -1,0 +1,50 @@
+=== RUN   TestAppleActivationWaitsForBothServingPrograms
+=== RUN   TestAppleActivationWaitsForBothServingPrograms/restart
+=== RUN   TestAppleActivationWaitsForBothServingPrograms/update
+--- PASS: TestAppleActivationWaitsForBothServingPrograms (0.00s)
+    --- PASS: TestAppleActivationWaitsForBothServingPrograms/restart (0.00s)
+    --- PASS: TestAppleActivationWaitsForBothServingPrograms/update (0.00s)
+=== RUN   TestAppleColdRPCStartupRechecksNFSAndMountWithoutReactivation
+--- PASS: TestAppleColdRPCStartupRechecksNFSAndMountWithoutReactivation (0.00s)
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/checkexports
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/enable
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/restart
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/update
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/#00
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Authentication_error
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Program/version_mismatch
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Unknown_host
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/Permission_denied
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/unrecognized_option
+=== RUN   TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Unable_to_receive
+--- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/checkexports (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/enable (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/restart (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/update (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/#00 (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Authentication_error (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Program/version_mismatch (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Unknown_host (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/Permission_denied (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/unrecognized_option (0.00s)
+    --- PASS: TestAppleStartupDoesNotMaskInvalidSetupOrExecution/RPC:_Unable_to_receive (0.00s)
+=== RUN   TestAppleStartupStopsObservingUnavailablePrograms
+=== RUN   TestAppleStartupStopsObservingUnavailablePrograms/RPC:_Program_not_registered
+=== RUN   TestAppleStartupStopsObservingUnavailablePrograms/RPC:_Remote_system_error_-_Connection_refused
+=== RUN   TestAppleStartupStopsObservingUnavailablePrograms/RPC:_Timed_out
+--- PASS: TestAppleStartupStopsObservingUnavailablePrograms (0.00s)
+    --- PASS: TestAppleStartupStopsObservingUnavailablePrograms/RPC:_Program_not_registered (0.00s)
+    --- PASS: TestAppleStartupStopsObservingUnavailablePrograms/RPC:_Remote_system_error_-_Connection_refused (0.00s)
+    --- PASS: TestAppleStartupStopsObservingUnavailablePrograms/RPC:_Timed_out (0.00s)
+=== RUN   TestAppleExportAndConflictingGlobalSettings
+--- PASS: TestAppleExportAndConflictingGlobalSettings (0.00s)
+=== RUN   TestGaneshaPolicyAndPersistentRecovery
+--- PASS: TestGaneshaPolicyAndPersistentRecovery (0.00s)
+=== RUN   TestPackageMaskCleanupRetainsUncertainReceipt
+--- PASS: TestPackageMaskCleanupRetainsUncertainReceipt (0.03s)
+=== RUN   TestGaneshaDetachPreservesRecoveryAndRejectsExternalConfig
+--- PASS: TestGaneshaDetachPreservesRecoveryAndRejectsExternalConfig (0.00s)
+PASS
+ok  	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/backend	0.335s

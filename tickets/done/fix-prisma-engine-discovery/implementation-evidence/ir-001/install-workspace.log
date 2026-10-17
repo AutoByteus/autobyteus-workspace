@@ -1,0 +1,45 @@
+Scope: all 13 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1243
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 1243, reused 1, downloaded 49, added 48
+Progress: resolved 1243, reused 1, downloaded 134, added 136
+Progress: resolved 1243, reused 1, downloaded 166, added 146
+Progress: resolved 1243, reused 1, downloaded 234, added 233
+Progress: resolved 1243, reused 1, downloaded 328, added 328
+Progress: resolved 1243, reused 1, downloaded 411, added 392
+Progress: resolved 1243, reused 1, downloaded 533, added 535
+Progress: resolved 1243, reused 1, downloaded 656, added 654
+Progress: resolved 1243, reused 1, downloaded 772, added 734
+Progress: resolved 1243, reused 1, downloaded 865, added 865
+Progress: resolved 1243, reused 1, downloaded 986, added 984
+Progress: resolved 1243, reused 1, downloaded 1091, added 1078
+Progress: resolved 1243, reused 1, downloaded 1188, added 1188
+Progress: resolved 1243, reused 1, downloaded 1231, added 1233
+Progress: resolved 1243, reused 1, downloaded 1237, added 1239
+Progress: resolved 1243, reused 1, downloaded 1240, added 1242
+Progress: resolved 1243, reused 1, downloaded 1241, added 1242
+Progress: resolved 1243, reused 1, downloaded 1241, added 1243, done
+.../node_modules/@parcel/watcher install$ node scripts/build-from-source.js
+.../sharp@0.33.5/node_modules/sharp install$ node install/check
+.../node_modules/vue-demi postinstall$ node -e "try{require('./scripts/postinstall.js')}catch(e){}"
+.../node_modules/@parcel/watcher install: Done
+.../node_modules/vue-demi postinstall: Done
+.../sharp@0.33.5/node_modules/sharp install: Done
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery/autobyteus-application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery/autobyteus-application-devkit/dist/cli.js'
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] ok: /Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+autobyteus-ts postinstall: Done
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery/applications/brief-studio/node_modules/@autobyteus/application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery/applications/socratic-math-teacher/node_modules/@autobyteus/application-devkit/dist/cli.js'
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @google/genai@2.24.0.                               │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 29s using pnpm v10.28.2

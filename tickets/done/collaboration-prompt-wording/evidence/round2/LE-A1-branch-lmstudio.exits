@@ -1,0 +1,6 @@
+branch lmstudio run 1 exit 1
+branch lmstudio run 2 exit 1
+branch lmstudio run 3 exit 0
+branch lmstudio run 4 exit 0
+branch lmstudio run 5 exit 0
+done

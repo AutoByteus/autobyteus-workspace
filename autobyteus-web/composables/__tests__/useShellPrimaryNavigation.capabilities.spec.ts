@@ -9,7 +9,7 @@ const { applicationsCapabilityStoreMock, runtime } = vi.hoisted(() => ({
 }));
 
 vi.mock('vue-router', () => ({
-  useRoute: () => ({ path: '/agents' }),
+  useRoute: () => ({ path: '/agents', query: {} }),
 }));
 
 vi.mock('~/stores/applicationsCapabilityStore', () => ({
@@ -61,7 +61,7 @@ describe('useShellPrimaryNavigation capability gating', () => {
 
   it('routes and matches the Projects destination', () => {
     expect(resolveShellPrimaryRoute('projects')).toBe('/projects');
-    expect(isShellPrimaryRouteActive('projects', '/projects/project_1')).toBe(true);
-    expect(isShellPrimaryRouteActive('projects', '/applications')).toBe(false);
+    expect(isShellPrimaryRouteActive('projects', { path: '/projects/project_1', query: {} })).toBe(true);
+    expect(isShellPrimaryRouteActive('projects', { path: '/applications', query: {} })).toBe(false);
   });
 });

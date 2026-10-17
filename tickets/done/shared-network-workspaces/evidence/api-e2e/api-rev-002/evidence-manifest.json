@@ -1,0 +1,229 @@
+{
+  "selfExcluded": true,
+  "files": {
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/V01-console.log": {
+      "sha256": "608364f77893b5e00c5454006d467f655bc5827746b8430897a14e6b82b192f0",
+      "bytes": 15
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/V01-result.json": {
+      "sha256": "609ecd0d5872413b9c818460e40fa88c1ecd32a7a25f6300071286cf714e1975",
+      "bytes": 37680
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/V02-repro-console.log": {
+      "sha256": "608364f77893b5e00c5454006d467f655bc5827746b8430897a14e6b82b192f0",
+      "bytes": 15
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/V02-repro-result.json": {
+      "sha256": "181010eee2d698b4701cf5d3b74df191605a2f48ec1c40e9c216c4787aaf628b",
+      "bytes": 37956
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/ab-nfs-api002-ebe8a71b-client-boot.log": {
+      "sha256": "608364f77893b5e00c5454006d467f655bc5827746b8430897a14e6b82b192f0",
+      "bytes": 15
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/ab-nfs-api002-ebe8a71b-server-boot.log": {
+      "sha256": "608364f77893b5e00c5454006d467f655bc5827746b8430897a14e6b82b192f0",
+      "bytes": 15
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/artifact-audit.json": {
+      "sha256": "fd24a731aa79340be5cfbb555017fa5d3fa4f6c755827f260594866d2f83c222",
+      "bytes": 13659
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/audit-artifacts.py": {
+      "sha256": "5f8fd2e6655cc17a0ff2e03a63f77195f3901edeb9b94f2be01a0ad04cff8892",
+      "bytes": 4144
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/binary.json": {
+      "sha256": "0312b272483f452d695cd876dbd02f6aa7ccff75ee96173cb7667a57f75e5887",
+      "bytes": 361
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/build-linux-candidate.py": {
+      "sha256": "119d6248f57756a549d143058a179c74128dc26bde72ff931ba6ee56cfcd98b1",
+      "bytes": 1893
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/cleanup-owned.py": {
+      "sha256": "8efa249855e9d57d2b0835fc5d1193180f08db18cc9c9c27840590ce96915ab4",
+      "bytes": 2956
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/cleanup.json": {
+      "sha256": "2a560f65efad54eb0b45713aa449a60ea4c08eec958de1c684f464b98754d9a8",
+      "bytes": 3879
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/go-race.log": {
+      "sha256": "012bf911e0963984c5183ab13d430b4dc1c84217205ed4521d12c7fb782b42ad",
+      "bytes": 11599
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/go-vet.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/input-audit.json": {
+      "sha256": "37b6860e18afe1aa2fe4d8dfd34fd848232385514c2ab99d19c78ec19b508c93",
+      "bytes": 1250
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/linux-boot.log": {
+      "sha256": "608364f77893b5e00c5454006d467f655bc5827746b8430897a14e6b82b192f0",
+      "bytes": 15
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/linux-candidate-build.json": {
+      "sha256": "16a05c75b7a2f4638cc446de6af0ad5a63fe9018cf859ababfb87eaa4cf3ea23",
+      "bytes": 1573
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/linux-download.log": {
+      "sha256": "c1f59e73aa25bf1a396cd6ce90a6a594a714e0153405c29bd13188827c817df6",
+      "bytes": 994
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/linux-native-focused.json": {
+      "sha256": "aa6e6e415712c2a55518d34850697940f3af7f6dba6c5976121ec530fd58282b",
+      "bytes": 3986
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/linux-native-repro-result.json": {
+      "sha256": "9b880505c7b0ad12fc9e09785ab88d1736320bff4517c7b12c494cc2671d4c2f",
+      "bytes": 34660
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/linux-native-result.json": {
+      "sha256": "b2eb93c643c3b2acca0a1a0c4acc8cd23eb2844c015da5096167e4cdaaaa9fc2",
+      "bytes": 34660
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/linux-native-trace-corrected.json": {
+      "sha256": "ea1b363058ffe56d7d9c53d6e0945f027d3c66a19988f97ec4340df182915f59",
+      "bytes": 9574
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/linux-native-trace.json": {
+      "sha256": "98ab27c56b7c0c4cb5eb98986bbcc9e39046aea333f5142d71045b4600118144",
+      "bytes": 4884
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/linux-repro-boot.log": {
+      "sha256": "608364f77893b5e00c5454006d467f655bc5827746b8430897a14e6b82b192f0",
+      "bytes": 15
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/linux-repro-download.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/linux-repro-resource.json": {
+      "sha256": "caa1bbdd90af90141b3989b38004dcd4040f38e204a8ab3392d055f89372dfca",
+      "bytes": 767
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/linux-repro-start.json": {
+      "sha256": "9e9f45e774330bc890f2b85dc69ea8b8ef94df06a7a9586da306819d4946db58",
+      "bytes": 3948
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/linux-resource.json": {
+      "sha256": "b5e6919fbd56dfb54e988c02ca84c197016b5e473e307458b9786abf577566af",
+      "bytes": 767
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/linux-start.json": {
+      "sha256": "26dfc2a2894da9def4ce600881ba32e90cbdf594e67701417fddf95fced0d6f0",
+      "bytes": 3696
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/mac-matrix-live-diagnostics.json": {
+      "sha256": "8296a54060014d3380359bbafed5fee42c422a52f8f5c437996b0d41c4dbd79f",
+      "bytes": 5852
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/mac-matrix-result.json": {
+      "sha256": "895c4b8cbe3a52d2133135b2ba018c4539d813298480da7ffc6f60f47621e0ab",
+      "bytes": 38685
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/narrow-checks-result.json": {
+      "sha256": "da46ff05ddb1551c22479071f26abb7b46bd43f20debbbc0e2563097fcaa1e4f",
+      "bytes": 1117
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/new-failure-summary.json": {
+      "sha256": "6816f1c442ff68edb20db4dad5a1d0ec0f05edffa5895e675f9bba13b138027c",
+      "bytes": 982
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/package-index.json": {
+      "sha256": "2557ce254b3fb77a1c13f60d1804d8270ea4eac2e89b8e00927baf8bc43da4ac",
+      "bytes": 51343
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/packaging-check.json": {
+      "sha256": "997b6f88765bf4a5c7fee7c2813342146470431c9a2cfb105881ba01896ffb3d",
+      "bytes": 962
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/prepare-linux-repro.py": {
+      "sha256": "30c13546e5894173934a2878955c1242815649a9c221cf2547b33aa21ffd4bc2",
+      "bytes": 1278
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/prepare-linux-resource.py": {
+      "sha256": "2eec40f399b436fee7ad688c9beca6ab4279e79cd0ce9f7c25c82995eca39723",
+      "bytes": 1266
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/prepare-native.py": {
+      "sha256": "5b0cff6dd8aa72d84abf6f9d0ec452ec0a7390df5876ee60871cf3b50837f67f",
+      "bytes": 2319
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/prepare-result.json": {
+      "sha256": "7a4f978672a74beaad5ee728d92c07b5b865bb641c3358cb984f57d0705c6165",
+      "bytes": 2940
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/prior-failure-resolution.json": {
+      "sha256": "9bc43e4560ea728b4379730ec4f291f41308449bbe9a28060cba134a69f2e78a",
+      "bytes": 1013
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/python-bootstrap-launcher.log": {
+      "sha256": "e0d0a3d478e48a3a6bb11c4e09bc024ddb12305ea739d00c955328050c9380e6",
+      "bytes": 7159
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/routing.json": {
+      "sha256": "e1985098fe4969d2b31196139957ff16d2e66164d0e1944081c46783f03e529b",
+      "bytes": 622
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/run-linux-native-repro.py": {
+      "sha256": "e4fd5f8678d09bc26d84fa70aa15edb850aa1d38125f0669dc6beac22b131fb1",
+      "bytes": 6253
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/run-linux-native.py": {
+      "sha256": "2f46a2e5d260742574b77484e897b6e22a3fa9d32eedaebfb268e0b5b21d5c7e",
+      "bytes": 6235
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/run-linux-trace-corrected.py": {
+      "sha256": "bbee06c75ae805b2e079631159d2adfb69958fb7cdaba7393d6cb16b5de12113",
+      "bytes": 2459
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/run-linux-trace.py": {
+      "sha256": "ef66afc253832162c87919a36d29194c271211e02d2f583c604524b5bb829327",
+      "bytes": 2413
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/run-mac-cold.py": {
+      "sha256": "8919bfbece4bcbea3d843c72260dfca153cb9709286f2bfd2de82465674190f5",
+      "bytes": 10302
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/run-mac-matrix.py": {
+      "sha256": "d57b101723d839d9f634fd8a2e94fbeb65ed8101df44aa55ac5f22248cdb5681",
+      "bytes": 11698
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/run-narrow-checks.py": {
+      "sha256": "a07ab78d55c38766a455e3e837e244f515466e0fec9a96d8e47a4026e747cfd7",
+      "bytes": 1448
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/scratch-path.txt": {
+      "sha256": "107aabff2561ac3b9d918af68fd2511a6d077727ffc6ad3059be52129a7818ac",
+      "bytes": 80
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/start-linux-repro.py": {
+      "sha256": "d4008735247c9c4e0b10e50833d876cb1dc1385cdd8cbd71d5cd510c73d28635",
+      "bytes": 2135
+    },
+    "tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-002/start-linux.py": {
+      "sha256": "db12516c102e3e3235c1520efe1d3be880a367145499b9e6e92e5bc80aec6f7c",
+      "bytes": 2111
+    },
+    "tickets/in-progress/shared-network-workspaces/api-e2e-coverage-investigation.md": {
+      "sha256": "0f2fd1154193fb008b2d161c27eb10943a54fdef212b7de873bd7bef36aa25cd",
+      "bytes": 28997
+    },
+    "tickets/in-progress/shared-network-workspaces/api-e2e-execution-coverage-report.md": {
+      "sha256": "ecaf990c9d5c988ca52f9a7f2225f85a9cdb8a2f3beb2786d47ba0fcc8ad604b",
+      "bytes": 28181
+    },
+    "tickets/in-progress/shared-network-workspaces/api-e2e-revision-record.md": {
+      "sha256": "1d78442fd6710dc3c609b8360c3934774c3ad666f29a1c6cc7afa107beaaccac",
+      "bytes": 9791
+    },
+    "tickets/in-progress/shared-network-workspaces/api-e2e-test-case-ledger.md": {
+      "sha256": "e596d1e6022e6c78e75cf1b0cd9c088e8346816293572d69cf8290f40a443ab4",
+      "bytes": 22002
+    }
+  }
+}

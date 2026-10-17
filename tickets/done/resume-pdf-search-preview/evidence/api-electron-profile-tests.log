@@ -1,0 +1,15 @@
+
+> autobyteus@1.5.3-beta.1 test:electron /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web
+> vitest --config ./electron/vitest.config.ts --run launch-profile/__tests__/electronLaunchProfile.spec.ts launch-profile/__tests__/e2eLaunchPreflight.spec.ts
+
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web/electron
+
+ ✓ launch-profile/__tests__/e2eLaunchPreflight.spec.ts (1 test) 20ms
+ ✓ launch-profile/__tests__/electronLaunchProfile.spec.ts (3 tests) 20ms
+
+ Test Files  2 passed (2)
+      Tests  4 passed (4)
+   Start at  03:18:48
+   Duration  2.92s (transform 333ms, setup 0ms, collect 519ms, tests 40ms, environment 0ms, prepare 1.90s)
+

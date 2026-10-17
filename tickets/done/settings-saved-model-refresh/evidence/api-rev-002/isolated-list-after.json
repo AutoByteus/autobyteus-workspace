@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "list",
+  "result": {
+    "instances": []
+  },
+  "_evidenceFilter": {
+    "scope": "Only owned instances retained; unrelated registry records untouched",
+    "ownedInstanceIds": [
+      "iso-63101-feda",
+      "iso-63522-1749"
+    ],
+    "unrelatedInstanceCount": 3
+  }
+}

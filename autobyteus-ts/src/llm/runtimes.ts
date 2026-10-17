@@ -7,5 +7,4 @@ export enum LLMRuntime {
   OPENAI_COMPATIBLE = "openai_compatible",
   OLLAMA = "ollama",
   LMSTUDIO = "lmstudio",
-  AUTOBYTEUS = "autobyteus",
 }

@@ -1,0 +1,83 @@
+
+> autobyteus@1.5.3-beta.2 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts components/fileExplorer/__tests__/FileExplorerTabs.spec.ts --run --maxWorkers=2
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+[1m[46m RUN [49m[22m [36mv3.2.4 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web[39m
+
+[90mstderr[2m | components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts
+[22m[39mWarning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+[90mstderr[2m | components/fileExplorer/__tests__/FileExplorerTabs.spec.ts
+[22m[39mWarning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+[90mstdout[2m | components/fileExplorer/__tests__/FileExplorerTabs.spec.ts
+[22m[39mserverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+[90mstdout[2m | components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts
+[22m[39mserverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ [32m✓[39m components/fileExplorer/__tests__/FileExplorerTabs.spec.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [31m❯[39m components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts [2m([22m[2m2 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 43[2mms[22m[39m
+   [32m✓[39m FileExplorerTabs unsaved content during peer modification (AC-010)[2m > [22mretains the editor draft for Save, peer modify=false[32m 18[2mms[22m[39m
+[31m   [31m×[31m FileExplorerTabs unsaved content during peer modification (AC-010)[2m > [22mretains the editor draft for Save, peer modify=true[39m[32m 24[2mms[22m[39m
+[31m     → expected "wrappedAction" to be called with arguments: [ 'unsaved-workspace', …(2) ][90m
+
+Received: 
+
+[1m  1st wrappedAction call:
+
+[22m[2m  [[22m
+[2m    "unsaved-workspace",[22m
+[2m    "notes.txt",[22m
+[32m-   "local unsaved draft",[90m
+[31m+   "peer committed bytes",[90m
+[2m  ][22m
+[31m[90m
+
+Number of calls: [1m1[22m
+[31m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts[2m > [22mFileExplorerTabs unsaved content during peer modification (AC-010)[2m > [22mretains the editor draft for Save, peer modify=true
+[31m[1mAssertionError[22m: expected "wrappedAction" to be called with arguments: [ 'unsaved-workspace', …(2) ][90m
+
+Received: 
+
+[1m  1st wrappedAction call:
+
+[22m[2m  [[22m
+[2m    "unsaved-workspace",[22m
+[2m    "notes.txt",[22m
+[32m-   "local unsaved draft",[90m
+[31m+   "peer committed bytes",[90m
+[2m  ][22m
+[31m[90m
+
+Number of calls: [1m1[22m
+[31m[39m
+[36m [2m❯[22m components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts:[2m51:20[22m[39m
+    [90m 49| [39m      wrapper[33m.[39m[34mfindComponent[39m({ name[33m:[39m [32m'FileViewer'[39m })[33m.[39mvm[33m.[39m[34m$emit[39m([32m'save'[39m)
+    [90m 50| [39m      [35mawait[39m [34mflushPromises[39m()
+    [90m 51| [39m      expect(save).toHaveBeenCalledWith(workspaceId, node.path, 'local…
+    [90m   | [39m                   [31m^[39m
+    [90m 52| [39m    } [35mfinally[39m {
+    [90m 53| [39m      wrapper[33m.[39m[34munmount[39m()
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m1 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m3 passed[39m[22m[90m (4)[39m
+[2m   Start at [22m 16:13:16
+[2m   Duration [22m 8.75s[2m (transform 3.99s, setup 15.45s, collect 536ms, tests 64ms, environment 690ms, prepare 352ms)[22m
+
+ ELIFECYCLE  Command failed with exit code 1.

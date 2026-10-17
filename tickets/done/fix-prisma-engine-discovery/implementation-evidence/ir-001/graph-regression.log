@@ -1,0 +1,215 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.22                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+ ❯ tests/unit/startup/migrations-prisma-engine-env.test.ts (30 tests | 3 failed) 243ms
+     ✓ follows the real root-pnpm dependency graph, preferring its bundle over newer cache 18ms
+     ✓ follows the real package-pnpm dependency graph, preferring its bundle over newer cache 8ms
+     ✓ follows the real flat dependency graph, preferring its bundle over newer cache 5ms
+     ✓ ignores unrelated direct and virtual-store installations 11ms
+     ✓ uses only exact-revision cache when its bundle is incomplete 10ms
+     ✓ does not select a complete cache belonging to another revision 8ms
+     ✓ does not combine files across revisions or targets 9ms
+     ✓ sorts equivalent targets stably, without file mtimes 9ms
+     ✓ declines automatic selection for invalid native revision undefined 8ms
+     ✓ declines automatic selection for invalid native revision  8ms
+     ✓ declines automatic selection for invalid native revision 5.22.0 9ms
+     ✓ declines automatic selection for invalid native revision ../other 8ms
+     ✓ declines automatic selection for invalid native revision aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 8ms
+     ✓ declines automatic selection for invalid native revision gggggggggggggggggggggggggggggggggggggggg 8ms
+     ✓ declines automatic selection for invalid native revision 42 8ms
+     ✓ declines automatic selection for invalid native revision null 9ms
+     ✓ declines when cliPath is missing 7ms
+     × declines when engineManifest is missing 13ms
+     × declines when versionManifest is missing 9ms
+     × declines malformed or unreadable revision JSON 36ms
+     ✓ keeps complete explicit overrides even without metadata or files 5ms
+     ✓ replaces a partial PRISMA_QUERY_ENGINE_LIBRARY only when an automatic pair resolves 7ms
+     ✓ replaces a partial PRISMA_SCHEMA_ENGINE_BINARY only when an automatic pair resolves 9ms
+     ✓ retains linux/arm64 target preference 0ms
+     ✓ retains linux/x64 target preference 0ms
+     ✓ retains darwin/arm64 target preference 0ms
+     ✓ retains darwin/x64 target preference 0ms
+     ✓ retains win32/x64 target preference 0ms
+     ✓ retains freebsd/x64 target preference 0ms
+     ✓ prefers Linux ARM64 openssl3 over openssl1 and never selects Debian x64 11ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/startup/migrations-prisma-engine-env.test.ts > CLI-owned Prisma migration engines > declines when engineManifest is missing
+AssertionError: expected { …(4) } to be null
+
+- Expected:
+null
+
++ Received:
+{
+  "queryEngineLibrary": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/libquery_engine-darwin-arm64.dylib.node",
+  "schemaEngineBinary": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/schema-engine-darwin-arm64",
+  "source": "bundled",
+  "sourcePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/fix-prisma-engine-discovery/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines",
+}
+
+ ❯ tests/unit/startup/migrations-prisma-engine-env.test.ts:156:65
+    154|     cachedPair(f.cacheRoot);
+    155|     fs.unlinkSync(f[field]);
+    156|     expect(resolvePrismaEnginePair(f.appRoot, {}, f.cacheRoot)).toBeNu…
+       |                                                                 ^
+    157|   });
+    158|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/startup/migrations-prisma-engine-env.test.ts > CLI-owned Prisma migration engines > declines when versionManifest is missing
+AssertionError: expected { …(4) } to be null
+
+- Expected:
+null
+
++ Received:
+{
+  "queryEngineLibrary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-VJwoDk/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/libquery_engine-darwin-arm64.dylib.node",
+  "schemaEngineBinary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-VJwoDk/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/schema-engine-darwin-arm64",
+  "source": "bundled",
+  "sourcePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-VJwoDk/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines",
+}
+
+ ❯ tests/unit/startup/migrations-prisma-engine-env.test.ts:156:65
+    154|     cachedPair(f.cacheRoot);
+    155|     fs.unlinkSync(f[field]);
+    156|     expect(resolvePrismaEnginePair(f.appRoot, {}, f.cacheRoot)).toBeNu…
+       |                                                                 ^
+    157|   });
+    158|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/unit/startup/migrations-prisma-engine-env.test.ts > CLI-owned Prisma migration engines > declines malformed or unreadable revision JSON
+AssertionError: expected { …(4) } to be null
+
+- Expected:
+null
+
++ Received:
+{
+  "queryEngineLibrary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-zdMRwx/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/libquery_engine-darwin-arm64.dylib.node",
+  "schemaEngineBinary": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-zdMRwx/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/schema-engine-darwin-arm64",
+  "source": "bundled",
+  "sourcePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-prisma-graph-zdMRwx/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines",
+}
+
+ ❯ tests/unit/startup/migrations-prisma-engine-env.test.ts:167:65
+    165|     fs.unlinkSync(f.versionManifest);
+    166|     fs.mkdirSync(f.versionManifest);
+    167|     expect(resolvePrismaEnginePair(f.appRoot, {}, f.cacheRoot)).toBeNu…
+       |                                                                 ^
+    168|   });
+    169|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 27 passed (30)
+   Start at  17:35:18
+   Duration  893ms (transform 54ms, setup 45ms, import 25ms, tests 243ms, environment 0ms)

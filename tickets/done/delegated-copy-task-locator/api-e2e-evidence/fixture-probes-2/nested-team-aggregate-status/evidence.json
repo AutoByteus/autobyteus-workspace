@@ -1,0 +1,222 @@
+{
+  "startedAt": "2026-10-11T07:43:04.617Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "webDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/fixtures/nested-team-aggregate-status.page.vue",
+  "installedPagePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/pages/api-e2e-nested-team-aggregate-status.vue",
+  "routePath": "/api-e2e-nested-team-aggregate-status",
+  "scenarios": {
+    "NTAS-BR-001": {
+      "description": "All five aggregate states render with the approved visual, accessibility, placement, one-dot, and route-exclusion behavior",
+      "result": "Pass",
+      "startedAt": "2026-10-11T07:43:15.789Z",
+      "details": {
+        "presentations": {
+          "running": {
+            "status": "running",
+            "role": "img",
+            "ariaLabel": "Team status: Running",
+            "title": "Team status: Running",
+            "tabindex": null,
+            "tagName": "span",
+            "interactiveDescendants": 0,
+            "outerClass": "inline-flex flex-shrink-0 items-center mr-1.5",
+            "innerClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 animate-pulse",
+            "backgroundColor": "rgb(59, 130, 246)",
+            "animationName": "pulse",
+            "outerDisplay": "flex",
+            "outerWidth": 8,
+            "outerHeight": 8,
+            "innerWidth": 8,
+            "innerHeight": 8,
+            "identityKind": "user-group-solid",
+            "identityWidth": 16,
+            "identityHeight": 16,
+            "gapToIdentity": 6,
+            "leadingDataTest": "workspace-team-member-disclosure",
+            "leadingAriaHidden": null,
+            "afterLeading": true,
+            "beforeIdentity": true
+          },
+          "initializing": {
+            "status": "initializing",
+            "role": "img",
+            "ariaLabel": "Team status: Initializing",
+            "title": "Team status: Initializing",
+            "tabindex": null,
+            "tagName": "span",
+            "interactiveDescendants": 0,
+            "outerClass": "inline-flex flex-shrink-0 items-center mr-1.5",
+            "innerClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-amber-500 animate-pulse",
+            "backgroundColor": "rgb(245, 158, 11)",
+            "animationName": "pulse",
+            "outerDisplay": "flex",
+            "outerWidth": 8,
+            "outerHeight": 8,
+            "innerWidth": 8,
+            "innerHeight": 8,
+            "identityKind": "user-group-solid",
+            "identityWidth": 16,
+            "identityHeight": 16,
+            "gapToIdentity": 6,
+            "leadingDataTest": "workspace-team-member-disclosure",
+            "leadingAriaHidden": null,
+            "afterLeading": true,
+            "beforeIdentity": true
+          },
+          "error": {
+            "status": "error",
+            "role": "img",
+            "ariaLabel": "Team status: Error",
+            "title": "Team status: Error",
+            "tabindex": null,
+            "tagName": "span",
+            "interactiveDescendants": 0,
+            "outerClass": "inline-flex flex-shrink-0 items-center mr-1.5",
+            "innerClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-red-500",
+            "backgroundColor": "rgb(239, 68, 68)",
+            "animationName": "none",
+            "outerDisplay": "flex",
+            "outerWidth": 8,
+            "outerHeight": 8,
+            "innerWidth": 8,
+            "innerHeight": 8,
+            "identityKind": "user-group-solid",
+            "identityWidth": 16,
+            "identityHeight": 16,
+            "gapToIdentity": 6,
+            "leadingDataTest": "workspace-team-member-disclosure",
+            "leadingAriaHidden": null,
+            "afterLeading": true,
+            "beforeIdentity": true
+          },
+          "idle": {
+            "status": "idle",
+            "role": "img",
+            "ariaLabel": "Team status: Idle",
+            "title": "Team status: Idle",
+            "tabindex": null,
+            "tagName": "span",
+            "interactiveDescendants": 0,
+            "outerClass": "inline-flex flex-shrink-0 items-center mr-1.5",
+            "innerClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500",
+            "backgroundColor": "rgb(34, 197, 94)",
+            "animationName": "none",
+            "outerDisplay": "flex",
+            "outerWidth": 8,
+            "outerHeight": 8,
+            "innerWidth": 8,
+            "innerHeight": 8,
+            "identityKind": "user-group-solid",
+            "identityWidth": 16,
+            "identityHeight": 16,
+            "gapToIdentity": 6,
+            "leadingDataTest": "workspace-team-member-disclosure",
+            "leadingAriaHidden": null,
+            "afterLeading": true,
+            "beforeIdentity": true
+          },
+          "offline": {
+            "status": "offline",
+            "role": "img",
+            "ariaLabel": "Team status: Offline",
+            "title": "Team status: Offline",
+            "tabindex": null,
+            "tagName": "span",
+            "interactiveDescendants": 0,
+            "outerClass": "inline-flex flex-shrink-0 items-center mr-1.5",
+            "innerClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+            "backgroundColor": "rgb(153, 153, 153)",
+            "animationName": "none",
+            "outerDisplay": "flex",
+            "outerWidth": 8,
+            "outerHeight": 8,
+            "innerWidth": 8,
+            "innerHeight": 8,
+            "identityKind": "user-group-solid",
+            "identityWidth": 16,
+            "identityHeight": 16,
+            "gapToIdentity": 6,
+            "leadingDataTest": "workspace-team-member-disclosure",
+            "leadingAriaHidden": null,
+            "afterLeading": true,
+            "beforeIdentity": true
+          }
+        },
+        "visibleAggregateCount": 4,
+        "binaryActivityCount": 2,
+        "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/tickets/in-progress/delegated-copy-task-locator/api-e2e-evidence/fixture-probes-2/nested-team-aggregate-status/expanded-running.png"
+      }
+    },
+    "NTAS-BR-002": {
+      "description": "Recursive/task scope, sibling isolation, and collapsed live patching use the current projection without navigation, reload, duplicate dots, or an aggregate request",
+      "result": "Fail",
+      "startedAt": "2026-10-11T07:43:15.925Z",
+      "failure": {
+        "id": "NTAS-BR-002",
+        "description": "Recursive/task scope, sibling isolation, and collapsed live patching use the current projection without navigation, reload, duplicate dots, or an aggregate request",
+        "message": "Collapsed Product Team must hide the deep configured Team row",
+        "stack": "Error: Collapsed Product Team must hide the deep configured Team row\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/nested-team-aggregate-status-probe.mjs:78:19)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/nested-team-aggregate-status-probe.mjs:484:7\n    at async runScenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/nested-team-aggregate-status-probe.mjs:169:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/nested-team-aggregate-status-probe.mjs:469:3"
+      }
+    }
+  },
+  "browserEvents": [
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace:api-e2e-aggregate, workspaceRootPath: /api-e2e-aggregate, workspaceName: Aggregate Status Fixture, workspaceKind: filesystem, canRemoveFromWorkspaces: false} workspace-teams= [Object] workspace-team-history-groups= []  ... > \n  at <ApiE2eNestedTeamAggregateStatus onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-nested-team-aggregate-status\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-nested-team-aggregate-status, hash: , query: Object, name: api-e2e-nested-team-aggregate-status, path: /api-e2e-nested-team-aggregate-status}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace:api-e2e-aggregate, workspaceRootPath: /api-e2e-aggregate, workspaceName: Aggregate Status Fixture, workspaceKind: filesystem, canRemoveFromWorkspaces: false} workspace-teams= [Object] workspace-team-history-groups= []  ... > \n  at <ApiE2eNestedTeamAggregateStatus onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-nested-team-aggregate-status\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-nested-team-aggregate-status, hash: , query: Object, name: api-e2e-nested-team-aggregate-status, path: /api-e2e-nested-team-aggregate-status}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace:api-e2e-aggregate, workspaceRootPath: /api-e2e-aggregate, workspaceName: Aggregate Status Fixture, workspaceKind: filesystem, canRemoveFromWorkspaces: false} workspace-teams= [Object] workspace-team-history-groups= []  ... > \n  at <ApiE2eNestedTeamAggregateStatus onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-nested-team-aggregate-status\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-nested-team-aggregate-status, hash: , query: Object, name: api-e2e-nested-team-aggregate-status, path: /api-e2e-nested-team-aggregate-status}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace:api-e2e-aggregate, workspaceRootPath: /api-e2e-aggregate, workspaceName: Aggregate Status Fixture, workspaceKind: filesystem, canRemoveFromWorkspaces: false} workspace-teams= [Object] workspace-team-history-groups= []  ... > \n  at <ApiE2eNestedTeamAggregateStatus onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-nested-team-aggregate-status\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-nested-team-aggregate-status, hash: , query: Object, name: api-e2e-nested-team-aggregate-status, path: /api-e2e-nested-team-aggregate-status}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace:api-e2e-aggregate, workspaceRootPath: /api-e2e-aggregate, workspaceName: Aggregate Status Fixture, workspaceKind: filesystem, canRemoveFromWorkspaces: false} workspace-teams= [Object] workspace-team-history-groups= []  ... > \n  at <ApiE2eNestedTeamAggregateStatus onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-nested-team-aggregate-status\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-nested-team-aggregate-status, hash: , query: Object, name: api-e2e-nested-team-aggregate-status, path: /api-e2e-nested-team-aggregate-status}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace:api-e2e-aggregate, workspaceRootPath: /api-e2e-aggregate, workspaceName: Aggregate Status Fixture, workspaceKind: filesystem, canRemoveFromWorkspaces: false} workspace-teams= [Object] workspace-team-history-groups= []  ... > \n  at <ApiE2eNestedTeamAggregateStatus onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-nested-team-aggregate-status\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-nested-team-aggregate-status, hash: , query: Object, name: api-e2e-nested-team-aggregate-status, path: /api-e2e-nested-team-aggregate-status}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace:api-e2e-aggregate, workspaceRootPath: /api-e2e-aggregate, workspaceName: Aggregate Status Fixture, workspaceKind: filesystem, canRemoveFromWorkspaces: false} workspace-teams= [Object] workspace-team-history-groups= []  ... > \n  at <ApiE2eNestedTeamAggregateStatus onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/api-e2e-nested-team-aggregate-status\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-nested-team-aggregate-status, hash: , query: Object, name: api-e2e-nested-team-aggregate-status, path: /api-e2e-nested-team-aggregate-status}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< Proxy(Object) > > \n  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>"
+    }
+  ],
+  "requests": [],
+  "failures": [
+    {
+      "id": "NTAS-BR-002",
+      "description": "Recursive/task scope, sibling isolation, and collapsed live patching use the current projection without navigation, reload, duplicate dots, or an aggregate request",
+      "message": "Collapsed Product Team must hide the deep configured Team row",
+      "stack": "Error: Collapsed Product Team must hide the deep configured Team row\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/nested-team-aggregate-status-probe.mjs:78:19)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/nested-team-aggregate-status-probe.mjs:484:7\n    at async runScenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/nested-team-aggregate-status-probe.mjs:169:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/tests/e2e/nested-team-aggregate-status-probe.mjs:469:3"
+    }
+  ],
+  "cleanup": {
+    "nuxt": {
+      "status": "terminated",
+      "pid": 89822,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": 0,
+      "finalSignalCode": null
+    },
+    "fixture": {
+      "status": "removed",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-web/pages/api-e2e-nested-team-aggregate-status.vue"
+    }
+  },
+  "port": 61103,
+  "baseUrl": "http://127.0.0.1:61103",
+  "finishedAt": "2026-10-11T07:43:19.594Z",
+  "result": "Fail"
+}

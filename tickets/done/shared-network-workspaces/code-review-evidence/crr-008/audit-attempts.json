@@ -1,0 +1,8 @@
+{
+  "attempt1": {
+    "result": "Reviewer harness path assertion before evidence writes or product commands",
+    "cause": "parents[4] resolves tickets rather than worktree",
+    "correction": "parents[5]"
+  },
+  "productFinding": false
+}

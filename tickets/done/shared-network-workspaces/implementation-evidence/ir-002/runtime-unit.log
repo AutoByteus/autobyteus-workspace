@@ -1,0 +1,222 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession streaming lifecycle > closes the opened process and fails the turn when system-instruction persistence fails
+Claude input for run 'run-1' failed before send: Error: persist failed
+    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:277:36)
+    at Object.Mock [as capture] (file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/node_modules/.pnpm/@vitest+spy@4.0.18/node_modules/@vitest/spy/dist/index.js:285:34)
+    at captureClaudeSystemInstructions (/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-system-instruction-capture.ts:14:75)
+    at ClaudeSession.handleProcessOpened (/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:361:5)
+    at Object.onOpened (/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:127:34)
+    at ClaudeSessionProcess.open (/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts:75:18)
+    at ClaudeSession.submitInput (/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:233:7)
+    at start (/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:159:20)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:284:20
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession streaming lifecycle > enriches a failed process open with bounded redacted stderr diagnostics
+Claude input for run 'run-1' failed before send: Error: Claude Code process exited with code 1
+Claude Code diagnostics:
+Authorization: Bearer [redacted]
+ANTHROPIC_API_KEY=[redacted]
+--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons
+    at enrichClaudeRuntimeErrorWithDiagnostics (/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-process-diagnostics.ts:79:10)
+    at ClaudeSessionProcess.open (/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts:82:13)
+    at ClaudeSession.submitInput (/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:233:7)
+    at start (/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:159:20)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:439:5
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession process lifetime > fails the active turn visibly on an unexpected exit and reopens with resume on the next input (AC-009)
+Claude process for run 'run-1' exited: Error: Claude Code process terminated by signal SIGKILL
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:900:16
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession process lifetime > treats a conflicting provider UUID as fatal for the process and fails the active turn
+Claude process for run 'run-1' exited: Error: CLAUDE_PROVIDER_SESSION_ID_CONFLICT: Claude returned a different provider session identity.
+    at ClaudeProviderSessionLifecycle.confirmProviderSessionId (/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.ts:82:13)
+    at ClaudeSession.handleFrame (/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:386:37)
+    at Object.onFrame (/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:128:32)
+    at ClaudeSessionProcess.runPump (/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts:91:26)
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession process lifetime > marks still-running background tasks stopped on unexpected exit (REQ-009, AC-011)
+Claude process for run 'run-1' exited: Error: killed
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:952:112
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:961:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession token usage > marks the first observation after a reopen following an unexpected exit, but never a create generation
+Claude process for run 'run-1' exited: Error: Claude Code process terminated by signal SIGKILL
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:1070:16
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession compaction (real SDK frame shapes) > records one operation for an auto compaction with 30 s keepalives (AC-023)
+Claude compaction 7a12debe-56a1-4b84-ba8d-c69fd6973df9 suppressed 3 repeated compacting status frame(s).
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession compaction (real SDK frame shapes) > closes an open operation as process_exited before the terminal turn error (SCN-020)
+Claude process for run 'run-1' exited: Error: Claude Code process terminated by signal SIGKILL
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:1559:15
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts (54 tests) 595ms
+stdout | tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts > CodexThreadBootstrapper > falls back to workspace materialization when the discoverable-skill probe fails
+Failed to preflight discoverable Codex skills for '/tmp/codex-workspace'; falling back to workspace materialization: Error: skills/list failed
+
+ ✓ tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts (32 tests) 21ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts (34 tests) 10ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-turn-tracker.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-turn-tracker.test.ts (28 tests) 10ms
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts (18 tests) 129ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts (13 tests) 22ms
+stdout | tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts (8 tests) 9ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-background-task-registry.test.ts (37 tests) 7ms
+stdout | tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts (11 tests) 400ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-input-terminal-release.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-input-terminal-release.test.ts (6 tests) 434ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.test.ts (5 tests) 5ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts (9 tests) 10ms
+stdout | tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts (4 tests) 8ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-compaction-operation-tracker.test.ts > ClaudeCompactionOperationTracker > collapses 30 s compacting keepalives into the open operation (AC-023)
+Claude compaction 7a12debe-56a1-4b84-ba8d-c69fd6973df9 suppressed 3 repeated compacting status frame(s).
+
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-compaction-operation-tracker.test.ts (9 tests) 5ms
+ ✓ tests/unit/agent-execution/backends/claude/claude-agent-run-backend.test.ts (6 tests) 6ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-token-usage.test.ts (6 tests) 11ms
+ ✓ tests/unit/agent-execution/backends/shared/runtime-skill-profile.test.ts (7 tests) 32ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session-output-events.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-output-events.test.ts (18 tests) 4ms
+ ✓ tests/unit/runtime-management/codex/client/codex-app-server-client-manager.test.ts (2 tests) 4ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-user-message-builder.test.ts (3 tests) 5ms
+ ✓ tests/unit/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-materializer.test.ts (2 tests) 2ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-cleanup.test.ts (1 test) 3ms
+ ✓ tests/unit/agent-execution/backends/claude/claude-workspace-skill-materializer.test.ts (2 tests) 6ms
+ ✓ tests/unit/agent-execution/backends/codex/backend/codex-configured-tool-gating.test.ts (2 tests) 3ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-config.test.ts (3 tests) 2ms
+ ✓ tests/unit/agent-execution/backends/claude/session/build-claude-session-mcp-servers.test.ts (2 tests) 2ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-process-diagnostics.test.ts (2 tests) 2ms
+
+ Test Files  27 passed (27)
+      Tests  324 passed (324)
+   Start at  18:50:16
+   Duration  15.74s (transform 3.07s, setup 233ms, import 10.96s, tests 1.75s, environment 2ms)

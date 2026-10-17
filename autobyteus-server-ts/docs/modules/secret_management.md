@@ -2,8 +2,8 @@
 
 ## Scope
 
-The TypeScript server stores bounded provider, search, media, metadata,
-AutoByteus gateway, and managed Claude credentials in an encrypted vault inside
+The TypeScript server stores bounded provider, search, media, metadata, and
+managed Claude credentials in an encrypted vault inside
 the same SQLite application database used by the rest of the server. Product
 callers identify an authorized semantic consumer; they do not read environment
 aliases, database paths, encryption keys, or ciphertext records directly.
@@ -135,13 +135,9 @@ result seeds only that provider's in-process source. Delete removes the
 credential and metadata before removing that exact source; neither operation
 performs a global catalog refresh.
 
-AutoByteus remote discovery and invocation always use the intrinsic
-`provider.autobyteus.api-key`, regardless of a discovered model's downstream
-display provider. `AUTOBYTEUS_LLM_SERVER_HOSTS` remains ordinary non-secret
-configuration. A committed AutoByteus key replacement returns after the vault
-commit. It then invalidates and starts only the AutoByteus LLM/audio/image
-sources in the background; the credential command does not wait for remote
-hosts or relabel discovery failure as a credential failure.
+The removed remote AutoByteus provider has no binding. A vault row it left
+behind is never resolved by any consumer and stays inert; local `.env` import
+skips its former alias.
 
 ## Gemini Setup And Metadata
 
@@ -264,7 +260,10 @@ given it a key source file. A typical case is provisioning model access into an
 isolated AutoByteus instance at the `databaseUrl` reported by
 `pnpm isolated-app start`. The agent runs the same command with the same TTY
 confirmation (`script` provides a terminal for agents that cannot type into
-prompts). Nothing runs it automatically, and no tool imports on an agent's
+prompts). When the agent shell's stdin is a socket, `script` can fail with
+`tcgetattr: Operation not supported on socket`; the agent then runs the same
+command under a small Python `pty.fork()` wrapper that types `IMPORT` at the
+prompt. Nothing runs it automatically, and no tool imports on an agent's
 behalf:
 
 - `--source` must be an explicit absolute path;

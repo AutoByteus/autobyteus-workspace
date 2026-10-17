@@ -1,0 +1,22 @@
+{
+  "head": "76fab065ec30bff5be76dd2e013243abda3a6934",
+  "status": "M ../tickets/in-progress/settings-saved-model-refresh/api-e2e-coverage-investigation.md\n M ../tickets/in-progress/settings-saved-model-refresh/api-e2e-test-case-ledger.md\n?? ../autobyteus-application-backend-sdk/dist/\n?? ../autobyteus-application-sdk-contracts/dist/\n?? ../tickets/in-progress/settings-saved-model-refresh/evidence/api-rev-003/",
+  "instance": {
+    "instanceId": "iso-65414-c9a5",
+    "pid": 57442,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:65415",
+    "graphqlUrl": "http://127.0.0.1:65415/graphql",
+    "controlEndpoint": "http://127.0.0.1:65414",
+    "controlPort": 65414,
+    "serverPort": 65415,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-qyzwj2",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-qyzwj2/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-65414-c9a5.log"
+  },
+  "skipBuild": false,
+  "asar": "/Users/normy/autobyteus_org/autobyteus-worktrees/settings-saved-model-refresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar",
+  "asarSha256": "e9b395c077453afd31b5e462a1a3299c491837f7523bde29a352f09aa1ce5154"
+}

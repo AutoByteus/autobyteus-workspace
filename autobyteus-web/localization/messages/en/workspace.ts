@@ -2,6 +2,7 @@ import type { TranslationCatalog } from "../../runtime/types";
 
 const messages = {
   "workspace.components.conversation.SkillRequestChips.sentToTheAgentAs": "Sent to the agent as",
+  "workspace.components.conversation.segments.SystemTaskNotificationSegment.skillUpdated": "Skill updated",
   "fileExplorer.workspaceUnavailable": "Workspace details are unavailable. Refresh or reopen Settings to load the saved workspace.",
   "workspace.teamCopy.loading": "Reading saved Team configuration…",
   "workspace.runModelConfig.modelRequired": "Select a model before launch.",
@@ -232,6 +233,8 @@ const messages = {
   "workspace.history.hierarchy.tree_label": "{{name}} organization tree",
   "workspace.history.hierarchy.role.agent_team": "Agent team",
   "workspace.history.hierarchy.role.agent": "Agent",
+  "workspace.history.copyTask.locate": "Show Task in Projects: {{title}}",
+  "workspace.history.copyTask.accessible": "Task: {{title}}",
   "workspace.history.hierarchy.role.temporary_task_team": "Temporary task team",
   "workspace.history.hierarchy.role.temporary_task_agent": "Temporary task agent",
   "workspace.history.hierarchy.identity": "{{role}} · {{name}} · {{address}}",

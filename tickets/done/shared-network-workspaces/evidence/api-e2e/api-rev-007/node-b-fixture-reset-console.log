@@ -1,0 +1,7 @@
+Started destroy only interrupted fresh B through public launcher
+destroy only interrupted fresh B through public launcher: Pass
+Started remove exact test-only B private volumes for clean fixture rebuild
+remove exact test-only B private volumes for clean fixture rebuild: Pass
+Started recreate B through unchanged current public launcher
+recreate B through unchanged current public launcher: Pass
+L03 fixture correction: initial B Stop interrupted first database migration. Preserved failed attempt/logs; rebuilt only exact owned B volumes through public launcher and waited for real health. A-only unselected proof retains old B ID scope; no database/schema/product changes.

@@ -1,0 +1,12 @@
+PASS two fresh real application-image nodes serve independent GraphQL endpoints
+PASS daemon mounts one export into both application nodes; private state and credentials isolated
+PASS each application registers the ordinary mounted project through its public workspace API
+PASS native Codex login streamed into fresh private homes, source unchanged
+PASS each independent native process discovers its private skill while retaining common project cwd
+PASS A private native skill reads supporting asset and writes ordinary shared project file
+PASS B native read sees A data and appends own private skill asset without prompt copying
+PASS A native fresh reopen sees B modification
+PASS A native process close/private-bundle removal leaves common project unchanged
+FAIL active B private native skill survives A cleanup and reads previously unread asset AssertionError([{'method': 'turn/completed', 'params': {'threadId': '01a133ec-d597-7a41-a044-cb9eab4d5c3b', 'turn': {'id': '01a133ed-e6b1-7882-84fe-5f57e73bca01', 'rootTurnId': '01a133ed-e6b1-7882-84fe-5f57e73bca01', 'items': [], 'itemsView': 'notLoaded', 'status': 'failed', 'error': {'message': 'Selected model is at capacity. Please try a different model.', 'codexErrorInfo': 'serverOverloaded', 'additionalDetails': None, 'misalignment': None}, 'startedAt': 1791872591, 'completedAt': 1791872633, 'durationMs': 41799}}}])
+PROBE FAILURE AssertionError([{'method': 'turn/completed', 'params': {'threadId': '01a133ec-d597-7a41-a044-cb9eab4d5c3b', 'turn': {'id': '01a133ed-e6b1-7882-84fe-5f57e73bca01', 'rootTurnId': '01a133ed-e6b1-7882-84fe-5f57e73bca01', 'items': [], 'itemsView': 'notLoaded', 'status': 'failed', 'error': {'message': 'Selected model is at capacity. Please try a different model.', 'codexErrorInfo': 'serverOverloaded', 'additionalDetails': None, 'misalignment': None}, 'startedAt': 1791872591, 'completedAt': 1791872633, 'durationMs': 41799}}}])
+{"run": "ab-sf-fr015-68c77fbb", "passes": 9, "fatal": "AssertionError([{'method': 'turn/completed', 'params': {'threadId': '01a133ec-d597-7a41-a044-cb9eab4d5c3b', 'turn': {'id': '01a133ed-e6b1-7882-84fe-5f57e73bca01', 'rootTurnId': '01a133ed-e6b1-7882-84fe-5f57e73bca01', 'items': [], 'itemsView': 'notLoaded', 'status': 'failed', 'error': {'message': 'Selected model is at capacity. Please try a different model.', 'codexErrorInfo': 'serverOverloaded', 'additionalDetails': None, 'misalignment': None}, 'startedAt': 1791872591, 'completedAt': 1791872633, 'durationMs': 41799}}}])", "cleanup_ok": true}

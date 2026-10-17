@@ -1,0 +1,7 @@
+PASS two fresh real application-image nodes serve independent GraphQL endpoints
+PASS daemon mounts one export into both application nodes; private state and credentials isolated
+PASS each application registers the ordinary mounted project through its public workspace API
+PASS native Claude login streamed only into fresh private homes, no source edit
+FAIL both native sessions discover different private plugin paths and preserved workspace skill AssertionError('native SDK response timeout')
+PROBE FAILURE AssertionError('native SDK response timeout')
+{"run": "ab-sf-fr012-dcf60c7d", "passes": 4, "fatal": "AssertionError('native SDK response timeout')", "cleanup_ok": true}

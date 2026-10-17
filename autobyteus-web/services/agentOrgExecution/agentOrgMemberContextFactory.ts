@@ -17,7 +17,7 @@ export type AgentSeed = Readonly<{
   launch: LaunchConfiguration
 }>
 
-/** One Offline Org member context (a configured member, a collaborator or a delegated child). */
+/** One Offline Org member context (a configured member or a delegated child). */
 export const createAgentContext = (
   seed: AgentSeed,
   createdAt: string,

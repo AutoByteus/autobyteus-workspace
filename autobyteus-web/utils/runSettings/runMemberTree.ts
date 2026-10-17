@@ -19,6 +19,7 @@ import { onlyModelOptions, otherModelSettingKeys, withoutModelOptions } from '~/
 import { isAutoApproveLockedForRuntime } from '~/utils/agentRunRuntimeDraftPolicy'
 import { modelConfigsEqual } from '~/utils/teamRunConfigUtils'
 import { resolveMemberSettings } from '~/utils/runSettings/memberOverrides'
+import type { MemberLaunchNote } from '~/utils/runSettings/memberLaunchDefaults'
 
 /**
  * The member tree of a Team (New chat), an Org (the Org launch page) or a saved run: every member
@@ -41,8 +42,57 @@ export interface RunMemberNode {
   customizedOptionKeys: readonly string[]
   /** No model chosen anywhere up the tree. */
   modelRequired: boolean
+  /** Notes on this row: an own default a fresh start could not use, or a copy's recorded fallbacks. */
+  launchNotes: readonly RunMemberNote[]
+  /** A delegated copy (read-only Settings rows): how it joined the run. */
+  badge?: 'delegated_copy'
+  /** A delegated copy: where its launch came from (absent once the user chose its model). */
+  sourceKey?: RunMemberLaunchSource
+  /** A delegated copy row: what the user can stop and change on it (SR-007). */
+  delegated?: RunMemberDelegatedFacts
+  /** This row's own locks; when set they replace its section's. */
+  locked?: RunSettingFlags
   children: readonly RunMemberNode[]
 }
+
+/**
+ * The user's control of a delegated copy row: where its model choice is recorded
+ * (`agent:<run ID>` or `team:<run ID>`), the model it runs with before this edit, what its stop
+ * icon stops (only the copy itself, never one member of a Team), and whether its
+ * copy is running (its model is locked until it is stopped).
+ */
+export type RunMemberDelegatedFacts = Readonly<{
+  target: `agent:${string}` | `team:${string}`
+  original: Readonly<{ llmModelIdentifier: string; llmConfig: Record<string, unknown> | null }>
+  stop: Readonly<{ agentRunId: string }> | Readonly<{ teamRunId: string }> | null
+  running: boolean
+  stopping: boolean
+}>
+
+/** Where a delegated copy's launch came from (`configured`: a copy of an in-run placement). */
+export type RunMemberLaunchSource = 'agent_default' | 'team_default' | 'inherited' | 'configured' | 'not_recorded'
+
+/** A recorded configured layer a copy skipped, with the server's reason. */
+export type RunMemberLaunchFallback = Readonly<{
+  layer: 'agent_default' | 'team_default'
+  runtimeKind: string | null
+  llmModelIdentifier: string | null
+  detail: string
+}>
+
+export type RunMemberNote =
+  | (Readonly<{ kind: 'unusable_default' }> & MemberLaunchNote)
+  | (Readonly<{ kind: 'fallback' }> & RunMemberLaunchFallback)
+
+/** Notes on a row and every row below it (a collapsed copy Team shows their count). */
+export const countRunMemberNotes = (node: RunMemberNode): number =>
+  node.launchNotes.length + node.children.reduce((total, child) => total + countRunMemberNotes(child), 0)
+
+/** A launch form's seeded rows (DS-006): pinned rows keep their own model; notes explain unusable defaults. */
+export type RunMemberSeedMarks = Readonly<{
+  pinnedAddresses?: readonly AgentTeamAddress[]
+  launchNotes?: Readonly<Record<AgentTeamAddress, MemberLaunchNote>>
+}>
 
 export interface RunMemberTreeDeps {
   schemaFor(runtimeKind: string, llmModelIdentifier: string): UiModelConfigSchema | null
@@ -74,8 +124,10 @@ const customization = (
   parent: RunSettingsValues,
   fields: readonly RunSettingField[],
   deps: RunMemberTreeDeps,
+  pinned: boolean,
 ): Pick<RunMemberNode, 'customized' | 'customizedOptionKeys'> => {
-  const model = values.runtimeKind !== parent.runtimeKind || values.llmModelIdentifier !== parent.llmModelIdentifier
+  // A pinned (seeded) row's model is its own even when it equals the parent's.
+  const model = pinned || values.runtimeKind !== parent.runtimeKind || values.llmModelIdentifier !== parent.llmModelIdentifier
   const schema = values.llmModelIdentifier ? deps.schemaFor(values.runtimeKind, values.llmModelIdentifier) : null
   // With its own model a member's thinking belongs to that model; it is reset with the model.
   const thinking = !model && !modelConfigsEqual(withoutModelOptions(schema, values.llmConfig), withoutModelOptions(schema, parent.llmConfig))
@@ -95,7 +147,15 @@ const customization = (
   }
 }
 
-const memberNode = (input: Readonly<{
+/** A copy's read-only row facts (DS-007): badge, launch source and recorded fallbacks. */
+export type RunMemberLaunchFacts = Readonly<{
+  badge?: RunMemberNode['badge']
+  /** Absent: the user chose this row's model, so no origin is shown (SR-007). */
+  sourceKey?: RunMemberLaunchSource
+  notes: readonly RunMemberNote[]
+}>
+
+export const memberNode = (input: Readonly<{
   key: AgentTeamAddress
   kind: 'agent' | 'team'
   name: string
@@ -104,6 +164,10 @@ const memberNode = (input: Readonly<{
   parentValues: RunSettingsValues
   fields: readonly RunSettingField[]
   children?: readonly RunMemberNode[]
+  marks?: RunMemberSeedMarks
+  launch?: RunMemberLaunchFacts
+  delegated?: RunMemberDelegatedFacts
+  locked?: RunSettingFlags
 }>, deps: RunMemberTreeDeps): RunMemberNode => Object.freeze({
   key: input.key,
   kind: input.kind,
@@ -112,10 +176,21 @@ const memberNode = (input: Readonly<{
   values: input.values,
   parentValues: input.parentValues,
   fields: input.fields,
-  ...customization(input.values, input.parentValues, input.fields, deps),
-  modelRequired: !input.values.llmModelIdentifier.trim(),
+  ...customization(input.values, input.parentValues, input.fields, deps, Boolean(input.marks?.pinnedAddresses?.includes(input.key))),
+  // A recorded launch is what ran; it never asks for a model.
+  modelRequired: !input.launch && !input.values.llmModelIdentifier.trim(),
+  launchNotes: Object.freeze(input.launch?.notes ?? seededNotes(input.marks, input.key)),
+  ...(input.launch?.badge ? { badge: input.launch.badge } : {}),
+  ...(input.launch?.sourceKey ? { sourceKey: input.launch.sourceKey } : {}),
+  ...(input.delegated ? { delegated: input.delegated } : {}),
+  ...(input.locked ? { locked: input.locked } : {}),
   children: Object.freeze([...(input.children ?? [])]),
 })
+
+const seededNotes = (marks: RunMemberSeedMarks | undefined, key: AgentTeamAddress): RunMemberNote[] => {
+  const note = marks?.launchNotes?.[key]
+  return note ? [{ kind: 'unusable_default', ...note }] : []
+}
 
 const agentMember = (
   key: AgentTeamAddress,
@@ -124,9 +199,10 @@ const agentMember = (
   override: AgentConfigOverride | null | undefined,
   deps: RunMemberTreeDeps,
   isCoordinator = false,
+  marks?: RunMemberSeedMarks,
 ): RunMemberNode => memberNode({
   key, kind: 'agent', name, isCoordinator, parentValues: parent, fields: MEMBER_RUN_SETTING_FIELDS,
-  values: { ...resolveMemberSettings(parent, override), workspace: parent.workspace },
+  values: { ...resolveMemberSettings(parent, override), workspace: parent.workspace }, marks,
 }, deps)
 
 /** A Team New chat: its (flat) members under the composer's settings. */
@@ -134,10 +210,10 @@ export const buildTeamMemberTree = (input: Readonly<{
   team: Pick<AgentTeamDefinition, 'coordinatorMemberName' | 'nodes'>
   root: RunSettingsValues
   agentOverrides: Readonly<Record<AgentTeamAddress, AgentConfigOverride>>
-}>, deps: RunMemberTreeDeps): readonly RunMemberNode[] => Object.freeze(input.team.nodes.map((node) => {
+}> & RunMemberSeedMarks, deps: RunMemberTreeDeps): readonly RunMemberNode[] => Object.freeze(input.team.nodes.map((node) => {
   const name = node.memberName.trim()
   const address: AgentTeamAddress = `/${name}`
-  return agentMember(address, name, input.root, input.agentOverrides[address], deps, node.memberName === input.team.coordinatorMemberName)
+  return agentMember(address, name, input.root, input.agentOverrides[address], deps, node.memberName === input.team.coordinatorMemberName, input)
 }))
 
 export type OrgMemberTreeDiagnostic = Readonly<{
@@ -176,7 +252,7 @@ export const buildOrgMemberTree = (input: Readonly<{
   teamOverrides: Readonly<Record<AgentTeamAddress, AgentConfigOverride>>
   teamWorkspaces: Readonly<Record<AgentTeamAddress, RunWorkspaceChoice>>
   agentOverrides: Readonly<Record<AgentTeamAddress, AgentConfigOverride>>
-}>, deps: RunMemberTreeDeps): OrgMemberTree => {
+}> & RunMemberSeedMarks, deps: RunMemberTreeDeps): OrgMemberTree => {
   try {
     const occupied = new Set<AgentTeamAddress>()
     const teams = new Set<AgentTeamAddress>()
@@ -191,7 +267,7 @@ export const buildOrgMemberTree = (input: Readonly<{
       if (member.refType === 'AGENT') {
         claim(address, 'Agent')
         return agentMember(address, input.getAgentDisplayNameById(member.ref) ?? member.memberName,
-          input.root, input.agentOverrides[address], deps)
+          input.root, input.agentOverrides[address], deps, false, input)
       }
       claim(address, 'Team')
       const definition = input.getTeamDefinitionById(member.ref)
@@ -208,11 +284,11 @@ export const buildOrgMemberTree = (input: Readonly<{
         const childAddress = placementAddress(node.memberName, address)
         claim(childAddress, 'Agent')
         return agentMember(childAddress, node.memberName, teamValues, input.agentOverrides[childAddress], deps,
-          node.memberName === definition.coordinatorMemberName)
+          node.memberName === definition.coordinatorMemberName, input)
       })
       return memberNode({
         key: address, kind: 'team', name: definition.name, values: teamValues, parentValues: input.root,
-        fields: PLACED_TEAM_RUN_SETTING_FIELDS, children,
+        fields: PLACED_TEAM_RUN_SETTING_FIELDS, children, marks: input,
       }, deps)
     })
     for (const address of [...Object.keys(input.teamOverrides), ...Object.keys(input.teamWorkspaces)]) {

@@ -1,0 +1,12 @@
+ M agent-orgs/autobyteus-org/org-config.json
+ M agent-orgs/autobyteus-org/org.md
+ M agent-teams/software-engineering-team/agents/architecture-reviewer/skills/architecture-reviewer/references/design-examples.md
+ M agent-teams/software-engineering-team/agents/architecture-reviewer/skills/architecture-reviewer/references/design-principles.md
+ M agent-teams/software-engineering-team/agents/code-reviewer/skills/code-reviewer/references/design-examples.md
+ M agent-teams/software-engineering-team/agents/code-reviewer/skills/code-reviewer/references/design-principles.md
+ M agent-teams/software-engineering-team/agents/implementation-engineer/skills/implementation-engineer/references/design-examples.md
+ M agent-teams/software-engineering-team/agents/implementation-engineer/skills/implementation-engineer/references/design-principles.md
+ M agent-teams/software-engineering-team/agents/solution-designer/skills/solution-designer/references/design-examples.md
+ M agent-teams/software-engineering-team/agents/solution-designer/skills/solution-designer/references/design-principles.md
+ M agent-teams/software-engineering-team/team-config.json
+ M agent-teams/software-engineering-team/team.md

@@ -1,0 +1,10 @@
+{
+  "head": "277c0c33d3671ce7aeedf2e8e30a4fb1baa94e0c",
+  "tree": "0f208ff3ab930b9a2f3aec691c7e2c12f983531c",
+  "workingDiff": " autobyteus-server-ts/package.json | 3 ++-\n 1 file changed, 2 insertions(+), 1 deletion(-)\n",
+  "sourceSha256": "02902ddd053b2f4ccb944a8b035bbd9fee20444535778af7cb495e17c38b9cc0",
+  "distManifestSha256": "4e1eaf007099120ac155bddf2fdc7c71132708be7618f69d68094aa929990ae3",
+  "baseline": "e22245f097c208e66065302cfc30814cc5ffd14f",
+  "baseSourceSha256": "c6b1d94f18d38af457580777a8340a9e0fba30710d87f93984d2e9d75dccc227",
+  "image": "sha256:1779a6e136a2fcd48a3045687a88ded45628e306471f5fd9d3eb4321017b21fa"
+}

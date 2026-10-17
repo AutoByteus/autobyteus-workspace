@@ -5,7 +5,6 @@ import { vi } from "vitest";
 import { AgentDefinition } from "../../../../src/agent-definition/domain/models.js";
 import { AgentTeamDefinition, TeamMember } from "../../../../src/agent-team-definition/domain/agent-team-definition.js";
 import { createCollaboratorAdmission } from "../../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
-import { prepareCollaboratorHandles } from "../../../../src/agent-collaboration/execution/backends/collaborator-handle-preparation.js";
 import type { RunModelSelectionValidator } from "../../../../src/llm-management/services/run-model-selection-service.js";
 import { projectAgentOrgConfiguredAgentNode, projectAgentOrgConfiguredTeamNode } from "../../../../src/agent-org-execution/services/agent-org-runtime-config-projector.js";
 import type { TeamRunAgentTeamNode } from "../../../../src/agent-team-execution/domain/team-run-config.js";
@@ -24,7 +23,6 @@ import { TokenUsageMigrationReadiness } from "../../../../src/token-usage/provid
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
 import { observeConfiguredHandles } from "./task-publication-handles.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
-import type { AgentOrgRunCollaborators } from "../../../../src/agent-org-execution/services/agent-org-run-collaborators.js";
 
 /**
  * An AgentOrg (`/director`, mounted Team `/target` with `/target/lead` and `/target/writer`) over a
@@ -56,7 +54,7 @@ export const admission = (runnable = true) => {
     listTeamDefinitions: async () => teams,
     getAgentDefinition: async (id) => agents.find((agent) => agent.id === id) ?? null,
     getTeamDefinition: async (id) => teams.find((team) => team.id === id) ?? null,
-  }, validator(runnable));
+  }, validator(runnable), { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) });
 };
 
 export const buildOrg = async (options: { runnable?: boolean } = {}) => {
@@ -103,17 +101,9 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
     } as never,
     activityInspector: { inspect: vi.fn(() => ({ kind: "present" as const })) } as never,
     collaboratorAdmission: admission(options.runnable ?? true),
-    prepareCollaboratorHandles: (entries) => prepareCollaboratorHandles({ root, rootAgents, teams, teamCallbacks: callbacks, entries, mode: "fresh" }),
     // Production always binds the Task side; every delegated copy belongs to a Task.
     taskExecutionResources: resources,
   });
   run.activate();
   return { handles, root, orgMemoryDir, executionTreeStore, owner: run, rootAgents, teams, publisher, resources };
 };
-
-/**
- * Brings a catalog address in as a collaborator (Offline, nothing started): the bring-in step of
- * the sender's first send_message_to that address, without delivering the message.
- */
-export const bringIn = (owner: AgentOrgRun, address: string, senderRunId: string) =>
-  (owner as unknown as { collaborators: AgentOrgRunCollaborators }).collaborators.bringInAt({ address, senderRunId });

@@ -50,6 +50,7 @@ import { chatDraftHasText, chatDraftText, useChatDraftStore, type ChatDraft } fr
 import { useAgentContextsStore } from '../agentContextsStore'
 import { writeChatLastModel } from '~/utils/chat/chatLastModelPreference'
 import { applyModelConfigSchemaDefaults } from '~/utils/llmConfigSchema'
+import { buildTeamMemberTree } from '~/utils/runSettings/runMemberTree'
 
 describe('chatDraftStore', () => {
   beforeEach(() => {
@@ -542,5 +543,151 @@ describe('chatDraftStore', () => {
       setActivePinia(createPinia())
       expect(useChatDraftStore().drafts).toEqual([])
     })
+  })
+})
+
+describe('chatDraftStore Team member defaults (REQ-009, REQ-010, DS-006)', () => {
+  const team = 'se-team'
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    window.localStorage.clear()
+    mocks.enabledRuntimes = new Set(['autobyteus', 'codex_app_server'])
+    mocks.modelsByRuntime = { autobyteus: ['gpt-5.5'], codex_app_server: ['sol-6.1'] }
+    mocks.schemas = {}
+    mocks.definitions = [
+      { id: 'autobyteus-daily-assistant', name: 'Daily Assistant' },
+      { id: 'designer', name: 'Designer' },
+      { id: 'ie', name: 'IE', defaultLaunchConfig: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'sol-6.1', llmConfig: { reasoning_effort: 'high' } } },
+      { id: 'cr', name: 'CR', defaultLaunchConfig: { runtimeKind: 'grok_build', llmModelIdentifier: 'grok-4' } },
+    ]
+    mocks.teams = [{
+      id: team, name: 'SE', coordinatorMemberName: 'designer',
+      defaultLaunchConfig: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'sol-6.1' },
+      nodes: [{ memberName: 'designer', ref: 'designer', refScope: 'SHARED' }, { memberName: 'ie', ref: 'ie', refScope: 'SHARED' }, { memberName: 'cr', ref: 'cr', refScope: 'SHARED' }],
+    }]
+  })
+
+  it('AC-011: a fresh Team start seeds and pins members with a usable default; an unusable one gets a note and follows', async () => {
+    const draft = useChatDraftStore().startForDefinition({ kind: 'team', teamDefinitionId: team })
+    await flushPromises()
+    expect(draft.teamAgentOverrides).toEqual({ '/ie': { runtimeKind: 'codex_app_server', llmModelIdentifier: 'sol-6.1', llmConfig: { reasoning_effort: 'high' } } })
+    expect(draft.pinnedMemberAddresses).toEqual(['/ie'])
+    expect(draft.memberLaunchNotes).toEqual({ '/cr': { runtimeKind: 'grok_build', llmModelIdentifier: 'grok-4', reason: 'runtime_unavailable' } })
+  })
+
+  it('AC-013: a root change keeps seeded rows; an edited pinned row keeps its model; a reset row follows the root', async () => {
+    const store = useChatDraftStore()
+    const draft = store.startForDefinition({ kind: 'team', teamDefinitionId: team })
+    await flushPromises()
+    // The seeded IE equals the root (Codex / Sol 6.1); a thinking edit keeps its own model.
+    store.changeTeamMember('/ie', { field: 'thinking', llmConfig: { reasoning_effort: 'low' } })
+    store.setModel({ runtimeKind: 'autobyteus', llmModelIdentifier: 'gpt-5.5' })
+    expect(store.draft!.teamAgentOverrides['/ie']).toEqual({ runtimeKind: 'codex_app_server', llmModelIdentifier: 'sol-6.1', llmConfig: { reasoning_effort: 'low' } })
+    store.resetTeamMember('/ie', { field: 'model' })
+    expect(store.draft!.pinnedMemberAddresses).toEqual([])
+    expect(store.draft!.teamAgentOverrides['/ie']).toBeUndefined()
+    expect(draft.target).toEqual({ kind: 'team', teamDefinitionId: team })
+  })
+
+  it('Reset all releases every pin; a copied ("+") start is not seeded and has no pins', async () => {
+    const store = useChatDraftStore()
+    store.startForDefinition({ kind: 'team', teamDefinitionId: team })
+    await flushPromises()
+    store.resetTeamMembers()
+    expect(store.draft!.pinnedMemberAddresses).toEqual([])
+    expect(store.draft!.teamAgentOverrides).toEqual({})
+    const copied = store.startForDefinition({ kind: 'team', teamDefinitionId: team }, { copied: {
+      workspace: { kind: 'existing', workspaceId: 'temp_ws_default' }, runtimeKind: 'autobyteus', llmModelIdentifier: 'gpt-5.5',
+      llmConfig: null, autoExecuteTools: true, teamAgentOverrides: {},
+    } })
+    await flushPromises()
+    expect(copied.teamAgentOverrides).toEqual({})
+    expect(copied.pinnedMemberAddresses).toEqual([])
+  })
+})
+
+describe('chatDraftStore switcher and carried starts seed Team members (SR-005)', () => {
+  const team = 'se-team'
+  const carried = {
+    workspace: { kind: 'existing' as const, workspaceId: 'temp_ws_default' }, runtimeKind: 'autobyteus', llmModelIdentifier: 'gpt-5.5',
+    llmConfig: null, autoExecuteTools: true,
+  }
+  const seededIe = { runtimeKind: 'codex_app_server', llmModelIdentifier: 'sol-6.1', llmConfig: { reasoning_effort: 'high' } }
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    window.localStorage.clear()
+    mocks.enabledRuntimes = new Set(['autobyteus', 'codex_app_server'])
+    mocks.modelsByRuntime = { autobyteus: ['gpt-5.5'], codex_app_server: ['sol-6.1'] }
+    mocks.schemas = {}
+    mocks.definitions = [
+      { id: 'autobyteus-daily-assistant', name: 'Daily Assistant' },
+      { id: 'designer', name: 'Designer' },
+      { id: 'ie', name: 'IE', defaultLaunchConfig: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'sol-6.1', llmConfig: { reasoning_effort: 'high' } } },
+      { id: 'writer', name: 'Writer', defaultLaunchConfig: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'sol-6.1' } },
+    ]
+    mocks.teams = [
+      { id: team, name: 'SE', coordinatorMemberName: 'designer',
+        nodes: [{ memberName: 'designer', ref: 'designer', refScope: 'SHARED' }, { memberName: 'ie', ref: 'ie', refScope: 'SHARED' }] },
+      { id: 'content-team', name: 'Content', coordinatorMemberName: 'writer', nodes: [{ memberName: 'writer', ref: 'writer', refScope: 'SHARED' }] },
+    ]
+    writeChatLastModel({ runtimeKind: 'autobyteus', llmModelIdentifier: 'gpt-5.5' })
+  })
+
+  it('(1) the heading switcher from an Agent draft with text to a Team seeds and pins its members; root and text are kept', async () => {
+    const store = useChatDraftStore()
+    const draft = store.startNewChat()
+    await flushPromises()
+    draft.context.requirement = 'hell'
+    store.retarget({ kind: 'team', teamDefinitionId: team })
+    await flushPromises()
+    expect(store.draft!.teamAgentOverrides).toEqual({ '/ie': seededIe })
+    expect(store.draft!.pinnedMemberAddresses).toEqual(['/ie'])
+    expect(store.draft!.context.requirement).toBe('hell')
+    expect(store.draft!.context.config).toMatchObject({ runtimeKind: 'autobyteus', llmModelIdentifier: 'gpt-5.5' })
+    const members = buildTeamMemberTree({
+      team: mocks.teams[0]!, root: { workspace: null, runtimeKind: 'autobyteus', llmModelIdentifier: 'gpt-5.5', llmConfig: null, autoExecuteTools: true },
+      agentOverrides: store.draft!.teamAgentOverrides, pinnedAddresses: store.draft!.pinnedMemberAddresses,
+    }, { schemaFor: () => null, sameWorkspace: () => true })
+    expect(members.map((node) => [node.key, node.customized.model, node.values.llmModelIdentifier]))
+      .toEqual([['/designer', false, 'gpt-5.5'], ['/ie', true, 'sol-6.1']])
+  })
+
+  it('(2) Team A → Team B: only B\'s members are seeded', async () => {
+    const store = useChatDraftStore()
+    store.startNewChat()
+    await flushPromises()
+    store.retarget({ kind: 'team', teamDefinitionId: team })
+    store.retarget({ kind: 'team', teamDefinitionId: 'content-team' })
+    await flushPromises()
+    expect(store.draft!.teamAgentOverrides).toEqual({ '/writer': { runtimeKind: 'codex_app_server', llmModelIdentifier: 'sol-6.1', llmConfig: null } })
+    expect(store.draft!.pinnedMemberAddresses).toEqual(['/writer'])
+  })
+
+  it('(3) a Team, then quickly an Agent: no late seeds are applied', async () => {
+    const store = useChatDraftStore()
+    store.startNewChat()
+    await flushPromises()
+    store.retarget({ kind: 'team', teamDefinitionId: team })
+    store.retarget({ kind: 'agent', agentDefinitionId: 'designer' })
+    await flushPromises()
+    expect(store.draft!.teamAgentOverrides).toEqual({})
+    expect(store.draft!.pinnedMemberAddresses).toEqual([])
+    expect(store.draft!.memberLaunchNotes).toEqual({})
+  })
+
+  it('(4) a carried (switcher) Team start keeps the carried root and seeds its members', async () => {
+    const draft = useChatDraftStore().startForDefinition({ kind: 'team', teamDefinitionId: team }, { carried })
+    await flushPromises()
+    expect(draft.context.config).toMatchObject({ runtimeKind: 'autobyteus', llmModelIdentifier: 'gpt-5.5' })
+    expect(draft.teamAgentOverrides).toEqual({ '/ie': seededIe })
+    expect(draft.pinnedMemberAddresses).toEqual(['/ie'])
+  })
+
+  it('(5) a copied ("+") Team start keeps the run\'s member settings and is not seeded', async () => {
+    const recorded = { '/designer': { llmModelIdentifier: 'gpt-5.5', llmConfig: null } }
+    const draft = useChatDraftStore().startForDefinition({ kind: 'team', teamDefinitionId: team }, { copied: { ...carried, teamAgentOverrides: recorded } })
+    await flushPromises()
+    expect(draft.teamAgentOverrides).toEqual(recorded)
+    expect(draft.pinnedMemberAddresses).toEqual([])
   })
 })

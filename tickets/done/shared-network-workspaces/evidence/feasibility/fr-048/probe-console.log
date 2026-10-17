@@ -1,0 +1,5 @@
+PASS direct MOUNT3 accepts exact allowed network peer and denies reachable excluded peer
+PASS different mounted client UIDs see local owner presentation but source remains nonroot owner
+PASS client root cannot read server-root private directory and creates only squashed nonroot files
+PROBE FAILURE AssertionError(['WON', 'WON'])
+{"run": "ab-sf-fr048-89d4026b", "passes": 3, "fatal": "AssertionError(['WON', 'WON'])"}

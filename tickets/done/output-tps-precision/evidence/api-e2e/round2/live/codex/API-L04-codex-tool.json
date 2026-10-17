@@ -1,0 +1,733 @@
+{
+  "caseId": "API-L04",
+  "runtimeKind": "codex_app_server",
+  "model": "gpt-5.6-luna",
+  "runId": "tps_live_codex_app_server_32fd2015_a993_48d7_ad0_ccb09dc42d2149b8b81801358f306f10",
+  "sentAtMs": 1791968761630,
+  "modelCallCount": 2,
+  "toolStartedAtMsSinceSend": 3284,
+  "toolFinishedAtMsSinceSend": 6174,
+  "contentWindow": {
+    "frames": 134,
+    "firstAtMsSinceSend": 2753,
+    "lastAtMsSinceSend": 8301
+  },
+  "timeline": [
+    {
+      "atMsSinceSend": 1,
+      "type": "AGENT_STATUS"
+    },
+    {
+      "atMsSinceSend": 1,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 1,
+      "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+    },
+    {
+      "atMsSinceSend": 1,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 1,
+      "type": "AGENT_COMMAND_ACK"
+    },
+    {
+      "atMsSinceSend": 7,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7,
+      "type": "AGENT_STATUS"
+    },
+    {
+      "atMsSinceSend": 14,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 14,
+      "type": "TURN_STARTED"
+    },
+    {
+      "atMsSinceSend": 14,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 2753,
+      "type": "SEGMENT_START"
+    },
+    {
+      "atMsSinceSend": 2753,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 3284,
+      "type": "SEGMENT_END"
+    },
+    {
+      "atMsSinceSend": 3284,
+      "type": "SEGMENT_START"
+    },
+    {
+      "atMsSinceSend": 3284,
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool_name": "run_bash",
+      "invocation_id": "exec-c744055a-3951-4524-b7e0-143f4bde3f3f"
+    },
+    {
+      "atMsSinceSend": 3284,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 6174,
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "run_bash",
+      "invocation_id": "exec-c744055a-3951-4524-b7e0-143f4bde3f3f"
+    },
+    {
+      "atMsSinceSend": 6174,
+      "type": "SEGMENT_END"
+    },
+    {
+      "atMsSinceSend": 6174,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 6184,
+      "type": "TOKEN_USAGE_UPDATED",
+      "call_sequence": null,
+      "reports_model_call": true,
+      "model_identifier": "gpt-5.6-luna",
+      "reported_output_tokens": 110,
+      "reasoning_output_tokens": 14,
+      "output_throughput": {
+        "method": "end_to_end",
+        "output_tokens": 110,
+        "duration_ms": 1529
+      },
+      "raw_usage_json": {
+        "totalTokens": 8855,
+        "inputTokens": 8745,
+        "cachedInputTokens": 5888,
+        "cacheWriteInputTokens": 0,
+        "outputTokens": 110,
+        "reasoningOutputTokens": 14
+      }
+    },
+    {
+      "atMsSinceSend": 6184,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7327,
+      "type": "SEGMENT_START"
+    },
+    {
+      "atMsSinceSend": 7327,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7353,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7353,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7353,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7353,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7353,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7353,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7353,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7358,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7358,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7358,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7358,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7358,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7358,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7358,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7372,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7372,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7372,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7372,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7372,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7372,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7372,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7372,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7372,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7372,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7376,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7376,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7381,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7381,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7386,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7386,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7386,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7386,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7386,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7386,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7386,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7388,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7390,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7393,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7393,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7394,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7397,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7397,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7429,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7438,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7447,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7447,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7447,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7447,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7463,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7463,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7463,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7463,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7472,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7472,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7492,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7492,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7499,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7504,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7504,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7509,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7513,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7513,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7538,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7538,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7538,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7550,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7555,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7555,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7587,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7640,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7640,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7640,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7640,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7640,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7654,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7674,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7674,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7674,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7781,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7781,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7781,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7781,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7790,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7790,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7791,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7791,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7792,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7792,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7792,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7806,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7808,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7808,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7822,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7826,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7957,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7957,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7957,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7957,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7957,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7957,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7957,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7957,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7957,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7957,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7957,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7970,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7970,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 7970,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8000,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8016,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8016,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8039,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8043,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8058,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8058,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8067,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8067,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8117,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8117,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8117,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8117,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8117,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8118,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8137,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8144,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8144,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8181,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8197,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8301,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8301,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8301,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8301,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8301,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8304,
+      "type": "SEGMENT_END"
+    },
+    {
+      "atMsSinceSend": 8304,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8323,
+      "type": "TOKEN_USAGE_UPDATED",
+      "call_sequence": null,
+      "reports_model_call": true,
+      "model_identifier": "gpt-5.6-luna",
+      "reported_output_tokens": 162,
+      "reasoning_output_tokens": 23,
+      "output_throughput": {
+        "method": "end_to_end",
+        "output_tokens": 162,
+        "duration_ms": 2134
+      },
+      "raw_usage_json": {
+        "totalTokens": 17899,
+        "inputTokens": 17627,
+        "cachedInputTokens": 11776,
+        "cacheWriteInputTokens": 0,
+        "outputTokens": 272,
+        "reasoningOutputTokens": 37
+      }
+    },
+    {
+      "atMsSinceSend": 8323,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8323,
+      "type": "AGENT_INPUT_STATE"
+    },
+    {
+      "atMsSinceSend": 8323,
+      "type": "TURN_COMPLETED"
+    },
+    {
+      "atMsSinceSend": 8323,
+      "type": "AGENT_STATUS"
+    },
+    {
+      "atMsSinceSend": 8323,
+      "type": "AGENT_INPUT_STATE"
+    }
+  ],
+  "readings": [
+    {
+      "method": "end_to_end",
+      "output_tokens": 110,
+      "duration_ms": 1529,
+      "tokensPerSecond": 71.9,
+      "receivedAtMsSinceSend": 6184,
+      "call_sequence": null,
+      "model": "gpt-5.6-luna"
+    },
+    {
+      "method": "end_to_end",
+      "output_tokens": 162,
+      "duration_ms": 2134,
+      "tokensPerSecond": 75.9,
+      "receivedAtMsSinceSend": 8323,
+      "call_sequence": null,
+      "model": "gpt-5.6-luna"
+    }
+  ]
+}

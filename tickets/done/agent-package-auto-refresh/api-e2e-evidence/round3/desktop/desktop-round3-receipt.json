@@ -1,0 +1,25 @@
+{
+  "round": "API-REV-003 (authoritative), IR-004 renamed contracts",
+  "build": "pnpm --silent isolated-app start --build at 705e699b1 (product = e89085f3e IR-004). The packaged app contains '/ws/agent-package-definitions' and 'loadIssues', and no '/ws/definition-catalog' or 'catalogIssues' (asar and embedded server).",
+  "instance": "iso-53429-718d (control 53429, backend 53430)",
+  "method": "Human-like only: clicks on sidebar, Workspaces tree, cards, Run, badges, Reload and Settings controls; typed messages and Send; model picker clicks. Package changes made by agents on real Codex GPT-6.1-Sol (low): the APAR Package Breaker test agent, and the Project Task Manager delegating to the Agent Package Creator. One file was written by me during the server restart (human editor). Second client: a separate test-owned Chrome paired as a phone via Nodes > Phone Setup (LAN QR link). Whole run recorded.",
+  "video": "api-e2e-evidence/round3/desktop/round3-human-journey.mp4 (4031 s, 40312 frames)",
+  "testPackage": "api-e2e-evidence/round3-rehearsal/apar-ux-test-package (reused unchanged)",
+  "steps": {
+    "H1 import 3 agent packages via Settings": "Pass (all Auto-refreshing)",
+    "H1b N-7 application package": "Pass. Import of a Brief Studio copy containing malformed application agents was refused by the existing import validation ('Invalid JSON in application-owned agent config …'). After importing the package with only the valid extra agent and then placing two malformed agents on disk, clicking Reload on the Agents page gave 48 agents, 'APAR App Good Agent' listed, the malformed ones absent, no page error; GraphQL agentDefinitions returned 120 entries with no errors",
+    "H2/H3 Run Package Breaker; Codex model via picker": "Pass",
+    "H4/H5 agent breaks team-local helper; Teams page; click badge": "Pass — 'Using last working version (1) — APAR Crew Helper', file, reason",
+    "H6 agent restores": "Pass — badge cleared 1.06 s after the write (292.80 → 293.86)",
+    "H7 org-owned break; Orgs page; click badge; Orgs Reload button; agent restores": "Pass — Org card (2) 1.07 s after write (316.10 → 317.17): APAR Studio Writer + APAR Studio Squad with file and reason; after Reload the last good + badge were kept; cleared 1.11 s after restore",
+    "Reload buttons (single mutation)": "Pass — an independent client on /ws/agent-package-definitions received, for each of the Agents, Teams and Orgs Reload clicks, {type:'agent_package_definitions_changed', changedLists:['agents','agent_teams','agent_orgs','agent_packages']} ~0.85 s after the click",
+    "H8 PTM → Agent Package Creator creates Poet, Temp, Duo": "Pass — cards 1.28 s after the creator's write; Teams page lists Duo; typed '@APAR' lists Poet, Temp, Duo (coordinator poet); list_available_agents lists all three; Team copy replied MARK_UX_V1",
+    "H9 creator edits Poet V2, Duo lead/analyst + handoff, deletes Temp": "Pass — Temp card gone 1.24 s; '@APAR' without Temp, Duo 'coordinator lead'; Temp not listed; delegation refused (existing delegated:false message); Duo copy (Lead) replied MARK_UX_V2",
+    "H10 phone (paired /mobile) live update": "Pass — paired via Phone Setup (LAN URL, trust, Create QR, link, Pair this phone); phone Agents list current (Temp absent); 'APAR Phone Seen' created by the breaker visible on the phone 1.09 s after the write, no refresh",
+    "H11 Restart server via Settings > Server Settings > Advanced > Server Status & Logs; file written while down": "Pass — backend down 861 / up 865; phone showed the agent at 868.4 (reconnected, Connected); desktop Agents page showed it; markers kept",
+    "H12 breaker mv package away/back; Settings > Agent Packages": "Pass — 'Folder not found — Its definitions keep their last loaded version until the folder returns.' then 'Auto-refreshing' (37 agents); all packages WATCHING",
+    "Idle CPU (embedded server, 60 s)": "0.00 s / 60 s",
+    "driver slips (not product)": "one AMBIGUOUS run-row click while the chat was already open (message still sent)"
+  },
+  "cleanup": "recording stopped; test-owned Chrome (/tmp/apar-r4/chrome-profile) terminated; instance stopped (not forced), data root removed, both ports released; /tmp/apar-r4 removed"
+}

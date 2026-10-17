@@ -1,0 +1,93 @@
+{
+  "actualExit": 0,
+  "expectedExit": 0,
+  "seconds": 25.004,
+  "timedout": false,
+  "unhandledErrorMarker": false,
+  "compilerDiagnosticLines": [],
+  "ownedGroupRemaining": [],
+  "ownedProcessesObserved": [
+    {
+      "pid": 67229,
+      "ppid": 67227,
+      "pgid": 67229,
+      "command": "(node)"
+    },
+    {
+      "pid": 67254,
+      "ppid": 67229,
+      "pgid": 67229,
+      "command": "(node)"
+    },
+    {
+      "pid": 67264,
+      "ppid": 67254,
+      "pgid": 67229,
+      "command": "(esbuild)"
+    },
+    {
+      "pid": 67266,
+      "ppid": 67254,
+      "pgid": 67229,
+      "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-server-ts/node_modules/prisma/build/index.js migrate reset --force --skip-generate"
+    },
+    {
+      "pid": 67269,
+      "ppid": 67266,
+      "pgid": 67229,
+      "command": "(schema-engine-da)"
+    },
+    {
+      "pid": 67275,
+      "ppid": 67254,
+      "pgid": 67229,
+      "command": "(node)"
+    },
+    {
+      "pid": 67319,
+      "ppid": 67275,
+      "pgid": 67229,
+      "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/autobyteus-server-ts/tests/fixtures/claude-owned-sdk-cli.mjs --output-format stream-json --verbose --input-format stream-json --setting-sources= --permission-mode default"
+    },
+    {
+      "pid": 68787,
+      "ppid": 67254,
+      "pgid": 67229,
+      "command": "(node)"
+    },
+    {
+      "pid": 68803,
+      "ppid": 67254,
+      "pgid": 67229,
+      "command": "(node)"
+    },
+    {
+      "pid": 68848,
+      "ppid": 67254,
+      "pgid": 67229,
+      "command": "/Users/normy/.hermes/node/bin/node --conditions node --conditions development --experimental-import-meta-resolve --require /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/suppress-warnings.cjs /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/dist/workers/forks.js"
+    },
+    {
+      "pid": 68850,
+      "ppid": 67254,
+      "pgid": 67229,
+      "command": "(node)"
+    },
+    {
+      "pid": 69515,
+      "ppid": 67254,
+      "pgid": 67229,
+      "command": "/Users/normy/.hermes/node/bin/node --conditions node --conditions development --experimental-import-meta-resolve --require /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/suppress-warnings.cjs /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/dist/workers/forks.js"
+    },
+    {
+      "pid": 69523,
+      "ppid": 67254,
+      "pgid": 67229,
+      "command": "/Users/normy/.hermes/node/bin/node --conditions node --conditions development --experimental-import-meta-resolve --require /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/suppress-warnings.cjs /Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types/node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/dist/workers/forks.js"
+    }
+  ],
+  "privateRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delivery-fixture-types-ve8tcz2b",
+  "privateRootRemoved": true,
+  "tmpNonCacheState": [],
+  "workspaceRemnants": []
+}

@@ -173,7 +173,7 @@ const placeholder = computed(() => {
   return t('chat.new.placeholderDefault')
 })
 
-/** `@` brings a collaborator in; the agent (or the team's coordinator) receives the message. */
+/** `@` names a unit to delegate to; the agent (or the team's coordinator) receives the message. */
 const mentionSource = computed<MentionCandidateSource | null>(() => {
   const current = draft.value
   if (!current) return null
@@ -197,6 +197,8 @@ const teamMembers = computed(() => {
       autoExecuteTools: current.autoExecuteTools,
     },
     agentOverrides: current.teamAgentOverrides,
+    pinnedAddresses: current.pinnedMemberAddresses,
+    launchNotes: current.memberLaunchNotes,
   }, {
     schemaFor: (runtimeKind, llmModelIdentifier) => catalogs.modelConfigSchemaByIdentifier(runtimeKind, llmModelIdentifier),
     sameWorkspace: sameRunWorkspaceChoice,

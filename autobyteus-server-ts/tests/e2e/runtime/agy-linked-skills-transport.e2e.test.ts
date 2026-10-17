@@ -344,7 +344,8 @@ suite("AGY linked skills and always auto-approve through the server (scripted CL
           { memberName: "helper", ref: helperId, refScope: "SHARED" }] } });
     const teamDefinitionId = team.createAgentTeamDefinition.id;
     cleanup.push(() => graphql("mutation($id: String!) { deleteAgentTeamDefinition(id: $id) { success } }", { id: teamDefinitionId }));
-    const off = { llmModelIdentifier: MODEL, llmConfig: {}, autoExecuteTools: false, runtimeKind: "antigravity_cli", workspaceRootPath: workspace };
+    // llmConfig null: the delegated catalog copy inherits the root's settings, and this model has none to adjust.
+    const off = { llmModelIdentifier: MODEL, llmConfig: null, autoExecuteTools: false, runtimeKind: "antigravity_cli", workspaceRootPath: workspace };
     const created = await graphql<{ createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null } }>(
       "mutation($input: CreateAgentTeamRunInput!) { createAgentTeamRun(input: $input) { success message teamRunId } }",
       { input: { teamDefinitionId, teamConfigs: [{ teamAddress: "/", ...off }], memberConfigs: [
@@ -359,7 +360,14 @@ suite("AGY linked skills and always auto-approve through the server (scripted CL
       .map((member) => [member.memberName, member.agentRunId]));
     const { socket, frames } = await open(`/ws/agent-team/${teamRunId}`);
 
-    const args = { recipient_address: "/helper", description: "Reply OK." };
+    // collaboration-model-contract: delegating to a teammate (/helper) is refused; the delegated child is an outside catalog Agent.
+    const outsiderName = `outsider_${randomUUID().slice(0, 8)}`;
+    const outsider = await graphql<{ createAgentDefinition: { id: string } }>(
+      "mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }",
+      { input: { name: outsiderName, role: "assistant", description: "AGY delegation target outside the Team",
+        instructions: "Follow the user's instructions.", category: "runtime-e2e", toolNames: [], skillNames: [], skillScope: "CONFIGURED" } });
+    cleanup.push(() => graphql("mutation($id: String!) { deleteAgentDefinition(id: $id) { success } }", { id: outsider.createAgentDefinition.id }));
+    const args = { recipient_address: `/${outsiderName}`, description: "Reply OK." };
     sendE2eSendMessageCommand(socket, { agent_run_id: members.get("coordinator"), content: `DELEGATE:${JSON.stringify(args)}` });
     const reply = await until(frames, "delegation result", (f) => JSON.stringify(f.payload).includes("DELEGATED:"));
     const childRunId = /target_agent_run_id\\+":\\+"([^"\\]+)/.exec(JSON.stringify(reply.payload))?.[1];

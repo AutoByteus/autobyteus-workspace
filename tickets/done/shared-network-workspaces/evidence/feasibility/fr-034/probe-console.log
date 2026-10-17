@@ -1,0 +1,3 @@
+PASS fresh native macOS nfsd serves a selected nonempty local APFS folder with exact peer allowlist
+PROBE FAILURE RuntimeError("('docker', 'run', '-d', '--name'): docker: Error response from daemon: No such image: sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a\n\nRun 'docker run --help' for more information\n")
+{"run": "ab-sf-fr034-20a4e882", "passes": 1, "fatal": "RuntimeError(\"('docker', 'run', '-d', '--name'): docker: Error response from daemon: No such image: sha256:62ee64827c53610eac932413a5cbe11761d713cda46609d2fa53c6495758b35a\\n\\nRun 'docker run --help' for more information\\n\")"}

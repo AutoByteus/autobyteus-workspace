@@ -1,0 +1,17 @@
+{
+  "command": [
+    "pnpm",
+    "-C",
+    "autobyteus-ts",
+    "exec",
+    "vitest",
+    "run",
+    "tests/unit",
+    "--no-watch",
+    "--maxWorkers=2"
+  ],
+  "exitCode": 0,
+  "temporaryHome": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-expanded-core-rerun-mcmec5ka",
+  "removed": true,
+  "fixtureOnlyChange": true
+}

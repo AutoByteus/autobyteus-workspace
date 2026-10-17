@@ -1,0 +1,55 @@
+{
+  "result": "Pass negative release gate only",
+  "commands": [
+    {
+      "name": "default-source-hash",
+      "argv": [
+        "python3",
+        "autobyteus-nfs/packaging/release.py",
+        "--source-hash"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "rc": 0,
+      "stdout": "cc3556ce850bf20281e6b7e0411a6b01359ea863cac6cb22104808e9dc225354\n",
+      "stderr": ""
+    },
+    {
+      "name": "same-engine-source-hash",
+      "argv": [
+        "python3",
+        "autobyteus-nfs/packaging/release.py",
+        "--source-hash",
+        "--engine-manifest",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-nfs/out/ir005-local-candidate/engine-candidate/engine-manifest.json"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "rc": 0,
+      "stdout": "f0d71675d3d9b70d89969a8071b8de03287cff0676669ddab295f14568041c88\n",
+      "stderr": ""
+    },
+    {
+      "name": "unqualified-publication-refusal",
+      "argv": [
+        "python3",
+        "autobyteus-nfs/packaging/release.py",
+        "--check-publish"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "rc": 1,
+      "stdout": "",
+      "stderr": "No qualified release targets; publishing unavailable.\n"
+    }
+  ]
+}

@@ -1,0 +1,184 @@
+[
+  {
+    "index": 0,
+    "phase": "OLR-010-T1",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 96
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "stop"
+    ],
+    "maxReportedOutputTokens": 1,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 17203,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "output": 1
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 1,
+    "phase": "OLR-010-T2",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 96
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "stop"
+    ],
+    "maxReportedOutputTokens": 1,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 29617,
+      "cacheRead": 17152,
+      "cacheWrite": 0,
+      "output": 1
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 2,
+    "phase": "OLR-010-T2",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 96
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 96,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 30362,
+      "cacheRead": 29568,
+      "cacheWrite": 0,
+      "output": 96
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 3,
+    "phase": "OLR-010-T2",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 96
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 96,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 30362,
+      "cacheRead": 30208,
+      "cacheWrite": 0,
+      "output": 96
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 4,
+    "phase": "OLR-010-T2",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 96
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 96,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 25263,
+      "cacheRead": 256,
+      "cacheWrite": 0,
+      "output": 96
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 5,
+    "phase": "OLR-010-T2",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 96
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 96,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 25263,
+      "cacheRead": 25088,
+      "cacheWrite": 0,
+      "output": 96
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 6,
+    "phase": "OLR-010-T2",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 96
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 96,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 25263,
+      "cacheRead": 25088,
+      "cacheWrite": 0,
+      "output": 96
+    },
+    "strictInjected": false
+  }
+]

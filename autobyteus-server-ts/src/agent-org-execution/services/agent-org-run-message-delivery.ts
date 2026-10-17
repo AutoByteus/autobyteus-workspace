@@ -1,4 +1,6 @@
+import { reachingAddressOf } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { mentionViewerOf } from "../../agent-collaboration/collaborators/mention-viewer.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { AgentRunInputOptions, AgentRunInputReservationResult } from "../../agent-execution/input/agent-run-input-contract.js";
 import { getAgentTeamAddressBasename, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
@@ -9,7 +11,7 @@ import {
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { MemberLogicalMessageInput } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import type { RootTaskExecutionLifecycle } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
-import { TaskDelegationError, type AssignToExistingCopyInput, type SpawnTaskInput, type TaskDelegationContext, type TaskDelegationOutcome } from "../../agent-collaboration/execution/task/task-delegation-command.js";
+import { type AssignToExistingCopyInput, type SpawnTaskInput, type TaskDelegationContext, type TaskDelegationOutcome } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { delegateToResolvedTarget } from "../../agent-collaboration/execution/task/task-delegation-target.js";
 import { buildTaskWorkMessageInput } from "../../agent-collaboration/execution/task/task-execution-input.js";
 import type { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
@@ -52,7 +54,7 @@ export class AgentOrgRunMessageDelivery {
   /** `@`: resolves the mentioned definitions for the focused agent (adds nothing); the caller composes the note. */
   resolveMentions(input: Readonly<{ focusedAgentRunId: string; mentions: readonly CollaboratorMention[] }>): Promise<RootCollaboratorAdmissionResult> {
     return this.options.getIndex().getAgent(input.focusedAgentRunId)
-      ? this.options.collaborators.resolveMentions(input.mentions)
+      ? this.options.collaborators.resolveMentions(input.mentions, mentionViewerOf(this.options.getIndex(), input.focusedAgentRunId))
       : Promise.resolve({ admitted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${input.focusedAgentRunId}' is not in AgentOrg '${this.options.orgRunId}'.` });
   }
 
@@ -62,16 +64,15 @@ export class AgentOrgRunMessageDelivery {
     return this.options.collaborators.listAvailable();
   }
 
-  /** `send_message_to(address)`; a first message to a catalog address brings it in. */
+  /** `send_message_to(address)`: delivers to a standing instance; any other address is not found. */
   async deliverToAddress(sender: CollaborationMemberExecutionIdentity, input: MemberLogicalMessageInput): Promise<AgentOperationResult> {
     this.options.authorizeIdentity(sender);
-    const resolution = await this.options.recipients.resolveMessageRecipient(sender, input.recipientAddress);
-    if (!resolution.resolved) return { accepted: false, code: resolution.code, message: resolution.message };
-    const target = resolution.placement.receiver;
+    const target = this.options.recipients.resolveMessageRecipient(sender, input.recipientAddress).receiver;
     const receiver = this.identityFor(target.agentRunId, target.address);
     return this.withLiveLease(receiver.agentRunId, () => this.options.getCommunication().deliver({
       senderIdentity: sender,
       senderDisplayName: getAgentTeamAddressBasename(sender.memberAddress) ?? sender.agentRunId,
+      senderAddress: reachingAddressOf(this.options.getIndex(), receiver.agentRunId, sender),
       receiverIdentity: receiver,
       receiverDisplayName: getAgentTeamAddressBasename(receiver.memberAddress) ?? receiver.agentRunId,
       content: input.content,
@@ -90,6 +91,7 @@ export class AgentOrgRunMessageDelivery {
     return this.withLiveLease(receiver.agentRunId, () => this.options.getCommunication().deliver({
       senderIdentity: input.sender.identity,
       senderDisplayName: input.sender.displayName,
+      senderAddress: reachingAddressOf(this.options.getIndex(), receiver.agentRunId, input.sender.identity),
       receiverIdentity: this.identityFor(receiver.agentRunId, receiver.address),
       receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId,
       content: input.content,
@@ -98,15 +100,11 @@ export class AgentOrgRunMessageDelivery {
     }));
   }
 
-  /** `delegate_task(address)`: never to the caller's own placement. */
+  /** `delegate_task(address)`: never to the caller itself, a teammate or its own Team (CM-1, in the shared resolution). */
   delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput): Promise<TaskDelegationOutcome> {
     this.options.authorizeIdentity(context.identity);
-    return delegateToResolvedTarget(() => this.options.recipients.resolveDelegationPlacement(context.identity, input.recipient_address), (placement) => {
-      if (placement.kind === "agent" && placement.address === context.identity.memberAddress) {
-        throw new Error("An Agent cannot delegate a task to its own logical placement.");
-      }
-      return this.options.taskExecutions.delegateToNewCopy(context, input, placement);
-    });
+    return delegateToResolvedTarget(() => this.options.recipients.resolveDelegationPlacement(context.identity, input.recipient_address), (placement) =>
+      this.options.taskExecutions.delegateToNewCopy(context, input, placement));
   }
 
   /** `delegate_task` with a copy's own ID: its new Task's work is delivered by this root's exact delivery. */
@@ -178,7 +176,7 @@ export class AgentOrgRunMessageDelivery {
 
   /**
    * Runtime liveness (AR-005): the host is active and, for a delegated child Agent, its
-   * AgentRun is active. Configured Agents and collaborators keep host membership (they
+   * AgentRun is active. Configured Agents keep host membership (they
    * activate lazily on their first message).
    */
   isLiveAgent(agentRunId: string): boolean {

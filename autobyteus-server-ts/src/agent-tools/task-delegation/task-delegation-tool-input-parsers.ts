@@ -18,7 +18,7 @@ const DescribedTaskInputSchema = z.object({
 
 const LinkedTaskInputSchema = z.object({ recipient_address: z.string(), task_id: nonEmptyString("task_id") }).strict();
 
-const EXISTING_COPY_TASK_ID = "task_id (an existing copy takes a saved Task)";
+const EXISTING_COPY_TASK_ID = "task_id (the saved Task to give)";
 const ExistingTeamCopyInputSchema = z.object({
   target_team_run_id: nonEmptyString("target_team_run_id"), task_id: nonEmptyString(EXISTING_COPY_TASK_ID),
 }).strict();
@@ -31,11 +31,11 @@ const parseZodIssues = (error: z.ZodError): string =>
 
 const parseExistingCopyInput = (rawArguments: Record<string, unknown>): DelegateTaskToolInput => {
   if (Object.hasOwn(rawArguments, "target_team_run_id") && Object.hasOwn(rawArguments, "target_agent_run_id")) {
-    throw new Error("Invalid delegate_task input: supply exactly one of target_team_run_id (a Team copy) or target_agent_run_id (an Agent copy).");
+    throw new Error("Invalid delegate_task input: supply exactly one of target_team_run_id (a task agent team) or target_agent_run_id (a task agent).");
   }
   const extra = Object.keys(rawArguments).filter(key => !["target_team_run_id", "target_agent_run_id", "task_id"].includes(key));
   if (extra.length) {
-    throw new Error(`Invalid delegate_task input: with target_team_run_id or target_agent_run_id, supply only that ID and task_id (not ${extra.join(", ")}).`);
+    throw new Error(`Invalid delegate_task input: with target_team_run_id or target_agent_run_id, supply only that run id and task_id (not ${extra.join(", ")}).`);
   }
   if (Object.hasOwn(rawArguments, "target_team_run_id")) {
     const result = ExistingTeamCopyInputSchema.safeParse(rawArguments);
@@ -58,7 +58,7 @@ export const parseDelegateTaskInput = (
     if (typeof rawArguments.recipient_address !== "string") {
       throw new CollaborationContractError(
         "COLLABORATION_ADDRESS_INVALID",
-        "delegate_task needs recipient_address (a logical address string) for a new copy, or target_team_run_id / target_agent_run_id with task_id for an existing copy.",
+        "delegate_task needs recipient_address (an address beginning with '/') to create a new task agent, or target_agent_run_id / target_team_run_id with task_id to give a saved Task to one of your task agents.",
       );
     }
     throw new Error(`Invalid delegate_task input: ${parseZodIssues(result.error)}`);

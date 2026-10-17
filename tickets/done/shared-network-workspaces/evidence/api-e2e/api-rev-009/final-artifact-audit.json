@@ -1,0 +1,98 @@
+{
+  "result": "Pass",
+  "inputHead": "bd57ef932dcd9e12c8470f0a1accbce0928d7ae5",
+  "priorHistoryExactPrefix": true,
+  "reportLinksExist": true,
+  "onlyOwnedFourTrackedDocsModified": true,
+  "sourceAndDurableTestEdits": [],
+  "evidenceFiles": {
+    "scope-audit.json": {
+      "bytes": 5726,
+      "sha256": "94d3db12b244eea83ca8a92f4536742c2d769946374814beccd7b5a40609158d"
+    },
+    "finalize-report.py": {
+      "bytes": 20552,
+      "sha256": "1c645971b119e35a176e7a5a1a9f4dbc657443a32330f5c4c42510bfd0790f41"
+    },
+    "cleanup-console.log": {
+      "bytes": 1415,
+      "sha256": "f0dab7051ca3516eff94ead1f7c2934c16650e0e10762b245bc146444467f227"
+    },
+    "run-integrated-checks.py": {
+      "bytes": 5488,
+      "sha256": "8b3a3556c97038076956b34d1f1c472da68f5f8490e5f1720a4cdb74f7248a21"
+    },
+    "workspace-rest.log": {
+      "bytes": 21978,
+      "sha256": "e7574e81e75de104dd123b28993a90fc65fc6e3700e3e6ea67bee2f7c4f56059"
+    },
+    "checks-result.json": {
+      "bytes": 6469,
+      "sha256": "871429edad8b3347862e7e930e9689e7601eefcd70c01ba4c184034c524e06af"
+    },
+    "final-summary.json": {
+      "bytes": 1415,
+      "sha256": "f0dab7051ca3516eff94ead1f7c2934c16650e0e10762b245bc146444467f227"
+    },
+    "integration-prepare.log": {
+      "bytes": 3427,
+      "sha256": "fe701e1b421cdee24ce6bdfcc2031bf75d252fb3bc4fb760ac0ba1d36f126da7"
+    },
+    "cleanup.json": {
+      "bytes": 2240,
+      "sha256": "1c4ac9108201ae79673c3211397da38611695ff44156492012fcec6824e39930"
+    },
+    "audit-scope.py": {
+      "bytes": 2822,
+      "sha256": "d5c9a2f5a542a2608f270b8a909f64637e0125b056785f232aefa48225d3e883"
+    },
+    "reviewed-test-delta.diff": {
+      "bytes": 1805,
+      "sha256": "b2b5e4fa00d73f8c994b8c15676cb1a445d9cb3ba54cb00724d79e6f509dc730"
+    },
+    "execution-console.log": {
+      "bytes": 2661,
+      "sha256": "358d0ac02019e77e1313c5e8b9deb83b6bce8f9ac226038fb8e6f66c0ea336be"
+    },
+    "run-integrated-checks-attempt1.py": {
+      "bytes": 5215,
+      "sha256": "0b3405ad046fb67c32ab99325a3d0a20d9bc0a0df762963e6fc413f0189a5572"
+    },
+    "archive-attempt-1.json": {
+      "bytes": 108087,
+      "sha256": "5544d52ab390d8aecbf39ebd7124bea7444129aecee719a33d41c4100e711f65"
+    },
+    "cleanup-and-summarize.py": {
+      "bytes": 4702,
+      "sha256": "2a2fe2eae834b318c8fe08039ff85a8bec7b0c04c59283aeee37717de8cfc34d"
+    },
+    "scratch-path.txt": {
+      "bytes": 72,
+      "sha256": "c58820f4b83f95237de10aeebaf3b80010cba52b2ba1107154984f0e3caf003e"
+    },
+    "install.log": {
+      "bytes": 4667,
+      "sha256": "a266d2eabe3066f3f72d22f90f8ae5535a345bdf92f96048d8fb0f6894ba0f0f"
+    },
+    "server-typecheck.log": {
+      "bytes": 1116,
+      "sha256": "4c69e81a89e1b306729bc878ad405562e422cf40dddca25b099cdd5291537755"
+    },
+    "workspace-unit.log": {
+      "bytes": 27064,
+      "sha256": "26c0cd5a1f2f1dc20f80d9ed1280a79263d36d9db87bfe504a90d4391c0449a7"
+    },
+    "input-audit.json": {
+      "bytes": 45808,
+      "sha256": "c79f3ad430d00f6e29d763e2a5c96281179b79a9d7b2b442e0cb11bd2a9073ed"
+    },
+    "workspace-rest-repeat.log": {
+      "bytes": 21092,
+      "sha256": "5563f83469ac14c3ebff3a20a0bb33d7b42a7fde525d77463299659fce5b7184"
+    },
+    "adjacent-explorer.log": {
+      "bytes": 15163,
+      "sha256": "239b8bf274cdb0ac16532e8b98bca82aafa2e50f60a6359c6f0c638f431f8a51"
+    }
+  }
+}

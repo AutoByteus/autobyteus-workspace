@@ -1,0 +1,70 @@
+{
+  "startedAt": "2026-10-08T17:02:20.173Z",
+  "controlEndpoint": "http://127.0.0.1:58732",
+  "backendUrl": "http://127.0.0.1:58733",
+  "cases": {},
+  "errors": [],
+  "seed": {
+    "names": {
+      "manager": "Manager Dsk e666",
+      "worker": "Release Notes Writer Dsk e666",
+      "helper": "Fact Checker Dsk e666",
+      "squad": "Docs Review Team Dsk e666",
+      "team": "Delivery Team Dsk e666",
+      "org": "Delivery Org Dsk e666"
+    },
+    "ids": {
+      "manager": "manager-dsk-e666",
+      "worker": "release-notes-writer-dsk-e666",
+      "helper": "fact-checker-dsk-e666",
+      "squad": "docs-review-team-dsk-e666",
+      "team": "delivery-team-dsk-e666"
+    },
+    "projectId": "project_40b44696-10f7-416d-8f1d-66ebe5924e0f",
+    "agentTask": "project_task_2f537c13-c8ce-4054-aaf8-07b25b152f0e",
+    "teamTask": "project_task_270482a4-4f08-4c2a-b65c-17c8d997f6fa",
+    "agentRoot": {
+      "kind": "agent",
+      "rootId": "manager_dsk_e666_120e432acdda4c37bb58e2f418af903f",
+      "managerRunId": "manager_dsk_e666_120e432acdda4c37bb58e2f418af903f"
+    },
+    "teamRoot": {
+      "kind": "team",
+      "rootId": "delivery_team_dsk_e666_a7bb673703134596b7aed163a83b7ceb",
+      "managerRunId": "manager_dsk_e666_935cc39a3a3c4bd3b41767ef7c722a1e"
+    },
+    "agentWorker": {
+      "kind": "agent",
+      "recipientAddress": "/release_notes_writer_dsk_e666",
+      "ingressAgentRunId": "release_notes_writer_dsk_e666_edcc39da9df04227a230b3698984f0a9",
+      "teamRunId": null,
+      "start": "started",
+      "hostRoot": {
+        "kind": "agent",
+        "runId": "manager_dsk_e666_120e432acdda4c37bb58e2f418af903f"
+      }
+    },
+    "teamWorker": {
+      "kind": "team",
+      "recipientAddress": "/docs_review_team_dsk_e666",
+      "ingressAgentRunId": "release_notes_writer_dsk_e666_0411873b23004b86907c9adc8562e71c",
+      "teamRunId": "docs_review_team_dsk_e666_ad43b21cea894390a747e3b9b7205c07",
+      "start": "started",
+      "hostRoot": {
+        "kind": "agent_team",
+        "runId": "delivery_team_dsk_e666_a7bb673703134596b7aed163a83b7ceb"
+      }
+    }
+  },
+  "window": {
+    "width": 1200,
+    "height": 768,
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) autobyteus/1.4.99-beta.2 Chrome/1",
+    "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat"
+  },
+  "result": "Fail",
+  "failure": {
+    "message": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-agent-row\"]').filter({ hasText: 'Manager Dsk e666' }).first()\n"
+  },
+  "finishedAt": "2026-10-08T17:02:51.479Z"
+}

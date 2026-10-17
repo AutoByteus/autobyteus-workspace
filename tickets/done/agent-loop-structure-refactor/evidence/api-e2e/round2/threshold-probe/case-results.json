@@ -1,0 +1,48 @@
+[
+  {
+    "case": "ALSR-TU-001",
+    "name": "ALSR-TU-001: the native frame and the stored run summary carry a numeric threshold that follows the trigger ratio",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "before": {
+        "error": null,
+        "usage": [
+          {
+            "llm_call_id": "turn_0001:llm:1",
+            "ingestion_kind": "autobyteus_llm_phase",
+            "latest_prompt_tokens": 7915,
+            "effective_context_window_tokens": 1000000,
+            "context_compaction_threshold_tokens": 697395
+          }
+        ],
+        "summary": {
+          "contextCompactionThresholdTokens": 697395,
+          "effectiveContextWindowTokens": 1000000,
+          "latestPromptTokens": 7915,
+          "latestRuntimeKind": "autobyteus"
+        }
+      },
+      "settingMessage": "Server setting 'AUTOBYTEUS_COMPACTION_TRIGGER_RATIO' has been updated successfully.",
+      "after": {
+        "error": null,
+        "usage": [
+          {
+            "llm_call_id": "turn_0001:llm:1",
+            "ingestion_kind": "autobyteus_llm_phase",
+            "latest_prompt_tokens": 7915,
+            "effective_context_window_tokens": 1000000,
+            "context_compaction_threshold_tokens": 435872
+          }
+        ],
+        "summary": {
+          "contextCompactionThresholdTokens": 435872,
+          "effectiveContextWindowTokens": 1000000,
+          "latestPromptTokens": 7915,
+          "latestRuntimeKind": "autobyteus"
+        }
+      }
+    },
+    "at": "2026-10-12T13:13:29.381Z"
+  }
+]

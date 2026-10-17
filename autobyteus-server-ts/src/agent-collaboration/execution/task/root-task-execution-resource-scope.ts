@@ -31,7 +31,7 @@ export class RootTaskExecutionResourceScope<T> {
   constructor(private readonly adapter: RootTaskExecutionAdapter<T>, private readonly resources?: TaskExecutionResourcePort) {}
 
   port(): TaskExecutionResourcePort {
-    if (!this.resources) throw new TaskDelegationError("TASK_AGENT_RESOURCES_UNAVAILABLE", "Task agent run resources are unavailable in this scope.");
+    if (!this.resources) throw new TaskDelegationError("TASK_AGENT_RESOURCES_UNAVAILABLE", "Tasks are not available here, so this delegation can't be recorded.");
     return this.resources;
   }
 
@@ -64,7 +64,7 @@ export class RootTaskExecutionResourceScope<T> {
     const sender = this.ownerOf(senderAgentRunId), recipient = this.ownerOf(recipientAgentRunId);
     if (sender?.open === false || recipient?.open === false) throw closed();
     if (sender && recipient && sender.taskId !== recipient.taskId) {
-      throw new TaskDelegationError("TASK_AGENT_RESOURCE_CONFLICT", "A Task-owned worker cannot message another Task's work.");
+      throw new TaskDelegationError("TASK_AGENT_RESOURCE_CONFLICT", "You can't message this agent: it works on a different Task.");
     }
   }
 
@@ -131,7 +131,7 @@ export class RootTaskExecutionResourceScope<T> {
   }
 }
 
-const closed = () => new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "The Task work for this agent run is closed (its Task is DONE or CANCELLED).");
+const closed = () => new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "Your Task is DONE or CANCELLED, so you can't start new work.");
 const isClosed = (port: TaskExecutionResourcePort, execution: TaskExecutionReference): boolean => {
   try { return port.ownerOf([execution])?.open === false; } catch { return false; }
 };

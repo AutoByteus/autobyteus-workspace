@@ -1,0 +1,14 @@
+
+> autobyteus@1.5.4 test:e2e:cross-scope-agent-mentions /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-web
+> node tests/e2e/cross-scope-agent-mentions-live-probe.mjs --runtime claude_agent_sdk --model haiku --cases T01 --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/tickets/in-progress/collaboration-prompt-wording/evidence/round4/probes/T01-branch-1
+
+T01 Fail SCN-001 Team run: VIS-001 menu; @Product Team → no Team collaborator (AC-001), stored note (AC-002), the focused researcher delegates a Team copy with an ad-hoc Task (AC-003); "From Product Prototyper:"; the next send with @Note Taker (CR-003) delegates an Agent copy — locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('[data-test="chat-model-list-claude_agent_sdk"]').locator('[data-test="chat-model-option-haiku"]')
+    - locator resolved to <button data-row="" type="button" role="menuitemradio" aria-checked="false" data-test="chat-model-option-haiku" title="claude-haiku-5-5 — Haiku · Haiku 5.5 · Fastest for quick answers · $0.10/$0.50 per Mtok ($0.50/$2.50 for prompts over 100k)" aria-label="claude-haiku-5-5 — Haiku · Haiku 5.5 · Fastest for quick answers · $0.10/$0.50 per Mtok ($0.50/$2.50 for prompts over 100k)" class="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-[0.8125rem] text-gray-900 hover:bg-gray-100 focus…>…</button>
+  - attempting click action
+    - waiting for element to be visible, enabled and stable
+  - element was detached from the DOM, retrying
+
+Summary: 0 Pass, 1 Fail, 0 Not Applicable
+ ELIFECYCLE  Command failed with exit code 1.

@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "F39CBF24AEE7CEC3D3F97A2834E38841",
+    "--script",
+    "() => {const c=document.querySelector(\"canvas\");if(!c||c.width<200||c.height<100)throw Error(\"PDF not rendered\");const d=c.getContext(\"2d\").getImageData(0,0,c.width,c.height).data;let dark=0;for(let i=0;i<d.length;i+=4)if(d[i]+d[i+1]+d[i+2]<500&&d[i+3]>0)dark++;if(dark<20)throw Error(\"blank PDF\");return {w:c.width,h:c.height,darkPixels:dark}}"
+  ],
+  "rc": 0,
+  "stdout": "{\"schema_version\":\"1\",\"ok\":true,\"command\":\"run-script\",\"result\":{\"tab_id\":\"F39CBF24AEE7CEC3D3F97A2834E38841\",\"url\":\"file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat\",\"output_mode\":\"inline\",\"result\":{\"w\":334,\"h\":222,\"darkPixels\":1106}}}\n",
+  "stderr": ""
+}

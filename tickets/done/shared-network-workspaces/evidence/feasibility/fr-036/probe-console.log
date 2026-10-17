@@ -1,0 +1,4 @@
+PASS fresh native macOS nfsd serves a selected nonempty local APFS folder with exact peer allowlist
+FAIL native Mac mounts its selected APFS source through actual NFSv3 before Linux-client negotiation RuntimeError("owned VM command failed ('exec', 'ab-sf-fr036-macos', '/usr/bin/sudo'): sudo: mount: command not found\n")
+PROBE FAILURE RuntimeError("owned VM command failed ('exec', 'ab-sf-fr036-macos', '/usr/bin/sudo'): sudo: mount: command not found\n")
+{"run": "ab-sf-fr036-b1038a88", "passes": 1, "fatal": "RuntimeError(\"owned VM command failed ('exec', 'ab-sf-fr036-macos', '/usr/bin/sudo'): sudo: mount: command not found\\n\")"}

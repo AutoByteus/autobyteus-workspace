@@ -1,0 +1,63 @@
+{
+  "scope": "FR054 completed prior to current continue; read-only exact resource recheck, no broad inventory/mutation",
+  "checks": [
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr054-00b67a81-server"
+      ],
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr054-00b67a81-server"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr054-00b67a81-client-a"
+      ],
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr054-00b67a81-client-a"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "ab-sf-fr054-00b67a81-client-b"
+      ],
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: No such container: ab-sf-fr054-00b67a81-client-b"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr054-00b67a81-nfs-a"
+      ],
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr054-00b67a81-nfs-a: no such volume"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "ab-sf-fr054-00b67a81-nfs-b"
+      ],
+      "rc": 1,
+      "absent": true,
+      "stderr": "Error response from daemon: get ab-sf-fr054-00b67a81-nfs-b: no such volume"
+    }
+  ],
+  "ownedScratchAbsent": true,
+  "pythonSyntax": "PASS",
+  "resultJson": "PASS"
+}

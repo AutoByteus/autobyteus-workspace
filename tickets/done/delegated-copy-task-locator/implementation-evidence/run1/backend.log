@@ -1,0 +1,840 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:53662
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:53662
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "development.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/db/development.db"
+
+SQLite database development.db created at file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/db/development.db
+
+26 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:11218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-11T06:32:08.566Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+Populating agent definition cache for the first time...
+[2026-10-11T06:32:08.672Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-10-11T06:32:08.672Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 2 items.
+{"level":30,"time":1791700328677,"pid":11218,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:53666"}
+{"level":30,"time":1791700328701,"pid":11218,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:53662"}
+[2026-10-11T06:32:08.701Z] [INFO] [server.runtime] Server listening on 127.0.0.1:53662
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/workspace.
+Created and registered workspace ID: agent_ws_5f9dd188ed9e0c2a692574279e4abed2dc36c95c5015ec9da94d5da68403f16b
+In-memory cache: Added new agent definition with ID project-task-manager.
+Agent Definition created successfully with ID: project-task-manager
+In-memory cache: Added new agent definition with ID agent-package-creator.
+Agent Definition created successfully with ID: agent-package-creator
+In-memory cache: Added new agent definition with ID fact-checker.
+Agent Definition created successfully with ID: fact-checker
+[2026-10-11T06:32:08.907Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID software-engineering-team.
+Agent Team Definition created successfully with ID: software-engineering-team
+[2026-10-11T06:32:08.919Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID delivery-team.
+Agent Team Definition created successfully with ID: delivery-team
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/workspace.
+Reusing registered workspace ID: agent_ws_5f9dd188ed9e0c2a692574279e4abed2dc36c95c5015ec9da94d5da68403f16b
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/workspace.
+Reusing registered workspace ID: agent_ws_5f9dd188ed9e0c2a692574279e4abed2dc36c95c5015ec9da94d5da68403f16b
+AGY compaction detection off for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session 0e38aec7-f8fa-48c5-beaf-9012c3cfac82 for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=0e38aec7-f8fa-48c5-beaf-9012c3cfac82, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+{"level":40,"time":1791700329850,"pid":11218,"hostname":"MacBookPro","reqId":"req-3","method":"GET","url":"/mcp/agent-tools/agtrun_hfekYXApWSmM8QgVzVmHeV-uXMs1MIQOt8DnKgoDYJY","statusCode":405,"elapsedMs":0.21287500858306885,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/workspace.
+Reusing registered workspace ID: agent_ws_5f9dd188ed9e0c2a692574279e4abed2dc36c95c5015ec9da94d5da68403f16b
+AGY compaction detection off for run agent_package_creator_659c74c3f0c14e48ad04c95afa71d041: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791700330135,"pid":11218,"hostname":"MacBookPro","reqId":"req-7","method":"GET","url":"/mcp/agent-tools/agtrun_hfekYXApWSmM8QgVzVmHeV-uXMs1MIQOt8DnKgoDYJY","statusCode":405,"elapsedMs":0.14800000190734863,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/workspace.
+Reusing registered workspace ID: agent_ws_5f9dd188ed9e0c2a692574279e4abed2dc36c95c5015ec9da94d5da68403f16b
+AGY compaction detection off for run agent_package_creator_e7659c8b1d5e40898b3cf568efe3ec29: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791700330386,"pid":11218,"hostname":"MacBookPro","reqId":"req-b","method":"GET","url":"/mcp/agent-tools/agtrun_hfekYXApWSmM8QgVzVmHeV-uXMs1MIQOt8DnKgoDYJY","statusCode":405,"elapsedMs":0.17895901203155518,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/workspace.
+Reusing registered workspace ID: agent_ws_5f9dd188ed9e0c2a692574279e4abed2dc36c95c5015ec9da94d5da68403f16b
+AGY compaction detection off for run fact_checker_ada1a14710234c28af3e0fc54fa1b2d4: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/workspace.
+Reusing registered workspace ID: agent_ws_5f9dd188ed9e0c2a692574279e4abed2dc36c95c5015ec9da94d5da68403f16b
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session 1e53b201-6c15-406a-8a35-bd7bb62c2ba2 for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=1e53b201-6c15-406a-8a35-bd7bb62c2ba2, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/workspace.
+Reusing registered workspace ID: agent_ws_5f9dd188ed9e0c2a692574279e4abed2dc36c95c5015ec9da94d5da68403f16b
+AGY compaction detection off for run project_task_manager_a88e580de63343f2a013620350050887: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791700331045,"pid":11218,"hostname":"MacBookPro","reqId":"req-f","method":"GET","url":"/mcp/agent-tools/agtrun_gniDDjZSDXkgVdryzYU1iwIjYZImw9jFoWwBAwKKAAM","statusCode":405,"elapsedMs":0.13129103183746338,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/workspace.
+Reusing registered workspace ID: agent_ws_5f9dd188ed9e0c2a692574279e4abed2dc36c95c5015ec9da94d5da68403f16b
+AGY compaction detection off for run agent_package_creator_b77cd8df3b6a44d58fb9b3845fd49060: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session 1fa7381c-8a62-4a70-8192-2f59e0edd27a for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=1fa7381c-8a62-4a70-8192-2f59e0edd27a, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Created terminal session dacaeb7c-d0a7-4191-b0f7-fbbd30f5a129 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: dacaeb7c-d0a7-4191-b0f7-fbbd30f5a129
+Terminal websocket attached for cwd /Users/normy
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session f683ec14-7f9e-4315-b3d2-eaf448430efd for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=f683ec14-7f9e-4315-b3d2-eaf448430efd, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Closed agent session 1fa7381c-8a62-4a70-8192-2f59e0edd27a
+Agent WebSocket disconnected: 1fa7381c-8a62-4a70-8192-2f59e0edd27a
+Closed agent session f683ec14-7f9e-4315-b3d2-eaf448430efd
+Closed PTY session dacaeb7c-d0a7-4191-b0f7-fbbd30f5a129
+Terminal WebSocket disconnected: dacaeb7c-d0a7-4191-b0f7-fbbd30f5a129
+Created terminal session d00c3af8-f385-43c2-82dd-9eba68d0bd91 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: d00c3af8-f385-43c2-82dd-9eba68d0bd91
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session 149b7038-b46a-49bf-a99d-9effeb410721 for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=149b7038-b46a-49bf-a99d-9effeb410721, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session 39db851b-f08f-47dc-a804-e1c7d5e653f1 for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=39db851b-f08f-47dc-a804-e1c7d5e653f1, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed PTY session d00c3af8-f385-43c2-82dd-9eba68d0bd91
+Terminal WebSocket disconnected: d00c3af8-f385-43c2-82dd-9eba68d0bd91
+Created terminal session 6d50802b-4ced-4773-b2cc-1d984cec7830 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 6d50802b-4ced-4773-b2cc-1d984cec7830
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session aeffdc1e-9a4b-4933-ac2c-e2e461e7c2d9 for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=aeffdc1e-9a4b-4933-ac2c-e2e461e7c2d9, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session d2a78a03-a8ad-4b94-8646-22bb0bdf5c0e for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=d2a78a03-a8ad-4b94-8646-22bb0bdf5c0e, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed PTY session 6d50802b-4ced-4773-b2cc-1d984cec7830
+Terminal WebSocket disconnected: 6d50802b-4ced-4773-b2cc-1d984cec7830
+Closed agent session 149b7038-b46a-49bf-a99d-9effeb410721
+Agent WebSocket disconnected: 149b7038-b46a-49bf-a99d-9effeb410721
+Closed agent session 39db851b-f08f-47dc-a804-e1c7d5e653f1
+Closed agent session aeffdc1e-9a4b-4933-ac2c-e2e461e7c2d9
+Agent WebSocket disconnected: aeffdc1e-9a4b-4933-ac2c-e2e461e7c2d9
+Closed agent session d2a78a03-a8ad-4b94-8646-22bb0bdf5c0e
+Created terminal session 7a678214-2b77-47e3-bdc4-9eba6744a65e using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 7a678214-2b77-47e3-bdc4-9eba6744a65e
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session 89e55822-d497-44e9-9c9d-0155ff3352fc for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=89e55822-d497-44e9-9c9d-0155ff3352fc, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session df679380-ed66-4e80-a144-0fe7e42c69b2 for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=df679380-ed66-4e80-a144-0fe7e42c69b2, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed PTY session 7a678214-2b77-47e3-bdc4-9eba6744a65e
+Terminal WebSocket disconnected: 7a678214-2b77-47e3-bdc4-9eba6744a65e
+Created terminal session 644dbc28-2cbd-44cd-9e6e-eb458e32cd69 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 644dbc28-2cbd-44cd-9e6e-eb458e32cd69
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session 38bb2b0d-2904-40ba-b155-ede46d8dbf6d for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=38bb2b0d-2904-40ba-b155-ede46d8dbf6d, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session fee1347d-3392-488d-836d-549210aaeef4 for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=fee1347d-3392-488d-836d-549210aaeef4, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed PTY session 644dbc28-2cbd-44cd-9e6e-eb458e32cd69
+Terminal WebSocket disconnected: 644dbc28-2cbd-44cd-9e6e-eb458e32cd69
+Closed agent session df679380-ed66-4e80-a144-0fe7e42c69b2
+Closed agent session 89e55822-d497-44e9-9c9d-0155ff3352fc
+Agent WebSocket disconnected: 89e55822-d497-44e9-9c9d-0155ff3352fc
+Closed agent session fee1347d-3392-488d-836d-549210aaeef4
+Closed agent session 38bb2b0d-2904-40ba-b155-ede46d8dbf6d
+Agent WebSocket disconnected: 38bb2b0d-2904-40ba-b155-ede46d8dbf6d
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session 797f59d4-1f8a-4109-a55d-49c95c7dda79 for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=797f59d4-1f8a-4109-a55d-49c95c7dda79, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created terminal session 933c9e5c-f53b-4e15-9cbf-97f2fb1ad7f0 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 933c9e5c-f53b-4e15-9cbf-97f2fb1ad7f0
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session eb0ee3f5-8541-49d3-83cf-315025c96dab for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=eb0ee3f5-8541-49d3-83cf-315025c96dab, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed PTY session 933c9e5c-f53b-4e15-9cbf-97f2fb1ad7f0
+Terminal WebSocket disconnected: 933c9e5c-f53b-4e15-9cbf-97f2fb1ad7f0
+Closed agent session eb0ee3f5-8541-49d3-83cf-315025c96dab
+Closed agent session 797f59d4-1f8a-4109-a55d-49c95c7dda79
+Agent WebSocket disconnected: 797f59d4-1f8a-4109-a55d-49c95c7dda79
+Created terminal session fc75a61e-ada2-496c-ae83-6ea353cfe8a2 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: fc75a61e-ada2-496c-ae83-6ea353cfe8a2
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session d3ba4c8a-3099-46af-86ea-0bcf1d980212 for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=d3ba4c8a-3099-46af-86ea-0bcf1d980212, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session b9c42caf-f32a-45b2-bc12-d2f419454cde for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=b9c42caf-f32a-45b2-bc12-d2f419454cde, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed PTY session fc75a61e-ada2-496c-ae83-6ea353cfe8a2
+Terminal WebSocket disconnected: fc75a61e-ada2-496c-ae83-6ea353cfe8a2
+Closed agent session d3ba4c8a-3099-46af-86ea-0bcf1d980212
+Agent WebSocket disconnected: d3ba4c8a-3099-46af-86ea-0bcf1d980212
+Closed agent session b9c42caf-f32a-45b2-bc12-d2f419454cde
+Created terminal session 38dc9dd2-8928-4122-81b5-6ca863060ada using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 38dc9dd2-8928-4122-81b5-6ca863060ada
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session 4de517c0-316d-4649-ae31-147f02fab157 for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=4de517c0-316d-4649-ae31-147f02fab157, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session a9d09ddf-1400-49e9-b5cd-82722cdb897e for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=a9d09ddf-1400-49e9-b5cd-82722cdb897e, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed PTY session 38dc9dd2-8928-4122-81b5-6ca863060ada
+Terminal WebSocket disconnected: 38dc9dd2-8928-4122-81b5-6ca863060ada
+Closed agent session a9d09ddf-1400-49e9-b5cd-82722cdb897e
+Closed agent session 4de517c0-316d-4649-ae31-147f02fab157
+Agent WebSocket disconnected: 4de517c0-316d-4649-ae31-147f02fab157
+Created terminal session c987cb14-899b-4ab7-8edd-1f6d6a1d1a14 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: c987cb14-899b-4ab7-8edd-1f6d6a1d1a14
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session 4c58aa13-3771-4698-9bf2-0bb531fd2aa1 for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=4c58aa13-3771-4698-9bf2-0bb531fd2aa1, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session 572ae591-ddc0-45b8-98c4-a58b4561a7d2 for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=572ae591-ddc0-45b8-98c4-a58b4561a7d2, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed PTY session c987cb14-899b-4ab7-8edd-1f6d6a1d1a14
+Terminal WebSocket disconnected: c987cb14-899b-4ab7-8edd-1f6d6a1d1a14
+Closed agent session 4c58aa13-3771-4698-9bf2-0bb531fd2aa1
+Agent WebSocket disconnected: 4c58aa13-3771-4698-9bf2-0bb531fd2aa1
+Closed agent session 572ae591-ddc0-45b8-98c4-a58b4561a7d2
+Created terminal session f98ca36f-e6b7-4914-9d58-e862a3414f9e using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: f98ca36f-e6b7-4914-9d58-e862a3414f9e
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session eca69102-3224-4cb3-9ccc-90319eaea635 for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=eca69102-3224-4cb3-9ccc-90319eaea635, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session 5f6b9f20-c905-4d26-8058-17e781efcf64 for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=5f6b9f20-c905-4d26-8058-17e781efcf64, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed PTY session f98ca36f-e6b7-4914-9d58-e862a3414f9e
+Terminal WebSocket disconnected: f98ca36f-e6b7-4914-9d58-e862a3414f9e
+Closed agent session 5f6b9f20-c905-4d26-8058-17e781efcf64
+Closed agent session eca69102-3224-4cb3-9ccc-90319eaea635
+Agent WebSocket disconnected: eca69102-3224-4cb3-9ccc-90319eaea635
+Created terminal session d795935b-7123-4557-be15-2a9c36a5e98d using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: d795935b-7123-4557-be15-2a9c36a5e98d
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session 03b5de06-904f-429e-b141-1624d6de354d for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=03b5de06-904f-429e-b141-1624d6de354d, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session f9e4dbdb-e3dc-4740-88fe-cd41d60adb27 for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=f9e4dbdb-e3dc-4740-88fe-cd41d60adb27, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed PTY session d795935b-7123-4557-be15-2a9c36a5e98d
+Terminal WebSocket disconnected: d795935b-7123-4557-be15-2a9c36a5e98d
+Closed agent session f9e4dbdb-e3dc-4740-88fe-cd41d60adb27
+Closed agent session 03b5de06-904f-429e-b141-1624d6de354d
+Agent WebSocket disconnected: 03b5de06-904f-429e-b141-1624d6de354d
+Created terminal session 824f3a39-9a6c-4468-aee3-cea3f9c5546d using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 824f3a39-9a6c-4468-aee3-cea3f9c5546d
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session 747bc026-9c79-4b17-91d1-15666bedb73c for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=747bc026-9c79-4b17-91d1-15666bedb73c, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session 3f4e265e-cb42-4ba4-931e-ab7203d36150 for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=3f4e265e-cb42-4ba4-931e-ab7203d36150, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed PTY session 824f3a39-9a6c-4468-aee3-cea3f9c5546d
+Terminal WebSocket disconnected: 824f3a39-9a6c-4468-aee3-cea3f9c5546d
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session 94abc542-31b5-4933-a394-3d762a905b76 for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=94abc542-31b5-4933-a394-3d762a905b76, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session b75e48bc-bd12-418b-89be-80e4f0fd30fe for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=b75e48bc-bd12-418b-89be-80e4f0fd30fe, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed agent session 747bc026-9c79-4b17-91d1-15666bedb73c
+Agent WebSocket disconnected: 747bc026-9c79-4b17-91d1-15666bedb73c
+Closed agent session 3f4e265e-cb42-4ba4-931e-ab7203d36150
+Closed agent session b75e48bc-bd12-418b-89be-80e4f0fd30fe
+Closed agent session 94abc542-31b5-4933-a394-3d762a905b76
+Agent WebSocket disconnected: 94abc542-31b5-4933-a394-3d762a905b76
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session f381c4d1-1524-4e78-99bd-76cf0ad2d141 for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=f381c4d1-1524-4e78-99bd-76cf0ad2d141, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created terminal session cfcefe9a-a2a6-475f-9f03-fc886c35354c using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: cfcefe9a-a2a6-475f-9f03-fc886c35354c
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session 631b4045-f2da-4624-b613-4e5179635297 for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=631b4045-f2da-4624-b613-4e5179635297, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed PTY session cfcefe9a-a2a6-475f-9f03-fc886c35354c
+Terminal WebSocket disconnected: cfcefe9a-a2a6-475f-9f03-fc886c35354c
+Closed agent session 631b4045-f2da-4624-b613-4e5179635297
+Closed agent session f381c4d1-1524-4e78-99bd-76cf0ad2d141
+Agent WebSocket disconnected: f381c4d1-1524-4e78-99bd-76cf0ad2d141
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session d6188526-2c9d-43ee-8016-d8377f4d552f for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=d6188526-2c9d-43ee-8016-d8377f4d552f, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Created terminal session 8f06e832-4f84-4852-96a2-559d24b5bec7 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 8f06e832-4f84-4852-96a2-559d24b5bec7
+Terminal websocket attached for cwd /Users/normy
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session a8e66198-99b8-457a-b463-efb100072ae7 for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=a8e66198-99b8-457a-b463-efb100072ae7, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed PTY session 8f06e832-4f84-4852-96a2-559d24b5bec7
+Terminal WebSocket disconnected: 8f06e832-4f84-4852-96a2-559d24b5bec7
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session 8afff7fd-baae-427c-ac18-47898880d954 for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=8afff7fd-baae-427c-ac18-47898880d954, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session c2eafbf1-5b67-4a66-8a9e-14d895c5b54f for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=c2eafbf1-5b67-4a66-8a9e-14d895c5b54f, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed agent session d6188526-2c9d-43ee-8016-d8377f4d552f
+Agent WebSocket disconnected: d6188526-2c9d-43ee-8016-d8377f4d552f
+Closed agent session a8e66198-99b8-457a-b463-efb100072ae7
+Closed agent session 8afff7fd-baae-427c-ac18-47898880d954
+Agent WebSocket disconnected: 8afff7fd-baae-427c-ac18-47898880d954
+Closed agent session c2eafbf1-5b67-4a66-8a9e-14d895c5b54f
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session 64973e7c-4e03-4a86-8e30-6ed3565542fb for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=64973e7c-4e03-4a86-8e30-6ed3565542fb, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session b1f57008-1402-4ff4-ab06-198585463566 for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=b1f57008-1402-4ff4-ab06-198585463566, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed agent session b1f57008-1402-4ff4-ab06-198585463566
+Closed agent session 64973e7c-4e03-4a86-8e30-6ed3565542fb
+Agent WebSocket disconnected: 64973e7c-4e03-4a86-8e30-6ed3565542fb
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session 8a333edb-1596-4935-9630-bfed461b15d6 for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=8a333edb-1596-4935-9630-bfed461b15d6, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session 8e4bf320-4cb7-46fe-aee3-e6109f03dfa7 for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=8e4bf320-4cb7-46fe-aee3-e6109f03dfa7, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed agent session 8e4bf320-4cb7-46fe-aee3-e6109f03dfa7
+Closed agent session 8a333edb-1596-4935-9630-bfed461b15d6
+Agent WebSocket disconnected: 8a333edb-1596-4935-9630-bfed461b15d6
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session c2ab89d0-ede8-4d92-9331-09026bf42101 for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=c2ab89d0-ede8-4d92-9331-09026bf42101, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session 38706cd3-4ea0-4480-b69c-6f088d9aeccb for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=38706cd3-4ea0-4480-b69c-6f088d9aeccb, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed agent session 38706cd3-4ea0-4480-b69c-6f088d9aeccb
+Closed agent session c2ab89d0-ede8-4d92-9331-09026bf42101
+Agent WebSocket disconnected: c2ab89d0-ede8-4d92-9331-09026bf42101
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session a21818f5-5fc4-4415-8604-f08420778ea0 for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=a21818f5-5fc4-4415-8604-f08420778ea0, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session 2f5032e9-595b-4df5-a7b0-43b0ae45d9aa for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=2f5032e9-595b-4df5-a7b0-43b0ae45d9aa, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed agent session 2f5032e9-595b-4df5-a7b0-43b0ae45d9aa
+Closed agent session a21818f5-5fc4-4415-8604-f08420778ea0
+Agent WebSocket disconnected: a21818f5-5fc4-4415-8604-f08420778ea0
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session 67d6afb1-f109-4a82-a947-d6ec83d1678a for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=67d6afb1-f109-4a82-a947-d6ec83d1678a, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session b6200226-5099-41e8-b660-ae53c7664850 for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=b6200226-5099-41e8-b660-ae53c7664850, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed agent session 67d6afb1-f109-4a82-a947-d6ec83d1678a
+Agent WebSocket disconnected: 67d6afb1-f109-4a82-a947-d6ec83d1678a
+Closed agent session b6200226-5099-41e8-b660-ae53c7664850
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session 0638ab3c-1e57-4b3d-b9a4-c6e66a804724 for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=0638ab3c-1e57-4b3d-b9a4-c6e66a804724, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session 7f323143-08cb-4b65-9de4-b5457ee04f44 for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=7f323143-08cb-4b65-9de4-b5457ee04f44, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed agent session 0638ab3c-1e57-4b3d-b9a4-c6e66a804724
+Agent WebSocket disconnected: 0638ab3c-1e57-4b3d-b9a4-c6e66a804724
+Closed agent session 7f323143-08cb-4b65-9de4-b5457ee04f44
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session a4f5dbb1-c20f-4805-ab0e-631c69858f95 for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=a4f5dbb1-c20f-4805-ab0e-631c69858f95, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session 52e25f6d-7133-4a9e-a26d-ef41b7a05f53 for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=52e25f6d-7133-4a9e-a26d-ef41b7a05f53, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Created terminal session e85df92e-0d61-41ba-90c5-2637755aaf9b using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: e85df92e-0d61-41ba-90c5-2637755aaf9b
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed PTY session e85df92e-0d61-41ba-90c5-2637755aaf9b
+Terminal WebSocket disconnected: e85df92e-0d61-41ba-90c5-2637755aaf9b
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session 73370991-d29f-4bac-97c7-9e23484f6472 for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=73370991-d29f-4bac-97c7-9e23484f6472, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session 2ad3b114-2c90-4f3e-ab44-aef9d59df5e6 for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=2ad3b114-2c90-4f3e-ab44-aef9d59df5e6, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed agent session 52e25f6d-7133-4a9e-a26d-ef41b7a05f53
+Closed agent session a4f5dbb1-c20f-4805-ab0e-631c69858f95
+Agent WebSocket disconnected: a4f5dbb1-c20f-4805-ab0e-631c69858f95
+Closed agent session 73370991-d29f-4bac-97c7-9e23484f6472
+Agent WebSocket disconnected: 73370991-d29f-4bac-97c7-9e23484f6472
+Closed agent session 2ad3b114-2c90-4f3e-ab44-aef9d59df5e6
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session 9558a298-b68f-49ee-92d9-3c31287f9405 for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=9558a298-b68f-49ee-92d9-3c31287f9405, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Created terminal session 04229e9b-fcbf-4620-867a-d0f8195a5864 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 04229e9b-fcbf-4620-867a-d0f8195a5864
+Terminal websocket attached for cwd /Users/normy
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session cd59ec06-2f6f-49e2-881f-51e2467572c0 for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=cd59ec06-2f6f-49e2-881f-51e2467572c0, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed PTY session 04229e9b-fcbf-4620-867a-d0f8195a5864
+Terminal WebSocket disconnected: 04229e9b-fcbf-4620-867a-d0f8195a5864
+Closed agent session cd59ec06-2f6f-49e2-881f-51e2467572c0
+Closed agent session 9558a298-b68f-49ee-92d9-3c31287f9405
+Agent WebSocket disconnected: 9558a298-b68f-49ee-92d9-3c31287f9405
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session f413d848-4864-4fe6-aae5-13a28d055c63 for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=f413d848-4864-4fe6-aae5-13a28d055c63, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session e4157920-a640-4b59-a0b6-a4d235363b92 for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=e4157920-a640-4b59-a0b6-a4d235363b92, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed agent session e4157920-a640-4b59-a0b6-a4d235363b92
+Closed agent session f413d848-4864-4fe6-aae5-13a28d055c63
+Agent WebSocket disconnected: f413d848-4864-4fe6-aae5-13a28d055c63
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session ce927d14-8cc0-4afa-87f0-25b60707ccd9 for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=ce927d14-8cc0-4afa-87f0-25b60707ccd9, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session 4cd1d708-573c-4e56-abc7-5beed4c55c8a for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=4cd1d708-573c-4e56-abc7-5beed4c55c8a, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Created terminal session 8e2ac1f9-1e8b-4397-b897-b382a9f329f9 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 8e2ac1f9-1e8b-4397-b897-b382a9f329f9
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed PTY session 8e2ac1f9-1e8b-4397-b897-b382a9f329f9
+Terminal WebSocket disconnected: 8e2ac1f9-1e8b-4397-b897-b382a9f329f9
+{"level":30,"time":1791700837617,"pid":11218,"hostname":"MacBookPro","reqId":"req-1lc","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:473:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-task-locator/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1791700837933,"pid":11218,"hostname":"MacBookPro","reqId":"req-k","method":"GET","url":"/mcp/agent-tools/agtrun_hfekYXApWSmM8QgVzVmHeV-uXMs1MIQOt8DnKgoDYJY","statusCode":405,"elapsedMs":0.2185419797897339,"msg":"http request completed"}
+Closed agent session 4cd1d708-573c-4e56-abc7-5beed4c55c8a
+Closed agent session ce927d14-8cc0-4afa-87f0-25b60707ccd9
+Agent WebSocket disconnected: ce927d14-8cc0-4afa-87f0-25b60707ccd9
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session ef19a1b9-de93-4a85-9d93-672882afe227 for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=ef19a1b9-de93-4a85-9d93-672882afe227, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Created terminal session a33a65d3-6d81-44e7-a5b4-063d0e3e45ff using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: a33a65d3-6d81-44e7-a5b4-063d0e3e45ff
+Terminal websocket attached for cwd /Users/normy
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session b4291b40-d054-4d6f-8acb-d00fb17b07f9 for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=b4291b40-d054-4d6f-8acb-d00fb17b07f9, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed PTY session a33a65d3-6d81-44e7-a5b4-063d0e3e45ff
+Terminal WebSocket disconnected: a33a65d3-6d81-44e7-a5b4-063d0e3e45ff
+Closed agent session ef19a1b9-de93-4a85-9d93-672882afe227
+Agent WebSocket disconnected: ef19a1b9-de93-4a85-9d93-672882afe227
+Closed agent session b4291b40-d054-4d6f-8acb-d00fb17b07f9
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session f9b6fb9b-5fa6-4a4f-8fad-faa29dbb1626 for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=f9b6fb9b-5fa6-4a4f-8fad-faa29dbb1626, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created terminal session 1ff4fbb0-4597-46db-93c5-e5bb856d8c84 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 1ff4fbb0-4597-46db-93c5-e5bb856d8c84
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session c7ac426b-7495-49c0-8148-aaf6966f016c for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=c7ac426b-7495-49c0-8148-aaf6966f016c, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed PTY session 1ff4fbb0-4597-46db-93c5-e5bb856d8c84
+Terminal WebSocket disconnected: 1ff4fbb0-4597-46db-93c5-e5bb856d8c84
+Closed agent session f9b6fb9b-5fa6-4a4f-8fad-faa29dbb1626
+Agent WebSocket disconnected: f9b6fb9b-5fa6-4a4f-8fad-faa29dbb1626
+Closed agent session c7ac426b-7495-49c0-8148-aaf6966f016c
+Created terminal session db6af38b-653a-475b-b2e1-bdef320d9488 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: db6af38b-653a-475b-b2e1-bdef320d9488
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session 046603b6-7e6a-4a0d-8e88-e0fcad882bc1 for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=046603b6-7e6a-4a0d-8e88-e0fcad882bc1, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session 8047f946-1b76-4a39-a01d-bb24f1f4e3c7 for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=8047f946-1b76-4a39-a01d-bb24f1f4e3c7, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed PTY session db6af38b-653a-475b-b2e1-bdef320d9488
+Terminal WebSocket disconnected: db6af38b-653a-475b-b2e1-bdef320d9488
+Closed agent session 8047f946-1b76-4a39-a01d-bb24f1f4e3c7
+Closed agent session 046603b6-7e6a-4a0d-8e88-e0fcad882bc1
+Agent WebSocket disconnected: 046603b6-7e6a-4a0d-8e88-e0fcad882bc1
+Created terminal session e8266d79-b96b-468c-b575-92b5b648de34 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: e8266d79-b96b-468c-b575-92b5b648de34
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session 6df15c83-e727-46da-b6b5-79865b7646e7 for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=6df15c83-e727-46da-b6b5-79865b7646e7, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session 44b005d6-622e-41a0-a2e8-ee184759cf27 for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=44b005d6-622e-41a0-a2e8-ee184759cf27, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Closed agent session 6df15c83-e727-46da-b6b5-79865b7646e7
+Agent WebSocket disconnected: 6df15c83-e727-46da-b6b5-79865b7646e7
+Closed agent session 44b005d6-622e-41a0-a2e8-ee184759cf27
+Closed PTY session e8266d79-b96b-468c-b575-92b5b648de34
+Terminal WebSocket disconnected: e8266d79-b96b-468c-b575-92b5b648de34
+Created terminal session 596cb2e2-3028-4088-9bb1-a566bfd61251 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 596cb2e2-3028-4088-9bb1-a566bfd61251
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session c7d7f9fd-df6e-4446-9038-c57a6346aff7 for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=c7d7f9fd-df6e-4446-9038-c57a6346aff7, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session 485d5ee4-89d4-416d-9c03-880294e835b5 for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=485d5ee4-89d4-416d-9c03-880294e835b5, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed PTY session 596cb2e2-3028-4088-9bb1-a566bfd61251
+Terminal WebSocket disconnected: 596cb2e2-3028-4088-9bb1-a566bfd61251
+Closed agent session c7d7f9fd-df6e-4446-9038-c57a6346aff7
+Agent WebSocket disconnected: c7d7f9fd-df6e-4446-9038-c57a6346aff7
+Closed agent session 485d5ee4-89d4-416d-9c03-880294e835b5
+Created terminal session 2c8ae638-7fb7-474d-a791-559602c73c2e using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 2c8ae638-7fb7-474d-a791-559602c73c2e
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session 478e3c19-f7f8-4f16-9285-baf91b9de407 for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=478e3c19-f7f8-4f16-9285-baf91b9de407, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session df432922-e9fd-4e99-9b20-083b398b3330 for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=df432922-e9fd-4e99-9b20-083b398b3330, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed PTY session 2c8ae638-7fb7-474d-a791-559602c73c2e
+Terminal WebSocket disconnected: 2c8ae638-7fb7-474d-a791-559602c73c2e
+Closed agent session df432922-e9fd-4e99-9b20-083b398b3330
+Closed agent session 478e3c19-f7f8-4f16-9285-baf91b9de407
+Agent WebSocket disconnected: 478e3c19-f7f8-4f16-9285-baf91b9de407
+Created terminal session 544ace46-45eb-4719-a873-53e78cdc1ccb using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 544ace46-45eb-4719-a873-53e78cdc1ccb
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session 170629b0-179e-4fc3-a92a-8e633d20aaf4 for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=170629b0-179e-4fc3-a92a-8e633d20aaf4, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session 23d53a1c-724c-4c92-8731-31809b6a0b69 for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=23d53a1c-724c-4c92-8731-31809b6a0b69, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed PTY session 544ace46-45eb-4719-a873-53e78cdc1ccb
+Terminal WebSocket disconnected: 544ace46-45eb-4719-a873-53e78cdc1ccb
+Closed agent session 170629b0-179e-4fc3-a92a-8e633d20aaf4
+Agent WebSocket disconnected: 170629b0-179e-4fc3-a92a-8e633d20aaf4
+Closed agent session 23d53a1c-724c-4c92-8731-31809b6a0b69
+Created terminal session 992c9e28-2f0f-48f5-832c-c3981330b042 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 992c9e28-2f0f-48f5-832c-c3981330b042
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Created agent session 0cfd285f-063a-4a3a-8da0-afddc81d843a for run project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Agent WebSocket connected: session=0cfd285f-063a-4a3a-8da0-afddc81d843a, run=project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/agent_package_creator_83e0e2338af845beab822ce2aa45bd88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agent_teams/delivery_team_e78164ca1e054445a53408b880ed1100/fact_checker_6d694607d7424ff185eb737fee17d6ee/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_e78164ca1e054445a53408b880ed1100
+Created agent session a3b44745-1197-463f-8a21-8f6fdb6b491b for run delivery_team_e78164ca1e054445a53408b880ed1100
+Agent Team WebSocket connected: session=a3b44745-1197-463f-8a21-8f6fdb6b491b, run=delivery_team_e78164ca1e054445a53408b880ed1100
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/copy-task-locator-IZDzQM/memory/agents/project_task_manager_c1444a91f8b34f36b46c11a1ec2ce14e/collaboration/software_engineering_team_22cfdb79e07d4e4ca8229b0eaadd69f3/fact_checker_18157689dfc944d5ab55dec6da6dc024/raw_traces_active.jsonl
+Closed PTY session 992c9e28-2f0f-48f5-832c-c3981330b042
+Terminal WebSocket disconnected: 992c9e28-2f0f-48f5-832c-c3981330b042
+Closed agent session 0cfd285f-063a-4a3a-8da0-afddc81d843a
+Agent WebSocket disconnected: 0cfd285f-063a-4a3a-8da0-afddc81d843a
+Closed agent session a3b44745-1197-463f-8a21-8f6fdb6b491b
+Closed agent session 1e53b201-6c15-406a-8a35-bd7bb62c2ba2
+Closed agent session 0e38aec7-f8fa-48c5-beaf-9012c3cfac82
+Agent WebSocket disconnected: 0e38aec7-f8fa-48c5-beaf-9012c3cfac82
+[2026-10-11T06:45:47.338Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-10-11T06:45:47.408Z] [INFO] [server.runtime] Server closed cleanly.

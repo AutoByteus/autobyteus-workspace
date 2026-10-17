@@ -18,8 +18,7 @@ const mockImageClientFactory = vi.hoisted(() => ({
   listModels: vi.fn(),
   describeConstructionTarget: vi.fn(),
   createImageClient: vi.fn(),
-  syncRuntimeModels: vi.fn(),
-  listSourceModels: vi.fn(),
+  hasRegisteredModel: vi.fn(),
 }));
 
 const mockAudioClientFactory = vi.hoisted(() => ({
@@ -28,8 +27,7 @@ const mockAudioClientFactory = vi.hoisted(() => ({
   listModels: vi.fn(),
   describeConstructionTarget: vi.fn(),
   createAudioClient: vi.fn(),
-  syncRuntimeModels: vi.fn(),
-  listSourceModels: vi.fn(),
+  hasRegisteredModel: vi.fn(),
 }));
 
 const mockVideoClientFactory = vi.hoisted(() => ({
@@ -220,7 +218,8 @@ const configureMediaFactories = (): void => {
       parameterSchema: createModelSchema("editA"),
     },
   ]);
-  mockImageClientFactory.listSourceModels.mockReturnValue([]);
+  mockImageClientFactory.hasRegisteredModel.mockImplementation((identifier: string) =>
+    mockImageClientFactory.listModels().some((model: { modelIdentifier: string }) => model.modelIdentifier === identifier));
   mockAudioClientFactory.ensureInitialized.mockImplementation(() => undefined);
   mockAudioClientFactory.requiresGeminiRuntimeResolver.mockReturnValue(false);
   mockAudioClientFactory.describeConstructionTarget.mockImplementation(() => ({
@@ -235,7 +234,8 @@ const configureMediaFactories = (): void => {
       parameterSchema: createModelSchema("speechA"),
     },
   ]);
-  mockAudioClientFactory.listSourceModels.mockReturnValue([]);
+  mockAudioClientFactory.hasRegisteredModel.mockImplementation((identifier: string) =>
+    mockAudioClientFactory.listModels().some((model: { modelIdentifier: string }) => model.modelIdentifier === identifier));
   mockVideoClientFactory.ensureInitialized.mockImplementation(() => undefined);
   mockVideoClientFactory.requiresGeminiRuntimeResolver.mockReturnValue(false);
   mockVideoClientFactory.describeConstructionTarget.mockImplementation(() => ({
@@ -248,8 +248,6 @@ const configureMediaFactories = (): void => {
       name: "Video A",
       value: "video-a",
       provider: "GEMINI",
-      runtime: "api",
-      hostUrl: null,
       description: "video model A capabilities",
       parameterSchema: createModelSchema("videoA"),
     },
@@ -258,8 +256,6 @@ const configureMediaFactories = (): void => {
       name: "Video B",
       value: "video-b",
       provider: "GEMINI",
-      runtime: "api",
-      hostUrl: null,
       description: "video model B capabilities",
       parameterSchema: createModelSchema("videoB"),
     },
@@ -571,6 +567,35 @@ describe("server-owned media tools API/E2E boundary", () => {
     });
   });
 
+  it("reports a saved default media model of the removed remote AutoByteus provider as unavailable without clearing it (AC-004)", async () => {
+    const { workspaceRoot } = createWorkspace();
+    const remoteImageModel = "imagen@remote-llm.example.invalid:8000";
+    const remoteSpeechModel = "tts@remote-llm.example.invalid:8000";
+    configValues[DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY] = remoteImageModel;
+    configValues[DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY] = remoteSpeechModel;
+    registerMediaTools();
+
+    const imageOutputPath = path.join(workspaceRoot, "outputs", "remote-default.png");
+    const speechOutputPath = path.join(workspaceRoot, "outputs", "remote-default.wav");
+    await expect(defaultToolRegistry.createTool(GENERATE_IMAGE_TOOL_NAME).execute(
+      { agentId: "agent-auto", runId: "run-remote-default", workspaceRootPath: workspaceRoot } as any,
+      { prompt: "paint with the saved default", output_file_path: imageOutputPath },
+    )).rejects.toThrow("MODEL_IDENTIFIER_NOT_AVAILABLE");
+    await expect(defaultToolRegistry.createTool(GENERATE_SPEECH_TOOL_NAME).execute(
+      { agentId: "agent-auto", runId: "run-remote-default", workspaceRootPath: workspaceRoot } as any,
+      { prompt: "speak with the saved default", output_file_path: speechOutputPath },
+    )).rejects.toThrow("MODEL_IDENTIFIER_NOT_AVAILABLE");
+
+    expect(mockImageClientFactory.hasRegisteredModel).toHaveBeenCalledWith(remoteImageModel);
+    expect(mockAudioClientFactory.hasRegisteredModel).toHaveBeenCalledWith(remoteSpeechModel);
+    expect(mockImageClientFactory.createImageClient).not.toHaveBeenCalled();
+    expect(mockAudioClientFactory.createAudioClient).not.toHaveBeenCalled();
+    expect(fs.existsSync(imageOutputPath)).toBe(false);
+    expect(fs.existsSync(speechOutputPath)).toBe(false);
+    expect(configValues[DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY]).toBe(remoteImageModel);
+    expect(configValues[DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY]).toBe(remoteSpeechModel);
+  });
+
   it("exposes nested speech and video generation_config schemas through the GraphQL tools query", async () => {
     configValues[DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY] = "gpt-4o-mini-tts";
     configValues[DEFAULT_VIDEO_GENERATION_MODEL_SETTING_KEY] = "gemini-omni-flash-preview";
@@ -588,8 +613,6 @@ describe("server-owned media tools API/E2E boundary", () => {
         name: "Gemini Omni Flash Preview",
         value: "gemini-omni-flash-preview",
         provider: "GEMINI",
-        runtime: "api",
-        hostUrl: null,
         description: "Gemini video generation model.",
         parameterSchema: createVideoSchema(),
       },

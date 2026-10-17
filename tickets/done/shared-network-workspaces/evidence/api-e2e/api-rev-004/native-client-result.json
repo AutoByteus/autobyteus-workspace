@@ -1,0 +1,886 @@
+{
+  "vm": "ab-nfs-api004-linux-9591ce1a",
+  "source": "/home/admin/ab-nfs-api004-linux-9591ce1a-native-source",
+  "mountRoot": "/Volumes/autobyteus-shared",
+  "binary": {
+    "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api004-ih_oeijo/autobyteus-nfs-docker-linux-arm64",
+    "sha256": "4360002f6e62dde7242863929a7e469e04439aa891000b1f52327ef9ff50caf7",
+    "size": 11047187
+  },
+  "metadata": {
+    "version": "v1.5.3-beta.2",
+    "sourceHash": "51f81cd187caf269ecffa83fecc35a4f665b70942716d7858fa7d964d3b335ed",
+    "ubuntuPackages": {
+      "nfs-common": "1:2.6.4-3ubuntu5.1"
+    },
+    "engineImage": "127.0.0.1:5000/ab-nfs-api004@sha256:34197bbbfb60990b3da046d2442c2e28eaaf66c195c2a94883bd90e15876dc78",
+    "qualifiedTargets": [],
+    "engine": {
+      "source": {
+        "version": "4.3-8ubuntu1",
+        "files": [
+          {
+            "file": "nfs-ganesha_4.3-8ubuntu1.dsc",
+            "sha256": "ffa76c26b12d23b67dcda184d7ec7ae55a42d1d14bf84bb7c0cf0134156ba3ca",
+            "size": 3576
+          },
+          {
+            "file": "nfs-ganesha_4.3.orig.tar.gz",
+            "sha256": "d4efd020edf4dfe65abfd0f0f66eb4390613360f99dce4354467ab297e0e1c0f",
+            "size": 1895017
+          },
+          {
+            "file": "nfs-ganesha_4.3-8ubuntu1.debian.tar.xz",
+            "sha256": "ef35d130e1b37149b156d201b70e6c2804bebbfbee1713c5bd6d938dd433fe03",
+            "size": 19224
+          }
+        ],
+        "patchCommit": "98eb77c4fd94effa6882b214698a77752ec79f6e",
+        "patchSha256": "ba682b5c64e7f800c927f4c90b2a7bfb4b8d2a323ddc48c3d591db3d75799031",
+        "sourceDateEpoch": 1791936000,
+        "recipeSha256": "34e28c622f598487af74a545115fa8dffe94e8f1aa5d85c091515aa187d66e4f",
+        "buildBase": "ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e"
+      },
+      "architectures": {
+        "arm64": {
+          "packages": [
+            {
+              "file": "nfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb",
+              "sha256": "0b5c78911cfc1b299e9894e1f841e74176fbb2cb45b158008e4530713549ebc8",
+              "size": 613976,
+              "name": "nfs-ganesha",
+              "version": "4.3-8ubuntu1+autobyteus1",
+              "architecture": "arm64"
+            },
+            {
+              "file": "nfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb",
+              "sha256": "3bf06769646d93ea85f0277fe0726eb42d0d29a70c0108505706954e5e8d2ac6",
+              "size": 48626,
+              "name": "nfs-ganesha-vfs",
+              "version": "4.3-8ubuntu1+autobyteus1",
+              "architecture": "arm64"
+            }
+          ],
+          "correspondingSource": {
+            "file": "autobyteus-nfs-ganesha-source-4.3-8ubuntu1+autobyteus1-arm64.tar.gz",
+            "sha256": "eed35ab4b732ac05d2afc3531e70cdc27031fb414fdb52a0daf093f33daaec0a",
+            "size": 1930105
+          },
+          "buildInventory": {
+            "file": "engine-build-arm64.txt",
+            "sha256": "56fad63c43f85091d84df347564dfd962a9afaafe519539849860b1807695761",
+            "size": 57836
+          }
+        }
+      }
+    }
+  },
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api004-linux-9591ce1a",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n docker start autobyteus-server-0"
+      ],
+      "rc": 0,
+      "seconds": 1.016,
+      "stdout": "autobyteus-server-0\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api004-linux-9591ce1a",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n docker inspect autobyteus-server-0"
+      ],
+      "rc": 0,
+      "seconds": 0.367,
+      "stdout": "[\n    {\n        \"Id\": \"10af3f665f8ff4243c209380d0183548ad8096d3573e80d10917ea875dd312dc\",\n        \"Created\": \"2026-10-15T07:57:23.446251583Z\",\n        \"Path\": \"/usr/local/bin/entrypoint.sh\",\n        \"Args\": [],\n        \"State\": {\n            \"Status\": \"running\",\n            \"Running\": true,\n            \"Paused\": false,\n            \"Restarting\": false,\n            \"OOMKilled\": false,\n            \"Dead\": false,\n            \"Pid\": 4161,\n            \"ExitCode\": 0,\n            \"Error\": \"\",\n            \"StartedAt\": \"2026-10-15T08:04:36.729896336Z\",\n            \"FinishedAt\": \"0001-01-01T00:00:00Z\"\n        },\n        \"Image\": \"sha256:c4338af68b8608226655056dc7c52d76250eba7c317f25ef43b9ca8458414dfb\",\n        \"ResolvConfPath\": \"/var/lib/docker/containers/10af3f665f8ff4243c209380d0183548ad8096d3573e80d10917ea875dd312dc/resolv.conf\",\n        \"HostnamePath\": \"/var/lib/docker/containers/10af3f665f8ff4243c209380d0183548ad8096d3573e80d10917ea875dd312dc/hostname\",\n        \"HostsPath\": \"/var/lib/docker/containers/10af3f665f8ff4243c209380d0183548ad8096d3573e80d10917ea875dd312dc/hosts\",\n        \"LogPath\": \"/var/lib/docker/containers/10af3f665f8ff4243c209380d0183548ad8096d3573e80d10917ea875dd312dc/10af3f665f8ff4243c209380d0183548ad8096d3573e80d10917ea875dd312dc-json.log\",\n        \"Name\": \"/autobyteus-server-0\",\n        \"RestartCount\": 0,\n        \"Driver\": \"overlayfs\",\n        \"Platform\": \"linux\",\n        \"MountLabel\": \"\",\n        \"ProcessLabel\": \"\",\n        \"AppArmorProfile\": \"docker-default\",\n        \"ExecIDs\": null,\n        \"HostConfig\": {\n            \"Binds\": [\n                \"autobyteus-server-0-workspace:/app/autobyteus-server-ts/workspace\",\n                \"autobyteus-server-0-data:/home/autobyteus/data\",\n                \"autobyteus-server-0-root-home:/root\",\n                \"autobyteus-server-0-chromium-profile:/home/vncuser/.config/chromium\"\n            ],\n            \"ContainerIDFile\": \"\",\n            \"LogConfig\": {\n                \"Type\": \"json-file\",\n                \"Config\": {}\n            },\n            \"NetworkMode\": \"bridge\",\n            \"PortBindings\": {\n                \"5900/tcp\": [\n                    {\n                        \"HostIp\": \"\",\n                        \"HostPort\": \"5908\"\n                    }\n                ],\n                \"6080/tcp\": [\n                    {\n                        \"HostIp\": \"\",\n                        \"HostPort\": \"6080\"\n                    }\n                ],\n                \"8000/tcp\": [\n                    {\n                        \"HostIp\": \"\",\n                        \"HostPort\": \"8001\"\n                    }\n                ],\n                \"9223/tcp\": [\n                    {\n                        \"HostIp\": \"\",\n                        \"HostPort\": \"9228\"\n                    }\n                ]\n            },\n            \"RestartPolicy\": {\n                \"Name\": \"unless-stopped\",\n                \"MaximumRetryCount\": 0\n            },\n            \"AutoRemove\": false,\n            \"VolumeDriver\": \"\",\n            \"VolumesFrom\": null,\n            \"ConsoleSize\": [\n                0,\n                0\n            ],\n            \"CapAdd\": [\n                \"CAP_SYS_ADMIN\"\n            ],\n            \"CapDrop\": null,\n            \"CgroupnsMode\": \"private\",\n            \"Dns\": [],\n            \"DnsOptions\": [],\n            \"DnsSearch\": [],\n            \"ExtraHosts\": null,\n            \"GroupAdd\": null,\n            \"IpcMode\": \"private\",\n            \"Cgroup\": \"\",\n            \"Links\": null,\n            \"OomScoreAdj\": 0,\n            \"PidMode\": \"\",\n            \"Privileged\": false,\n            \"PublishAllPorts\": false,\n            \"ReadonlyRootfs\": false,\n            \"SecurityOpt\": [\n                \"seccomp=unconfined\"\n            ],\n            \"UTSMode\": \"\",\n            \"UsernsMode\": \"\",\n            \"ShmSize\": 67108864,\n            \"Runtime\": \"runc\",\n            \"Isolation\": \"\",\n            \"CpuShares\": 0,\n            \"Memory\": 0,\n            \"NanoCpus\": 0,\n            \"CgroupParent\": \"\",\n            \"BlkioWeight\": 0,\n            \"BlkioWeightDevice\": [],\n            \"BlkioDeviceReadBps\": [],\n            \"BlkioDeviceWriteBps\": [],\n            \"BlkioDeviceReadIOps\": [],\n            \"BlkioDeviceWriteIOps\": [],\n            \"CpuPeriod\": 0,\n            \"CpuQuota\": 0,\n            \"CpuRealtimePeriod\": 0,\n            \"CpuRealtimeRuntime\": 0,\n            \"CpusetCpus\": \"\",\n            \"CpusetMems\": \"\",\n            \"Devices\": [],\n            \"DeviceCgroupRules\": null,\n            \"DeviceRequests\": null,\n            \"MemoryReservation\": 0,\n            \"MemorySwap\": 0,\n            \"MemorySwappiness\": null,\n            \"OomKillDisable\": null,\n            \"PidsLimit\": null,\n            \"Ulimits\": [],\n            \"CpuCount\": 0,\n            \"CpuPercent\": 0,\n            \"IOMaximumIOps\": 0,\n            \"IOMaximumBandwidth\": 0,\n            \"Mounts\": [\n                {\n                    \"Type\": \"bind\",\n                    \"Source\": \"/home/admin/api004-launcher-home/.autobyteus/docker-server/shared-workspace/nodes/autobyteus-server-0\",\n                    \"Target\": \"/home/autobyteus/workspace\"\n                },\n                {\n                    \"Type\": \"bind\",\n                    \"Source\": \"/home/admin/api004-launcher-home/.autobyteus/docker-server/shared-workspace/shared\",\n                    \"Target\": \"/home/autobyteus/shared\"\n                }\n            ],\n            \"MaskedPaths\": [\n                \"/proc/acpi\",\n                \"/proc/asound\",\n                \"/proc/interrupts\",\n                \"/proc/kcore\",\n                \"/proc/keys\",\n                \"/proc/latency_stats\",\n                \"/proc/sched_debug\",\n                \"/proc/scsi\",\n                \"/proc/timer_list\",\n                \"/proc/timer_stats\",\n                \"/sys/devices/virtual/powercap\",\n                \"/sys/firmware\"\n            ],\n            \"ReadonlyPaths\": [\n                \"/proc/bus\",\n                \"/proc/fs\",\n                \"/proc/irq\",\n                \"/proc/sys\",\n                \"/proc/sysrq-trigger\"\n            ]\n        },\n        \"Storage\": {\n            \"RootFS\": {\n                \"Snapshot\": {\n                    \"Name\": \"overlayfs\"\n                }\n            }\n        },\n        \"Mounts\": [\n            {\n                \"Type\": \"volume\",\n                \"Name\": \"autobyteus-server-0-root-home\",\n                \"Source\": \"/var/lib/docker/volumes/autobyteus-server-0-root-home/_data\",\n                \"Destination\": \"/root\",\n                \"Driver\": \"local\",\n                \"Mode\": \"z\",\n                \"RW\": true,\n                \"Propagation\": \"\"\n            },\n            {\n                \"Type\": \"volume\",\n                \"Name\": \"autobyteus-server-0-chromium-profile\",\n                \"Source\": \"/var/lib/docker/volumes/autobyteus-server-0-chromium-profile/_data\",\n                \"Destination\": \"/home/vncuser/.config/chromium\",\n                \"Driver\": \"local\",\n                \"Mode\": \"z\",\n                \"RW\": true,\n                \"Propagation\": \"\"\n            },\n            {\n                \"Type\": \"bind\",\n                \"Source\": \"/home/admin/api004-launcher-home/.autobyteus/docker-server/shared-workspace/nodes/autobyteus-server-0\",\n                \"Destination\": \"/home/autobyteus/workspace\",\n                \"Mode\": \"\",\n                \"RW\": true,\n                \"Propagation\": \"rprivate\"\n            },\n            {\n                \"Type\": \"bind\",\n                \"Source\": \"/home/admin/api004-launcher-home/.autobyteus/docker-server/shared-workspace/shared\",\n                \"Destination\": \"/home/autobyteus/shared\",\n                \"Mode\": \"\",\n                \"RW\": true,\n                \"Propagation\": \"rprivate\"\n            },\n            {\n                \"Type\": \"volume\",\n                \"Name\": \"autobyteus-server-0-workspace\",\n                \"Source\": \"/var/lib/docker/volumes/autobyteus-server-0-workspace/_data\",\n                \"Destination\": \"/app/autobyteus-server-ts/workspace\",\n                \"Driver\": \"local\",\n                \"Mode\": \"z\",\n                \"RW\": true,\n                \"Propagation\": \"\"\n            },\n            {\n                \"Type\": \"volume\",\n                \"Name\": \"autobyteus-server-0-data\",\n                \"Source\": \"/var/lib/docker/volumes/autobyteus-server-0-data/_data\",\n                \"Destination\": \"/home/autobyteus/data\",\n                \"Driver\": \"local\",\n                \"Mode\": \"z\",\n                \"RW\": true,\n                \"Propagation\": \"\"\n            }\n        ],\n        \"Config\": {\n            \"Hostname\": \"5eb232755145\",\n            \"Domainname\": \"\",\n            \"User\": \"\",\n            \"AttachStdin\": false,\n            \"AttachStdout\": false,\n            \"AttachStderr\": false,\n            \"ExposedPorts\": {\n                \"5900/tcp\": {},\n                \"6080/tcp\": {},\n                \"8000/tcp\": {},\n                \"9223/tcp\": {}\n            },\n            \"Tty\": false,\n            \"OpenStdin\": false,\n            \"StdinOnce\": false,\n            \"Env\": [\n                \"AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace\",\n                \"AUTOBYTEUS_DATA_DIR=/home/autobyteus/data\",\n                \"AUTOBYTEUS_SERVER_PORT=8000\",\n                \"APP_ENV=production\",\n                \"DB_TYPE=sqlite\",\n                \"LOG_LEVEL=INFO\",\n                \"AUTOBYTEUS_SKIP_SYNC=1\",\n                \"AUTOBYTEUS_WORKSPACE_ROOT=/app\",\n                \"AUTOBYTEUS_BIND_HOST=0.0.0.0\",\n                \"AUTOBYTEUS_SERVER_HOST=http://localhost:8001\",\n                \"AUTOBYTEUS_VNC_SERVER_HOSTS=localhost:6080\",\n                \"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\",\n                \"USER_UID=1000\",\n                \"USER_GID=1000\",\n                \"IMAGE_VARIANT=default\",\n                \"DEBIAN_FRONTEND=noninteractive\",\n                \"DISPLAY=:99\",\n                \"SCREEN_RESOLUTION=1920x1080x24\",\n                \"XDG_RUNTIME_DIR=/run/user/1000\",\n                \"GTK_IM_MODULE=fcitx\",\n                \"QT_IM_MODULE=fcitx\",\n                \"XMODIFIERS=@im=fcitx\",\n                \"SDL_IM_MODULE=fcitx\",\n                \"LANG=en_US.UTF-8\",\n                \"LANGUAGE=en_US:en\",\n                \"LC_ALL=en_US.UTF-8\",\n                \"NODE_ENV=production\",\n                \"BROWSER=/usr/local/bin/open-vnc-browser-url.sh\",\n                \"HOME=/root\"\n            ],\n            \"Cmd\": null,\n            \"Image\": \"sha256:c4338af68b8608226655056dc7c52d76250eba7c317f25ef43b9ca8458414dfb\",\n            \"Volumes\": null,\n            \"WorkingDir\": \"/app\",\n            \"Entrypoint\": [\n                \"/usr/local/bin/entrypoint.sh\"\n            ],\n            \"Labels\": {\n                \"com.autobyteus.configHash\": \"8985aeb402c25ec448b27e3882c47dc056385c1d6d04ee453c11be0ae7b0b458\",\n                \"com.autobyteus.launcher\": \"server-docker\",\n                \"com.autobyteus.nfs.recreation\": \"ad66fdd8-e47e-43d3-b30f-7d5399e77437\",\n                \"com.autobyteus.nodeName\": \"autobyteus-server-0\",\n                \"org.opencontainers.image.licenses\": \"AGPL-3.0-only\",\n                \"org.opencontainers.image.version\": \"24.04\"\n            }\n        },\n        \"NetworkSettings\": {\n            \"SandboxID\": \"9801b70a049ac106974aed18dea1b9c4f573dc24a274a19c9064b2aea5128a2d\",\n            \"SandboxKey\": \"/var/run/docker/netns/9801b70a049a\",\n            \"Ports\": {\n                \"5900/tcp\": [\n                    {\n                        \"HostIp\": \"127.0.0.1\",\n                        \"HostPort\": \"5908\"\n                    }\n                ],\n                \"6080/tcp\": [\n                    {\n                        \"HostIp\": \"127.0.0.1\",\n                        \"HostPort\": \"6080\"\n                    }\n                ],\n                \"8000/tcp\": [\n                    {\n                        \"HostIp\": \"127.0.0.1\",\n                        \"HostPort\": \"8001\"\n                    }\n                ],\n                \"9223/tcp\": [\n                    {\n                        \"HostIp\": \"127.0.0.1\",\n                        \"HostPort\": \"9228\"\n                    }\n                ]\n            },\n            \"Networks\": {\n                \"bridge\": {\n                    \"IPAMConfig\": null,\n                    \"Links\": null,\n                    \"Aliases\": null,\n                    \"DriverOpts\": null,\n                    \"GwPriority\": 0,\n                    \"NetworkID\": \"3c2ffce03d14884b83d112b389fbbbf448cc0cb6878d71efe5eced2861ba64c1\",\n                    \"EndpointID\": \"c1d5543b2a6e7b94251b7a8c33f34e7926a00ad3b26f8f28da1543bfea9bd336\",\n                    \"Gateway\": \"172.17.0.1\",\n                    \"IPAddress\": \"172.17.0.2\",\n                    \"MacAddress\": \"ba:a3:0f:51:d6:79\",\n                    \"IPPrefixLen\": 16,\n                    \"IPv6Gateway\": \"\",\n                    \"GlobalIPv6Address\": \"\",\n                    \"GlobalIPv6PrefixLen\": 0,\n                    \"DNSNames\": null\n                }\n            }\n        },\n        \"ImageManifestDescriptor\": {\n            \"mediaType\": \"application/vnd.oci.image.manifest.v1+json\",\n            \"digest\": \"sha256:106c01b3b8eeb9351c4d127ce3f8fdf422e2993b53088e40e520c13b178bc1e7\",\n            \"size\": 11080,\n            \"platform\": {\n                \"architecture\": \"arm64\",\n                \"os\": \"linux\"\n            }\n        }\n    }\n]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api004-linux-9591ce1a",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n docker inspect autobyteus-server-1"
+      ],
+      "rc": 0,
+      "seconds": 0.071,
+      "stdout": "[\n    {\n        \"Id\": \"14e826e65d72b9fba17d13eef955246f55f8209338dcbea27be020f3114cc1b9\",\n        \"Created\": \"2026-10-15T07:42:22.454378043Z\",\n        \"Path\": \"/usr/local/bin/entrypoint.sh\",\n        \"Args\": [],\n        \"State\": {\n            \"Status\": \"exited\",\n            \"Running\": false,\n            \"Paused\": false,\n            \"Restarting\": false,\n            \"OOMKilled\": false,\n            \"Dead\": false,\n            \"Pid\": 0,\n            \"ExitCode\": 0,\n            \"Error\": \"\",\n            \"StartedAt\": \"2026-10-15T07:55:04.704257573Z\",\n            \"FinishedAt\": \"2026-10-15T07:55:09.903381822Z\"\n        },\n        \"Image\": \"sha256:c4338af68b8608226655056dc7c52d76250eba7c317f25ef43b9ca8458414dfb\",\n        \"ResolvConfPath\": \"/var/lib/docker/containers/14e826e65d72b9fba17d13eef955246f55f8209338dcbea27be020f3114cc1b9/resolv.conf\",\n        \"HostnamePath\": \"/var/lib/docker/containers/14e826e65d72b9fba17d13eef955246f55f8209338dcbea27be020f3114cc1b9/hostname\",\n        \"HostsPath\": \"/var/lib/docker/containers/14e826e65d72b9fba17d13eef955246f55f8209338dcbea27be020f3114cc1b9/hosts\",\n        \"LogPath\": \"/var/lib/docker/containers/14e826e65d72b9fba17d13eef955246f55f8209338dcbea27be020f3114cc1b9/14e826e65d72b9fba17d13eef955246f55f8209338dcbea27be020f3114cc1b9-json.log\",\n        \"Name\": \"/autobyteus-server-1\",\n        \"RestartCount\": 0,\n        \"Driver\": \"overlayfs\",\n        \"Platform\": \"linux\",\n        \"MountLabel\": \"\",\n        \"ProcessLabel\": \"\",\n        \"AppArmorProfile\": \"docker-default\",\n        \"ExecIDs\": null,\n        \"HostConfig\": {\n            \"Binds\": [\n                \"autobyteus-server-1-workspace:/app/autobyteus-server-ts/workspace\",\n                \"autobyteus-server-1-data:/home/autobyteus/data\",\n                \"autobyteus-server-1-root-home:/root\",\n                \"autobyteus-server-1-chromium-profile:/home/vncuser/.config/chromium\"\n            ],\n            \"ContainerIDFile\": \"\",\n            \"LogConfig\": {\n                \"Type\": \"json-file\",\n                \"Config\": {}\n            },\n            \"NetworkMode\": \"bridge\",\n            \"PortBindings\": {\n                \"5900/tcp\": [\n                    {\n                        \"HostIp\": \"\",\n                        \"HostPort\": \"5909\"\n                    }\n                ],\n                \"6080/tcp\": [\n                    {\n                        \"HostIp\": \"\",\n                        \"HostPort\": \"6081\"\n                    }\n                ],\n                \"8000/tcp\": [\n                    {\n                        \"HostIp\": \"\",\n                        \"HostPort\": \"8002\"\n                    }\n                ],\n                \"9223/tcp\": [\n                    {\n                        \"HostIp\": \"\",\n                        \"HostPort\": \"9229\"\n                    }\n                ]\n            },\n            \"RestartPolicy\": {\n                \"Name\": \"unless-stopped\",\n                \"MaximumRetryCount\": 0\n            },\n            \"AutoRemove\": false,\n            \"VolumeDriver\": \"\",\n            \"VolumesFrom\": null,\n            \"ConsoleSize\": [\n                0,\n                0\n            ],\n            \"CapAdd\": [\n                \"CAP_SYS_ADMIN\"\n            ],\n            \"CapDrop\": null,\n            \"CgroupnsMode\": \"private\",\n            \"Dns\": [],\n            \"DnsOptions\": [],\n            \"DnsSearch\": [],\n            \"ExtraHosts\": null,\n            \"GroupAdd\": null,\n            \"IpcMode\": \"private\",\n            \"Cgroup\": \"\",\n            \"Links\": null,\n            \"OomScoreAdj\": 0,\n            \"PidMode\": \"\",\n            \"Privileged\": false,\n            \"PublishAllPorts\": false,\n            \"ReadonlyRootfs\": false,\n            \"SecurityOpt\": [\n                \"seccomp=unconfined\"\n            ],\n            \"UTSMode\": \"\",\n            \"UsernsMode\": \"\",\n            \"ShmSize\": 67108864,\n            \"Runtime\": \"runc\",\n            \"Isolation\": \"\",\n            \"CpuShares\": 0,\n            \"Memory\": 0,\n            \"NanoCpus\": 0,\n            \"CgroupParent\": \"\",\n            \"BlkioWeight\": 0,\n            \"BlkioWeightDevice\": [],\n            \"BlkioDeviceReadBps\": [],\n            \"BlkioDeviceWriteBps\": [],\n            \"BlkioDeviceReadIOps\": [],\n            \"BlkioDeviceWriteIOps\": [],\n            \"CpuPeriod\": 0,\n            \"CpuQuota\": 0,\n            \"CpuRealtimePeriod\": 0,\n            \"CpuRealtimeRuntime\": 0,\n            \"CpusetCpus\": \"\",\n            \"CpusetMems\": \"\",\n            \"Devices\": [],\n            \"DeviceCgroupRules\": null,\n            \"DeviceRequests\": null,\n            \"MemoryReservation\": 0,\n            \"MemorySwap\": 0,\n            \"MemorySwappiness\": null,\n            \"OomKillDisable\": null,\n            \"PidsLimit\": null,\n            \"Ulimits\": [],\n            \"CpuCount\": 0,\n            \"CpuPercent\": 0,\n            \"IOMaximumIOps\": 0,\n            \"IOMaximumBandwidth\": 0,\n            \"Mounts\": [\n                {\n                    \"Type\": \"bind\",\n                    \"Source\": \"/home/admin/api004-launcher-home/.autobyteus/docker-server/shared-workspace/nodes/autobyteus-server-1\",\n                    \"Target\": \"/home/autobyteus/workspace\"\n                },\n                {\n                    \"Type\": \"bind\",\n                    \"Source\": \"/home/admin/api004-launcher-home/.autobyteus/docker-server/shared-workspace/shared\",\n                    \"Target\": \"/home/autobyteus/shared\"\n                }\n            ],\n            \"MaskedPaths\": [\n                \"/proc/acpi\",\n                \"/proc/asound\",\n                \"/proc/interrupts\",\n                \"/proc/kcore\",\n                \"/proc/keys\",\n                \"/proc/latency_stats\",\n                \"/proc/sched_debug\",\n                \"/proc/scsi\",\n                \"/proc/timer_list\",\n                \"/proc/timer_stats\",\n                \"/sys/devices/virtual/powercap\",\n                \"/sys/firmware\"\n            ],\n            \"ReadonlyPaths\": [\n                \"/proc/bus\",\n                \"/proc/fs\",\n                \"/proc/irq\",\n                \"/proc/sys\",\n                \"/proc/sysrq-trigger\"\n            ]\n        },\n        \"Storage\": {\n            \"RootFS\": {\n                \"Snapshot\": {\n                    \"Name\": \"overlayfs\"\n                }\n            }\n        },\n        \"Mounts\": [\n            {\n                \"Type\": \"volume\",\n                \"Name\": \"autobyteus-server-1-chromium-profile\",\n                \"Source\": \"/var/lib/docker/volumes/autobyteus-server-1-chromium-profile/_data\",\n                \"Destination\": \"/home/vncuser/.config/chromium\",\n                \"Driver\": \"local\",\n                \"Mode\": \"z\",\n                \"RW\": true,\n                \"Propagation\": \"\"\n            },\n            {\n                \"Type\": \"volume\",\n                \"Name\": \"autobyteus-server-1-root-home\",\n                \"Source\": \"/var/lib/docker/volumes/autobyteus-server-1-root-home/_data\",\n                \"Destination\": \"/root\",\n                \"Driver\": \"local\",\n                \"Mode\": \"z\",\n                \"RW\": true,\n                \"Propagation\": \"\"\n            },\n            {\n                \"Type\": \"volume\",\n                \"Name\": \"autobyteus-server-1-workspace\",\n                \"Source\": \"/var/lib/docker/volumes/autobyteus-server-1-workspace/_data\",\n                \"Destination\": \"/app/autobyteus-server-ts/workspace\",\n                \"Driver\": \"local\",\n                \"Mode\": \"z\",\n                \"RW\": true,\n                \"Propagation\": \"\"\n            },\n            {\n                \"Type\": \"volume\",\n                \"Name\": \"autobyteus-server-1-data\",\n                \"Source\": \"/var/lib/docker/volumes/autobyteus-server-1-data/_data\",\n                \"Destination\": \"/home/autobyteus/data\",\n                \"Driver\": \"local\",\n                \"Mode\": \"z\",\n                \"RW\": true,\n                \"Propagation\": \"\"\n            },\n            {\n                \"Type\": \"bind\",\n                \"Source\": \"/home/admin/api004-launcher-home/.autobyteus/docker-server/shared-workspace/shared\",\n                \"Destination\": \"/home/autobyteus/shared\",\n                \"Mode\": \"\",\n                \"RW\": true,\n                \"Propagation\": \"rprivate\"\n            },\n            {\n                \"Type\": \"bind\",\n                \"Source\": \"/home/admin/api004-launcher-home/.autobyteus/docker-server/shared-workspace/nodes/autobyteus-server-1\",\n                \"Destination\": \"/home/autobyteus/workspace\",\n                \"Mode\": \"\",\n                \"RW\": true,\n                \"Propagation\": \"rprivate\"\n            }\n        ],\n        \"Config\": {\n            \"Hostname\": \"14e826e65d72\",\n            \"Domainname\": \"\",\n            \"User\": \"\",\n            \"AttachStdin\": false,\n            \"AttachStdout\": false,\n            \"AttachStderr\": false,\n            \"ExposedPorts\": {\n                \"5900/tcp\": {},\n                \"6080/tcp\": {},\n                \"8000/tcp\": {},\n                \"9223/tcp\": {}\n            },\n            \"Tty\": false,\n            \"OpenStdin\": false,\n            \"StdinOnce\": false,\n            \"Env\": [\n                \"APP_ENV=production\",\n                \"LOG_LEVEL=INFO\",\n                \"AUTOBYTEUS_SKIP_SYNC=1\",\n                \"AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace\",\n                \"AUTOBYTEUS_WORKSPACE_ROOT=/app\",\n                \"AUTOBYTEUS_DATA_DIR=/home/autobyteus/data\",\n                \"AUTOBYTEUS_SERVER_HOST=http://localhost:8002\",\n                \"AUTOBYTEUS_VNC_SERVER_HOSTS=localhost:6081\",\n                \"DB_TYPE=sqlite\",\n                \"AUTOBYTEUS_BIND_HOST=0.0.0.0\",\n                \"AUTOBYTEUS_SERVER_PORT=8000\",\n                \"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\",\n                \"USER_UID=1000\",\n                \"USER_GID=1000\",\n                \"IMAGE_VARIANT=default\",\n                \"DEBIAN_FRONTEND=noninteractive\",\n                \"DISPLAY=:99\",\n                \"SCREEN_RESOLUTION=1920x1080x24\",\n                \"XDG_RUNTIME_DIR=/run/user/1000\",\n                \"GTK_IM_MODULE=fcitx\",\n                \"QT_IM_MODULE=fcitx\",\n                \"XMODIFIERS=@im=fcitx\",\n                \"SDL_IM_MODULE=fcitx\",\n                \"LANG=en_US.UTF-8\",\n                \"LANGUAGE=en_US:en\",\n                \"LC_ALL=en_US.UTF-8\",\n                \"NODE_ENV=production\",\n                \"BROWSER=/usr/local/bin/open-vnc-browser-url.sh\",\n                \"HOME=/root\"\n            ],\n            \"Cmd\": null,\n            \"Image\": \"127.0.0.1:5000/ab-nfs-api004-server@sha256:c4338af68b8608226655056dc7c52d76250eba7c317f25ef43b9ca8458414dfb\",\n            \"Volumes\": null,\n            \"WorkingDir\": \"/app\",\n            \"Entrypoint\": [\n                \"/usr/local/bin/entrypoint.sh\"\n            ],\n            \"Labels\": {\n                \"com.autobyteus.configHash\": \"5576340c1bd4ed0bb88a74b6daa0d6387c5dcd75007dddf0baf72195d755cc84\",\n                \"com.autobyteus.launcher\": \"server-docker\",\n                \"com.autobyteus.nodeName\": \"autobyteus-server-1\",\n                \"org.opencontainers.image.licenses\": \"AGPL-3.0-only\",\n                \"org.opencontainers.image.version\": \"24.04\"\n            }\n        },\n        \"NetworkSettings\": {\n            \"SandboxID\": \"\",\n            \"SandboxKey\": \"\",\n            \"Ports\": {},\n            \"Networks\": {\n                \"bridge\": {\n                    \"IPAMConfig\": null,\n                    \"Links\": null,\n                    \"Aliases\": null,\n                    \"DriverOpts\": null,\n                    \"GwPriority\": 0,\n                    \"NetworkID\": \"932ac25c51cc1633e4b353f418d18776f6446951133df75b687087bc487f8654\",\n                    \"EndpointID\": \"\",\n                    \"Gateway\": \"\",\n                    \"IPAddress\": \"\",\n                    \"MacAddress\": \"\",\n                    \"IPPrefixLen\": 0,\n                    \"IPv6Gateway\": \"\",\n                    \"GlobalIPv6Address\": \"\",\n                    \"GlobalIPv6PrefixLen\": 0,\n                    \"DNSNames\": null\n                }\n            }\n        },\n        \"ImageManifestDescriptor\": {\n            \"mediaType\": \"application/vnd.oci.image.manifest.v1+json\",\n            \"digest\": \"sha256:106c01b3b8eeb9351c4d127ce3f8fdf422e2993b53088e40e520c13b178bc1e7\",\n            \"size\": 11080,\n            \"platform\": {\n                \"architecture\": \"arm64\",\n                \"os\": \"linux\"\n            }\n        }\n    }\n]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api004-linux-9591ce1a",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c '/home/admin/ab-nfs-api004-linux-9591ce1a-native-binary create --source /home/admin/ab-nfs-api004-linux-9591ce1a-native-source --backend ganesha-native --endpoint 192.168.64.4 --allow 192.168.64.4,192.168.64.2 --nodes autobyteus-server-0 --yes --drained --json'"
+      ],
+      "rc": 1,
+      "seconds": 0.141,
+      "stdout": "",
+      "stderr": "Detected private addresses: 192.168.64.4, 172.18.0.1, 172.17.0.1\nLocal managed Docker nodes: autobyteus-server-0, autobyteus-server-1\nAutoByteus NFS incomplete: already configured; use status/reconnect/detach\nAutoByteus NFS incomplete: exit status 1\n"
+    }
+  ],
+  "cases": [
+    {
+      "name": "explicit start owned current node before native storage selection",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api004-linux-9591ce1a",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/home/admin",
+          "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "sudo -n docker start autobyteus-server-0"
+        ],
+        "rc": 0,
+        "seconds": 1.016,
+        "stdout": "autobyteus-server-0\n",
+        "stderr": ""
+      },
+      "status": "Pass",
+      "seconds": 1.017
+    },
+    {
+      "name": "public native create selects existing current managed Docker client",
+      "status": "Fail",
+      "error": "RuntimeError('Detected private addresses: 192.168.64.4, 172.18.0.1, 172.17.0.1\\nLocal managed Docker nodes: autobyteus-server-0, autobyteus-server-1\\nAutoByteus NFS incomplete: already configured; use status/reconnect/detach\\nAutoByteus NFS incomplete: exit status 1\\n')",
+      "seconds": 0.143
+    }
+  ],
+  "result": "Fail",
+  "connection": {
+    "storageId": "982e2025-961c-4b25-ab83-24ff06debcfa",
+    "endpoint": "192.168.64.4",
+    "export": "/autobyteus/982e2025-961c-4b25-ab83-24ff06debcfa",
+    "protocol": "4.1",
+    "mountRoot": "/Volumes/autobyteus-shared"
+  },
+  "sourceIdentityBefore": "64769:2359328:1000:109:755",
+  "before": {
+    "Id": "10af3f665f8ff4243c209380d0183548ad8096d3573e80d10917ea875dd312dc",
+    "Created": "2026-10-15T07:57:23.446251583Z",
+    "Path": "/usr/local/bin/entrypoint.sh",
+    "Args": [],
+    "State": {
+      "Status": "running",
+      "Running": true,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 4161,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-10-15T08:04:36.729896336Z",
+      "FinishedAt": "0001-01-01T00:00:00Z"
+    },
+    "Image": "sha256:c4338af68b8608226655056dc7c52d76250eba7c317f25ef43b9ca8458414dfb",
+    "ResolvConfPath": "/var/lib/docker/containers/10af3f665f8ff4243c209380d0183548ad8096d3573e80d10917ea875dd312dc/resolv.conf",
+    "HostnamePath": "/var/lib/docker/containers/10af3f665f8ff4243c209380d0183548ad8096d3573e80d10917ea875dd312dc/hostname",
+    "HostsPath": "/var/lib/docker/containers/10af3f665f8ff4243c209380d0183548ad8096d3573e80d10917ea875dd312dc/hosts",
+    "LogPath": "/var/lib/docker/containers/10af3f665f8ff4243c209380d0183548ad8096d3573e80d10917ea875dd312dc/10af3f665f8ff4243c209380d0183548ad8096d3573e80d10917ea875dd312dc-json.log",
+    "Name": "/autobyteus-server-0",
+    "RestartCount": 0,
+    "Driver": "overlayfs",
+    "Platform": "linux",
+    "MountLabel": "",
+    "ProcessLabel": "",
+    "AppArmorProfile": "docker-default",
+    "ExecIDs": null,
+    "HostConfig": {
+      "Binds": [
+        "autobyteus-server-0-workspace:/app/autobyteus-server-ts/workspace",
+        "autobyteus-server-0-data:/home/autobyteus/data",
+        "autobyteus-server-0-root-home:/root",
+        "autobyteus-server-0-chromium-profile:/home/vncuser/.config/chromium"
+      ],
+      "ContainerIDFile": "",
+      "LogConfig": {
+        "Type": "json-file",
+        "Config": {}
+      },
+      "NetworkMode": "bridge",
+      "PortBindings": {
+        "5900/tcp": [
+          {
+            "HostIp": "",
+            "HostPort": "5908"
+          }
+        ],
+        "6080/tcp": [
+          {
+            "HostIp": "",
+            "HostPort": "6080"
+          }
+        ],
+        "8000/tcp": [
+          {
+            "HostIp": "",
+            "HostPort": "8001"
+          }
+        ],
+        "9223/tcp": [
+          {
+            "HostIp": "",
+            "HostPort": "9228"
+          }
+        ]
+      },
+      "RestartPolicy": {
+        "Name": "unless-stopped",
+        "MaximumRetryCount": 0
+      },
+      "AutoRemove": false,
+      "VolumeDriver": "",
+      "VolumesFrom": null,
+      "ConsoleSize": [
+        0,
+        0
+      ],
+      "CapAdd": [
+        "CAP_SYS_ADMIN"
+      ],
+      "CapDrop": null,
+      "CgroupnsMode": "private",
+      "Dns": [],
+      "DnsOptions": [],
+      "DnsSearch": [],
+      "ExtraHosts": null,
+      "GroupAdd": null,
+      "IpcMode": "private",
+      "Cgroup": "",
+      "Links": null,
+      "OomScoreAdj": 0,
+      "PidMode": "",
+      "Privileged": false,
+      "PublishAllPorts": false,
+      "ReadonlyRootfs": false,
+      "SecurityOpt": [
+        "seccomp=unconfined"
+      ],
+      "UTSMode": "",
+      "UsernsMode": "",
+      "ShmSize": 67108864,
+      "Runtime": "runc",
+      "Isolation": "",
+      "CpuShares": 0,
+      "Memory": 0,
+      "NanoCpus": 0,
+      "CgroupParent": "",
+      "BlkioWeight": 0,
+      "BlkioWeightDevice": [],
+      "BlkioDeviceReadBps": [],
+      "BlkioDeviceWriteBps": [],
+      "BlkioDeviceReadIOps": [],
+      "BlkioDeviceWriteIOps": [],
+      "CpuPeriod": 0,
+      "CpuQuota": 0,
+      "CpuRealtimePeriod": 0,
+      "CpuRealtimeRuntime": 0,
+      "CpusetCpus": "",
+      "CpusetMems": "",
+      "Devices": [],
+      "DeviceCgroupRules": null,
+      "DeviceRequests": null,
+      "MemoryReservation": 0,
+      "MemorySwap": 0,
+      "MemorySwappiness": null,
+      "OomKillDisable": null,
+      "PidsLimit": null,
+      "Ulimits": [],
+      "CpuCount": 0,
+      "CpuPercent": 0,
+      "IOMaximumIOps": 0,
+      "IOMaximumBandwidth": 0,
+      "Mounts": [
+        {
+          "Type": "bind",
+          "Source": "/home/admin/api004-launcher-home/.autobyteus/docker-server/shared-workspace/nodes/autobyteus-server-0",
+          "Target": "/home/autobyteus/workspace"
+        },
+        {
+          "Type": "bind",
+          "Source": "/home/admin/api004-launcher-home/.autobyteus/docker-server/shared-workspace/shared",
+          "Target": "/home/autobyteus/shared"
+        }
+      ],
+      "MaskedPaths": [
+        "/proc/acpi",
+        "/proc/asound",
+        "/proc/interrupts",
+        "/proc/kcore",
+        "/proc/keys",
+        "/proc/latency_stats",
+        "/proc/sched_debug",
+        "/proc/scsi",
+        "/proc/timer_list",
+        "/proc/timer_stats",
+        "/sys/devices/virtual/powercap",
+        "/sys/firmware"
+      ],
+      "ReadonlyPaths": [
+        "/proc/bus",
+        "/proc/fs",
+        "/proc/irq",
+        "/proc/sys",
+        "/proc/sysrq-trigger"
+      ]
+    },
+    "Storage": {
+      "RootFS": {
+        "Snapshot": {
+          "Name": "overlayfs"
+        }
+      }
+    },
+    "Mounts": [
+      {
+        "Type": "volume",
+        "Name": "autobyteus-server-0-root-home",
+        "Source": "/var/lib/docker/volumes/autobyteus-server-0-root-home/_data",
+        "Destination": "/root",
+        "Driver": "local",
+        "Mode": "z",
+        "RW": true,
+        "Propagation": ""
+      },
+      {
+        "Type": "volume",
+        "Name": "autobyteus-server-0-chromium-profile",
+        "Source": "/var/lib/docker/volumes/autobyteus-server-0-chromium-profile/_data",
+        "Destination": "/home/vncuser/.config/chromium",
+        "Driver": "local",
+        "Mode": "z",
+        "RW": true,
+        "Propagation": ""
+      },
+      {
+        "Type": "bind",
+        "Source": "/home/admin/api004-launcher-home/.autobyteus/docker-server/shared-workspace/nodes/autobyteus-server-0",
+        "Destination": "/home/autobyteus/workspace",
+        "Mode": "",
+        "RW": true,
+        "Propagation": "rprivate"
+      },
+      {
+        "Type": "bind",
+        "Source": "/home/admin/api004-launcher-home/.autobyteus/docker-server/shared-workspace/shared",
+        "Destination": "/home/autobyteus/shared",
+        "Mode": "",
+        "RW": true,
+        "Propagation": "rprivate"
+      },
+      {
+        "Type": "volume",
+        "Name": "autobyteus-server-0-workspace",
+        "Source": "/var/lib/docker/volumes/autobyteus-server-0-workspace/_data",
+        "Destination": "/app/autobyteus-server-ts/workspace",
+        "Driver": "local",
+        "Mode": "z",
+        "RW": true,
+        "Propagation": ""
+      },
+      {
+        "Type": "volume",
+        "Name": "autobyteus-server-0-data",
+        "Source": "/var/lib/docker/volumes/autobyteus-server-0-data/_data",
+        "Destination": "/home/autobyteus/data",
+        "Driver": "local",
+        "Mode": "z",
+        "RW": true,
+        "Propagation": ""
+      }
+    ],
+    "Config": {
+      "Hostname": "5eb232755145",
+      "Domainname": "",
+      "User": "",
+      "AttachStdin": false,
+      "AttachStdout": false,
+      "AttachStderr": false,
+      "ExposedPorts": {
+        "5900/tcp": {},
+        "6080/tcp": {},
+        "8000/tcp": {},
+        "9223/tcp": {}
+      },
+      "Tty": false,
+      "OpenStdin": false,
+      "StdinOnce": false,
+      "Env": [
+        "AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace",
+        "AUTOBYTEUS_DATA_DIR=/home/autobyteus/data",
+        "AUTOBYTEUS_SERVER_PORT=8000",
+        "APP_ENV=production",
+        "DB_TYPE=sqlite",
+        "LOG_LEVEL=INFO",
+        "AUTOBYTEUS_SKIP_SYNC=1",
+        "AUTOBYTEUS_WORKSPACE_ROOT=/app",
+        "AUTOBYTEUS_BIND_HOST=0.0.0.0",
+        "AUTOBYTEUS_SERVER_HOST=http://localhost:8001",
+        "AUTOBYTEUS_VNC_SERVER_HOSTS=localhost:6080",
+        "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "USER_UID=1000",
+        "USER_GID=1000",
+        "IMAGE_VARIANT=default",
+        "DEBIAN_FRONTEND=noninteractive",
+        "DISPLAY=:99",
+        "SCREEN_RESOLUTION=1920x1080x24",
+        "XDG_RUNTIME_DIR=/run/user/1000",
+        "GTK_IM_MODULE=fcitx",
+        "QT_IM_MODULE=fcitx",
+        "XMODIFIERS=@im=fcitx",
+        "SDL_IM_MODULE=fcitx",
+        "LANG=en_US.UTF-8",
+        "LANGUAGE=en_US:en",
+        "LC_ALL=en_US.UTF-8",
+        "NODE_ENV=production",
+        "BROWSER=/usr/local/bin/open-vnc-browser-url.sh",
+        "HOME=/root"
+      ],
+      "Cmd": null,
+      "Image": "sha256:c4338af68b8608226655056dc7c52d76250eba7c317f25ef43b9ca8458414dfb",
+      "Volumes": null,
+      "WorkingDir": "/app",
+      "Entrypoint": [
+        "/usr/local/bin/entrypoint.sh"
+      ],
+      "Labels": {
+        "com.autobyteus.configHash": "8985aeb402c25ec448b27e3882c47dc056385c1d6d04ee453c11be0ae7b0b458",
+        "com.autobyteus.launcher": "server-docker",
+        "com.autobyteus.nfs.recreation": "ad66fdd8-e47e-43d3-b30f-7d5399e77437",
+        "com.autobyteus.nodeName": "autobyteus-server-0",
+        "org.opencontainers.image.licenses": "AGPL-3.0-only",
+        "org.opencontainers.image.version": "24.04"
+      }
+    },
+    "NetworkSettings": {
+      "SandboxID": "9801b70a049ac106974aed18dea1b9c4f573dc24a274a19c9064b2aea5128a2d",
+      "SandboxKey": "/var/run/docker/netns/9801b70a049a",
+      "Ports": {
+        "5900/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "5908"
+          }
+        ],
+        "6080/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "6080"
+          }
+        ],
+        "8000/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "8001"
+          }
+        ],
+        "9223/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "9228"
+          }
+        ]
+      },
+      "Networks": {
+        "bridge": {
+          "IPAMConfig": null,
+          "Links": null,
+          "Aliases": null,
+          "DriverOpts": null,
+          "GwPriority": 0,
+          "NetworkID": "3c2ffce03d14884b83d112b389fbbbf448cc0cb6878d71efe5eced2861ba64c1",
+          "EndpointID": "c1d5543b2a6e7b94251b7a8c33f34e7926a00ad3b26f8f28da1543bfea9bd336",
+          "Gateway": "172.17.0.1",
+          "IPAddress": "172.17.0.2",
+          "MacAddress": "ba:a3:0f:51:d6:79",
+          "IPPrefixLen": 16,
+          "IPv6Gateway": "",
+          "GlobalIPv6Address": "",
+          "GlobalIPv6PrefixLen": 0,
+          "DNSNames": null
+        }
+      }
+    },
+    "ImageManifestDescriptor": {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:106c01b3b8eeb9351c4d127ce3f8fdf422e2993b53088e40e520c13b178bc1e7",
+      "size": 11080,
+      "platform": {
+        "architecture": "arm64",
+        "os": "linux"
+      }
+    }
+  },
+  "unselectedBefore": {
+    "Id": "14e826e65d72b9fba17d13eef955246f55f8209338dcbea27be020f3114cc1b9",
+    "Created": "2026-10-15T07:42:22.454378043Z",
+    "Path": "/usr/local/bin/entrypoint.sh",
+    "Args": [],
+    "State": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-10-15T07:55:04.704257573Z",
+      "FinishedAt": "2026-10-15T07:55:09.903381822Z"
+    },
+    "Image": "sha256:c4338af68b8608226655056dc7c52d76250eba7c317f25ef43b9ca8458414dfb",
+    "ResolvConfPath": "/var/lib/docker/containers/14e826e65d72b9fba17d13eef955246f55f8209338dcbea27be020f3114cc1b9/resolv.conf",
+    "HostnamePath": "/var/lib/docker/containers/14e826e65d72b9fba17d13eef955246f55f8209338dcbea27be020f3114cc1b9/hostname",
+    "HostsPath": "/var/lib/docker/containers/14e826e65d72b9fba17d13eef955246f55f8209338dcbea27be020f3114cc1b9/hosts",
+    "LogPath": "/var/lib/docker/containers/14e826e65d72b9fba17d13eef955246f55f8209338dcbea27be020f3114cc1b9/14e826e65d72b9fba17d13eef955246f55f8209338dcbea27be020f3114cc1b9-json.log",
+    "Name": "/autobyteus-server-1",
+    "RestartCount": 0,
+    "Driver": "overlayfs",
+    "Platform": "linux",
+    "MountLabel": "",
+    "ProcessLabel": "",
+    "AppArmorProfile": "docker-default",
+    "ExecIDs": null,
+    "HostConfig": {
+      "Binds": [
+        "autobyteus-server-1-workspace:/app/autobyteus-server-ts/workspace",
+        "autobyteus-server-1-data:/home/autobyteus/data",
+        "autobyteus-server-1-root-home:/root",
+        "autobyteus-server-1-chromium-profile:/home/vncuser/.config/chromium"
+      ],
+      "ContainerIDFile": "",
+      "LogConfig": {
+        "Type": "json-file",
+        "Config": {}
+      },
+      "NetworkMode": "bridge",
+      "PortBindings": {
+        "5900/tcp": [
+          {
+            "HostIp": "",
+            "HostPort": "5909"
+          }
+        ],
+        "6080/tcp": [
+          {
+            "HostIp": "",
+            "HostPort": "6081"
+          }
+        ],
+        "8000/tcp": [
+          {
+            "HostIp": "",
+            "HostPort": "8002"
+          }
+        ],
+        "9223/tcp": [
+          {
+            "HostIp": "",
+            "HostPort": "9229"
+          }
+        ]
+      },
+      "RestartPolicy": {
+        "Name": "unless-stopped",
+        "MaximumRetryCount": 0
+      },
+      "AutoRemove": false,
+      "VolumeDriver": "",
+      "VolumesFrom": null,
+      "ConsoleSize": [
+        0,
+        0
+      ],
+      "CapAdd": [
+        "CAP_SYS_ADMIN"
+      ],
+      "CapDrop": null,
+      "CgroupnsMode": "private",
+      "Dns": [],
+      "DnsOptions": [],
+      "DnsSearch": [],
+      "ExtraHosts": null,
+      "GroupAdd": null,
+      "IpcMode": "private",
+      "Cgroup": "",
+      "Links": null,
+      "OomScoreAdj": 0,
+      "PidMode": "",
+      "Privileged": false,
+      "PublishAllPorts": false,
+      "ReadonlyRootfs": false,
+      "SecurityOpt": [
+        "seccomp=unconfined"
+      ],
+      "UTSMode": "",
+      "UsernsMode": "",
+      "ShmSize": 67108864,
+      "Runtime": "runc",
+      "Isolation": "",
+      "CpuShares": 0,
+      "Memory": 0,
+      "NanoCpus": 0,
+      "CgroupParent": "",
+      "BlkioWeight": 0,
+      "BlkioWeightDevice": [],
+      "BlkioDeviceReadBps": [],
+      "BlkioDeviceWriteBps": [],
+      "BlkioDeviceReadIOps": [],
+      "BlkioDeviceWriteIOps": [],
+      "CpuPeriod": 0,
+      "CpuQuota": 0,
+      "CpuRealtimePeriod": 0,
+      "CpuRealtimeRuntime": 0,
+      "CpusetCpus": "",
+      "CpusetMems": "",
+      "Devices": [],
+      "DeviceCgroupRules": null,
+      "DeviceRequests": null,
+      "MemoryReservation": 0,
+      "MemorySwap": 0,
+      "MemorySwappiness": null,
+      "OomKillDisable": null,
+      "PidsLimit": null,
+      "Ulimits": [],
+      "CpuCount": 0,
+      "CpuPercent": 0,
+      "IOMaximumIOps": 0,
+      "IOMaximumBandwidth": 0,
+      "Mounts": [
+        {
+          "Type": "bind",
+          "Source": "/home/admin/api004-launcher-home/.autobyteus/docker-server/shared-workspace/nodes/autobyteus-server-1",
+          "Target": "/home/autobyteus/workspace"
+        },
+        {
+          "Type": "bind",
+          "Source": "/home/admin/api004-launcher-home/.autobyteus/docker-server/shared-workspace/shared",
+          "Target": "/home/autobyteus/shared"
+        }
+      ],
+      "MaskedPaths": [
+        "/proc/acpi",
+        "/proc/asound",
+        "/proc/interrupts",
+        "/proc/kcore",
+        "/proc/keys",
+        "/proc/latency_stats",
+        "/proc/sched_debug",
+        "/proc/scsi",
+        "/proc/timer_list",
+        "/proc/timer_stats",
+        "/sys/devices/virtual/powercap",
+        "/sys/firmware"
+      ],
+      "ReadonlyPaths": [
+        "/proc/bus",
+        "/proc/fs",
+        "/proc/irq",
+        "/proc/sys",
+        "/proc/sysrq-trigger"
+      ]
+    },
+    "Storage": {
+      "RootFS": {
+        "Snapshot": {
+          "Name": "overlayfs"
+        }
+      }
+    },
+    "Mounts": [
+      {
+        "Type": "volume",
+        "Name": "autobyteus-server-1-chromium-profile",
+        "Source": "/var/lib/docker/volumes/autobyteus-server-1-chromium-profile/_data",
+        "Destination": "/home/vncuser/.config/chromium",
+        "Driver": "local",
+        "Mode": "z",
+        "RW": true,
+        "Propagation": ""
+      },
+      {
+        "Type": "volume",
+        "Name": "autobyteus-server-1-root-home",
+        "Source": "/var/lib/docker/volumes/autobyteus-server-1-root-home/_data",
+        "Destination": "/root",
+        "Driver": "local",
+        "Mode": "z",
+        "RW": true,
+        "Propagation": ""
+      },
+      {
+        "Type": "volume",
+        "Name": "autobyteus-server-1-workspace",
+        "Source": "/var/lib/docker/volumes/autobyteus-server-1-workspace/_data",
+        "Destination": "/app/autobyteus-server-ts/workspace",
+        "Driver": "local",
+        "Mode": "z",
+        "RW": true,
+        "Propagation": ""
+      },
+      {
+        "Type": "volume",
+        "Name": "autobyteus-server-1-data",
+        "Source": "/var/lib/docker/volumes/autobyteus-server-1-data/_data",
+        "Destination": "/home/autobyteus/data",
+        "Driver": "local",
+        "Mode": "z",
+        "RW": true,
+        "Propagation": ""
+      },
+      {
+        "Type": "bind",
+        "Source": "/home/admin/api004-launcher-home/.autobyteus/docker-server/shared-workspace/shared",
+        "Destination": "/home/autobyteus/shared",
+        "Mode": "",
+        "RW": true,
+        "Propagation": "rprivate"
+      },
+      {
+        "Type": "bind",
+        "Source": "/home/admin/api004-launcher-home/.autobyteus/docker-server/shared-workspace/nodes/autobyteus-server-1",
+        "Destination": "/home/autobyteus/workspace",
+        "Mode": "",
+        "RW": true,
+        "Propagation": "rprivate"
+      }
+    ],
+    "Config": {
+      "Hostname": "14e826e65d72",
+      "Domainname": "",
+      "User": "",
+      "AttachStdin": false,
+      "AttachStdout": false,
+      "AttachStderr": false,
+      "ExposedPorts": {
+        "5900/tcp": {},
+        "6080/tcp": {},
+        "8000/tcp": {},
+        "9223/tcp": {}
+      },
+      "Tty": false,
+      "OpenStdin": false,
+      "StdinOnce": false,
+      "Env": [
+        "APP_ENV=production",
+        "LOG_LEVEL=INFO",
+        "AUTOBYTEUS_SKIP_SYNC=1",
+        "AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace",
+        "AUTOBYTEUS_WORKSPACE_ROOT=/app",
+        "AUTOBYTEUS_DATA_DIR=/home/autobyteus/data",
+        "AUTOBYTEUS_SERVER_HOST=http://localhost:8002",
+        "AUTOBYTEUS_VNC_SERVER_HOSTS=localhost:6081",
+        "DB_TYPE=sqlite",
+        "AUTOBYTEUS_BIND_HOST=0.0.0.0",
+        "AUTOBYTEUS_SERVER_PORT=8000",
+        "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "USER_UID=1000",
+        "USER_GID=1000",
+        "IMAGE_VARIANT=default",
+        "DEBIAN_FRONTEND=noninteractive",
+        "DISPLAY=:99",
+        "SCREEN_RESOLUTION=1920x1080x24",
+        "XDG_RUNTIME_DIR=/run/user/1000",
+        "GTK_IM_MODULE=fcitx",
+        "QT_IM_MODULE=fcitx",
+        "XMODIFIERS=@im=fcitx",
+        "SDL_IM_MODULE=fcitx",
+        "LANG=en_US.UTF-8",
+        "LANGUAGE=en_US:en",
+        "LC_ALL=en_US.UTF-8",
+        "NODE_ENV=production",
+        "BROWSER=/usr/local/bin/open-vnc-browser-url.sh",
+        "HOME=/root"
+      ],
+      "Cmd": null,
+      "Image": "127.0.0.1:5000/ab-nfs-api004-server@sha256:c4338af68b8608226655056dc7c52d76250eba7c317f25ef43b9ca8458414dfb",
+      "Volumes": null,
+      "WorkingDir": "/app",
+      "Entrypoint": [
+        "/usr/local/bin/entrypoint.sh"
+      ],
+      "Labels": {
+        "com.autobyteus.configHash": "5576340c1bd4ed0bb88a74b6daa0d6387c5dcd75007dddf0baf72195d755cc84",
+        "com.autobyteus.launcher": "server-docker",
+        "com.autobyteus.nodeName": "autobyteus-server-1",
+        "org.opencontainers.image.licenses": "AGPL-3.0-only",
+        "org.opencontainers.image.version": "24.04"
+      }
+    },
+    "NetworkSettings": {
+      "SandboxID": "",
+      "SandboxKey": "",
+      "Ports": {},
+      "Networks": {
+        "bridge": {
+          "IPAMConfig": null,
+          "Links": null,
+          "Aliases": null,
+          "DriverOpts": null,
+          "GwPriority": 0,
+          "NetworkID": "932ac25c51cc1633e4b353f418d18776f6446951133df75b687087bc487f8654",
+          "EndpointID": "",
+          "Gateway": "",
+          "IPAddress": "",
+          "MacAddress": "",
+          "IPPrefixLen": 0,
+          "IPv6Gateway": "",
+          "GlobalIPv6Address": "",
+          "GlobalIPv6PrefixLen": 0,
+          "DNSNames": null
+        }
+      }
+    },
+    "ImageManifestDescriptor": {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:106c01b3b8eeb9351c4d127ce3f8fdf422e2993b53088e40e520c13b178bc1e7",
+      "size": 11080,
+      "platform": {
+        "architecture": "arm64",
+        "os": "linux"
+      }
+    }
+  },
+  "fatal": "RuntimeError('Detected private addresses: 192.168.64.4, 172.18.0.1, 172.17.0.1\\nLocal managed Docker nodes: autobyteus-server-0, autobyteus-server-1\\nAutoByteus NFS incomplete: already configured; use status/reconnect/detach\\nAutoByteus NFS incomplete: exit status 1\\n')"
+}

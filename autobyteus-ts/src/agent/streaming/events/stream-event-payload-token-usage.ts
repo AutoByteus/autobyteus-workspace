@@ -1,5 +1,6 @@
 import { BaseStreamPayload, isRecord, parseUsage } from './stream-event-payload-utils.js';
 import type { LlmTokenUsageObservation } from '../../../llm/utils/llm-token-usage-observation.js';
+import type { LlmCallThroughput } from '../../loop/llm-call-throughput.js';
 
 export class TokenUsageUpdatedData extends BaseStreamPayload {
   usage_event_id?: string;
@@ -13,6 +14,9 @@ export class TokenUsageUpdatedData extends BaseStreamPayload {
   latest_prompt_tokens?: number | null;
   effective_context_window_tokens?: number | null;
   context_window_usage_percent?: number | null;
+  context_compaction_threshold_tokens?: number | null;
+  /** Passed through as measured; the server's run-side check validates it. */
+  output_throughput?: LlmCallThroughput | null;
   raw_event_json?: Record<string, unknown> | null;
 
   constructor(data: Record<string, any>) {
@@ -37,6 +41,12 @@ export class TokenUsageUpdatedData extends BaseStreamPayload {
       : undefined;
     this.context_window_usage_percent = typeof data.context_window_usage_percent === 'number' || data.context_window_usage_percent === null
       ? data.context_window_usage_percent
+      : undefined;
+    this.context_compaction_threshold_tokens = typeof data.context_compaction_threshold_tokens === 'number' || data.context_compaction_threshold_tokens === null
+      ? data.context_compaction_threshold_tokens
+      : undefined;
+    this.output_throughput = isRecord(data.output_throughput) || data.output_throughput === null
+      ? data.output_throughput as LlmCallThroughput | null
       : undefined;
     this.raw_event_json = isRecord(data.raw_event_json) || data.raw_event_json === null ? data.raw_event_json : undefined;
   }

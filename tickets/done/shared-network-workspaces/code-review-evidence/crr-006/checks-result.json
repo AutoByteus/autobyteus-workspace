@@ -1,0 +1,69 @@
+{
+  "commands": [
+    {
+      "name": "python-packaging",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "scripts/tests/test_nfs_engine_packaging.py",
+        "scripts/tests/test_nfs_installer_fixture.py",
+        "scripts/tests/test_nfs_packaging_and_launcher.py",
+        "-v"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+      "rc": 0,
+      "expected": 0,
+      "seconds": 4.396,
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr006-check-mv2ky0hi/home",
+        "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr006-check-mv2ky0hi/tmp",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      }
+    },
+    {
+      "name": "source-hash",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "autobyteus-nfs/packaging/release.py",
+        "--source-hash"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+      "rc": 0,
+      "expected": 0,
+      "seconds": 0.268,
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr006-check-mv2ky0hi/home",
+        "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr006-check-mv2ky0hi/tmp",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      }
+    },
+    {
+      "name": "publish-refusal",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "autobyteus-nfs/packaging/release.py",
+        "--check-publish"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces",
+      "rc": 1,
+      "expected": 1,
+      "seconds": 0.301,
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr006-check-mv2ky0hi/home",
+        "TMPDIR": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr006-check-mv2ky0hi/tmp",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      }
+    }
+  ],
+  "noGoRerun": true,
+  "noVMOrRootOperations": true,
+  "ownedTemporaryRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-crr006-check-mv2ky0hi",
+  "cleanup": "TemporaryDirectory scope exits below"
+}

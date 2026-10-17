@@ -1,9 +1,9 @@
 import { z } from "zod";
 import { nonEmptyStringSchema } from "./schema-helpers.js";
 import {
-  collaboratorEntryDtoSchema,
   taskAgentExecutionDtoSchema,
   taskTeamExecutionDtoSchema,
+  userLaunchSelectionDtoSchema,
 } from "./team-execution-view-dtos.js";
 
 /** A delegated child (task Agent or task Team) was committed under its host TeamRun. */
@@ -35,10 +35,16 @@ export type TeamTaskExecutionsClosedPayload = Readonly<z.infer<typeof teamTaskEx
 export const teamTaskExecutionsReopenedPayloadSchema = teamTaskExecutionsClosedPayloadSchema;
 export type TeamTaskExecutionsReopenedPayload = TeamTaskExecutionsClosedPayload;
 
-/** A collaborator entry was committed at the root; it precedes any task execution at its address. */
-export const teamCollaboratorAddedPayloadSchema = z.object({
+/**
+ * The user's model choices of these delegated copies were saved on the live run
+ * (DS-001). Each names one record by its run ID (unique in the tree) with its choice as now recorded.
+ */
+export const teamDelegatedLaunchSelectionsChangedPayloadSchema = z.object({
   change_sequence: z.number().int().positive(),
-  collaborator: collaboratorEntryDtoSchema,
+  selections: z.array(z.union([
+    z.object({ agent_run_id: nonEmptyStringSchema, selection: userLaunchSelectionDtoSchema }).strict(),
+    z.object({ team_run_id: nonEmptyStringSchema, selection: userLaunchSelectionDtoSchema }).strict(),
+  ])).min(1),
 }).strict();
 
-export type TeamCollaboratorAddedPayload = Readonly<z.infer<typeof teamCollaboratorAddedPayloadSchema>>;
+export type TeamDelegatedLaunchSelectionsChangedPayload = Readonly<z.infer<typeof teamDelegatedLaunchSelectionsChangedPayloadSchema>>;

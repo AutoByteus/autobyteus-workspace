@@ -1,0 +1,168 @@
+{
+  "phase": "member",
+  "runId": "tma_coordinator_bcbecd53_60820ea176ed482a914bf7c4452e5b31",
+  "idleAt": 4986,
+  "usage": [
+    {
+      "t": 1972,
+      "kind": "claude_sdk_call",
+      "call": true,
+      "model": "claude-haiku-5-5",
+      "input": 2,
+      "cacheRead": 22082,
+      "cacheCreation": 129,
+      "output": 72,
+      "total": 22285,
+      "prompt": 22213,
+      "window": 1000000,
+      "threshold": 967000,
+      "summaryCount": 9,
+      "summaryRevision": 11,
+      "summaryPrompt": 22213
+    },
+    {
+      "t": 3037,
+      "kind": "claude_sdk_call",
+      "call": true,
+      "model": "claude-haiku-5-5",
+      "input": 2,
+      "cacheRead": 22211,
+      "cacheCreation": 102,
+      "output": 72,
+      "total": 22387,
+      "prompt": 22315,
+      "window": 1000000,
+      "threshold": 967000,
+      "summaryCount": 10,
+      "summaryRevision": 12,
+      "summaryPrompt": 22315
+    },
+    {
+      "t": 4077,
+      "kind": "claude_sdk_call",
+      "call": true,
+      "model": "claude-haiku-5-5",
+      "input": 2,
+      "cacheRead": 22313,
+      "cacheCreation": 102,
+      "output": 72,
+      "total": 22489,
+      "prompt": 22417,
+      "window": 1000000,
+      "threshold": 967000,
+      "summaryCount": 11,
+      "summaryRevision": 13,
+      "summaryPrompt": 22417
+    },
+    {
+      "t": 4979,
+      "kind": "claude_sdk_call",
+      "call": true,
+      "model": "claude-haiku-5-5",
+      "input": 2,
+      "cacheRead": 22415,
+      "cacheCreation": 102,
+      "output": 18,
+      "total": 22537,
+      "prompt": 22519,
+      "window": 1000000,
+      "threshold": 967000,
+      "summaryCount": 12,
+      "summaryRevision": 14,
+      "summaryPrompt": 22519
+    },
+    {
+      "t": 4986,
+      "kind": "claude_sdk_result",
+      "call": false,
+      "model": "claude-haiku-5-5",
+      "input": 0,
+      "cacheRead": 0,
+      "cacheCreation": 0,
+      "output": 0,
+      "total": 0,
+      "prompt": null,
+      "window": null,
+      "threshold": null,
+      "summaryCount": 12,
+      "summaryRevision": 15,
+      "summaryPrompt": 22519
+    }
+  ],
+  "samples": [
+    {
+      "t": 1007,
+      "getTeamMemberTokenUsageSummary": {
+        "runId": "tma_coordinator_bcbecd53_60820ea176ed482a914bf7c4452e5b31",
+        "usageReportCount": 8,
+        "revision": 10,
+        "totalTokens": 175445,
+        "latestPromptTokens": 22084,
+        "effectiveContextWindowTokens": 1000000,
+        "contextWindowUsagePercent": 2.2084,
+        "contextCompactionThresholdTokens": 967000,
+        "latestModelIdentifier": "claude-haiku-5-5",
+        "latestRuntimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "t": 2217,
+      "getTeamMemberTokenUsageSummary": {
+        "runId": "tma_coordinator_bcbecd53_60820ea176ed482a914bf7c4452e5b31",
+        "usageReportCount": 9,
+        "revision": 11,
+        "totalTokens": 197730,
+        "latestPromptTokens": 22213,
+        "effectiveContextWindowTokens": 1000000,
+        "contextWindowUsagePercent": 2.2213,
+        "contextCompactionThresholdTokens": 967000,
+        "latestModelIdentifier": "claude-haiku-5-5",
+        "latestRuntimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "t": 3422,
+      "getTeamMemberTokenUsageSummary": {
+        "runId": "tma_coordinator_bcbecd53_60820ea176ed482a914bf7c4452e5b31",
+        "usageReportCount": 10,
+        "revision": 12,
+        "totalTokens": 220117,
+        "latestPromptTokens": 22315,
+        "effectiveContextWindowTokens": 1000000,
+        "contextWindowUsagePercent": 2.2315,
+        "contextCompactionThresholdTokens": 967000,
+        "latestModelIdentifier": "claude-haiku-5-5",
+        "latestRuntimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "t": 4627,
+      "getTeamMemberTokenUsageSummary": {
+        "runId": "tma_coordinator_bcbecd53_60820ea176ed482a914bf7c4452e5b31",
+        "usageReportCount": 11,
+        "revision": 13,
+        "totalTokens": 242606,
+        "latestPromptTokens": 22417,
+        "effectiveContextWindowTokens": 1000000,
+        "contextWindowUsagePercent": 2.2417,
+        "contextCompactionThresholdTokens": 967000,
+        "latestModelIdentifier": "claude-haiku-5-5",
+        "latestRuntimeKind": "claude_agent_sdk"
+      }
+    }
+  ],
+  "teamSummary": {
+    "runId": "tma_meter_team_bcbecd53_004022605b1747b69a765a758488efca",
+    "usageReportCount": 12,
+    "revision": 15,
+    "totalTokens": 265143,
+    "latestPromptTokens": 22519,
+    "effectiveContextWindowTokens": 1000000,
+    "contextWindowUsagePercent": 2.2519,
+    "contextCompactionThresholdTokens": 967000,
+    "latestModelIdentifier": "claude-haiku-5-5",
+    "latestRuntimeKind": "claude_agent_sdk"
+  },
+  "contractFailures": [],
+  "tokenFramesChecked": 5
+}

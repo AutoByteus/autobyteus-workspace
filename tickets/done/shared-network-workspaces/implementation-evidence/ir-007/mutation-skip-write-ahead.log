@@ -1,0 +1,5 @@
+--- FAIL: TestFailedStartSameIDProofAndConsumption (0.04s)
+    start_recovery_test.go:107: missing write-ahead consumption {     } no such file or directory
+FAIL
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/docker	0.368s
+FAIL

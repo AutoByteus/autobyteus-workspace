@@ -127,6 +127,23 @@
 - Remote branch cleanup result: `Not required`. `origin/codex/composer-context-file-removal` is kept as the review reference, as on earlier tickets.
 - Release helper worktree `autobyteus-worktrees/release-tmp-ccfr` and branch `release-tmp-ccfr`: removed after this delivery record is pushed.
 
+## Stable Release v1.4.99 (DR-003)
+
+- Trigger: the user tested the fix in the desktop app, then asked for a stable release.
+- Notes: `release-notes-v1.4.99.md`, curated over all 11 tickets merged since `v1.4.98`.
+- Helper: `scripts/desktop-release.sh release 1.4.99 --release-notes tickets/done/composer-context-file-removal/release-notes-v1.4.99.md --branch release-v1.4.99 --no-push`, run in a temporary clean worktree at `5458f270d`.
+- Release commit `bd45af839` (1.4.99-beta.10 → 1.4.99, notes synced). Pushes: `5458f270d..bd45af839 HEAD -> personal` and the tag `v1.4.99` (`delivery-evidence/v1.4.99-release.log`).
+- Checks on the tagged tree: licensing and hygiene both exit 0 (`delivery-evidence/v1.4.99-hygiene.log`).
+- Workflows, all succeeded on attempt 1 (`delivery-evidence/workflows-v1.4.99.json`):
+  - Desktop `37977123238`
+  - iOS `37977123275`
+  - Server Docker `37977123163`
+  - Android `37977123234`
+- GitHub release `v1.4.99`: **Latest**, not a pre-release, not a draft, published 2026-10-09T19:04:24Z, with 17 assets (`delivery-evidence/github-release-v1.4.99.json`).
+- Updater metadata: all 4 `latest*.yml` report `version: 1.4.99` (`delivery-evidence/v1.4.99-updater-metadata/`).
+- Docker: `:1.4.99`, `:latest` and `:beta` share `sha256:fd503795…30d0` (amd64, arm64) (`delivery-evidence/v1.4.99-docker-tags.txt`).
+- Result: `Completed`.
+
 ## Release Notes Summary
 
 - Release notes artifact created before verification: `tickets/done/composer-context-file-removal/release-notes.md`

@@ -7,6 +7,7 @@ import process from 'node:process';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { routeTaskWorkerBoundaries } from './fixtures/task-worker-boundaries.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -174,6 +175,8 @@ try {
   page.on('console', (message) => evidence.browserEvents.push({ type: `console:${message.type()}`, text: message.text() }));
   page.on('pageerror', (error) => evidence.browserEvents.push({ type: 'pageerror', text: error.message }));
   page.on('requestfailed', (request) => evidence.browserEvents.push({ type: 'requestfailed', text: `${request.method()} ${request.url()} ${request.failure()?.errorText || ''}` }));
+  // delegated-copy-task-locator: Task-worker rows read their Task and retain the Projects feed.
+  await routeTaskWorkerBoundaries(context);
   await page.goto(`${baseUrl}${routePath}`, { waitUntil: 'domcontentloaded', timeout: timeoutMs });
   await page.locator('[data-test="background-contention-probe"]').waitFor({ state: 'visible', timeout: timeoutMs });
   await page.waitForFunction(() => Boolean(window.__backgroundContentionProbe), null, { timeout: timeoutMs });

@@ -1,0 +1,6160 @@
+[
+  {
+    "case": "OLR-E2E-001",
+    "name": "OLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "error": null,
+      "calls": [
+        {
+          "index": 0,
+          "phase": "OLR-001",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 1200,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 1,
+          "phase": "OLR-001",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 1117,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 2,
+          "phase": "OLR-001",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 850,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 3,
+          "phase": "OLR-001",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 915,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 4,
+          "phase": "OLR-001",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 987,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 5,
+          "phase": "OLR-001",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 879,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 6,
+          "phase": "OLR-001",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 121,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 7,
+          "phase": "OLR-001",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "end_turn"
+          ],
+          "maxReportedOutputTokens": 154,
+          "responseHasToolCall": false,
+          "errorBody": null
+        }
+      ],
+      "frames": [
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "output_limit_recovery_writer_d83a2032_a62aa9f93bbb4693bf5c9a26656842c0"
+          },
+          "state": "accepted"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "running"
+        },
+        {
+          "type": "TURN_STARTED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END",
+          "failed": true,
+          "error": "Discarded: the output limit was reached before this tool call was complete."
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "available"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "available"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "available"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "available"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "available"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "tool_call"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "text"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "ASSISTANT_COMPLETE"
+        },
+        {
+          "type": "TURN_COMPLETED"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        }
+      ],
+      "recoveryUserMessages": [
+        "Create the file sea-lines.md with exactly 100 lines. Line N (for every N from 1 to 100) is \"Line N: \" followed by one different sentence of 12 to 16 words about the sea. Write every line in full.\n\nThe user's current message is:\n\nSystem note: your previous response hit the output limit of 1200 tokens while generating a `write_file` tool call; the call was discarded and not executed. Break the work into smaller pieces (for example, write a large file in several smaller parts) and continue. Do not apologize or recap."
+      ],
+      "noteMergedWithCurrentMessageConnector": true,
+      "fileLineCount": 100,
+      "firstLine": "Line 1: The sea stretches endlessly toward the horizon, shimmering beneath the bright morning sun.",
+      "lastLine": "Line 100: Standing at the edge of the sea reminds us how small and brief we are.",
+      "projection": [
+        {
+          "kind": "message",
+          "role": "user",
+          "messageId": "e2e-1c49ee4b-d5ac-46a1-954f-b50d332e359a",
+          "dedupeKey": "agent_run_input:e2e:e2e-1c49ee4b-d5ac-46a1-954f-b50d332e359a",
+          "content": "Create the file sea-lines.md with exactly 100 lines. Line N (for every N from 1 to 100) is \"Line N: \" followed by one different sentence of 12 to 16 words about the sea. Write every line in full.",
+          "media": null,
+          "ts": 1791611599.675
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "",
+          "media": null,
+          "ts": 1791611625.872
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "toolu_013fLvTeMDTj9PBD2YCgkkDC",
+          "role": null,
+          "content": "",
+          "toolName": "write_file",
+          "toolArgs": {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-cj0U9X/sea-lines.md",
+            "content": "Line 1: The sea stretches endlessly toward the horizon, shimmering beneath the bright morning sun.\nLine 2: Waves crash against the rocky shore with a rhythm older than human memory.\nLine 3: Salt spray drifts through the air whenever the wind pushes the water toward land.\nLine 4: Deep beneath the surface, the ocean hides canyons taller than any mountain range.\nLine 5: Sailors once navigated the open sea using only stars and their careful observations.\nLine 6: The tide retreats each evening, leaving shells scattered across the wet sandy beach.\nLine 7: Gulls circle above the harbor, crying loudly as fishing boats return with their catch.\nLine 8: At night the sea glows faintly where tiny plankton light up the breaking waves.\nLine 9: Storms at sea can raise waves high enough to swallow small ships whole.\nLine 10: Coral reefs shelter thousands of colorful creatures in the warm and shallow tropical sea.\nLine 11: The color of the sea shifts from turquoise to slate gray as clouds pass.\nLine 12: Whales migrate across entire oceans, singing haunting songs that travel for many miles.\nLine 13: A lighthouse beam sweeps across the dark sea, guiding vessels safely past the reef.\nLine 14: The smell of seaweed and salt fills the air along the quiet northern coast.\nLine 15: Children build sandcastles while the gentle sea laps softly at their bare feet.\nLine 16: Ancient explorers believed monsters lurked in the uncharted waters beyond the known sea.\nLine 17: Fog rolls in from the sea, hiding the cliffs beneath a soft gray blanket.\nLine 18: Currents beneath the waves carry warm water from the equator toward the frozen poles.\nLine 19: The sea absorbs vast amounts of heat, helping to regulate the climate of Earth.\nLine 20: Dolphins leap playfully alongside the bow as the ship cuts through the blue sea.\n"
+          },
+          "toolResult": "File created/updated at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-cj0U9X/sea-lines.md",
+          "toolError": null,
+          "media": null,
+          "ts": 1791611625.892
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "",
+          "media": null,
+          "ts": 1791611637.143
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "toolu_01KFtGBwQKPffs18ZBvBkf8z",
+          "role": null,
+          "content": "",
+          "toolName": "edit_file",
+          "toolArgs": {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-cj0U9X/sea-lines.md",
+            "patch": "@@\n Line 20: Dolphins leap playfully alongside the bow as the ship cuts through the blue sea.\n+Line 21: The roar of the sea echoes through caves carved by centuries of pounding waves.\n+Line 22: Fishermen mend their nets on the dock while watching the restless sea for storms.\n+Line 23: Moonlight paints a silver path across the calm sea on a clear summer night.\n+Line 24: Icebergs drift slowly through the cold northern sea, most of their bulk hidden below.\n+Line 25: The deepest parts of the sea remain darker and less explored than the moon.\n+Line 26: Sea turtles return to the same beaches where they hatched to lay their eggs.\n+Line 27: Driftwood washed smooth by the sea collects in tangled piles along the shoreline.\n+Line 28: The horizon where sea meets sky often blurs into a single line of blue.\n+Line 29: Tide pools left by the retreating sea teem with crabs, anemones, and small fish.\n+Line 30: Sailboats lean into the wind as they race across the choppy afternoon sea.\n+Line 31: Underwater volcanoes slowly build new islands that rise from the floor of the sea.\n+Line 32: The sea has inspired poets and painters for thousands of years across every culture.\n+Line 33: Kelp forests sway in the cold currents, providing shelter for otters and sea urchins.\n+Line 34: A message in a bottle may drift across the sea for decades before landing.\n+Line 35: Rising sea levels threaten coastal cities that were built close to the water's edge.\n+Line 36: The steady sound of waves on the sand helps many restless people fall asleep.\n+Line 37: Pirates once prowled the Caribbean Sea, hunting merchant ships loaded with gold and spices.\n+Line 38: Octopuses change color instantly to blend with rocks and coral on the sea floor.\n+Line 39: Sunset turns the sea into a glowing sheet of orange, pink, and gold.\n+Line 40: Salt from the sea crystallizes in shallow pans where workers harvest it by hand.\n"
+          },
+          "toolResult": "File edited successfully at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-cj0U9X/sea-lines.md",
+          "toolError": null,
+          "media": null,
+          "ts": 1791611637.147
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "",
+          "media": null,
+          "ts": 1791611681.799
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "toolu_01FSTRiyf1yKeDPUvPR4YF6k",
+          "role": null,
+          "content": "",
+          "toolName": "edit_file",
+          "toolArgs": {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-cj0U9X/sea-lines.md",
+            "patch": "@@\n Line 40: Salt from the sea crystallizes in shallow pans where workers harvest it by hand.\n+Line 41: Submarines glide silently through the dark sea, far below the reach of sunlight.\n+Line 42: The sea breeze cools the coastal town during the hottest days of the summer.\n+Line 43: Shipwrecks resting on the sea floor become artificial reefs for fish and coral.\n+Line 44: Jellyfish pulse gracefully through the open sea, trailing long and stinging tentacles behind them.\n+Line 45: Surfers paddle out at dawn, waiting patiently for the perfect wave from the sea.\n+Line 46: The vast sea covers more than seventy percent of the surface of our planet.\n+Line 47: Pelicans dive headfirst into the sea, scooping fish into their large stretchy throat pouches.\n+Line 48: Old maps decorated the empty sea with drawings of serpents and sailing ships.\n+Line 49: The sea can be calm as glass in the morning and violent by evening.\n+Line 50: Sharks have patrolled the sea for hundreds of millions of years, long before dinosaurs.\n+Line 51: Seashells hold a faint echo that many people say sounds like the distant sea.\n+Line 52: Hurricanes draw their tremendous energy from the warm surface waters of the tropical sea.\n+Line 53: A lone sailor crossing the sea must endure weeks of solitude and changing weather.\n+Line 54: Bioluminescent fish create their own light in the pitch black depths of the sea.\n+Line 55: The tide rises twice each day, pulled toward the moon across the entire sea.\n+Line 56: Harbor seals bask on warm rocks before slipping back into the chilly gray sea.\n+Line 57: Sand dunes along the coast shift constantly, shaped by wind blowing in from sea.\n+Line 58: Ferries carry passengers and cars across the narrow strait of sea between two islands.\n+Line 59: The sea floor is covered in fine sediment that has settled over millions of years.\n+Line 60: Waves sparkle like scattered diamonds when sunlight strikes the restless sea at noon.\n"
+          },
+          "toolResult": "File edited successfully at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-cj0U9X/sea-lines.md",
+          "toolError": null,
+          "media": null,
+          "ts": 1791611681.818
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "",
+          "media": null,
+          "ts": 1791611693.699
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "toolu_017dnL2m7pTWaRZyv114T6uq",
+          "role": null,
+          "content": "",
+          "toolName": "edit_file",
+          "toolArgs": {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-cj0U9X/sea-lines.md",
+            "patch": "@@\n Line 60: Waves sparkle like scattered diamonds when sunlight strikes the restless sea at noon.\n+Line 61: Marine biologists study the sea to understand how its fragile ecosystems are changing.\n+Line 62: Plastic waste floating in the sea forms enormous patches that harm countless marine animals.\n+Line 63: The Dead Sea is so salty that swimmers float effortlessly on its still surface.\n+Line 64: Mangrove roots along tropical shores protect the land from the erosion of the sea.\n+Line 65: An albatross can glide over the open sea for hours without flapping its wings.\n+Line 66: The sea turns emerald green near shallow reefs where sunlight reaches the white sand.\n+Line 67: Tsunamis race across the sea at incredible speeds after powerful earthquakes shake the floor.\n+Line 68: Coastal villages have depended on the sea for food and trade for generations.\n+Line 69: Seaweed harvested from the sea is used in foods, medicines, and many cosmetics.\n+Line 70: The rhythmic swell of the sea gently rocks the anchored boat throughout the night.\n+Line 71: Hydrothermal vents on the sea floor support strange creatures that never see sunlight.\n+Line 72: Ancient traders crossed the Mediterranean Sea carrying olive oil, wine, and precious metals.\n+Line 73: Whitecaps dot the sea when strong winds whip the surface into a frothy mess.\n+Line 74: Starfish cling to rocks in the shallow sea, slowly regrowing any arms they lose.\n+Line 75: The sea reflects the mood of the sky, darkening quickly when storm clouds gather.\n+Line 76: Penguins dart through the frigid southern sea, chasing krill and small silver fish.\n+Line 77: Beachcombers search the sand after storms for treasures that the sea has tossed ashore.\n+Line 78: Navigators use charts of the sea to avoid hidden sandbars and dangerous rocky shoals.\n+Line 79: The sea holds enough dissolved salt to cover all the continents in a thick layer.\n+Line 80: A gentle sea breeze carries the scent of salt far inland on summer evenings.\n"
+          },
+          "toolResult": "File edited successfully at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-cj0U9X/sea-lines.md",
+          "toolError": null,
+          "media": null,
+          "ts": 1791611693.703
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "",
+          "media": null,
+          "ts": 1791611704.501
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "toolu_01DJtecvQ5Bwn5UoKaMuQNQe",
+          "role": null,
+          "content": "",
+          "toolName": "edit_file",
+          "toolArgs": {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-cj0U9X/sea-lines.md",
+            "patch": "@@\n Line 80: A gentle sea breeze carries the scent of salt far inland on summer evenings.\n+Line 81: Flying fish burst from the sea and glide above the waves to escape predators.\n+Line 82: The sea gradually wears down cliffs, creating arches, stacks, and dramatic rocky coastlines.\n+Line 83: Cargo ships cross the sea carrying containers filled with goods from distant countries.\n+Line 84: Manatees graze slowly on seagrass in the warm, shallow waters of the coastal sea.\n+Line 85: Early morning mist hovers over the sea, making the distant islands appear to float.\n+Line 86: The sea provides oxygen through tiny algae that produce much of the air we breathe.\n+Line 87: Divers explore the sea with tanks of air, marveling at the silent underwater world.\n+Line 88: Long ago, sailors feared the sea would end in a waterfall at the edge.\n+Line 89: Seahorses anchor themselves to seagrass with their tails, swaying with the gentle sea currents.\n+Line 90: The winter sea looks cold and gray, with heavy waves battering the empty beach.\n+Line 91: Rainbows sometimes arch over the sea when sunlight breaks through after a passing shower.\n+Line 92: Sea otters float on their backs, cracking open shellfish with rocks held on their bellies.\n+Line 93: The sound of a foghorn drifts across the sea, warning ships of the nearby coast.\n+Line 94: Krill swarm in the cold sea by the billions, feeding the largest whales on Earth.\n+Line 95: A calm sea at dawn invites rowers to glide across its smooth and silent surface.\n+Line 96: Sandpipers scurry along the edge of the sea, pecking at tiny creatures in the sand.\n+Line 97: The sea keeps countless secrets in its depths that scientists have yet to discover.\n+Line 98: Waves carry grains of sand from one beach to another along the winding coast.\n+Line 99: Many cultures tell legends of mermaids who sing to sailors from beneath the sea.\n+Line 100: Standing at the edge of the sea reminds us how small and brief we are.\n"
+          },
+          "toolResult": "File edited successfully at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-cj0U9X/sea-lines.md",
+          "toolError": null,
+          "media": null,
+          "ts": 1791611704.506
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "",
+          "media": null,
+          "ts": 1791611707.238
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "toolu_018Cio4eqpWcXd9q8dZTsiFn",
+          "role": null,
+          "content": "",
+          "toolName": "run_bash",
+          "toolArgs": {
+            "command": "f=sea-lines.md; wc -l $f; awk '{n=split($0,a,\" \")-2; if(n<12||n>16||$2!=NR\":\") print NR, n}' $f; sort $f | uniq -d | head"
+          },
+          "toolResult": {
+            "exitCode": 0,
+            "effectiveCwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-cj0U9X",
+            "stdout": "     100 sea-lines.md\n"
+          },
+          "toolError": null,
+          "media": null,
+          "ts": 1791611707.403
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "I created `sea-lines.md` with exactly 100 lines, written in five parts. Each line starts with \"Line N: \" in order from 1 to 100 and has a different sentence about the sea. A script check confirmed the line count and numbering, that every sentence is 12 to 16 words long, and that no line is repeated.\n\ndone",
+          "media": null,
+          "ts": 1791611710.567
+        }
+      ],
+      "usageCallIds": [
+        "turn_0001:llm:1",
+        "turn_0001:llm:2",
+        "turn_0001:llm:3",
+        "turn_0001:llm:4",
+        "turn_0001:llm:5",
+        "turn_0001:llm:6",
+        "turn_0001:llm:7",
+        "turn_0001:llm:8"
+      ]
+    },
+    "at": "2026-10-10T05:55:10.829Z"
+  },
+  {
+    "case": "OLR-E2E-011",
+    "name": "OLR-E2E-011: an Anthropic write_file cut mid tool call is discarded: segment failed, never executed, not in the next request",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "error": {
+        "code": "LLM_OUTPUT_LIMIT_EXHAUSTED",
+        "message": "The model's response hit the output limit of 400 tokens 4 times in a row, so the turn stopped after 3 automatic recovery attempts. Ask for the work in smaller pieces (for example, write a large file in several parts) and send the request again.",
+        "error_scope": "turn",
+        "error_effect": "diagnostic",
+        "turn_id": "turn_0001"
+      },
+      "calls": [
+        {
+          "index": 8,
+          "phase": "OLR-011",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 400
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 400,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 9,
+          "phase": "OLR-011",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 400
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 400,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 10,
+          "phase": "OLR-011",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 400
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 400,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 11,
+          "phase": "OLR-011",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 400
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 400,
+          "responseHasToolCall": false,
+          "errorBody": null
+        }
+      ],
+      "frames": [
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "output_limit_recovery_writer_d83a2032_a47c9263230a4fd6a981d697f8f0cb9d"
+          },
+          "state": "accepted"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "running"
+        },
+        {
+          "type": "TURN_STARTED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END",
+          "failed": true,
+          "error": "Discarded: the output limit was reached before this tool call was complete."
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END",
+          "failed": true,
+          "error": "Discarded: the output limit was reached before this tool call was complete."
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "ERROR",
+          "code": "LLM_OUTPUT_LIMIT_EXHAUSTED",
+          "message": "The model's response hit the output limit of 400 tokens 4 times in a row, so the turn stopped after 3 automatic recovery attempts. Ask for the work in smaller pieces (for example, write a large file in several parts) and send the request again."
+        },
+        {
+          "type": "ASSISTANT_COMPLETE"
+        },
+        {
+          "type": "TURN_COMPLETED"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        }
+      ],
+      "discardedIds": [
+        "toolu_01CZ7qadG6ayMBPuCZzp6GNf",
+        "toolu_011NJ5iNtDhcRornL1ViigDv"
+      ],
+      "executedIds": [],
+      "recoveryTail": [
+        {
+          "role": "user",
+          "text": "Create the file sea-lines.md with exactly 40 lines. Line N (for every N from 1 to 40) is \"Line N: \" followed by one different sentence of 12 to 16 words about the sea. Write every line in full.\n\nThe user's current message is:\n\nSystem note: your previous response hit the output limit of 400 tokens while generating a `write_file` tool call; the call was discarded and not executed. Break the work into smaller pieces (for example, write a large file in several smaller parts) and continue. Do not apologize or recap.",
+          "toolUses": 0,
+          "toolResults": []
+        }
+      ]
+    },
+    "at": "2026-10-10T05:55:30.514Z"
+  },
+  {
+    "case": "OLR-E2E-002",
+    "name": "OLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "error": null,
+      "calls": [
+        {
+          "index": 12,
+          "phase": "OLR-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 110,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 13,
+          "phase": "OLR-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 1200,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 14,
+          "phase": "OLR-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 1200,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 15,
+          "phase": "OLR-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 1200,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 16,
+          "phase": "OLR-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 1113,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 17,
+          "phase": "OLR-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 1200,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 18,
+          "phase": "OLR-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 835,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 19,
+          "phase": "OLR-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 716,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 20,
+          "phase": "OLR-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 698,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 21,
+          "phase": "OLR-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 734,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 22,
+          "phase": "OLR-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 717,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 23,
+          "phase": "OLR-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 352,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 24,
+          "phase": "OLR-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 134,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 25,
+          "phase": "OLR-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1200
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "end_turn"
+          ],
+          "maxReportedOutputTokens": 105,
+          "responseHasToolCall": false,
+          "errorBody": null
+        }
+      ],
+      "frames": [
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "output_limit_recovery_reader_writer_cb1c8106_5d9b504e63a241f8aee321281cd60b3c"
+          },
+          "state": "accepted"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "running"
+        },
+        {
+          "type": "TURN_STARTED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "tool_call"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END",
+          "failed": true,
+          "error": "Discarded: the output limit was reached before this tool call was complete."
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END",
+          "failed": true,
+          "error": "Discarded: the output limit was reached before this tool call was complete."
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "available"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "tool_call"
+        },
+        {
+          "type": "SEGMENT_END",
+          "failed": true,
+          "error": "Discarded: the output limit was reached before this tool call was complete."
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "available"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "available"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "available"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "available"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "available"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "available"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "edit_file"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "tool_call"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "run_bash"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "text"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "ASSISTANT_COMPLETE"
+        },
+        {
+          "type": "TURN_COMPLETED"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        }
+      ],
+      "recoveryMessages": [
+        {
+          "role": "assistant",
+          "text": "",
+          "toolUses": 1,
+          "toolResults": []
+        },
+        {
+          "role": "user",
+          "text": "",
+          "toolUses": 0,
+          "toolResults": [
+            "\"1: Topic: the sea. Tone: calm. Each line names a different sea creature or coastal feature.\\n\""
+          ]
+        },
+        {
+          "role": "user",
+          "text": "System note: your previous response hit the output limit of 1200 tokens before producing any visible output, so nothing was kept. Answer again from the start, breaking the work into smaller pieces.",
+          "toolUses": 0,
+          "toolResults": []
+        }
+      ],
+      "fileLineCount": 100
+    },
+    "at": "2026-10-10T05:57:37.638Z"
+  },
+  {
+    "case": "OLR-E2E-003",
+    "name": "OLR-E2E-003: a text-only cut keeps the partial text, resumes with the hidden note, and shows two assistant parts live and after reload",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "error": null,
+      "calls": [
+        {
+          "index": 26,
+          "phase": "OLR-003",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 300
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 300,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 27,
+          "phase": "OLR-003",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 300
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 300,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 28,
+          "phase": "OLR-003",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 300
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "end_turn"
+          ],
+          "maxReportedOutputTokens": 141,
+          "responseHasToolCall": false,
+          "errorBody": null
+        }
+      ],
+      "frames": [
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "output_limit_recovery_chat_e14b344f_1e2cb64ed8d9417bbb80c8346dd5ab37"
+          },
+          "state": "accepted"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "running"
+        },
+        {
+          "type": "TURN_STARTED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "text"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "text"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "text"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "ASSISTANT_COMPLETE"
+        },
+        {
+          "type": "TURN_COMPLETED"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        }
+      ],
+      "recoveryMessages": [
+        {
+          "role": "user",
+          "text": "Write an essay of about 330 words on the history of lighthouses. Plain paragraphs only: no title, headings or lists.",
+          "toolUses": 0,
+          "toolResults": []
+        },
+        {
+          "role": "assistant",
+          "text": "For more than two thousand years, lighthouses have stood where land meets sea and warned sailors of danger. The earliest guides were simple fires lit on hilltops or beaches so that ships could find a harbor at night. Homer's poems mention such beacons, and as trade grew across the Mediterranean, people began building permanent towers to raise the flames higher and make them visible from farther away.\n\nThe most famous of these early structures was the Pharos of Alexandria, finished around 280 BCE under the Ptolemaic kings of Egypt. It is thought to have stood more than one hundred meters tall, ",
+          "toolUses": 0,
+          "toolResults": []
+        },
+        {
+          "role": "user",
+          "text": "System note: output token limit hit. Resume directly from where your previous message stopped — no apology, no recap. Break remaining work into smaller pieces.",
+          "toolUses": 0,
+          "toolResults": []
+        }
+      ],
+      "projection": [
+        {
+          "kind": "message",
+          "role": "user",
+          "messageId": "e2e-e04da2a3-83c3-48d9-bae0-0d63d39fb8b1",
+          "dedupeKey": "agent_run_input:e2e:e2e-e04da2a3-83c3-48d9-bae0-0d63d39fb8b1",
+          "content": "Write an essay of about 330 words on the history of lighthouses. Plain paragraphs only: no title, headings or lists.",
+          "media": null,
+          "ts": 1791611857.717
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "For more than two thousand years, lighthouses have stood where land meets sea and warned sailors of danger. The earliest guides were simple fires lit on hilltops or beaches so that ships could find a harbor at night. Homer's poems mention such beacons, and as trade grew across the Mediterranean, people began building permanent towers to raise the flames higher and make them visible from farther away.\n\nThe most famous of these early structures was the Pharos of Alexandria, finished around 280 BCE under the Ptolemaic kings of Egypt. It is thought to have stood more than one hundred meters tall, and it was counted among the Seven Wonders of the Ancient World. It guided ships into one of the busiest ports of antiquity for centuries until earthquakes finally brought it down in the Middle Ages. The Romans built lighthouses across their empire, from Ostia to Dover. The",
+          "media": null,
+          "ts": 1791611861.605
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "tower at A Coruña in Spain, known as the Tower of Hercules, still operates today.\n\nAfter Rome fell, lighthouse building slowed, but it picked up again as medieval trade revived. Italian city-states such as Genoa put up towers to protect their merchant fleets, and monks sometimes kept lights burning on dangerous coasts. These lights still relied on wood fires, coal or candles, which were dim and needed constant tending.\n\nThe eighteenth and nineteenth centuries changed lighthouses completely. Engineers like John Smeaton, who built the Eddystone Lighthouse in England, worked out how to make stone towers that could survive violent waves. In 1822 the French physicist Augustin Fresnel invented a lens that gathered light into powerful beams, so a modest flame could be seen dozens of kilometers away. Oil lamps gave way to kerosene and then electricity, and each lighthouse was",
+          "media": null,
+          "ts": 1791611865.693
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "given its own pattern of flashes so sailors could tell one from another.\n\nKeepers and their families often lived in these remote stations. They trimmed wicks, wound clockwork, and polished lenses through long, lonely nights. In the twentieth century, automation gradually replaced them, and satellite navigation later made many lights less essential. Even so, lighthouses still guide ships today and remain lasting symbols of safety and human watchfulness.",
+          "media": null,
+          "ts": 1791611868.543
+        }
+      ]
+    },
+    "at": "2026-10-10T05:57:48.868Z"
+  },
+  {
+    "case": "OLR-E2E-004",
+    "name": "OLR-E2E-004: four cut responses in a row end the turn with LLM_OUTPUT_LIMIT_EXHAUSTED after 3 recoveries; the next message is valid",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "error": {
+        "code": "LLM_OUTPUT_LIMIT_EXHAUSTED",
+        "message": "The model's response hit the output limit of 20 tokens 4 times in a row, so the turn stopped after 3 automatic recovery attempts. Ask for the work in smaller pieces (for example, write a large file in several parts) and send the request again.",
+        "error_scope": "turn",
+        "error_effect": "diagnostic",
+        "turn_id": "turn_0001"
+      },
+      "calls": [
+        {
+          "index": 29,
+          "phase": "OLR-004",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 20
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 20,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 30,
+          "phase": "OLR-004",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 20
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 20,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 31,
+          "phase": "OLR-004",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 20
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 20,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 32,
+          "phase": "OLR-004",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 20
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 20,
+          "responseHasToolCall": false,
+          "errorBody": null
+        }
+      ],
+      "frames": [
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "output_limit_recovery_chat_e14b344f_06a46923ec47442ca97ae427162ae6bb"
+          },
+          "state": "accepted"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "running"
+        },
+        {
+          "type": "TURN_STARTED"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "text"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "ERROR",
+          "code": "LLM_OUTPUT_LIMIT_EXHAUSTED",
+          "message": "The model's response hit the output limit of 20 tokens 4 times in a row, so the turn stopped after 3 automatic recovery attempts. Ask for the work in smaller pieces (for example, write a large file in several parts) and send the request again."
+        },
+        {
+          "type": "ASSISTANT_COMPLETE"
+        },
+        {
+          "type": "TURN_COMPLETED"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        }
+      ],
+      "usageCallIds": [
+        "turn_0001:llm:1",
+        "turn_0001:llm:2",
+        "turn_0001:llm:3",
+        "turn_0001:llm:4"
+      ],
+      "followUpError": null,
+      "followUpCalls": [
+        {
+          "index": 33,
+          "phase": "OLR-004-next",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 20
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "end_turn"
+          ],
+          "maxReportedOutputTokens": 4,
+          "responseHasToolCall": false,
+          "errorBody": null
+        }
+      ],
+      "followUpMessages": [
+        {
+          "role": "user",
+          "text": "Write a 300-word paragraph about the history of lighthouses.\n\nThe user's current message is:\n\nSystem note: your previous response hit the output limit of 20 tokens before producing any visible output, so nothing was kept. Answer again from the start, breaking the work into smaller pieces.",
+          "toolUses": 0,
+          "toolResults": []
+        },
+        {
+          "role": "assistant",
+          "text": "People",
+          "toolUses": 0,
+          "toolResults": []
+        },
+        {
+          "role": "user",
+          "text": "System note: output token limit hit. Resume directly from where your previous message stopped — no apology, no recap. Break remaining work into smaller pieces.\n\nThe user's current message is:\n\nSystem note: your previous response hit the output limit of 20 tokens before producing any visible output, ",
+          "toolUses": 0,
+          "toolResults": []
+        }
+      ]
+    },
+    "at": "2026-10-10T05:57:56.176Z"
+  },
+  {
+    "case": "OLR-E2E-005",
+    "name": "OLR-E2E-005: DeepSeek finish_reason length mid tool call is discarded and recovered the same way",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "error": {
+        "code": "LLM_OUTPUT_LIMIT_EXHAUSTED",
+        "message": "The model's response hit the output limit of 150 tokens 4 times in a row, so the turn stopped after 3 automatic recovery attempts. Ask for the work in smaller pieces (for example, write a large file in several parts) and send the request again.",
+        "error_scope": "turn",
+        "error_effect": "diagnostic",
+        "turn_id": "turn_0001"
+      },
+      "calls": [
+        {
+          "index": 34,
+          "phase": "OLR-005",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 150
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "length"
+          ],
+          "maxReportedOutputTokens": 150,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 35,
+          "phase": "OLR-005",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 150
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "length"
+          ],
+          "maxReportedOutputTokens": 150,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 36,
+          "phase": "OLR-005",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 150
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "length"
+          ],
+          "maxReportedOutputTokens": 150,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 37,
+          "phase": "OLR-005",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 150
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "length"
+          ],
+          "maxReportedOutputTokens": 150,
+          "responseHasToolCall": true,
+          "errorBody": null
+        }
+      ],
+      "frames": [
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "output_limit_recovery_writer_d83a2032_3a54152eb48249ffbb22295c7f1bd5fc"
+          },
+          "state": "accepted"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "running"
+        },
+        {
+          "type": "TURN_STARTED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "text"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "SEGMENT_END",
+          "failed": true,
+          "error": "Discarded: the output limit was reached before this tool call was complete."
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "text"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "SEGMENT_END",
+          "failed": true,
+          "error": "Discarded: the output limit was reached before this tool call was complete."
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END",
+          "failed": true,
+          "error": "Discarded: the output limit was reached before this tool call was complete."
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END",
+          "failed": true,
+          "error": "Discarded: the output limit was reached before this tool call was complete."
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "ERROR",
+          "code": "LLM_OUTPUT_LIMIT_EXHAUSTED",
+          "message": "The model's response hit the output limit of 150 tokens 4 times in a row, so the turn stopped after 3 automatic recovery attempts. Ask for the work in smaller pieces (for example, write a large file in several parts) and send the request again."
+        },
+        {
+          "type": "ASSISTANT_COMPLETE"
+        },
+        {
+          "type": "TURN_COMPLETED"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        }
+      ],
+      "recoveryTail": [
+        {
+          "role": "user",
+          "text": "Create the file sea-lines.md with exactly 40 lines. Line N (for every N from 1 to 40) is \"Line N: \" followed by one different sentence of 12 to 16 words about the sea. Write every line in full.",
+          "toolUses": 0,
+          "toolResults": []
+        },
+        {
+          "role": "assistant",
+          "text": "I'll create the file with exactly 40 lines, each with a unique sentence about the sea.",
+          "toolUses": 0,
+          "toolResults": []
+        },
+        {
+          "role": "user",
+          "text": "System note: your previous response hit the output limit of 150 tokens while generating a `write_file` tool call; the call was discarded and not executed. Break the work into smaller pieces (for example, write a large file in several smaller parts) and continue. Do not apologize or recap.",
+          "toolUses": 0,
+          "toolResults": []
+        }
+      ],
+      "fileLineCount": null
+    },
+    "at": "2026-10-10T05:58:02.292Z"
+  },
+  {
+    "case": "OLR-E2E-006",
+    "name": "OLR-E2E-006: a refusal stop mid tool call fails clearly with no tool and no recovery; the next message is valid",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "error": {
+        "code": "LLM_RESPONSE_REFUSED",
+        "message": "The model refused, or a content filter stopped, the response (provider reason: refusal). No tool was run.",
+        "provider_code": "LLM_RESPONSE_REFUSED",
+        "error_scope": "turn",
+        "error_effect": "diagnostic",
+        "turn_id": "turn_0001"
+      },
+      "calls": [
+        {
+          "index": 38,
+          "phase": "OLR-E2E-006",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": true,
+          "status": 200,
+          "stopSignals": [
+            "refusal"
+          ],
+          "maxReportedOutputTokens": 133,
+          "responseHasToolCall": true,
+          "errorBody": null
+        }
+      ],
+      "frames": [
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "output_limit_recovery_writer_d83a2032_ef71bf315598457ca7191dc4aeb9eed6"
+          },
+          "state": "accepted"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "running"
+        },
+        {
+          "type": "TURN_STARTED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END",
+          "failed": true,
+          "error": "The model refused, or a content filter stopped, the response (provider reason: refusal). No tool was run."
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "ERROR",
+          "code": "LLM_RESPONSE_REFUSED",
+          "message": "The model refused, or a content filter stopped, the response (provider reason: refusal). No tool was run."
+        },
+        {
+          "type": "ASSISTANT_COMPLETE"
+        },
+        {
+          "type": "TURN_COMPLETED"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        }
+      ],
+      "nextError": null,
+      "nextMessages": [
+        {
+          "role": "user",
+          "text": "Reply with the single word pong.",
+          "toolUses": 0,
+          "toolResults": []
+        }
+      ]
+    },
+    "at": "2026-10-10T05:58:06.295Z"
+  },
+  {
+    "case": "OLR-E2E-007",
+    "name": "OLR-E2E-007: a model_context_window_exceeded stop fails clearly with no recovery; the next message is valid",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "error": {
+        "code": "LLM_CONTEXT_WINDOW_EXCEEDED",
+        "message": "The request exceeded the model's context window (provider reason: model_context_window_exceeded). Compact or shorten the conversation, then try again.",
+        "provider_code": "LLM_CONTEXT_WINDOW_EXCEEDED",
+        "error_scope": "turn",
+        "error_effect": "diagnostic",
+        "turn_id": "turn_0001"
+      },
+      "calls": [
+        {
+          "index": 40,
+          "phase": "OLR-E2E-007",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": true,
+          "status": 200,
+          "stopSignals": [
+            "model_context_window_exceeded"
+          ],
+          "maxReportedOutputTokens": 133,
+          "responseHasToolCall": true,
+          "errorBody": null
+        }
+      ],
+      "frames": [
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "output_limit_recovery_writer_d83a2032_bab4d1d08c55406abf16706c47b81494"
+          },
+          "state": "accepted"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "running"
+        },
+        {
+          "type": "TURN_STARTED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END",
+          "failed": true,
+          "error": "The request exceeded the model's context window (provider reason: model_context_window_exceeded). Compact or shorten the conversation, then try again."
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "ERROR",
+          "code": "LLM_CONTEXT_WINDOW_EXCEEDED",
+          "message": "The request exceeded the model's context window (provider reason: model_context_window_exceeded). Compact or shorten the conversation, then try again."
+        },
+        {
+          "type": "ASSISTANT_COMPLETE"
+        },
+        {
+          "type": "TURN_COMPLETED"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        }
+      ],
+      "nextError": null,
+      "nextMessages": [
+        {
+          "role": "user",
+          "text": "Reply with the single word pong.",
+          "toolUses": 0,
+          "toolResults": []
+        }
+      ]
+    },
+    "at": "2026-10-10T05:58:09.391Z"
+  },
+  {
+    "case": "OLR-E2E-008",
+    "name": "OLR-E2E-008: a stream that ends without message_stop after a tool_use start fails and rolls back; the next message is valid",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "error": {
+        "code": "LLM_PROVIDER_ERROR",
+        "message": "Error in Anthropic streaming: Error: Anthropic stream ended before message_stop.",
+        "error_scope": "turn",
+        "error_effect": "diagnostic",
+        "turn_id": "turn_0001"
+      },
+      "calls": [
+        {
+          "index": 42,
+          "phase": "OLR-008",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": true,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 132,
+          "responseHasToolCall": true,
+          "errorBody": null
+        }
+      ],
+      "frames": [
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "output_limit_recovery_writer_d83a2032_6d9ebe24ff1d4ae0b79585367cd9a147"
+          },
+          "state": "accepted"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "running"
+        },
+        {
+          "type": "TURN_STARTED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END",
+          "failed": true,
+          "error": "Error in Anthropic streaming: Error: Anthropic stream ended before message_stop."
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "ERROR",
+          "code": "LLM_PROVIDER_ERROR",
+          "message": "Error in Anthropic streaming: Error: Anthropic stream ended before message_stop."
+        },
+        {
+          "type": "ASSISTANT_COMPLETE"
+        },
+        {
+          "type": "TURN_COMPLETED"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        }
+      ],
+      "nextError": null,
+      "nextMessages": [
+        {
+          "role": "user",
+          "text": "Reply with the single word pong.",
+          "toolUses": 0,
+          "toolResults": []
+        }
+      ]
+    },
+    "at": "2026-10-10T05:58:12.792Z"
+  },
+  {
+    "case": "OLR-E2E-009",
+    "name": "OLR-E2E-009: a tool call with malformed arguments does not run; the model gets the retry error and the turn continues",
+    "state": "fail",
+    "errors": [
+      "the turn continued: expected undefined to be truthy"
+    ],
+    "details": {
+      "error": {
+        "code": "LLM_PROVIDER_ERROR",
+        "message": "Error in Anthropic streaming: SyntaxError: Unexpected token '@', \"@@{\"path\":\"... is not valid JSON",
+        "error_scope": "turn",
+        "error_effect": "diagnostic",
+        "turn_id": "turn_0001"
+      },
+      "calls": [
+        {
+          "index": 44,
+          "phase": "OLR-009",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": true,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 133,
+          "responseHasToolCall": true,
+          "errorBody": null
+        }
+      ],
+      "frames": [
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "output_limit_recovery_writer_d83a2032_1557c2f57f0d48fba39e80344b173875"
+          },
+          "state": "accepted"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "running"
+        },
+        {
+          "type": "TURN_STARTED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END",
+          "failed": true,
+          "error": "Error in Anthropic streaming: SyntaxError: Unexpected token '@', \"@@{\"path\":\"... is not valid JSON"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "ERROR",
+          "code": "LLM_PROVIDER_ERROR",
+          "message": "Error in Anthropic streaming: SyntaxError: Unexpected token '@', \"@@{\"path\":\"... is not valid JSON"
+        },
+        {
+          "type": "ASSISTANT_COMPLETE"
+        },
+        {
+          "type": "TURN_COMPLETED"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        }
+      ],
+      "retryToolResults": [],
+      "fileContent": null
+    },
+    "at": "2026-10-10T05:58:14.669Z"
+  },
+  {
+    "case": "OLR-E2E-009b",
+    "name": "OLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "error": null,
+      "calls": [
+        {
+          "index": 45,
+          "phase": "OLR-009b",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 384000
+          },
+          "rewritten": true,
+          "status": 200,
+          "stopSignals": [
+            "tool_calls"
+          ],
+          "maxReportedOutputTokens": 101,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 46,
+          "phase": "OLR-009b",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 384000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_calls"
+          ],
+          "maxReportedOutputTokens": 101,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 47,
+          "phase": "OLR-009b",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 384000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_calls"
+          ],
+          "maxReportedOutputTokens": 85,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 48,
+          "phase": "OLR-009b",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 384000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "stop"
+          ],
+          "maxReportedOutputTokens": 1,
+          "responseHasToolCall": false,
+          "errorBody": null
+        }
+      ],
+      "frames": [
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "output_limit_recovery_writer_d83a2032_3df5f3ebef0e42afa545aabff8909ee7"
+          },
+          "state": "accepted"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "running"
+        },
+        {
+          "type": "TURN_STARTED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "TOOL_EXECUTION_FAILED",
+          "error": "Your tool call was malformed and could not be parsed (Unexpected token '@', \"@@{\"path\":\"... is not valid JSON). Please retry.",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "failed"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "available"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "tool_call"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "text"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "ASSISTANT_COMPLETE"
+        },
+        {
+          "type": "TURN_COMPLETED"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        }
+      ],
+      "retryToolResults": [
+        "Error: Your tool call was malformed and could not be parsed (Unexpected token '@', \"@@{\"path\":\"... is not valid JSON). Please retry."
+      ],
+      "fileContent": "hello"
+    },
+    "at": "2026-10-10T05:58:19.274Z"
+  },
+  {
+    "case": "OLR-E2E-010",
+    "name": "OLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "settingMessages": [
+        "Server setting 'AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE' has been updated successfully.",
+        "Server setting 'AUTOBYTEUS_COMPACTION_TRIGGER_RATIO' has been updated successfully.",
+        "Server setting 'AUTOBYTEUS_COMPACTION_MODEL_SETTINGS' has been updated successfully."
+      ],
+      "sendsMade": 2,
+      "errors": [
+        {
+          "code": "LLM_IMMEDIATE_COMPACTION_FAILED",
+          "message": "Memory compaction failed before dispatch [incomplete_summary]: Provider reported incomplete compaction output.",
+          "details": "CompactionPreparationError: Memory compaction failed before dispatch [incomplete_summary]: Provider reported incomplete compaction output.",
+          "error_scope": "turn",
+          "error_effect": "diagnostic",
+          "turn_id": "turn_0002"
+        }
+      ],
+      "compactionFrames": [
+        {
+          "type": "COMPACTION_STATUS",
+          "phase": "requested",
+          "turn_id": "turn_0002",
+          "compaction_operation_id": "compaction_operation_mv1zgvaj_1",
+          "requested_turn_id": "turn_0002"
+        },
+        {
+          "type": "COMPACTION_STATUS",
+          "turn_id": "turn_0002",
+          "compaction_operation_id": "compaction_operation_mv1zgvaj_1",
+          "requested_turn_id": "turn_0002",
+          "execution_turn_id": "turn_0002",
+          "selected_block_count": 3,
+          "raw_trace_count": 3,
+          "phase": "started"
+        },
+        {
+          "type": "COMPACTION_STATUS",
+          "turn_id": "turn_0002",
+          "compaction_operation_id": "compaction_operation_mv1zgvaj_1",
+          "requested_turn_id": "turn_0002",
+          "execution_turn_id": "turn_0002",
+          "selected_block_count": 3,
+          "raw_trace_count": 3,
+          "compaction_model_identifier": "deepseek-v4-flash",
+          "summarizer_provider": "DEEPSEEK",
+          "compaction_invocation_id": "compaction_a1f35799-5ae7-459e-80e6-386e945dc35d",
+          "completion_status": "incomplete",
+          "completion_reason": "length",
+          "phase": "failed",
+          "error_message": "Memory compaction failed before dispatch [incomplete_summary]: Provider reported incomplete compaction output."
+        },
+        {
+          "type": "COMPACTION_BLOCKED",
+          "block": {
+            "operationId": "compaction_operation_mv1zgvaj_1",
+            "failureEpoch": 1
+          },
+          "recovery": {
+            "operationId": "compaction_operation_mv1zgvaj_1",
+            "failureEpoch": 1,
+            "position": {
+              "kind": "next_turn",
+              "failedTurnId": "turn_0002"
+            },
+            "state": "awaiting_user",
+            "code": "incomplete_summary",
+            "message": "Compaction failed — send a message to retry"
+          }
+        },
+        {
+          "type": "COMPACTION_BLOCKED",
+          "block": {
+            "operationId": "compaction_operation_mv1zgvaj_1",
+            "failureEpoch": 1
+          },
+          "recovery": {
+            "operationId": "compaction_operation_mv1zgvaj_1",
+            "failureEpoch": 1,
+            "position": {
+              "kind": "next_turn",
+              "failedTurnId": "turn_0002"
+            },
+            "state": "awaiting_user",
+            "code": "incomplete_summary",
+            "message": "Compaction failed — send a message to retry"
+          }
+        }
+      ],
+      "compactionCalls": [
+        {
+          "index": 51,
+          "phase": "OLR-010-T2",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": false,
+          "limits": {
+            "max_tokens": 24
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "length"
+          ],
+          "maxReportedOutputTokens": 24,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 52,
+          "phase": "OLR-010-T2",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": false,
+          "limits": {
+            "max_tokens": 24
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "length"
+          ],
+          "maxReportedOutputTokens": 24,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 53,
+          "phase": "OLR-010-T2",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": false,
+          "limits": {
+            "max_tokens": 24
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "length"
+          ],
+          "maxReportedOutputTokens": 24,
+          "responseHasToolCall": false,
+          "errorBody": null
+        }
+      ],
+      "turnCalls": [
+        {
+          "index": 49,
+          "phase": "OLR-010-T1",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1024
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "stop"
+          ],
+          "maxReportedOutputTokens": 1,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 50,
+          "phase": "OLR-010-T2",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 1024
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "stop"
+          ],
+          "maxReportedOutputTokens": 1,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 51,
+          "phase": "OLR-010-T2",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": false,
+          "limits": {
+            "max_tokens": 24
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "length"
+          ],
+          "maxReportedOutputTokens": 24,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 52,
+          "phase": "OLR-010-T2",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": false,
+          "limits": {
+            "max_tokens": 24
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "length"
+          ],
+          "maxReportedOutputTokens": 24,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 53,
+          "phase": "OLR-010-T2",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": false,
+          "limits": {
+            "max_tokens": 24
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "length"
+          ],
+          "maxReportedOutputTokens": 24,
+          "responseHasToolCall": false,
+          "errorBody": null
+        }
+      ]
+    },
+    "at": "2026-10-10T05:58:29.650Z"
+  }
+]

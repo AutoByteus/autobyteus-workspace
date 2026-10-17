@@ -9,7 +9,6 @@ import type {
   RootConfiguredTeamExecutionNode,
   TeamRunExecutionTreeFile,
 } from "../../agent-team-execution/domain/team-run-execution-tree.js";
-import { listCollaboratorAgentRunIds } from "../domain/run-execution-tree-shared-records.js";
 import {
   canonicalNonRootAddress,
   deepFreeze,
@@ -17,16 +16,13 @@ import {
   objectRecord,
   parseApplicationBinding,
   parseConfiguredAgent,
-  parseCollaborators,
   parseLaunchConfiguration,
   parseTaskExecutions,
   requiredArray,
   requiredString,
   requireKeys,
-  validateCollaboratorInvariants,
+  validateCatalogCopyLayouts,
   validateTaskExecutionDelegators,
-  collaboratorTaskOwners,
-  collectTaskExecutionRunIds,
 } from "./run-execution-tree-shared-record-schemas.js";
 
 const parseRootTeam = (value: unknown): RootConfiguredTeamExecutionNode => {
@@ -61,7 +57,6 @@ const parseRootTeam = (value: unknown): RootConfiguredTeamExecutionNode => {
     coordinatorAddress,
     defaultLaunchConfiguration: parseLaunchConfiguration(root.defaultLaunchConfiguration, "rootTeam.defaultLaunchConfiguration"),
     members,
-    collaborators: parseCollaborators(root.collaborators, "rootTeam.collaborators"),
     taskExecutions: parseTaskExecutions(root.taskExecutions, "rootTeam.taskExecutions"),
   };
 };
@@ -81,17 +76,8 @@ const validateInvariants = (tree: TeamRunExecutionTreeFile): void => {
     if (!byAddress.has(from)) throw new Error(`Handoff sender '${from}' is not a configured Agent.`);
     if (!byAddress.has(to)) throw new Error(`Handoff recipient '${to}' is not a configured Agent.`);
   }
-  const collaborators = tree.rootTeam.collaborators;
-  validateTaskExecutionDelegators(
-    [...tree.rootTeam.members.map((member) => member.agentRunId), ...listCollaboratorAgentRunIds(collaborators)],
-    [tree.rootTeam, ...collaboratorTaskOwners(collaborators)],
-  );
-  validateCollaboratorInvariants({
-    collaborators,
-    reservedAddresses: byAddress.keys(),
-    otherRunIds: [...runIds, ...collectTaskExecutionRunIds(tree.rootTeam.taskExecutions)],
-    owners: [tree.rootTeam],
-  });
+  validateTaskExecutionDelegators(tree.rootTeam.members.map((member) => member.agentRunId), [tree.rootTeam]);
+  validateCatalogCopyLayouts([tree.rootTeam]);
 };
 
 /**

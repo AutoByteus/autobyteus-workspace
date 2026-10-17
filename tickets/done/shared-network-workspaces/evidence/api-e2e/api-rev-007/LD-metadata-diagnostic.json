@@ -1,0 +1,121 @@
+{
+  "vm": "ab-nfs-api007-linux-b72ac1ef",
+  "source": "/home/admin/ab-nfs-api007-linux-b72ac1ef-native-source",
+  "mountRoot": "/Volumes/autobyteus-shared",
+  "binary": {
+    "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api007-ejvzqfh7/autobyteus-nfs-docker-linux-arm64",
+    "sha256": "08e1da412ecd5853f41903943f30e2f3d8a794d4fe638bd16ee577cdf87d1ad1",
+    "size": 11049466
+  },
+  "metadata": {
+    "version": "v1.5.3-beta.2",
+    "sourceHash": "f0d71675d3d9b70d89969a8071b8de03287cff0676669ddab295f14568041c88",
+    "ubuntuPackages": {
+      "nfs-common": "1:2.6.4-3ubuntu5.1"
+    },
+    "engineImage": "127.0.0.1:5000/ab-nfs-api007@sha256:29f712a2ad0963c4effe28209e0953cf814a5013f47c46ee7bb871b9b923071b",
+    "qualifiedTargets": [],
+    "engine": {
+      "source": {
+        "version": "4.3-8ubuntu1",
+        "files": [
+          {
+            "file": "nfs-ganesha_4.3-8ubuntu1.dsc",
+            "sha256": "ffa76c26b12d23b67dcda184d7ec7ae55a42d1d14bf84bb7c0cf0134156ba3ca",
+            "size": 3576
+          },
+          {
+            "file": "nfs-ganesha_4.3.orig.tar.gz",
+            "sha256": "d4efd020edf4dfe65abfd0f0f66eb4390613360f99dce4354467ab297e0e1c0f",
+            "size": 1895017
+          },
+          {
+            "file": "nfs-ganesha_4.3-8ubuntu1.debian.tar.xz",
+            "sha256": "ef35d130e1b37149b156d201b70e6c2804bebbfbee1713c5bd6d938dd433fe03",
+            "size": 19224
+          }
+        ],
+        "patchCommit": "98eb77c4fd94effa6882b214698a77752ec79f6e",
+        "patchSha256": "ba682b5c64e7f800c927f4c90b2a7bfb4b8d2a323ddc48c3d591db3d75799031",
+        "sourceDateEpoch": 1791936000,
+        "recipeSha256": "34e28c622f598487af74a545115fa8dffe94e8f1aa5d85c091515aa187d66e4f",
+        "buildBase": "ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e"
+      },
+      "architectures": {
+        "arm64": {
+          "packages": [
+            {
+              "file": "nfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb",
+              "sha256": "0b5c78911cfc1b299e9894e1f841e74176fbb2cb45b158008e4530713549ebc8",
+              "size": 613976,
+              "name": "nfs-ganesha",
+              "version": "4.3-8ubuntu1+autobyteus1",
+              "architecture": "arm64"
+            },
+            {
+              "file": "nfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb",
+              "sha256": "3bf06769646d93ea85f0277fe0726eb42d0d29a70c0108505706954e5e8d2ac6",
+              "size": 48626,
+              "name": "nfs-ganesha-vfs",
+              "version": "4.3-8ubuntu1+autobyteus1",
+              "architecture": "arm64"
+            }
+          ],
+          "correspondingSource": {
+            "file": "autobyteus-nfs-ganesha-source-4.3-8ubuntu1+autobyteus1-arm64.tar.gz",
+            "sha256": "eed35ab4b732ac05d2afc3531e70cdc27031fb414fdb52a0daf093f33daaec0a",
+            "size": 1930105
+          },
+          "buildInventory": {
+            "file": "engine-build-arm64.txt",
+            "sha256": "56fad63c43f85091d84df347564dfd962a9afaafe519539849860b1807695761",
+            "size": 57836
+          }
+        }
+      }
+    }
+  },
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api007-linux-b72ac1ef",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n docker exec autobyteus-server-0 stat -c \"%u:%g:%a %n\" /Volumes/autobyteus-shared/api007-LD/exec-0 /Volumes/autobyteus-shared/api007-LD/exec-0.link; stat -c \"%u:%g:%a %n\" /home/admin/ab-nfs-api007-linux-b72ac1ef-native-source/api007-LD/exec-0; sudo -n cat /var/lib/autobyteus-nfs/ganesha/*/ganesha.conf; sudo -n cat /var/lib/autobyteus-nfs/attachment.json; sudo -n cat /etc/autobyteus-nfs/attachment.json"
+      ],
+      "rc": 0,
+      "seconds": 0.307,
+      "stdout": "1001:109:755 /Volumes/autobyteus-shared/api007-LD/exec-0\n1001:109:777 /Volumes/autobyteus-shared/api007-LD/exec-0.link\n1000:109:755 /home/admin/ab-nfs-api007-linux-b72ac1ef-native-source/api007-LD/exec-0\n{\n  \"storageId\": \"c0ab74ea-5701-41ed-b7b4-1c2c7dce5069\",\n  \"endpoint\": \"192.168.64.4\",\n  \"export\": \"/autobyteus/c0ab74ea-5701-41ed-b7b4-1c2c7dce5069\",\n  \"protocol\": \"4.1\",\n  \"mountRoot\": \"/Volumes/autobyteus-shared\",\n  \"installationId\": \"4522ea00-24f8-452f-aeea-054640087d18\",\n  \"userUid\": 1000,\n  \"userGid\": 109,\n  \"nodes\": [\n    \"autobyteus-server-0\",\n    \"autobyteus-server-1\"\n  ]\n}\n{\n  \"storageId\": \"c0ab74ea-5701-41ed-b7b4-1c2c7dce5069\",\n  \"endpoint\": \"192.168.64.4\",\n  \"export\": \"/autobyteus/c0ab74ea-5701-41ed-b7b4-1c2c7dce5069\",\n  \"protocol\": \"4.1\",\n  \"mountRoot\": \"/Volumes/autobyteus-shared\"\n}\n",
+      "stderr": "cat: '/var/lib/autobyteus-nfs/ganesha/*/ganesha.conf': No such file or directory\n"
+    }
+  ],
+  "cases": [],
+  "result": "Observed",
+  "engineImage": "127.0.0.1:5000/ab-nfs-api007@sha256:29f712a2ad0963c4effe28209e0953cf814a5013f47c46ee7bb871b9b923071b",
+  "diagnostic": {
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-api007-linux-b72ac1ef",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/home/admin",
+      "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "sudo -n docker exec autobyteus-server-0 stat -c \"%u:%g:%a %n\" /Volumes/autobyteus-shared/api007-LD/exec-0 /Volumes/autobyteus-shared/api007-LD/exec-0.link; stat -c \"%u:%g:%a %n\" /home/admin/ab-nfs-api007-linux-b72ac1ef-native-source/api007-LD/exec-0; sudo -n cat /var/lib/autobyteus-nfs/ganesha/*/ganesha.conf; sudo -n cat /var/lib/autobyteus-nfs/attachment.json; sudo -n cat /etc/autobyteus-nfs/attachment.json"
+    ],
+    "rc": 0,
+    "seconds": 0.307,
+    "stdout": "1001:109:755 /Volumes/autobyteus-shared/api007-LD/exec-0\n1001:109:777 /Volumes/autobyteus-shared/api007-LD/exec-0.link\n1000:109:755 /home/admin/ab-nfs-api007-linux-b72ac1ef-native-source/api007-LD/exec-0\n{\n  \"storageId\": \"c0ab74ea-5701-41ed-b7b4-1c2c7dce5069\",\n  \"endpoint\": \"192.168.64.4\",\n  \"export\": \"/autobyteus/c0ab74ea-5701-41ed-b7b4-1c2c7dce5069\",\n  \"protocol\": \"4.1\",\n  \"mountRoot\": \"/Volumes/autobyteus-shared\",\n  \"installationId\": \"4522ea00-24f8-452f-aeea-054640087d18\",\n  \"userUid\": 1000,\n  \"userGid\": 109,\n  \"nodes\": [\n    \"autobyteus-server-0\",\n    \"autobyteus-server-1\"\n  ]\n}\n{\n  \"storageId\": \"c0ab74ea-5701-41ed-b7b4-1c2c7dce5069\",\n  \"endpoint\": \"192.168.64.4\",\n  \"export\": \"/autobyteus/c0ab74ea-5701-41ed-b7b4-1c2c7dce5069\",\n  \"protocol\": \"4.1\",\n  \"mountRoot\": \"/Volumes/autobyteus-shared\"\n}\n",
+    "stderr": "cat: '/var/lib/autobyteus-nfs/ganesha/*/ganesha.conf': No such file or directory\n"
+  }
+}

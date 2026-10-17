@@ -1,0 +1,11 @@
+{
+  "removedTaskOwnedUntrackedBuildPrerequisitesAfterChecks": [
+    "applications/brief-studio/dist",
+    "autobyteus-application-backend-sdk/dist",
+    "autobyteus-application-devkit/dist",
+    "autobyteus-application-frontend-sdk/dist",
+    "autobyteus-application-sdk-contracts/dist"
+  ],
+  "sharedCheckoutOrUserDataRemoved": false,
+  "ignoredNodeDependenciesAndPackageOutputsNotStaged": true
+}

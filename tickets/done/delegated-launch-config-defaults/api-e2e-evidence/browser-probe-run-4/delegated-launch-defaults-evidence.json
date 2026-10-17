@@ -1,0 +1,113 @@
+{
+  "startedAt": "2026-10-12T11:33:40.504Z",
+  "cases": {
+    "DLP-003": {
+      "title": "AC-001/003/004/005/007/010: Manager chat from the UI; copy, bring-ins and extra copy from its composer; teammate, helper and Grok engineer from the copy lead's conversation; Settings rows",
+      "result": "Fail",
+      "ms": 68183,
+      "error": "locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"chat-composer\"] textarea').last() to be visible\n",
+      "details": null
+    },
+    "DLP-004": {
+      "title": "AC-010: Team run (New chat) and Org run (Org launch page) whose manager delegates the Squad and brings in the Pair from the composer: Settings lists the rows",
+      "result": "Fail",
+      "ms": 69827,
+      "error": "locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"chat-composer\"] textarea').last() to be visible\n",
+      "details": null
+    },
+    "DLP-005": {
+      "title": "AC-006/REQ-004: the root model is retired mid-run; delegation and bring-in that need the inherited layer fail in the conversation with today's text and add nothing; an own usable default still works",
+      "result": "Fail",
+      "ms": 67990,
+      "error": "locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"chat-composer\"] textarea').last() to be visible\n",
+      "details": null
+    },
+    "DLP-006": {
+      "title": "AC-009/QR-002: runs saved before this change (stripped while the backend is down, as after an upgrade) reopen: Settings shows \"Source not recorded\" and Team values; a copy member starts on the Team value",
+      "result": "Fail",
+      "ms": 68090,
+      "error": "locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"chat-composer\"] textarea').last() to be visible\n",
+      "details": null
+    },
+    "DLP-007": {
+      "title": "AC-008/DEC-008: copy A; the engineer's default edited in the Agents editor; copy B; Settings shows each copy's recorded values; stop and reopen from the UI; copy A's engineer then starts on Grok",
+      "result": "Fail",
+      "ms": 77184,
+      "error": "locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"chat-composer\"] textarea').last() to be visible\n",
+      "details": null
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 37782
+    },
+    {
+      "label": "frontend",
+      "pid": 37812
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 37812,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 37782,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-6OHcz4"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-6OHcz4",
+  "backendUrl": "http://127.0.0.1:56774",
+  "frontUrl": "http://127.0.0.1:56775",
+  "definitions": {
+    "ids": {
+      "manager": "manager-6d4f",
+      "lead": "lead-9f4b",
+      "worker": "worker-b0a9",
+      "plain": "plain-6f17",
+      "engineer": "engineer-2ce9",
+      "reviewer": "reviewer-301e",
+      "writer": "writer-1e2e",
+      "offline": "offline-30bf",
+      "unoffered": "unoffered-d788",
+      "badsettings": "badsettings-4e2c",
+      "incomplete": "incomplete-1a52",
+      "build": "build-team-ba7c",
+      "pair": "pair-team-039b",
+      "squad": "squad-team-2ce6",
+      "home": "home-team-516f",
+      "launchOrg": "launchorg-org-d944",
+      "hostOrg": "hostorg-org-5ac8"
+    },
+    "names": {
+      "manager": "Manager 6d4f",
+      "lead": "Lead 9f4b",
+      "worker": "Worker b0a9",
+      "plain": "Plain 6f17",
+      "engineer": "Engineer 2ce9",
+      "reviewer": "Reviewer 301e",
+      "writer": "Writer 1e2e",
+      "offline": "Offline 30bf",
+      "unoffered": "Unoffered d788",
+      "badsettings": "Badsettings 4e2c",
+      "incomplete": "Incomplete 1a52",
+      "build": "Build Team ba7c",
+      "pair": "Pair Team 039b",
+      "squad": "Squad Team 2ce6",
+      "home": "Home Team 516f",
+      "launchOrg": "LaunchOrg Org d944",
+      "hostOrg": "HostOrg Org 5ac8"
+    }
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 0,
+    "fail": 5
+  },
+  "completedAt": "2026-10-12T11:40:07.614Z"
+}

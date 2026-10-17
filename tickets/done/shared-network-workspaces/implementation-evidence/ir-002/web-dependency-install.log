@@ -1,0 +1,17 @@
+Scope: 5 of 13 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+.                                        |    +1244 ++++++++++++++++++++++++++++
+Progress: resolved 1244, reused 1243, downloaded 0, added 161
+Progress: resolved 1244, reused 1243, downloaded 0, added 510
+Progress: resolved 1244, reused 1243, downloaded 0, added 906
+Progress: resolved 1244, reused 1243, downloaded 0, added 1181
+Progress: resolved 1244, reused 1243, downloaded 0, added 1244, done
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @google/genai@2.24.0.                               │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 5.5s using pnpm v10.28.2

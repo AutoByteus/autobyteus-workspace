@@ -1,0 +1,76 @@
+{
+  "startedAt": "2026-10-13T05:15:55.555610+00:00",
+  "scope": [
+    "TESTING.md",
+    "docs/isolated-app-instances.md"
+  ],
+  "result": "Pass",
+  "protectedDirtyFilesBefore": {
+    "delivery-revision-record.md": "e3732e3eac67ccce08a3ab8db968ddbc60e5d07ea9d9884a1ac5c6acbb4081d1",
+    "docs-sync-report.md": "06348617b7448438e8802ecc18200548ffe1898ac6e374353bbbbb114fb445d8",
+    "handoff-summary.md": "f114ca9611da45002238b9bf66c9affa9456fd835391a7ee9a40aa60c62d8bec",
+    "release-deployment-report.md": "f3be95a5c374a9bbe573d8aca2b98927ff18da461d5367a0e11dafcd16ef4559",
+    "evidence/delivery-dr002-integration.log": "4f4e2621c7106fe160e652c16489ef601c612bc1b69fefe3aba77f67f4182f84"
+  },
+  "runtimeRerun": false,
+  "finishedAt": "2026-10-13T05:16:14.491905+00:00",
+  "applicabilityAssertions": "Pass",
+  "bashBlocks": [
+    {
+      "block": 1,
+      "syntax": "Pass",
+      "executableRecipeUnchanged": true,
+      "executed": false
+    },
+    {
+      "block": 2,
+      "syntax": "Pass",
+      "executableRecipeUnchanged": true,
+      "executed": false
+    },
+    {
+      "block": 3,
+      "syntax": "Pass",
+      "executableRecipeUnchanged": true,
+      "executed": false
+    },
+    {
+      "block": 4,
+      "syntax": "Pass",
+      "executableRecipeUnchanged": true,
+      "executed": false
+    },
+    {
+      "block": 5,
+      "syntax": "Pass",
+      "executableRecipeUnchanged": true,
+      "executed": false
+    },
+    {
+      "block": 6,
+      "syntax": "Pass",
+      "executableRecipeUnchanged": true,
+      "executed": false
+    },
+    {
+      "block": 7,
+      "syntax": "Pass",
+      "executableRecipeUnchanged": true,
+      "executed": false
+    }
+  ],
+  "whitespaceCheck": "Pass",
+  "deletedPdfScriptStillAbsent": true,
+  "nonArtifactDiffScope": [
+    "TESTING.md",
+    "docs/isolated-app-instances.md"
+  ],
+  "protectedDirtyFilesAfter": {
+    "delivery-revision-record.md": "e3732e3eac67ccce08a3ab8db968ddbc60e5d07ea9d9884a1ac5c6acbb4081d1",
+    "docs-sync-report.md": "06348617b7448438e8802ecc18200548ffe1898ac6e374353bbbbb114fb445d8",
+    "handoff-summary.md": "f114ca9611da45002238b9bf66c9affa9456fd835391a7ee9a40aa60c62d8bec",
+    "release-deployment-report.md": "f3be95a5c374a9bbe573d8aca2b98927ff18da461d5367a0e11dafcd16ef4559",
+    "evidence/delivery-dr002-integration.log": "4f4e2621c7106fe160e652c16489ef601c612bc1b69fefe3aba77f67f4182f84"
+  },
+  "commands": "Python applicability/content/scope assertions; git show/diff --check; bash -n seven unchanged executable recipes; no runtime test/build/launch"
+}

@@ -1,0 +1,15 @@
+{
+  "head": "902638e584d8e669b632cf81bcc0a95074892403",
+  "status": "?? applications/brief-studio/dist/\n?? autobyteus-application-backend-sdk/dist/\n?? autobyteus-application-devkit/dist/\n?? autobyteus-application-frontend-sdk/dist/\n?? autobyteus-application-sdk-contracts/dist/\n?? tickets/in-progress/shared-network-workspaces/evidence/api-e2e/api-rev-004/\n",
+  "branch": "codex/shared-network-workspaces",
+  "upstreamType": "dict",
+  "upstreamKeys": [
+    "round",
+    "inputHead",
+    "sourceCommit",
+    "classification",
+    "incomingReferenceCount",
+    "reference_files",
+    "referenceCount"
+  ]
+}

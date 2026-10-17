@@ -1,0 +1,35 @@
+COMMAND ["/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir003-go-w7fg7538/go/bin/go", "test", "-count=1", "-run", "^TestBootstrapDirectoryModes$", "-v", "./internal/platform"]
+=== RUN   TestBootstrapDirectoryModes
+    directory_modes_test.go:39: bootstrap boundary: exit status 1
+        test_directory_modes_with_go_fixture (scripts.tests.test_nfs_installer_fixture.NfsInstallerFixtureTest) ... FAIL
+
+        ======================================================================
+        FAIL: test_directory_modes_with_go_fixture (scripts.tests.test_nfs_installer_fixture.NfsInstallerFixtureTest)
+        ----------------------------------------------------------------------
+        Traceback (most recent call last):
+          File "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-ir003-final-cj_b9v9w/missing-node-mode/scripts/tests/test_nfs_installer_fixture.py", line 77, in test_directory_modes_with_go_fixture
+            def test_directory_modes_with_go_fixture(self):self.run_fixture('permissions')
+          File "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-ir003-final-cj_b9v9w/missing-node-mode/scripts/tests/test_nfs_installer_fixture.py", line 59, in run_fixture
+            self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+        AssertionError: 1 != 0 : === RUN   TestInstallerDirectoryModeChild
+        --- PASS: TestInstallerDirectoryModeChild (0.00s)
+        PASS
+        === RUN   TestInstallerDirectoryModeChild
+        === RUN   TestInstallerDirectoryModeChild/mac
+            directory_modes_test.go:83: /tmp/nfs-installer-fixture-qato0mqd/TestInstallerDirectoryModeChildmac2897821188/001/etc/autobyteus-nfs/nodes: mode 0700, want 0755
+        === RUN   TestInstallerDirectoryModeChild/linux
+            directory_modes_test.go:83: /tmp/nfs-installer-fixture-qato0mqd/TestInstallerDirectoryModeChildlinux3617118360/001/etc/autobyteus-nfs/nodes: mode 0700, want 0755
+        --- FAIL: TestInstallerDirectoryModeChild (0.00s)
+            --- FAIL: TestInstallerDirectoryModeChild/mac (0.00s)
+            --- FAIL: TestInstallerDirectoryModeChild/linux (0.00s)
+        FAIL
+
+
+        ----------------------------------------------------------------------
+        Ran 1 test in 0.739s
+
+        FAILED (failures=1)
+--- FAIL: TestBootstrapDirectoryModes (1.05s)
+FAIL
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/platform	1.383s
+FAIL

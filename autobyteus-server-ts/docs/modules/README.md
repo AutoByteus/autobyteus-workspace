@@ -17,7 +17,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Agent Streaming | [agent_streaming.md](./agent_streaming.md) |
 | Agent Team Definition | [agent_team_definition.md](./agent_team_definition.md) |
 | Agent Organization | [agent_orgs.md](./agent_orgs.md) |
-| Standalone Agent Run Root (standalone runs with collaborators) | [standalone_agent_run_root.md](./standalone_agent_run_root.md) |
+| Standalone Agent Run Root (standalone runs with delegated copies) | [standalone_agent_run_root.md](./standalone_agent_run_root.md) |
 | Agent Team Execution | [agent_team_execution.md](./agent_team_execution.md) |
 | Agent Tools | [agent_tools.md](./agent_tools.md) |
 | Agent Tools MCP Server | [agent_tools_mcp_server.md](./agent_tools_mcp_server.md) |
@@ -30,6 +30,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Application Storage | [application_storage.md](./application_storage.md) |
 | Applications | [applications.md](./applications.md) |
 | Codex Integration | [codex_integration.md](./codex_integration.md) |
+| Agent Package Definitions (live agent/team/org definitions from agent packages, package folder watching) | [agent_package_definitions.md](./agent_package_definitions.md) |
 | File Explorer | [file_explorer.md](./file_explorer.md) |
 | File Search | [file_search.md](./file_search.md) |
 | Grok Build Runtime | [grok_build_runtime.md](./grok_build_runtime.md) |
@@ -42,6 +43,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Search | [search.md](./search.md) |
 | Secret Management | [secret_management.md](./secret_management.md) |
 | Skill Improvement | [skill_improvement.md](./skill_improvement.md) |
+| Skill Update Notices (tell active runs when a used skill changes) | [skill_update_notices.md](./skill_update_notices.md) |
 | Skills | [skills.md](./skills.md) |
 | Terminal | [terminal.md](./terminal.md) |
 | Token Usage | [token_usage.md](./token_usage.md) |

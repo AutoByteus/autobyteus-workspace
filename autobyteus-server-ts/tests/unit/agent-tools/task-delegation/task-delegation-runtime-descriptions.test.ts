@@ -19,6 +19,9 @@ import {
   DELEGATE_TASK_TARGET_TEAM_RUN_ID_DESCRIPTION,
 } from "../../../../src/agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
 
+import { assertAgentTeamAddress } from "../../../../src/agent-collaboration/domain/agent-team-address.js";
+import { toTaskDelegationToolErrorPayload } from "../../../../src/agent-tools/task-delegation/task-delegation-tool-serialization.js";
+
 const findParameter = (schema: ParameterSchema, name: string) =>
   schema.parameters.find((parameter) => parameter.name === name);
 
@@ -33,6 +36,19 @@ const memberExecutionContext = testMemberExecutionContext({
   agentRunId: "run-coordinator",
 });
 
+describe("delegate_task refuses an invalid address with a next step (SR-003 F-3b)", () => {
+  it("converts the address validator's text at the tool boundary only", () => {
+    let thrown: unknown;
+    try { assertAgentTeamAddress("research_lead"); } catch (error) { thrown = error; }
+    expect(thrown).toBeInstanceOf(Error);
+    expect((thrown as Error).message).toBe("AgentTeam address 'research_lead' is invalid: a canonical rooted value beginning with '/' is required");
+    expect(toTaskDelegationToolErrorPayload(thrown)).toEqual({ error: {
+      code: "COLLABORATION_ADDRESS_INVALID",
+      message: "'research_lead' is not a valid address (a canonical rooted value beginning with '/' is required). An address is exact and begins with '/', for example /team/agent; if you have list_available_agents, it shows the addresses you can delegate to.",
+    } });
+  });
+});
+
 describe("task delegation runtime descriptions", () => {
   it("exposes only delegate_task in the canonical manifest (AC-002)", () => {
     expect(TASK_DELEGATION_TOOL_NAME_LIST).toEqual([DELEGATE_TASK_TOOL_NAME]);
@@ -40,14 +56,14 @@ describe("task delegation runtime descriptions", () => {
     expect(JSON.stringify(TASK_DELEGATION_TOOL_MANIFEST)).not.toMatch(/submit_task_result|review_task_result/);
   });
 
-  it("describes delegate_task as a spawn by address or an assignment to an existing copy by its own ID (AC-015)", () => {
+  it("describes delegate_task as a new task agent by address or an assignment to one of your task agents by its own ID (AC-015)", () => {
     const delegateEntry = getTaskDelegationToolManifestEntry(DELEGATE_TASK_TOOL_NAME);
     expect(delegateEntry.description).toBe(DELEGATE_TASK_LLM_DESCRIPTION);
-    expect(delegateEntry.description).toContain("With an address, every call spawns\nanother copy");
-    expect(delegateEntry.description).toContain("available agent or team");
+    expect(delegateEntry.description).toContain("creates a new task agent (or task agent team)");
+    expect(delegateEntry.description).toContain("gives the saved Task to one of your task agents");
     expect(delegateEntry.description).toContain("recipient_address");
-    expect(delegateEntry.description).toContain("target_team_run_id or target_agent_run_id");
-    expect(delegateEntry.description).toContain("On failure delegated is false");
+    expect(delegateEntry.description).toContain("target_agent_run_id or target_team_run_id");
+    expect(delegateEntry.description).toContain("If delegated is false, nothing was created");
     expect(delegateEntry.description).not.toMatch(/always spawns|target_agent_run_id is null/);
     expect(delegateEntry.description).not.toMatch(/submit_task_result|review_task_result|task lifecycle/i);
     expect(delegateEntry.description).not.toContain("./");
@@ -76,15 +92,13 @@ describe("task delegation runtime descriptions", () => {
     expect(findParameter(delegateSchema, "target_agent_run_id")?.description).toBe(DELEGATE_TASK_TARGET_AGENT_RUN_ID_DESCRIPTION);
     const delegateDescription = findParameter(delegateSchema, "description")?.description ?? "";
     expect(delegateDescription).toBe(DELEGATE_TASK_DESCRIPTION_FIELD_DESCRIPTION);
-    expect(delegateDescription).toContain("Complete ready-to-run work description");
+    expect(delegateDescription).toContain("complete, ready-to-work task description");
     expect(delegateDescription).toContain("objective");
-    expect(delegateDescription).toContain("done conditions");
-    expect(delegateDescription).toContain("delegate_task itself delivers this as the new copy's first message");
-    expect(delegateDescription).toContain("do not resend it with send_message_to");
+    expect(delegateDescription).toContain("what done looks like");
     const delegateReferenceDescription = findParameter(delegateSchema, "reference_files")?.description ?? "";
     expect(delegateReferenceDescription.toLowerCase()).toContain("absolute local file paths");
     expect(delegateReferenceDescription).toBe(DELEGATE_TASK_REFERENCE_FILES_DESCRIPTION);
-    expect(delegateReferenceDescription).toContain("relative paths and URLs are rejected");
+    expect(delegateReferenceDescription).toContain("Relative paths and URLs are rejected");
     expect(JSON.stringify(delegateSchema)).not.toContain("Do not pass");
     expect(JSON.stringify(delegateSchema)).not.toContain("completion_criteria");
   });
@@ -132,7 +146,7 @@ describe("task delegation runtime descriptions", () => {
     expect(publicCopy).toContain("target_agent_run_id");
   });
 
-  it("publishes the delegate_task MCP output schema as the explicit-ID union; success may carry the created task_id (AC-001, REQ-001)", () => {
+  it("publishes the delegate_task MCP output schema as the explicit-ID union; success may carry the created task_id and launch_notes (AC-001, REQ-001, REQ-008)", () => {
     const provider = new TaskDelegationToolsMcpAdapterProvider({} as never);
     const catalog = new AgentToolMcpCatalog({ adapters: provider.getAdapters() });
     const [mcpDefinition] = catalog.listMcpToolsForSession({
@@ -152,7 +166,11 @@ describe("task delegation runtime descriptions", () => {
       properties: { delegated: { const: true }, target_kind: { const: "agent" }, target_agent_run_id: { type: "string", minLength: 1 },
         task_id: { type: "string", minLength: 1 } },
     });
-    expect(Object.keys(agentCopy!.properties as object)).toEqual(["delegated", "target_kind", "target_agent_run_id", "task_id"]);
+    expect(Object.keys(agentCopy!.properties as object)).toEqual(["delegated", "target_kind", "target_agent_run_id", "task_id", "launch_notes"]);
+    // launch_notes: an optional, non-empty list of non-blank fallback notes.
+    expect((agentCopy!.properties as Record<string, unknown>).launch_notes).toMatchObject({ type: "array", minItems: 1, items: { type: "string", minLength: 1 } });
+    expect((agentCopy!.required as string[])).not.toContain("launch_notes");
+    expect(Object.keys(teamCopy!.properties as object)).toContain("launch_notes");
     expect(teamCopy).toMatchObject({
       type: "object",
       additionalProperties: false,
@@ -169,7 +187,7 @@ describe("task delegation runtime descriptions", () => {
       properties: { delegated: { const: false }, message: { type: "string", minLength: 1 } },
     });
     // task_id is only an optional success field; no Task status or failed-start Task identity.
-    expect(JSON.stringify(notDelegated)).not.toMatch(/task_id|target_/);
+    expect(JSON.stringify(notDelegated)).not.toMatch(/task_id|target_|launch_notes/);
     expect(JSON.stringify(outputSchema)).not.toMatch(/"status"/);
   });
 

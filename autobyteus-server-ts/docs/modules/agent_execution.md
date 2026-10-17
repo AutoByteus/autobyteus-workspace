@@ -70,8 +70,8 @@ AutoByteus then resolves its exact absolute workspace and calls
 `composeNativeAutoByteusPrompt(...)`; Codex and Claude call
 `composeSharedCarpenterPrompt(...)` and retain ownership of their provider
 working-directory fields. A team run supplies its validated `MemberTeamContext`
-so every composition includes the exact selected Team instruction, canonical
-member address, and the same AgentTeam Addressing/Collaboration guidance. No
+so every composition includes the exact selected Team instruction
+and the collaboration sections for the member's role. No
 flat communication or delegation roster is injected.
 
 The shared semantic order is Agent Identity, optional Team Instruction, and
@@ -159,7 +159,7 @@ logic must treat the whole `agentRunId` as opaque and must not parse the slug or
 assume a runtime-specific prefix.
 
 The same stateless allocation boundary is used for standalone prepared/created
-runs, Team/Org members, collaborators, delegated task Agents, and application
+runs, Team/Org members, delegated task Agents, and application
 scopes. It loads the current definition and generates a fresh UUID; it does not
 scan active runs, saved execution trees, metadata/directories, or reservations
 to check candidate-ID collisions. UUID uniqueness is probabilistic, not a
@@ -199,7 +199,7 @@ kind's capability and catalog. Accepted same-kind evidence can recover inherited
 views without resetting model/configuration/override intent; it does not heal
 different runtimes or discard an explicit failed edit. Missing exact models,
 invalid schemas, required owned references and structural admission still block
-launch. See the [Org configuration contract](../../../autobyteus-web/docs/agent_orgs.md#readiness-and-runtime-catalog-failure).
+launch. See the [Org configuration contract](../../../autobyteus-web/docs/agent_orgs.md#readiness).
 
 ## Activation Publication And Exact Continuation
 
@@ -248,7 +248,7 @@ agent's previous session was still shutting down, so this message couldn't be
 delivered. Please send it again." That code is always retryable and is never a
 quarantine: nothing is cached, a timed-out release keeps running, and the next
 send joins or repeats it. The registry's claim guard raises the same code as the
-last line of defence. A configured Agent execution (Team member, collaborator,
+last line of defence. A configured Agent execution (Team member,
 task copy) keeps the exact previous run and marks the attempt retry-safe when
 its release fails, so the next work retries the same release.
 
@@ -283,7 +283,7 @@ committed attempt rather than being converted into success.
 ### Root Shutdown Fence
 
 When a Team, Org or standalone Agent root stops, every configured Agent
-execution it hosts (`ConfiguredAgentExecutionHandle`: members, collaborators
+execution it hosts (`ConfiguredAgentExecutionHandle`: members
 and task copies; the standalone host stops separately) first calls
 `AgentRun.fenceInputAndInterruptForRootShutdown()`. On the run's serialized
 dispatch lane it fences new input admission and, through `AgentRunTermination`,
@@ -461,6 +461,40 @@ runtime accepted the interrupt request: later `TURN_INTERRUPTED`/terminal
 socket cannot receive a server result, so client disconnect completion is a
 separate local transport failure, not a synthetic acknowledgement.
 
+### Platform Input Preface And Run Lifecycle Observer
+
+`AgentRunManager` accepts two optional generic ports. Neither carries any
+feature knowledge; the only current implementation is
+[Skill Update Notices](./skill_update_notices.md).
+
+- **`AgentRunLifecycleObserver`** (`domain/agent-run-lifecycle-observer.ts`):
+  - `runPublished(run, kind)` is reported from the single activation point,
+    after `registry.publish`, for kinds `new`, `restore` and
+    `platform_restore`;
+  - `runReleased(run)` is reported by `AgentRunResourceManager` after a
+    successful release. Every removal path goes through it.
+- **`AgentRunInputPreface`** (`domain/agent-run-input-preface.ts`):
+  `takePreface(run)`, `prefaceDelivered(run, preface, turnId)` and
+  `prefaceReturned(run, preface)`.
+  - In `executeInputDispatch`, after normalization, `AgentRun` asks the port
+    for a pending preface. It does so only when the claimed message is an
+    **external** input. Compaction-recovery dispatches
+    (`ClaimedInputDispatch.recovery`), TOOL continuations and messages that
+    already are or carry a preface never take one.
+  - The provider message becomes the preface text, a blank line, then the
+    input unchanged (sender, context files, recording attachments, metadata),
+    tagged `platform_input_preface { content, sender_id, original_content }`.
+    It is one dispatch, so one turn.
+  - The preface is settled `delivered` only when the dispatch is forwarded. On
+    delivery, `AgentRun` publishes `SYSTEM_TASK_NOTIFICATION` with the
+    preface's sender and the turn ID. Every other outcome (not forwarded,
+    failed, uncertain, `undeliveredRetryAsStart`) returns it.
+  - A failing port never affects the input.
+  - Admission state and the backend dispatch contract are unchanged.
+
+`GeneralProcessRunSupervisor` receives both ports as `platformInputNotices` from
+the studio and standalone compositions.
+
 ## Canonical Turn Lifecycle And Failure Authority
 
 Runtime lifecycle projection is boundary-owned. A live run is `running` only
@@ -540,6 +574,15 @@ It is not a new diagnostic/log feed or recovery policy.
   uses the same existing credential redaction. Existing authentication
   recognition, error-code/generic fallback and tracker settlement remain. An
   `errors[]` field alone does not make an unrelated event terminal.
+- Only SDK error fields decide whether a Claude `result` is a turn error:
+  `is_error: true`, or a non-empty string `error` or `code`. On a successful
+  result, `result` is the agent's own final reply and is never scanned for
+  failure, so a reply that mentions "not logged in", "please run /login" or
+  `authentication_failed` completes the turn normally. The authentication
+  markers only choose `CLAUDE_RUNTIME_AUTHENTICATION_FAILED` over
+  `CLAUDE_RUNTIME_RESULT_ERROR` for a result that is already an error, such as
+  the SDK's not-logged-in result (`is_error: true`,
+  `result: "Not logged in · Please run /login"`).
 - Native AutoByteus, Codex and ACP/Grok keep their existing informative error
   paths. There is no recognized-cause allowlist or quota-specific translation,
   invented reset time/code, whole-response dump or arbitrary ordinary-message
@@ -663,9 +706,12 @@ owner of Claude turn identity. Turn ids are `${runId}:turn:${uuid}`.
 `ClaudeBackgroundTaskRegistry` tracks the CLI's background set and completions
 the model has not seen. A turn the CLI starts itself is preceded by a
 `SYSTEM_TASK_NOTIFICATION` (`sender_id: "system.claude_background_task"`), for
-example `Background task completed: <description> (<status>)`. Agent memory
-records these notices, and only these, as `system_task_notification` traces,
-and run-history replay shows them in the conversation.
+example `Background task completed: <description> (<status>)`. For external
+runtimes, agent memory records system notices from an allow-list of senders as
+`system_task_notification` traces: these Claude background-task notices and
+skill update notices (`system.skill_update_notifier`, see
+[Skill Update Notices](./skill_update_notices.md)). Run-history replay shows
+them in the conversation.
 
 The registry also owns the live Background Tasks view. A task enters it when the
 CLI lists it in `background_tasks_changed`, reports `task_started` with
@@ -729,10 +775,11 @@ raw model; auxiliary-model usage is not charged to the selected-model meter.
 The meter reports an AutoByteus-configured API-equivalent estimate, not the
 Claude subscription's actual charge. See [Token Usage](token_usage.md) for
 checkpoint, cache-write approximation, and migration details.
-The same selected raw result row supplies a context-window capacity only when
-it is positive and safe; a safe full prompt sum then yields the latest prompt
-percentage. Older valid rows with null percentage are repaired by the
-run-summary read projection, not by a data backfill.
+Context readings do not come from the result: every main-loop model call is
+reported live from the stream's `message_start`/`message_delta` usage with the
+SDK's own `getContextUsage()` reading (tokens in context, window and
+auto-compaction threshold), and the result only reconciles what per-call data
+cannot see, such as the SDK's own compaction calls.
 
 Claude interrupt is owned by the session, not by WebSocket, GraphQL, or
 frontend button state, and it ends only the current turn. The process, the

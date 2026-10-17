@@ -1,0 +1,1285 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-incomplete-content-block-step2/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-incomplete-content-block-step2/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:56106) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-incomplete-content-block-step2/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-incomplete-content-block-step2/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-appdata-zu2IXh
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-appdata-zu2IXh/.env
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mLoading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-appdata-zu2IXh/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-appdata-zu2IXh/.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-incomplete-content-block-step2/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-incomplete-content-block-step2/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-appdata-zu2IXh
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-appdata-zu2IXh/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-appdata-zu2IXh/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-appdata-zu2IXh/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-appdata-zu2IXh/memory
+============================================================
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-10T05:30:45.808Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-appdata-zu2IXh/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-appdata-zu2IXh/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-appdata-zu2IXh/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mPopulating agent definition cache for the first time...
+[2026-10-10T05:30:45.948Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39m[2026-10-10T05:30:45.948Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mIn-memory cache: Added new agent definition with ID output-limit-recovery-chat-fd02708e.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mAgent Definition created successfully with ID: output-limit-recovery-chat-fd02708e
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mIn-memory cache: Added new agent definition with ID output-limit-recovery-writer-1a587c5e.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mAgent Definition created successfully with ID: output-limit-recovery-writer-1a587c5e
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mIn-memory cache: Added new agent definition with ID output-limit-recovery-reader-writer-84a851f1.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mAgent Definition created successfully with ID: output-limit-recovery-reader-writer-84a851f1
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-Zhv1zC
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-Zhv1zC.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mCreated and registered workspace ID: agent_ws_3eed4f6edd1b66814a0487f0ab721ef07ee245eb7a5d567b9895c9500d6736a2
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-Zhv1zC
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-Zhv1zC.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mReusing registered workspace ID: agent_ws_3eed4f6edd1b66814a0487f0ab721ef07ee245eb7a5d567b9895c9500d6736a2
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mMediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-appdata-zu2IXh/media
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentRuntimeState initialized for agent_id 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': LLM instance 'AnthropicLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269' with config: 'output-limit-recovery-writer-1a587c5e'.
+AgentWorker initialized for agent_id 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269'.
+Registered AgentContext for agent_id 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269'. Context registered.
+Agent facade initialized for agent_id 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269'.
+Agent 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269' created and stored successfully.
+Agent 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269' requesting runtime to start.
+AgentRuntime for 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': Starting worker.
+AgentWorker 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': Starting...
+AgentWorker 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269' asyncRun(): Starting.
+Agent 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': Runtime init completed (event store initialized).
+Agent 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': Runtime init completed (status deriver initialized).
+Agent 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': Runtime init completed (AgentEventInbox initialized).
+Agent 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269' to become idle (timeout: 30s)...
+AgentEventStream (ID: e51f37a9-840a-462b-8add-07321d6340c7) initialized for agent_id 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269'. Subscribed to notifier.
+Agent 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgent 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': Bootstrapper starting direct lifecycle execution.
+Agent 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgent 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': Executing SystemPromptProcessingStep.
+Agent 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': No configured skills. Skipping skill catalog.
+Agent 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': Final processed system prompt configured and captured. Trace ID: rt_1791610246110_37d21845-f19f-43ad-80c5-6364fccefb30. Final length: 4573.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgent 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentWorker 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgent 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269' has become idle.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentEventStream (ID: e51f37a9-840a-462b-8add-07321d6340c7) for 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentEventStream (ID: e59598e2-c6c5-4d44-b365-ea28a35729bc) initialized for agent_id 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269'. Subscribed to notifier.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgent websocket attached for run output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269
+Created agent session 0447b19a-eb86-4358-af96-6efe2367697b for run output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269
+Agent WebSocket connected: session=0447b19a-eb86-4358-af96-6efe2367697b, run=output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgent run 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': UserInputContextBuildingProcessor completed. Final content length: 195
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgent run 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': UserInputContextBuildingProcessor completed. Final content length: 48
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgent run 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': UserInputContextBuildingProcessor completed. Final content length: 46
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgent run 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': UserInputContextBuildingProcessor completed. Final content length: 46
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgent run 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': UserInputContextBuildingProcessor completed. Final content length: 46
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgent run 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': UserInputContextBuildingProcessor completed. Final content length: 46
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgent run 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-VzLFVw
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-VzLFVw.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mCreated and registered workspace ID: agent_ws_2336e39315ca329c39a19546821bf0f88804c88b527ec56190da7ed52e20a5b8
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-VzLFVw
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-VzLFVw.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mReusing registered workspace ID: agent_ws_2336e39315ca329c39a19546821bf0f88804c88b527ec56190da7ed52e20a5b8
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mMediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-appdata-zu2IXh/media
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentRuntimeState initialized for agent_id 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c': LLM instance 'AnthropicLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c' with config: 'output-limit-recovery-reader-writer-84a851f1'.
+AgentWorker initialized for agent_id 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c'.
+Registered AgentContext for agent_id 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c'. Context registered.
+Agent facade initialized for agent_id 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c'.
+Agent 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c' created and stored successfully.
+Agent 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c' requesting runtime to start.
+AgentRuntime for 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c': Starting worker.
+AgentWorker 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c': Starting...
+AgentWorker 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c' asyncRun(): Starting.
+Agent 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c': Runtime init completed (event store initialized).
+Agent 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c': Runtime init completed (status deriver initialized).
+Agent 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c': Runtime init completed (AgentEventInbox initialized).
+Agent 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c' to become idle (timeout: 30s)...
+AgentEventStream (ID: d8ac6c5b-b508-4f0d-9ea5-334f7be3c8eb) initialized for agent_id 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c'. Subscribed to notifier.
+Agent 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgent 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c': Bootstrapper starting direct lifecycle execution.
+Agent 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgent 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c': Executing SystemPromptProcessingStep.
+Agent 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c': No configured skills. Skipping skill catalog.
+Agent 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c': Final processed system prompt configured and captured. Trace ID: rt_1791610314769_dc0d63c5-d69a-48e4-9184-fb99ec710c8b. Final length: 4587.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgent 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentWorker 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgent 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c' has become idle.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentEventStream (ID: d8ac6c5b-b508-4f0d-9ea5-334f7be3c8eb) for 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentEventStream (ID: a37d3bf7-f840-400d-8a72-e3a19debfc0c) initialized for agent_id 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c'. Subscribed to notifier.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgent websocket attached for run output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c
+Created agent session e64c3854-2e9d-4f04-97b8-b40dc3661e8e for run output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c
+Agent WebSocket connected: session=e64c3854-2e9d-4f04-97b8-b40dc3661e8e, run=output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgent run 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c': UserInputContextBuildingProcessor completed. Final content length: 267
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgent run 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c': UserInputContextBuildingProcessor completed. Final content length: 47
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mRemoving agent 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c'. Attempting graceful shutdown.
+Agent 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c' requesting runtime to stop (timeout: 10s).
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentWorker 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c': Stop requested.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentExternalEventNotifier (NotifierID: d423965b-3696-43c1-bc70-177a0ed4b95c, AgentID: output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c' asyncRun() loop has finished.
+AgentWorker 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentWorker 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c': Shutdown resource cleanup completed successfully.
+AgentWorker 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c': Shutdown sequence completed.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mUnregistered AgentContext for agent_id 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c'.
+AgentRuntime for 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c': Context unregistered.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentRuntime for 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c' stop() method completed.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentEventStream (ID: a37d3bf7-f840-400d-8a72-e3a19debfc0c) for 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mAgentEventStream (ID: a37d3bf7-f840-400d-8a72-e3a19debfc0c) for 'output_limit_recovery_reader_writer_84a851f1_4097c730c4674d7b9ef8f1bf6457c63c': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message
+[22m[39mClosed agent session e64c3854-2e9d-4f04-97b8-b40dc3661e8e
+Agent WebSocket disconnected: e64c3854-2e9d-4f04-97b8-b40dc3661e8e
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-CtiZfC
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-CtiZfC.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mCreated and registered workspace ID: agent_ws_e15043b81fd577264764ce1a9abfcab7925402dea36d4fc0bfe4f1225de506db
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-CtiZfC
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-CtiZfC.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mReusing registered workspace ID: agent_ws_e15043b81fd577264764ce1a9abfcab7925402dea36d4fc0bfe4f1225de506db
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mMediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-appdata-zu2IXh/media
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentRuntimeState initialized for agent_id 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': LLM instance 'DeepSeekLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999' with config: 'output-limit-recovery-writer-1a587c5e'.
+AgentWorker initialized for agent_id 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999'.
+Registered AgentContext for agent_id 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999'. Context registered.
+Agent facade initialized for agent_id 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999'.
+Agent 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999' created and stored successfully.
+Agent 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999' requesting runtime to start.
+AgentRuntime for 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': Starting worker.
+AgentWorker 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': Starting...
+AgentWorker 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999' asyncRun(): Starting.
+Agent 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': Runtime init completed (event store initialized).
+Agent 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': Runtime init completed (status deriver initialized).
+Agent 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': Runtime init completed (AgentEventInbox initialized).
+Agent 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999' to become idle (timeout: 30s)...
+AgentEventStream (ID: f9cd1f77-9b14-4ab8-8d2e-796ff30cdc4a) initialized for agent_id 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999'. Subscribed to notifier.
+Agent 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgent 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': Bootstrapper starting direct lifecycle execution.
+Agent 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgent 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': Executing SystemPromptProcessingStep.
+Agent 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': No configured skills. Skipping skill catalog.
+Agent 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': Final processed system prompt configured and captured. Trace ID: rt_1791610367273_dadc6f95-2127-4ceb-b842-a587855576a9. Final length: 4573.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgent 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentWorker 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgent 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999' has become idle.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentEventStream (ID: f9cd1f77-9b14-4ab8-8d2e-796ff30cdc4a) for 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentEventStream (ID: c7149100-d708-48de-8f32-a5350396412f) initialized for agent_id 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999'. Subscribed to notifier.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgent websocket attached for run output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999
+Created agent session a2b507c2-9340-445e-8912-35fe237d4316 for run output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999
+Agent WebSocket connected: session=a2b507c2-9340-445e-8912-35fe237d4316, run=output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgent run 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': UserInputContextBuildingProcessor completed. Final content length: 67
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstderr[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mNative tool call call_00_DLQeMDKJiDX8Hy4YWeIp4091 for write_file has unusable arguments: Unexpected token '@', "@@{"path":"... is not valid JSON
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_tool_execution_failed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgent run 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': UserInputContextBuildingProcessor completed. Final content length: 175
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgent run 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': UserInputContextBuildingProcessor completed. Final content length: 48
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgent run 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': UserInputContextBuildingProcessor completed. Final content length: 47
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgent run 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mRemoving agent 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999'. Attempting graceful shutdown.
+Agent 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999' requesting runtime to stop (timeout: 10s).
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentWorker 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': Stop requested.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentExternalEventNotifier (NotifierID: 624f0ca1-ec5d-4b95-aaa7-b515c4f84c7a, AgentID: output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999' asyncRun() loop has finished.
+AgentWorker 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentWorker 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': Shutdown resource cleanup completed successfully.
+AgentWorker 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': Shutdown sequence completed.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mUnregistered AgentContext for agent_id 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999'.
+AgentRuntime for 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': Context unregistered.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentRuntime for 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999' stop() method completed.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentEventStream (ID: c7149100-d708-48de-8f32-a5350396412f) for 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mAgentEventStream (ID: c7149100-d708-48de-8f32-a5350396412f) for 'output_limit_recovery_writer_1a587c5e_470bc10f0b3c41179ad6e4d99a123999': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+[22m[39mClosed agent session a2b507c2-9340-445e-8912-35fe237d4316
+Agent WebSocket disconnected: a2b507c2-9340-445e-8912-35fe237d4316
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mServer setting 'AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE' updated
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mServer setting 'AUTOBYTEUS_COMPACTION_TRIGGER_RATIO' updated
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mServer setting 'AUTOBYTEUS_COMPACTION_MODEL_SETTINGS' updated
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-29SNld
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-29SNld.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mCreated and registered workspace ID: agent_ws_7dbc61285dfdfc68f481747d77a559f4bd5114aa578dc9e9ece61cb708b16b9d
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-29SNld
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-ws-29SNld.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mReusing registered workspace ID: agent_ws_7dbc61285dfdfc68f481747d77a559f4bd5114aa578dc9e9ece61cb708b16b9d
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mMediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/output-limit-recovery-e2e-appdata-zu2IXh/media
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgentRuntimeState initialized for agent_id 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': LLM instance 'DeepSeekLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20' with config: 'output-limit-recovery-chat-fd02708e'.
+AgentWorker initialized for agent_id 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20'.
+Registered AgentContext for agent_id 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20'. Context registered.
+Agent facade initialized for agent_id 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20'.
+Agent 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20' created and stored successfully.
+Agent 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20' requesting runtime to start.
+AgentRuntime for 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': Starting worker.
+AgentWorker 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': Starting...
+AgentWorker 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20' asyncRun(): Starting.
+Agent 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': Runtime init completed (event store initialized).
+Agent 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': Runtime init completed (status deriver initialized).
+Agent 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': Runtime init completed (AgentEventInbox initialized).
+Agent 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20' to become idle (timeout: 30s)...
+AgentEventStream (ID: 204c0387-3373-41fd-aed8-5fa9ad7c1f5d) initialized for agent_id 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20'. Subscribed to notifier.
+Agent 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgent 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': Bootstrapper starting direct lifecycle execution.
+Agent 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgent 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': Executing SystemPromptProcessingStep.
+Agent 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': No configured skills. Skipping skill catalog.
+Agent 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': Final processed system prompt configured and captured. Trace ID: rt_1791610372528_3602bf26-160c-4494-b696-af480ed7e33b. Final length: 4427.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgent 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgentWorker 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgent 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20' has become idle.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgentEventStream (ID: 204c0387-3373-41fd-aed8-5fa9ad7c1f5d) for 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgentEventStream (ID: 7669a9b1-8aa8-4289-b65a-dab1d96ab9de) initialized for agent_id 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20'. Subscribed to notifier.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgent websocket attached for run output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20
+Created agent session 3eca976f-c39e-4aa3-a2d8-352d341fa17a for run output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20
+Agent WebSocket connected: session=3eca976f-c39e-4aa3-a2d8-352d341fa17a, run=output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgent run 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': UserInputContextBuildingProcessor completed. Final content length: 36256
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgent run 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgent run 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': UserInputContextBuildingProcessor completed. Final content length: 37031
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_requested {
+  agent_id: [32m'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20'[39m,
+  phase: [32m'requested'[39m,
+  turn_id: [32m'turn_0002'[39m,
+  compaction_operation_id: [32m'compaction_operation_mv1yk5a4_1'[39m,
+  requested_turn_id: [32m'turn_0002'[39m,
+  execution_turn_id: [1mnull[22m,
+  selected_block_count: [1mnull[22m,
+  compacted_block_count: [1mnull[22m,
+  raw_trace_count: [1mnull[22m
+}
+AgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: [32m'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20'[39m,
+  turn_id: [32m'turn_0002'[39m,
+  compaction_operation_id: [32m'compaction_operation_mv1yk5a4_1'[39m,
+  requested_turn_id: [32m'turn_0002'[39m,
+  execution_turn_id: [32m'turn_0002'[39m,
+  selected_block_count: [33m3[39m,
+  raw_trace_count: [33m3[39m,
+  phase: [32m'started'[39m
+}
+AgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstderr[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mcompaction_failed {
+  agent_id: [32m'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20'[39m,
+  turn_id: [32m'turn_0002'[39m,
+  compaction_operation_id: [32m'compaction_operation_mv1yk5a4_1'[39m,
+  requested_turn_id: [32m'turn_0002'[39m,
+  execution_turn_id: [32m'turn_0002'[39m,
+  selected_block_count: [33m3[39m,
+  raw_trace_count: [33m3[39m,
+  compaction_model_identifier: [32m'deepseek-v4-flash'[39m,
+  summarizer_provider: [32m'DEEPSEEK'[39m,
+  compaction_invocation_id: [32m'compaction_c870f741-8f40-4c18-882c-d3a246aefccb'[39m,
+  completion_status: [32m'incomplete'[39m,
+  completion_reason: [32m'length'[39m,
+  phase: [32m'failed'[39m,
+  error_message: [32m'Memory compaction failed before dispatch [incomplete_summary]: Provider reported incomplete compaction output.'[39m
+}
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgent run 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)[2m > [22m[2mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[22m[39mAgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mRemoving agent 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269'. Attempting graceful shutdown.
+Agent 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269' requesting runtime to stop (timeout: 10s).
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mAgentWorker 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': Stop requested.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mClosed agent session 3eca976f-c39e-4aa3-a2d8-352d341fa17a
+Agent WebSocket disconnected: 3eca976f-c39e-4aa3-a2d8-352d341fa17a
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mClosed agent session 0447b19a-eb86-4358-af96-6efe2367697b
+Agent WebSocket disconnected: 0447b19a-eb86-4358-af96-6efe2367697b
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mAgentExternalEventNotifier (NotifierID: 6eca7bcc-a0c5-473f-9a92-85e83b02f98e, AgentID: output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269' asyncRun() loop has finished.
+AgentWorker 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mAgentWorker 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': Shutdown resource cleanup completed successfully.
+AgentWorker 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': Shutdown sequence completed.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mUnregistered AgentContext for agent_id 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269'.
+AgentRuntime for 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': Context unregistered.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mAgentRuntime for 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269' stop() method completed.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mAgentEventStream (ID: e59598e2-c6c5-4d44-b365-ea28a35729bc) for 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mAgentEventStream (ID: e59598e2-c6c5-4d44-b365-ea28a35729bc) for 'output_limit_recovery_writer_1a587c5e_acc46c46ba214eb4915d63588d478269': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mAgent 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20' requesting runtime interrupt.
+AgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mRemoving agent 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20'. Attempting graceful shutdown.
+Agent 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20' requesting runtime to stop (timeout: 10s).
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mAgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mAgentWorker 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': Stop requested.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mAgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mAgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5ac595b4-f387-4132-8ef0-8a70f2b7cdd5, AgentID: output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20' asyncRun() loop has finished.
+AgentWorker 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mAgentWorker 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': Shutdown resource cleanup completed successfully.
+AgentWorker 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': Shutdown sequence completed.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mUnregistered AgentContext for agent_id 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20'.
+AgentRuntime for 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': Context unregistered.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mAgentRuntime for 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20' stop() method completed.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mAgentEventStream (ID: 7669a9b1-8aa8-4289-b65a-dab1d96ab9de) for 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mAgentEventStream (ID: 7669a9b1-8aa8-4289-b65a-dab1d96ab9de) for 'output_limit_recovery_chat_fd02708e_94a06f21b7194f0fb59ebba4ec033e20': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mIn-memory cache: Removed agent definition with ID output-limit-recovery-chat-fd02708e.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mAgent Definition with ID output-limit-recovery-chat-fd02708e deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mIn-memory cache: Removed agent definition with ID output-limit-recovery-writer-1a587c5e.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mAgent Definition with ID output-limit-recovery-writer-1a587c5e deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mIn-memory cache: Removed agent definition with ID output-limit-recovery-reader-writer-84a851f1.
+
+[90mstdout[2m | tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22m[2mAutoByteus native runtime output-limit recovery (live)
+[22m[39mAgent Definition with ID output-limit-recovery-reader-writer-84a851f1 deleted successfully.
+
+ [31m❯[39m tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts [2m([22m[2m11 tests[22m[2m | [22m[31m2 failed[39m[2m | [22m[33m7 skipped[39m[2m)[22m[33m 1329831[2mms[22m[39m
+[31m     [31m×[31m OLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note[39m[33m 68669[2mms[22m[39m
+     [33m[2m✓[22m[39m OLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message [33m 52511[2mms[22m[39m
+     [2m[90m↓[39m[22m OLR-E2E-003: a text-only cut keeps the partial text, resumes with the hidden note, and shows two assistant parts live and after reload
+     [2m[90m↓[39m[22m OLR-E2E-004: four cut responses in a row end the turn with LLM_OUTPUT_LIMIT_EXHAUSTED after 3 recoveries; the next message is valid
+     [2m[90m↓[39m[22m OLR-E2E-005: DeepSeek finish_reason length mid tool call is discarded and recovered the same way
+     [2m[90m↓[39m[22m OLR-E2E-006: a refusal stop mid tool call fails clearly with no tool and no recovery; the next message is valid
+     [2m[90m↓[39m[22m OLR-E2E-007: a model_context_window_exceeded stop fails clearly with no recovery; the next message is valid
+     [2m[90m↓[39m[22m OLR-E2E-008: a stream that ends without message_stop after a tool_use start fails and rolls back; the next message is valid
+     [2m[90m↓[39m[22m OLR-E2E-009: a tool call with malformed arguments does not run; the model gets the retry error and the turn continues
+     [33m[2m✓[22m[39m OLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues [33m 5223[2mms[22m[39m
+[31m     [31m×[31m OLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected[39m[33m 1200010[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22mAutoByteus native runtime output-limit recovery (live)[2m > [22mOLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note
+[31m[1mAssertionError[22m: the cut response was generating a tool call: expected false to be true // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+[36m [2m❯[22m tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts:[2m135:84[22m[39m
+    [90m133| [39m    })[33m;[39m
+    [90m134| [39m    harness[33m.[39m[34massertAccepted[39m(phaseCalls[33m,[39m [32m"OLR-001"[39m)[33m;[39m
+    [90m135| [39m    for (const call of phaseCalls) harness.assertLimit(call, "max_toke…
+    [90m   | [39m                                                                                   [31m^[39m
+    [90m136| [39m    // The turn's FIRST response was cut. Opus may spend it on the wri…
+    [90m137| [39m    // the hidden note follows the user's request directly (the CND-10…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts[2m > [22mAutoByteus native runtime output-limit recovery (live)[2m > [22mOLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected
+[31m[1mError[22m: Test timed out in 1200000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".[39m
+[36m [2m❯[22m tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts:[2m387:40[22m[39m
+    [90m385| [39m    expect(error, `ERROR frame: ${JSON.stringify(error?.payload)}`).to…
+    [90m386| [39m    [34mexpect[39m(content[33m?.[39m[34mtrim[39m())[33m.[39m[34mtoBe[39m([32m"hello"[39m)[33m;[39m
+    [90m387| [39m    [35mawait[39m harness[33m.[39m[34mstopRun[39m(session)[33m;[39m
+    [90m   | [39m                                       [31m^[39m
+    [90m388| [39m  }[33m,[39m [33mSTEP_TIMEOUT_MS[39m)[33m;[39m
+    [90m389| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m2 passed[39m[22m[2m | [22m[33m7 skipped[39m[90m (11)[39m
+[2m   Start at [22m 07:30:37
+[2m   Duration [22m 1337.78s[2m (transform 5.16s, setup 24ms, import 7.46s, tests 1329.83s, environment 0ms)[22m
+
+exit=1

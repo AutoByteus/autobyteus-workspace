@@ -1,0 +1,106 @@
+Scope: all 13 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1680
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 1680, reused 96, downloaded 0, added 0
+Progress: resolved 1680, reused 210, downloaded 0, added 0
+Progress: resolved 1680, reused 377, downloaded 0, added 0
+Progress: resolved 1680, reused 503, downloaded 0, added 0
+Progress: resolved 1680, reused 544, downloaded 0, added 0
+Progress: resolved 1680, reused 624, downloaded 0, added 0
+Progress: resolved 1680, reused 712, downloaded 0, added 0
+
+   ╭───────────────────────────────────────────────╮
+   │                                               │
+   │     Update available! 10.28.2 → 12.11.2.      │
+   │     Changelog: https://pnpm.io/v/12.11.2      │
+   │   To update, run: corepack use pnpm@12.11.2   │
+   │                                               │
+   ╰───────────────────────────────────────────────╯
+
+Progress: resolved 1680, reused 810, downloaded 0, added 0
+Progress: resolved 1680, reused 987, downloaded 0, added 0
+Progress: resolved 1680, reused 1154, downloaded 0, added 0
+Progress: resolved 1680, reused 1407, downloaded 0, added 0
+Progress: resolved 1680, reused 1647, downloaded 0, added 0
+Progress: resolved 1680, reused 1677, downloaded 0, added 26
+Progress: resolved 1680, reused 1677, downloaded 0, added 57
+Progress: resolved 1680, reused 1677, downloaded 0, added 80
+Progress: resolved 1680, reused 1677, downloaded 0, added 119
+Progress: resolved 1680, reused 1677, downloaded 0, added 122
+Progress: resolved 1680, reused 1677, downloaded 0, added 130
+Progress: resolved 1680, reused 1677, downloaded 0, added 131
+Progress: resolved 1680, reused 1677, downloaded 0, added 165
+Progress: resolved 1680, reused 1677, downloaded 0, added 206
+Progress: resolved 1680, reused 1677, downloaded 0, added 236
+Progress: resolved 1680, reused 1677, downloaded 0, added 254
+Progress: resolved 1680, reused 1677, downloaded 0, added 272
+Progress: resolved 1680, reused 1677, downloaded 0, added 283
+Progress: resolved 1680, reused 1677, downloaded 0, added 339
+Progress: resolved 1680, reused 1677, downloaded 0, added 354
+Progress: resolved 1680, reused 1677, downloaded 0, added 371
+Progress: resolved 1680, reused 1677, downloaded 0, added 401
+Progress: resolved 1680, reused 1677, downloaded 0, added 412
+Progress: resolved 1680, reused 1677, downloaded 0, added 425
+Progress: resolved 1680, reused 1677, downloaded 0, added 445
+Progress: resolved 1680, reused 1677, downloaded 0, added 465
+Progress: resolved 1680, reused 1677, downloaded 0, added 476
+Progress: resolved 1680, reused 1677, downloaded 0, added 495
+Progress: resolved 1680, reused 1677, downloaded 0, added 502
+Progress: resolved 1680, reused 1677, downloaded 0, added 507
+Progress: resolved 1680, reused 1677, downloaded 0, added 516
+Progress: resolved 1680, reused 1677, downloaded 1, added 525
+Progress: resolved 1680, reused 1677, downloaded 1, added 567
+Progress: resolved 1680, reused 1677, downloaded 1, added 610
+Progress: resolved 1680, reused 1677, downloaded 1, added 629
+Progress: resolved 1680, reused 1677, downloaded 1, added 662
+Progress: resolved 1680, reused 1677, downloaded 1, added 674
+Progress: resolved 1680, reused 1677, downloaded 1, added 701
+Progress: resolved 1680, reused 1677, downloaded 1, added 758
+Progress: resolved 1680, reused 1677, downloaded 1, added 782
+Progress: resolved 1680, reused 1677, downloaded 1, added 846
+Progress: resolved 1680, reused 1677, downloaded 1, added 891
+Progress: resolved 1680, reused 1677, downloaded 1, added 939
+Progress: resolved 1680, reused 1677, downloaded 1, added 975
+Progress: resolved 1680, reused 1677, downloaded 1, added 981
+Progress: resolved 1680, reused 1677, downloaded 1, added 992
+Progress: resolved 1680, reused 1677, downloaded 1, added 1022
+Progress: resolved 1680, reused 1677, downloaded 1, added 1048
+Progress: resolved 1680, reused 1677, downloaded 1, added 1066
+Progress: resolved 1680, reused 1677, downloaded 1, added 1123
+Progress: resolved 1680, reused 1677, downloaded 1, added 1142
+Progress: resolved 1680, reused 1677, downloaded 1, added 1178
+Progress: resolved 1680, reused 1677, downloaded 1, added 1241
+Progress: resolved 1680, reused 1677, downloaded 1, added 1273
+Progress: resolved 1680, reused 1677, downloaded 1, added 1306
+Progress: resolved 1680, reused 1677, downloaded 1, added 1344
+Progress: resolved 1680, reused 1677, downloaded 1, added 1368
+Progress: resolved 1680, reused 1677, downloaded 1, added 1389
+Progress: resolved 1680, reused 1677, downloaded 1, added 1412
+Progress: resolved 1680, reused 1677, downloaded 1, added 1429
+Progress: resolved 1680, reused 1677, downloaded 1, added 1492
+Progress: resolved 1680, reused 1677, downloaded 1, added 1527
+Progress: resolved 1680, reused 1677, downloaded 1, added 1547
+Progress: resolved 1680, reused 1677, downloaded 1, added 1574
+Progress: resolved 1680, reused 1677, downloaded 1, added 1600
+Progress: resolved 1680, reused 1677, downloaded 1, added 1654
+Progress: resolved 1680, reused 1677, downloaded 1, added 1678
+Progress: resolved 1680, reused 1677, downloaded 1, added 1679
+Progress: resolved 1680, reused 1677, downloaded 1, added 1680, done
+ WARN  Failed to create bin at /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-application-devkit/dist/cli.js'
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] skipped: no spawn-helper found
+autobyteus-ts postinstall: Done
+ WARN  Failed to create bin at /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/applications/brief-studio/node_modules/@autobyteus/application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/applications/socratic-math-teacher/node_modules/@autobyteus/application-devkit/dist/cli.js'
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @google/genai@2.24.0.                               │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 1m 25.4s using pnpm v10.28.2

@@ -1,0 +1,58 @@
+{
+  "vm": "ab-nfs-api006-mac-a0000f39",
+  "source": "/Users/admin/ab-nfs-api006-mac-a0000f39-source",
+  "binary": {
+    "guestPath": "/Users/admin/ab-nfs-api006-mac-a0000f39-binary",
+    "sha256": "c79e5ac05367d6657bc0be74f2e8f5b9eb504af8ade265e1afdf0334218d0cf1"
+  },
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api006-mac-a0000f39",
+        "/usr/bin/sudo",
+        "-n",
+        "-u",
+        "admin",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/Users/admin",
+        "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n ls -la '/Library/Application Support/AutoByteusNFS'; sudo -n cat /etc/exports /etc/nfs.conf; sudo -n /usr/sbin/lsof -nP -iTCP:2049 -sTCP:LISTEN; sudo -n /sbin/nfsd status; ls -ld /Users/admin/ab-nfs-api006-mac-a0000f39-source /Users/admin/ab-nfs-api006-mac-a0000f39-source-new; sudo -n cat '/Library/Application Support/AutoByteusNFS/pending-setup.json'"
+      ],
+      "rc": 1,
+      "seconds": 0.375,
+      "stdout": "total 16\ndrwx------   5 root  admin  160 Oct 15 12:15 .\ndrwxr-xr-x  12 root  admin  384 Oct 15 12:08 ..\n-rw-------   1 root  admin  100 Oct 15 12:15 apple-detach-receipt.json\n-rw-------   1 root  admin    0 Oct 15 12:08 operation.lock\n-rw-r--r--   1 root  admin  480 Oct 15 12:15 service.log\n#\n# nfs.conf: the NFS configuration file\n#\nCOMMAND  PID USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME\nnfsd    1716 root   13u  IPv4 0x6027af1cc0c12cbe      0t0  TCP *:2049 (LISTEN)\nnfsd    1716 root   14u  IPv6 0x898d2c7e74401977      0t0  TCP *:2049 (LISTEN)\nnfsd service is enabled\nnfsd is running (pid 1716, 8 threads)\ndrwxr-xr-x  4 admin  staff  128 Oct 15 12:08 /Users/admin/ab-nfs-api006-mac-a0000f39-source\n",
+      "stderr": "ls: /Users/admin/ab-nfs-api006-mac-a0000f39-source-new: No such file or directory\ncat: /Library/Application Support/AutoByteusNFS/pending-setup.json: No such file or directory\n"
+    }
+  ],
+  "cases": [],
+  "result": "Observed",
+  "observation": {
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-api006-mac-a0000f39",
+      "/usr/bin/sudo",
+      "-n",
+      "-u",
+      "admin",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/Users/admin",
+      "PATH=/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "sudo -n ls -la '/Library/Application Support/AutoByteusNFS'; sudo -n cat /etc/exports /etc/nfs.conf; sudo -n /usr/sbin/lsof -nP -iTCP:2049 -sTCP:LISTEN; sudo -n /sbin/nfsd status; ls -ld /Users/admin/ab-nfs-api006-mac-a0000f39-source /Users/admin/ab-nfs-api006-mac-a0000f39-source-new; sudo -n cat '/Library/Application Support/AutoByteusNFS/pending-setup.json'"
+    ],
+    "rc": 1,
+    "seconds": 0.375,
+    "stdout": "total 16\ndrwx------   5 root  admin  160 Oct 15 12:15 .\ndrwxr-xr-x  12 root  admin  384 Oct 15 12:08 ..\n-rw-------   1 root  admin  100 Oct 15 12:15 apple-detach-receipt.json\n-rw-------   1 root  admin    0 Oct 15 12:08 operation.lock\n-rw-r--r--   1 root  admin  480 Oct 15 12:15 service.log\n#\n# nfs.conf: the NFS configuration file\n#\nCOMMAND  PID USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME\nnfsd    1716 root   13u  IPv4 0x6027af1cc0c12cbe      0t0  TCP *:2049 (LISTEN)\nnfsd    1716 root   14u  IPv6 0x898d2c7e74401977      0t0  TCP *:2049 (LISTEN)\nnfsd service is enabled\nnfsd is running (pid 1716, 8 threads)\ndrwxr-xr-x  4 admin  staff  128 Oct 15 12:08 /Users/admin/ab-nfs-api006-mac-a0000f39-source\n",
+    "stderr": "ls: /Users/admin/ab-nfs-api006-mac-a0000f39-source-new: No such file or directory\ncat: /Library/Application Support/AutoByteusNFS/pending-setup.json: No such file or directory\n"
+  }
+}

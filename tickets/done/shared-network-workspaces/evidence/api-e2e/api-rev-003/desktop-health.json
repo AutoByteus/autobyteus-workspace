@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "health-check"
+  ],
+  "rc": 0,
+  "stdout": "{\"schema_version\":\"1\",\"ok\":true,\"command\":\"health-check\",\"result\":{\"connected\":true,\"endpoint\":\"http://127.0.0.1:59463\",\"context_count\":1,\"page_count\":1}}\n",
+  "stderr": ""
+}

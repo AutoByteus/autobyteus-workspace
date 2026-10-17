@@ -1,0 +1,98 @@
+diff --git a/agent-orgs/autobyteus-org/org-config.json b/agent-orgs/autobyteus-org/org-config.json
+index 3b72316..fc565fd 100644
+--- a/agent-orgs/autobyteus-org/org-config.json
++++ b/agent-orgs/autobyteus-org/org-config.json
+@@ -1,5 +1,4 @@
+ {
+-  "avatarUrl": null,
+   "members": [
+     {
+       "memberName": "product_team",
+@@ -68,5 +67,6 @@
+       ]
+     }
+   ],
++  "avatarUrl": null,
+   "defaultLaunchConfig": null
+ }
+diff --git a/agent-orgs/autobyteus-org/org.md b/agent-orgs/autobyteus-org/org.md
+index 937f68c..fb8732b 100644
+--- a/agent-orgs/autobyteus-org/org.md
++++ b/agent-orgs/autobyteus-org/org.md
+@@ -1,6 +1,6 @@
+ ---
+ name: AutoByteus Org
+-description: A cross-functional AutoByteus organization combining product experience, software engineering, and marketing execution through shared Teams.
++description: A cross-functional AutoByteus organization combining product experience, software engineering, and marketing execution through shared Teams. Edited in the app (API-002).
+ category: product-and-software
+ ---
+ 
+diff --git a/agent-teams/software-engineering-team/team-config.json b/agent-teams/software-engineering-team/team-config.json
+index 852fddd..e0afa88 100644
+--- a/agent-teams/software-engineering-team/team-config.json
++++ b/agent-teams/software-engineering-team/team-config.json
+@@ -4,37 +4,31 @@
+     {
+       "memberName": "solution_designer",
+       "ref": "solution-designer",
+-      "refType": "agent",
+       "refScope": "team_local"
+     },
+     {
+       "memberName": "architecture_reviewer",
+       "ref": "architecture-reviewer",
+-      "refType": "agent",
+       "refScope": "team_local"
+     },
+     {
+       "memberName": "implementation_engineer",
+       "ref": "implementation-engineer",
+-      "refType": "agent",
+       "refScope": "team_local"
+     },
+     {
+       "memberName": "code_reviewer",
+       "ref": "code-reviewer",
+-      "refType": "agent",
+       "refScope": "team_local"
+     },
+     {
+       "memberName": "api_e2e_engineer",
+       "ref": "api-e2e-engineer",
+-      "refType": "agent",
+       "refScope": "team_local"
+     },
+     {
+       "memberName": "delivery_engineer",
+       "ref": "delivery-engineer",
+-      "refType": "agent",
+       "refScope": "team_local"
+     }
+   ],
+@@ -176,5 +170,14 @@
+         "When delivery judges the validation evidence too weak to prove the change works and API/E2E must add or strengthen evidence, such as a missing journey, an unproven acceptance criterion, or an unrecorded user-only check."
+       ]
+     }
+-  ]
++  ],
++  "avatarUrl": null,
++  "defaultLaunchConfig": {
++    "llmModelIdentifier": "sonnet",
++    "runtimeKind": "claude_agent_sdk",
++    "llmConfig": {
++      "reasoning_effort": "xhigh",
++      "thinking_enabled": true
++    }
++  }
+ }
+diff --git a/agent-teams/software-engineering-team/team.md b/agent-teams/software-engineering-team/team.md
+index b0821f0..38ad48b 100644
+--- a/agent-teams/software-engineering-team/team.md
++++ b/agent-teams/software-engineering-team/team.md
+@@ -63,4 +63,4 @@ specialist sends it the context even without a rule.
+ Every role keeps to the ticket's scope: the requirements doc's Scope Guardrail
+ and the design spec's Change Scope. Problems found outside it become follow-ups
+ for the agent that manages the project's Tasks instead of growing the ticket;
+-see [Example 11](shared/design-examples.md#example-11-keeping-a-ticket-in-scope-during-technical-review).
++see [Example 11](shared/design-examples.md#example-11-keeping-a-ticket-in-scope-during-technical-review).
+\ No newline at end of file

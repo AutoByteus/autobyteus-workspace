@@ -27,7 +27,10 @@ const tokenPayload = (details: AgentPresentationTokenUsageDetails) => ({
   api_cost_status: details.apiCostStatus, missing_price_dimensions: [...details.missingPriceDimensions],
   pricing_policy_key: details.pricingPolicyKey, selected_pricing_tier_id: details.selectedPricingTierId,
   latest_prompt_tokens: details.latestPromptTokens, effective_context_window_tokens: details.effectiveContextWindowTokens,
-  context_window_usage_percent: details.contextWindowUsagePercent, run_summary_after_event: details.runSummaryAfterEvent,
+  context_window_usage_percent: details.contextWindowUsagePercent,
+  context_compaction_threshold_tokens: details.contextCompactionThresholdTokens, reports_model_call: details.reportsModelCall,
+  output_throughput: details.outputThroughput,
+  run_summary_after_event: details.runSummaryAfterEvent,
   quality_flags: [...details.qualityFlags],
 });
 

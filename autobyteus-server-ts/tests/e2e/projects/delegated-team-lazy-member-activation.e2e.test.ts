@@ -120,8 +120,8 @@ suite("Delegated Team copies start only the members that work reaches, in every 
   let dataDir = "", workspace = "", argvLog = "", app: FastifyInstance | undefined, url!: URL;
   const sockets: WebSocket[] = [];
   const active: Array<{ kind: Kind; rootId: string }> = [];
-  const ids = { manager: "", worker: "", squad: "", team: "", org: "" };
-  const names = { squad: "" };
+  const ids = { manager: "", worker: "", squad: "", squad2: "", team: "", org: "" };
+  const names = { squad: "", squad2: "" };
   const savedEnv = new Map<string, string | undefined>();
   const evidence: Record<string, unknown> = {};
 
@@ -213,10 +213,16 @@ suite("Delegated Team copies start only the members that work reaches, in every 
     app = started.fastify; url = started.mainUrl;
     const suffix = randomUUID().slice(0, 6);
     names.squad = `DTL Squad ${suffix}`;
-    ids.manager = await agentDefinition(`DTL Manager ${suffix}`, ["create_or_update_task"]);
+    names.squad2 = `DTL Squad Two ${suffix}`;
+    ids.manager = await agentDefinition(`DTL Manager ${suffix}`, ["create_task", "update_task"]);
     ids.worker = await agentDefinition(`DTL Worker ${suffix}`, []);
     ids.squad = (await graphql(`mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}`,
       { input: { name: names.squad, description: "Task Team", instructions: "Follow requests.", coordinatorMemberName: "lead",
+        nodes: MEMBERS.map((memberName) => ({ memberName, ref: ids.worker, refScope: "SHARED" })) } },
+    )).createAgentTeamDefinition.id;
+    // A second catalog Team of the same shape: a copy member delegates it (its own Team is refused, collaboration-model-contract).
+    ids.squad2 = (await graphql(`mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}`,
+      { input: { name: names.squad2, description: "Second Task Team", instructions: "Follow requests.", coordinatorMemberName: "lead",
         nodes: MEMBERS.map((memberName) => ({ memberName, ref: ids.worker, refScope: "SHARED" })) } },
     )).createAgentTeamDefinition.id;
     ids.team = (await graphql(`mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}`,
@@ -492,9 +498,13 @@ suite("Delegated Team copies start only the members that work reaches, in every 
       await root.answered(copy.members.reviewer.agentRunId, copy.members.reviewer.address, "REVIEW-SECOND");
       record.memberStartFailure = { result: failed, errorCard: cards[0] };
     } else {
-      // DTL-004 (AC-003, REQ-004): a copy member delegates the Team (a Team-hosted copy); only its coordinator starts.
+      // DTL-004 (AC-003, REQ-004): a copy member delegating its own Team is refused (collaboration-model-contract); it delegates
+      // another catalog Team instead, and only that copy's coordinator starts.
+      const ownTeam = await memberCalls(root, copy, "lead", callTool("delegate_task", { recipient_address: squad,
+        description: "Own team work." }));
+      expect(JSON.stringify(ownTeam), JSON.stringify(ownTeam)).toContain("COLLABORATION_SELF_TARGET_REJECTED");
       const nestedFrom = (await launches()).length;
-      const nestedResult = await memberCalls(root, copy, "lead", callTool("delegate_task", { recipient_address: squad,
+      const nestedResult = await memberCalls(root, copy, "lead", callTool("delegate_task", { recipient_address: `/${segment(names.squad2)}`,
         description: "Nested team work. Marker NESTED-FIRST." }));
       const nested = await copyOf(root, nestedResult, [copy.teamRunId]);
       await root.answered(nested.members.lead.agentRunId, nested.members.lead.address, "NESTED-FIRST");
@@ -522,9 +532,9 @@ suite("Delegated Team copies start only the members that work reaches, in every 
     record.idleRestore = { launches: wakeLaunches };
 
     // DTL-006 (AC-005): Task DONE stops the copy; reopen and the Manager's message resume only the lead.
-    await root.managerCalls(callTool("create_or_update_task", { task_id: taskId!, status: "DONE" }));
+    await root.managerCalls(callTool("update_task", { task_id: taskId!, status: "DONE" }));
     await until(() => offline(copy, MEMBERS), `${kind}: copy stopped by DONE`, 30_000);
-    await root.managerCalls(callTool("create_or_update_task", { task_id: taskId!, status: "TODO" }));
+    await root.managerCalls(callTool("update_task", { task_id: taskId!, status: "TODO" }));
     const reopenFrom = (await launches()).length;
     const reopened = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: copy.members.lead.agentRunId, content: "Reopened. Marker LEAD-REOPEN." }));
     expect(reopened, JSON.stringify(reopened)).toMatchObject({ accepted: true });

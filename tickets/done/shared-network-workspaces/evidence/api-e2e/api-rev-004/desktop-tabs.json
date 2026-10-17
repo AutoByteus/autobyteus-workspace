@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "list-tabs"
+  ],
+  "rc": 0,
+  "stdout": "{\"schema_version\":\"1\",\"ok\":true,\"command\":\"list-tabs\",\"result\":{\"tabs\":[{\"tab_id\":\"ADCEC247EC1A87421D4DB626E85165F1\",\"url\":\"file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat\",\"title\":\"\"}]}}\n",
+  "stderr": ""
+}

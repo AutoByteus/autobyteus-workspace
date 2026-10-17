@@ -1,0 +1,5 @@
+--- FAIL: TestFailedStartSameIDProofAndConsumption (0.02s)
+    start_recovery_test.go:152: {recovered actual API/shared binding ready} 1 0 1
+FAIL
+FAIL	github.com/AutoByteus/autobyteus-workspace/autobyteus-nfs/internal/docker	0.376s
+FAIL

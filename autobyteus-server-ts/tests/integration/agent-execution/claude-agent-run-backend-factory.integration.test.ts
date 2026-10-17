@@ -184,7 +184,6 @@ const createFactory = (input: {
         lifecycle: inert,
       },
       waitForIdle: inert,
-      compactionLlmFactory: inert,
     },
     codex: {
       workspaceSkillMaterializer: inert,

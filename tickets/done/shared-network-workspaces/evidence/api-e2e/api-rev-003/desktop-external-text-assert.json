@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "63E82A998089CC78CC6976AF907DBE03",
+    "--script",
+    "() => {if(!document.body.innerText.includes(\"API003_EXTERNAL_DESKTOP\"))throw Error(\"fresh remote bytes absent\");return {result:\"Pass\",freshMountedText:true};}"
+  ],
+  "rc": 0,
+  "stdout": "{\"schema_version\":\"1\",\"ok\":true,\"command\":\"run-script\",\"result\":{\"tab_id\":\"63E82A998089CC78CC6976AF907DBE03\",\"url\":\"file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat\",\"output_mode\":\"inline\",\"result\":{\"result\":\"Pass\",\"freshMountedText\":true}}}\n",
+  "stderr": ""
+}

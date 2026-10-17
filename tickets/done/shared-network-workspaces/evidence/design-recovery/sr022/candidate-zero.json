@@ -1,0 +1,351 @@
+{
+  "phase": "candidate-zero",
+  "uid": 1000,
+  "gid": 109,
+  "groups": [],
+  "cases": [
+    {
+      "name": "inplace-1024",
+      "file": "sr022-candidate-zero-e92fa53b2b6846d1bbd4a3343313f311",
+      "size": 1024,
+      "kind": "inplace",
+      "sourceBefore": [
+        64769,
+        577883,
+        1000,
+        109,
+        420
+      ],
+      "sourceAfter": [
+        64769,
+        577883,
+        1000,
+        109,
+        420
+      ],
+      "sourceHash": "656d125f7504fc3c49ab3a3cc7949c0cc552753b8f8faaa7a0870921d95a2b15",
+      "oldHash": "0fa99fc773a9f50daab2d827dc5b7af16d63fcf4cc83a14d2e7a152698cb39ea",
+      "newHash": "656d125f7504fc3c49ab3a3cc7949c0cc552753b8f8faaa7a0870921d95a2b15",
+      "observations": [
+        {
+          "startSeconds": 0.00011990800000205581,
+          "reads": [
+            {
+              "sha256": "656d125f7504fc3c49ab3a3cc7949c0cc552753b8f8faaa7a0870921d95a2b15",
+              "size": 1024,
+              "startSeconds": 0.00012304500000226426,
+              "endSeconds": 0.0006673159999976974
+            },
+            {
+              "sha256": "656d125f7504fc3c49ab3a3cc7949c0cc552753b8f8faaa7a0870921d95a2b15",
+              "size": 1024,
+              "startSeconds": 0.000674250000002985,
+              "endSeconds": 0.0010465220000028808
+            }
+          ],
+          "endSeconds": 0.0010487509999990152
+        }
+      ],
+      "firstExact": [
+        0.0006673159999976974,
+        0.0010465220000028808
+      ],
+      "withinFiveSeconds": true
+    },
+    {
+      "name": "inplace-1MiB",
+      "file": "sr022-candidate-zero-5d48edcae2004a3fb6cd010f19f79f25",
+      "size": 1048576,
+      "kind": "inplace",
+      "sourceBefore": [
+        64769,
+        577885,
+        1000,
+        109,
+        420
+      ],
+      "sourceAfter": [
+        64769,
+        577885,
+        1000,
+        109,
+        420
+      ],
+      "sourceHash": "bc3ff9efc603a4364e451ad7106a834eb19f0b5fb8b060d7f5c01f508c37acb0",
+      "oldHash": "240fff3563b2fafa9d66a3f3f4e4854edabc10ed792f4b723a68264d35b29b54",
+      "newHash": "bc3ff9efc603a4364e451ad7106a834eb19f0b5fb8b060d7f5c01f508c37acb0",
+      "observations": [
+        {
+          "startSeconds": 0.0016983599999988996,
+          "reads": [
+            {
+              "sha256": "bc3ff9efc603a4364e451ad7106a834eb19f0b5fb8b060d7f5c01f508c37acb0",
+              "size": 1048576,
+              "startSeconds": 0.001701042000000541,
+              "endSeconds": 0.0035181129999983796
+            },
+            {
+              "sha256": "bc3ff9efc603a4364e451ad7106a834eb19f0b5fb8b060d7f5c01f508c37acb0",
+              "size": 1048576,
+              "startSeconds": 0.003521292000002063,
+              "endSeconds": 0.005311409000000822
+            }
+          ],
+          "endSeconds": 0.005314009999999314
+        }
+      ],
+      "firstExact": [
+        0.0035181129999983796,
+        0.005311409000000822
+      ],
+      "withinFiveSeconds": true
+    },
+    {
+      "name": "atomic-replace",
+      "file": "sr022-candidate-zero-fab6fc4354464cc8a590560d18e94c7e",
+      "size": 1024,
+      "kind": "replace",
+      "sourceBefore": [
+        64769,
+        578030,
+        1000,
+        109,
+        420
+      ],
+      "sourceAfter": [
+        64769,
+        578035,
+        1000,
+        109,
+        420
+      ],
+      "sourceHash": "acbf24122278b51cdc5ef3653e4744cd50a62b077f3faecd589944c9d567eb50",
+      "oldHash": "ac437e241af9b20e3f724adf52abc12a8a34844e34aa18748df2ba9f9d84e26d",
+      "newHash": "acbf24122278b51cdc5ef3653e4744cd50a62b077f3faecd589944c9d567eb50",
+      "observations": [
+        {
+          "startSeconds": 5.7044999998367985e-05,
+          "reads": [
+            {
+              "sha256": "acbf24122278b51cdc5ef3653e4744cd50a62b077f3faecd589944c9d567eb50",
+              "size": 1024,
+              "startSeconds": 5.881899999593543e-05,
+              "endSeconds": 0.001075292999999533
+            },
+            {
+              "sha256": "acbf24122278b51cdc5ef3653e4744cd50a62b077f3faecd589944c9d567eb50",
+              "size": 1024,
+              "startSeconds": 0.0010786769999953094,
+              "endSeconds": 0.0015703209999955448
+            }
+          ],
+          "endSeconds": 0.0015721369999965873
+        }
+      ],
+      "firstExact": [
+        0.001075292999999533,
+        0.0015703209999955448
+      ],
+      "withinFiveSeconds": true
+    },
+    {
+      "name": "create-after-negative",
+      "file": "sr022-candidate-zero-c1199c94311a46759000669c170a78cd",
+      "size": 1024,
+      "kind": "new",
+      "sourceBefore": null,
+      "sourceAfter": [
+        64769,
+        578030,
+        1000,
+        109,
+        420
+      ],
+      "sourceHash": "d91ac3e599cb5e5694b854dd3ecfc7d51be5cba96f9ecd38b23741b8adf4aaae",
+      "oldHash": "111b3a10f6587440ade7a61091c6064894868af41c467d2560ad6a341869c22b",
+      "newHash": "d91ac3e599cb5e5694b854dd3ecfc7d51be5cba96f9ecd38b23741b8adf4aaae",
+      "observations": [
+        {
+          "startSeconds": 7.504000000579936e-05,
+          "reads": [
+            {
+              "missing": true,
+              "startSeconds": 7.681499999989683e-05,
+              "endSeconds": 9.464700000449966e-05
+            },
+            {
+              "missing": true,
+              "startSeconds": 9.600900000350521e-05,
+              "endSeconds": 0.0001012920000036388
+            }
+          ],
+          "endSeconds": 0.00010203500000471877
+        },
+        {
+          "startSeconds": 0.10449710000000323,
+          "reads": [
+            {
+              "missing": true,
+              "startSeconds": 0.10450341500000349,
+              "endSeconds": 0.10455397800000554
+            },
+            {
+              "missing": true,
+              "startSeconds": 0.10455670300000008,
+              "endSeconds": 0.1045642560000033
+            }
+          ],
+          "endSeconds": 0.10456479300000154
+        },
+        {
+          "startSeconds": 0.20712862799999954,
+          "reads": [
+            {
+              "missing": true,
+              "startSeconds": 0.2071405160000026,
+              "endSeconds": 0.20735833200000542
+            },
+            {
+              "missing": true,
+              "startSeconds": 0.20736547300000296,
+              "endSeconds": 0.20740406600000227
+            }
+          ],
+          "endSeconds": 0.20740518000000208
+        },
+        {
+          "startSeconds": 0.31185807300000334,
+          "reads": [
+            {
+              "missing": true,
+              "startSeconds": 0.31186525500000073,
+              "endSeconds": 0.3119158189999993
+            },
+            {
+              "missing": true,
+              "startSeconds": 0.31191788299999956,
+              "endSeconds": 0.3119251890000001
+            }
+          ],
+          "endSeconds": 0.31192564300000214
+        },
+        {
+          "startSeconds": 0.4161326520000017,
+          "reads": [
+            {
+              "missing": true,
+              "startSeconds": 0.4161395859999999,
+              "endSeconds": 0.4162286600000016
+            },
+            {
+              "missing": true,
+              "startSeconds": 0.41623167400000227,
+              "endSeconds": 0.4162400530000028
+            }
+          ],
+          "endSeconds": 0.4162405070000048
+        },
+        {
+          "startSeconds": 0.5164176440000006,
+          "reads": [
+            {
+              "missing": true,
+              "startSeconds": 0.5164244629999999,
+              "endSeconds": 0.5164792190000043
+            },
+            {
+              "missing": true,
+              "startSeconds": 0.5164815330000039,
+              "endSeconds": 0.5164890130000046
+            }
+          ],
+          "endSeconds": 0.5164895910000027
+        },
+        {
+          "startSeconds": 0.6213278439999996,
+          "reads": [
+            {
+              "missing": true,
+              "startSeconds": 0.621335282000004,
+              "endSeconds": 0.6213924350000042
+            },
+            {
+              "missing": true,
+              "startSeconds": 0.6213949560000032,
+              "endSeconds": 0.6214022700000044
+            }
+          ],
+          "endSeconds": 0.6214026840000031
+        },
+        {
+          "startSeconds": 0.7226066320000015,
+          "reads": [
+            {
+              "missing": true,
+              "startSeconds": 0.7226135330000005,
+              "endSeconds": 0.7226761410000009
+            },
+            {
+              "missing": true,
+              "startSeconds": 0.7226789090000025,
+              "endSeconds": 0.7226861410000041
+            }
+          ],
+          "endSeconds": 0.7226866789999988
+        },
+        {
+          "startSeconds": 0.8233949310000028,
+          "reads": [
+            {
+              "missing": true,
+              "startSeconds": 0.8234028650000056,
+              "endSeconds": 0.8234560920000007
+            },
+            {
+              "missing": true,
+              "startSeconds": 0.8234588609999989,
+              "endSeconds": 0.823467167000004
+            }
+          ],
+          "endSeconds": 0.8234678290000019
+        },
+        {
+          "startSeconds": 0.9238087820000018,
+          "reads": [
+            {
+              "sha256": "d91ac3e599cb5e5694b854dd3ecfc7d51be5cba96f9ecd38b23741b8adf4aaae",
+              "size": 1024,
+              "startSeconds": 0.923816923000004,
+              "endSeconds": 0.925438401000001
+            },
+            {
+              "sha256": "d91ac3e599cb5e5694b854dd3ecfc7d51be5cba96f9ecd38b23741b8adf4aaae",
+              "size": 1024,
+              "startSeconds": 0.9254420789999998,
+              "endSeconds": 0.9266383190000056
+            }
+          ],
+          "endSeconds": 0.9266410470000039
+        }
+      ],
+      "firstExact": [
+        0.925438401000001,
+        0.9266383190000056
+      ],
+      "withinFiveSeconds": true
+    }
+  ],
+  "sourceIdentity": [
+    64769,
+    577887,
+    1000,
+    109,
+    493
+  ],
+  "markers": [
+    "{\"storageId\":\"904e2af2-e1db-4d23-9322-f86d50469290\"}\n",
+    "{\"storageId\":\"904e2af2-e1db-4d23-9322-f86d50469290\"}\n",
+    "{\"storageId\":\"904e2af2-e1db-4d23-9322-f86d50469290\"}\n"
+  ],
+  "result": "Observed"
+}

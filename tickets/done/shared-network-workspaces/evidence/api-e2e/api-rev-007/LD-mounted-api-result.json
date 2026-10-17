@@ -1,0 +1,647 @@
+{
+  "vm": "ab-nfs-api007-linux-b72ac1ef",
+  "source": "/home/admin/ab-nfs-api007-linux-b72ac1ef-native-source",
+  "mountRoot": "/Volumes/autobyteus-shared",
+  "binary": {
+    "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api007-ejvzqfh7/autobyteus-nfs-docker-linux-arm64",
+    "sha256": "08e1da412ecd5853f41903943f30e2f3d8a794d4fe638bd16ee577cdf87d1ad1",
+    "size": 11049466
+  },
+  "metadata": {
+    "version": "v1.5.3-beta.2",
+    "sourceHash": "f0d71675d3d9b70d89969a8071b8de03287cff0676669ddab295f14568041c88",
+    "ubuntuPackages": {
+      "nfs-common": "1:2.6.4-3ubuntu5.1"
+    },
+    "engineImage": "127.0.0.1:5000/ab-nfs-api007@sha256:29f712a2ad0963c4effe28209e0953cf814a5013f47c46ee7bb871b9b923071b",
+    "qualifiedTargets": [],
+    "engine": {
+      "source": {
+        "version": "4.3-8ubuntu1",
+        "files": [
+          {
+            "file": "nfs-ganesha_4.3-8ubuntu1.dsc",
+            "sha256": "ffa76c26b12d23b67dcda184d7ec7ae55a42d1d14bf84bb7c0cf0134156ba3ca",
+            "size": 3576
+          },
+          {
+            "file": "nfs-ganesha_4.3.orig.tar.gz",
+            "sha256": "d4efd020edf4dfe65abfd0f0f66eb4390613360f99dce4354467ab297e0e1c0f",
+            "size": 1895017
+          },
+          {
+            "file": "nfs-ganesha_4.3-8ubuntu1.debian.tar.xz",
+            "sha256": "ef35d130e1b37149b156d201b70e6c2804bebbfbee1713c5bd6d938dd433fe03",
+            "size": 19224
+          }
+        ],
+        "patchCommit": "98eb77c4fd94effa6882b214698a77752ec79f6e",
+        "patchSha256": "ba682b5c64e7f800c927f4c90b2a7bfb4b8d2a323ddc48c3d591db3d75799031",
+        "sourceDateEpoch": 1791936000,
+        "recipeSha256": "34e28c622f598487af74a545115fa8dffe94e8f1aa5d85c091515aa187d66e4f",
+        "buildBase": "ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e"
+      },
+      "architectures": {
+        "arm64": {
+          "packages": [
+            {
+              "file": "nfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb",
+              "sha256": "0b5c78911cfc1b299e9894e1f841e74176fbb2cb45b158008e4530713549ebc8",
+              "size": 613976,
+              "name": "nfs-ganesha",
+              "version": "4.3-8ubuntu1+autobyteus1",
+              "architecture": "arm64"
+            },
+            {
+              "file": "nfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb",
+              "sha256": "3bf06769646d93ea85f0277fe0726eb42d0d29a70c0108505706954e5e8d2ac6",
+              "size": 48626,
+              "name": "nfs-ganesha-vfs",
+              "version": "4.3-8ubuntu1+autobyteus1",
+              "architecture": "arm64"
+            }
+          ],
+          "correspondingSource": {
+            "file": "autobyteus-nfs-ganesha-source-4.3-8ubuntu1+autobyteus1-arm64.tar.gz",
+            "sha256": "eed35ab4b732ac05d2afc3531e70cdc27031fb414fdb52a0daf093f33daaec0a",
+            "size": 1930105
+          },
+          "buildInventory": {
+            "file": "engine-build-arm64.txt",
+            "sha256": "56fad63c43f85091d84df347564dfd962a9afaafe519539849860b1807695761",
+            "size": 57836
+          }
+        }
+      }
+    }
+  },
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api007-linux-b72ac1ef",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c 'python3 -c '\"'\"'from pathlib import Path\nimport base64\np=Path('\"'\"'\"'\"'\"'\"'\"'\"'/home/admin/ab-nfs-api007-linux-b72ac1ef-native-source'\"'\"'\"'\"'\"'\"'\"'\"')/'\"'\"'\"'\"'\"'\"'\"'\"'api-scenario-LD'\"'\"'\"'\"'\"'\"'\"'\"';p.mkdir();(p/'\"'\"'\"'\"'\"'\"'\"'\"'assets'\"'\"'\"'\"'\"'\"'\"'\"').mkdir();(p/'\"'\"'\"'\"'\"'\"'\"'\"'preexisting.txt'\"'\"'\"'\"'\"'\"'\"'\"').write_text('\"'\"'\"'\"'\"'\"'\"'\"'API007_INITIAL'\"'\"'\"'\"'\"'\"'\"'\"');(p/'\"'\"'\"'\"'\"'\"'\"'\"'index.html'\"'\"'\"'\"'\"'\"'\"'\"').write_text('\"'\"'\"'\"'\"'\"'\"'\"'<html><body><h1>API007 mounted HTML</h1><img src=\"assets/diagram%20one.png\"></body></html>'\"'\"'\"'\"'\"'\"'\"'\"');(p/'\"'\"'\"'\"'\"'\"'\"'\"'assets/diagram one.png'\"'\"'\"'\"'\"'\"'\"'\"').write_bytes(base64.b64decode('\"'\"'\"'\"'\"'\"'\"'\"'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='\"'\"'\"'\"'\"'\"'\"'\"'))\n'\"'\"' && git -C /home/admin/ab-nfs-api007-linux-b72ac1ef-native-source/api-scenario-LD init -q && git -C /home/admin/ab-nfs-api007-linux-b72ac1ef-native-source/api-scenario-LD add . && git -C /home/admin/ab-nfs-api007-linux-b72ac1ef-native-source/api-scenario-LD -c user.name=API007 -c user.email=api007@example.invalid commit -qm fixture'"
+      ],
+      "rc": 0,
+      "seconds": 1.001,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "-i",
+        "ab-nfs-api007-linux-b72ac1ef",
+        "sudo",
+        "-n",
+        "docker",
+        "exec",
+        "-i",
+        "autobyteus-server-0",
+        "node",
+        "--input-type=module"
+      ],
+      "rc": 0,
+      "seconds": 0.359,
+      "stdout": "{\"cases\":[{\"name\":\"public workspace create/fileContent/folderChildren on mounted project\",\"result\":\"Pass\"},{\"name\":\"healthy HTML static relative asset and image content APIs return exact NFS bytes\",\"result\":\"Pass\"},{\"name\":\"actual WebSocket PTY enters mounted cwd and grants only exact child Git path\",\"result\":\"Pass\"}],\"root\":\"/Volumes/autobyteus-shared/api-scenario-LD\",\"workspaceId\":\"agent_ws_d6926053f050ba1d1f163a0a956d1e91483c33d5cb3b0da6565996999d62bcfc\",\"terminal\":{\"cwd\":\"/Volumes/autobyteus-shared/api-scenario-LD\",\"uid\":0,\"gitRc\":0,\"gitErr\":\"\",\"gitTop\":\"/Volumes/autobyteus-shared/api-scenario-LD\",\"count\":\"1\",\"key0\":\"safe.directory\",\"value0\":\"/Volumes/autobyteus-shared/api-scenario-LD\"},\"globalGitConfig\":{\"before\":null,\"after\":null,\"unchanged\":true},\"result\":\"Pass\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "-i",
+        "ab-nfs-api007-linux-b72ac1ef",
+        "sudo",
+        "-n",
+        "docker",
+        "exec",
+        "-i",
+        "autobyteus-server-1",
+        "node",
+        "--input-type=module"
+      ],
+      "rc": 0,
+      "seconds": 0.621,
+      "stdout": "{\"cases\":[{\"name\":\"public workspace create/fileContent/folderChildren on mounted project\",\"result\":\"Pass\"},{\"name\":\"healthy HTML static relative asset and image content APIs return exact NFS bytes\",\"result\":\"Pass\"},{\"name\":\"actual WebSocket PTY enters mounted cwd and grants only exact child Git path\",\"result\":\"Pass\"}],\"root\":\"/Volumes/autobyteus-shared/api-scenario-LD\",\"workspaceId\":\"agent_ws_d6926053f050ba1d1f163a0a956d1e91483c33d5cb3b0da6565996999d62bcfc\",\"terminal\":{\"cwd\":\"/Volumes/autobyteus-shared/api-scenario-LD\",\"uid\":0,\"gitRc\":0,\"gitErr\":\"\",\"gitTop\":\"/Volumes/autobyteus-shared/api-scenario-LD\",\"count\":\"1\",\"key0\":\"safe.directory\",\"value0\":\"/Volumes/autobyteus-shared/api-scenario-LD\"},\"globalGitConfig\":{\"before\":null,\"after\":null,\"unchanged\":true},\"result\":\"Pass\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api007-linux-b72ac1ef",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n docker exec autobyteus-server-1 node --input-type=module -e 'import fs from '\"'\"'node:fs/promises'\"'\"';const f=await fs.open(\"/Volumes/autobyteus-shared/api-scenario-LD/peer-autobyteus-server-1.bin\",'\"'\"'w'\"'\"');await f.writeFile(Buffer.from(Array.from({length:1024},(_,i)=>i%256)));await f.sync();await f.close();console.log('\"'\"'committed'\"'\"');'"
+      ],
+      "rc": 0,
+      "seconds": 0.425,
+      "stdout": "committed\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api007-linux-b72ac1ef",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n docker exec autobyteus-server-0 node --input-type=module -e 'import assert from '\"'\"'node:assert/strict'\"'\"';let r=await fetch('\"'\"'http://127.0.0.1:8000/rest/workspaces/'\"'\"'+encodeURIComponent(\"agent_ws_d6926053f050ba1d1f163a0a956d1e91483c33d5cb3b0da6565996999d62bcfc\")+'\"'\"'/content?path='\"'\"'+encodeURIComponent(\"peer-autobyteus-server-1.bin\"));assert.equal(r.status,200);assert.deepEqual(Buffer.from(await r.arrayBuffer()),Buffer.from(Array.from({length:1024},(_,i)=>i%256)));console.log('\"'\"'exact peer HTTP bytes'\"'\"');'"
+      ],
+      "rc": 0,
+      "seconds": 0.252,
+      "stdout": "exact peer HTTP bytes\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api007-linux-b72ac1ef",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n docker exec autobyteus-server-1 node --input-type=module -e 'import fs from '\"'\"'node:fs/promises'\"'\"';await fs.unlink(\"/Volumes/autobyteus-shared/api-scenario-LD/peer-autobyteus-server-1.bin\");console.log('\"'\"'deleted'\"'\"')'"
+      ],
+      "rc": 0,
+      "seconds": 0.254,
+      "stdout": "deleted\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api007-linux-b72ac1ef",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n docker exec autobyteus-server-0 node --input-type=module -e 'import assert from '\"'\"'node:assert/strict'\"'\"';const base='\"'\"'http://127.0.0.1:8000/rest/workspaces/'\"'\"'+encodeURIComponent(\"agent_ws_d6926053f050ba1d1f163a0a956d1e91483c33d5cb3b0da6565996999d62bcfc\");for(const path of [\"peer-autobyteus-server-1.bin\",'\"'\"'../outside'\"'\"','\"'\"'/etc/passwd'\"'\"']){const r=await fetch(base+'\"'\"'/content?path='\"'\"'+encodeURIComponent(path));assert.ok([400,403,404].includes(r.status),path+'\"'\"':'\"'\"'+r.status);console.log(JSON.stringify({path,status:r.status}));}'"
+      ],
+      "rc": 0,
+      "seconds": 0.227,
+      "stdout": "{\"path\":\"peer-autobyteus-server-1.bin\",\"status\":404}\n{\"path\":\"../outside\",\"status\":400}\n{\"path\":\"/etc/passwd\",\"status\":400}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api007-linux-b72ac1ef",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n docker exec autobyteus-server-0 node --input-type=module -e 'import fs from '\"'\"'node:fs/promises'\"'\"';const f=await fs.open(\"/Volumes/autobyteus-shared/api-scenario-LD/peer-autobyteus-server-0.bin\",'\"'\"'w'\"'\"');await f.writeFile(Buffer.from(Array.from({length:1024},(_,i)=>i%256)));await f.sync();await f.close();console.log('\"'\"'committed'\"'\"');'"
+      ],
+      "rc": 0,
+      "seconds": 0.287,
+      "stdout": "committed\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api007-linux-b72ac1ef",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n docker exec autobyteus-server-1 node --input-type=module -e 'import assert from '\"'\"'node:assert/strict'\"'\"';let r=await fetch('\"'\"'http://127.0.0.1:8000/rest/workspaces/'\"'\"'+encodeURIComponent(\"agent_ws_d6926053f050ba1d1f163a0a956d1e91483c33d5cb3b0da6565996999d62bcfc\")+'\"'\"'/content?path='\"'\"'+encodeURIComponent(\"peer-autobyteus-server-0.bin\"));assert.equal(r.status,200);assert.deepEqual(Buffer.from(await r.arrayBuffer()),Buffer.from(Array.from({length:1024},(_,i)=>i%256)));console.log('\"'\"'exact peer HTTP bytes'\"'\"');'"
+      ],
+      "rc": 0,
+      "seconds": 0.123,
+      "stdout": "exact peer HTTP bytes\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api007-linux-b72ac1ef",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n docker exec autobyteus-server-0 node --input-type=module -e 'import fs from '\"'\"'node:fs/promises'\"'\"';await fs.unlink(\"/Volumes/autobyteus-shared/api-scenario-LD/peer-autobyteus-server-0.bin\");console.log('\"'\"'deleted'\"'\"')'"
+      ],
+      "rc": 0,
+      "seconds": 0.137,
+      "stdout": "deleted\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-api007-linux-b72ac1ef",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n docker exec autobyteus-server-1 node --input-type=module -e 'import assert from '\"'\"'node:assert/strict'\"'\"';const base='\"'\"'http://127.0.0.1:8000/rest/workspaces/'\"'\"'+encodeURIComponent(\"agent_ws_d6926053f050ba1d1f163a0a956d1e91483c33d5cb3b0da6565996999d62bcfc\");for(const path of [\"peer-autobyteus-server-0.bin\",'\"'\"'../outside'\"'\"','\"'\"'/etc/passwd'\"'\"']){const r=await fetch(base+'\"'\"'/content?path='\"'\"'+encodeURIComponent(path));assert.ok([400,403,404].includes(r.status),path+'\"'\"':'\"'\"'+r.status);console.log(JSON.stringify({path,status:r.status}));}'"
+      ],
+      "rc": 0,
+      "seconds": 0.171,
+      "stdout": "{\"path\":\"peer-autobyteus-server-0.bin\",\"status\":404}\n{\"path\":\"../outside\",\"status\":400}\n{\"path\":\"/etc/passwd\",\"status\":400}\n",
+      "stderr": ""
+    }
+  ],
+  "cases": [
+    {
+      "name": "L22 LD deterministic mounted project and non-global Git fixture",
+      "evidence": {
+        "argv": [
+          "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+          "exec",
+          "ab-nfs-api007-linux-b72ac1ef",
+          "/usr/bin/env",
+          "-i",
+          "HOME=/home/admin",
+          "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+          "LANG=C",
+          "/bin/sh",
+          "-c",
+          "sudo -n /usr/bin/setpriv --reuid=1000 --regid=109 --clear-groups /usr/bin/env -i HOME=/home/admin PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin LANG=C /bin/sh -c 'python3 -c '\"'\"'from pathlib import Path\nimport base64\np=Path('\"'\"'\"'\"'\"'\"'\"'\"'/home/admin/ab-nfs-api007-linux-b72ac1ef-native-source'\"'\"'\"'\"'\"'\"'\"'\"')/'\"'\"'\"'\"'\"'\"'\"'\"'api-scenario-LD'\"'\"'\"'\"'\"'\"'\"'\"';p.mkdir();(p/'\"'\"'\"'\"'\"'\"'\"'\"'assets'\"'\"'\"'\"'\"'\"'\"'\"').mkdir();(p/'\"'\"'\"'\"'\"'\"'\"'\"'preexisting.txt'\"'\"'\"'\"'\"'\"'\"'\"').write_text('\"'\"'\"'\"'\"'\"'\"'\"'API007_INITIAL'\"'\"'\"'\"'\"'\"'\"'\"');(p/'\"'\"'\"'\"'\"'\"'\"'\"'index.html'\"'\"'\"'\"'\"'\"'\"'\"').write_text('\"'\"'\"'\"'\"'\"'\"'\"'<html><body><h1>API007 mounted HTML</h1><img src=\"assets/diagram%20one.png\"></body></html>'\"'\"'\"'\"'\"'\"'\"'\"');(p/'\"'\"'\"'\"'\"'\"'\"'\"'assets/diagram one.png'\"'\"'\"'\"'\"'\"'\"'\"').write_bytes(base64.b64decode('\"'\"'\"'\"'\"'\"'\"'\"'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='\"'\"'\"'\"'\"'\"'\"'\"'))\n'\"'\"' && git -C /home/admin/ab-nfs-api007-linux-b72ac1ef-native-source/api-scenario-LD init -q && git -C /home/admin/ab-nfs-api007-linux-b72ac1ef-native-source/api-scenario-LD add . && git -C /home/admin/ab-nfs-api007-linux-b72ac1ef-native-source/api-scenario-LD -c user.name=API007 -c user.email=api007@example.invalid commit -qm fixture'"
+        ],
+        "rc": 0,
+        "seconds": 1.001,
+        "stdout": "",
+        "stderr": ""
+      },
+      "status": "Pass",
+      "seconds": 1.002
+    },
+    {
+      "name": "L22 LD autobyteus-server-0 actual GraphQL REST HTML-relative-image and WebSocket PTY scoped Git",
+      "evidence": {
+        "cases": [
+          {
+            "name": "public workspace create/fileContent/folderChildren on mounted project",
+            "result": "Pass"
+          },
+          {
+            "name": "healthy HTML static relative asset and image content APIs return exact NFS bytes",
+            "result": "Pass"
+          },
+          {
+            "name": "actual WebSocket PTY enters mounted cwd and grants only exact child Git path",
+            "result": "Pass"
+          }
+        ],
+        "root": "/Volumes/autobyteus-shared/api-scenario-LD",
+        "workspaceId": "agent_ws_d6926053f050ba1d1f163a0a956d1e91483c33d5cb3b0da6565996999d62bcfc",
+        "terminal": {
+          "cwd": "/Volumes/autobyteus-shared/api-scenario-LD",
+          "uid": 0,
+          "gitRc": 0,
+          "gitErr": "",
+          "gitTop": "/Volumes/autobyteus-shared/api-scenario-LD",
+          "count": "1",
+          "key0": "safe.directory",
+          "value0": "/Volumes/autobyteus-shared/api-scenario-LD"
+        },
+        "globalGitConfig": {
+          "before": null,
+          "after": null,
+          "unchanged": true
+        },
+        "result": "Pass"
+      },
+      "status": "Pass",
+      "seconds": 0.36
+    },
+    {
+      "name": "L22 LD autobyteus-server-1 actual GraphQL REST HTML-relative-image and WebSocket PTY scoped Git",
+      "evidence": {
+        "cases": [
+          {
+            "name": "public workspace create/fileContent/folderChildren on mounted project",
+            "result": "Pass"
+          },
+          {
+            "name": "healthy HTML static relative asset and image content APIs return exact NFS bytes",
+            "result": "Pass"
+          },
+          {
+            "name": "actual WebSocket PTY enters mounted cwd and grants only exact child Git path",
+            "result": "Pass"
+          }
+        ],
+        "root": "/Volumes/autobyteus-shared/api-scenario-LD",
+        "workspaceId": "agent_ws_d6926053f050ba1d1f163a0a956d1e91483c33d5cb3b0da6565996999d62bcfc",
+        "terminal": {
+          "cwd": "/Volumes/autobyteus-shared/api-scenario-LD",
+          "uid": 0,
+          "gitRc": 0,
+          "gitErr": "",
+          "gitTop": "/Volumes/autobyteus-shared/api-scenario-LD",
+          "count": "1",
+          "key0": "safe.directory",
+          "value0": "/Volumes/autobyteus-shared/api-scenario-LD"
+        },
+        "globalGitConfig": {
+          "before": null,
+          "after": null,
+          "unchanged": true
+        },
+        "result": "Pass"
+      },
+      "status": "Pass",
+      "seconds": 0.622
+    },
+    {
+      "name": "L22 LD autobyteus-server-1 to autobyteus-server-0 actual content API peer change",
+      "evidence": [
+        {
+          "argv": [
+            "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+            "exec",
+            "ab-nfs-api007-linux-b72ac1ef",
+            "/usr/bin/env",
+            "-i",
+            "HOME=/home/admin",
+            "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+            "LANG=C",
+            "/bin/sh",
+            "-c",
+            "sudo -n docker exec autobyteus-server-1 node --input-type=module -e 'import fs from '\"'\"'node:fs/promises'\"'\"';const f=await fs.open(\"/Volumes/autobyteus-shared/api-scenario-LD/peer-autobyteus-server-1.bin\",'\"'\"'w'\"'\"');await f.writeFile(Buffer.from(Array.from({length:1024},(_,i)=>i%256)));await f.sync();await f.close();console.log('\"'\"'committed'\"'\"');'"
+          ],
+          "rc": 0,
+          "seconds": 0.425,
+          "stdout": "committed\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+            "exec",
+            "ab-nfs-api007-linux-b72ac1ef",
+            "/usr/bin/env",
+            "-i",
+            "HOME=/home/admin",
+            "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+            "LANG=C",
+            "/bin/sh",
+            "-c",
+            "sudo -n docker exec autobyteus-server-0 node --input-type=module -e 'import assert from '\"'\"'node:assert/strict'\"'\"';let r=await fetch('\"'\"'http://127.0.0.1:8000/rest/workspaces/'\"'\"'+encodeURIComponent(\"agent_ws_d6926053f050ba1d1f163a0a956d1e91483c33d5cb3b0da6565996999d62bcfc\")+'\"'\"'/content?path='\"'\"'+encodeURIComponent(\"peer-autobyteus-server-1.bin\"));assert.equal(r.status,200);assert.deepEqual(Buffer.from(await r.arrayBuffer()),Buffer.from(Array.from({length:1024},(_,i)=>i%256)));console.log('\"'\"'exact peer HTTP bytes'\"'\"');'"
+          ],
+          "rc": 0,
+          "seconds": 0.252,
+          "stdout": "exact peer HTTP bytes\n",
+          "stderr": ""
+        }
+      ],
+      "status": "Pass",
+      "seconds": 0.679
+    },
+    {
+      "name": "L22 LD peer delete and traversal/absolute authorization refusals",
+      "evidence": [
+        {
+          "argv": [
+            "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+            "exec",
+            "ab-nfs-api007-linux-b72ac1ef",
+            "/usr/bin/env",
+            "-i",
+            "HOME=/home/admin",
+            "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+            "LANG=C",
+            "/bin/sh",
+            "-c",
+            "sudo -n docker exec autobyteus-server-1 node --input-type=module -e 'import fs from '\"'\"'node:fs/promises'\"'\"';await fs.unlink(\"/Volumes/autobyteus-shared/api-scenario-LD/peer-autobyteus-server-1.bin\");console.log('\"'\"'deleted'\"'\"')'"
+          ],
+          "rc": 0,
+          "seconds": 0.254,
+          "stdout": "deleted\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+            "exec",
+            "ab-nfs-api007-linux-b72ac1ef",
+            "/usr/bin/env",
+            "-i",
+            "HOME=/home/admin",
+            "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+            "LANG=C",
+            "/bin/sh",
+            "-c",
+            "sudo -n docker exec autobyteus-server-0 node --input-type=module -e 'import assert from '\"'\"'node:assert/strict'\"'\"';const base='\"'\"'http://127.0.0.1:8000/rest/workspaces/'\"'\"'+encodeURIComponent(\"agent_ws_d6926053f050ba1d1f163a0a956d1e91483c33d5cb3b0da6565996999d62bcfc\");for(const path of [\"peer-autobyteus-server-1.bin\",'\"'\"'../outside'\"'\"','\"'\"'/etc/passwd'\"'\"']){const r=await fetch(base+'\"'\"'/content?path='\"'\"'+encodeURIComponent(path));assert.ok([400,403,404].includes(r.status),path+'\"'\"':'\"'\"'+r.status);console.log(JSON.stringify({path,status:r.status}));}'"
+          ],
+          "rc": 0,
+          "seconds": 0.227,
+          "stdout": "{\"path\":\"peer-autobyteus-server-1.bin\",\"status\":404}\n{\"path\":\"../outside\",\"status\":400}\n{\"path\":\"/etc/passwd\",\"status\":400}\n",
+          "stderr": ""
+        }
+      ],
+      "status": "Pass",
+      "seconds": 0.482
+    },
+    {
+      "name": "L22 LD autobyteus-server-0 to autobyteus-server-1 actual content API peer change",
+      "evidence": [
+        {
+          "argv": [
+            "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+            "exec",
+            "ab-nfs-api007-linux-b72ac1ef",
+            "/usr/bin/env",
+            "-i",
+            "HOME=/home/admin",
+            "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+            "LANG=C",
+            "/bin/sh",
+            "-c",
+            "sudo -n docker exec autobyteus-server-0 node --input-type=module -e 'import fs from '\"'\"'node:fs/promises'\"'\"';const f=await fs.open(\"/Volumes/autobyteus-shared/api-scenario-LD/peer-autobyteus-server-0.bin\",'\"'\"'w'\"'\"');await f.writeFile(Buffer.from(Array.from({length:1024},(_,i)=>i%256)));await f.sync();await f.close();console.log('\"'\"'committed'\"'\"');'"
+          ],
+          "rc": 0,
+          "seconds": 0.287,
+          "stdout": "committed\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+            "exec",
+            "ab-nfs-api007-linux-b72ac1ef",
+            "/usr/bin/env",
+            "-i",
+            "HOME=/home/admin",
+            "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+            "LANG=C",
+            "/bin/sh",
+            "-c",
+            "sudo -n docker exec autobyteus-server-1 node --input-type=module -e 'import assert from '\"'\"'node:assert/strict'\"'\"';let r=await fetch('\"'\"'http://127.0.0.1:8000/rest/workspaces/'\"'\"'+encodeURIComponent(\"agent_ws_d6926053f050ba1d1f163a0a956d1e91483c33d5cb3b0da6565996999d62bcfc\")+'\"'\"'/content?path='\"'\"'+encodeURIComponent(\"peer-autobyteus-server-0.bin\"));assert.equal(r.status,200);assert.deepEqual(Buffer.from(await r.arrayBuffer()),Buffer.from(Array.from({length:1024},(_,i)=>i%256)));console.log('\"'\"'exact peer HTTP bytes'\"'\"');'"
+          ],
+          "rc": 0,
+          "seconds": 0.123,
+          "stdout": "exact peer HTTP bytes\n",
+          "stderr": ""
+        }
+      ],
+      "status": "Pass",
+      "seconds": 0.412
+    },
+    {
+      "name": "L22 LD peer delete and traversal/absolute authorization refusals",
+      "evidence": [
+        {
+          "argv": [
+            "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+            "exec",
+            "ab-nfs-api007-linux-b72ac1ef",
+            "/usr/bin/env",
+            "-i",
+            "HOME=/home/admin",
+            "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+            "LANG=C",
+            "/bin/sh",
+            "-c",
+            "sudo -n docker exec autobyteus-server-0 node --input-type=module -e 'import fs from '\"'\"'node:fs/promises'\"'\"';await fs.unlink(\"/Volumes/autobyteus-shared/api-scenario-LD/peer-autobyteus-server-0.bin\");console.log('\"'\"'deleted'\"'\"')'"
+          ],
+          "rc": 0,
+          "seconds": 0.137,
+          "stdout": "deleted\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+            "exec",
+            "ab-nfs-api007-linux-b72ac1ef",
+            "/usr/bin/env",
+            "-i",
+            "HOME=/home/admin",
+            "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+            "LANG=C",
+            "/bin/sh",
+            "-c",
+            "sudo -n docker exec autobyteus-server-1 node --input-type=module -e 'import assert from '\"'\"'node:assert/strict'\"'\"';const base='\"'\"'http://127.0.0.1:8000/rest/workspaces/'\"'\"'+encodeURIComponent(\"agent_ws_d6926053f050ba1d1f163a0a956d1e91483c33d5cb3b0da6565996999d62bcfc\");for(const path of [\"peer-autobyteus-server-0.bin\",'\"'\"'../outside'\"'\"','\"'\"'/etc/passwd'\"'\"']){const r=await fetch(base+'\"'\"'/content?path='\"'\"'+encodeURIComponent(path));assert.ok([400,403,404].includes(r.status),path+'\"'\"':'\"'\"'+r.status);console.log(JSON.stringify({path,status:r.status}));}'"
+          ],
+          "rc": 0,
+          "seconds": 0.171,
+          "stdout": "{\"path\":\"peer-autobyteus-server-0.bin\",\"status\":404}\n{\"path\":\"../outside\",\"status\":400}\n{\"path\":\"/etc/passwd\",\"status\":400}\n",
+          "stderr": ""
+        }
+      ],
+      "status": "Pass",
+      "seconds": 0.31
+    }
+  ],
+  "result": "Pass",
+  "engineImage": "127.0.0.1:5000/ab-nfs-api007@sha256:29f712a2ad0963c4effe28209e0953cf814a5013f47c46ee7bb871b9b923071b",
+  "api": {
+    "autobyteus-server-0": {
+      "cases": [
+        {
+          "name": "public workspace create/fileContent/folderChildren on mounted project",
+          "result": "Pass"
+        },
+        {
+          "name": "healthy HTML static relative asset and image content APIs return exact NFS bytes",
+          "result": "Pass"
+        },
+        {
+          "name": "actual WebSocket PTY enters mounted cwd and grants only exact child Git path",
+          "result": "Pass"
+        }
+      ],
+      "root": "/Volumes/autobyteus-shared/api-scenario-LD",
+      "workspaceId": "agent_ws_d6926053f050ba1d1f163a0a956d1e91483c33d5cb3b0da6565996999d62bcfc",
+      "terminal": {
+        "cwd": "/Volumes/autobyteus-shared/api-scenario-LD",
+        "uid": 0,
+        "gitRc": 0,
+        "gitErr": "",
+        "gitTop": "/Volumes/autobyteus-shared/api-scenario-LD",
+        "count": "1",
+        "key0": "safe.directory",
+        "value0": "/Volumes/autobyteus-shared/api-scenario-LD"
+      },
+      "globalGitConfig": {
+        "before": null,
+        "after": null,
+        "unchanged": true
+      },
+      "result": "Pass"
+    },
+    "autobyteus-server-1": {
+      "cases": [
+        {
+          "name": "public workspace create/fileContent/folderChildren on mounted project",
+          "result": "Pass"
+        },
+        {
+          "name": "healthy HTML static relative asset and image content APIs return exact NFS bytes",
+          "result": "Pass"
+        },
+        {
+          "name": "actual WebSocket PTY enters mounted cwd and grants only exact child Git path",
+          "result": "Pass"
+        }
+      ],
+      "root": "/Volumes/autobyteus-shared/api-scenario-LD",
+      "workspaceId": "agent_ws_d6926053f050ba1d1f163a0a956d1e91483c33d5cb3b0da6565996999d62bcfc",
+      "terminal": {
+        "cwd": "/Volumes/autobyteus-shared/api-scenario-LD",
+        "uid": 0,
+        "gitRc": 0,
+        "gitErr": "",
+        "gitTop": "/Volumes/autobyteus-shared/api-scenario-LD",
+        "count": "1",
+        "key0": "safe.directory",
+        "value0": "/Volumes/autobyteus-shared/api-scenario-LD"
+      },
+      "globalGitConfig": {
+        "before": null,
+        "after": null,
+        "unchanged": true
+      },
+      "result": "Pass"
+    }
+  }
+}

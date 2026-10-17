@@ -21,10 +21,6 @@ import {
 } from "../config/featured-catalog-items-setting.js";
 import { reloadMediaToolSchemas } from "../agent-tools/media/register-media-tools.js";
 import {
-  COMPACTION_MODEL_SETTINGS_KEY,
-  normalizeCompactionModelSettingsForPersistence,
-} from "../config/compaction-model-settings.js";
-import {
   normalizeStreamingContentFlushIntervalForPersistence,
   resolveStreamingContentFlushIntervalMs,
   STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
@@ -80,11 +76,6 @@ export class ServerSettingsService {
 
   private initializeSettings(): void {
     this.registerPredefinedSetting(
-      "AUTOBYTEUS_LLM_SERVER_HOSTS",
-      "Comma-separated URLs of AUTOBYTEUS LLM servers",
-    );
-
-    this.registerPredefinedSetting(
       "AUTOBYTEUS_SERVER_HOST",
       "Public URL of this server. Managed at startup by the launch environment and not editable here.",
       false,
@@ -113,15 +104,6 @@ export class ServerSettingsService {
     this.registerPredefinedSetting(
       "AUTOBYTEUS_COMPACTION_TRIGGER_RATIO",
       "Decimal compaction trigger ratio used for post-response budget checks (default 0.8)",
-    );
-
-    this.registerPredefinedSetting(
-      COMPACTION_MODEL_SETTINGS_KEY,
-      "Direct compaction model/configuration. Null model inherits the current parent model.",
-      true,
-      {
-        normalizeForPersistence: normalizeCompactionModelSettingsForPersistence,
-      },
     );
 
     this.registerPredefinedSetting(
@@ -305,8 +287,7 @@ export class ServerSettingsService {
       }
 
       const config = appConfigProvider.config;
-      if (key === COMPACTION_MODEL_SETTINGS_KEY) config.setDurably(key, normalizedValueOrError);
-      else config.set(key, normalizedValueOrError);
+      config.set(key, normalizedValueOrError);
       this.refreshDependentSettingsAfterUpdate(key);
 
       if (!this.settingsInfo.has(key)) {
@@ -351,9 +332,7 @@ export class ServerSettingsService {
   }
 
   private refreshDependentSettingsAfterUpdate(key: string): void {
-    if (key === 'AUTOBYTEUS_LLM_SERVER_HOSTS'
-      || key === 'OLLAMA_HOSTS'
-      || key === 'LMSTUDIO_HOSTS') {
+    if (key === 'OLLAMA_HOSTS' || key === 'LMSTUDIO_HOSTS') {
       getModelCatalogService().notifySettingsChange(key);
     }
     if (MEDIA_DEFAULT_MODEL_SETTING_KEYS.has(key)) {

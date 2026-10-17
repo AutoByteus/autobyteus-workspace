@@ -123,6 +123,7 @@
             type="button"
             data-test="workspace-agent-run-row"
             :data-run-id="run.runId"
+            :aria-current="state.selectedRunId === run.runId && !collaboration.selectedChild(run.runId) ? 'true' : undefined"
             class="group/run-row flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left text-sm transition-colors"
             :class="state.selectedRunId === run.runId && !collaboration.selectedChild(run.runId)
               ? 'bg-indigo-50 text-indigo-900'
@@ -141,7 +142,7 @@
                 type="button"
                 data-test="terminate-agent-run"
                 :data-run-id="run.runId"
-                class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
+                class="inline-flex h-5 w-5 items-center justify-center rounded text-red-500 transition-colors hover:bg-red-50 hover:text-red-600 disabled:text-gray-400 disabled:hover:text-gray-400 disabled:hover:bg-transparent disabled:cursor-not-allowed disabled:opacity-50"
                 :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.terminate_run')"
                 :aria-label="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.terminate_run')"
                 :disabled="state.isRunTerminating(run.runId)"
@@ -191,6 +192,7 @@
             :run-selected="state.selectedRunId === run.runId"
             :has-collaboration="run.hasCollaboration === true"
             @select-run="actions.onSelectRun(run)"
+            @open-run="selectAgentRun(run)"
           />
           </template>
         </div>
@@ -286,7 +288,7 @@
                   <button
                     v-if="team.isActive"
                     type="button"
-                    class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
+                    class="inline-flex h-5 w-5 items-center justify-center rounded text-red-500 transition-colors hover:bg-red-50 hover:text-red-600 disabled:text-gray-400 disabled:hover:text-gray-400 disabled:hover:bg-transparent disabled:cursor-not-allowed disabled:opacity-50"
                     :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.terminate_team')"
                     :aria-label="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.terminate_team')"
                     :disabled="state.isTeamTerminating(team.teamRunId)"
@@ -331,6 +333,7 @@
                 :format-relative-time="formatRelativeTime"
                 @select="(row: import('~/stores/runHistoryTypes').RunHistoryTeamExecutionRow) => selectTeamDisplayRow(team, row)"
                 @toggle="(row: import('~/stores/runHistoryTypes').RunHistoryTeamExecutionRow) => toggleTeamDisplayRow(team, row)"
+                @open-run="actions.onOpenTeamRun(team, workspaceNode.workspaceId)"
               />
             </div>
           </div>
@@ -426,11 +429,6 @@ onBeforeUnmount(() => {
   if (relativeTimeTimer !== null) clearInterval(relativeTimeTimer);
 });
 
-const opensOnAppear = (team: TeamTreeNode, rowKey: string): boolean => {
-  const row = team.executionRows.find((candidate) => candidate.rowKey === rowKey);
-  return row?.kind === 'transient_execution' && row.opensOnAppear === true;
-};
-
 const isTeamDisplayRowExpanded = (
   team: TeamTreeNode,
   rowKey: string,
@@ -438,7 +436,6 @@ const isTeamDisplayRowExpanded = (
   workspacePresentationId.value,
   team.teamRunId,
   rowKey,
-  opensOnAppear(team, rowKey),
 );
 
 const toggleTeamDisplayRow = (
@@ -448,7 +445,6 @@ const toggleTeamDisplayRow = (
   workspacePresentationId.value,
   team.teamRunId,
   row.rowKey,
-  opensOnAppear(team, row.rowKey),
 );
 
 const selectTeamDisplayRow = (

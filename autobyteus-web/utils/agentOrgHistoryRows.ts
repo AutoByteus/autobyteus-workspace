@@ -12,8 +12,6 @@ import { foldTeamAggregateStatus, type TeamStatus, type TeamStatusAuthority } fr
 import {
   catalogTeamSourceAt,
   collaborationTaskExecutionLists,
-  collaboratorExecutionNodes,
-  collaboratorTeamSourceAt,
 } from '~/services/collaborators/agentSourceSelectors'
 import { collaborationTreeWalk, collectClosedSubtrees, type CollaborationTreeNode } from '~/utils/collaboration/taskExecutionClosure'
 
@@ -63,11 +61,9 @@ type StatusSource = Readonly<{
   isListed(node: TaskBranchNode): boolean
 }>
 
-/** Root-level delegated children as the tree shows them: collaborators first, then extra copies. */
-const rootTaskExecutions = (rootOrg: AgentOrgRunHistoryItem['executionTree']['rootOrg']): readonly AgentOrgTaskExecutionNode[] => [
-  ...collaboratorExecutionNodes(rootOrg.collaborators ?? []) as AgentOrgTaskExecutionNode[],
-  ...rootOrg.taskExecutions,
-]
+/** Root-level delegated children as the tree shows them. */
+const rootTaskExecutions = (rootOrg: AgentOrgRunHistoryItem['executionTree']['rootOrg']): readonly AgentOrgTaskExecutionNode[] =>
+  rootOrg.taskExecutions
 
 const collectAgentAddresses = (tree: AgentOrgRunHistoryItem['executionTree']): ReadonlyMap<string, string> => {
   const addresses = new Map<string, string>()
@@ -122,11 +118,9 @@ const statusSource = (
     coordinatorFor: (team) => {
       const rootOrg = (context?.executionTree ?? run.executionTree).rootOrg
       const configured = rootOrg.members.find((member) => 'teamRunId' in member && member.address === team.address)
-      // A task Team at a collaborator address takes its layout from the collaborator entry.
       const source = configured && 'teamRunId' in configured
         ? configured
-        : collaboratorTeamSourceAt(rootOrg.collaborators ?? [], team.address)
-          ?? catalogTeamSourceAt(collaborationTaskExecutionLists(rootOrg), team.address)
+        : catalogTeamSourceAt(collaborationTaskExecutionLists(rootOrg), team.address)
       if (!source) throw new Error(`Missing captured Team source '${team.address}'.`)
       const findMembers = (node: TaskTeamNode): { agentRunId: string; address: string }[] => node.members.flatMap((member) =>
         'agentRunId' in member ? [member] : findMembers(member))

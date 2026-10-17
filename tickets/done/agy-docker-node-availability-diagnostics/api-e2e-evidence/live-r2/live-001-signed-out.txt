@@ -1,0 +1,13 @@
+## served classifier text
+"AGY_SIGN_IN_REQUIRED", message: "Not signed in on this node. Run `agy` to sign in."
+## agy state
+1.3.3
+no oauth token (signed out)
+## agy models (HOME=/root, server cwd)
+Fetching available models...
+Error: Please sign in to view available models. Launch the CLI without arguments to sign in.
+exit=1
+## GraphQL runtimeAvailability(antigravity_cli)
+{"data":{"runtimeAvailability":{"runtimeKind":"antigravity_cli","enabled":false,"reason":"Not signed in on this node. Run `agy` to sign in."}}}
+## GraphQL providerModelCatalogSnapshots(antigravity_cli)
+{"data":null,"errors":[{"message":"Not signed in on this node. Run `agy` to sign in.","locations":[{"line":1,"column":18}],"path":["providerModelCatalogSnapshots"]}]}

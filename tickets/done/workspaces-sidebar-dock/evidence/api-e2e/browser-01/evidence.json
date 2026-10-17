@@ -1,0 +1,22 @@
+{
+  "startedAt": "2026-10-13T14:03:26.680Z",
+  "source": "9848d80eec3f522e4a3b06d2a2834c294d023c1b",
+  "platform": "linux-arm64",
+  "cases": {},
+  "snapshots": [],
+  "browserErrors": [],
+  "operations": [],
+  "cleanup": {
+    "routeRemoved": true,
+    "privateHomeRemoved": true,
+    "nuxtExit": 0,
+    "portFree": true,
+    "browserClosed": true
+  },
+  "browserUid": 1000,
+  "port": 43555,
+  "nuxtPid": 20721,
+  "result": "Fail",
+  "error": "browserType.launch: Failed to create a ProcessSingleton for your profile directory. This usually means that the profile is already in use by another instance of Chromium.\nCall log:\n\u001b[2m  - <launching> /tmp/sidebar-dock-probe-CXrBPl/chromium-unprivileged --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate,AutoDeElevate,RenderDocument,OptimizationHints --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --enable-automation --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --user-data-dir=/tmp/playwright_chromiumdev_profile-uYIL3o --remote-debugging-pipe --no-startup-window\u001b[22m\n\u001b[2m  - <launched> pid=21222\u001b[22m\n\u001b[2m  - [pid=21222][err] [21222:21222:1013/140339.787964:ERROR:chrome/browser/process_singleton_posix.cc:474] readlink failed: Permission denied (13)\u001b[22m\n\u001b[2m  - [pid=21222][err] [21222:21222:1013/140339.788018:ERROR:chrome/common/process_singleton_lock_posix.cc:22] readlink(/tmp/playwright_chromiumdev_profile-uYIL3o/SingletonLock) failed: Permission denied (13)\u001b[22m\n\u001b[2m  - [pid=21222][err] [21222:21222:1013/140339.788033:ERROR:chrome/browser/process_singleton_posix.cc:323] readlink(/tmp/playwright_chromiumdev_profile-uYIL3o/SingletonLock) failed: Permission denied (13)\u001b[22m\n\u001b[2m  - [pid=21222][err] [21222:21222:1013/140339.788035:ERROR:chrome/browser/process_singleton_posix.cc:347] Failed to create /tmp/playwright_chromiumdev_profile-uYIL3o/SingletonLock: Permission denied (13)\u001b[22m\n\u001b[2m  - [pid=21222][err] [21222:21222:1013/140339.788041:ERROR:chrome/browser/process_singleton_posix.cc:474] readlink failed: Permission denied (13)\u001b[22m\n\u001b[2m  - [pid=21222][err] [21222:21222:1013/140339.788043:ERROR:chrome/common/process_singleton_lock_posix.cc:22] readlink(/tmp/playwright_chromiumdev_profile-uYIL3o/SingletonLock) failed: Permission denied (13)\u001b[22m\n\u001b[2m  - [pid=21222][err] [21222:21222:1013/140339.788052:ERROR:chrome/app/chrome_main_delegate.cc:550] Failed to create a ProcessSingleton for your profile directory. This means that running multiple instances would start multiple browser processes rather than opening a new window in the existing process. Aborting now to avoid profile corruption.\u001b[22m\n\u001b[2m  - [pid=21222] <gracefully close start>\u001b[22m\n\u001b[2m  - [pid=21222] <kill>\u001b[22m\n\u001b[2m  - [pid=21222] <will force kill>\u001b[22m\n\u001b[2m  - [pid=21222] <process did exit: exitCode=21, signal=null>\u001b[22m\n\u001b[2m  - [pid=21222] starting temporary directories cleanup\u001b[22m\n\u001b[2m  - [pid=21222] finished temporary directories cleanup\u001b[22m\n\u001b[2m  - [pid=21222] <gracefully close end>\u001b[22m\n",
+  "finishedAt": "2026-10-13T14:03:39.903Z"
+}

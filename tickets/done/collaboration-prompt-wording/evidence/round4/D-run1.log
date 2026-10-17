@@ -1,0 +1,721 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:85205) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-prompt-wording/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/memory
+============================================================
+Initialized server settings service with 19 predefined settings
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: cpw-manager-91b0a9
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: cpw-mate-91b0a9
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: cpw-sibling-91b0a9
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: cpw-outsider-91b0a9
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: cpw-stranger-91b0a9
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Team Definition created successfully with ID: cpw-team-91b0a9
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Team Definition created successfully with ID: cpw-squad-91b0a9
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+[22m[39mCreated and registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+[22m[39mAGY compaction detection off for run cpw_manager_91b0a9_7358a7bd46624817a815848b77a53ab5: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+[22m[39mAgent websocket attached for run cpw_manager_91b0a9_7358a7bd46624817a815848b77a53ab5
+Created agent session 80b1fccb-5287-4214-a5da-b3cc22fe9680 for run cpw_manager_91b0a9_7358a7bd46624817a815848b77a53ab5
+Agent WebSocket connected: session=80b1fccb-5287-4214-a5da-b3cc22fe9680, run=cpw_manager_91b0a9_7358a7bd46624817a815848b77a53ab5
+
+[90mstderr[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/memory/agents/cpw_manager_91b0a9_7358a7bd46624817a815848b77a53ab5/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+[22m[39mAGY compaction detection off for run cpw_outsider_91b0a9_9c1d738cb77440e0a73e4fb2ad4fc4cf: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+[22m[39mAGY compaction detection off for run cpw_manager_91b0a9_6b59dda9d5104164aa2dbcb7d9b741c6: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+[22m[39mClosed agent session 80b1fccb-5287-4214-a5da-b3cc22fe9680
+Agent WebSocket disconnected: 80b1fccb-5287-4214-a5da-b3cc22fe9680
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+[22m[39mAgent team websocket attached for team run cpw_team_91b0a9_e698e1077dfa44f290895ed3abf10bae
+Created agent session 9a990be5-97e8-41b6-a55d-6d3a5f0818ff for run cpw_team_91b0a9_e698e1077dfa44f290895ed3abf10bae
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+[22m[39mAgent Team WebSocket connected: session=9a990be5-97e8-41b6-a55d-6d3a5f0818ff, run=cpw_team_91b0a9_e698e1077dfa44f290895ed3abf10bae
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+[22m[39mAGY compaction detection off for run cpw_manager_91b0a9_0a813424c02c4cb7b993b8e3e5f3ff2d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+[22m[39mAGY compaction detection off for run cpw_mate_91b0a9_d896b2c3f3f04f58be813cab8086d5ff: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+[22m[39mAGY compaction detection off for run cpw_outsider_91b0a9_a818ea9d3f1c44bf9041814dd2d529fa: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+[22m[39mClosed agent session 9a990be5-97e8-41b6-a55d-6d3a5f0818ff
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+[22m[39mAGY compaction detection off for run cpw_manager_91b0a9_38bc48431aeb4b6eaa836088b9e3752b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+[22m[39mAGY compaction detection off for run cpw_mate_91b0a9_ee7ce9d4131f4aa1bb090b3d462c3099: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+[22m[39mAGY compaction detection off for run cpw_outsider_91b0a9_ef51313468694d34a60784c2c34d9f26: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+[22m[39mAGY compaction detection off for run cpw_sibling_91b0a9_022af90c585b46dc97cc393691674494: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+[22m[39mAGY compaction detection off for run cpw_manager_91b0a9_84d30d917cab40f394a506171200aaad: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+[22m[39mAGY compaction detection off for run cpw_manager_91b0a9_275971ea53894f778b13b85583fb5f11: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+[22m[39mAgent websocket attached for run cpw_manager_91b0a9_275971ea53894f778b13b85583fb5f11
+Created agent session afd79716-5622-454f-9d00-70f0cfd7a709 for run cpw_manager_91b0a9_275971ea53894f778b13b85583fb5f11
+Agent WebSocket connected: session=afd79716-5622-454f-9d00-70f0cfd7a709, run=cpw_manager_91b0a9_275971ea53894f778b13b85583fb5f11
+
+[90mstderr[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/memory/agents/cpw_manager_91b0a9_275971ea53894f778b13b85583fb5f11/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+[22m[39mAGY compaction detection off for run cpw_outsider_91b0a9_a7ffe50dc3594fd3856a216c86535088: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+[22m[39mAGY compaction detection off for run cpw_stranger_91b0a9_d893f48707574b72b07550e0a9e4c7b7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+[22m[39mAGY compaction detection off for run cpw_manager_91b0a9_512e92d7c2504bb18c28cccd454e3678: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+[22m[39mClosed agent session afd79716-5622-454f-9d00-70f0cfd7a709
+Agent WebSocket disconnected: afd79716-5622-454f-9d00-70f0cfd7a709
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+[22m[39mAGY compaction detection off for run cpw_manager_91b0a9_9eb67a7269b4444c86df22356fde1dc9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+[22m[39mAgent websocket attached for run cpw_manager_91b0a9_9eb67a7269b4444c86df22356fde1dc9
+Created agent session c1aa14fc-8f86-4ca8-b5b2-e036a4ea4050 for run cpw_manager_91b0a9_9eb67a7269b4444c86df22356fde1dc9
+Agent WebSocket connected: session=c1aa14fc-8f86-4ca8-b5b2-e036a4ea4050, run=cpw_manager_91b0a9_9eb67a7269b4444c86df22356fde1dc9
+
+[90mstderr[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/memory/agents/cpw_manager_91b0a9_9eb67a7269b4444c86df22356fde1dc9/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+[22m[39mAGY compaction detection off for run cpw_outsider_91b0a9_143842cecf424a4d8b32e0fd51e3f445: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+[22m[39mAGY compaction detection off for run cpw_stranger_91b0a9_f33e3e97d7e84e5297f164364e726ae3: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+[22m[39mClosed agent session c1aa14fc-8f86-4ca8-b5b2-e036a4ea4050
+Agent WebSocket disconnected: c1aa14fc-8f86-4ca8-b5b2-e036a4ea4050
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+[22m[39mAGY compaction detection off for run cpw_manager_91b0a9_e02db99bf3a84ae6876a5aa7f56ec8fd: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+[22m[39mAgent websocket attached for run cpw_manager_91b0a9_e02db99bf3a84ae6876a5aa7f56ec8fd
+Created agent session b2434ae0-cbf3-47e2-b38c-c38db32932b4 for run cpw_manager_91b0a9_e02db99bf3a84ae6876a5aa7f56ec8fd
+Agent WebSocket connected: session=b2434ae0-cbf3-47e2-b38c-c38db32932b4, run=cpw_manager_91b0a9_e02db99bf3a84ae6876a5aa7f56ec8fd
+
+[90mstderr[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/memory/agents/cpw_manager_91b0a9_e02db99bf3a84ae6876a5aa7f56ec8fd/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+[22m[39mAGY compaction detection off for run cpw_manager_91b0a9_b2d869f0752e4067b431da207c6080d2: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+[22m[39mClosed agent session b2434ae0-cbf3-47e2-b38c-c38db32932b4
+Agent WebSocket disconnected: b2434ae0-cbf3-47e2-b38c-c38db32932b4
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+[22m[39mAGY compaction detection off for run cpw_manager_91b0a9_50bd3d1ffa2c4a75ac5a02569f9d2c1d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+[22m[39mAgent websocket attached for run cpw_manager_91b0a9_50bd3d1ffa2c4a75ac5a02569f9d2c1d
+Created agent session 423dbdca-910f-4cab-b941-d6184176c36e for run cpw_manager_91b0a9_50bd3d1ffa2c4a75ac5a02569f9d2c1d
+Agent WebSocket connected: session=423dbdca-910f-4cab-b941-d6184176c36e, run=cpw_manager_91b0a9_50bd3d1ffa2c4a75ac5a02569f9d2c1d
+
+[90mstderr[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/memory/agents/cpw_manager_91b0a9_50bd3d1ffa2c4a75ac5a02569f9d2c1d/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+[22m[39mAGY compaction detection off for run cpw_outsider_91b0a9_540dec9b398247709aaa1939ba5458a7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+[22m[39mAGY compaction detection off for run cpw_manager_91b0a9_8d5508b6c6fb4b55aadd419007b57c6b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated
+[22m[39mAgent team websocket attached for team run cpw_team_91b0a9_0f6256a1f1654a80aaf889fdf12c5588
+Created agent session 25667646-dd53-4c8f-93b2-45299d8e97bc for run cpw_team_91b0a9_0f6256a1f1654a80aaf889fdf12c5588
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated
+[22m[39mAgent Team WebSocket connected: session=25667646-dd53-4c8f-93b2-45299d8e97bc, run=cpw_team_91b0a9_0f6256a1f1654a80aaf889fdf12c5588
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstderr[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/memory/agent_teams/cpw_team_91b0a9_0f6256a1f1654a80aaf889fdf12c5588/cpw_manager_91b0a9_79ded49f3eb34a17bc828615027fde10/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/memory/agent_teams/cpw_team_91b0a9_0f6256a1f1654a80aaf889fdf12c5588/cpw_manager_91b0a9_79ded49f3eb34a17bc828615027fde10/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated
+[22m[39mAGY compaction detection off for run cpw_manager_91b0a9_79ded49f3eb34a17bc828615027fde10: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/memory/agent_teams/cpw_team_91b0a9_0f6256a1f1654a80aaf889fdf12c5588/cpw_manager_91b0a9_79ded49f3eb34a17bc828615027fde10/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated
+[22m[39mClosed agent session 25667646-dd53-4c8f-93b2-45299d8e97bc
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+[22m[39mAGY compaction detection off for run cpw_manager_91b0a9_66df0988717b43e38558c2d8e9857a67: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+[22m[39mAgent websocket attached for run cpw_manager_91b0a9_66df0988717b43e38558c2d8e9857a67
+Created agent session 140df5bf-3fed-43b9-b2a2-ad1134e7ed6e for run cpw_manager_91b0a9_66df0988717b43e38558c2d8e9857a67
+Agent WebSocket connected: session=140df5bf-3fed-43b9-b2a2-ad1134e7ed6e, run=cpw_manager_91b0a9_66df0988717b43e38558c2d8e9857a67
+
+[90mstderr[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/memory/agents/cpw_manager_91b0a9_66df0988717b43e38558c2d8e9857a67/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+[22m[39mAGY compaction detection off for run cpw_outsider_91b0a9_a3689635d0c849088bf2a7eccf24a2bd: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+[22m[39mClosed agent session 140df5bf-3fed-43b9-b2a2-ad1134e7ed6e
+Agent WebSocket disconnected: 140df5bf-3fed-43b9-b2a2-ad1134e7ed6e
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M3 Org root: a sibling of the organization is reachable and delegable
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M3 Org root: a sibling of the organization is reachable and delegable
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M3 Org root: a sibling of the organization is reachable and delegable
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/workspace.
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M3 Org root: a sibling of the organization is reachable and delegable
+[22m[39mReusing registered workspace ID: agent_ws_8a466029e5d32a72b3b406970b249368e0361da03e08fafeba7f87ebc816531d
+
+[90mstderr[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M3 Org root: a sibling of the organization is reachable and delegable
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/memory/agent_orgs/cpw_org_91b0a9_0fdb62823ddc4b21bc7bb158687f1334/cpw_manager_91b0a9_1514a6fc48bb429c8603a199cefcfc14/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M3 Org root: a sibling of the organization is reachable and delegable
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/memory/agent_orgs/cpw_org_91b0a9_0fdb62823ddc4b21bc7bb158687f1334/cpw_manager_91b0a9_1514a6fc48bb429c8603a199cefcfc14/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M3 Org root: a sibling of the organization is reachable and delegable
+[22m[39mAGY compaction detection off for run cpw_manager_91b0a9_1514a6fc48bb429c8603a199cefcfc14: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2mCPW-M3 Org root: a sibling of the organization is reachable and delegable
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cpw-e2e-xcYKtq/memory/agent_orgs/cpw_org_91b0a9_0fdb62823ddc4b21bc7bb158687f1334/cpw_manager_91b0a9_1514a6fc48bb429c8603a199cefcfc14/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22m[2mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mClosed agent session 423dbdca-910f-4cab-b941-d6184176c36e
+Agent WebSocket disconnected: 423dbdca-910f-4cab-b941-d6184176c36e
+
+ [31m❯[39m tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts [2m([22m[2m10 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 10009[2mms[22m[39m
+     [33m[2m✓[22m[39m CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs [33m 1346[2mms[22m[39m
+     [33m[2m✓[22m[39m CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team [33m 844[2mms[22m[39m
+     [33m[2m✓[22m[39m CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team [33m 1516[2mms[22m[39m
+     [33m[2m✓[22m[39m CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID) [33m 1594[2mms[22m[39m
+     [33m[2m✓[22m[39m CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text [33m 1004[2mms[22m[39m
+     [33m[2m✓[22m[39m CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011) [33m 732[2mms[22m[39m
+[31m     [31m×[31m CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate[39m[33m 872[2mms[22m[39m
+     [32m✓[39m CPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated[32m 296[2mms[22m[39m
+     [33m[2m✓[22m[39m CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it [33m 734[2mms[22m[39m
+     [33m[2m✓[22m[39m CPW-M3 Org root: a sibling of the organization is reachable and delegable [33m 350[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts[2m > [22mCollaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22mCPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+[31m[1mAssertionError[22m: M-04: {"isError":true,"text":"{\"accepted\":false,\"code\":\"COLLABORATION_ADDRESS_INVALID\",\"message\":\"'research_assistant' is not a valid address (a canonical rooted value beginning with '/' is required). An address is exact and begins with '/', for example /team/agent. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run ID.\",\"target_agent_run_id\":null}"}: expected '{"accepted":false,"code":"COLLABORATI…' to contain '\'research_assistant\' is not a valid…'[39m
+
+Expected: [32m"'research_assistant' is not a valid address ([7mit must[27m begin with '/'). An address is exact and begins with '/', for example /team/agent. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run ID."[39m
+Received: [31m"[7m{"accepted":false,"code":"COLLABORATION_ADDRESS_INVALID","message":"[27m'research_assistant' is not a valid address ([7ma canonical rooted value[27m begin[7mning[27m with '/'[7m is required[27m). An address is exact and begins with '/', for example /team/agent. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run ID.[7m","target_agent_run_id":null}[27m"[39m
+
+[36m [2m❯[22m check tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts:[2m291:92[22m[39m
+    [90m289| [39m    const check = async (id: string, from: string, tool: string, args:…
+    [90m290| [39m      [35mconst[39m result [33m=[39m [35mawait[39m h[33m.[39m[34mmcpCall[39m([35mfrom[39m[33m,[39m tool[33m,[39m args)[33m;[39m
+    [90m291| [39m      for (const part of expected) expect(result.text, `${id}: ${JSON.…
+    [90m   | [39m                                                                                           [31m^[39m
+    [90m292| [39m      expect(result.text, id).not.toMatch(/\b(copy|copies|spawn|collab…
+    [90m293| [39m    }[33m;[39m
+[90m [2m❯[22m tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts:[2m299:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m9 passed[39m[22m[90m (10)[39m
+[2m   Start at [22m 09:14:32
+[2m   Duration [22m 19.21s[2m (transform 6.38s, setup 28ms, import 8.64s, tests 10.01s, environment 0ms)[22m
+

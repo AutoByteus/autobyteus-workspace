@@ -1,0 +1,17 @@
+{
+  "image": "ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e",
+  "clone": "ab-nfs-api002-linux-5336c36d",
+  "publicImageSource": "https://github.com/cirruslabs/tart/pkgs/container/ubuntu/",
+  "instructionsSource": "https://tart.run/quick-start/",
+  "privateTartHome": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-api002-5861wgnv/linux-tart-state",
+  "result": "Ready",
+  "started": "2026-10-14T04:28:51Z",
+  "noVMStarted": true,
+  "argv": [
+    "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+    "clone",
+    "ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e",
+    "ab-nfs-api002-linux-5336c36d"
+  ],
+  "rc": 0
+}

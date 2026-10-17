@@ -1,0 +1,82 @@
+{
+  "review": "CRR-018",
+  "entryPoint": "Successful proportional test-code review",
+  "testReviewRound": 2,
+  "head": "6904190d616eb43da17f52dafdad48dc742a1da1",
+  "integratedSource": "a4afd758a9766274b08f675c04952b19913fff0c",
+  "testPath": "autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts",
+  "testSha256": "94b6a231e61fbe4bd1381ac661de6ed79b3e165b5d2f200eeed66cc9780367ee",
+  "delta": "6\t2\tautobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts",
+  "allSixBodiesIdentical": true,
+  "api009ProductionOrDurableDiff": "",
+  "logs": {
+    "install": {
+      "exitCode": 0,
+      "hashMatches": true,
+      "summary": []
+    },
+    "integration-prepare": {
+      "exitCode": 0,
+      "hashMatches": true,
+      "summary": []
+    },
+    "server-typecheck": {
+      "exitCode": 0,
+      "hashMatches": true,
+      "summary": []
+    },
+    "workspace-rest": {
+      "exitCode": 0,
+      "hashMatches": true,
+      "summary": [
+        "Test Files  1 passed (1)",
+        "Tests  6 passed (6)"
+      ]
+    },
+    "workspace-unit": {
+      "exitCode": 0,
+      "hashMatches": true,
+      "summary": [
+        "Test Files  9 passed (9)",
+        "Tests  48 passed (48)"
+      ]
+    },
+    "adjacent-explorer": {
+      "exitCode": 0,
+      "hashMatches": true,
+      "summary": [
+        "Test Files  2 passed (2)",
+        "Tests  12 passed (12)"
+      ]
+    },
+    "workspace-rest-repeat": {
+      "exitCode": 0,
+      "hashMatches": true,
+      "summary": [
+        "Test Files  1 passed (1)",
+        "Tests  6 passed (6)"
+      ]
+    }
+  },
+  "sourceReportSha256": "1755fa3ece180b8f060badb87d49ae2625d9c283624080caab56406c643c63d5",
+  "priorSuccessfulTestReportSha256": "6f860810ea5ee8c7ff75f564a962683f690e6ff5446ceebd56e1c0c26dc00ccd",
+  "priorHistoryBytes": 91469,
+  "priorHistorySha256": "c31b3698f5d5a87facb2440ccda8ef00e747df8a20e5b5a5661d8fbee001233c",
+  "protectedCanonicalInputs": {
+    "api-e2e-coverage-investigation.md": "991dd49846c424b38854226dd04a4bfd93e0e200f9904918bd0928736f8753d2",
+    "api-e2e-execution-coverage-report.md": "932181458d0549564e211b9d07cff4fc9464ecfc400f1f2a6901371a42f07de3",
+    "api-e2e-test-case-ledger.md": "7b2369093fde897f981669811fe1705193ea2908c6c29e4dcd79581d3d1497fd",
+    "api-e2e-revision-record.md": "ecb87180f3a8e4ef76e4cb99e82731e48acf18d4a7f88fe48902af896d74ce5e",
+    "code-review-report.md": "1755fa3ece180b8f060badb87d49ae2625d9c283624080caab56406c643c63d5",
+    "implementation-handoff.md": "f1cfc0b655cd417221b50360cdd3721016cfd20a71bac7c478552cc11232a904",
+    "delivery-revision-record.md": "2ba6836718bb344b28a898abde4f9152abff613417161f23ca9ed84c2f20ef41"
+  },
+  "counts": {
+    "unique": 66,
+    "files": 12,
+    "repeat": 6,
+    "executions": 72
+  },
+  "reviewerExecution": "None; previously reviewed lifecycle diff and fresh API009 evidence sufficient",
+  "scope": "No application gate or repeat VM campaign; retained IR010 and CR-FUP002 disposition unchanged"
+}

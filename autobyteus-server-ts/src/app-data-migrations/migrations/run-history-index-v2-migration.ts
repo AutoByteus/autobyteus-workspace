@@ -371,10 +371,10 @@ export class RunHistoryIndexV2AppDataMigration implements AppDataMigrationDefini
   }
 
   private async loadAgentDefinitionService(): Promise<AgentDefinitionLookup> {
-    const { AgentDefinitionPersistenceProvider } = await import(
-      "../../agent-definition/providers/agent-definition-persistence-provider.js"
+    const { FileAgentDefinitionProvider } = await import(
+      "../../agent-definition/providers/file-agent-definition-provider.js"
     );
-    const provider = new AgentDefinitionPersistenceProvider();
+    const provider = new FileAgentDefinitionProvider();
     return {
       getAgentDefinitionById: (agentDefinitionId) =>
         provider.getById(agentDefinitionId),

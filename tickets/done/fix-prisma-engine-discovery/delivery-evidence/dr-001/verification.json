@@ -1,0 +1,18 @@
+{
+  "judgement": "Verified from evidence for approved source-only scope",
+  "currentAuthority": "API-REV-002 scoped Pass95.7%, CRR-003 Pass; no findings",
+  "criteria": {
+    "AC001": "Five executed input hashes and4559dist entries intact;30owner graph cases within197;real CLI/root-pnpm605native control",
+    "AC002": "Exact revision/cache/unknown identity matrix; real retainedc299 negative nativeRPC vs605positive",
+    "AC003": "38owner/command cases within197; caller scopes/typecheck; canonicalDB/env/P3005/error semantics preserved",
+    "AC004": "Actual first/recreated IDs differ, same owned HOME/data/currentdist; six HTTP200, publicAPI-created definition retained, cache hashes equal; no pins",
+    "AC005": "Source cause brief synced; original identicalimage/differentcache contrast; writer unknown",
+    "AC006": "Owned cleanup receipts,69raw files intact; no user-node/backup/Docker/live/model commands by Delivery; source-only finalization pending"
+  },
+  "integration": "129cc8403bdce7ddd32bb8752d48c38a6eb9017d",
+  "base": "8a4dfe4279fe05d0180c313c87a2ac8bef23c71a",
+  "reruns": "focused197/197,20filesPass; typecheckPass; cleanHOME/TMPDIR; ownDBcleaned",
+  "manualUserCheck": "Not required by current authoritative delivery skill: no OnlyUserCanCheck criterion or unexplained proof gap. This is not recovery/live deployment; no old user acceptance reused. Explicit user source-only scope already approved R3; no new behavior/release decision.",
+  "remainingRisk": "PB-001 full integration2Fail remains separate manager candidate awaiting Task creation approval, not blanket green/waiver; native platform LinuxARM64 only",
+  "release": "No release, source-only approved scope; no public image mutation"
+}

@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "3D8792D7B8A94729330CFD62530A7B49",
+    "--script",
+    "() => {const p=document.querySelector(\"#node-manager-panel-nfsGuide\"), t=p.innerText, b=[...p.querySelectorAll(\"button\")];if(b.length!==2||!b.every(x=>x.disabled)||!t.includes(\"No compatible, verified release\")||!t.includes(\"unrelated work may stall\")||!t.includes(\"Docker agent clients are supported\"))throw Error(\"Guide contract differs\");return {result:\"Pass\",disabledCopyButtons:2,unqualifiedRelease:true,stallWarning:true,macDockerClientSupport:true};}"
+  ],
+  "rc": 0,
+  "stdout": "{\"schema_version\":\"1\",\"ok\":true,\"command\":\"run-script\",\"result\":{\"tab_id\":\"3D8792D7B8A94729330CFD62530A7B49\",\"url\":\"file:///Users/normy/autobyteus_org/autobyteus-worktrees/shared-network-workspaces/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/nodes\",\"output_mode\":\"inline\",\"result\":{\"result\":\"Pass\",\"disabledCopyButtons\":2,\"unqualifiedRelease\":true,\"stallWarning\":true,\"macDockerClientSupport\":true}}}\n",
+  "stderr": ""
+}

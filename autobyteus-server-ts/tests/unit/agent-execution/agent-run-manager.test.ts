@@ -80,6 +80,7 @@ const createManagerFixture = (input: {
   publishedArtifactRelayService?: unknown;
   memoryRecorder?: unknown;
   agentToolMcpRunSessionDeactivator?: AgentToolMcpRunSessionDeactivator;
+  lifecycleObserver?: { runPublished: ReturnType<typeof vi.fn> };
 }) => {
   const runSessions = input.agentToolMcpRunSessionDeactivator
     ?? createRecordingAgentToolMcpRunSessionDeactivator().deactivator;
@@ -119,6 +120,7 @@ const createManagerFixture = (input: {
       memoryRecorder,
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
       agentToolMcpRunSessionDeactivator: runSessions,
+      lifecycleObserver: input.lifecycleObserver ?? null,
     }),
   };
 };
@@ -160,6 +162,25 @@ describe("AgentRunManager candidate lifecycle", () => {
     expect(published.runId).toBe("run-codex");
   });
 
+  it("tells the lifecycle observer about a run only once it is published, with its activation kind", async () => {
+    const backend = createBackend({ runId: "run-observed", platformAgentRunId: "thread-observed" });
+    const lifecycleObserver = { runPublished: vi.fn(() => { throw new Error("observer failed"); }) };
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const manager = createManager({
+      codexBackendFactory: { createBackend: vi.fn(async () => backend), restoreBackend: vi.fn() },
+      lifecycleObserver,
+    });
+
+    const candidate = await manager.beginActivation({ kind: "new", runId: "run-observed", config: createConfig() }).prepare();
+    expect(lifecycleObserver.runPublished).not.toHaveBeenCalled();
+
+    // A failing observer never fails the publication.
+    const published = candidate.commitPublication();
+    expect(lifecycleObserver.runPublished).toHaveBeenCalledExactlyOnceWith(published, "new");
+    expect(manager.getActiveRun("run-observed")).toBe(published);
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("run-observed"));
+  });
+
   it("claims the run id before the first backend await and rejects overlapping preparation", async () => {
     let release!: () => void;
     const gate = new Promise<void>((resolve) => { release = resolve; });
@@ -176,7 +197,8 @@ describe("AgentRunManager candidate lifecycle", () => {
     const first = manager.beginActivation({ kind: "new", ...({ runId: "run-overlap", config }) }).prepare();
     await expect(Promise.resolve().then(() => manager.beginActivation({ kind: "new", ...({ runId: "run-overlap", config }) }).prepare()))
       .rejects.toMatchObject({ code: "AGENT_RUN_ACTIVATION_IN_PROGRESS_CONFLICT" });
-    expect(codexBackendFactory.createBackend).toHaveBeenCalledOnce();
+    // Shared-workspace admission may await its local descriptor before native preparation.
+    await vi.waitFor(() => expect(codexBackendFactory.createBackend).toHaveBeenCalledOnce());
 
     release();
     const candidate = await first;

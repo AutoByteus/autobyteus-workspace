@@ -1,0 +1,6 @@
+prepare verified toolchain and copied current CLI
+clone fresh owned VM ab-nfs-sr020-0c98a83d
+fetch authenticated exact Ubuntu source and build dependencies in guest
+build two-field upstream backport as local prototype Debian packages
+RuntimeError('dch warning: Unable to determine if noble is a valid Ubuntu release.\ndpkg-source: info: using patch list from debian/patches/series\ndpkg-source: info: local changes detected, the modified files are:\n nfs-ganesha-4.3/src/Protocols/NFS/nfs4_Compound.c\ndpkg-source: info: local changes have been recorded in a new patch: nfs-ganesha-4.3/debian/patches/autobyteus-get-dir-delegation.patch\nlibdistro-info-perl is not installed, Debian release names are not known.\nlibdistro-info-perl is not installed, Ubuntu release names are not known.\n')
+{"result": "Prototype Incomplete", "cleanup": true}

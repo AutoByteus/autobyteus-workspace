@@ -1,0 +1,688 @@
+{
+  "scope": "Narrow package owner / Docker package parity, not NFS product validation",
+  "vm": "ab-nfs-ir005-install-962c1d52",
+  "image": "ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e",
+  "scratch": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir005-b31e16r_/install-vm",
+  "commands": [
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "clone",
+        "ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e",
+        "ab-nfs-ir005-install-962c1d52"
+      ],
+      "rc": 0,
+      "seconds": 286.726,
+      "stdout": "pulling manifest...\npulling disk (3.1 GB compressed)...\n0%\n\u001b[1A\r\u001b[J2%\n\u001b[1A\r\u001b[J4%\n\u001b[1A\r\u001b[J5%\n\u001b[1A\r\u001b[J6%\n\u001b[1A\r\u001b[J7%\n\u001b[1A\r\u001b[J8%\n\u001b[1A\r\u001b[J9%\n\u001b[1A\r\u001b[J10%\n\u001b[1A\r\u001b[J11%\n\u001b[1A\r\u001b[J12%\n\u001b[1A\r\u001b[J13%\n\u001b[1A\r\u001b[J14%\n\u001b[1A\r\u001b[J15%\n\u001b[1A\r\u001b[J16%\n\u001b[1A\r\u001b[J17%\n\u001b[1A\r\u001b[J18%\n\u001b[1A\r\u001b[J19%\n\u001b[1A\r\u001b[J20%\n\u001b[1A\r\u001b[J21%\n\u001b[1A\r\u001b[J22%\n\u001b[1A\r\u001b[J24%\n\u001b[1A\r\u001b[J25%\n\u001b[1A\r\u001b[J26%\n\u001b[1A\r\u001b[J27%\n\u001b[1A\r\u001b[J28%\n\u001b[1A\r\u001b[J29%\n\u001b[1A\r\u001b[J30%\n\u001b[1A\r\u001b[J31%\n\u001b[1A\r\u001b[J32%\n\u001b[1A\r\u001b[J33%\n\u001b[1A\r\u001b[J34%\n\u001b[1A\r\u001b[J35%\n\u001b[1A\r\u001b[J36%\n\u001b[1A\r\u001b[J37%\n\u001b[1A\r\u001b[J39%\n\u001b[1A\r\u001b[J40%\n\u001b[1A\r\u001b[J41%\n\u001b[1A\r\u001b[J42%\n\u001b[1A\r\u001b[J43%\n\u001b[1A\r\u001b[J44%\n\u001b[1A\r\u001b[J45%\n\u001b[1A\r\u001b[J46%\n\u001b[1A\r\u001b[J47%\n\u001b[1A\r\u001b[J48%\n\u001b[1A\r\u001b[J49%\n\u001b[1A\r\u001b[J50%\n\u001b[1A\r\u001b[J52%\n\u001b[1A\r\u001b[J53%\n\u001b[1A\r\u001b[J54%\n\u001b[1A\r\u001b[J55%\n\u001b[1A\r\u001b[J56%\n\u001b[1A\r\u001b[J57%\n\u001b[1A\r\u001b[J58%\n\u001b[1A\r\u001b[J59%\n\u001b[1A\r\u001b[J60%\n\u001b[1A\r\u001b[J61%\n\u001b[1A\r\u001b[J63%\n\u001b[1A\r\u001b[J64%\n\u001b[1A\r\u001b[J65%\n\u001b[1A\r\u001b[J66%\n\u001b[1A\r\u001b[J67%\n\u001b[1A\r\u001b[J68%\n\u001b[1A\r\u001b[J69%\n\u001b[1A\r\u001b[J71%\n\u001b[1A\r\u001b[J73%\n\u001b[1A\r\u001b[J74%\n\u001b[1A\r\u001b[J75%\n\u001b[1A\r\u001b[J76%\n\u001b[1A\r\u001b[J77%\n\u001b[1A\r\u001b[J78%\n\u001b[1A\r\u001b[J79%\n\u001b[1A\r\u001b[J80%\n\u001b[1A\r\u001b[J81%\n\u001b[1A\r\u001b[J82%\n\u001b[1A\r\u001b[J83%\n\u001b[1A\r\u001b[J84%\n\u001b[1A\r\u001b[J86%\n\u001b[1A\r\u001b[J87%\n\u001b[1A\r\u001b[J88%\n\u001b[1A\r\u001b[J89%\n\u001b[1A\r\u001b[J90%\n\u001b[1A\r\u001b[J91%\n\u001b[1A\r\u001b[J92%\n\u001b[1A\r\u001b[J93%\n\u001b[1A\r\u001b[J94%\n\u001b[1A\r\u001b[J95%\n\u001b[1A\r\u001b[J96%\n\u001b[1A\r\u001b[J97%\n\u001b[1A\r\u001b[J98%\n\u001b[1A\r\u001b[J99%\n\u001b[1A\r\u001b[J100%\npulling NVRAM...\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "set",
+        "ab-nfs-ir005-install-962c1d52",
+        "--cpu",
+        "4",
+        "--memory",
+        "6144"
+      ],
+      "rc": 0,
+      "seconds": 0.024,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-ir005-install-962c1d52",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "true"
+      ],
+      "rc": 2,
+      "seconds": 0.018,
+      "stdout": "",
+      "stderr": "VM \"ab-nfs-ir005-install-962c1d52\" is not running\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-ir005-install-962c1d52",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "true"
+      ],
+      "rc": 0,
+      "seconds": 5.836,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-ir005-install-962c1d52",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "set -e; uname -a; test ! -e /var/lib/autobyteus-nfs; ! dpkg-query -W nfs-ganesha; ! command -v gcc; ! command -v docker; test ! -e /etc/systemd/system/nfs-ganesha.service; findmnt -t nfs,nfs4 || true"
+      ],
+      "rc": 0,
+      "seconds": 0.04,
+      "stdout": "Linux ubuntu 7.0.0-38-generic #38~24.04.4-Ubuntu SMP PREEMPT_DYNAMIC Mon Sep 14 17:12:37 UTC 2 aarch64 aarch64 aarch64 GNU/Linux\n",
+      "stderr": "dpkg-query: no packages found matching nfs-ganesha\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "-i",
+        "ab-nfs-ir005-install-962c1d52",
+        "/bin/sh",
+        "-c",
+        "umask 077; cat > /home/admin/package-fixture"
+      ],
+      "rc": 0,
+      "seconds": 0.097,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-ir005-install-962c1d52",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "chmod 755 /home/admin/package-fixture"
+      ],
+      "rc": 0,
+      "seconds": 0.089,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "-i",
+        "ab-nfs-ir005-install-962c1d52",
+        "/bin/sh",
+        "-c",
+        "umask 077; cat > /home/admin/bad-package-fixture"
+      ],
+      "rc": 0,
+      "seconds": 0.106,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-ir005-install-962c1d52",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "chmod 755 /home/admin/bad-package-fixture"
+      ],
+      "rc": 0,
+      "seconds": 0.089,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-ir005-install-962c1d52",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n /bin/sh -c 'umask 077; exec /home/admin/bad-package-fixture --owned-vm-install-only'"
+      ],
+      "rc": 1,
+      "seconds": 0.051,
+      "stdout": "",
+      "stderr": "engine package digest mismatch\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-ir005-install-962c1d52",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "set -e; ! dpkg-query -W nfs-ganesha; test ! -e /etc/systemd/system/nfs-ganesha.service; sudo -n test ! -e /var/lib/autobyteus-nfs/package-mask.json"
+      ],
+      "rc": 0,
+      "seconds": 0.037,
+      "stdout": "",
+      "stderr": "dpkg-query: no packages found matching nfs-ganesha\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-ir005-install-962c1d52",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n /bin/sh -c 'umask 077; exec /home/admin/package-fixture --owned-vm-install-only'"
+      ],
+      "rc": 0,
+      "seconds": 16.84,
+      "stdout": "Production package owner completed; no NFS setup/export/mount executed\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-ir005-install-962c1d52",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "set -e; dpkg-query -W -f='${Package} ${Status} ${Version} ${Architecture}\\n' nfs-common nfs-ganesha nfs-ganesha-vfs; test ! -e /etc/systemd/system/nfs-ganesha.service; ! systemctl is-active --quiet nfs-ganesha.service; sudo -n test ! -e /var/lib/autobyteus-nfs/package-mask.json; sudo -n find /var/lib/autobyteus-nfs -maxdepth 1 -type d; sudo -n stat -c \"%u:%g %a %n\" /var/lib/autobyteus-nfs; sha256sum /usr/bin/ganesha.nfsd; dpkg-query -L nfs-ganesha-vfs; ! command -v gcc"
+      ],
+      "rc": 0,
+      "seconds": 0.548,
+      "stdout": "nfs-common install ok installed 1:2.6.4-3ubuntu5.1 arm64\nnfs-ganesha install ok installed 4.3-8ubuntu1+autobyteus1 arm64\nnfs-ganesha-vfs install ok installed 4.3-8ubuntu1+autobyteus1 arm64\n/var/lib/autobyteus-nfs\n0:0 700 /var/lib/autobyteus-nfs\nce7f607a149221c1d0ece6d3d4d9112174e138e43a0c52398061bcaf7406fcc8  /usr/bin/ganesha.nfsd\n/.\n/etc\n/etc/ganesha\n/etc/ganesha/vfs.conf\n/usr\n/usr/lib\n/usr/lib/aarch64-linux-gnu\n/usr/lib/aarch64-linux-gnu/ganesha\n/usr/lib/aarch64-linux-gnu/ganesha/libfsalvfs.so\n/usr/share\n/usr/share/doc\n/usr/share/doc/nfs-ganesha-vfs\n/usr/share/doc/nfs-ganesha-vfs/changelog.Debian.gz\n/usr/share/doc/nfs-ganesha-vfs/copyright\n/usr/share/lintian\n/usr/share/lintian/overrides\n/usr/share/lintian/overrides/nfs-ganesha-vfs\n/usr/share/man\n/usr/share/man/man8\n/usr/share/man/man8/ganesha-vfs-config.8.gz\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-ir005-install-962c1d52",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n /home/admin/package-fixture --owned-vm-install-only"
+      ],
+      "rc": 0,
+      "seconds": 0.097,
+      "stdout": "Production package owner completed; no NFS setup/export/mount executed\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-ir005-install-962c1d52",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n apt-get update -qq; sudo -n env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends docker.io; sudo -n systemctl start docker"
+      ],
+      "rc": 0,
+      "seconds": 14.1,
+      "stdout": "Reading package lists...\nBuilding dependency tree...\nReading state information...\nThe following additional packages will be installed:\n  containerd runc\nSuggested packages:\n  aufs-tools cgroupfs-mount | cgroup-lite debootstrap docker-buildx\n  docker-compose-v2 docker-doc rinse zfs-fuse | zfsutils\nRecommended packages:\n  pigz ubuntu-fan\nThe following NEW packages will be installed:\n  containerd docker.io runc\n0 upgraded, 3 newly installed, 0 to remove and 34 not upgraded.\nNeed to get 65.8 MB of archives.\nAfter this operation, 265 MB of additional disk space will be used.\nGet:1 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 runc arm64 1.3.4-0ubuntu1~24.04.1 [8578 kB]\nGet:2 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 containerd arm64 2.2.1-0ubuntu1~24.04.3 [25.2 MB]\nGet:3 http://ports.ubuntu.com/ubuntu-ports noble-updates/universe arm64 docker.io arm64 29.1.3-0ubuntu3~24.04.2 [32.0 MB]\nPreconfiguring packages ...\nFetched 65.8 MB in 6s (11.3 MB/s)\nSelecting previously unselected package runc.\r\n(Reading database ... \r(Reading database ... 5%\r(Reading database ... 10%\r(Reading database ... 15%\r(Reading database ... 20%\r(Reading database ... 25%\r(Reading database ... 30%\r(Reading database ... 35%\r(Reading database ... 40%\r(Reading database ... 45%\r(Reading database ... 50%\r(Reading database ... 55%\r(Reading database ... 60%\r(Reading database ... 65%\r(Reading database ... 70%\r(Reading database ... 75%\r(Reading database ... 80%\r(Reading database ... 85%\r(Reading database ... 90%\r(Reading database ... 95%\r(Reading database ... 100%\r(Reading database ... 131734 files and directories currently installed.)\r\nPreparing to unpack .../runc_1.3.4-0ubuntu1~24.04.1_arm64.deb ...\r\nUnpacking runc (1.3.4-0ubuntu1~24.04.1) ...\r\nSelecting previously unselected package containerd.\r\nPreparing to unpack .../containerd_2.2.1-0ubuntu1~24.04.3_arm64.deb ...\r\nUnpacking containerd (2.2.1-0ubuntu1~24.04.3) ...\r\nSelecting previously unselected package docker.io.\r\nPreparing to unpack .../docker.io_29.1.3-0ubuntu3~24.04.2_arm64.deb ...\r\nUnpacking docker.io (29.1.3-0ubuntu3~24.04.2) ...\r\nSetting up runc (1.3.4-0ubuntu1~24.04.1) ...\r\nSetting up containerd (2.2.1-0ubuntu1~24.04.3) ...\r\nCreated symlink /etc/systemd/system/multi-user.target.wants/containerd.service -> /usr/lib/systemd/system/containerd.service.\r\r\nSetting up docker.io (29.1.3-0ubuntu3~24.04.2) ...\r\ninfo: Selecting GID from range 100 to 999 ...\r\ninfo: Adding group `docker' (GID 111) ...\r\nCreated symlink /etc/systemd/system/multi-user.target.wants/docker.service -> /usr/lib/systemd/system/docker.service.\r\r\nCreated symlink /etc/systemd/system/sockets.target.wants/docker.socket -> /usr/lib/systemd/system/docker.socket.\r\r\nProcessing triggers for man-db (2.12.0-4build2) ...\r\n",
+      "stderr": "\nRunning kernel seems to be up-to-date.\n\nNo services need to be restarted.\n\nNo containers need to be restarted.\n\nNo user sessions are running outdated binaries.\n\nNo VM guests are running outdated hypervisor (qemu) binaries on this host.\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "-i",
+        "ab-nfs-ir005-install-962c1d52",
+        "/bin/sh",
+        "-c",
+        "mkdir /home/admin/image-context; tar -xf - -C /home/admin/image-context"
+      ],
+      "rc": 0,
+      "seconds": 0.376,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-ir005-install-962c1d52",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "cd /home/admin/image-context; sudo -n docker build --pull --build-arg UBUNTU_BASE=ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55 --build-arg TARGETARCH=arm64 -f autobyteus-nfs/packaging/Dockerfile -t ab-nfs-ir005:check ."
+      ],
+      "rc": 0,
+      "seconds": 38.796,
+      "stdout": "Sending build context to Docker daemon    2.7MB\r\r\nStep 1/9 : ARG UBUNTU_BASE\nStep 2/9 : FROM ${UBUNTU_BASE}\n24.04: Pulling from library/ubuntu\n90812e242c93: Pulling fs layer\nd840120f5ea1: Download complete\n90812e242c93: Download complete\n90812e242c93: Pull complete\nDigest: sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55\nStatus: Downloaded newer image for ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55\n ---> 534baea6a22c\nStep 3/9 : ARG TARGETARCH\n ---> Running in be76192ec7a9\n ---> Removed intermediate container be76192ec7a9\n ---> 47beeff61e6f\nStep 4/9 : COPY engine-candidate/${TARGETARCH}/ /tmp/autobyteus-engine/\n ---> 067d4ef04e2d\nStep 5/9 : RUN set -eu; cd /tmp/autobyteus-engine; sha256sum -c SHA256SUMS;  for name in nfs-ganesha nfs-ganesha-vfs; do    file=\"${name}_4.3-8ubuntu1+autobyteus1_${TARGETARCH}.deb\";    test \"$(dpkg-deb -f \"$file\" Package)\" = \"$name\";    test \"$(dpkg-deb -f \"$file\" Version)\" = '4.3-8ubuntu1+autobyteus1';    test \"$(dpkg-deb -f \"$file\" Architecture)\" = \"$TARGETARCH\";  done;  apt-get update; DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends    /tmp/autobyteus-engine/nfs-ganesha_*.deb /tmp/autobyteus-engine/nfs-ganesha-vfs_*.deb;  for name in nfs-ganesha nfs-ganesha-vfs; do    test \"$(dpkg-query -W -f='${Status} ${Version}' \"$name\")\" = 'install ok installed 4.3-8ubuntu1+autobyteus1';  done;  mkdir -p /run/ganesha /var/lib/ganesha /export /usr/share/autobyteus-nfs/licenses;  cp COPYRIGHT /usr/share/autobyteus-nfs/licenses/nfs-ganesha;  cp engine-build-*.txt SHA256SUMS /usr/share/autobyteus-nfs/;  dpkg-query -W > /usr/share/autobyteus-nfs/packages.txt;  rm -rf /var/lib/apt/lists/* /tmp/autobyteus-engine\n ---> Running in 40c0955eed27\nnfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb: OK\nnfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb: OK\nautobyteus-nfs-ganesha-source-4.3-8ubuntu1+autobyteus1-arm64.tar.gz: OK\nengine-build-arm64.txt: OK\nGet:1 http://ports.ubuntu.com/ubuntu-ports noble InRelease [256 kB]\nGet:2 http://ports.ubuntu.com/ubuntu-ports noble-updates InRelease [126 kB]\nGet:3 http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease [126 kB]\nGet:4 http://ports.ubuntu.com/ubuntu-ports noble-security InRelease [126 kB]\nGet:5 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 Packages [1776 kB]\nGet:6 http://ports.ubuntu.com/ubuntu-ports noble/restricted arm64 Packages [113 kB]\nGet:7 http://ports.ubuntu.com/ubuntu-ports noble/multiverse arm64 Packages [274 kB]\nGet:8 http://ports.ubuntu.com/ubuntu-ports noble/universe arm64 Packages [19.0 MB]\nGet:9 http://ports.ubuntu.com/ubuntu-ports noble-updates/restricted arm64 Packages [3251 kB]\nGet:10 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 Packages [1786 kB]\nGet:11 http://ports.ubuntu.com/ubuntu-ports noble-updates/universe arm64 Packages [2212 kB]\nGet:12 http://ports.ubuntu.com/ubuntu-ports noble-updates/multiverse arm64 Packages [104 kB]\nGet:13 http://ports.ubuntu.com/ubuntu-ports noble-backports/main arm64 Packages [49.0 kB]\nGet:14 http://ports.ubuntu.com/ubuntu-ports noble-backports/universe arm64 Packages [36.3 kB]\nGet:15 http://ports.ubuntu.com/ubuntu-ports noble-backports/multiverse arm64 Packages [669 B]\nGet:16 http://ports.ubuntu.com/ubuntu-ports noble-security/multiverse arm64 Packages [99.1 kB]\nGet:17 http://ports.ubuntu.com/ubuntu-ports noble-security/universe arm64 Packages [1636 kB]\nGet:18 http://ports.ubuntu.com/ubuntu-ports noble-security/main arm64 Packages [1475 kB]\nGet:19 http://ports.ubuntu.com/ubuntu-ports noble-security/restricted arm64 Packages [3129 kB]\nFetched 35.6 MB in 5s (7469 kB/s)\nReading package lists...\nReading package lists...\nBuilding dependency tree...\nReading state information...\nThe following additional packages will be installed:\n  adduser dbus dbus-bin dbus-daemon dbus-session-bus-common\n  dbus-system-bus-common keyutils libapparmor1 libdbus-1-3 libdevmapper1.02.1\n  libevent-core-2.1-7t64 libexpat1 libgssapi-krb5-2 libk5crypto3 libkeyutils1\n  libkrb5-3 libkrb5support0 libldap2 libnfsidmap1 libntirpc4.3t64\n  libpython3-stdlib libpython3.12-minimal libpython3.12-stdlib libreadline8t64\n  libsasl2-2 libsasl2-modules-db libsqlite3-0 libtirpc-common libtirpc3t64\n  liburcu8t64 libwbclient0 libwrap0 media-types netbase nfs-common python3\n  python3-minimal python3.12 python3.12-minimal readline-common rpcbind tzdata\n  ucf\nSuggested packages:\n  liblocale-gettext-perl perl cron quota ecryptfs-utils\n  default-dbus-session-bus | dbus-session-bus krb5-doc krb5-user open-iscsi\n  watchdog python3-doc python3-tk python3-venv python3.12-venv python3.12-doc\n  binutils binfmt-support readline-doc\nRecommended packages:\n  dmsetup krb5-locales libldap-common libsasl2-modules ca-certificates\nThe following NEW packages will be installed:\n  adduser dbus dbus-bin dbus-daemon dbus-session-bus-common\n  dbus-system-bus-common keyutils libapparmor1 libdbus-1-3 libdevmapper1.02.1\n  libevent-core-2.1-7t64 libexpat1 libgssapi-krb5-2 libk5crypto3 libkeyutils1\n  libkrb5-3 libkrb5support0 libldap2 libnfsidmap1 libntirpc4.3t64\n  libpython3-stdlib libpython3.12-minimal libpython3.12-stdlib libreadline8t64\n  libsasl2-2 libsasl2-modules-db libsqlite3-0 libtirpc-common libtirpc3t64\n  liburcu8t64 libwbclient0 libwrap0 media-types netbase nfs-common nfs-ganesha\n  nfs-ganesha-vfs python3 python3-minimal python3.12 python3.12-minimal\n  readline-common rpcbind tzdata ucf\n0 upgraded, 45 newly installed, 0 to remove and 3 not upgraded.\nNeed to get 9809 kB/10.5 MB of archives.\nAfter this operation, 41.8 MB of additional disk space will be used.\nGet:1 /tmp/autobyteus-engine/nfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb nfs-ganesha arm64 4.3-8ubuntu1+autobyteus1 [614 kB]\nGet:2 /tmp/autobyteus-engine/nfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb nfs-ganesha-vfs arm64 4.3-8ubuntu1+autobyteus1 [48.6 kB]\nGet:3 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libpython3.12-minimal arm64 3.12.3-1ubuntu0.17 [835 kB]\nGet:4 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libexpat1 arm64 2.6.1-2ubuntu0.6 [89.8 kB]\nGet:5 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 python3.12-minimal arm64 3.12.3-1ubuntu0.17 [2253 kB]\nGet:6 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 python3-minimal arm64 3.12.3-0ubuntu2.1 [27.4 kB]\nGet:7 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 media-types all 10.1.0 [27.5 kB]\nGet:8 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 netbase all 6.4 [13.1 kB]\nGet:9 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 tzdata all 2026c-0ubuntu0.24.04.1 [280 kB]\nGet:10 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 readline-common all 8.2-4build1 [56.5 kB]\nGet:11 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 libreadline8t64 arm64 8.2-4build1 [153 kB]\nGet:12 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libsqlite3-0 arm64 3.45.1-1ubuntu2.8 [691 kB]\nGet:13 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libpython3.12-stdlib arm64 3.12.3-1ubuntu0.17 [2039 kB]\nGet:14 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 python3.12 arm64 3.12.3-1ubuntu0.17 [651 kB]\nGet:15 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libpython3-stdlib arm64 3.12.3-0ubuntu2.1 [10.1 kB]\nGet:16 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 python3 arm64 3.12.3-0ubuntu2.1 [23.0 kB]\nGet:17 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libdevmapper1.02.1 arm64 2:1.02.185-3ubuntu3.2 [128 kB]\nGet:18 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libevent-core-2.1-7t64 arm64 2.1.12-stable-9ubuntu2.2 [90.6 kB]\nGet:19 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libkrb5support0 arm64 1.20.1-6ubuntu2.10 [35.4 kB]\nGet:20 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libk5crypto3 arm64 1.20.1-6ubuntu2.10 [85.8 kB]\nGet:21 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 libkeyutils1 arm64 1.6.3-3build1 [9654 B]\nGet:22 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libkrb5-3 arm64 1.20.1-6ubuntu2.10 [350 kB]\nGet:23 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libgssapi-krb5-2 arm64 1.20.1-6ubuntu2.10 [142 kB]\nGet:24 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libsasl2-modules-db arm64 2.1.28+dfsg1-5ubuntu3.1 [21.6 kB]\nGet:25 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libsasl2-2 arm64 2.1.28+dfsg1-5ubuntu3.1 [54.7 kB]\nGet:26 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libldap2 arm64 2.6.10+dfsg-0ubuntu0.24.04.1 [196 kB]\nGet:27 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libnfsidmap1 arm64 1:2.6.4-3ubuntu5.1 [48.2 kB]\nGet:28 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 libtirpc-common all 1.3.4+ds-1.1build1 [8094 B]\nGet:29 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 libtirpc3t64 arm64 1.3.4+ds-1.1build1 [83.6 kB]\nGet:30 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 libwrap0 arm64 7.6.q-33 [48.5 kB]\nGet:31 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 adduser all 3.137ubuntu1 [101 kB]\nGet:32 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 rpcbind arm64 1.2.6-7ubuntu2 [46.1 kB]\nGet:33 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 ucf all 3.0043+nmu1 [56.5 kB]\nGet:34 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 keyutils arm64 1.6.3-3build1 [56.3 kB]\nGet:35 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 nfs-common arm64 1:2.6.4-3ubuntu5.1 [247 kB]\nGet:36 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libdbus-1-3 arm64 1.14.10-4ubuntu4.1 [210 kB]\nGet:37 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 dbus-bin arm64 1.14.10-4ubuntu4.1 [38.8 kB]\nGet:38 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 dbus-session-bus-common all 1.14.10-4ubuntu4.1 [80.5 kB]\nGet:39 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libapparmor1 arm64 4.0.1really4.0.1-0ubuntu0.24.04.9 [51.9 kB]\nGet:40 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 dbus-daemon arm64 1.14.10-4ubuntu4.1 [115 kB]\nGet:41 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 dbus-system-bus-common all 1.14.10-4ubuntu4.1 [81.6 kB]\nGet:42 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 dbus arm64 1.14.10-4ubuntu4.1 [23.9 kB]\nGet:43 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 liburcu8t64 arm64 0.14.0-3.1build1 [63.1 kB]\nGet:44 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 libntirpc4.3t64 arm64 4.3-3.1build2 [113 kB]\nGet:45 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libwbclient0 arm64 2:4.19.5+dfsg-4ubuntu9.8 [73.0 kB]\n\u001b[91mdebconf: delaying package configuration, since apt-utils is not installed\n\u001b[0mFetched 9809 kB in 3s (3678 kB/s)\nSelecting previously unselected package libpython3.12-minimal:arm64.\r\n(Reading database ... \r(Reading database ... 5%\r(Reading database ... 10%\r(Reading database ... 15%\r(Reading database ... 20%\r(Reading database ... 25%\r(Reading database ... 30%\r(Reading database ... 35%\r(Reading database ... 40%\r(Reading database ... 45%\r(Reading database ... 50%\r(Reading database ... 55%\r(Reading database ... 60%\r(Reading database ... 65%\r(Reading database ... 70%\r(Reading database ... 75%\r(Reading database ... 80%\r(Reading database ... 85%\r(Reading database ... 90%\r(Reading database ... 95%\r(Reading database ... 100%\r(Reading database ... 4376 files and directories currently installed.)\r\nPreparing to unpack .../libpython3.12-minimal_3.12.3-1ubuntu0.17_arm64.deb ...\r\nUnpacking libpython3.12-minimal:arm64 (3.12.3-1ubuntu0.17) ...\r\nSelecting previously unselected package libexpat1:arm64.\r\nPreparing to unpack .../libexpat1_2.6.1-2ubuntu0.6_arm64.deb ...\r\nUnpacking libexpat1:arm64 (2.6.1-2ubuntu0.6) ...\r\nSelecting previously unselected package python3.12-minimal.\r\nPreparing to unpack .../python3.12-minimal_3.12.3-1ubuntu0.17_arm64.deb ...\r\nUnpacking python3.12-minimal (3.12.3-1ubuntu0.17) ...\r\nSetting up libpython3.12-minimal:arm64 (3.12.3-1ubuntu0.17) ...\r\nSetting up libexpat1:arm64 (2.6.1-2ubuntu0.6) ...\r\nSetting up python3.12-minimal (3.12.3-1ubuntu0.17) ...\r\nSelecting previously unselected package python3-minimal.\r\n(Reading database ... \r(Reading database ... 5%\r(Reading database ... 10%\r(Reading database ... 15%\r(Reading database ... 20%\r(Reading database ... 25%\r(Reading database ... 30%\r(Reading database ... 35%\r(Reading database ... 40%\r(Reading database ... 45%\r(Reading database ... 50%\r(Reading database ... 55%\r(Reading database ... 60%\r(Reading database ... 65%\r(Reading database ... 70%\r(Reading database ... 75%\r(Reading database ... 80%\r(Reading database ... 85%\r(Reading database ... 90%\r(Reading database ... 95%\r(Reading database ... 100%\r(Reading database ... 4695 files and directories currently installed.)\r\nPreparing to unpack .../0-python3-minimal_3.12.3-0ubuntu2.1_arm64.deb ...\r\nUnpacking python3-minimal (3.12.3-0ubuntu2.1) ...\r\nSelecting previously unselected package media-types.\r\nPreparing to unpack .../1-media-types_10.1.0_all.deb ...\r\nUnpacking media-types (10.1.0) ...\r\nSelecting previously unselected package netbase.\r\nPreparing to unpack .../2-netbase_6.4_all.deb ...\r\nUnpacking netbase (6.4) ...\r\nSelecting previously unselected package tzdata.\r\nPreparing to unpack .../3-tzdata_2026c-0ubuntu0.24.04.1_all.deb ...\r\nUnpacking tzdata (2026c-0ubuntu0.24.04.1) ...\r\nSelecting previously unselected package readline-common.\r\nPreparing to unpack .../4-readline-common_8.2-4build1_all.deb ...\r\nUnpacking readline-common (8.2-4build1) ...\r\nSelecting previously unselected package libreadline8t64:arm64.\r\nPreparing to unpack .../5-libreadline8t64_8.2-4build1_arm64.deb ...\r\nAdding 'diversion of /lib/aarch64-linux-gnu/libhistory.so.8 to /lib/aarch64-linux-gnu/libhistory.so.8.usr-is-merged by libreadline8t64'\r\nAdding 'diversion of /lib/aarch64-linux-gnu/libhistory.so.8.2 to /lib/aarch64-linux-gnu/libhistory.so.8.2.usr-is-merged by libreadline8t64'\r\nAdding 'diversion of /lib/aarch64-linux-gnu/libreadline.so.8 to /lib/aarch64-linux-gnu/libreadline.so.8.usr-is-merged by libreadline8t64'\r\nAdding 'diversion of /lib/aarch64-linux-gnu/libreadline.so.8.2 to /lib/aarch64-linux-gnu/libreadline.so.8.2.usr-is-merged by libreadline8t64'\r\nUnpacking libreadline8t64:arm64 (8.2-4build1) ...\r\nSelecting previously unselected package libsqlite3-0:arm64.\r\nPreparing to unpack .../6-libsqlite3-0_3.45.1-1ubuntu2.8_arm64.deb ...\r\nUnpacking libsqlite3-0:arm64 (3.45.1-1ubuntu2.8) ...\r\nSelecting previously unselected package libpython3.12-stdlib:arm64.\r\nPreparing to unpack .../7-libpython3.12-stdlib_3.12.3-1ubuntu0.17_arm64.deb ...\r\nUnpacking libpython3.12-stdlib:arm64 (3.12.3-1ubuntu0.17) ...\r\nSelecting previously unselected package python3.12.\r\nPreparing to unpack .../8-python3.12_3.12.3-1ubuntu0.17_arm64.deb ...\r\nUnpacking python3.12 (3.12.3-1ubuntu0.17) ...\r\nSelecting previously unselected package libpython3-stdlib:arm64.\r\nPreparing to unpack .../9-libpython3-stdlib_3.12.3-0ubuntu2.1_arm64.deb ...\r\nUnpacking libpython3-stdlib:arm64 (3.12.3-0ubuntu2.1) ...\r\nSetting up python3-minimal (3.12.3-0ubuntu2.1) ...\r\nSelecting previously unselected package python3.\r\n(Reading database ... \r(Reading database ... 5%\r(Reading database ... 10%\r(Reading database ... 15%\r(Reading database ... 20%\r(Reading database ... 25%\r(Reading database ... 30%\r(Reading database ... 35%\r(Reading database ... 40%\r(Reading database ... 45%\r(Reading database ... 50%\r(Reading database ... 55%\r(Reading database ... 60%\r(Reading database ... 65%\r(Reading database ... 70%\r(Reading database ... 75%\r(Reading database ... 80%\r(Reading database ... 85%\r(Reading database ... 90%\r(Reading database ... 95%\r(Reading database ... 100%\r(Reading database ... 5701 files and directories currently installed.)\r\nPreparing to unpack .../00-python3_3.12.3-0ubuntu2.1_arm64.deb ...\r\nUnpacking python3 (3.12.3-0ubuntu2.1) ...\r\nSelecting previously unselected package libdevmapper1.02.1:arm64.\r\nPreparing to unpack .../01-libdevmapper1.02.1_2%3a1.02.185-3ubuntu3.2_arm64.deb ...\r\nUnpacking libdevmapper1.02.1:arm64 (2:1.02.185-3ubuntu3.2) ...\r\nSelecting previously unselected package libevent-core-2.1-7t64:arm64.\r\nPreparing to unpack .../02-libevent-core-2.1-7t64_2.1.12-stable-9ubuntu2.2_arm64.deb ...\r\nUnpacking libevent-core-2.1-7t64:arm64 (2.1.12-stable-9ubuntu2.2) ...\r\nSelecting previously unselected package libkrb5support0:arm64.\r\nPreparing to unpack .../03-libkrb5support0_1.20.1-6ubuntu2.10_arm64.deb ...\r\nUnpacking libkrb5support0:arm64 (1.20.1-6ubuntu2.10) ...\r\nSelecting previously unselected package libk5crypto3:arm64.\r\nPreparing to unpack .../04-libk5crypto3_1.20.1-6ubuntu2.10_arm64.deb ...\r\nUnpacking libk5crypto3:arm64 (1.20.1-6ubuntu2.10) ...\r\nSelecting previously unselected package libkeyutils1:arm64.\r\nPreparing to unpack .../05-libkeyutils1_1.6.3-3build1_arm64.deb ...\r\nUnpacking libkeyutils1:arm64 (1.6.3-3build1) ...\r\nSelecting previously unselected package libkrb5-3:arm64.\r\nPreparing to unpack .../06-libkrb5-3_1.20.1-6ubuntu2.10_arm64.deb ...\r\nUnpacking libkrb5-3:arm64 (1.20.1-6ubuntu2.10) ...\r\nSelecting previously unselected package libgssapi-krb5-2:arm64.\r\nPreparing to unpack .../07-libgssapi-krb5-2_1.20.1-6ubuntu2.10_arm64.deb ...\r\nUnpacking libgssapi-krb5-2:arm64 (1.20.1-6ubuntu2.10) ...\r\nSelecting previously unselected package libsasl2-modules-db:arm64.\r\nPreparing to unpack .../08-libsasl2-modules-db_2.1.28+dfsg1-5ubuntu3.1_arm64.deb ...\r\nUnpacking libsasl2-modules-db:arm64 (2.1.28+dfsg1-5ubuntu3.1) ...\r\nSelecting previously unselected package libsasl2-2:arm64.\r\nPreparing to unpack .../09-libsasl2-2_2.1.28+dfsg1-5ubuntu3.1_arm64.deb ...\r\nUnpacking libsasl2-2:arm64 (2.1.28+dfsg1-5ubuntu3.1) ...\r\nSelecting previously unselected package libldap2:arm64.\r\nPreparing to unpack .../10-libldap2_2.6.10+dfsg-0ubuntu0.24.04.1_arm64.deb ...\r\nUnpacking libldap2:arm64 (2.6.10+dfsg-0ubuntu0.24.04.1) ...\r\nSelecting previously unselected package libnfsidmap1:arm64.\r\nPreparing to unpack .../11-libnfsidmap1_1%3a2.6.4-3ubuntu5.1_arm64.deb ...\r\nUnpacking libnfsidmap1:arm64 (1:2.6.4-3ubuntu5.1) ...\r\nSelecting previously unselected package libtirpc-common.\r\nPreparing to unpack .../12-libtirpc-common_1.3.4+ds-1.1build1_all.deb ...\r\nUnpacking libtirpc-common (1.3.4+ds-1.1build1) ...\r\nSelecting previously unselected package libtirpc3t64:arm64.\r\nPreparing to unpack .../13-libtirpc3t64_1.3.4+ds-1.1build1_arm64.deb ...\r\nAdding 'diversion of /lib/aarch64-linux-gnu/libtirpc.so.3 to /lib/aarch64-linux-gnu/libtirpc.so.3.usr-is-merged by libtirpc3t64'\r\nAdding 'diversion of /lib/aarch64-linux-gnu/libtirpc.so.3.0.0 to /lib/aarch64-linux-gnu/libtirpc.so.3.0.0.usr-is-merged by libtirpc3t64'\r\nUnpacking libtirpc3t64:arm64 (1.3.4+ds-1.1build1) ...\r\nSelecting previously unselected package libwrap0:arm64.\r\nPreparing to unpack .../14-libwrap0_7.6.q-33_arm64.deb ...\r\nUnpacking libwrap0:arm64 (7.6.q-33) ...\r\nSelecting previously unselected package adduser.\r\nPreparing to unpack .../15-adduser_3.137ubuntu1_all.deb ...\r\nUnpacking adduser (3.137ubuntu1) ...\r\nSetting up adduser (3.137ubuntu1) ...\r\nSelecting previously unselected package rpcbind.\r\n(Reading database ... \r(Reading database ... 5%\r(Reading database ... 10%\r(Reading database ... 15%\r(Reading database ... 20%\r(Reading database ... 25%\r(Reading database ... 30%\r(Reading database ... 35%\r(Reading database ... 40%\r(Reading database ... 45%\r(Reading database ... 50%\r(Reading database ... 55%\r(Reading database ... 60%\r(Reading database ... 65%\r(Reading database ... 70%\r(Reading database ... 75%\r(Reading database ... 80%\r(Reading database ... 85%\r(Reading database ... 90%\r(Reading database ... 95%\r(Reading database ... 100%\r(Reading database ... 5879 files and directories currently installed.)\r\nPreparing to unpack .../00-rpcbind_1.2.6-7ubuntu2_arm64.deb ...\r\nUnpacking rpcbind (1.2.6-7ubuntu2) ...\r\nSelecting previously unselected package ucf.\r\nPreparing to unpack .../01-ucf_3.0043+nmu1_all.deb ...\r\nMoving old data out of the way\r\nUnpacking ucf (3.0043+nmu1) ...\r\nSelecting previously unselected package keyutils.\r\nPreparing to unpack .../02-keyutils_1.6.3-3build1_arm64.deb ...\r\nUnpacking keyutils (1.6.3-3build1) ...\r\nSelecting previously unselected package nfs-common.\r\nPreparing to unpack .../03-nfs-common_1%3a2.6.4-3ubuntu5.1_arm64.deb ...\r\nUnpacking nfs-common (1:2.6.4-3ubuntu5.1) ...\r\nSelecting previously unselected package libdbus-1-3:arm64.\r\nPreparing to unpack .../04-libdbus-1-3_1.14.10-4ubuntu4.1_arm64.deb ...\r\nUnpacking libdbus-1-3:arm64 (1.14.10-4ubuntu4.1) ...\r\nSelecting previously unselected package dbus-bin.\r\nPreparing to unpack .../05-dbus-bin_1.14.10-4ubuntu4.1_arm64.deb ...\r\nUnpacking dbus-bin (1.14.10-4ubuntu4.1) ...\r\nSelecting previously unselected package dbus-session-bus-common.\r\nPreparing to unpack .../06-dbus-session-bus-common_1.14.10-4ubuntu4.1_all.deb ...\r\nUnpacking dbus-session-bus-common (1.14.10-4ubuntu4.1) ...\r\nSelecting previously unselected package libapparmor1:arm64.\r\nPreparing to unpack .../07-libapparmor1_4.0.1really4.0.1-0ubuntu0.24.04.9_arm64.deb ...\r\nUnpacking libapparmor1:arm64 (4.0.1really4.0.1-0ubuntu0.24.04.9) ...\r\nSelecting previously unselected package dbus-daemon.\r\nPreparing to unpack .../08-dbus-daemon_1.14.10-4ubuntu4.1_arm64.deb ...\r\nUnpacking dbus-daemon (1.14.10-4ubuntu4.1) ...\r\nSelecting previously unselected package dbus-system-bus-common.\r\nPreparing to unpack .../09-dbus-system-bus-common_1.14.10-4ubuntu4.1_all.deb ...\r\nUnpacking dbus-system-bus-common (1.14.10-4ubuntu4.1) ...\r\nSelecting previously unselected package dbus.\r\nPreparing to unpack .../10-dbus_1.14.10-4ubuntu4.1_arm64.deb ...\r\nUnpacking dbus (1.14.10-4ubuntu4.1) ...\r\nSelecting previously unselected package liburcu8t64:arm64.\r\nPreparing to unpack .../11-liburcu8t64_0.14.0-3.1build1_arm64.deb ...\r\nUnpacking liburcu8t64:arm64 (0.14.0-3.1build1) ...\r\nSelecting previously unselected package libntirpc4.3t64:arm64.\r\nPreparing to unpack .../12-libntirpc4.3t64_4.3-3.1build2_arm64.deb ...\r\nUnpacking libntirpc4.3t64:arm64 (4.3-3.1build2) ...\r\nSelecting previously unselected package libwbclient0:arm64.\r\nPreparing to unpack .../13-libwbclient0_2%3a4.19.5+dfsg-4ubuntu9.8_arm64.deb ...\r\nUnpacking libwbclient0:arm64 (2:4.19.5+dfsg-4ubuntu9.8) ...\r\nSelecting previously unselected package nfs-ganesha.\r\nPreparing to unpack .../14-nfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb ...\r\nUnpacking nfs-ganesha (4.3-8ubuntu1+autobyteus1) ...\r\nSelecting previously unselected package nfs-ganesha-vfs:arm64.\r\nPreparing to unpack .../15-nfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb ...\r\nUnpacking nfs-ganesha-vfs:arm64 (4.3-8ubuntu1+autobyteus1) ...\r\nSetting up media-types (10.1.0) ...\r\nSetting up liburcu8t64:arm64 (0.14.0-3.1build1) ...\r\nSetting up libkeyutils1:arm64 (1.6.3-3build1) ...\r\nSetting up libapparmor1:arm64 (4.0.1really4.0.1-0ubuntu0.24.04.9) ...\r\nSetting up libtirpc-common (1.3.4+ds-1.1build1) ...\r\nSetting up libsqlite3-0:arm64 (3.45.1-1ubuntu2.8) ...\r\nSetting up libwbclient0:arm64 (2:4.19.5+dfsg-4ubuntu9.8) ...\r\nSetting up libkrb5support0:arm64 (1.20.1-6ubuntu2.10) ...\r\nSetting up libsasl2-modules-db:arm64 (2.1.28+dfsg1-5ubuntu3.1) ...\r\nSetting up tzdata (2026c-0ubuntu0.24.04.1) ...\r\n\r\nCurrent default time zone: 'Etc/UTC'\r\nLocal time is now:      Wed Oct 14 06:06:02 UTC 2026.\r\nUniversal Time is now:  Wed Oct 14 06:06:02 UTC 2026.\r\nRun 'dpkg-reconfigure tzdata' if you wish to change it.\r\n\r\nSetting up libwrap0:arm64 (7.6.q-33) ...\r\nSetting up libdbus-1-3:arm64 (1.14.10-4ubuntu4.1) ...\r\nSetting up ucf (3.0043+nmu1) ...\r\nSetting up libk5crypto3:arm64 (1.20.1-6ubuntu2.10) ...\r\nSetting up libsasl2-2:arm64 (2.1.28+dfsg1-5ubuntu3.1) ...\r\nSetting up libdevmapper1.02.1:arm64 (2:1.02.185-3ubuntu3.2) ...\r\nSetting up keyutils (1.6.3-3build1) ...\r\nSetting up dbus-session-bus-common (1.14.10-4ubuntu4.1) ...\r\nSetting up netbase (6.4) ...\r\nSetting up libkrb5-3:arm64 (1.20.1-6ubuntu2.10) ...\r\nSetting up libevent-core-2.1-7t64:arm64 (2.1.12-stable-9ubuntu2.2) ...\r\nSetting up dbus-system-bus-common (1.14.10-4ubuntu4.1) ...\r\nSetting up readline-common (8.2-4build1) ...\r\nSetting up libldap2:arm64 (2.6.10+dfsg-0ubuntu0.24.04.1) ...\r\nSetting up dbus-bin (1.14.10-4ubuntu4.1) ...\r\nSetting up libnfsidmap1:arm64 (1:2.6.4-3ubuntu5.1) ...\r\nSetting up dbus-daemon (1.14.10-4ubuntu4.1) ...\r\nSetting up dbus (1.14.10-4ubuntu4.1) ...\r\nSetting up libgssapi-krb5-2:arm64 (1.20.1-6ubuntu2.10) ...\r\nSetting up libreadline8t64:arm64 (8.2-4build1) ...\r\nSetting up libpython3.12-stdlib:arm64 (3.12.3-1ubuntu0.17) ...\r\nSetting up libtirpc3t64:arm64 (1.3.4+ds-1.1build1) ...\r\nSetting up python3.12 (3.12.3-1ubuntu0.17) ...\r\nSetting up rpcbind (1.2.6-7ubuntu2) ...\r\ninvoke-rc.d: could not determine current runlevel\r\ninvoke-rc.d: policy-rc.d denied execution of start.\r\nSetting up libntirpc4.3t64:arm64 (4.3-3.1build2) ...\r\nSetting up libpython3-stdlib:arm64 (3.12.3-0ubuntu2.1) ...\r\nSetting up python3 (3.12.3-0ubuntu2.1) ...\r\nSetting up nfs-common (1:2.6.4-3ubuntu5.1) ...\r\n\r\nCreating config file /etc/idmapd.conf with new version\r\n\r\nCreating config file /etc/nfs.conf with new version\r\ninfo: Selecting UID from range 100 to 999 ...\r\n\r\ninfo: Adding system user `statd' (UID 102) ...\r\ninfo: Adding new user `statd' (UID 102) with group `nogroup' ...\r\ninfo: Not creating home directory `/var/lib/nfs'.\r\ninvoke-rc.d: could not determine current runlevel\r\ninvoke-rc.d: policy-rc.d denied execution of start.\r\nSetting up nfs-ganesha (4.3-8ubuntu1+autobyteus1) ...\r\nSetting up nfs-ganesha-vfs:arm64 (4.3-8ubuntu1+autobyteus1) ...\r\nProcessing triggers for libc-bin (2.39-0ubuntu8.9) ...\r\nProcessing triggers for dbus (1.14.10-4ubuntu4.1) ...\r\n ---> Removed intermediate container 40c0955eed27\n ---> bf17ddc49b38\nStep 6/9 : COPY engine-candidate/engine-manifest.json /usr/share/autobyteus-nfs/engine-manifest.json\n ---> 32398129a248\nStep 7/9 : COPY autobyteus-nfs/THIRD_PARTY_NOTICES /usr/share/autobyteus-nfs/THIRD_PARTY_NOTICES\n ---> 82b748a10294\nStep 8/9 : EXPOSE 2049/tcp\n ---> Running in 9daaf5ee207e\n ---> Removed intermediate container 9daaf5ee207e\n ---> 596a2c7b92bb\nStep 9/9 : ENTRYPOINT [\"/usr/bin/ganesha.nfsd\", \"-F\", \"-f\", \"/etc/ganesha/ganesha.conf\", \"-L\", \"/dev/stdout\", \"-p\", \"/run/ganesha/ganesha.pid\"]\n ---> Running in bc85b46edff1\n ---> Removed intermediate container bc85b46edff1\n ---> 347c7439994b\nSuccessfully built 347c7439994b\nSuccessfully tagged ab-nfs-ir005:check\n",
+      "stderr": "DEPRECATED: The legacy builder is deprecated and will be removed in a future release.\n            Install the buildx component to build images with BuildKit:\n            https://docs.docker.com/go/buildx/\n\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-ir005-install-962c1d52",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n docker run --rm --network none --entrypoint /bin/sh ab-nfs-ir005:check -ec 'dpkg-query -W -f=\"\\${Package} \\${Status} \\${Version} \\${Architecture}\\n\" nfs-ganesha nfs-ganesha-vfs; sha256sum /usr/bin/ganesha.nfsd; cat /usr/share/autobyteus-nfs/engine-manifest.json; test ! -e /tmp/autobyteus-engine; ! command -v gcc'"
+      ],
+      "rc": 0,
+      "seconds": 1.325,
+      "stdout": "nfs-ganesha install ok installed 4.3-8ubuntu1+autobyteus1 arm64\nnfs-ganesha-vfs install ok installed 4.3-8ubuntu1+autobyteus1 arm64\nce7f607a149221c1d0ece6d3d4d9112174e138e43a0c52398061bcaf7406fcc8  /usr/bin/ganesha.nfsd\n{\n  \"source\": {\n    \"version\": \"4.3-8ubuntu1\",\n    \"files\": [\n      {\n        \"file\": \"nfs-ganesha_4.3-8ubuntu1.dsc\",\n        \"sha256\": \"ffa76c26b12d23b67dcda184d7ec7ae55a42d1d14bf84bb7c0cf0134156ba3ca\",\n        \"size\": 3576\n      },\n      {\n        \"file\": \"nfs-ganesha_4.3.orig.tar.gz\",\n        \"sha256\": \"d4efd020edf4dfe65abfd0f0f66eb4390613360f99dce4354467ab297e0e1c0f\",\n        \"size\": 1895017\n      },\n      {\n        \"file\": \"nfs-ganesha_4.3-8ubuntu1.debian.tar.xz\",\n        \"sha256\": \"ef35d130e1b37149b156d201b70e6c2804bebbfbee1713c5bd6d938dd433fe03\",\n        \"size\": 19224\n      }\n    ],\n    \"patchCommit\": \"98eb77c4fd94effa6882b214698a77752ec79f6e\",\n    \"patchSha256\": \"ba682b5c64e7f800c927f4c90b2a7bfb4b8d2a323ddc48c3d591db3d75799031\",\n    \"sourceDateEpoch\": 1791936000,\n    \"recipeSha256\": \"34e28c622f598487af74a545115fa8dffe94e8f1aa5d85c091515aa187d66e4f\",\n    \"buildBase\": \"ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e\"\n  },\n  \"architectures\": {\n    \"arm64\": {\n      \"packages\": [\n        {\n          \"file\": \"nfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb\",\n          \"sha256\": \"0b5c78911cfc1b299e9894e1f841e74176fbb2cb45b158008e4530713549ebc8\",\n          \"size\": 613976,\n          \"name\": \"nfs-ganesha\",\n          \"version\": \"4.3-8ubuntu1+autobyteus1\",\n          \"architecture\": \"arm64\"\n        },\n        {\n          \"file\": \"nfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb\",\n          \"sha256\": \"3bf06769646d93ea85f0277fe0726eb42d0d29a70c0108505706954e5e8d2ac6\",\n          \"size\": 48626,\n          \"name\": \"nfs-ganesha-vfs\",\n          \"version\": \"4.3-8ubuntu1+autobyteus1\",\n          \"architecture\": \"arm64\"\n        }\n      ],\n      \"correspondingSource\": {\n        \"file\": \"autobyteus-nfs-ganesha-source-4.3-8ubuntu1+autobyteus1-arm64.tar.gz\",\n        \"sha256\": \"eed35ab4b732ac05d2afc3531e70cdc27031fb414fdb52a0daf093f33daaec0a\",\n        \"size\": 1930105\n      },\n      \"buildInventory\": {\n        \"file\": \"engine-build-arm64.txt\",\n        \"sha256\": \"56fad63c43f85091d84df347564dfd962a9afaafe519539849860b1807695761\",\n        \"size\": 57836\n      }\n    }\n  }\n}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-ir005-install-962c1d52",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "findmnt -t nfs,nfs4 || true"
+      ],
+      "rc": 0,
+      "seconds": 0.088,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "exec",
+        "ab-nfs-ir005-install-962c1d52",
+        "/usr/bin/env",
+        "-i",
+        "HOME=/home/admin",
+        "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LANG=C",
+        "/bin/sh",
+        "-c",
+        "sudo -n docker image inspect ab-nfs-ir005:check --format \"{{.Id}}\""
+      ],
+      "rc": 0,
+      "seconds": 0.057,
+      "stdout": "sha256:347c7439994b0f7f80638c29e9437056f9ceeb96f2c04bfea0d7ffb1d510e8c9\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "stop",
+        "ab-nfs-ir005-install-962c1d52"
+      ],
+      "rc": 0,
+      "seconds": 0.228,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "delete",
+        "ab-nfs-ir005-install-962c1d52"
+      ],
+      "rc": 0,
+      "seconds": 0.088,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+        "list",
+        "--format",
+        "json"
+      ],
+      "rc": 0,
+      "seconds": 0.021,
+      "stdout": "[\n  {\n    \"Running\" : false,\n    \"Disk\" : 20,\n    \"Source\" : \"OCI\",\n    \"Accessed\" : \"2026-10-14T06:04:53Z\",\n    \"Size\" : 5,\n    \"State\" : \"stopped\",\n    \"Name\" : \"ghcr.io\\/cirruslabs\\/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e\"\n  }\n]\n",
+      "stderr": ""
+    }
+  ],
+  "result": "Narrow native package install and Docker parity Pass; no create/mount/API qualification",
+  "stage": "build clean Docker image from the identical candidate artifacts",
+  "vmPid": 23231,
+  "preflight": {
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-ir005-install-962c1d52",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/home/admin",
+      "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "set -e; uname -a; test ! -e /var/lib/autobyteus-nfs; ! dpkg-query -W nfs-ganesha; ! command -v gcc; ! command -v docker; test ! -e /etc/systemd/system/nfs-ganesha.service; findmnt -t nfs,nfs4 || true"
+    ],
+    "rc": 0,
+    "seconds": 0.04,
+    "stdout": "Linux ubuntu 7.0.0-38-generic #38~24.04.4-Ubuntu SMP PREEMPT_DYNAMIC Mon Sep 14 17:12:37 UTC 2 aarch64 aarch64 aarch64 GNU/Linux\n",
+    "stderr": "dpkg-query: no packages found matching nfs-ganesha\n"
+  },
+  "binaryProvenance": {
+    "scope": "current copied CLI + package-owner fixture only; no qualified release",
+    "metadata": {
+      "version": "v1.5.3-beta.2",
+      "sourceHash": "588a8826111e970bee40f59fe62163d56c730f965d35fe15971dfe99a54e33b6",
+      "ubuntuPackages": {
+        "nfs-common": "1:2.6.4-3ubuntu5.1"
+      },
+      "engineImage": "",
+      "qualifiedTargets": [],
+      "engine": {
+        "source": {
+          "version": "4.3-8ubuntu1",
+          "files": [
+            {
+              "file": "nfs-ganesha_4.3-8ubuntu1.dsc",
+              "sha256": "ffa76c26b12d23b67dcda184d7ec7ae55a42d1d14bf84bb7c0cf0134156ba3ca",
+              "size": 3576
+            },
+            {
+              "file": "nfs-ganesha_4.3.orig.tar.gz",
+              "sha256": "d4efd020edf4dfe65abfd0f0f66eb4390613360f99dce4354467ab297e0e1c0f",
+              "size": 1895017
+            },
+            {
+              "file": "nfs-ganesha_4.3-8ubuntu1.debian.tar.xz",
+              "sha256": "ef35d130e1b37149b156d201b70e6c2804bebbfbee1713c5bd6d938dd433fe03",
+              "size": 19224
+            }
+          ],
+          "patchCommit": "98eb77c4fd94effa6882b214698a77752ec79f6e",
+          "patchSha256": "ba682b5c64e7f800c927f4c90b2a7bfb4b8d2a323ddc48c3d591db3d75799031",
+          "sourceDateEpoch": 1791936000,
+          "recipeSha256": "34e28c622f598487af74a545115fa8dffe94e8f1aa5d85c091515aa187d66e4f",
+          "buildBase": "ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e"
+        },
+        "architectures": {
+          "arm64": {
+            "packages": [
+              {
+                "file": "nfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb",
+                "sha256": "0b5c78911cfc1b299e9894e1f841e74176fbb2cb45b158008e4530713549ebc8",
+                "size": 613976,
+                "name": "nfs-ganesha",
+                "version": "4.3-8ubuntu1+autobyteus1",
+                "architecture": "arm64"
+              },
+              {
+                "file": "nfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb",
+                "sha256": "3bf06769646d93ea85f0277fe0726eb42d0d29a70c0108505706954e5e8d2ac6",
+                "size": 48626,
+                "name": "nfs-ganesha-vfs",
+                "version": "4.3-8ubuntu1+autobyteus1",
+                "architecture": "arm64"
+              }
+            ],
+            "correspondingSource": {
+              "file": "autobyteus-nfs-ganesha-source-4.3-8ubuntu1+autobyteus1-arm64.tar.gz",
+              "sha256": "eed35ab4b732ac05d2afc3531e70cdc27031fb414fdb52a0daf093f33daaec0a",
+              "size": 1930105
+            },
+            "buildInventory": {
+              "file": "engine-build-arm64.txt",
+              "sha256": "56fad63c43f85091d84df347564dfd962a9afaafe519539849860b1807695761",
+              "size": 57836
+            }
+          }
+        }
+      }
+    },
+    "commands": [
+      [
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir005-b31e16r_/go/bin/go",
+        "build",
+        "-trimpath",
+        "-o",
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir005-b31e16r_/current-cli",
+        "./cmd/autobyteus-nfs"
+      ],
+      [
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir005-b31e16r_/go/bin/go",
+        "build",
+        "-trimpath",
+        "-o",
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir005-b31e16r_/package-fixture",
+        "./cmd/install-fixture"
+      ],
+      [
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir005-b31e16r_/go/bin/go",
+        "build",
+        "-trimpath",
+        "-o",
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir005-b31e16r_/bad-package-fixture",
+        "./cmd/install-fixture"
+      ]
+    ],
+    "copy": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-nfs-ir005-b31e16r_/install-check-source",
+    "binaries": [
+      {
+        "name": "current-cli",
+        "sha256": "20022a9e553ce3d898531e66e48a843d9fd10fb2fd044474f1a471ed070b219e",
+        "size": 11033781
+      },
+      {
+        "name": "package-fixture",
+        "sha256": "ad60ad5bffad3a0e044bd773fa0c668ebce7ab55297fb1020369209ebfb7e400",
+        "size": 7618664
+      },
+      {
+        "name": "bad-package-fixture",
+        "sha256": "397053f8a1c6b76a0b1387b83f0aeebc7efd656eb796f4f3aa2300fef1e07c0b",
+        "size": 7618664
+      }
+    ]
+  },
+  "negative": {
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-ir005-install-962c1d52",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/home/admin",
+      "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "sudo -n /bin/sh -c 'umask 077; exec /home/admin/bad-package-fixture --owned-vm-install-only'"
+    ],
+    "rc": 1,
+    "seconds": 0.051,
+    "stdout": "",
+    "stderr": "engine package digest mismatch\n"
+  },
+  "install": {
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-ir005-install-962c1d52",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/home/admin",
+      "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "sudo -n /bin/sh -c 'umask 077; exec /home/admin/package-fixture --owned-vm-install-only'"
+    ],
+    "rc": 0,
+    "seconds": 16.84,
+    "stdout": "Production package owner completed; no NFS setup/export/mount executed\n",
+    "stderr": ""
+  },
+  "native": {
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-ir005-install-962c1d52",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/home/admin",
+      "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "set -e; dpkg-query -W -f='${Package} ${Status} ${Version} ${Architecture}\\n' nfs-common nfs-ganesha nfs-ganesha-vfs; test ! -e /etc/systemd/system/nfs-ganesha.service; ! systemctl is-active --quiet nfs-ganesha.service; sudo -n test ! -e /var/lib/autobyteus-nfs/package-mask.json; sudo -n find /var/lib/autobyteus-nfs -maxdepth 1 -type d; sudo -n stat -c \"%u:%g %a %n\" /var/lib/autobyteus-nfs; sha256sum /usr/bin/ganesha.nfsd; dpkg-query -L nfs-ganesha-vfs; ! command -v gcc"
+    ],
+    "rc": 0,
+    "seconds": 0.548,
+    "stdout": "nfs-common install ok installed 1:2.6.4-3ubuntu5.1 arm64\nnfs-ganesha install ok installed 4.3-8ubuntu1+autobyteus1 arm64\nnfs-ganesha-vfs install ok installed 4.3-8ubuntu1+autobyteus1 arm64\n/var/lib/autobyteus-nfs\n0:0 700 /var/lib/autobyteus-nfs\nce7f607a149221c1d0ece6d3d4d9112174e138e43a0c52398061bcaf7406fcc8  /usr/bin/ganesha.nfsd\n/.\n/etc\n/etc/ganesha\n/etc/ganesha/vfs.conf\n/usr\n/usr/lib\n/usr/lib/aarch64-linux-gnu\n/usr/lib/aarch64-linux-gnu/ganesha\n/usr/lib/aarch64-linux-gnu/ganesha/libfsalvfs.so\n/usr/share\n/usr/share/doc\n/usr/share/doc/nfs-ganesha-vfs\n/usr/share/doc/nfs-ganesha-vfs/changelog.Debian.gz\n/usr/share/doc/nfs-ganesha-vfs/copyright\n/usr/share/lintian\n/usr/share/lintian/overrides\n/usr/share/lintian/overrides/nfs-ganesha-vfs\n/usr/share/man\n/usr/share/man/man8\n/usr/share/man/man8/ganesha-vfs-config.8.gz\n",
+    "stderr": ""
+  },
+  "repeat": {
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-ir005-install-962c1d52",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/home/admin",
+      "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "sudo -n /home/admin/package-fixture --owned-vm-install-only"
+    ],
+    "rc": 0,
+    "seconds": 0.097,
+    "stdout": "Production package owner completed; no NFS setup/export/mount executed\n",
+    "stderr": ""
+  },
+  "dockerBuild": {
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-ir005-install-962c1d52",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/home/admin",
+      "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "cd /home/admin/image-context; sudo -n docker build --pull --build-arg UBUNTU_BASE=ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55 --build-arg TARGETARCH=arm64 -f autobyteus-nfs/packaging/Dockerfile -t ab-nfs-ir005:check ."
+    ],
+    "rc": 0,
+    "seconds": 38.796,
+    "stdout": "Sending build context to Docker daemon    2.7MB\r\r\nStep 1/9 : ARG UBUNTU_BASE\nStep 2/9 : FROM ${UBUNTU_BASE}\n24.04: Pulling from library/ubuntu\n90812e242c93: Pulling fs layer\nd840120f5ea1: Download complete\n90812e242c93: Download complete\n90812e242c93: Pull complete\nDigest: sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55\nStatus: Downloaded newer image for ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55\n ---> 534baea6a22c\nStep 3/9 : ARG TARGETARCH\n ---> Running in be76192ec7a9\n ---> Removed intermediate container be76192ec7a9\n ---> 47beeff61e6f\nStep 4/9 : COPY engine-candidate/${TARGETARCH}/ /tmp/autobyteus-engine/\n ---> 067d4ef04e2d\nStep 5/9 : RUN set -eu; cd /tmp/autobyteus-engine; sha256sum -c SHA256SUMS;  for name in nfs-ganesha nfs-ganesha-vfs; do    file=\"${name}_4.3-8ubuntu1+autobyteus1_${TARGETARCH}.deb\";    test \"$(dpkg-deb -f \"$file\" Package)\" = \"$name\";    test \"$(dpkg-deb -f \"$file\" Version)\" = '4.3-8ubuntu1+autobyteus1';    test \"$(dpkg-deb -f \"$file\" Architecture)\" = \"$TARGETARCH\";  done;  apt-get update; DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends    /tmp/autobyteus-engine/nfs-ganesha_*.deb /tmp/autobyteus-engine/nfs-ganesha-vfs_*.deb;  for name in nfs-ganesha nfs-ganesha-vfs; do    test \"$(dpkg-query -W -f='${Status} ${Version}' \"$name\")\" = 'install ok installed 4.3-8ubuntu1+autobyteus1';  done;  mkdir -p /run/ganesha /var/lib/ganesha /export /usr/share/autobyteus-nfs/licenses;  cp COPYRIGHT /usr/share/autobyteus-nfs/licenses/nfs-ganesha;  cp engine-build-*.txt SHA256SUMS /usr/share/autobyteus-nfs/;  dpkg-query -W > /usr/share/autobyteus-nfs/packages.txt;  rm -rf /var/lib/apt/lists/* /tmp/autobyteus-engine\n ---> Running in 40c0955eed27\nnfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb: OK\nnfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb: OK\nautobyteus-nfs-ganesha-source-4.3-8ubuntu1+autobyteus1-arm64.tar.gz: OK\nengine-build-arm64.txt: OK\nGet:1 http://ports.ubuntu.com/ubuntu-ports noble InRelease [256 kB]\nGet:2 http://ports.ubuntu.com/ubuntu-ports noble-updates InRelease [126 kB]\nGet:3 http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease [126 kB]\nGet:4 http://ports.ubuntu.com/ubuntu-ports noble-security InRelease [126 kB]\nGet:5 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 Packages [1776 kB]\nGet:6 http://ports.ubuntu.com/ubuntu-ports noble/restricted arm64 Packages [113 kB]\nGet:7 http://ports.ubuntu.com/ubuntu-ports noble/multiverse arm64 Packages [274 kB]\nGet:8 http://ports.ubuntu.com/ubuntu-ports noble/universe arm64 Packages [19.0 MB]\nGet:9 http://ports.ubuntu.com/ubuntu-ports noble-updates/restricted arm64 Packages [3251 kB]\nGet:10 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 Packages [1786 kB]\nGet:11 http://ports.ubuntu.com/ubuntu-ports noble-updates/universe arm64 Packages [2212 kB]\nGet:12 http://ports.ubuntu.com/ubuntu-ports noble-updates/multiverse arm64 Packages [104 kB]\nGet:13 http://ports.ubuntu.com/ubuntu-ports noble-backports/main arm64 Packages [49.0 kB]\nGet:14 http://ports.ubuntu.com/ubuntu-ports noble-backports/universe arm64 Packages [36.3 kB]\nGet:15 http://ports.ubuntu.com/ubuntu-ports noble-backports/multiverse arm64 Packages [669 B]\nGet:16 http://ports.ubuntu.com/ubuntu-ports noble-security/multiverse arm64 Packages [99.1 kB]\nGet:17 http://ports.ubuntu.com/ubuntu-ports noble-security/universe arm64 Packages [1636 kB]\nGet:18 http://ports.ubuntu.com/ubuntu-ports noble-security/main arm64 Packages [1475 kB]\nGet:19 http://ports.ubuntu.com/ubuntu-ports noble-security/restricted arm64 Packages [3129 kB]\nFetched 35.6 MB in 5s (7469 kB/s)\nReading package lists...\nReading package lists...\nBuilding dependency tree...\nReading state information...\nThe following additional packages will be installed:\n  adduser dbus dbus-bin dbus-daemon dbus-session-bus-common\n  dbus-system-bus-common keyutils libapparmor1 libdbus-1-3 libdevmapper1.02.1\n  libevent-core-2.1-7t64 libexpat1 libgssapi-krb5-2 libk5crypto3 libkeyutils1\n  libkrb5-3 libkrb5support0 libldap2 libnfsidmap1 libntirpc4.3t64\n  libpython3-stdlib libpython3.12-minimal libpython3.12-stdlib libreadline8t64\n  libsasl2-2 libsasl2-modules-db libsqlite3-0 libtirpc-common libtirpc3t64\n  liburcu8t64 libwbclient0 libwrap0 media-types netbase nfs-common python3\n  python3-minimal python3.12 python3.12-minimal readline-common rpcbind tzdata\n  ucf\nSuggested packages:\n  liblocale-gettext-perl perl cron quota ecryptfs-utils\n  default-dbus-session-bus | dbus-session-bus krb5-doc krb5-user open-iscsi\n  watchdog python3-doc python3-tk python3-venv python3.12-venv python3.12-doc\n  binutils binfmt-support readline-doc\nRecommended packages:\n  dmsetup krb5-locales libldap-common libsasl2-modules ca-certificates\nThe following NEW packages will be installed:\n  adduser dbus dbus-bin dbus-daemon dbus-session-bus-common\n  dbus-system-bus-common keyutils libapparmor1 libdbus-1-3 libdevmapper1.02.1\n  libevent-core-2.1-7t64 libexpat1 libgssapi-krb5-2 libk5crypto3 libkeyutils1\n  libkrb5-3 libkrb5support0 libldap2 libnfsidmap1 libntirpc4.3t64\n  libpython3-stdlib libpython3.12-minimal libpython3.12-stdlib libreadline8t64\n  libsasl2-2 libsasl2-modules-db libsqlite3-0 libtirpc-common libtirpc3t64\n  liburcu8t64 libwbclient0 libwrap0 media-types netbase nfs-common nfs-ganesha\n  nfs-ganesha-vfs python3 python3-minimal python3.12 python3.12-minimal\n  readline-common rpcbind tzdata ucf\n0 upgraded, 45 newly installed, 0 to remove and 3 not upgraded.\nNeed to get 9809 kB/10.5 MB of archives.\nAfter this operation, 41.8 MB of additional disk space will be used.\nGet:1 /tmp/autobyteus-engine/nfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb nfs-ganesha arm64 4.3-8ubuntu1+autobyteus1 [614 kB]\nGet:2 /tmp/autobyteus-engine/nfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb nfs-ganesha-vfs arm64 4.3-8ubuntu1+autobyteus1 [48.6 kB]\nGet:3 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libpython3.12-minimal arm64 3.12.3-1ubuntu0.17 [835 kB]\nGet:4 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libexpat1 arm64 2.6.1-2ubuntu0.6 [89.8 kB]\nGet:5 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 python3.12-minimal arm64 3.12.3-1ubuntu0.17 [2253 kB]\nGet:6 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 python3-minimal arm64 3.12.3-0ubuntu2.1 [27.4 kB]\nGet:7 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 media-types all 10.1.0 [27.5 kB]\nGet:8 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 netbase all 6.4 [13.1 kB]\nGet:9 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 tzdata all 2026c-0ubuntu0.24.04.1 [280 kB]\nGet:10 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 readline-common all 8.2-4build1 [56.5 kB]\nGet:11 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 libreadline8t64 arm64 8.2-4build1 [153 kB]\nGet:12 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libsqlite3-0 arm64 3.45.1-1ubuntu2.8 [691 kB]\nGet:13 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libpython3.12-stdlib arm64 3.12.3-1ubuntu0.17 [2039 kB]\nGet:14 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 python3.12 arm64 3.12.3-1ubuntu0.17 [651 kB]\nGet:15 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libpython3-stdlib arm64 3.12.3-0ubuntu2.1 [10.1 kB]\nGet:16 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 python3 arm64 3.12.3-0ubuntu2.1 [23.0 kB]\nGet:17 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libdevmapper1.02.1 arm64 2:1.02.185-3ubuntu3.2 [128 kB]\nGet:18 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libevent-core-2.1-7t64 arm64 2.1.12-stable-9ubuntu2.2 [90.6 kB]\nGet:19 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libkrb5support0 arm64 1.20.1-6ubuntu2.10 [35.4 kB]\nGet:20 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libk5crypto3 arm64 1.20.1-6ubuntu2.10 [85.8 kB]\nGet:21 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 libkeyutils1 arm64 1.6.3-3build1 [9654 B]\nGet:22 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libkrb5-3 arm64 1.20.1-6ubuntu2.10 [350 kB]\nGet:23 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libgssapi-krb5-2 arm64 1.20.1-6ubuntu2.10 [142 kB]\nGet:24 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libsasl2-modules-db arm64 2.1.28+dfsg1-5ubuntu3.1 [21.6 kB]\nGet:25 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libsasl2-2 arm64 2.1.28+dfsg1-5ubuntu3.1 [54.7 kB]\nGet:26 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libldap2 arm64 2.6.10+dfsg-0ubuntu0.24.04.1 [196 kB]\nGet:27 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libnfsidmap1 arm64 1:2.6.4-3ubuntu5.1 [48.2 kB]\nGet:28 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 libtirpc-common all 1.3.4+ds-1.1build1 [8094 B]\nGet:29 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 libtirpc3t64 arm64 1.3.4+ds-1.1build1 [83.6 kB]\nGet:30 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 libwrap0 arm64 7.6.q-33 [48.5 kB]\nGet:31 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 adduser all 3.137ubuntu1 [101 kB]\nGet:32 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 rpcbind arm64 1.2.6-7ubuntu2 [46.1 kB]\nGet:33 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 ucf all 3.0043+nmu1 [56.5 kB]\nGet:34 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 keyutils arm64 1.6.3-3build1 [56.3 kB]\nGet:35 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 nfs-common arm64 1:2.6.4-3ubuntu5.1 [247 kB]\nGet:36 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libdbus-1-3 arm64 1.14.10-4ubuntu4.1 [210 kB]\nGet:37 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 dbus-bin arm64 1.14.10-4ubuntu4.1 [38.8 kB]\nGet:38 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 dbus-session-bus-common all 1.14.10-4ubuntu4.1 [80.5 kB]\nGet:39 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libapparmor1 arm64 4.0.1really4.0.1-0ubuntu0.24.04.9 [51.9 kB]\nGet:40 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 dbus-daemon arm64 1.14.10-4ubuntu4.1 [115 kB]\nGet:41 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 dbus-system-bus-common all 1.14.10-4ubuntu4.1 [81.6 kB]\nGet:42 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 dbus arm64 1.14.10-4ubuntu4.1 [23.9 kB]\nGet:43 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 liburcu8t64 arm64 0.14.0-3.1build1 [63.1 kB]\nGet:44 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 libntirpc4.3t64 arm64 4.3-3.1build2 [113 kB]\nGet:45 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 libwbclient0 arm64 2:4.19.5+dfsg-4ubuntu9.8 [73.0 kB]\n\u001b[91mdebconf: delaying package configuration, since apt-utils is not installed\n\u001b[0mFetched 9809 kB in 3s (3678 kB/s)\nSelecting previously unselected package libpython3.12-minimal:arm64.\r\n(Reading database ... \r(Reading database ... 5%\r(Reading database ... 10%\r(Reading database ... 15%\r(Reading database ... 20%\r(Reading database ... 25%\r(Reading database ... 30%\r(Reading database ... 35%\r(Reading database ... 40%\r(Reading database ... 45%\r(Reading database ... 50%\r(Reading database ... 55%\r(Reading database ... 60%\r(Reading database ... 65%\r(Reading database ... 70%\r(Reading database ... 75%\r(Reading database ... 80%\r(Reading database ... 85%\r(Reading database ... 90%\r(Reading database ... 95%\r(Reading database ... 100%\r(Reading database ... 4376 files and directories currently installed.)\r\nPreparing to unpack .../libpython3.12-minimal_3.12.3-1ubuntu0.17_arm64.deb ...\r\nUnpacking libpython3.12-minimal:arm64 (3.12.3-1ubuntu0.17) ...\r\nSelecting previously unselected package libexpat1:arm64.\r\nPreparing to unpack .../libexpat1_2.6.1-2ubuntu0.6_arm64.deb ...\r\nUnpacking libexpat1:arm64 (2.6.1-2ubuntu0.6) ...\r\nSelecting previously unselected package python3.12-minimal.\r\nPreparing to unpack .../python3.12-minimal_3.12.3-1ubuntu0.17_arm64.deb ...\r\nUnpacking python3.12-minimal (3.12.3-1ubuntu0.17) ...\r\nSetting up libpython3.12-minimal:arm64 (3.12.3-1ubuntu0.17) ...\r\nSetting up libexpat1:arm64 (2.6.1-2ubuntu0.6) ...\r\nSetting up python3.12-minimal (3.12.3-1ubuntu0.17) ...\r\nSelecting previously unselected package python3-minimal.\r\n(Reading database ... \r(Reading database ... 5%\r(Reading database ... 10%\r(Reading database ... 15%\r(Reading database ... 20%\r(Reading database ... 25%\r(Reading database ... 30%\r(Reading database ... 35%\r(Reading database ... 40%\r(Reading database ... 45%\r(Reading database ... 50%\r(Reading database ... 55%\r(Reading database ... 60%\r(Reading database ... 65%\r(Reading database ... 70%\r(Reading database ... 75%\r(Reading database ... 80%\r(Reading database ... 85%\r(Reading database ... 90%\r(Reading database ... 95%\r(Reading database ... 100%\r(Reading database ... 4695 files and directories currently installed.)\r\nPreparing to unpack .../0-python3-minimal_3.12.3-0ubuntu2.1_arm64.deb ...\r\nUnpacking python3-minimal (3.12.3-0ubuntu2.1) ...\r\nSelecting previously unselected package media-types.\r\nPreparing to unpack .../1-media-types_10.1.0_all.deb ...\r\nUnpacking media-types (10.1.0) ...\r\nSelecting previously unselected package netbase.\r\nPreparing to unpack .../2-netbase_6.4_all.deb ...\r\nUnpacking netbase (6.4) ...\r\nSelecting previously unselected package tzdata.\r\nPreparing to unpack .../3-tzdata_2026c-0ubuntu0.24.04.1_all.deb ...\r\nUnpacking tzdata (2026c-0ubuntu0.24.04.1) ...\r\nSelecting previously unselected package readline-common.\r\nPreparing to unpack .../4-readline-common_8.2-4build1_all.deb ...\r\nUnpacking readline-common (8.2-4build1) ...\r\nSelecting previously unselected package libreadline8t64:arm64.\r\nPreparing to unpack .../5-libreadline8t64_8.2-4build1_arm64.deb ...\r\nAdding 'diversion of /lib/aarch64-linux-gnu/libhistory.so.8 to /lib/aarch64-linux-gnu/libhistory.so.8.usr-is-merged by libreadline8t64'\r\nAdding 'diversion of /lib/aarch64-linux-gnu/libhistory.so.8.2 to /lib/aarch64-linux-gnu/libhistory.so.8.2.usr-is-merged by libreadline8t64'\r\nAdding 'diversion of /lib/aarch64-linux-gnu/libreadline.so.8 to /lib/aarch64-linux-gnu/libreadline.so.8.usr-is-merged by libreadline8t64'\r\nAdding 'diversion of /lib/aarch64-linux-gnu/libreadline.so.8.2 to /lib/aarch64-linux-gnu/libreadline.so.8.2.usr-is-merged by libreadline8t64'\r\nUnpacking libreadline8t64:arm64 (8.2-4build1) ...\r\nSelecting previously unselected package libsqlite3-0:arm64.\r\nPreparing to unpack .../6-libsqlite3-0_3.45.1-1ubuntu2.8_arm64.deb ...\r\nUnpacking libsqlite3-0:arm64 (3.45.1-1ubuntu2.8) ...\r\nSelecting previously unselected package libpython3.12-stdlib:arm64.\r\nPreparing to unpack .../7-libpython3.12-stdlib_3.12.3-1ubuntu0.17_arm64.deb ...\r\nUnpacking libpython3.12-stdlib:arm64 (3.12.3-1ubuntu0.17) ...\r\nSelecting previously unselected package python3.12.\r\nPreparing to unpack .../8-python3.12_3.12.3-1ubuntu0.17_arm64.deb ...\r\nUnpacking python3.12 (3.12.3-1ubuntu0.17) ...\r\nSelecting previously unselected package libpython3-stdlib:arm64.\r\nPreparing to unpack .../9-libpython3-stdlib_3.12.3-0ubuntu2.1_arm64.deb ...\r\nUnpacking libpython3-stdlib:arm64 (3.12.3-0ubuntu2.1) ...\r\nSetting up python3-minimal (3.12.3-0ubuntu2.1) ...\r\nSelecting previously unselected package python3.\r\n(Reading database ... \r(Reading database ... 5%\r(Reading database ... 10%\r(Reading database ... 15%\r(Reading database ... 20%\r(Reading database ... 25%\r(Reading database ... 30%\r(Reading database ... 35%\r(Reading database ... 40%\r(Reading database ... 45%\r(Reading database ... 50%\r(Reading database ... 55%\r(Reading database ... 60%\r(Reading database ... 65%\r(Reading database ... 70%\r(Reading database ... 75%\r(Reading database ... 80%\r(Reading database ... 85%\r(Reading database ... 90%\r(Reading database ... 95%\r(Reading database ... 100%\r(Reading database ... 5701 files and directories currently installed.)\r\nPreparing to unpack .../00-python3_3.12.3-0ubuntu2.1_arm64.deb ...\r\nUnpacking python3 (3.12.3-0ubuntu2.1) ...\r\nSelecting previously unselected package libdevmapper1.02.1:arm64.\r\nPreparing to unpack .../01-libdevmapper1.02.1_2%3a1.02.185-3ubuntu3.2_arm64.deb ...\r\nUnpacking libdevmapper1.02.1:arm64 (2:1.02.185-3ubuntu3.2) ...\r\nSelecting previously unselected package libevent-core-2.1-7t64:arm64.\r\nPreparing to unpack .../02-libevent-core-2.1-7t64_2.1.12-stable-9ubuntu2.2_arm64.deb ...\r\nUnpacking libevent-core-2.1-7t64:arm64 (2.1.12-stable-9ubuntu2.2) ...\r\nSelecting previously unselected package libkrb5support0:arm64.\r\nPreparing to unpack .../03-libkrb5support0_1.20.1-6ubuntu2.10_arm64.deb ...\r\nUnpacking libkrb5support0:arm64 (1.20.1-6ubuntu2.10) ...\r\nSelecting previously unselected package libk5crypto3:arm64.\r\nPreparing to unpack .../04-libk5crypto3_1.20.1-6ubuntu2.10_arm64.deb ...\r\nUnpacking libk5crypto3:arm64 (1.20.1-6ubuntu2.10) ...\r\nSelecting previously unselected package libkeyutils1:arm64.\r\nPreparing to unpack .../05-libkeyutils1_1.6.3-3build1_arm64.deb ...\r\nUnpacking libkeyutils1:arm64 (1.6.3-3build1) ...\r\nSelecting previously unselected package libkrb5-3:arm64.\r\nPreparing to unpack .../06-libkrb5-3_1.20.1-6ubuntu2.10_arm64.deb ...\r\nUnpacking libkrb5-3:arm64 (1.20.1-6ubuntu2.10) ...\r\nSelecting previously unselected package libgssapi-krb5-2:arm64.\r\nPreparing to unpack .../07-libgssapi-krb5-2_1.20.1-6ubuntu2.10_arm64.deb ...\r\nUnpacking libgssapi-krb5-2:arm64 (1.20.1-6ubuntu2.10) ...\r\nSelecting previously unselected package libsasl2-modules-db:arm64.\r\nPreparing to unpack .../08-libsasl2-modules-db_2.1.28+dfsg1-5ubuntu3.1_arm64.deb ...\r\nUnpacking libsasl2-modules-db:arm64 (2.1.28+dfsg1-5ubuntu3.1) ...\r\nSelecting previously unselected package libsasl2-2:arm64.\r\nPreparing to unpack .../09-libsasl2-2_2.1.28+dfsg1-5ubuntu3.1_arm64.deb ...\r\nUnpacking libsasl2-2:arm64 (2.1.28+dfsg1-5ubuntu3.1) ...\r\nSelecting previously unselected package libldap2:arm64.\r\nPreparing to unpack .../10-libldap2_2.6.10+dfsg-0ubuntu0.24.04.1_arm64.deb ...\r\nUnpacking libldap2:arm64 (2.6.10+dfsg-0ubuntu0.24.04.1) ...\r\nSelecting previously unselected package libnfsidmap1:arm64.\r\nPreparing to unpack .../11-libnfsidmap1_1%3a2.6.4-3ubuntu5.1_arm64.deb ...\r\nUnpacking libnfsidmap1:arm64 (1:2.6.4-3ubuntu5.1) ...\r\nSelecting previously unselected package libtirpc-common.\r\nPreparing to unpack .../12-libtirpc-common_1.3.4+ds-1.1build1_all.deb ...\r\nUnpacking libtirpc-common (1.3.4+ds-1.1build1) ...\r\nSelecting previously unselected package libtirpc3t64:arm64.\r\nPreparing to unpack .../13-libtirpc3t64_1.3.4+ds-1.1build1_arm64.deb ...\r\nAdding 'diversion of /lib/aarch64-linux-gnu/libtirpc.so.3 to /lib/aarch64-linux-gnu/libtirpc.so.3.usr-is-merged by libtirpc3t64'\r\nAdding 'diversion of /lib/aarch64-linux-gnu/libtirpc.so.3.0.0 to /lib/aarch64-linux-gnu/libtirpc.so.3.0.0.usr-is-merged by libtirpc3t64'\r\nUnpacking libtirpc3t64:arm64 (1.3.4+ds-1.1build1) ...\r\nSelecting previously unselected package libwrap0:arm64.\r\nPreparing to unpack .../14-libwrap0_7.6.q-33_arm64.deb ...\r\nUnpacking libwrap0:arm64 (7.6.q-33) ...\r\nSelecting previously unselected package adduser.\r\nPreparing to unpack .../15-adduser_3.137ubuntu1_all.deb ...\r\nUnpacking adduser (3.137ubuntu1) ...\r\nSetting up adduser (3.137ubuntu1) ...\r\nSelecting previously unselected package rpcbind.\r\n(Reading database ... \r(Reading database ... 5%\r(Reading database ... 10%\r(Reading database ... 15%\r(Reading database ... 20%\r(Reading database ... 25%\r(Reading database ... 30%\r(Reading database ... 35%\r(Reading database ... 40%\r(Reading database ... 45%\r(Reading database ... 50%\r(Reading database ... 55%\r(Reading database ... 60%\r(Reading database ... 65%\r(Reading database ... 70%\r(Reading database ... 75%\r(Reading database ... 80%\r(Reading database ... 85%\r(Reading database ... 90%\r(Reading database ... 95%\r(Reading database ... 100%\r(Reading database ... 5879 files and directories currently installed.)\r\nPreparing to unpack .../00-rpcbind_1.2.6-7ubuntu2_arm64.deb ...\r\nUnpacking rpcbind (1.2.6-7ubuntu2) ...\r\nSelecting previously unselected package ucf.\r\nPreparing to unpack .../01-ucf_3.0043+nmu1_all.deb ...\r\nMoving old data out of the way\r\nUnpacking ucf (3.0043+nmu1) ...\r\nSelecting previously unselected package keyutils.\r\nPreparing to unpack .../02-keyutils_1.6.3-3build1_arm64.deb ...\r\nUnpacking keyutils (1.6.3-3build1) ...\r\nSelecting previously unselected package nfs-common.\r\nPreparing to unpack .../03-nfs-common_1%3a2.6.4-3ubuntu5.1_arm64.deb ...\r\nUnpacking nfs-common (1:2.6.4-3ubuntu5.1) ...\r\nSelecting previously unselected package libdbus-1-3:arm64.\r\nPreparing to unpack .../04-libdbus-1-3_1.14.10-4ubuntu4.1_arm64.deb ...\r\nUnpacking libdbus-1-3:arm64 (1.14.10-4ubuntu4.1) ...\r\nSelecting previously unselected package dbus-bin.\r\nPreparing to unpack .../05-dbus-bin_1.14.10-4ubuntu4.1_arm64.deb ...\r\nUnpacking dbus-bin (1.14.10-4ubuntu4.1) ...\r\nSelecting previously unselected package dbus-session-bus-common.\r\nPreparing to unpack .../06-dbus-session-bus-common_1.14.10-4ubuntu4.1_all.deb ...\r\nUnpacking dbus-session-bus-common (1.14.10-4ubuntu4.1) ...\r\nSelecting previously unselected package libapparmor1:arm64.\r\nPreparing to unpack .../07-libapparmor1_4.0.1really4.0.1-0ubuntu0.24.04.9_arm64.deb ...\r\nUnpacking libapparmor1:arm64 (4.0.1really4.0.1-0ubuntu0.24.04.9) ...\r\nSelecting previously unselected package dbus-daemon.\r\nPreparing to unpack .../08-dbus-daemon_1.14.10-4ubuntu4.1_arm64.deb ...\r\nUnpacking dbus-daemon (1.14.10-4ubuntu4.1) ...\r\nSelecting previously unselected package dbus-system-bus-common.\r\nPreparing to unpack .../09-dbus-system-bus-common_1.14.10-4ubuntu4.1_all.deb ...\r\nUnpacking dbus-system-bus-common (1.14.10-4ubuntu4.1) ...\r\nSelecting previously unselected package dbus.\r\nPreparing to unpack .../10-dbus_1.14.10-4ubuntu4.1_arm64.deb ...\r\nUnpacking dbus (1.14.10-4ubuntu4.1) ...\r\nSelecting previously unselected package liburcu8t64:arm64.\r\nPreparing to unpack .../11-liburcu8t64_0.14.0-3.1build1_arm64.deb ...\r\nUnpacking liburcu8t64:arm64 (0.14.0-3.1build1) ...\r\nSelecting previously unselected package libntirpc4.3t64:arm64.\r\nPreparing to unpack .../12-libntirpc4.3t64_4.3-3.1build2_arm64.deb ...\r\nUnpacking libntirpc4.3t64:arm64 (4.3-3.1build2) ...\r\nSelecting previously unselected package libwbclient0:arm64.\r\nPreparing to unpack .../13-libwbclient0_2%3a4.19.5+dfsg-4ubuntu9.8_arm64.deb ...\r\nUnpacking libwbclient0:arm64 (2:4.19.5+dfsg-4ubuntu9.8) ...\r\nSelecting previously unselected package nfs-ganesha.\r\nPreparing to unpack .../14-nfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb ...\r\nUnpacking nfs-ganesha (4.3-8ubuntu1+autobyteus1) ...\r\nSelecting previously unselected package nfs-ganesha-vfs:arm64.\r\nPreparing to unpack .../15-nfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb ...\r\nUnpacking nfs-ganesha-vfs:arm64 (4.3-8ubuntu1+autobyteus1) ...\r\nSetting up media-types (10.1.0) ...\r\nSetting up liburcu8t64:arm64 (0.14.0-3.1build1) ...\r\nSetting up libkeyutils1:arm64 (1.6.3-3build1) ...\r\nSetting up libapparmor1:arm64 (4.0.1really4.0.1-0ubuntu0.24.04.9) ...\r\nSetting up libtirpc-common (1.3.4+ds-1.1build1) ...\r\nSetting up libsqlite3-0:arm64 (3.45.1-1ubuntu2.8) ...\r\nSetting up libwbclient0:arm64 (2:4.19.5+dfsg-4ubuntu9.8) ...\r\nSetting up libkrb5support0:arm64 (1.20.1-6ubuntu2.10) ...\r\nSetting up libsasl2-modules-db:arm64 (2.1.28+dfsg1-5ubuntu3.1) ...\r\nSetting up tzdata (2026c-0ubuntu0.24.04.1) ...\r\n\r\nCurrent default time zone: 'Etc/UTC'\r\nLocal time is now:      Wed Oct 14 06:06:02 UTC 2026.\r\nUniversal Time is now:  Wed Oct 14 06:06:02 UTC 2026.\r\nRun 'dpkg-reconfigure tzdata' if you wish to change it.\r\n\r\nSetting up libwrap0:arm64 (7.6.q-33) ...\r\nSetting up libdbus-1-3:arm64 (1.14.10-4ubuntu4.1) ...\r\nSetting up ucf (3.0043+nmu1) ...\r\nSetting up libk5crypto3:arm64 (1.20.1-6ubuntu2.10) ...\r\nSetting up libsasl2-2:arm64 (2.1.28+dfsg1-5ubuntu3.1) ...\r\nSetting up libdevmapper1.02.1:arm64 (2:1.02.185-3ubuntu3.2) ...\r\nSetting up keyutils (1.6.3-3build1) ...\r\nSetting up dbus-session-bus-common (1.14.10-4ubuntu4.1) ...\r\nSetting up netbase (6.4) ...\r\nSetting up libkrb5-3:arm64 (1.20.1-6ubuntu2.10) ...\r\nSetting up libevent-core-2.1-7t64:arm64 (2.1.12-stable-9ubuntu2.2) ...\r\nSetting up dbus-system-bus-common (1.14.10-4ubuntu4.1) ...\r\nSetting up readline-common (8.2-4build1) ...\r\nSetting up libldap2:arm64 (2.6.10+dfsg-0ubuntu0.24.04.1) ...\r\nSetting up dbus-bin (1.14.10-4ubuntu4.1) ...\r\nSetting up libnfsidmap1:arm64 (1:2.6.4-3ubuntu5.1) ...\r\nSetting up dbus-daemon (1.14.10-4ubuntu4.1) ...\r\nSetting up dbus (1.14.10-4ubuntu4.1) ...\r\nSetting up libgssapi-krb5-2:arm64 (1.20.1-6ubuntu2.10) ...\r\nSetting up libreadline8t64:arm64 (8.2-4build1) ...\r\nSetting up libpython3.12-stdlib:arm64 (3.12.3-1ubuntu0.17) ...\r\nSetting up libtirpc3t64:arm64 (1.3.4+ds-1.1build1) ...\r\nSetting up python3.12 (3.12.3-1ubuntu0.17) ...\r\nSetting up rpcbind (1.2.6-7ubuntu2) ...\r\ninvoke-rc.d: could not determine current runlevel\r\ninvoke-rc.d: policy-rc.d denied execution of start.\r\nSetting up libntirpc4.3t64:arm64 (4.3-3.1build2) ...\r\nSetting up libpython3-stdlib:arm64 (3.12.3-0ubuntu2.1) ...\r\nSetting up python3 (3.12.3-0ubuntu2.1) ...\r\nSetting up nfs-common (1:2.6.4-3ubuntu5.1) ...\r\n\r\nCreating config file /etc/idmapd.conf with new version\r\n\r\nCreating config file /etc/nfs.conf with new version\r\ninfo: Selecting UID from range 100 to 999 ...\r\n\r\ninfo: Adding system user `statd' (UID 102) ...\r\ninfo: Adding new user `statd' (UID 102) with group `nogroup' ...\r\ninfo: Not creating home directory `/var/lib/nfs'.\r\ninvoke-rc.d: could not determine current runlevel\r\ninvoke-rc.d: policy-rc.d denied execution of start.\r\nSetting up nfs-ganesha (4.3-8ubuntu1+autobyteus1) ...\r\nSetting up nfs-ganesha-vfs:arm64 (4.3-8ubuntu1+autobyteus1) ...\r\nProcessing triggers for libc-bin (2.39-0ubuntu8.9) ...\r\nProcessing triggers for dbus (1.14.10-4ubuntu4.1) ...\r\n ---> Removed intermediate container 40c0955eed27\n ---> bf17ddc49b38\nStep 6/9 : COPY engine-candidate/engine-manifest.json /usr/share/autobyteus-nfs/engine-manifest.json\n ---> 32398129a248\nStep 7/9 : COPY autobyteus-nfs/THIRD_PARTY_NOTICES /usr/share/autobyteus-nfs/THIRD_PARTY_NOTICES\n ---> 82b748a10294\nStep 8/9 : EXPOSE 2049/tcp\n ---> Running in 9daaf5ee207e\n ---> Removed intermediate container 9daaf5ee207e\n ---> 596a2c7b92bb\nStep 9/9 : ENTRYPOINT [\"/usr/bin/ganesha.nfsd\", \"-F\", \"-f\", \"/etc/ganesha/ganesha.conf\", \"-L\", \"/dev/stdout\", \"-p\", \"/run/ganesha/ganesha.pid\"]\n ---> Running in bc85b46edff1\n ---> Removed intermediate container bc85b46edff1\n ---> 347c7439994b\nSuccessfully built 347c7439994b\nSuccessfully tagged ab-nfs-ir005:check\n",
+    "stderr": "DEPRECATED: The legacy builder is deprecated and will be removed in a future release.\n            Install the buildx component to build images with BuildKit:\n            https://docs.docker.com/go/buildx/\n\n"
+  },
+  "docker": {
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-ir005-install-962c1d52",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/home/admin",
+      "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "sudo -n docker run --rm --network none --entrypoint /bin/sh ab-nfs-ir005:check -ec 'dpkg-query -W -f=\"\\${Package} \\${Status} \\${Version} \\${Architecture}\\n\" nfs-ganesha nfs-ganesha-vfs; sha256sum /usr/bin/ganesha.nfsd; cat /usr/share/autobyteus-nfs/engine-manifest.json; test ! -e /tmp/autobyteus-engine; ! command -v gcc'"
+    ],
+    "rc": 0,
+    "seconds": 1.325,
+    "stdout": "nfs-ganesha install ok installed 4.3-8ubuntu1+autobyteus1 arm64\nnfs-ganesha-vfs install ok installed 4.3-8ubuntu1+autobyteus1 arm64\nce7f607a149221c1d0ece6d3d4d9112174e138e43a0c52398061bcaf7406fcc8  /usr/bin/ganesha.nfsd\n{\n  \"source\": {\n    \"version\": \"4.3-8ubuntu1\",\n    \"files\": [\n      {\n        \"file\": \"nfs-ganesha_4.3-8ubuntu1.dsc\",\n        \"sha256\": \"ffa76c26b12d23b67dcda184d7ec7ae55a42d1d14bf84bb7c0cf0134156ba3ca\",\n        \"size\": 3576\n      },\n      {\n        \"file\": \"nfs-ganesha_4.3.orig.tar.gz\",\n        \"sha256\": \"d4efd020edf4dfe65abfd0f0f66eb4390613360f99dce4354467ab297e0e1c0f\",\n        \"size\": 1895017\n      },\n      {\n        \"file\": \"nfs-ganesha_4.3-8ubuntu1.debian.tar.xz\",\n        \"sha256\": \"ef35d130e1b37149b156d201b70e6c2804bebbfbee1713c5bd6d938dd433fe03\",\n        \"size\": 19224\n      }\n    ],\n    \"patchCommit\": \"98eb77c4fd94effa6882b214698a77752ec79f6e\",\n    \"patchSha256\": \"ba682b5c64e7f800c927f4c90b2a7bfb4b8d2a323ddc48c3d591db3d75799031\",\n    \"sourceDateEpoch\": 1791936000,\n    \"recipeSha256\": \"34e28c622f598487af74a545115fa8dffe94e8f1aa5d85c091515aa187d66e4f\",\n    \"buildBase\": \"ghcr.io/cirruslabs/ubuntu@sha256:94dbb9c4b94db827a208fea301cf33eacdcbfb801155b5702b9e2faa52473a2e\"\n  },\n  \"architectures\": {\n    \"arm64\": {\n      \"packages\": [\n        {\n          \"file\": \"nfs-ganesha_4.3-8ubuntu1+autobyteus1_arm64.deb\",\n          \"sha256\": \"0b5c78911cfc1b299e9894e1f841e74176fbb2cb45b158008e4530713549ebc8\",\n          \"size\": 613976,\n          \"name\": \"nfs-ganesha\",\n          \"version\": \"4.3-8ubuntu1+autobyteus1\",\n          \"architecture\": \"arm64\"\n        },\n        {\n          \"file\": \"nfs-ganesha-vfs_4.3-8ubuntu1+autobyteus1_arm64.deb\",\n          \"sha256\": \"3bf06769646d93ea85f0277fe0726eb42d0d29a70c0108505706954e5e8d2ac6\",\n          \"size\": 48626,\n          \"name\": \"nfs-ganesha-vfs\",\n          \"version\": \"4.3-8ubuntu1+autobyteus1\",\n          \"architecture\": \"arm64\"\n        }\n      ],\n      \"correspondingSource\": {\n        \"file\": \"autobyteus-nfs-ganesha-source-4.3-8ubuntu1+autobyteus1-arm64.tar.gz\",\n        \"sha256\": \"eed35ab4b732ac05d2afc3531e70cdc27031fb414fdb52a0daf093f33daaec0a\",\n        \"size\": 1930105\n      },\n      \"buildInventory\": {\n        \"file\": \"engine-build-arm64.txt\",\n        \"sha256\": \"56fad63c43f85091d84df347564dfd962a9afaafe519539849860b1807695761\",\n        \"size\": 57836\n      }\n    }\n  }\n}\n",
+    "stderr": ""
+  },
+  "noMounts": {
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-ir005-install-962c1d52",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/home/admin",
+      "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "findmnt -t nfs,nfs4 || true"
+    ],
+    "rc": 0,
+    "seconds": 0.088,
+    "stdout": "",
+    "stderr": ""
+  },
+  "imageIdentity": {
+    "argv": [
+      "/private/tmp/ab-sf-macos-vm-fr019.WmqeQ5YK/tools/tart.app/Contents/MacOS/tart",
+      "exec",
+      "ab-nfs-ir005-install-962c1d52",
+      "/usr/bin/env",
+      "-i",
+      "HOME=/home/admin",
+      "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LANG=C",
+      "/bin/sh",
+      "-c",
+      "sudo -n docker image inspect ab-nfs-ir005:check --format \"{{.Id}}\""
+    ],
+    "rc": 0,
+    "seconds": 0.057,
+    "stdout": "sha256:347c7439994b0f7f80638c29e9437056f9ceeb96f2c04bfea0d7ffb1d510e8c9\n",
+    "stderr": ""
+  }
+}

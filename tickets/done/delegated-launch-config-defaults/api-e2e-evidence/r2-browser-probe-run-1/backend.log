@@ -1,0 +1,526 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/launch-defaults-not-applied/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:58443
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/launch-defaults-not-applied/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:58443
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/launch-defaults-not-applied/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Unable to resolve Prisma engine override paths; Prisma CLI will use default engine resolution.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/db/probe.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:8099) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 19 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+{"level":30,"time":1791835472458,"pid":8099,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:58452"}
+{"level":30,"time":1791835472483,"pid":8099,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:58443"}
+[2026-10-12T20:04:32.483Z] [INFO] [server.runtime] Server listening on 127.0.0.1:58443
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 35 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Agent Definition created successfully with ID: manager-acf8
+Agent Definition created successfully with ID: lead-355a
+Agent Definition created successfully with ID: worker-eac4
+Agent Definition created successfully with ID: plain-1170
+Agent Definition created successfully with ID: engineer-0710
+Agent Definition created successfully with ID: reviewer-b12c
+Agent Definition created successfully with ID: writer-0d10
+Agent Definition created successfully with ID: offline-54fe
+Agent Definition created successfully with ID: unoffered-94b1
+Agent Definition created successfully with ID: badsettings-518e
+Agent Definition created successfully with ID: incomplete-74c4
+Agent Team Definition created successfully with ID: build-team-7f42
+Agent Team Definition created successfully with ID: pair-team-824d
+Agent Team Definition created successfully with ID: squad-team-bdda
+Agent Team Definition created successfully with ID: home-team-0b81
+Created terminal session efc9a51c-857b-4cfa-aa9b-42b5208d58fd using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/home
+Terminal WebSocket connected: efc9a51c-857b-4cfa-aa9b-42b5208d58fd
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/home
+Closed PTY session efc9a51c-857b-4cfa-aa9b-42b5208d58fd
+Terminal WebSocket disconnected: efc9a51c-857b-4cfa-aa9b-42b5208d58fd
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/lead_355a_531b9e004c7843be957d85aaf0046584/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/engineer_0710_6bd186c29991434383ba3bc807929a19/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/reviewer_b12c_7d4483f8ab1745eb9537281ddc2adbf2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/unoffered_94b1_aaddcd5885204beb95dfcc93704cc124/raw_traces_active.jsonl
+Agent team websocket attached for team run build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Created agent session 00ca9098-4d0a-455f-b772-29b537f84f34 for run build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Agent Team WebSocket connected: session=00ca9098-4d0a-455f-b772-29b537f84f34, run=build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/lead_355a_531b9e004c7843be957d85aaf0046584/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/lead_355a_531b9e004c7843be957d85aaf0046584/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run lead_355a_531b9e004c7843be957d85aaf0046584: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session 00ca9098-4d0a-455f-b772-29b537f84f34
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/engineer_0710_6bd186c29991434383ba3bc807929a19/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/reviewer_b12c_7d4483f8ab1745eb9537281ddc2adbf2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/unoffered_94b1_aaddcd5885204beb95dfcc93704cc124/raw_traces_active.jsonl
+Agent team websocket attached for team run build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Created agent session c287bbc8-5f9d-426d-8740-e411f4100b78 for run build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Agent Team WebSocket connected: session=c287bbc8-5f9d-426d-8740-e411f4100b78, run=build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_orgs/launchorg_org_880f_4bc6371ead05476e9212c0d8a7115e7b/writer_0d10_b21922745980498ba83ebe99bee9f346/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_orgs/launchorg_org_880f_4bc6371ead05476e9212c0d8a7115e7b/pair_team_824d_3ac8ccfd34354075b01251ee43bc33d0/lead_355a_832632c70fe3406cad9eb25f66f68b71/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_orgs/launchorg_org_880f_4bc6371ead05476e9212c0d8a7115e7b/pair_team_824d_3ac8ccfd34354075b01251ee43bc33d0/engineer_0710_13f988b2eb514d05938e9e83d7c1dc7c/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_orgs/launchorg_org_880f_4bc6371ead05476e9212c0d8a7115e7b/pair_team_824d_3ac8ccfd34354075b01251ee43bc33d0/unoffered_94b1_4ec698976b8940fcbf3e3f9a859bfa4d/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_orgs/launchorg_org_880f_4bc6371ead05476e9212c0d8a7115e7b/writer_0d10_b21922745980498ba83ebe99bee9f346/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_orgs/launchorg_org_880f_4bc6371ead05476e9212c0d8a7115e7b/pair_team_824d_3ac8ccfd34354075b01251ee43bc33d0/lead_355a_832632c70fe3406cad9eb25f66f68b71/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_orgs/launchorg_org_880f_4bc6371ead05476e9212c0d8a7115e7b/pair_team_824d_3ac8ccfd34354075b01251ee43bc33d0/engineer_0710_13f988b2eb514d05938e9e83d7c1dc7c/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_orgs/launchorg_org_880f_4bc6371ead05476e9212c0d8a7115e7b/pair_team_824d_3ac8ccfd34354075b01251ee43bc33d0/unoffered_94b1_4ec698976b8940fcbf3e3f9a859bfa4d/raw_traces_active.jsonl
+Created terminal session 7688d7b0-9194-46d6-8466-ceeae1ea61ff using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/home
+Terminal WebSocket connected: 7688d7b0-9194-46d6-8466-ceeae1ea61ff
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/home
+Closed agent session c287bbc8-5f9d-426d-8740-e411f4100b78
+Closed PTY session 7688d7b0-9194-46d6-8466-ceeae1ea61ff
+Terminal WebSocket disconnected: 7688d7b0-9194-46d6-8466-ceeae1ea61ff
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/engineer_0710_6bd186c29991434383ba3bc807929a19/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/unoffered_94b1_aaddcd5885204beb95dfcc93704cc124/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/reviewer_b12c_7d4483f8ab1745eb9537281ddc2adbf2/raw_traces_active.jsonl
+Agent team websocket attached for team run build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Created agent session 155db1c7-969b-4a91-9e32-c9b2d7f8ed43 for run build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Agent Team WebSocket connected: session=155db1c7-969b-4a91-9e32-c9b2d7f8ed43, run=build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run manager_acf8_0a8e7810904447ca97f8c38c711cb80a
+Created agent session acb6b417-ecfb-48fd-9f66-22bc341a4d7a for run manager_acf8_0a8e7810904447ca97f8c38c711cb80a
+Agent WebSocket connected: session=acb6b417-ecfb-48fd-9f66-22bc341a4d7a, run=manager_acf8_0a8e7810904447ca97f8c38c711cb80a
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run manager_acf8_0a8e7810904447ca97f8c38c711cb80a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791835553236,"pid":8099,"hostname":"MacBookPro","reqId":"req-3","method":"GET","url":"/mcp/agent-tools/agtrun_LNp1Yciu6B0wh2bKI5Yrn6mlHRonXOnXz-Bx8Ehx4TE","statusCode":405,"elapsedMs":0.18037497997283936,"msg":"http request completed"}
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/lead_355a_fc0882e0198044338ebf7a3e9d58af99/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/engineer_0710_a34b5f9eafe14d02ab5318a097bc1730/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/reviewer_b12c_2427ff0d50e34d23926df50ea0667cef/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/offline_54fe_3d27b7ae57d8487fb701bd3a5949ead2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/unoffered_94b1_a2b00583b4a540eda2903014d48e4c9e/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/badsettings_518e_336fb7489b914c49a56b1d2a1ce0220d/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/incomplete_74c4_116701a8455a456f8616ef73bf55a9a0/raw_traces_active.jsonl
+AGY compaction detection off for run lead_355a_fc0882e0198044338ebf7a3e9d58af99: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791835555511,"pid":8099,"hostname":"MacBookPro","reqId":"req-7","method":"GET","url":"/mcp/agent-tools/agtrun_LNp1Yciu6B0wh2bKI5Yrn6mlHRonXOnXz-Bx8Ehx4TE","statusCode":405,"elapsedMs":0.2206670045852661,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run lead_355a_a03730272f884f4eaac10f3c4e194ccb: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791835556779,"pid":8099,"hostname":"MacBookPro","reqId":"req-b","method":"GET","url":"/mcp/agent-tools/agtrun_LNp1Yciu6B0wh2bKI5Yrn6mlHRonXOnXz-Bx8Ehx4TE","statusCode":405,"elapsedMs":0.1605839729309082,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run writer_0d10_3cf4d5657e5a4d6ca71ce2a83445bf93: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791835558029,"pid":8099,"hostname":"MacBookPro","reqId":"req-f","method":"GET","url":"/mcp/agent-tools/agtrun_LNp1Yciu6B0wh2bKI5Yrn6mlHRonXOnXz-Bx8Ehx4TE","statusCode":405,"elapsedMs":0.23287498950958252,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/engineer_0710_a34b5f9eafe14d02ab5318a097bc1730/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/pair_team_824d_b9f64e039a3845c9bf266527b03e609a/engineer_0710_8043b8af69e64a638c644731cf206987/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/reviewer_b12c_2427ff0d50e34d23926df50ea0667cef/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/offline_54fe_3d27b7ae57d8487fb701bd3a5949ead2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/unoffered_94b1_a2b00583b4a540eda2903014d48e4c9e/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/badsettings_518e_336fb7489b914c49a56b1d2a1ce0220d/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/pair_team_824d_b9f64e039a3845c9bf266527b03e609a/unoffered_94b1_3a926bc5217442899702a8249aa5c9af/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/incomplete_74c4_116701a8455a456f8616ef73bf55a9a0/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/pair_team_824d_1b496b3b838b4e4ea386e4309af71c8b/lead_355a_f06114d5b3694298b344e241afc51042/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/pair_team_824d_1b496b3b838b4e4ea386e4309af71c8b/engineer_0710_03a0676840974d7fab796be29775d9d8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/pair_team_824d_1b496b3b838b4e4ea386e4309af71c8b/unoffered_94b1_e651f36214b1411297b8579c051f2fa4/raw_traces_active.jsonl
+AGY compaction detection off for run lead_355a_f06114d5b3694298b344e241afc51042: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791835563171,"pid":8099,"hostname":"MacBookPro","reqId":"req-j","method":"GET","url":"/mcp/agent-tools/agtrun_eaaEJpFg-2VG3TcqK8pO3b7TBxz_a-7krZx98BMoa84","statusCode":405,"elapsedMs":0.11500000953674316,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run unoffered_94b1_5aa4dda218204759a27b3ee61ae75a5d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/pair_team_824d_b9f64e039a3845c9bf266527b03e609a/engineer_0710_8043b8af69e64a638c644731cf206987/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/pair_team_824d_b9f64e039a3845c9bf266527b03e609a/unoffered_94b1_3a926bc5217442899702a8249aa5c9af/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/engineer_0710_a34b5f9eafe14d02ab5318a097bc1730/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/offline_54fe_3d27b7ae57d8487fb701bd3a5949ead2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/reviewer_b12c_2427ff0d50e34d23926df50ea0667cef/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/unoffered_94b1_a2b00583b4a540eda2903014d48e4c9e/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/badsettings_518e_336fb7489b914c49a56b1d2a1ce0220d/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/incomplete_74c4_116701a8455a456f8616ef73bf55a9a0/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/pair_team_824d_1b496b3b838b4e4ea386e4309af71c8b/engineer_0710_03a0676840974d7fab796be29775d9d8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/pair_team_824d_1b496b3b838b4e4ea386e4309af71c8b/unoffered_94b1_e651f36214b1411297b8579c051f2fa4/raw_traces_active.jsonl
+{"level":40,"time":1791835564282,"pid":8099,"hostname":"MacBookPro","reqId":"req-n","method":"GET","url":"/mcp/agent-tools/agtrun_eaaEJpFg-2VG3TcqK8pO3b7TBxz_a-7krZx98BMoa84","statusCode":405,"elapsedMs":0.18970900774002075,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run badsettings_518e_f6528d519d694a37ba2523cf2e9621d9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/pair_team_824d_b9f64e039a3845c9bf266527b03e609a/engineer_0710_8043b8af69e64a638c644731cf206987/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/pair_team_824d_b9f64e039a3845c9bf266527b03e609a/unoffered_94b1_3a926bc5217442899702a8249aa5c9af/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/engineer_0710_a34b5f9eafe14d02ab5318a097bc1730/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/offline_54fe_3d27b7ae57d8487fb701bd3a5949ead2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/reviewer_b12c_2427ff0d50e34d23926df50ea0667cef/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/unoffered_94b1_a2b00583b4a540eda2903014d48e4c9e/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/badsettings_518e_336fb7489b914c49a56b1d2a1ce0220d/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/incomplete_74c4_116701a8455a456f8616ef73bf55a9a0/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/pair_team_824d_1b496b3b838b4e4ea386e4309af71c8b/engineer_0710_03a0676840974d7fab796be29775d9d8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/pair_team_824d_1b496b3b838b4e4ea386e4309af71c8b/unoffered_94b1_e651f36214b1411297b8579c051f2fa4/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/badsettings_518e_f6528d519d694a37ba2523cf2e9621d9/raw_traces_active.jsonl
+{"level":40,"time":1791835565532,"pid":8099,"hostname":"MacBookPro","reqId":"req-r","method":"GET","url":"/mcp/agent-tools/agtrun_eaaEJpFg-2VG3TcqK8pO3b7TBxz_a-7krZx98BMoa84","statusCode":405,"elapsedMs":0.17054098844528198,"msg":"http request completed"}
+{"level":40,"time":1791835566797,"pid":8099,"hostname":"MacBookPro","reqId":"req-v","method":"GET","url":"/mcp/agent-tools/agtrun_eaaEJpFg-2VG3TcqK8pO3b7TBxz_a-7krZx98BMoa84","statusCode":405,"elapsedMs":0.1495000123977661,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+Closed agent session acb6b417-ecfb-48fd-9f66-22bc341a4d7a
+Agent WebSocket disconnected: acb6b417-ecfb-48fd-9f66-22bc341a4d7a
+Closed agent session 155db1c7-969b-4a91-9e32-c9b2d7f8ed43
+Agent websocket attached for run manager_acf8_0a8e7810904447ca97f8c38c711cb80a
+Created agent session 320eecc9-1e33-4d79-8ea7-08d776859a35 for run manager_acf8_0a8e7810904447ca97f8c38c711cb80a
+Agent WebSocket connected: session=320eecc9-1e33-4d79-8ea7-08d776859a35, run=manager_acf8_0a8e7810904447ca97f8c38c711cb80a
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/pair_team_824d_b9f64e039a3845c9bf266527b03e609a/engineer_0710_8043b8af69e64a638c644731cf206987/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/pair_team_824d_b9f64e039a3845c9bf266527b03e609a/unoffered_94b1_3a926bc5217442899702a8249aa5c9af/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/offline_54fe_3d27b7ae57d8487fb701bd3a5949ead2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/reviewer_b12c_2427ff0d50e34d23926df50ea0667cef/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/unoffered_94b1_a2b00583b4a540eda2903014d48e4c9e/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/badsettings_518e_336fb7489b914c49a56b1d2a1ce0220d/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/incomplete_74c4_116701a8455a456f8616ef73bf55a9a0/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/pair_team_824d_1b496b3b838b4e4ea386e4309af71c8b/engineer_0710_03a0676840974d7fab796be29775d9d8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/pair_team_824d_1b496b3b838b4e4ea386e4309af71c8b/unoffered_94b1_e651f36214b1411297b8579c051f2fa4/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/engineer_0710_6bd186c29991434383ba3bc807929a19/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/reviewer_b12c_7d4483f8ab1745eb9537281ddc2adbf2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/unoffered_94b1_aaddcd5885204beb95dfcc93704cc124/raw_traces_active.jsonl
+Agent team websocket attached for team run build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Created agent session a7a82f35-c7fc-4248-a13a-d412a2d50c66 for run build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Agent Team WebSocket connected: session=a7a82f35-c7fc-4248-a13a-d412a2d50c66, run=build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Closed agent session a7a82f35-c7fc-4248-a13a-d412a2d50c66
+Closed agent session 320eecc9-1e33-4d79-8ea7-08d776859a35
+Agent WebSocket disconnected: 320eecc9-1e33-4d79-8ea7-08d776859a35
+Agent websocket attached for run manager_acf8_0a8e7810904447ca97f8c38c711cb80a
+Created agent session 4d7f2b1f-e3e5-4074-a9eb-44212bf3e368 for run manager_acf8_0a8e7810904447ca97f8c38c711cb80a
+Agent WebSocket connected: session=4d7f2b1f-e3e5-4074-a9eb-44212bf3e368, run=manager_acf8_0a8e7810904447ca97f8c38c711cb80a
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/engineer_0710_6bd186c29991434383ba3bc807929a19/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/unoffered_94b1_aaddcd5885204beb95dfcc93704cc124/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/reviewer_b12c_7d4483f8ab1745eb9537281ddc2adbf2/raw_traces_active.jsonl
+Agent team websocket attached for team run build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Created agent session 81d7199c-d136-4875-b946-a79cacbc3ecd for run build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Agent Team WebSocket connected: session=81d7199c-d136-4875-b946-a79cacbc3ecd, run=build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/manager_acf8_18fd364a70ad4ca093b9ec6d1c1acd05/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/worker_eac4_19826db39a2e45d69a6c4cd7141b5969/raw_traces_active.jsonl
+Agent team websocket attached for team run home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103
+Created agent session e4742a43-cec7-435c-abef-47d4de8e7407 for run home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103
+Agent Team WebSocket connected: session=e4742a43-cec7-435c-abef-47d4de8e7407, run=home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/manager_acf8_18fd364a70ad4ca093b9ec6d1c1acd05/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/manager_acf8_18fd364a70ad4ca093b9ec6d1c1acd05/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run manager_acf8_18fd364a70ad4ca093b9ec6d1c1acd05: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791835591599,"pid":8099,"hostname":"MacBookPro","reqId":"req-z","method":"GET","url":"/mcp/agent-tools/agtrun_Mkw5-q_V1H4UdLU9yJ_kM6l5ecu-TWRSuIb7RQN4rAo","statusCode":405,"elapsedMs":0.14570897817611694,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run lead_355a_1b8fe072ddc249e5ad810d2c0a16f5e2: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791835594729,"pid":8099,"hostname":"MacBookPro","reqId":"req-13","method":"GET","url":"/mcp/agent-tools/agtrun_Mkw5-q_V1H4UdLU9yJ_kM6l5ecu-TWRSuIb7RQN4rAo","statusCode":405,"elapsedMs":0.1316249966621399,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run lead_355a_f1529fabafc2471c96f8355d907a876d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session e4742a43-cec7-435c-abef-47d4de8e7407
+Closed agent session 81d7199c-d136-4875-b946-a79cacbc3ecd
+Closed agent session 4d7f2b1f-e3e5-4074-a9eb-44212bf3e368
+Agent WebSocket disconnected: 4d7f2b1f-e3e5-4074-a9eb-44212bf3e368
+Agent websocket attached for run manager_acf8_0a8e7810904447ca97f8c38c711cb80a
+Created agent session f0fdf220-03ff-470f-987b-04fbdc4a25ac for run manager_acf8_0a8e7810904447ca97f8c38c711cb80a
+Agent WebSocket connected: session=f0fdf220-03ff-470f-987b-04fbdc4a25ac, run=manager_acf8_0a8e7810904447ca97f8c38c711cb80a
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/worker_eac4_19826db39a2e45d69a6c4cd7141b5969/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/pair_team_824d_b517094fbd184cb290044d08eac3fc1f/engineer_0710_d3328f9d92dc4cfd9b32810b0432cae8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/pair_team_824d_b517094fbd184cb290044d08eac3fc1f/unoffered_94b1_79cf4fe6a4f64240be068b3914e3f112/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/engineer_0710_297d92941dba4558a18ed7a66ffd5cc8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/reviewer_b12c_955a7ff8f7714257bfd67c43eace9662/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/offline_54fe_df99526916094c4c9d032be25c94bfa2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/unoffered_94b1_9ff5d031f5d14da1879a8d1c3ab270b8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/badsettings_518e_33a56d965d4f4095badd81aec3343c11/raw_traces_active.jsonl
+Created terminal session 0fd5e3db-204c-4fc6-b8db-83bfc51850a7 using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/home
+Terminal WebSocket connected: 0fd5e3db-204c-4fc6-b8db-83bfc51850a7
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/home
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/incomplete_74c4_fe8d165648974a4ab92292e5c9ea97e4/raw_traces_active.jsonl
+Agent team websocket attached for team run home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103
+Created agent session 5ad348dc-d7b5-4a9d-92df-109cc71054cb for run home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103
+Agent Team WebSocket connected: session=5ad348dc-d7b5-4a9d-92df-109cc71054cb, run=home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/engineer_0710_6bd186c29991434383ba3bc807929a19/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/reviewer_b12c_7d4483f8ab1745eb9537281ddc2adbf2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/unoffered_94b1_aaddcd5885204beb95dfcc93704cc124/raw_traces_active.jsonl
+Agent team websocket attached for team run build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Created agent session a5218d07-7ba2-4fa5-a2b1-f04ee3790160 for run build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Agent Team WebSocket connected: session=a5218d07-7ba2-4fa5-a2b1-f04ee3790160, run=build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Closed PTY session 0fd5e3db-204c-4fc6-b8db-83bfc51850a7
+Terminal WebSocket disconnected: 0fd5e3db-204c-4fc6-b8db-83bfc51850a7
+Closed agent session a5218d07-7ba2-4fa5-a2b1-f04ee3790160
+Closed agent session 5ad348dc-d7b5-4a9d-92df-109cc71054cb
+Closed agent session f0fdf220-03ff-470f-987b-04fbdc4a25ac
+Agent WebSocket disconnected: f0fdf220-03ff-470f-987b-04fbdc4a25ac
+Agent websocket attached for run manager_acf8_0a8e7810904447ca97f8c38c711cb80a
+Created agent session efecf58c-0efc-4b6d-ac8b-249404bb2276 for run manager_acf8_0a8e7810904447ca97f8c38c711cb80a
+Agent WebSocket connected: session=efecf58c-0efc-4b6d-ac8b-249404bb2276, run=manager_acf8_0a8e7810904447ca97f8c38c711cb80a
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/worker_eac4_19826db39a2e45d69a6c4cd7141b5969/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/pair_team_824d_b517094fbd184cb290044d08eac3fc1f/engineer_0710_d3328f9d92dc4cfd9b32810b0432cae8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/pair_team_824d_b517094fbd184cb290044d08eac3fc1f/unoffered_94b1_79cf4fe6a4f64240be068b3914e3f112/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/engineer_0710_297d92941dba4558a18ed7a66ffd5cc8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/reviewer_b12c_955a7ff8f7714257bfd67c43eace9662/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/offline_54fe_df99526916094c4c9d032be25c94bfa2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/unoffered_94b1_9ff5d031f5d14da1879a8d1c3ab270b8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/badsettings_518e_33a56d965d4f4095badd81aec3343c11/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/incomplete_74c4_fe8d165648974a4ab92292e5c9ea97e4/raw_traces_active.jsonl
+Agent team websocket attached for team run home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103
+Created agent session f471bd3c-2dd2-45a7-92d7-2a4ddccb69d5 for run home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103
+Agent Team WebSocket connected: session=f471bd3c-2dd2-45a7-92d7-2a4ddccb69d5, run=home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/engineer_0710_6bd186c29991434383ba3bc807929a19/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/reviewer_b12c_7d4483f8ab1745eb9537281ddc2adbf2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/unoffered_94b1_aaddcd5885204beb95dfcc93704cc124/raw_traces_active.jsonl
+Agent team websocket attached for team run build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Created agent session ef53c0c0-ed0e-4852-b2af-671a9bcc6ecc for run build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Agent Team WebSocket connected: session=ef53c0c0-ed0e-4852-b2af-671a9bcc6ecc, run=build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_orgs/hostorg_org_c58c_773c7b4d0e11420a8dc10f07adec7304/manager_acf8_c0a248e1369f478ca4e89e8ddb934ba5/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_orgs/hostorg_org_c58c_773c7b4d0e11420a8dc10f07adec7304/manager_acf8_c0a248e1369f478ca4e89e8ddb934ba5/raw_traces_active.jsonl
+Created terminal session a26de95e-2725-42f8-94cf-66adfe080c7a using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/home
+Terminal WebSocket connected: a26de95e-2725-42f8-94cf-66adfe080c7a
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/home
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run manager_acf8_c0a248e1369f478ca4e89e8ddb934ba5: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791835620362,"pid":8099,"hostname":"MacBookPro","reqId":"req-17","method":"GET","url":"/mcp/agent-tools/agtrun_KsVxPEUuml6TzXjDCS_CqDsMB9jDPHVMGlhEw-6jEfE","statusCode":405,"elapsedMs":0.0873749852180481,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_orgs/hostorg_org_c58c_773c7b4d0e11420a8dc10f07adec7304/squad_team_bdda_b82b43d4ef4845a38587b8166ef2f254/lead_355a_3dd7ce0ec0374f16a61949d132eed5fc/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_orgs/hostorg_org_c58c_773c7b4d0e11420a8dc10f07adec7304/squad_team_bdda_b82b43d4ef4845a38587b8166ef2f254/engineer_0710_87cb04b1aed842aaa06dde54572f3a33/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_orgs/hostorg_org_c58c_773c7b4d0e11420a8dc10f07adec7304/squad_team_bdda_b82b43d4ef4845a38587b8166ef2f254/reviewer_b12c_0c81072e491c4f87b8cafa5a2d55ec28/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_orgs/hostorg_org_c58c_773c7b4d0e11420a8dc10f07adec7304/squad_team_bdda_b82b43d4ef4845a38587b8166ef2f254/offline_54fe_9ade063586074864966c0091146962ba/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_orgs/hostorg_org_c58c_773c7b4d0e11420a8dc10f07adec7304/squad_team_bdda_b82b43d4ef4845a38587b8166ef2f254/unoffered_94b1_1dde2dd192d7439a99e9a8a60e58e0f2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_orgs/hostorg_org_c58c_773c7b4d0e11420a8dc10f07adec7304/squad_team_bdda_b82b43d4ef4845a38587b8166ef2f254/badsettings_518e_e8f4259315ee4ea3be4adcc256d4f29c/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_orgs/hostorg_org_c58c_773c7b4d0e11420a8dc10f07adec7304/squad_team_bdda_b82b43d4ef4845a38587b8166ef2f254/incomplete_74c4_e2e4723c052f4c399e245096e41a9e83/raw_traces_active.jsonl
+AGY compaction detection off for run lead_355a_3dd7ce0ec0374f16a61949d132eed5fc: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791835621363,"pid":8099,"hostname":"MacBookPro","reqId":"req-1b","method":"GET","url":"/mcp/agent-tools/agtrun_KsVxPEUuml6TzXjDCS_CqDsMB9jDPHVMGlhEw-6jEfE","statusCode":405,"elapsedMs":0.08808398246765137,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run lead_355a_478a86a541fb4afab80d09f9baebba26: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed PTY session a26de95e-2725-42f8-94cf-66adfe080c7a
+Terminal WebSocket disconnected: a26de95e-2725-42f8-94cf-66adfe080c7a
+Closed agent session ef53c0c0-ed0e-4852-b2af-671a9bcc6ecc
+Closed agent session f471bd3c-2dd2-45a7-92d7-2a4ddccb69d5
+Closed agent session efecf58c-0efc-4b6d-ac8b-249404bb2276
+Agent WebSocket disconnected: efecf58c-0efc-4b6d-ac8b-249404bb2276
+Agent websocket attached for run manager_acf8_0a8e7810904447ca97f8c38c711cb80a
+Created agent session f8890d20-acc1-40be-85b8-2d23b4cb2648 for run manager_acf8_0a8e7810904447ca97f8c38c711cb80a
+Agent WebSocket connected: session=f8890d20-acc1-40be-85b8-2d23b4cb2648, run=manager_acf8_0a8e7810904447ca97f8c38c711cb80a
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/worker_eac4_19826db39a2e45d69a6c4cd7141b5969/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/pair_team_824d_b517094fbd184cb290044d08eac3fc1f/unoffered_94b1_79cf4fe6a4f64240be068b3914e3f112/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/pair_team_824d_b517094fbd184cb290044d08eac3fc1f/engineer_0710_d3328f9d92dc4cfd9b32810b0432cae8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/engineer_0710_297d92941dba4558a18ed7a66ffd5cc8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/reviewer_b12c_955a7ff8f7714257bfd67c43eace9662/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/offline_54fe_df99526916094c4c9d032be25c94bfa2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/unoffered_94b1_9ff5d031f5d14da1879a8d1c3ab270b8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/badsettings_518e_33a56d965d4f4095badd81aec3343c11/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/incomplete_74c4_fe8d165648974a4ab92292e5c9ea97e4/raw_traces_active.jsonl
+Agent team websocket attached for team run home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103
+Created agent session cfb30763-f2e1-4d73-9de2-01d2532c5936 for run home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103
+Agent Team WebSocket connected: session=cfb30763-f2e1-4d73-9de2-01d2532c5936, run=home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/engineer_0710_6bd186c29991434383ba3bc807929a19/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/reviewer_b12c_7d4483f8ab1745eb9537281ddc2adbf2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/unoffered_94b1_aaddcd5885204beb95dfcc93704cc124/raw_traces_active.jsonl
+Agent team websocket attached for team run build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Created agent session d8ebbbb8-6538-44d1-b5a6-2f4456da3e8a for run build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Agent Team WebSocket connected: session=d8ebbbb8-6538-44d1-b5a6-2f4456da3e8a, run=build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run manager_acf8_5252dae63f744fa38f740101debddd40
+Created agent session 91c0cd4b-4eaa-432d-8e7c-647a7f489517 for run manager_acf8_5252dae63f744fa38f740101debddd40
+Agent WebSocket connected: session=91c0cd4b-4eaa-432d-8e7c-647a7f489517, run=manager_acf8_5252dae63f744fa38f740101debddd40
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/pair_team_824d_b9f64e039a3845c9bf266527b03e609a/engineer_0710_8043b8af69e64a638c644731cf206987/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/pair_team_824d_b9f64e039a3845c9bf266527b03e609a/unoffered_94b1_3a926bc5217442899702a8249aa5c9af/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/reviewer_b12c_2427ff0d50e34d23926df50ea0667cef/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/offline_54fe_3d27b7ae57d8487fb701bd3a5949ead2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/unoffered_94b1_a2b00583b4a540eda2903014d48e4c9e/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/badsettings_518e_336fb7489b914c49a56b1d2a1ce0220d/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/incomplete_74c4_116701a8455a456f8616ef73bf55a9a0/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/pair_team_824d_1b496b3b838b4e4ea386e4309af71c8b/engineer_0710_03a0676840974d7fab796be29775d9d8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/pair_team_824d_1b496b3b838b4e4ea386e4309af71c8b/unoffered_94b1_e651f36214b1411297b8579c051f2fa4/raw_traces_active.jsonl
+AGY compaction detection off for run manager_acf8_5252dae63f744fa38f740101debddd40: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791835636225,"pid":8099,"hostname":"MacBookPro","reqId":"req-1f","method":"GET","url":"/mcp/agent-tools/agtrun_Lv8wagxjJPtj33BGAh7Fz9ZW4ACDiZpG0JxeTnFTtZ0","statusCode":405,"elapsedMs":0.09254199266433716,"msg":"http request completed"}
+{"level":40,"time":1791835637324,"pid":8099,"hostname":"MacBookPro","reqId":"req-1j","method":"GET","url":"/mcp/agent-tools/agtrun_Lv8wagxjJPtj33BGAh7Fz9ZW4ACDiZpG0JxeTnFTtZ0","statusCode":405,"elapsedMs":0.11054199934005737,"msg":"http request completed"}
+{"level":40,"time":1791835638555,"pid":8099,"hostname":"MacBookPro","reqId":"req-1n","method":"GET","url":"/mcp/agent-tools/agtrun_Lv8wagxjJPtj33BGAh7Fz9ZW4ACDiZpG0JxeTnFTtZ0","statusCode":405,"elapsedMs":0.11233299970626831,"msg":"http request completed"}
+{"level":40,"time":1791835639814,"pid":8099,"hostname":"MacBookPro","reqId":"req-1r","method":"GET","url":"/mcp/agent-tools/agtrun_Lv8wagxjJPtj33BGAh7Fz9ZW4ACDiZpG0JxeTnFTtZ0","statusCode":405,"elapsedMs":0.12654101848602295,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run reviewer_b12c_a38b0cbab948487485cb4842fd17edac: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_5252dae63f744fa38f740101debddd40/collaboration/reviewer_b12c_a38b0cbab948487485cb4842fd17edac/raw_traces_active.jsonl
+Closed agent session d8ebbbb8-6538-44d1-b5a6-2f4456da3e8a
+Closed agent session cfb30763-f2e1-4d73-9de2-01d2532c5936
+Closed agent session f8890d20-acc1-40be-85b8-2d23b4cb2648
+Agent WebSocket disconnected: f8890d20-acc1-40be-85b8-2d23b4cb2648
+Closed agent session 91c0cd4b-4eaa-432d-8e7c-647a7f489517
+Agent WebSocket disconnected: 91c0cd4b-4eaa-432d-8e7c-647a7f489517
+Agent websocket attached for run manager_acf8_5252dae63f744fa38f740101debddd40
+Created agent session 2455b10e-221b-4b85-adac-bfa9da674e61 for run manager_acf8_5252dae63f744fa38f740101debddd40
+Agent WebSocket connected: session=2455b10e-221b-4b85-adac-bfa9da674e61, run=manager_acf8_5252dae63f744fa38f740101debddd40
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/worker_eac4_19826db39a2e45d69a6c4cd7141b5969/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/pair_team_824d_b517094fbd184cb290044d08eac3fc1f/unoffered_94b1_79cf4fe6a4f64240be068b3914e3f112/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/pair_team_824d_b517094fbd184cb290044d08eac3fc1f/engineer_0710_d3328f9d92dc4cfd9b32810b0432cae8/raw_traces_active.jsonl
+Agent websocket attached for run manager_acf8_0a8e7810904447ca97f8c38c711cb80a
+Created agent session 799e28c5-41e7-4b79-aa08-b34ecc5e9566 for run manager_acf8_0a8e7810904447ca97f8c38c711cb80a
+Agent WebSocket connected: session=799e28c5-41e7-4b79-aa08-b34ecc5e9566, run=manager_acf8_0a8e7810904447ca97f8c38c711cb80a
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/engineer_0710_297d92941dba4558a18ed7a66ffd5cc8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/reviewer_b12c_955a7ff8f7714257bfd67c43eace9662/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/offline_54fe_df99526916094c4c9d032be25c94bfa2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/unoffered_94b1_9ff5d031f5d14da1879a8d1c3ab270b8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/badsettings_518e_33a56d965d4f4095badd81aec3343c11/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/incomplete_74c4_fe8d165648974a4ab92292e5c9ea97e4/raw_traces_active.jsonl
+Agent team websocket attached for team run home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103
+Created agent session 791f69b0-5e36-4a3c-9162-3c2c281e3615 for run home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103
+Agent Team WebSocket connected: session=791f69b0-5e36-4a3c-9162-3c2c281e3615, run=home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/engineer_0710_6bd186c29991434383ba3bc807929a19/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/reviewer_b12c_7d4483f8ab1745eb9537281ddc2adbf2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/unoffered_94b1_aaddcd5885204beb95dfcc93704cc124/raw_traces_active.jsonl
+Agent team websocket attached for team run build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Created agent session 76f7ce0d-7618-4cce-a83b-dd7246471173 for run build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Agent Team WebSocket connected: session=76f7ce0d-7618-4cce-a83b-dd7246471173, run=build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run manager_acf8_aefe3be0211a48b98009e3b5839a3f8f
+Created agent session ed586d41-a13c-494e-bedf-0f13f4a0b210 for run manager_acf8_aefe3be0211a48b98009e3b5839a3f8f
+Agent WebSocket connected: session=ed586d41-a13c-494e-bedf-0f13f4a0b210, run=manager_acf8_aefe3be0211a48b98009e3b5839a3f8f
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/pair_team_824d_b9f64e039a3845c9bf266527b03e609a/engineer_0710_8043b8af69e64a638c644731cf206987/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/pair_team_824d_b9f64e039a3845c9bf266527b03e609a/unoffered_94b1_3a926bc5217442899702a8249aa5c9af/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/reviewer_b12c_2427ff0d50e34d23926df50ea0667cef/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/offline_54fe_3d27b7ae57d8487fb701bd3a5949ead2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/unoffered_94b1_a2b00583b4a540eda2903014d48e4c9e/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/badsettings_518e_336fb7489b914c49a56b1d2a1ce0220d/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/squad_team_bdda_fdb629c61a564851a47531493649c8bc/incomplete_74c4_116701a8455a456f8616ef73bf55a9a0/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/pair_team_824d_1b496b3b838b4e4ea386e4309af71c8b/engineer_0710_03a0676840974d7fab796be29775d9d8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_0a8e7810904447ca97f8c38c711cb80a/collaboration/pair_team_824d_1b496b3b838b4e4ea386e4309af71c8b/unoffered_94b1_e651f36214b1411297b8579c051f2fa4/raw_traces_active.jsonl
+AGY compaction detection off for run manager_acf8_aefe3be0211a48b98009e3b5839a3f8f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791835652161,"pid":8099,"hostname":"MacBookPro","reqId":"req-1v","method":"GET","url":"/mcp/agent-tools/agtrun_hnPHGt8pzTYhAW7McX4KioXRy_Cg0op9nRF0CEurzm8","statusCode":405,"elapsedMs":0.08925002813339233,"msg":"http request completed"}
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_aefe3be0211a48b98009e3b5839a3f8f/collaboration/squad_team_bdda_596d4d14a3904b3ab8b7124ef0f71049/lead_355a_fd2c31c43ed548cea6aa7413135a585c/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_aefe3be0211a48b98009e3b5839a3f8f/collaboration/squad_team_bdda_596d4d14a3904b3ab8b7124ef0f71049/engineer_0710_b1c28a0457b74a3e91c5bb85719aadba/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_aefe3be0211a48b98009e3b5839a3f8f/collaboration/squad_team_bdda_596d4d14a3904b3ab8b7124ef0f71049/reviewer_b12c_83b9e8d4cee14c7da3f2f3fdb24a4dda/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_aefe3be0211a48b98009e3b5839a3f8f/collaboration/squad_team_bdda_596d4d14a3904b3ab8b7124ef0f71049/offline_54fe_240c15c6779d466eb1d7a06fb15fc81d/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_aefe3be0211a48b98009e3b5839a3f8f/collaboration/squad_team_bdda_596d4d14a3904b3ab8b7124ef0f71049/unoffered_94b1_d4b27f71ba4c4d289d2ba0d1b81b6ccf/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_aefe3be0211a48b98009e3b5839a3f8f/collaboration/squad_team_bdda_596d4d14a3904b3ab8b7124ef0f71049/badsettings_518e_77a83ae9b06448248b68126ccf603b0c/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agents/manager_acf8_aefe3be0211a48b98009e3b5839a3f8f/collaboration/squad_team_bdda_596d4d14a3904b3ab8b7124ef0f71049/incomplete_74c4_8aaeb34c6c094822ba57434d0b781c0b/raw_traces_active.jsonl
+AGY compaction detection off for run lead_355a_fd2c31c43ed548cea6aa7413135a585c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791835653689,"pid":8099,"hostname":"MacBookPro","reqId":"req-1z","method":"GET","url":"/mcp/agent-tools/agtrun_hnPHGt8pzTYhAW7McX4KioXRy_Cg0op9nRF0CEurzm8","statusCode":405,"elapsedMs":0.13470804691314697,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run lead_355a_9d5a13379aaa4050ae98fc681fde7a65: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session 799e28c5-41e7-4b79-aa08-b34ecc5e9566
+Agent WebSocket disconnected: 799e28c5-41e7-4b79-aa08-b34ecc5e9566
+Closed agent session 2455b10e-221b-4b85-adac-bfa9da674e61
+Agent WebSocket disconnected: 2455b10e-221b-4b85-adac-bfa9da674e61
+Closed agent session ed586d41-a13c-494e-bedf-0f13f4a0b210
+Agent WebSocket disconnected: ed586d41-a13c-494e-bedf-0f13f4a0b210
+Closed agent session 76f7ce0d-7618-4cce-a83b-dd7246471173
+Closed agent session 791f69b0-5e36-4a3c-9162-3c2c281e3615
+Agent websocket attached for run manager_acf8_aefe3be0211a48b98009e3b5839a3f8f
+Created agent session 403e8bb3-944f-4d5e-a665-1ffb6a468d8a for run manager_acf8_aefe3be0211a48b98009e3b5839a3f8f
+Agent WebSocket connected: session=403e8bb3-944f-4d5e-a665-1ffb6a468d8a, run=manager_acf8_aefe3be0211a48b98009e3b5839a3f8f
+Agent websocket attached for run manager_acf8_5252dae63f744fa38f740101debddd40
+Created agent session 98a5d3f2-56c1-4b4a-be31-4841db7a46d2 for run manager_acf8_5252dae63f744fa38f740101debddd40
+Agent WebSocket connected: session=98a5d3f2-56c1-4b4a-be31-4841db7a46d2, run=manager_acf8_5252dae63f744fa38f740101debddd40
+Agent websocket attached for run manager_acf8_0a8e7810904447ca97f8c38c711cb80a
+Created agent session d95a330e-3adc-41c1-a2f3-ad36cf2c650e for run manager_acf8_0a8e7810904447ca97f8c38c711cb80a
+Agent WebSocket connected: session=d95a330e-3adc-41c1-a2f3-ad36cf2c650e, run=manager_acf8_0a8e7810904447ca97f8c38c711cb80a
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/worker_eac4_19826db39a2e45d69a6c4cd7141b5969/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/pair_team_824d_b517094fbd184cb290044d08eac3fc1f/engineer_0710_d3328f9d92dc4cfd9b32810b0432cae8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/pair_team_824d_b517094fbd184cb290044d08eac3fc1f/unoffered_94b1_79cf4fe6a4f64240be068b3914e3f112/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/engineer_0710_297d92941dba4558a18ed7a66ffd5cc8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/reviewer_b12c_955a7ff8f7714257bfd67c43eace9662/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/offline_54fe_df99526916094c4c9d032be25c94bfa2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/unoffered_94b1_9ff5d031f5d14da1879a8d1c3ab270b8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/badsettings_518e_33a56d965d4f4095badd81aec3343c11/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103/squad_team_bdda_fdcd8e801dd744ab916248402fed5a0e/incomplete_74c4_fe8d165648974a4ab92292e5c9ea97e4/raw_traces_active.jsonl
+Agent team websocket attached for team run home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103
+Created agent session 7a7cb402-afa4-48b3-bb1b-eaa7cc493a7c for run home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103
+Agent Team WebSocket connected: session=7a7cb402-afa4-48b3-bb1b-eaa7cc493a7c, run=home_team_0b81_69d2194d1f6a4e1787e6fb0f4e22e103
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/engineer_0710_6bd186c29991434383ba3bc807929a19/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/reviewer_b12c_7d4483f8ab1745eb9537281ddc2adbf2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/build_team_7f42_6a6d76801e42489eae225cb6317f24d6/unoffered_94b1_aaddcd5885204beb95dfcc93704cc124/raw_traces_active.jsonl
+Agent team websocket attached for team run build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Created agent session bc0270b3-b8b3-4a30-99b6-56621ac4e5f9 for run build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Agent Team WebSocket connected: session=bc0270b3-b8b3-4a30-99b6-56621ac4e5f9, run=build_team_7f42_6a6d76801e42489eae225cb6317f24d6
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_a2eb191b6c6f4ec8abaa5fd9a14922b7/manager_acf8_b618692fe70e4fc984aad28e2e465b34/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_a2eb191b6c6f4ec8abaa5fd9a14922b7/worker_eac4_17329af5c0a648208d771e4195a6faeb/raw_traces_active.jsonl
+Agent team websocket attached for team run home_team_0b81_a2eb191b6c6f4ec8abaa5fd9a14922b7
+Created agent session a88ec9fa-2dec-4167-8737-dcbbd3713dbe for run home_team_0b81_a2eb191b6c6f4ec8abaa5fd9a14922b7
+Agent Team WebSocket connected: session=a88ec9fa-2dec-4167-8737-dcbbd3713dbe, run=home_team_0b81_a2eb191b6c6f4ec8abaa5fd9a14922b7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_a2eb191b6c6f4ec8abaa5fd9a14922b7/manager_acf8_b618692fe70e4fc984aad28e2e465b34/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IFLlcf/server-data/memory/agent_teams/home_team_0b81_a2eb191b6c6f4ec8abaa5fd9a14922b7/manager_acf8_b618692fe70e4fc984aad28e2e465b34/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run manager_acf8_b618692fe70e4fc984aad28e2e465b34: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791835661301,"pid":8099,"hostname":"MacBookPro","reqId":"req-23","method":"GET","url":"/mcp/agent-tools/agtrun_vo4QeTYX5rcbSt9IX5LPHPYGXrAWY7cJMx9axjxzPFU","statusCode":405,"elapsedMs":0.12354099750518799,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run lead_355a_586e2ce6fd374a95a8771646ef375a55: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+[2026-10-12T20:07:42.703Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Closed agent session a88ec9fa-2dec-4167-8737-dcbbd3713dbe
+Closed agent session bc0270b3-b8b3-4a30-99b6-56621ac4e5f9
+Closed agent session 7a7cb402-afa4-48b3-bb1b-eaa7cc493a7c
+Closed agent session d95a330e-3adc-41c1-a2f3-ad36cf2c650e
+Agent WebSocket disconnected: d95a330e-3adc-41c1-a2f3-ad36cf2c650e
+Closed agent session 98a5d3f2-56c1-4b4a-be31-4841db7a46d2
+Agent WebSocket disconnected: 98a5d3f2-56c1-4b4a-be31-4841db7a46d2
+Closed agent session 403e8bb3-944f-4d5e-a665-1ffb6a468d8a
+Agent WebSocket disconnected: 403e8bb3-944f-4d5e-a665-1ffb6a468d8a
+[2026-10-12T20:07:42.810Z] [INFO] [server.runtime] Server closed cleanly.

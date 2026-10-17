@@ -1,0 +1,3677 @@
+{
+  "node": {
+    "name": "ab-sf-fr026-macos",
+    "host": "192.168.64.2",
+    "port": 54205,
+    "platform": "darwin",
+    "workspace": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106"
+  },
+  "actorRunId": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737",
+  "runtime": "codex_app_server",
+  "receipt": {
+    "url": "ws://192.168.64.2:54205/ws/agent/ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737",
+    "commandId": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+    "prompt": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+    "seconds": 11.092,
+    "tools": 1,
+    "succeeded": 1,
+    "events": [
+      {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "idle",
+          "recoverableBlock": null,
+          "agent_id": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 4,
+          "entries": [],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "initializing",
+          "recoverableBlock": null,
+          "agent_id": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 5,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": null,
+              "state": "queued",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "AGENT_COMMAND_ACK",
+        "payload": {
+          "command_type": "SEND_MESSAGE",
+          "run_id": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737",
+          "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+          "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+          "state": "accepted",
+          "accepted": true,
+          "duplicate": false,
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737"
+          }
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "running",
+          "recoverableBlock": null,
+          "agent_id": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "TURN_STARTED",
+        "payload": {
+          "turnId": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_START",
+        "payload": {
+          "id": "reasoning-block:6d76a846-ff26-4755-adc3-778dba02421a:2",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "reasoning",
+          "metadata": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "reasoning-block:6d76a846-ff26-4755-adc3-778dba02421a:2",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "reasoning",
+          "delta": "**Planning terminal commands for inspection**"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_END",
+        "payload": {
+          "id": "reasoning-block:6d76a846-ff26-4755-adc3-778dba02421a:2",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "metadata": null,
+          "interrupted": false,
+          "reason": null,
+          "failed": false,
+          "error": null
+        }
+      },
+      {
+        "type": "SEGMENT_START",
+        "payload": {
+          "id": "exec-00cac9f5-6355-4a6f-9d49-0f53840a1d83",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "run_bash",
+          "metadata": {
+            "tool_name": "run_bash",
+            "command": "/bin/zsh -lc \"pwd\nprintf '%s' '---FILE---'\ncat -- mac-linux-agents-aaca0a6d.txt\""
+          }
+        }
+      },
+      {
+        "type": "TOOL_EXECUTION_STARTED",
+        "payload": {
+          "item": {
+            "type": "commandExecution",
+            "id": "exec-00cac9f5-6355-4a6f-9d49-0f53840a1d83",
+            "pluginId": null,
+            "scriptPath": null,
+            "command": "/bin/zsh -lc \"pwd\nprintf '%s' '---FILE---'\ncat -- mac-linux-agents-aaca0a6d.txt\"",
+            "cwd": "/Volumes/autobyteus-shared/project",
+            "processId": "73809",
+            "source": "unifiedExecStartup",
+            "status": "inProgress",
+            "commandActions": [
+              {
+                "type": "unknown",
+                "command": "pwd\nprintf '%s' '---FILE---'\ncat -- mac-linux-agents-aaca0a6d.txt"
+              }
+            ],
+            "aggregatedOutput": null,
+            "exitCode": null,
+            "durationMs": null
+          },
+          "threadId": "01a13486-a0d2-7082-ae1e-a472e1f6b7cb",
+          "turnId": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "startedAtMs": 1791882641667,
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "invocation_id": "exec-00cac9f5-6355-4a6f-9d49-0f53840a1d83",
+          "tool_name": "run_bash",
+          "arguments": {
+            "command": "/bin/zsh -lc \"pwd\nprintf '%s' '---FILE---'\ncat -- mac-linux-agents-aaca0a6d.txt\"",
+            "cwd": "/Volumes/autobyteus-shared/project"
+          }
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "TOOL_EXECUTION_SUCCEEDED",
+        "payload": {
+          "item": {
+            "type": "commandExecution",
+            "id": "exec-00cac9f5-6355-4a6f-9d49-0f53840a1d83",
+            "pluginId": null,
+            "scriptPath": null,
+            "command": "/bin/zsh -lc \"pwd\nprintf '%s' '---FILE---'\ncat -- mac-linux-agents-aaca0a6d.txt\"",
+            "cwd": "/Volumes/autobyteus-shared/project",
+            "processId": "73809",
+            "source": "unifiedExecStartup",
+            "status": "completed",
+            "commandActions": [
+              {
+                "type": "unknown",
+                "command": "pwd\nprintf '%s' '---FILE---'\ncat -- mac-linux-agents-aaca0a6d.txt"
+              }
+            ],
+            "aggregatedOutput": "/Volumes/autobyteus-shared/project\n---FILE---MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\nLINUX_B_f8a27d180fe3433490a70b6f22bdca4f\nLINUX_C_28cf2a5267344a1fa5c75be3a23537f9\n",
+            "exitCode": 0,
+            "durationMs": 0
+          },
+          "threadId": "01a13486-a0d2-7082-ae1e-a472e1f6b7cb",
+          "turnId": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "completedAtMs": 1791882641667,
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "invocation_id": "exec-00cac9f5-6355-4a6f-9d49-0f53840a1d83",
+          "tool_name": "run_bash",
+          "arguments": {
+            "command": "/bin/zsh -lc \"pwd\nprintf '%s' '---FILE---'\ncat -- mac-linux-agents-aaca0a6d.txt\"",
+            "cwd": "/Volumes/autobyteus-shared/project"
+          },
+          "result": "/Volumes/autobyteus-shared/project\n---FILE---MAC_AGENT_3c0bb43a34774dfab341d42f122f96d9\nLINUX_B_f8a27d180fe3433490a70b6f22bdca4f\nLINUX_C_28cf2a5267344a1fa5c75be3a23537f9\n"
+        }
+      },
+      {
+        "type": "SEGMENT_END",
+        "payload": {
+          "id": "exec-00cac9f5-6355-4a6f-9d49-0f53840a1d83",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "metadata": {
+            "tool_name": "run_bash",
+            "command": "/bin/zsh -lc \"pwd\nprintf '%s' '---FILE---'\ncat -- mac-linux-agents-aaca0a6d.txt\""
+          },
+          "interrupted": false,
+          "reason": null,
+          "failed": false,
+          "error": null
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "usage_event_id": "604455bf-3bee-4af7-8db6-bede1338c864",
+          "idempotency_key": "codex_token_usage:ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737:01a13486-a0d2-7082-ae1e-a472e1f6b7cb:01a13487-29d4-74f0-b54e-563289b502c2:cumulative_snapshot:28636:21760:418:137:29054:11103",
+          "observed_at": "2026-10-13T09:10:41.674Z",
+          "run_id": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737",
+          "root_team_run_id": null,
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "llm_call_id": null,
+          "call_sequence": null,
+          "agent_definition_id": "ab-sf-fr026-6af2e9d4-codex-app-server-95601",
+          "workspace_id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+          "task_id": null,
+          "team_name": null,
+          "agent_name": "ab-sf-fr026-6af2e9d4-codex_app_server-95601",
+          "run_summary": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected work...",
+          "run_created_at": "2026-10-13T09:10:00.380Z",
+          "member_display_name": null,
+          "runtime_kind": "codex_app_server",
+          "model_provider": "OPENAI",
+          "provider_name": null,
+          "model_identifier": "gpt-5.6-luna",
+          "model_value": "gpt-5.6-luna",
+          "selected_match_state": null,
+          "selected_model_value": null,
+          "selected_resolved_raw_model_id": null,
+          "claude_sdk_model_usage": [],
+          "claude_sdk_session_id": null,
+          "claude_sdk_query_kind": null,
+          "ingestion_kind": "codex_thread_token_usage",
+          "usage_scope": "cumulative_snapshot",
+          "reports_model_call": true,
+          "snapshot_series_key": "codex_thread:01a13486-a0d2-7082-ae1e-a472e1f6b7cb",
+          "previous_snapshot_event_id": null,
+          "input_token_semantic": "gross_includes_cache",
+          "reported_input_tokens": 11010,
+          "reported_output_tokens": 93,
+          "reported_total_tokens": 11103,
+          "accounting_input_tokens": 11010,
+          "accounting_output_tokens": 93,
+          "accounting_total_tokens": 11103,
+          "standard_input_tokens": 3074,
+          "cache_miss_input_tokens": 3074,
+          "cache_read_input_tokens": 7936,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 14,
+          "billable_input_tokens": 11010,
+          "billable_output_tokens": 93,
+          "cost_basis": "api_price_estimate",
+          "currency": "USD",
+          "input_price_per_million": 0.2,
+          "output_price_per_million": 1.2,
+          "cached_input_read_price_per_million": 0.02,
+          "cached_input_write_price_per_million": 0.25,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "pricing_source": "autobyteus_model_catalog",
+          "pricing_status": "trusted",
+          "pricing_missing_reason": null,
+          "pricing_snapshot_json": {
+            "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "price_config_id": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "model_provider": "OPENAI",
+            "model_identifier": "gpt-5.6-luna",
+            "model_value": "gpt-5.6-luna",
+            "canonical_name": "gpt-5.6-luna",
+            "currency": "USD",
+            "input_price_per_million": 0.2,
+            "output_price_per_million": 1.2,
+            "cached_input_read_price_per_million": 0.02,
+            "cached_input_write_price_per_million": 0.25,
+            "cached_input_write_5m_price_per_million": null,
+            "cached_input_write_1h_price_per_million": null,
+            "input_price_tiers": [
+              {
+                "tier_id": "standard_le_272k",
+                "max_input_tokens": 272000,
+                "input_price_per_million": 0.2,
+                "output_price_per_million": 1.2,
+                "cached_input_read_price_per_million": 0.02,
+                "cached_input_write_price_per_million": 0.25,
+                "cached_input_write_5m_price_per_million": null,
+                "cached_input_write_1h_price_per_million": null,
+                "trusted_dimensions": {
+                  "input": true,
+                  "output": true,
+                  "cached_input_read": true,
+                  "cached_input_write": true,
+                  "cached_input_write_5m": false,
+                  "cached_input_write_1h": false
+                }
+              },
+              {
+                "tier_id": "long_context_gt_272k",
+                "max_input_tokens": null,
+                "input_price_per_million": 0.4,
+                "output_price_per_million": 1.8,
+                "cached_input_read_price_per_million": 0.04,
+                "cached_input_write_price_per_million": 0.5,
+                "cached_input_write_5m_price_per_million": null,
+                "cached_input_write_1h_price_per_million": null,
+                "trusted_dimensions": {
+                  "input": true,
+                  "output": true,
+                  "cached_input_read": true,
+                  "cached_input_write": true,
+                  "cached_input_write_5m": false,
+                  "cached_input_write_1h": false
+                }
+              }
+            ],
+            "pricing_status": "trusted",
+            "trusted_dimensions": {
+              "input": true,
+              "output": true,
+              "cached_input_read": true,
+              "cached_input_write": true,
+              "cached_input_write_5m": false,
+              "cached_input_write_1h": false
+            },
+            "missing_reason": null,
+            "source": "autobyteus_model_catalog",
+            "effective_from": null,
+            "effective_to": null,
+            "version": null,
+            "pricing_schedule_id": null,
+            "pricing_schedule_period_id": null,
+            "pricing_schedule_effective_from": null,
+            "pricing_schedule_window_timezone": null,
+            "pricing_schedule_peak_days": null,
+            "pricing_schedule_peak_days_timezone": null,
+            "selected_tier_id": "standard_le_272k"
+          },
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "selected_pricing_tier_id": "standard_le_272k",
+          "missing_price_dimensions": [],
+          "estimated_api_input_cost": 0.00077352,
+          "estimated_api_standard_input_cost": 0.0006148,
+          "estimated_api_cache_read_input_cost": 0.00015872,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.00011159999999999999,
+          "estimated_api_reasoning_output_cost": 1.68e-05,
+          "estimated_api_total_cost": 0.00088512,
+          "api_cost_status": "estimated",
+          "meter_delta_input_tokens": 11010,
+          "meter_delta_output_tokens": 93,
+          "meter_delta_total_tokens": 11103,
+          "run_summary_after_event": {
+            "run_id": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737",
+            "root_team_run_id": null,
+            "agent_definition_id": "ab-sf-fr026-6af2e9d4-codex-app-server-95601",
+            "workspace_id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+            "gross_input_tokens": 28636,
+            "standard_input_tokens": 6876,
+            "cache_miss_input_tokens": 6876,
+            "cache_read_input_tokens": 21760,
+            "cache_creation_input_tokens": 0,
+            "cache_creation_5m_input_tokens": 0,
+            "cache_creation_1h_input_tokens": 0,
+            "output_tokens": 418,
+            "reasoning_output_tokens": 137,
+            "billable_output_tokens": 418,
+            "total_tokens": 29054,
+            "cache_read_input_token_rate": 0.7598826651767007,
+            "standard_input_token_rate": 0.24011733482329933,
+            "cache_creation_input_token_rate": 0,
+            "cache_state": "positive",
+            "estimated_api_input_cost": 0.0018104,
+            "estimated_api_standard_input_cost": 0.0013752,
+            "estimated_api_cache_read_input_cost": 0.0004352,
+            "estimated_api_cache_creation_input_cost": null,
+            "estimated_api_cache_creation_5m_input_cost": null,
+            "estimated_api_cache_creation_1h_input_cost": null,
+            "estimated_api_output_cost": 0.0005015999999999999,
+            "estimated_api_reasoning_output_cost": 0.0001644,
+            "estimated_api_total_cost": 0.002312,
+            "currency": "USD",
+            "api_cost_status": "estimated",
+            "missing_price_dimensions": [],
+            "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "selected_pricing_tier_id": "standard_le_272k",
+            "unit_prices": {
+              "standard_input": {
+                "status": "single",
+                "price_per_million": 0.2
+              },
+              "cache_read_input": {
+                "status": "single",
+                "price_per_million": 0.02
+              },
+              "cache_creation_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_5m_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_1h_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "output": {
+                "status": "single",
+                "price_per_million": 1.2
+              },
+              "reasoning_output": {
+                "status": "single",
+                "price_per_million": 1.2
+              }
+            },
+            "usage_report_count": 3,
+            "revision": 3,
+            "updated_at": "2026-10-13T09:10:41.674Z",
+            "latest_prompt_tokens": 11103,
+            "effective_context_window_tokens": 258400,
+            "context_window_usage_percent": 4.296826625386998,
+            "context_compaction_threshold_tokens": null,
+            "latest_model_provider": "OPENAI",
+            "latest_model_identifier": "gpt-5.6-luna",
+            "latest_runtime_kind": "codex_app_server",
+            "latest_selected_raw_model_id": null,
+            "has_cache_write_rate_assumption": false
+          },
+          "latest_prompt_tokens": 11103,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 4.2968266253869976,
+          "context_compaction_threshold_tokens": null,
+          "raw_usage_json": {
+            "totalTokens": 29054,
+            "inputTokens": 28636,
+            "cachedInputTokens": 21760,
+            "cacheWriteInputTokens": 0,
+            "outputTokens": 418,
+            "reasoningOutputTokens": 137
+          },
+          "raw_event_json": {
+            "threadId": "01a13486-a0d2-7082-ae1e-a472e1f6b7cb",
+            "turnId": "01a13487-29d4-74f0-b54e-563289b502c2",
+            "tokenUsage": {
+              "total": {
+                "totalTokens": 29054,
+                "inputTokens": 28636,
+                "cachedInputTokens": 21760,
+                "cacheWriteInputTokens": 0,
+                "outputTokens": 418,
+                "reasoningOutputTokens": 137
+              },
+              "last": {
+                "totalTokens": 11103,
+                "inputTokens": 11010,
+                "cachedInputTokens": 7936,
+                "cacheWriteInputTokens": 0,
+                "outputTokens": 93,
+                "reasoningOutputTokens": 14
+              },
+              "modelContextWindow": 258400
+            },
+            "autobyteus_cumulative_snapshot_provider_delta_tokens": {
+              "reported_input_tokens": 11010,
+              "reported_output_tokens": 93,
+              "reported_total_tokens": 11103,
+              "accounting_input_tokens": null,
+              "accounting_output_tokens": null,
+              "accounting_total_tokens": null,
+              "standard_input_tokens": null,
+              "cache_miss_input_tokens": null,
+              "cache_read_input_tokens": 7936,
+              "cache_creation_input_tokens": null,
+              "cache_creation_5m_input_tokens": null,
+              "cache_creation_1h_input_tokens": null,
+              "reasoning_output_tokens": 14,
+              "billable_input_tokens": null,
+              "billable_output_tokens": null
+            },
+            "autobyteus_cumulative_snapshot_source_tokens": {
+              "reported_input_tokens": 28636,
+              "reported_output_tokens": 418,
+              "reported_total_tokens": 29054,
+              "accounting_input_tokens": 28636,
+              "accounting_output_tokens": 418,
+              "accounting_total_tokens": 29054,
+              "standard_input_tokens": 6876,
+              "cache_miss_input_tokens": 6876,
+              "cache_read_input_tokens": 21760,
+              "cache_creation_input_tokens": null,
+              "cache_creation_5m_input_tokens": null,
+              "cache_creation_1h_input_tokens": null,
+              "reasoning_output_tokens": 137,
+              "billable_input_tokens": 28636,
+              "billable_output_tokens": 418
+            }
+          },
+          "quality_flags": []
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_START",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "metadata": null
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "/"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "Volumes"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "/aut"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "oby"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "te"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "us"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "-sh"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "ared"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "/project"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "\n\n"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "Exact"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": " contents"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": ":\n"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "```"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "text"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "\n"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "MAC"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "_AGENT"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "_"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "3"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "c"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "0"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "bb"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "43"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "a"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "347"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "74"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "df"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "ab"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "341"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "d"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "42"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "f"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "122"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "f"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "96"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "d"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "9"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "\n"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "LIN"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "UX"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "_B"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "_f"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "8"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "a"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "27"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "d"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "180"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "fe"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "343"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "349"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "0"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "a"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "70"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "b"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "6"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "f"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "22"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "bd"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "ca"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "4"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "f"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "\n"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "LIN"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "UX"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "_C"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "_"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "28"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "cf"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "2"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "a"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "526"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "734"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "4"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "a"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "1"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "fa"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "5"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "c"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "75"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "be"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "3"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "a"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "235"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "37"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "f"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "9"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "\n"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_CONTENT",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "segment_type": "text",
+          "delta": "```"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "SEGMENT_END",
+        "payload": {
+          "id": "msg_0647252a7f05a538016acdf5948e4c87d28826f8e0abfa04b0",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "metadata": null,
+          "interrupted": false,
+          "reason": null,
+          "failed": false,
+          "error": null
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "TOKEN_USAGE_UPDATED",
+        "payload": {
+          "usage_event_id": "b8555325-a692-45c9-894a-8bcf9073d4f2",
+          "idempotency_key": "codex_token_usage:ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737:01a13486-a0d2-7082-ae1e-a472e1f6b7cb:01a13487-29d4-74f0-b54e-563289b502c2:cumulative_snapshot:39846:31744:511:137:40357:11303",
+          "observed_at": "2026-10-13T09:10:46.302Z",
+          "run_id": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737",
+          "root_team_run_id": null,
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "llm_call_id": null,
+          "call_sequence": null,
+          "agent_definition_id": "ab-sf-fr026-6af2e9d4-codex-app-server-95601",
+          "workspace_id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+          "task_id": null,
+          "team_name": null,
+          "agent_name": "ab-sf-fr026-6af2e9d4-codex_app_server-95601",
+          "run_summary": "Print pwd using native terminal tools. Create mac-linux-agents-aaca0a6d.txt in your selected work...",
+          "run_created_at": "2026-10-13T09:10:00.380Z",
+          "member_display_name": null,
+          "runtime_kind": "codex_app_server",
+          "model_provider": "OPENAI",
+          "provider_name": null,
+          "model_identifier": "gpt-5.6-luna",
+          "model_value": "gpt-5.6-luna",
+          "selected_match_state": null,
+          "selected_model_value": null,
+          "selected_resolved_raw_model_id": null,
+          "claude_sdk_model_usage": [],
+          "claude_sdk_session_id": null,
+          "claude_sdk_query_kind": null,
+          "ingestion_kind": "codex_thread_token_usage",
+          "usage_scope": "cumulative_snapshot",
+          "reports_model_call": true,
+          "snapshot_series_key": "codex_thread:01a13486-a0d2-7082-ae1e-a472e1f6b7cb",
+          "previous_snapshot_event_id": null,
+          "input_token_semantic": "gross_includes_cache",
+          "reported_input_tokens": 11210,
+          "reported_output_tokens": 93,
+          "reported_total_tokens": 11303,
+          "accounting_input_tokens": 11210,
+          "accounting_output_tokens": 93,
+          "accounting_total_tokens": 11303,
+          "standard_input_tokens": 1226,
+          "cache_miss_input_tokens": 1226,
+          "cache_read_input_tokens": 9984,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 0,
+          "billable_input_tokens": 11210,
+          "billable_output_tokens": 93,
+          "cost_basis": "api_price_estimate",
+          "currency": "USD",
+          "input_price_per_million": 0.2,
+          "output_price_per_million": 1.2,
+          "cached_input_read_price_per_million": 0.02,
+          "cached_input_write_price_per_million": 0.25,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "pricing_source": "autobyteus_model_catalog",
+          "pricing_status": "trusted",
+          "pricing_missing_reason": null,
+          "pricing_snapshot_json": {
+            "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "price_config_id": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "model_provider": "OPENAI",
+            "model_identifier": "gpt-5.6-luna",
+            "model_value": "gpt-5.6-luna",
+            "canonical_name": "gpt-5.6-luna",
+            "currency": "USD",
+            "input_price_per_million": 0.2,
+            "output_price_per_million": 1.2,
+            "cached_input_read_price_per_million": 0.02,
+            "cached_input_write_price_per_million": 0.25,
+            "cached_input_write_5m_price_per_million": null,
+            "cached_input_write_1h_price_per_million": null,
+            "input_price_tiers": [
+              {
+                "tier_id": "standard_le_272k",
+                "max_input_tokens": 272000,
+                "input_price_per_million": 0.2,
+                "output_price_per_million": 1.2,
+                "cached_input_read_price_per_million": 0.02,
+                "cached_input_write_price_per_million": 0.25,
+                "cached_input_write_5m_price_per_million": null,
+                "cached_input_write_1h_price_per_million": null,
+                "trusted_dimensions": {
+                  "input": true,
+                  "output": true,
+                  "cached_input_read": true,
+                  "cached_input_write": true,
+                  "cached_input_write_5m": false,
+                  "cached_input_write_1h": false
+                }
+              },
+              {
+                "tier_id": "long_context_gt_272k",
+                "max_input_tokens": null,
+                "input_price_per_million": 0.4,
+                "output_price_per_million": 1.8,
+                "cached_input_read_price_per_million": 0.04,
+                "cached_input_write_price_per_million": 0.5,
+                "cached_input_write_5m_price_per_million": null,
+                "cached_input_write_1h_price_per_million": null,
+                "trusted_dimensions": {
+                  "input": true,
+                  "output": true,
+                  "cached_input_read": true,
+                  "cached_input_write": true,
+                  "cached_input_write_5m": false,
+                  "cached_input_write_1h": false
+                }
+              }
+            ],
+            "pricing_status": "trusted",
+            "trusted_dimensions": {
+              "input": true,
+              "output": true,
+              "cached_input_read": true,
+              "cached_input_write": true,
+              "cached_input_write_5m": false,
+              "cached_input_write_1h": false
+            },
+            "missing_reason": null,
+            "source": "autobyteus_model_catalog",
+            "effective_from": null,
+            "effective_to": null,
+            "version": null,
+            "pricing_schedule_id": null,
+            "pricing_schedule_period_id": null,
+            "pricing_schedule_effective_from": null,
+            "pricing_schedule_window_timezone": null,
+            "pricing_schedule_peak_days": null,
+            "pricing_schedule_peak_days_timezone": null,
+            "selected_tier_id": "standard_le_272k"
+          },
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+          "selected_pricing_tier_id": "standard_le_272k",
+          "missing_price_dimensions": [],
+          "estimated_api_input_cost": 0.00044488000000000004,
+          "estimated_api_standard_input_cost": 0.00024520000000000005,
+          "estimated_api_cache_read_input_cost": 0.00019968,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.00011159999999999999,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": 0.00055648,
+          "api_cost_status": "estimated",
+          "meter_delta_input_tokens": 11210,
+          "meter_delta_output_tokens": 93,
+          "meter_delta_total_tokens": 11303,
+          "run_summary_after_event": {
+            "run_id": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737",
+            "root_team_run_id": null,
+            "agent_definition_id": "ab-sf-fr026-6af2e9d4-codex-app-server-95601",
+            "workspace_id": "agent_ws_abc4b507043baf9c43506ba99321b71e25cac1cd5876cad269a84ed0ef922106",
+            "gross_input_tokens": 39846,
+            "standard_input_tokens": 8102,
+            "cache_miss_input_tokens": 8102,
+            "cache_read_input_tokens": 31744,
+            "cache_creation_input_tokens": 0,
+            "cache_creation_5m_input_tokens": 0,
+            "cache_creation_1h_input_tokens": 0,
+            "output_tokens": 511,
+            "reasoning_output_tokens": 137,
+            "billable_output_tokens": 511,
+            "total_tokens": 40357,
+            "cache_read_input_token_rate": 0.7966671685991066,
+            "standard_input_token_rate": 0.20333283140089345,
+            "cache_creation_input_token_rate": 0,
+            "cache_state": "positive",
+            "estimated_api_input_cost": 0.00225528,
+            "estimated_api_standard_input_cost": 0.0016204,
+            "estimated_api_cache_read_input_cost": 0.00063488,
+            "estimated_api_cache_creation_input_cost": null,
+            "estimated_api_cache_creation_5m_input_cost": null,
+            "estimated_api_cache_creation_1h_input_cost": null,
+            "estimated_api_output_cost": 0.0006131999999999999,
+            "estimated_api_reasoning_output_cost": 0.0001644,
+            "estimated_api_total_cost": 0.00286848,
+            "currency": "USD",
+            "api_cost_status": "estimated",
+            "missing_price_dimensions": [],
+            "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.6-luna",
+            "selected_pricing_tier_id": "standard_le_272k",
+            "unit_prices": {
+              "standard_input": {
+                "status": "single",
+                "price_per_million": 0.2
+              },
+              "cache_read_input": {
+                "status": "single",
+                "price_per_million": 0.02
+              },
+              "cache_creation_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_5m_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "cache_creation_1h_input": {
+                "status": "not_applicable",
+                "price_per_million": null
+              },
+              "output": {
+                "status": "single",
+                "price_per_million": 1.2
+              },
+              "reasoning_output": {
+                "status": "single",
+                "price_per_million": 1.2
+              }
+            },
+            "usage_report_count": 4,
+            "revision": 4,
+            "updated_at": "2026-10-13T09:10:46.302Z",
+            "latest_prompt_tokens": 11303,
+            "effective_context_window_tokens": 258400,
+            "context_window_usage_percent": 4.37422600619195,
+            "context_compaction_threshold_tokens": null,
+            "latest_model_provider": "OPENAI",
+            "latest_model_identifier": "gpt-5.6-luna",
+            "latest_runtime_kind": "codex_app_server",
+            "latest_selected_raw_model_id": null,
+            "has_cache_write_rate_assumption": false
+          },
+          "latest_prompt_tokens": 11303,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 4.37422600619195,
+          "context_compaction_threshold_tokens": null,
+          "raw_usage_json": {
+            "totalTokens": 40357,
+            "inputTokens": 39846,
+            "cachedInputTokens": 31744,
+            "cacheWriteInputTokens": 0,
+            "outputTokens": 511,
+            "reasoningOutputTokens": 137
+          },
+          "raw_event_json": {
+            "threadId": "01a13486-a0d2-7082-ae1e-a472e1f6b7cb",
+            "turnId": "01a13487-29d4-74f0-b54e-563289b502c2",
+            "tokenUsage": {
+              "total": {
+                "totalTokens": 40357,
+                "inputTokens": 39846,
+                "cachedInputTokens": 31744,
+                "cacheWriteInputTokens": 0,
+                "outputTokens": 511,
+                "reasoningOutputTokens": 137
+              },
+              "last": {
+                "totalTokens": 11303,
+                "inputTokens": 11210,
+                "cachedInputTokens": 9984,
+                "cacheWriteInputTokens": 0,
+                "outputTokens": 93,
+                "reasoningOutputTokens": 0
+              },
+              "modelContextWindow": 258400
+            },
+            "autobyteus_cumulative_snapshot_provider_delta_tokens": {
+              "reported_input_tokens": 11210,
+              "reported_output_tokens": 93,
+              "reported_total_tokens": 11303,
+              "accounting_input_tokens": null,
+              "accounting_output_tokens": null,
+              "accounting_total_tokens": null,
+              "standard_input_tokens": null,
+              "cache_miss_input_tokens": null,
+              "cache_read_input_tokens": 9984,
+              "cache_creation_input_tokens": null,
+              "cache_creation_5m_input_tokens": null,
+              "cache_creation_1h_input_tokens": null,
+              "reasoning_output_tokens": 0,
+              "billable_input_tokens": null,
+              "billable_output_tokens": null
+            },
+            "autobyteus_cumulative_snapshot_source_tokens": {
+              "reported_input_tokens": 39846,
+              "reported_output_tokens": 511,
+              "reported_total_tokens": 40357,
+              "accounting_input_tokens": 39846,
+              "accounting_output_tokens": 511,
+              "accounting_total_tokens": 40357,
+              "standard_input_tokens": 8102,
+              "cache_miss_input_tokens": 8102,
+              "cache_read_input_tokens": 31744,
+              "cache_creation_input_tokens": null,
+              "cache_creation_5m_input_tokens": null,
+              "cache_creation_1h_input_tokens": null,
+              "reasoning_output_tokens": 137,
+              "billable_input_tokens": 39846,
+              "billable_output_tokens": 511
+            }
+          },
+          "quality_flags": []
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 6,
+          "entries": [
+            {
+              "sequence": 2,
+              "message_id": "ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "dedupe_key": "agent_run_input:shared-probe:ab-sf-fr026-6af2e9d4-mac-a-reopen",
+              "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2",
+              "state": "forwarded",
+              "content": "Print pwd; freshly open mac-linux-agents-aaca0a6d.txt with native filesystem tools and report its full exact contents. Other nodes modified it. No new values are supplied here; do not answer from memory.",
+              "sender_type": "user",
+              "file_attachments": []
+            }
+          ],
+          "recoverableBlock": null
+        }
+      },
+      {
+        "type": "TURN_COMPLETED",
+        "payload": {
+          "turnId": "01a13487-29d4-74f0-b54e-563289b502c2",
+          "turn_id": "01a13487-29d4-74f0-b54e-563289b502c2"
+        }
+      },
+      {
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "idle",
+          "recoverableBlock": null,
+          "agent_id": "ab_sf_fr026_6af2e9d4_codex_app_server_95601_5de02705553b4cbda4e4e508a5070737"
+        }
+      },
+      {
+        "type": "AGENT_INPUT_STATE",
+        "payload": {
+          "run_instance_id": "934758b9-b60a-45f9-96bb-b1859dfebe37",
+          "revision": 7,
+          "entries": [],
+          "recoverableBlock": null
+        }
+      }
+    ],
+    "error": null
+  }
+}

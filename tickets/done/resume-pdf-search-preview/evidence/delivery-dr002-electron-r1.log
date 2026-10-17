@@ -1,0 +1,15 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.3-beta.2 test:e2e:search-pdf-electron /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/autobyteus-web
+> node tests/e2e/search-pdf-electron-probe.mjs --skip-build --output-dir /home/autobyteus/workspace/.codex/worktrees/resume-pdf-search-preview/tickets/in-progress/resume-pdf-search-preview/evidence/delivery-dr002-electron-r1
+
+API-006: Started
+API-006: Pass
+API-002: Started
+API-002: Pass
+API-003: Started
+API-003: Checkpoint actual packaged2page PDF rendered through protected200 bytes
+API-003: Pass
+API-007: Started
+API-007: Pass
+{"cases":{"API-006":"Pass","API-002":"Pass","API-003":"Pass","API-007":"Pass"},"cleanup":{"stop":{"instanceId":"iso-38291-78a3","wasRunning":true,"forced":false,"dataRoot":"/tmp/resume-delivery-dr002.dFwKXl/runtime-tmp/autobyteus-isolated-root-dbErE7","dataRootRemoved":true,"controlPortReleased":true,"serverPortReleased":true,"logPath":null},"list":{"instances":[]},"dataRootRemoved":true,"cdpClosed":true,"fixtureRemoved":true}}

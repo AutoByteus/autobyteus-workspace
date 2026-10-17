@@ -27,6 +27,7 @@ const configAt = (root: string) => ({
   getAgentTeamsDir: () => path.join(root, "agent-teams"),
   getAgentOrgsDir: () => path.join(root, "agent-orgs"),
   getAdditionalAgentPackageRoots: () => [],
+  getRegisteredAgentPackageRoots: () => [],
 }) as AppConfig;
 // No external application packages in this disposable installation.
 const bundleService = {
@@ -40,7 +41,7 @@ const listQuery = `{ agentDefinitions { id ownershipScope } }`;
 
 // The configured GraphQL service is constructed by the real hosted composition;
 // no persistence, cache, service, exact resolver or GraphQL response is mocked.
-describe("Org-owned Agent exact lookup through hosted cached service and GraphQL", () => {
+describe("Org-owned Agent exact lookup through the hosted definition catalog and GraphQL", () => {
   let root: string;
   let definitions: ReturnType<typeof createBundleBackedDefinitionServices>;
   let registration: ReturnType<typeof configureStudioApplicationApiServices> | undefined;
@@ -78,13 +79,13 @@ describe("Org-owned Agent exact lookup through hosted cached service and GraphQL
     const unused = new Proxy({}, { get: (_target, key) => { throw new Error(`Unexpected unrelated service operation ${String(key)}`); } });
     registration = configureStudioApplicationApiServices({ ...definitions, bundleService,
       agentOrgDefinitionService: unused, agentRunService: unused, teamRunService: unused, agentOrgRunService: unused,
-      definitionAdmissionService: unused, collaborationRootHistoryService: unused, runModelConfigService: unused,
+      definitionAdmissionService: unused, collaborationRootHistoryService: unused, runModelConfigService: unused, delegatedLaunchSelectionService: unused,
       capabilityService: unused, packageQueries: unused, packageCommands: unused,
     } as never);
     schema = await buildSchema({ resolvers: [AgentDefinitionResolver], validate: false });
     originalFiles = await snapshot(root);
   });
-  afterEach(async () => { registration?.close(); registration = undefined; await fs.rm(root, { recursive: true, force: true }); });
+  afterEach(async () => { registration?.close(); registration = undefined; definitions.packageDefinitions.reloader.close(); await fs.rm(root, { recursive: true, force: true }); });
 
   it.each([false, true])("resolves exact owned content with catalog already loaded=%s and keeps it out of lists", async (catalogFirst) => {
     if (catalogFirst) {
@@ -109,11 +110,13 @@ describe("Org-owned Agent exact lookup through hosted cached service and GraphQL
     expect(await snapshot(root)).toEqual(originalFiles);
   });
 
-  it("reads parent-owned updates and reference removal without caching the exact child into the catalog", async () => {
+  it("reads parent-owned updates and reference removal once the Org unit change is detected, never listing the owned child", async () => {
+    // Direct file writes stand in for an external editor; the package monitor reports them as the Org unit.
+    const detected = () => definitions.packageDefinitions.reloader.markFolderChanged("agent_org", "org");
     expect((await read(ownedId)).data?.agentDefinition).toMatchObject({ ownerOrgName: "Org" });
-    let parent = (await orgs.getById("org"))!; parent.name = "Renamed Org"; parent = await orgs.update(parent);
+    let parent = (await orgs.getById("org"))!; parent.name = "Renamed Org"; parent = await orgs.update(parent); detected();
     expect((await read(ownedId)).data?.agentDefinition).toMatchObject({ ownerOrgName: "Renamed Org" });
-    parent.members = parent.members.filter(member => member.ref !== ownedId); await orgs.update(parent);
+    parent.members = parent.members.filter(member => member.ref !== ownedId); await orgs.update(parent); detected();
     expect((await read(ownedId)).data?.agentDefinition).toBeNull();
     expect((await definitions.agentDefinitionService.getAllAgentDefinitions()).map(d => d.id)).toEqual(["shared"]);
   });

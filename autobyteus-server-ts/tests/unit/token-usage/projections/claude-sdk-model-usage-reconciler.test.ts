@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import { buildClaudeTokenUsageEvent } from '../../../../src/agent-execution/backends/claude/session/claude-session-token-usage.js';
 import { createTokenUsageUpdatedPayload } from '../../../../src/agent-execution/domain/agent-run-token-usage.js';
 import { foldTokenUsageObservation } from '../../../../src/token-usage/projections/token-usage-run-fold.js';
-import { selectedClaudeSdkDetailsFromState } from '../../../../src/token-usage/projections/claude-sdk-model-usage-reconciler.js';
 import type { TokenUsageRunRecord } from '../../../../src/token-usage/domain/token-usage-run-record.js';
 import type { ResolvedTokenPricingPolicy } from '../../../../src/token-usage/pricing/token-pricing-policy.js';
 
@@ -58,7 +57,11 @@ describe('Claude SDK selected-only configured-price fold', () => {
     expect(first.authoritativePayload.estimated_api_total_cost).toBeCloseTo((1000 + 2 + 24 + 200) / 1e6, 9);
     expect(first.authoritativePayload.quality_flags).toContain('claude_sdk_cache_write_1h_assumed');
     expect(first.authoritativePayload.claude_sdk_model_usage).toEqual([]);
-    expect(selectedClaudeSdkDetailsFromState(first.record!.claudeSdkUsageStateJson).map((detail) => detail.rawModelId)).toEqual([opus]);
+    expect(JSON.parse(first.record!.claudeSdkUsageStateJson!).latestSelectedRawModelId).toBe(opus);
+    // The result is reconciliation only: no model call, no context reading (D-3).
+    expect(first.authoritativePayload.reports_model_call).toBe(false);
+    expect(first.record!.usageReportCount).toBe(0n);
+    expect(first.record!.latestPromptTokens).toBeNull();
     expect(first.record!.claudeSdkUsageStateJson).toContain(haiku);
     expect(first.record!.claudeSdkUsageStateJson).not.toContain("costUSD");
     const secondPayload = observation({ resultId: 'two', rows: {
@@ -72,27 +75,19 @@ describe('Claude SDK selected-only configured-price fold', () => {
     expect(second.authoritativePayload.missing_price_dimensions).toEqual([]);
   });
 
-  it('uses exact terminal 5m/1h split only after all four selected dimensions reconcile', () => {
+  it('prices a remainder cache write at the flagged 1h assumption and ignores result.usage', () => {
     const rows = { [haiku]: row(50), [opus]: opusRow(2, { outputTokens: 63,
       cacheReadInputTokens: 9617, cacheCreationInputTokens: 7140 }) };
     const main = { input_tokens: 2, output_tokens: 63, cache_read_input_tokens: 9617,
-      cache_creation_input_tokens: 7140, cache_creation: { ephemeral_5m_input_tokens: 0,
-        ephemeral_1h_input_tokens: 7140 } };
-    const exact = fold(null, observation({ resultId: 'exact', queryKind: 'create', rows, main }));
-    expect(exact.authoritativePayload.cache_creation_1h_input_tokens).toBe(7140);
-    expect(exact.authoritativePayload.quality_flags).not.toContain('claude_sdk_cache_write_1h_assumed');
-    expect(exact.authoritativePayload.estimated_api_total_cost).toBeCloseTo(
+      cache_creation_input_tokens: 7140, cache_creation: { ephemeral_5m_input_tokens: 7140,
+        ephemeral_1h_input_tokens: 0 } };
+    const remainder = fold(null, observation({ resultId: 'remainder', queryKind: 'create', rows, main }));
+    expect(remainder.authoritativePayload.cache_creation_1h_input_tokens).toBe(7140);
+    expect(remainder.authoritativePayload.cache_creation_5m_input_tokens).toBe(0);
+    expect(remainder.authoritativePayload.quality_flags).toContain('claude_sdk_cache_write_1h_assumed');
+    expect(remainder.authoritativePayload.estimated_api_total_cost).toBeCloseTo(
       (2 * 10 + 63 * 20 + 9617 * 1 + 7140 * 8) / 1e6, 9);
-    const mismatch = fold(null, observation({ resultId: 'mismatch', queryKind: 'create', rows,
-      main: { ...main, output_tokens: 64 } }));
-    expect(mismatch.authoritativePayload.accounting_total_tokens).toBe(exact.authoritativePayload.accounting_total_tokens);
-    expect(mismatch.authoritativePayload.quality_flags).toContain('claude_sdk_cache_write_1h_assumed');
-    expect(mismatch.authoritativePayload.estimated_api_total_cost).toBe(exact.authoritativePayload.estimated_api_total_cost);
-    const mixed = fold(null, observation({ resultId: 'mixed', queryKind: 'create', rows,
-      main: { ...main, cache_creation: { ephemeral_5m_input_tokens: 140, ephemeral_1h_input_tokens: 7000 } } }));
-    expect(mixed.authoritativePayload.cache_creation_5m_input_tokens).toBe(140);
-    expect(mixed.authoritativePayload.estimated_api_total_cost).toBeCloseTo(
-      (2 * 10 + 63 * 20 + 9617 + 140 * 5 + 7000 * 8) / 1e6, 9);
+    expect(remainder.authoritativePayload.latest_prompt_tokens).toBeNull();
   });
 
   it('fails closed for unresolved mapping and baselines legacy resume', () => {

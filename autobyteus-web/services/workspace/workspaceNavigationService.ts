@@ -27,6 +27,21 @@ export const buildAgentRunChatRoute = (runId: string): RouteLocationRaw => ({
   query: { id: runId },
 })
 
+/** The run id a `/chat` route opens (`/chat?id=…`); null on New chat. */
+export const chatRouteRunId = (query: LocationQuery): string | null =>
+  toFirstQueryValue(query.id) || null
+
+/** A `/workspace` route that shows the Org launch page (see `buildAgentOrgLaunchRoute`). */
+export const isAgentOrgLaunchRoute = (query: LocationQuery): boolean =>
+  toFirstQueryValue(query.rootSubjectKind) === 'agent_org'
+  && toFirstQueryValue(query.mode) === 'configuration'
+
+/** A `/workspace` route that shows a launched Org run (not the Org launch page). */
+export const isAgentOrgRunRoute = (query: LocationQuery): boolean =>
+  toFirstQueryValue(query.rootSubjectKind) === 'agent_org'
+  && ['active', 'history'].includes(toFirstQueryValue(query.mode))
+  && Boolean(toFirstQueryValue(query.orgRunId))
+
 /** The Org launch page (DEC-005: the existing configuration route); "+" adds the source run. */
 export const buildAgentOrgLaunchRoute = (orgDefinitionId: string, sourceOrgRunId?: string | null): RouteLocationRaw => ({
   path: '/workspace',

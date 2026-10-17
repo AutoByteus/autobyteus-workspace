@@ -1,0 +1,14 @@
+{
+  "command": [
+    "pnpm",
+    "install",
+    "--frozen-lockfile",
+    "--offline",
+    "--ignore-scripts",
+    "--store-dir",
+    "/Users/normy/Library/pnpm/store"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-interrupt-resume-fixture-types",
+  "started": "2026-10-13T04:19:31.171525+00:00",
+  "environment": "PATH/private temporary HOME/TMPDIR only; removed after exit"
+}

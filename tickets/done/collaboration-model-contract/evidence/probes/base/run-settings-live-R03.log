@@ -1,0 +1,19 @@
+R03 Fail S2 AC-003: the server rejects the Org launch (its member definition was deleted meanwhile) → "Couldn't start this Agent Org. Try again.", values kept, Run enabled, no run created — locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('[data-test="org-launch-run"]')
+    - locator resolved to <button title="Run" type="button" aria-label="Run" data-test="org-launch-run" class="absolute bottom-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white shadow-sm transition-all duration-200 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:cursor-not-allowed disabled:opacity-50">…</button>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is not enabled
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is not enabled
+    - retrying click action
+      - waiting 100ms
+    58 × waiting for element to be visible, enabled and stable
+       - element is not enabled
+     - retrying click action
+       - waiting 500ms
+
+Summary: 0 Pass, 1 Fail, 0 Blocked

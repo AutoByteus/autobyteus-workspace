@@ -1,0 +1,20 @@
+{
+  "scope": "IR011 implementation-local completion",
+  "result": "Ready for selected independent review",
+  "allSixTestsPreserved": true,
+  "checksAllExitZero": true,
+  "testFiles": 12,
+  "tests": 66,
+  "historyBytePrefixPreserved": true,
+  "inputChangesOnlyIntended": [
+    "tickets/in-progress/shared-network-workspaces/implementation-handoff.md",
+    "tickets/in-progress/shared-network-workspaces/implementation-revision-record.md",
+    "autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts"
+  ],
+  "protectedArtifactsUnchanged": 309,
+  "scratchRemoved": true,
+  "mergeInProgress": false,
+  "packageRefs": 58,
+  "rawLogWhitespaceException": [],
+  "whitespaceNote": "Retained unmodified command output only; .diff evidence also retains ordinary patch context spaces. Authored source/prose checked separately."
+}

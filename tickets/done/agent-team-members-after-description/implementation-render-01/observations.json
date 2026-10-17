@@ -1,0 +1,255 @@
+{
+  "scope": "Implementation rendered-result self-check; not API/E2E sign-off",
+  "layouts": {
+    "desktop-1440": {
+      "headings": [
+        "Description",
+        "Members (6)",
+        "Instructions",
+        "Handoffs"
+      ],
+      "sections": [
+        {
+          "x": 52,
+          "y": 204,
+          "width": 1336,
+          "height": 102,
+          "bottom": 306,
+          "right": 1388
+        },
+        {
+          "x": 52,
+          "y": 322,
+          "width": 1336,
+          "height": 308,
+          "bottom": 630,
+          "right": 1388
+        },
+        {
+          "x": 52,
+          "y": 646,
+          "width": 1336,
+          "height": 366,
+          "bottom": 1012,
+          "right": 1388
+        },
+        {
+          "x": 52,
+          "y": 1028,
+          "width": 1336,
+          "height": 1890,
+          "bottom": 2918,
+          "right": 1388
+        }
+      ],
+      "columns": "641px 641px",
+      "cards": [
+        {
+          "x": 73,
+          "y": 387,
+          "width": 641,
+          "height": 66,
+          "bottom": 453,
+          "right": 714
+        },
+        {
+          "x": 726,
+          "y": 387,
+          "width": 641,
+          "height": 66,
+          "bottom": 453,
+          "right": 1367
+        },
+        {
+          "x": 73,
+          "y": 465,
+          "width": 641,
+          "height": 66,
+          "bottom": 531,
+          "right": 714
+        },
+        {
+          "x": 726,
+          "y": 465,
+          "width": 641,
+          "height": 66,
+          "bottom": 531,
+          "right": 1367
+        },
+        {
+          "x": 73,
+          "y": 543,
+          "width": 641,
+          "height": 66,
+          "bottom": 609,
+          "right": 714
+        },
+        {
+          "x": 726,
+          "y": 543,
+          "width": 641,
+          "height": 66,
+          "bottom": 609,
+          "right": 1367
+        }
+      ],
+      "coordinator": [
+        "Ssolution_designerCOORDINATORsolution designerView ↗"
+      ],
+      "memberText": "Members (6)Ssolution_designerCOORDINATORsolution designerView ↗Aarchitecture_reviewerarchitecture reviewerView ↗Iimplementation_engineerimplementation engineerView ↗Ccode_reviewercode reviewerView ↗Aapi_e2e_engineerapi e2e engineerView ↗Ddelivery_engineerdelivery engineerView ↗",
+      "viewCount": 6,
+      "horizontalOverflow": false,
+      "handoffs": 8
+    },
+    "narrow-600": {
+      "headings": [
+        "Description",
+        "Members (6)",
+        "Instructions",
+        "Handoffs"
+      ],
+      "sections": [
+        {
+          "x": 16,
+          "y": 266,
+          "width": 568,
+          "height": 126,
+          "bottom": 392,
+          "right": 584
+        },
+        {
+          "x": 16,
+          "y": 408,
+          "width": 568,
+          "height": 542,
+          "bottom": 950,
+          "right": 584
+        },
+        {
+          "x": 16,
+          "y": 966,
+          "width": 568,
+          "height": 302,
+          "bottom": 1268,
+          "right": 584
+        },
+        {
+          "x": 16,
+          "y": 1284,
+          "width": 568,
+          "height": 2590,
+          "bottom": 3874,
+          "right": 584
+        }
+      ],
+      "columns": "526px",
+      "cards": [
+        {
+          "x": 37,
+          "y": 473,
+          "width": 526,
+          "height": 66,
+          "bottom": 539,
+          "right": 563
+        },
+        {
+          "x": 37,
+          "y": 551,
+          "width": 526,
+          "height": 66,
+          "bottom": 617,
+          "right": 563
+        },
+        {
+          "x": 37,
+          "y": 629,
+          "width": 526,
+          "height": 66,
+          "bottom": 695,
+          "right": 563
+        },
+        {
+          "x": 37,
+          "y": 707,
+          "width": 526,
+          "height": 66,
+          "bottom": 773,
+          "right": 563
+        },
+        {
+          "x": 37,
+          "y": 785,
+          "width": 526,
+          "height": 66,
+          "bottom": 851,
+          "right": 563
+        },
+        {
+          "x": 37,
+          "y": 863,
+          "width": 526,
+          "height": 66,
+          "bottom": 929,
+          "right": 563
+        }
+      ],
+      "coordinator": [
+        "Ssolution_designerCOORDINATORsolution designerView ↗"
+      ],
+      "memberText": "Members (6)Ssolution_designerCOORDINATORsolution designerView ↗Aarchitecture_reviewerarchitecture reviewerView ↗Iimplementation_engineerimplementation engineerView ↗Ccode_reviewercode reviewerView ↗Aapi_e2e_engineerapi e2e engineerView ↗Ddelivery_engineerdelivery engineerView ↗",
+      "viewCount": 6,
+      "horizontalOverflow": false,
+      "handoffs": 8
+    }
+  },
+  "interactions": {
+    "instructions": {
+      "expandedHeight": 1360,
+      "collapsedHeight": 224
+    },
+    "localMember": {
+      "target": "agents",
+      "view": "detail",
+      "id": "team-local-agent:preview-team:implementer",
+      "returnToTeam": "preview-team"
+    },
+    "preserved": [
+      "instruction expand/collapse",
+      "shared and team-local View emits",
+      "Edit emit",
+      "Delete confirmation/cancel",
+      "Back emit"
+    ],
+    "alternativeTeam": {
+      "name": "Research Team",
+      "ownership": "APPLICATION_OWNED",
+      "deleteVisible": false,
+      "handoffs": "empty",
+      "order": "unchanged"
+    }
+  },
+  "cleanup": {
+    "browserClosed": true,
+    "nuxt": {
+      "pid": 17721,
+      "exitCode": 0,
+      "signal": null
+    },
+    "pageRemoved": true,
+    "boundaryClosed": true,
+    "homeRemoved": true
+  },
+  "ports": {
+    "renderer": 53167,
+    "backend": 53166
+  },
+  "nuxtPid": 17721,
+  "browserEvents": [],
+  "boundaryRequests": [
+    {
+      "method": "GET",
+      "path": "/rest/health"
+    }
+  ],
+  "outcome": "Implementation preview observations satisfied"
+}

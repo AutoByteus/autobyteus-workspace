@@ -1,0 +1,397 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 837B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/autobyteus/autobyteus-server@sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1
+#2 ...
+
+#3 [auth] autobyteus/autobyteus-server:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/autobyteus/autobyteus-server@sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1
+#2 DONE 1.1s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [1/3] FROM docker.io/autobyteus/autobyteus-server@sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1
+#5 resolve docker.io/autobyteus/autobyteus-server@sha256:b1411fa6f5004dfe073d4841119a9c5da15c18ea93009fa20d6e312b25cd71d1 0.0s done
+#5 DONE 1.0s
+
+#6 [2/3] RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends build-essential autoconf automake flex bison libtirpc-dev curl ca-certificates && rm -rf /var/lib/apt/lists/*
+#6 0.395 Get:1 https://deb.nodesource.com/node_22.x nodistro InRelease [12.1 kB]
+#6 0.471 Get:2 http://ports.ubuntu.com/ubuntu-ports noble InRelease [256 kB]
+#6 0.528 Get:3 https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu noble InRelease [17.8 kB]
+#6 0.602 Get:4 https://deb.nodesource.com/node_22.x nodistro/main arm64 Packages [12.5 kB]
+#6 0.633 Get:5 http://ports.ubuntu.com/ubuntu-ports noble-updates InRelease [126 kB]
+#6 0.637 Get:6 https://ppa.launchpadcontent.net/xtradeb/apps/ubuntu noble InRelease [24.1 kB]
+#6 0.673 Get:7 http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease [126 kB]
+#6 0.715 Get:8 http://ports.ubuntu.com/ubuntu-ports noble-security InRelease [126 kB]
+#6 0.717 Get:9 https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu noble/main arm64 Packages [52.0 kB]
+#6 0.759 Get:10 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 Packages [1,776 kB]
+#6 0.896 Get:11 https://ppa.launchpadcontent.net/xtradeb/apps/ubuntu noble/main arm64 Packages [59.7 kB]
+#6 0.977 Get:12 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 Components [658 kB]
+#6 1.028 Get:13 http://ports.ubuntu.com/ubuntu-ports noble/universe arm64 Packages [19.0 MB]
+#6 2.561 Get:14 http://ports.ubuntu.com/ubuntu-ports noble/universe arm64 Components [5,467 kB]
+#6 2.999 Get:15 http://ports.ubuntu.com/ubuntu-ports noble/restricted arm64 Packages [113 kB]
+#6 3.002 Get:16 http://ports.ubuntu.com/ubuntu-ports noble/multiverse arm64 Packages [274 kB]
+#6 3.022 Get:17 http://ports.ubuntu.com/ubuntu-ports noble/multiverse arm64 Components [37.7 kB]
+#6 3.025 Get:18 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 Packages [1,786 kB]
+#6 3.167 Get:19 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 Components [239 kB]
+#6 3.185 Get:20 http://ports.ubuntu.com/ubuntu-ports noble-updates/universe arm64 Packages [2,212 kB]
+#6 3.361 Get:21 http://ports.ubuntu.com/ubuntu-ports noble-updates/universe arm64 Components [532 kB]
+#6 3.404 Get:22 http://ports.ubuntu.com/ubuntu-ports noble-updates/restricted arm64 Packages [3,251 kB]
+#6 3.661 Get:23 http://ports.ubuntu.com/ubuntu-ports noble-updates/restricted arm64 Components [159 B]
+#6 3.661 Get:24 http://ports.ubuntu.com/ubuntu-ports noble-updates/multiverse arm64 Packages [104 kB]
+#6 3.669 Get:25 http://ports.ubuntu.com/ubuntu-ports noble-updates/multiverse arm64 Components [159 B]
+#6 3.669 Get:26 http://ports.ubuntu.com/ubuntu-ports noble-backports/main arm64 Packages [49.0 kB]
+#6 3.673 Get:27 http://ports.ubuntu.com/ubuntu-ports noble-backports/main arm64 Components [3,708 B]
+#6 3.673 Get:28 http://ports.ubuntu.com/ubuntu-ports noble-backports/universe arm64 Packages [36.3 kB]
+#6 3.675 Get:29 http://ports.ubuntu.com/ubuntu-ports noble-backports/universe arm64 Components [13.6 kB]
+#6 3.677 Get:30 http://ports.ubuntu.com/ubuntu-ports noble-backports/restricted arm64 Components [160 B]
+#6 3.677 Get:31 http://ports.ubuntu.com/ubuntu-ports noble-backports/multiverse arm64 Packages [669 B]
+#6 3.689 Get:32 http://ports.ubuntu.com/ubuntu-ports noble-backports/multiverse arm64 Components [161 B]
+#6 3.689 Get:33 http://ports.ubuntu.com/ubuntu-ports noble-security/main arm64 Packages [1,474 kB]
+#6 3.807 Get:34 http://ports.ubuntu.com/ubuntu-ports noble-security/main arm64 Components [55.9 kB]
+#6 3.812 Get:35 http://ports.ubuntu.com/ubuntu-ports noble-security/universe arm64 Packages [1,636 kB]
+#6 3.943 Get:36 http://ports.ubuntu.com/ubuntu-ports noble-security/universe arm64 Components [98.4 kB]
+#6 3.948 Get:37 http://ports.ubuntu.com/ubuntu-ports noble-security/restricted arm64 Packages [3,129 kB]
+#6 4.203 Get:38 http://ports.ubuntu.com/ubuntu-ports noble-security/restricted arm64 Components [156 B]
+#6 4.203 Get:39 http://ports.ubuntu.com/ubuntu-ports noble-security/multiverse arm64 Packages [99.1 kB]
+#6 4.209 Get:40 http://ports.ubuntu.com/ubuntu-ports noble-security/multiverse arm64 Components [157 B]
+#6 5.335 Fetched 42.9 MB in 4s (10.4 MB/s)
+#6 5.335 Reading package lists...
+#6 6.217 Reading package lists...
+#6 7.083 Building dependency tree...
+#6 7.262 Reading state information...
+#6 7.498 build-essential is already the newest version (12.10ubuntu1).
+#6 7.498 curl is already the newest version (8.5.0-2ubuntu10.15).
+#6 7.498 ca-certificates is already the newest version (20260601~24.04.1).
+#6 7.498 The following packages were automatically installed and are no longer required:
+#6 7.498   geocode-glib-common gnome-keyring-pkcs11 libabsl20220623t64
+#6 7.498   libebackend-1.2-11t64 libebook-1.2-21t64 libebook-contacts-1.2-4t64
+#6 7.498   libedata-book-1.2-27t64 libedata-cal-2.0-2t64 libedataserverui-1.2-4t64
+#6 7.498   libgeocode-glib-2-0 libgweather-4-0t64 libgweather-4-common libphonenumber8
+#6 7.498   libprotobuf32t64 p11-kit p11-kit-modules
+#6 7.499 Use 'apt autoremove' to remove them.
+#6 7.499 The following additional packages will be installed:
+#6 7.500   autotools-dev m4
+#6 7.501 Suggested packages:
+#6 7.501   autoconf-archive gnu-standards autoconf-doc libtool gettext bison-doc
+#6 7.501   flex-doc m4-doc
+#6 7.501 Recommended packages:
+#6 7.501   libfl-dev
+#6 7.531 The following NEW packages will be installed:
+#6 7.531   autoconf automake autotools-dev bison flex libtirpc-dev m4
+#6 7.708 0 upgraded, 7 newly installed, 0 to remove and 65 not upgraded.
+#6 7.708 Need to get 2,415 kB of archives.
+#6 7.708 After this operation, 8,816 kB of additional disk space will be used.
+#6 7.708 Get:1 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 m4 arm64 1.4.19-4build1 [240 kB]
+#6 7.975 Get:2 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 flex arm64 2.6.4-8.2build1 [291 kB]
+#6 8.042 Get:3 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 autoconf all 2.71-3 [339 kB]
+#6 8.088 Get:4 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 autotools-dev all 20220109.1 [44.9 kB]
+#6 8.091 Get:5 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 automake all 1:1.16.5-1.3ubuntu1 [558 kB]
+#6 8.244 Get:6 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 bison arm64 2:3.8.2+dfsg-1ubuntu0.24.04.1 [740 kB]
+#6 8.291 Get:7 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 libtirpc-dev arm64 1.3.4+ds-1.1build1 [201 kB]
+#6 8.532 debconf: delaying package configuration, since apt-utils is not installed
+#6 8.564 Fetched 2,415 kB in 1s (3,218 kB/s)
+#6 8.586 Selecting previously unselected package m4.
+#6 8.586 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 98438 files and directories currently installed.)
+#6 8.736 Preparing to unpack .../0-m4_1.4.19-4build1_arm64.deb ...
+#6 8.738 Unpacking m4 (1.4.19-4build1) ...
+#6 8.767 Selecting previously unselected package flex.
+#6 8.772 Preparing to unpack .../1-flex_2.6.4-8.2build1_arm64.deb ...
+#6 8.773 Unpacking flex (2.6.4-8.2build1) ...
+#6 8.795 Selecting previously unselected package autoconf.
+#6 8.800 Preparing to unpack .../2-autoconf_2.71-3_all.deb ...
+#6 8.801 Unpacking autoconf (2.71-3) ...
+#6 8.833 Selecting previously unselected package autotools-dev.
+#6 8.838 Preparing to unpack .../3-autotools-dev_20220109.1_all.deb ...
+#6 8.839 Unpacking autotools-dev (20220109.1) ...
+#6 8.862 Selecting previously unselected package automake.
+#6 8.868 Preparing to unpack .../4-automake_1%3a1.16.5-1.3ubuntu1_all.deb ...
+#6 8.872 Unpacking automake (1:1.16.5-1.3ubuntu1) ...
+#6 8.900 Selecting previously unselected package bison.
+#6 8.906 Preparing to unpack .../5-bison_2%3a3.8.2+dfsg-1ubuntu0.24.04.1_arm64.deb ...
+#6 8.908 Unpacking bison (2:3.8.2+dfsg-1ubuntu0.24.04.1) ...
+#6 8.933 Selecting previously unselected package libtirpc-dev:arm64.
+#6 8.938 Preparing to unpack .../6-libtirpc-dev_1.3.4+ds-1.1build1_arm64.deb ...
+#6 8.941 Unpacking libtirpc-dev:arm64 (1.3.4+ds-1.1build1) ...
+#6 8.979 Setting up m4 (1.4.19-4build1) ...
+#6 8.985 Setting up autotools-dev (20220109.1) ...
+#6 8.990 Setting up libtirpc-dev:arm64 (1.3.4+ds-1.1build1) ...
+#6 8.993 Setting up autoconf (2.71-3) ...
+#6 8.998 Setting up bison (2:3.8.2+dfsg-1ubuntu0.24.04.1) ...
+#6 9.014 update-alternatives: using /usr/bin/bison.yacc to provide /usr/bin/yacc (yacc) in auto mode
+#6 9.015 update-alternatives: warning: skip creation of /usr/share/man/man1/yacc.1.gz because associated file /usr/share/man/man1/bison.yacc.1.gz (of link group yacc) doesn't exist
+#6 9.018 Setting up automake (1:1.16.5-1.3ubuntu1) ...
+#6 9.022 update-alternatives: using /usr/bin/automake-1.16 to provide /usr/bin/automake (automake) in auto mode
+#6 9.022 update-alternatives: warning: skip creation of /usr/share/man/man1/automake.1.gz because associated file /usr/share/man/man1/automake-1.16.1.gz (of link group automake) doesn't exist
+#6 9.022 update-alternatives: warning: skip creation of /usr/share/man/man1/aclocal.1.gz because associated file /usr/share/man/man1/aclocal-1.16.1.gz (of link group automake) doesn't exist
+#6 9.025 Setting up flex (2.6.4-8.2build1) ...
+#6 9.030 Processing triggers for man-db (2.12.0-4build2) ...
+#6 DONE 9.2s
+
+#7 [3/3] RUN mkdir /tmp/engine && curl -fL --retry 2 https://github.com/unfs3/unfs3/archive/ec1660ba33c80d5c67131e163e68834c1a10e243.tar.gz -o /tmp/engine/source.tar.gz && tar -xzf /tmp/engine/source.tar.gz -C /tmp/engine && cd /tmp/engine/unfs3-* && autoreconf -fi && ./configure --prefix=/opt/ab-probe-unfs && make -j2 && make install && rm -rf /tmp/engine
+#7 0.115   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+#7 0.115                                  Dload  Upload   Total   Spent    Left  Speed
+#7 0.115   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+#7 0.758 100  108k    0  108k    0     0   168k      0 --:--:-- --:--:-- --:--:--  168k
+#7 2.531 checking build system type... aarch64-unknown-linux-gnu
+#7 2.579 checking host system type... aarch64-unknown-linux-gnu
+#7 2.580 checking for a BSD-compatible install... /usr/bin/install -c
+#7 2.585 checking for gcc... gcc
+#7 2.599 checking whether the C compiler works... yes
+#7 2.640 checking for C compiler default output file name... a.out
+#7 2.641 checking for suffix of executables... 
+#7 2.664 checking whether we are cross compiling... no
+#7 2.700 checking for suffix of object files... o
+#7 2.713 checking whether the compiler supports GNU C... yes
+#7 2.725 checking whether gcc accepts -g... yes
+#7 2.738 checking for gcc option to enable C11 features... none needed
+#7 2.782 checking for ar... ar
+#7 2.783 checking for flex... flex
+#7 2.784 checking for lex output file root... lex.yy
+#7 2.787 checking for lex library... none needed
+#7 2.957 checking whether yytext is a pointer... yes
+#7 3.104 checking for bison... bison -y
+#7 3.104 checking for special C compiler options needed for large files... no
+#7 3.104 checking for _FILE_OFFSET_BITS value needed for large files... no
+#7 3.120 checking for library containing xdr_int... no
+#7 3.168 checking for library containing socket... none required
+#7 3.194 checking for libproc.h... no
+#7 3.207 checking for mntent.h... yes
+#7 3.223 checking for stdint.h... yes
+#7 3.237 checking for sys/mnttab.h... no
+#7 3.251 checking for sys/mount.h... yes
+#7 3.271 checking for sys/vmount.h... no
+#7 3.285 checking for rpc/svc_soc.h... no
+#7 3.295 checking for linux/ext2_fs.h... no
+#7 3.309 checking for int32... no
+#7 3.320 checking for uint32... no
+#7 3.330 checking for int64... no
+#7 3.340 checking for uint64... no
+#7 3.351 checking for struct rpcent... yes
+#7 3.387 checking for struct stat.st_gen... no
+#7 3.410 checking for statvfs... yes
+#7 3.438 checking for seteuid... yes
+#7 3.465 checking for setegid... yes
+#7 3.493 checking for setresuid... yes
+#7 3.519 checking for setresgid... yes
+#7 3.545 checking for vsyslog... yes
+#7 3.571 checking for lchown... yes
+#7 3.597 checking for setgroups... yes
+#7 3.623 checking for lutimes... yes
+#7 3.649 checking for pkg-config... /usr/bin/pkg-config
+#7 3.650 checking pkg-config is at least version 0.9.0... yes
+#7 3.654 checking for libtirpc... yes
+#7 3.658 checking for svc_getreq_poll... yes
+#7 3.691 checking for gcc options needed to detect all undeclared functions... none needed
+#7 3.718 checking whether svc_pollfd is declared... yes
+#7 3.760 configure: creating ./config.status
+#7 3.801 config.status: creating Makefile
+#7 3.806 config.status: creating Config/Makefile
+#7 3.814 config.status: creating Extras/Makefile
+#7 3.823 config.status: creating config.h
+#7 3.840 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o afsgettimes.o afsgettimes.c
+#7 3.840 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o afssupport.o afssupport.c
+#7 3.848 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o attr.o attr.c
+#7 3.849 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o daemon.o daemon.c
+#7 3.879 daemon.c: In function ‘nfs3_program_3’:
+#7 3.879 daemon.c:457:29: warning: cast between incompatible function types from ‘bool_t (*)(void)’ {aka ‘int (*)(void)’} to ‘bool_t (*)(XDR *, ...)’ {aka ‘int (*)(struct __rpc_xdr *, ...)’} [-Wcast-function-type]
+#7 3.879   457 |             _xdr_argument = (xdrproc_t) xdr_void;
+#7 3.879       |                             ^
+#7 3.879 daemon.c:458:27: warning: cast between incompatible function types from ‘bool_t (*)(void)’ {aka ‘int (*)(void)’} to ‘bool_t (*)(XDR *, ...)’ {aka ‘int (*)(struct __rpc_xdr *, ...)’} [-Wcast-function-type]
+#7 3.879   458 |             _xdr_result = (xdrproc_t) xdr_void;
+#7 3.879       |                           ^
+#7 3.879 daemon.c: In function ‘mountprog_3’:
+#7 3.879 daemon.c:645:29: warning: cast between incompatible function types from ‘bool_t (*)(void)’ {aka ‘int (*)(void)’} to ‘bool_t (*)(XDR *, ...)’ {aka ‘int (*)(struct __rpc_xdr *, ...)’} [-Wcast-function-type]
+#7 3.879   645 |             _xdr_argument = (xdrproc_t) xdr_void;
+#7 3.879       |                             ^
+#7 3.879 daemon.c:646:27: warning: cast between incompatible function types from ‘bool_t (*)(void)’ {aka ‘int (*)(void)’} to ‘bool_t (*)(XDR *, ...)’ {aka ‘int (*)(struct __rpc_xdr *, ...)’} [-Wcast-function-type]
+#7 3.879   646 |             _xdr_result = (xdrproc_t) xdr_void;
+#7 3.879       |                           ^
+#7 3.880 daemon.c:658:29: warning: cast between incompatible function types from ‘bool_t (*)(void)’ {aka ‘int (*)(void)’} to ‘bool_t (*)(XDR *, ...)’ {aka ‘int (*)(struct __rpc_xdr *, ...)’} [-Wcast-function-type]
+#7 3.880   658 |             _xdr_argument = (xdrproc_t) xdr_void;
+#7 3.880       |                             ^
+#7 3.880 daemon.c:666:27: warning: cast between incompatible function types from ‘bool_t (*)(void)’ {aka ‘int (*)(void)’} to ‘bool_t (*)(XDR *, ...)’ {aka ‘int (*)(struct __rpc_xdr *, ...)’} [-Wcast-function-type]
+#7 3.880   666 |             _xdr_result = (xdrproc_t) xdr_void;
+#7 3.880       |                           ^
+#7 3.880 daemon.c:672:29: warning: cast between incompatible function types from ‘bool_t (*)(void)’ {aka ‘int (*)(void)’} to ‘bool_t (*)(XDR *, ...)’ {aka ‘int (*)(struct __rpc_xdr *, ...)’} [-Wcast-function-type]
+#7 3.880   672 |             _xdr_argument = (xdrproc_t) xdr_void;
+#7 3.880       |                             ^
+#7 3.880 daemon.c:673:27: warning: cast between incompatible function types from ‘bool_t (*)(void)’ {aka ‘int (*)(void)’} to ‘bool_t (*)(XDR *, ...)’ {aka ‘int (*)(struct __rpc_xdr *, ...)’} [-Wcast-function-type]
+#7 3.880   673 |             _xdr_result = (xdrproc_t) xdr_void;
+#7 3.880       |                           ^
+#7 3.880 daemon.c:679:29: warning: cast between incompatible function types from ‘bool_t (*)(void)’ {aka ‘int (*)(void)’} to ‘bool_t (*)(XDR *, ...)’ {aka ‘int (*)(struct __rpc_xdr *, ...)’} [-Wcast-function-type]
+#7 3.880   679 |             _xdr_argument = (xdrproc_t) xdr_void;
+#7 3.880       |                             ^
+#7 3.883 daemon.c: In function ‘main’:
+#7 3.883 daemon.c:1283:13: warning: ignoring return value of ‘write’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+#7 3.883  1283 |             write(pipefd[1], "1", 1);
+#7 3.883       |             ^~~~~~~~~~~~~~~~~~~~~~~~
+#7 3.978 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o error.o error.c
+#7 4.058 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o fd_cache.o fd_cache.c
+#7 4.074 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o fh.o fh.c
+#7 4.110 In file included from fh.c:23:
+#7 4.110 fh.c: In function ‘fh_decode’:
+#7 4.110 fh.c:505:30: warning: comparison of integer expressions of different signedness: ‘u_int’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+#7 4.110   505 |     assert(fh->data.data_len == (FH_MINLEN + obj.len));
+#7 4.110       |                              ^~
+#7 4.121 fh.c: In function ‘fh_rec.constprop’:
+#7 4.121 fh.c:401:30: warning: ‘%s’ directive writing up to 255 bytes into a region of size between 1 and 1023 [-Wformat-overflow=]
+#7 4.121   401 |             sprintf(obj, "%s/%s", lead, entry->d_name);
+#7 4.121       |                              ^~
+#7 4.122 In file included from /usr/include/stdio.h:980,
+#7 4.122                  from /usr/include/tirpc/rpc/xdr.h:43,
+#7 4.122                  from /usr/include/tirpc/rpc/rpc.h:43,
+#7 4.122                  from fh.c:16:
+#7 4.122 In function ‘sprintf’,
+#7 4.122     inlined from ‘fh_rec.constprop’ at fh.c:401:13:
+#7 4.122 /usr/include/aarch64-linux-gnu/bits/stdio2.h:30:10: note: ‘__builtin___sprintf_chk’ output between 2 and 1279 bytes into a destination of size 1024
+#7 4.122    30 |   return __builtin___sprintf_chk (__s, __USE_FORTIFY_LEVEL - 1,
+#7 4.122       |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#7 4.122    31 |                                   __glibc_objsize (__s), __fmt,
+#7 4.122       |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#7 4.122    32 |                                   __va_arg_pack ());
+#7 4.122       |                                   ~~~~~~~~~~~~~~~~~
+#7 4.134 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o fh_cache.o fh_cache.c
+#7 4.178 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o locate.o locate.c
+#7 4.199 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o md5.o md5.c
+#7 4.209 locate.c: In function ‘locate_pfx.constprop’:
+#7 4.209 locate.c:64:27: warning: ‘%s’ directive writing up to 255 bytes into a region of size between 2 and 1023 [-Wformat-overflow=]
+#7 4.209    64 |         sprintf(path, "%s/%s", pfx, ent->d_name);
+#7 4.209       |                           ^~
+#7 4.209 In file included from /usr/include/stdio.h:980,
+#7 4.209                  from /usr/include/tirpc/rpc/xdr.h:43,
+#7 4.209                  from /usr/include/tirpc/rpc/rpc.h:43,
+#7 4.209                  from locate.c:12:
+#7 4.209 In function ‘sprintf’,
+#7 4.209     inlined from ‘locate_pfx.constprop’ at locate.c:64:9:
+#7 4.209 /usr/include/aarch64-linux-gnu/bits/stdio2.h:30:10: note: ‘__builtin___sprintf_chk’ output between 2 and 1278 bytes into a destination of size 1024
+#7 4.209    30 |   return __builtin___sprintf_chk (__s, __USE_FORTIFY_LEVEL - 1,
+#7 4.209       |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#7 4.209    31 |                                   __glibc_objsize (__s), __fmt,
+#7 4.209       |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#7 4.209    32 |                                   __va_arg_pack ());
+#7 4.209       |                                   ~~~~~~~~~~~~~~~~~
+#7 4.226 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o mount.o mount.c
+#7 4.266 mount.c: In function ‘mountproc_mnt_3_svc’:
+#7 4.266 mount.c:229:9: warning: ‘__builtin_strncpy’ specified bound 4096 equals destination size [-Wstringop-truncation]
+#7 4.266   229 |         strncpy(buf, dpath, PATH_MAX);
+#7 4.266       |         ^
+#7 4.271 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o nfs.o nfs.c
+#7 4.295 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o password.o password.c
+#7 4.298 nfs.c: In function ‘nfsproc3_access_3_svc’:
+#7 4.298 nfs.c:240:12: warning: variable ‘mode’ set but not used [-Wunused-but-set-variable]
+#7 4.298   240 |     mode_t mode;
+#7 4.298       |            ^~~~
+#7 4.349 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o readdir.o readdir.c
+#7 4.390 readdir.c: In function ‘read_dir’:
+#7 4.390 readdir.c:148:38: warning: ‘%s’ directive writing up to 255 bytes into a region of size between 1 and 1023 [-Wformat-overflow=]
+#7 4.390   148 |                 sprintf(scratch, "%s/%s", path, this->d_name);
+#7 4.390       |                                      ^~
+#7 4.390 In file included from /usr/include/stdio.h:980,
+#7 4.390                  from /usr/include/tirpc/rpc/xdr.h:43,
+#7 4.390                  from /usr/include/tirpc/rpc/rpc.h:43,
+#7 4.390                  from readdir.c:12:
+#7 4.390 In function ‘sprintf’,
+#7 4.390     inlined from ‘read_dir’ at readdir.c:148:17:
+#7 4.390 /usr/include/aarch64-linux-gnu/bits/stdio2.h:30:10: note: ‘__builtin___sprintf_chk’ output between 2 and 1279 bytes into a destination of size 1024
+#7 4.390    30 |   return __builtin___sprintf_chk (__s, __USE_FORTIFY_LEVEL - 1,
+#7 4.390       |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#7 4.390    31 |                                   __glibc_objsize (__s), __fmt,
+#7 4.390       |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#7 4.390    32 |                                   __va_arg_pack ());
+#7 4.390       |                                   ~~~~~~~~~~~~~~~~~
+#7 4.410 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o user.o user.c
+#7 4.436 In file included from backend.h:13,
+#7 4.436                  from user.h:10,
+#7 4.436                  from user.c:24:
+#7 4.436 user.c: In function ‘switch_to_root’:
+#7 4.436 backend_unix.h:56:25: warning: ignoring return value of ‘setegid’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+#7 4.436    56 | #define backend_setegid setegid
+#7 4.436 user.c:166:5: note: in expansion of macro ‘backend_setegid’
+#7 4.436   166 |     backend_setegid(0);
+#7 4.436       |     ^~~~~~~~~~~~~~~
+#7 4.436 backend_unix.h:57:25: warning: ignoring return value of ‘seteuid’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+#7 4.436    57 | #define backend_seteuid seteuid
+#7 4.436 user.c:167:5: note: in expansion of macro ‘backend_seteuid’
+#7 4.436   167 |     backend_seteuid(0);
+#7 4.436       |     ^~~~~~~~~~~~~~~
+#7 4.436 user.c: In function ‘switch_user’:
+#7 4.436 backend_unix.h:56:25: warning: ignoring return value of ‘setegid’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+#7 4.436    56 | #define backend_setegid setegid
+#7 4.436 user.c:211:5: note: in expansion of macro ‘backend_setegid’
+#7 4.436   211 |     backend_setegid(0);
+#7 4.436       |     ^~~~~~~~~~~~~~~
+#7 4.436 backend_unix.h:57:25: warning: ignoring return value of ‘seteuid’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+#7 4.436    57 | #define backend_seteuid seteuid
+#7 4.436 user.c:212:5: note: in expansion of macro ‘backend_seteuid’
+#7 4.436   212 |     backend_seteuid(0);
+#7 4.436       |     ^~~~~~~~~~~~~~~
+#7 4.436 user.c: In function ‘read_executable’:
+#7 4.436 backend_unix.h:56:25: warning: ignoring return value of ‘setegid’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+#7 4.436    56 | #define backend_setegid setegid
+#7 4.436 user.c:242:9: note: in expansion of macro ‘backend_setegid’
+#7 4.436   242 |         backend_setegid(0);
+#7 4.436       |         ^~~~~~~~~~~~~~~
+#7 4.437 backend_unix.h:57:25: warning: ignoring return value of ‘seteuid’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+#7 4.437    57 | #define backend_seteuid seteuid
+#7 4.437 user.c:243:9: note: in expansion of macro ‘backend_seteuid’
+#7 4.437   243 |         backend_seteuid(0);
+#7 4.437       |         ^~~~~~~~~~~~~~~
+#7 4.437 user.c: In function ‘read_by_owner’:
+#7 4.437 backend_unix.h:56:25: warning: ignoring return value of ‘setegid’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+#7 4.437    56 | #define backend_setegid setegid
+#7 4.437 user.c:266:9: note: in expansion of macro ‘backend_setegid’
+#7 4.437   266 |         backend_setegid(0);
+#7 4.437       |         ^~~~~~~~~~~~~~~
+#7 4.437 backend_unix.h:57:25: warning: ignoring return value of ‘seteuid’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+#7 4.437    57 | #define backend_seteuid seteuid
+#7 4.437 user.c:267:9: note: in expansion of macro ‘backend_seteuid’
+#7 4.437   267 |         backend_seteuid(0);
+#7 4.437       |         ^~~~~~~~~~~~~~~
+#7 4.437 user.c: In function ‘write_by_owner’:
+#7 4.437 backend_unix.h:56:25: warning: ignoring return value of ‘setegid’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+#7 4.437    56 | #define backend_setegid setegid
+#7 4.437 user.c:290:9: note: in expansion of macro ‘backend_setegid’
+#7 4.437   290 |         backend_setegid(0);
+#7 4.437       |         ^~~~~~~~~~~~~~~
+#7 4.437 backend_unix.h:57:25: warning: ignoring return value of ‘seteuid’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+#7 4.437    57 | #define backend_seteuid seteuid
+#7 4.437 user.c:291:9: note: in expansion of macro ‘backend_seteuid’
+#7 4.437   291 |         backend_seteuid(0);
+#7 4.437       |         ^~~~~~~~~~~~~~~
+#7 4.489 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o xdr.o xdr.c
+#7 4.538 gcc -g -O2 -Wall -W  -I/usr/include/tirpc  -D_GNU_SOURCE -I.   -c -o winsupport.o winsupport.c
+#7 4.549 make -C Config
+#7 4.550 make[1]: Entering directory '/tmp/engine/unfs3-ec1660ba33c80d5c67131e163e68834c1a10e243/Config'
+#7 4.550 flex ./exports.l
+#7 4.557 bison -y -d ./exports.y
+#7 4.593 gcc -g -O2 -Wall -W -I/usr/include/tirpc  -I.. -I. -I..   -c -o lex.yy.o lex.yy.c
+#7 4.782 gcc -g -O2 -Wall -W -I/usr/include/tirpc  -I.. -I. -I..   -c -o y.tab.o y.tab.c
+#7 4.963 ar crs lib.a lex.yy.o y.tab.o
+#7 4.968 make[1]: Leaving directory '/tmp/engine/unfs3-ec1660ba33c80d5c67131e163e68834c1a10e243/Config'
+#7 4.968 gcc -o unfsd afsgettimes.o afssupport.o attr.o daemon.o error.o fd_cache.o fh.o fh_cache.o locate.o md5.o mount.o nfs.o password.o readdir.o user.o xdr.o winsupport.o Config/lib.a  -ltirpc 
+#7 4.990 /usr/bin/install -c -d /opt/ab-probe-unfs/sbin
+#7 4.995 /usr/bin/install -c -d /opt/ab-probe-unfs/share/man/man7
+#7 4.996 /usr/bin/install -c -d /opt/ab-probe-unfs/share/man/man8
+#7 4.997 /usr/bin/install -c unfsd /opt/ab-probe-unfs/sbin/unfsd
+#7 4.997 /usr/bin/install -c -m 644 ./Extras/tags.7 /opt/ab-probe-unfs/share/man/man7/tags.7
+#7 4.998 /usr/bin/install -c -m 644 ./unfsd.8       /opt/ab-probe-unfs/share/man/man8/unfsd.8
+#7 DONE 5.0s
+
+#8 exporting to image
+#8 exporting layers
+#8 exporting layers 0.6s done
+#8 exporting manifest sha256:f2d0dc1bc2e63dcc291c4fc95b05e5470b469960a0eb35beb6a0eb14867451dc done
+#8 exporting config sha256:af1fa3a85aadf9c0eef64e84e55dd1e1bedd942fe1540fcda24431a969d0f454 done
+#8 exporting attestation manifest sha256:7baf0b4a3679cac9676c334bab8c2f5b62c9e20747af31b43f5fb2e6ae729480 0.0s done
+#8 exporting manifest list sha256:951795d5b29890feada3af4e2773690404a85a37065bd89eb0729327a13f2b60 done
+#8 naming to docker.io/library/ab-sf-fr040-unfs:probe done
+#8 unpacking to docker.io/library/ab-sf-fr040-unfs:probe 0.1s done
+#8 DONE 0.8s

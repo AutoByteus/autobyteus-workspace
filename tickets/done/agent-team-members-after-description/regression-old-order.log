@@ -1,0 +1,108 @@
+
+> autobyteus@1.5.3-beta.1 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/agentTeams/__tests__/AgentTeamDetail.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-members-after-description/autobyteus-web
+
+stderr | components/agentTeams/__tests__/AgentTeamDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/agentTeams/__tests__/AgentTeamDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/agentTeams/__tests__/AgentTeamDetail.spec.ts > AgentTeamDetail flat Team experience > places Members directly after Description and before the instruction and handoff cards
+[Vue warn]: injection "Symbol(router)" not found.
+  at <AgentTeamDetail teamDefinitionId="team-1" returnToOrgId=undefined ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/agentTeams/__tests__/AgentTeamDetail.spec.ts > AgentTeamDetail flat Team experience > keeps loaded sections out of loading and not-found states
+[Vue warn]: injection "Symbol(router)" not found.
+  at <AgentTeamDetail teamDefinitionId="team-1" returnToOrgId=undefined ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/agentTeams/__tests__/AgentTeamDetail.spec.ts > AgentTeamDetail flat Team experience > keeps loaded sections out of loading and not-found states
+[Vue warn]: injection "Symbol(router)" not found.
+  at <AgentTeamDetail teamDefinitionId="missing-team" returnToOrgId=undefined ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/agentTeams/__tests__/AgentTeamDetail.spec.ts > AgentTeamDetail flat Team experience > preserves shared member identity and Team return context
+[Vue warn]: injection "Symbol(router)" not found.
+  at <AgentTeamDetail teamDefinitionId="team-1" returnToOrgId=undefined ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/agentTeams/__tests__/AgentTeamDetail.spec.ts > AgentTeamDetail flat Team experience > preserves Back, Edit and confirmed Delete actions
+[Vue warn]: injection "Symbol(router)" not found.
+  at <AgentTeamDetail teamDefinitionId="team-1" returnToOrgId=undefined ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/agentTeams/__tests__/AgentTeamDetail.spec.ts > AgentTeamDetail flat Team experience > renders only direct Agent members, the exact coordinator, and ordered handoffs
+[Vue warn]: injection "Symbol(router)" not found.
+  at <AgentTeamDetail teamDefinitionId="team-1" returnToOrgId=undefined ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/agentTeams/__tests__/AgentTeamDetail.spec.ts > AgentTeamDetail flat Team experience > routes a Team-local Agent through its canonical definition identity
+[Vue warn]: injection "Symbol(router)" not found.
+  at <AgentTeamDetail teamDefinitionId="team-1" returnToOrgId=undefined ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/agentTeams/__tests__/AgentTeamDetail.spec.ts > AgentTeamDetail flat Team experience > Run opens New chat for the Team through the single start intent (REQ-005)
+[Vue warn]: injection "Symbol(router)" not found.
+  at <AgentTeamDetail teamDefinitionId="team-1" returnToOrgId=undefined ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+stderr | components/agentTeams/__tests__/AgentTeamDetail.spec.ts > AgentTeamDetail flat Team experience > returns to the owning Agent Org detail without inferring a parent Team
+[Vue warn]: injection "Symbol(router)" not found.
+  at <AgentTeamDetail teamDefinitionId="team-1" returnToOrgId="org-1" ref="VTU_COMPONENT" >
+  at <VTUROOT>
+
+ ❯ components/agentTeams/__tests__/AgentTeamDetail.spec.ts (8 tests | 1 failed) 78ms
+   × AgentTeamDetail flat Team experience > places Members directly after Description and before the instruction and handoff cards 23ms
+     → expected [ 'Description', 'Instructions', …(2) ] to deeply equal [ 'Description', 'Members (2)', …(2) ]
+   ✓ AgentTeamDetail flat Team experience > keeps loaded sections out of loading and not-found states 21ms
+   ✓ AgentTeamDetail flat Team experience > preserves shared member identity and Team return context 6ms
+   ✓ AgentTeamDetail flat Team experience > preserves Back, Edit and confirmed Delete actions 8ms
+   ✓ AgentTeamDetail flat Team experience > renders only direct Agent members, the exact coordinator, and ordered handoffs 5ms
+   ✓ AgentTeamDetail flat Team experience > routes a Team-local Agent through its canonical definition identity 6ms
+   ✓ AgentTeamDetail flat Team experience > Run opens New chat for the Team through the single start intent (REQ-005) 5ms
+   ✓ AgentTeamDetail flat Team experience > returns to the owning Agent Org detail without inferring a parent Team 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/agentTeams/__tests__/AgentTeamDetail.spec.ts > AgentTeamDetail flat Team experience > places Members directly after Description and before the instruction and handoff cards
+AssertionError: expected [ 'Description', 'Instructions', …(2) ] to deeply equal [ 'Description', 'Members (2)', …(2) ]
+
+- Expected
++ Received
+
+  [
+    "Description",
+-   "Members (2)",
+    "Instructions",
+    "Handoffs",
++   "Members (2)",
+  ]
+
+ ❯ components/agentTeams/__tests__/AgentTeamDetail.spec.ts:84:83
+     82|     const wrapper = await mountDetail()
+     83|
+     84|     expect(wrapper.findAll('section').map((section) => section.get('h2…
+       |                                                                                   ^
+     85|       'Description', 'Members (2)', 'Instructions', 'Handoffs',
+     86|     ])
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 passed (8)
+   Start at  05:25:47
+   Duration  8.73s (transform 4.47s, setup 7.37s, collect 181ms, tests 78ms, environment 416ms, prepare 301ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

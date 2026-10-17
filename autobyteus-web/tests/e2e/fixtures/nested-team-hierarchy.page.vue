@@ -295,6 +295,7 @@ const actions: WorkspaceHistorySectionActions = {
   onArchiveTeam: () => { archiveCount.value += 1; },
   onDeleteTeam: () => { deleteCount.value += 1; },
   onSelectTeam: () => { teamSelectionCount.value += 1; },
+  onOpenTeamRun: () => {},
   onSelectTeamMember: (member) => {
     memberSelectionCount.value += 1;
     selectedAgentRunId.value = member.agentRunId;

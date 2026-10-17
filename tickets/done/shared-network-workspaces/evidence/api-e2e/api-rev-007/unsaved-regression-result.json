@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "pnpm",
+    "-C",
+    "autobyteus-web",
+    "test:nuxt",
+    "components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts",
+    "components/fileExplorer/__tests__/FileExplorerTabs.spec.ts",
+    "--run",
+    "--maxWorkers=2"
+  ],
+  "rc": 1,
+  "log": "unsaved-regression.log"
+}
