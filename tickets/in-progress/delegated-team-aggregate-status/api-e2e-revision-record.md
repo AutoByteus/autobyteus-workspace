@@ -7,6 +7,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Implementation Engineer, `implementation-handoff.md`, round 1 | SR-003 (req SR-002), IR-001, ARCH-REV N/A, CRR N/A | N/A | Pass / 95% |
+| API-REV-002 | Delivery Engineer, DR-004 evidence request (user: this evidence is the AC-011 verification), round 2 | DR-004, merge `45cb47aefc` (`origin/personal` `db00ba16a9`), HEAD `ebf5ca614c` | Pass / 95% | Pass / 96% |
 
 ## Revision Entries
 
@@ -38,3 +39,41 @@ None.
 - New or remaining failure IDs: none
 - Recommended owner: Delivery (next stage)
 - Remaining risks, blocked evidence, or untested scope: AC-011 explicit user verification (Delivery/user); accepted freshness assumption ASM-001; packaged-renderer rendering is covered only by AC-011.
+
+### API-REV-002 — Merged HEAD re-validation and AC-011 in the packaged desktop app
+
+- Triggering role, report path, and round: `/software_engineering_team/delivery_engineer`, DR-004 in `delivery-revision-record.md`, round 2. The user's instruction (2026-10-17) makes this evidence the AC-011 verification.
+- Triggering finding or case IDs: DR-004 items 1–3
+- Related revision IDs: DR-004; merge `45cb47aefc`; Delivery test fixes `1455045654`, `ebf5ca614c`; IR-001; SR-003. The user-requested code and test reviews are context only.
+- Why recorded: re-validation after a 705-commit base refresh, plus explicit desktop evidence.
+- Coverage decisions or durable test paths changed (uncommitted):
+  - `nested-team-aggregate-status-probe.mjs` and `team-group-icon-probe.mjs`: baseline fix. They now serve `/ws/agent-package-definitions`, which upstream `e89085f3e3` opens from `app.vue`; the probes failed on the base too.
+  - `team-status-live-probe.mjs`: merged-row layout checks (dot, icon, name, Task summary, per-copy Stop) in TS-001/003/004.
+  - Ticket-owned desktop driver: `api-e2e-evidence/rev002/desktop/scripts/ac011-desktop.mjs`.
+- Cases added, changed, removed, or rechecked:
+  - TS-001..004 rechecked (layout assertions added).
+  - NTAS-BR-001..004 and B01..B04 rechecked.
+  - New desktop steps A1–A3, B1, C1, C2.
+- Commands, environment, fixture, or broader-validation delta:
+  - The three browser probes on HEAD `ebf5ca614c`.
+  - `isolated-app start --build` (instance `iso-55445-b74c`, throwaway `CODEX_HOME`).
+  - Codex attempt blocked by the usage limit. Switched to the scripted AGY CLI through `updateServerSetting` + `restart` on that instance only.
+  - Instance stopped and its data root removed.
+
+#### Prior Failure Resolution
+
+None. API-REV-001 had no open failures. This round's intermediate failures:
+
+| Failure | Classification | Resolution |
+| --- | --- | --- |
+| Fixture probes: refused `/ws/agent-package-definitions` | Local Fix (probe drift, baseline) | Feed routed in both probes; 4/4 each |
+| Desktop attempt 1: Codex usage limit | Environment (provider quota) | Scripted AGY runtime in the same packaged instance |
+| Desktop attempt 2: gray colour assertion | Local Fix (my assertion) | Neutral-gray check; attempt 3 Pass 6/6 |
+
+- Canonical artifacts and sections updated: execution coverage report (meta, "Round 2 — API-REV-002", Latest Authoritative Result); ledger (round-2 events); coverage investigation (round-2 addendum)
+- Prior result and confidence: Pass, 95%
+- Current result and confidence: Pass, 96%
+- New or remaining failure IDs: none
+- Recommended owner: Delivery (finalization on the user's standing approval)
+- Remaining risks, blocked evidence, or untested scope: no real-model desktop run (Codex quota until 2026-10-22); the accepted ASM-001 freshness assumption.
+

@@ -11,18 +11,132 @@
 - Architecture Review Revision Record: `N/A — not applicable`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/tickets/in-progress/delegated-team-aggregate-status/implementation-handoff.md`
 - Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/tickets/in-progress/delegated-team-aggregate-status/implementation-revision-record.md` (IR-001)
-- Code Review Report: `N/A — not applicable` (direct low-risk route)
-- Code Review Revision Record: `N/A — not applicable`
-- Delivery Revision Record: N/A
-- Relevant Delivery Revision IDs: N/A
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/tickets/in-progress/delegated-team-aggregate-status/code-review-report.md` (user-requested independent review on the direct route; context only). Test review: `api-e2e-test-review-report.md`, same folder.
+- Code Review Revision Record: `code-review-revision-record.md` (same folder; context only)
+- Delivery Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/tickets/in-progress/delegated-team-aggregate-status/delivery-revision-record.md`
+- Relevant Delivery Revision IDs: DR-004 (refresh onto `origin/personal` `db00ba16a9`; the user delegates AC-011 to API/E2E evidence)
 - Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/tickets/in-progress/delegated-team-aggregate-status/api-e2e-coverage-investigation.md`
 - API/E2E Test-Case Ledger: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/tickets/in-progress/delegated-team-aggregate-status/api-e2e-test-case-ledger.md`
 - API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/tickets/in-progress/delegated-team-aggregate-status/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Execution Round: 1
-- Trigger: implementation handoff IR-001 (direct Medium/Low route)
-- Prior Round Reviewed: None
-- Latest Authoritative Round: 1
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Execution Round: 2
+- Trigger:
+  - Round 1: implementation handoff IR-001 (direct Medium/Low route).
+  - Round 2: Delivery DR-004 evidence request. The user's instruction of 2026-10-17 makes this evidence the AC-011 verification.
+- Prior Round Reviewed: 1 (API-REV-001, Pass 95%)
+- Latest Authoritative Round: 2. See **Round 2 — API-REV-002** directly below. The round-1 sections after it are kept as history; where they differ, round 2 governs.
+
+## Round 2 — API-REV-002 (authoritative)
+
+### Basis
+
+- State validated:
+  - Worktree HEAD `ebf5ca614c3deeab419b43f2ce47ec913d96ab6a`, branch `codex/delegated-team-aggregate-status`. It contains `origin/personal` `db00ba16a9`, merged as `45cb47aefc`.
+  - Delivery's test fixes `1455045654` and `ebf5ca614c`.
+  - Plus this round's uncommitted probe changes (below).
+- Presentation unchanged: DEC-004 option A, a dot before the slate people-group icon.
+- Build state:
+  - Server `dist` and `nuxt prepare` are Delivery's current build of this HEAD.
+  - The packaged app was rebuilt by `isolated-app start --build` in this round; `app.asar` is dated 2026-10-17 09:27. The old `2b7648350` `electron-dist` was not used.
+
+### Item 1 — browser probes on this HEAD: Pass
+
+| Probe | Command (from the worktree root) | Result | Evidence |
+| --- | --- | --- | --- |
+| Live Team status (built backend + Nuxt + Chrome, scripted AGY) | `pnpm -C autobyteus-web test:e2e:team-status-live --output-dir <ticket>/api-e2e-evidence/rev002/live` | Pass 4/4 (TS-001..TS-004, with the merged-row layout checks); cleanup complete | `api-e2e-evidence/rev002/live/evidence.json` + 14 screenshots. The run before the layout checks was added (also 4/4 Pass) is in `rev002/live-before-layout/`. |
+| Nested Team status (fixture page) | `pnpm -C autobyteus-web test:e2e:nested-team-aggregate-status --output-dir <ticket>/api-e2e-evidence/rev002/nested` | Pass 4/4 (NTAS-BR-001..004) after the probe fix | `rev002/nested/evidence.json`. First attempt: `rev002/nested-attempt1/` |
+| Team identity glyph (fixture page) | `pnpm -C autobyteus-web test:e2e:team-group-icon --output-dir <ticket>/api-e2e-evidence/rev002/group-icon` | Pass 4/4 (B01..B04) after the probe fix; ports released | `rev002/group-icon/result.json`. First attempt: `rev002/group-icon-attempt1/` |
+
+**Probe drift found and fixed (a baseline fix, not a product defect).** The first runs of both fixture-page probes failed only their "no browser errors" check. The cause was `WebSocket … /ws/agent-package-definitions … ERR_CONNECTION_REFUSED`; every functional case passed.
+- Cause: upstream `e89085f3e3` (2026-10-12) made `app.vue` open the node's agent-package definition change feed on every page. These fixture probes have no backend.
+- Pre-existing on the base: neither probe routes that socket on `db00ba16a9`, so both would fail there too.
+- Fix: the probes now answer the feed with `{type:'connected'}`, the same pattern upstream uses in `agent-team-detail-probe.mjs` and `token-meter-tps-probe.mjs`.
+  - `autobyteus-web/tests/e2e/nested-team-aggregate-status-probe.mjs`: `context.routeWebSocket(...)`.
+  - `autobyteus-web/tests/e2e/team-group-icon-probe.mjs`: `page.routeWebSocket(...)`.
+- Per TESTING.md Rule 9, Delivery should commit these two as a separate baseline-fix commit.
+
+### Item 3 — the merged delegated rows: Pass
+
+`team-status-live-probe.mjs` gained a layout check (`rowLayoutOf` / `assertRowLayout`). It runs on delegated Team rows under Agent runs (TS-001), Team runs (TS-003) and Org runs (TS-004): idle, busy (collapsed) and after the host stops. It asserts:
+- the order dot → people-group icon → name;
+- the dot vertically centred on the name line (±2 px; measured midlines are equal);
+- no overlap of the dot, icon or name with upstream's Task summary line (`workspace-task-worker-task-summary`) or the per-copy Stop icon (`workspace-delegated-stop`);
+- the summary line sits under the name, right of the icon (Agent/Team roots; Org task-Team rows have no summary line);
+- per-copy Stop is present while the copy is live and gone after the host stops.
+
+TS-002 still asserts the TEAMS run-row Stop, archive and delete exactly as before. Example measurements (TS-001, 1440 px):
+
+| Element | Box (left, top, w×h) |
+| --- | --- |
+| dot | 76, 523, 8×8 |
+| icon | 90, 519, 16×16 |
+| name | 112, 517, 168×20 (196 wide once Stop is gone) |
+| summary | 108, 539, 119×16 |
+| Stop | 288, 524, 24×24 |
+
+The same layout was asserted in the packaged desktop app (item 2).
+
+### Item 2 — AC-011 in the real desktop app: Pass
+
+- **Instance.** `pnpm --silent isolated-app start --build`, run with `CODEX_HOME` set to a throwaway directory. That directory held only a symlink to the existing Codex login, per TESTING.md; nothing was written to `~/.codex`.
+  - Result: instance `iso-55445-b74c`, control port 55445, server port 55446.
+  - It used its own auto-created data root under `$TMPDIR/autobyteus-isolated-root-…`.
+  - Executable: `autobyteus-web/electron-dist/mac-arm64/AutoByteus.app` of this worktree (`rev002/desktop/isolated-start.json`, `build-identity.txt`, `isolated-build.log`).
+  - The installed app and `~/.autobyteus` were not used.
+- **Attempt 1, real model: blocked by provider quota, not a product issue.**
+  - Setup: Codex App Server, `gpt-5.6-sol`.
+  - The Manager's first turn returned "You've hit your usage limit … try again at Oct 22nd, 2026 9:16 AM". The Manager row showed Error; no delegation happened.
+  - Evidence: `rev002/desktop/attempt1-codex-quota/`.
+  - I did not switch to another paid provider without being asked.
+- **Runtime used instead: the repository's scripted AGY CLI.**
+  - It was configured on this instance only, through the public `updateServerSetting` mutation: `ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs` and `AGY_FAKE_CASE=linked_skills`. These persist in the instance's own `.env`. Then `pnpm --silent isolated-app restart iso-55445-b74c` (same ports and data root). Receipts: `scripted-runtime-settings.json`, `isolated-restart.json`.
+  - Agents call the real `delegate_task` / `send_message_to` tools through the packaged app's real server, streams and renderer. `HOLD_TURN` keeps a turn running.
+  - This proves the desktop presentation and live event path. It does not prove paid inference, which is not the property under test.
+- **Driver.** Ticket-owned automation, `rev002/desktop/scripts/ac011-desktop.mjs` (CDP attach to the control port + the instance's public GraphQL). The user's messages are typed into the app's real composer.
+  - Command: `node <ticket>/api-e2e-evidence/rev002/desktop/scripts/ac011-desktop.mjs <ticket>/api-e2e-evidence/rev002/desktop/isolated-start.json <ticket>/api-e2e-evidence/rev002/desktop R2`
+- **Attempt 2: failed on my own colour assertion.** I had hard-coded Tailwind's default `gray-400` RGB. This app renders `bg-gray-400` as rgb(153, 153, 153), and its class was correct. The check now requires a neutral gray (equal channels); blue and green matched the exact palette values. Evidence: `rev002/desktop/attempt2-gray-assertion/` (A1–B1 passed there too).
+- **Attempt 3, authoritative: Pass 6/6.** Fresh definitions, workspace and rows (suffix `R2`); no renderer page errors. Evidence: `rev002/desktop/ac011-evidence.json`, `ac011-run.log` and screenshots.
+
+| Step | Required | Observed (DOM) | Screenshot |
+| --- | --- | --- | --- |
+| A1 | Delegated Team under an Agent run: green when idle | `data-status=idle`, `bg-green-500` = rgb(34,197,94), no animation; label and title "Team status: Idle"; row aria-label "…, idle, …, Task: Review the docs site."; dot before the icon. Members: lead idle, helper offline. Collapsed: still idle. Merged layout OK with Stop shown. | `a1-delegated-team-idle-expanded.png`, `a1-delegated-team-idle-collapsed.png` |
+| A2 | Blue (pulsing) while a member works, collapsed | The Manager's `send_message_to` → `running` in 264 ms. `bg-blue-500` = rgb(59,130,246), CSS `animation-name: pulse`, "Team status: Running". The row stayed collapsed. Merged layout OK. | `a2-delegated-team-busy-collapsed.png` |
+| A3 | Blue while a member works, expanded | `running`. Lead row running, helper offline; aria-label "…, running, …" | `a3-delegated-team-busy-expanded.png` |
+| B1 | Idle standalone Team run: run and group rows green, not blue, Stop present | Run row `idle` and group row `idle` (both `bg-green-500`, no pulse); "Terminate team" present; no binary `team-activity-dot` | `b1-idle-team-run-green.png` |
+| C1 | Stop that run → run and group gray | Clicked the row's Terminate. Run and group `offline`, `bg-gray-400` rendered rgb(153,153,153), no pulse, "Team status: Offline". Stop removed; archive/delete offered (2 buttons). | `c1-team-run-stopped-gray.png` |
+| C2 | Stop the Agent-run host → its delegated Team gray | Clicked the host's Terminate. Delegated Team `offline`; per-copy Stop gone; merged layout OK (summary under the name). | `c2-host-stopped-delegated-team-gray.png` |
+
+Delegated Team dot timeline (sampled every 200 ms): idle 07:38:52.218Z → running 07:38:52.850Z → offline 07:38:56.355Z (`ac011-evidence.json` `timeline`).
+
+**Cleanup.**
+- `pnpm --silent isolated-app stop iso-55445-b74c` → `wasRunning: true`, `forced: true` (the graceful close timed out), `dataRootRemoved: true`, both ports released (`rev002/desktop/isolated-stop.json`).
+- `isolated-app list` afterwards shows only the four instances of other worktrees (`cmc-desktop-test-app`, `collaboration-prompt-wording`, `cpw-base-check`), which I did not touch.
+- The throwaway `CODEX_HOME` was removed; `~/.codex/auth.json` is intact.
+
+### Round-2 confidence
+
+| Category | Round 1 | Round 2 | Basis |
+| --- | --- | --- | --- |
+| Requirement and AC proof | 95% | 97% | AC-011 is now proven in the packaged app; AC-001..010 re-proven on the merged HEAD |
+| Changed-boundary execution directness | 97% | 97% | Unchanged |
+| Cross-boundary integration realism | 95% | 95% | The desktop run used the scripted runtime (a Codex quota block); real-model timing is immaterial to presentation |
+| Environment / fixture fidelity | 93% | 96% | Packaged Electron app of this HEAD with its own data |
+| Failure / lifecycle evidence | 95% | 95% | Unchanged; desktop adds UI Stop of a run and of a host |
+| User surface / desktop shell | 95% | 98% | Real desktop renderer: DOM, computed colour, pulse, labels, layout |
+| Durable regression coverage | 97% | 97% | Live probe extended with merged-row layout; two probes repaired |
+
+- Overall: **96%**. No category is below 90%. Every critical AC is directly proven.
+
+### Durable coverage changed this round (uncommitted; Delivery integrates)
+
+- `autobyteus-web/tests/e2e/nested-team-aggregate-status-probe.mjs`: baseline fix, serves the agent-package definition feed.
+- `autobyteus-web/tests/e2e/team-group-icon-probe.mjs`: baseline fix, same.
+- `autobyteus-web/tests/e2e/team-status-live-probe.mjs`: merged-row layout checks in TS-001/003/004, and a header note.
+- Ticket-owned (not product tests): `api-e2e-evidence/rev002/desktop/scripts/ac011-desktop.mjs`.
+
+### Product defects
+
+None found. All failures this round came from test harness or assertions: probe drift from upstream, and my own gray-colour assumption. One attempt was blocked by provider quota.
 
 ## Routing Classification
 
@@ -248,17 +362,17 @@ N/A. No failure is attributable to implementation, design or requirements. The s
 
 ## Latest Authoritative Result
 
+Round 2 (API-REV-002) governs.
+
 - Result: `Pass`
-- Final validation confidence: 95%
+- Final validation confidence: 96%
 - Default `95%` confidence target met: `Yes`
 - Any final applicable confidence category below `90%`: `No`
-- Broader validation decision: `Required`, executed (Browser against a built backend)
-- Critical acceptance criteria lacking direct proof: none (AC-011 is user verification by definition)
-- Preliminary classification and recommended owner: N/A
-- Next recipient from `get_handoff_rules`: Delivery (per the returned rule)
+- Broader validation decision: `Required`, executed: browser probes on the merged HEAD, plus the packaged desktop app (isolated instance of this HEAD)
+- Critical acceptance criteria lacking direct proof: none. AC-011 is proven in the packaged desktop app; the user designated this evidence as the AC-011 verification (DR-004).
+- Preliminary classification and recommended owner: N/A (no product defect)
+- Next recipient: `/software_engineering_team/delivery_engineer` (DR-004 requester)
 - Notes for Delivery:
-  1. AC-011 explicit user verification on an isolated worktree build (`pnpm --silent isolated-app start --build`), never the installed app.
-  2. Docs sync passages listed in the design spec.
-  3. Integrate this round's uncommitted test-only changes (listed above).
-  4. `origin/personal` drift touches `tests/e2e/task-closure-tree-probe.mjs` (not modified here).
-  5. Follow-up (outside this ticket): the open SR-006/ASM-001 user decisions and the `running/*` + `TeamActivityDot` dead-code removal.
+  1. Commit the two fixture-probe fixes as a separate baseline fix (TESTING.md Rule 9); commit the live-probe layout extension with the ticket's test changes. Do not stage `*/dist/` or `electron-dist`.
+  2. The desktop run used the scripted runtime because Codex hit its usage limit (resets 2026-10-22). A real-model desktop repeat is possible after the reset if the user wants one. The driver is now scripted-runtime specific; its Codex prompts are recorded in `attempt1-codex-quota/ac011-run.log` and the attempt-1 description above.
+  3. Follow-up (outside this ticket): the open SR-006/ASM-001 user decisions and the `running/*` + `TeamActivityDot` dead-code removal.

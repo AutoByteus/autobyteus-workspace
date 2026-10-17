@@ -250,3 +250,18 @@ None at this point.
 - Reroute Required Before Validation Execution: `No`
 - Recommended Owner If Reroute Required: N/A
 - Notes: executed. Final confidence and result are in the execution coverage report (Pass, 95%).
+
+## Round 2 Addendum (API-REV-002, DR-004)
+
+- Trigger: Delivery's DR-004 request. The user designated API/E2E evidence as the AC-011 verification.
+- Basis: HEAD `ebf5ca614c` (merge `45cb47aefc` of `origin/personal` `db00ba16a9`). Presentation unchanged (DEC-004 option A).
+- Guideline: the worktree `TESTING.md` is now global-only. It requires browser probes for renderer changes, an isolated desktop instance for the full product journey, a throwaway `CODEX_HOME`, stopping exactly the owned instance, and Rule 9 baseline fixes. `RELEASE.md`: evidence names avoid `:`, and paths stay ≤200 characters.
+- Plan and decisions:
+  1. Rerun the three browser probes on HEAD.
+  2. Extend the live probe with merged-row layout assertions (Task summary line, per-copy Stop), because upstream changed the same rows.
+  3. AC-011 on a fresh packaged build in an isolated instance, with DOM assertions and screenshots for each required state.
+- Existing coverage validity revised:
+  - `nested-team-aggregate-status-probe.mjs` and `team-group-icon-probe.mjs`: `Needs Update`. Upstream's global agent-package feed is unserved by their fixtures, so they fail on the base too.
+  - `team-status-live-probe.mjs`: `Needs Update` (merged-row layout).
+- Runtime decision for the desktop journey: real model first (Codex, per Delivery). It was blocked by the account's usage limit. Fallback: the repository's scripted AGY CLI on the same packaged instance, configured through the public settings API. This proves the desktop rendering and live event path, not paid inference, which is not under test. No other paid provider was used without being asked.
+- Result: see the execution coverage report, "Round 2 — API-REV-002" (Pass, 96%).

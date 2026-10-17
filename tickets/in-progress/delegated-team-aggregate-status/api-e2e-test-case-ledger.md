@@ -67,3 +67,22 @@
 - 2026-10-09T19:16:00.385Z TS-003: Pass — Team run: member-delegated Team row and the run row count the delegated agents; Stop → gray. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/tickets/in-progress/delegated-team-aggregate-status/api-e2e-evidence/live/evidence.json
 
 - 2026-10-09T19:16:03.132Z TS-004: Pass — Org run: delegated and Org-internal Team rows, Org root row unchanged; stop → gray. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/tickets/in-progress/delegated-team-aggregate-status/api-e2e-evidence/live/evidence.json
+
+## Round 2 (API-REV-002, DR-004) — HEAD `ebf5ca614c`
+
+| Sequence | Case ID | Timestamp (local) | Event | Command / Configuration | Observed | Result | Evidence |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| R2-1 | TS-001..004 | 2026-10-17 09:16 | Completed | `test:e2e:team-status-live --output-dir …/rev002/live` (before the layout checks) | 4/4 | Pass | `rev002/live-before-layout/` |
+| R2-2 | NTAS-BR-001..004 | 09:18 | Completed (attempt 1) | `test:e2e:nested-team-aggregate-status` | BR-004 failed: `/ws/agent-package-definitions` refused (fixture has no backend); BR-001..003 Pass | Fail (probe drift) | `rev002/nested-attempt1/` |
+| R2-3 | B01..B04 | 09:19 | Completed (attempt 1) | `test:e2e:team-group-icon` | Browser-error check failed on the same socket | Fail (probe drift) | `rev002/group-icon-attempt1/` |
+| R2-4 | NTAS / group-icon | 09:21 | Completed | Both rerun after `routeWebSocket` of the feed | 4/4 and 4/4; cleanup OK | Pass | `rev002/nested/`, `rev002/group-icon/` |
+| R2-5 | TS-001,003,004 (dev) | 09:23 | Checkpoint | Layout checks authored; dev run `/tmp/tsl-r2dev` | 3/3 | N/A | temporary |
+| R2-6 | TS-001..004 | 09:24 | Completed | `test:e2e:team-status-live --output-dir …/rev002/live` (with layout checks) | 4/4; cleanup OK | Pass | `rev002/live/evidence.json` |
+| R2-7 | Desktop build | 09:27 | Completed | `CODEX_HOME=<throwaway> pnpm --silent isolated-app start --build` → `iso-55445-b74c` (55445/55446) | Built and started | Pass | `rev002/desktop/isolated-start.json`, `isolated-build.log`, `build-identity.txt` |
+| R2-8 | A1..C2 (attempt 1) | 09:32 | Completed | Codex `gpt-5.6-sol` | Manager turn: provider usage limit; no delegation | Blocked (quota) | `rev002/desktop/attempt1-codex-quota/` |
+| R2-9 | Instance config | 09:36 | Completed | `updateServerSetting` ANTIGRAVITY_CLI_COMMAND / AGY_FAKE_CASE, then `isolated-app restart iso-55445-b74c` | Same ports and data root | Pass | `scripted-runtime-settings.json`, `isolated-restart.json` |
+| R2-10 | A1..C2 (attempt 2) | 09:38 | Completed | `ac011-desktop.mjs … AGY` | A1–B1 Pass; C1 failed on my gray RGB assumption (class correct; renders rgb(153,153,153)) | Fail (assertion) | `rev002/desktop/attempt2-gray-assertion/` |
+| R2-11 | A1..C2 (attempt 3) | 09:38 | Completed | `ac011-desktop.mjs … R2` (fresh rows) | 6/6; no page errors | Pass | `rev002/desktop/ac011-evidence.json`, screenshots |
+| R2-12 | Cleanup | 09:40 | Completed | `isolated-app stop iso-55445-b74c`; throwaway `CODEX_HOME` removed | Stopped (forced), data root removed, ports free; other worktrees' instances untouched | Pass | `rev002/desktop/isolated-stop.json` |
+
+- Round-2 reconciliation: all cases terminal and reconciled into the execution coverage report, "Round 2 — API-REV-002".

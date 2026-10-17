@@ -9,6 +9,7 @@ The latest docs sync report, handoff summary, and release/publication/deployment
 | DR-001 | API-REV-001 Pass (direct route) | N/A | Integrated, checked, docs synced; waiting for user verification (AC-011) | docs-sync-report.md, handoff-summary.md, release-deployment-report.md, release-notes.md |
 | DR-002 | User request "setup the test copy for me" (via Solution Designer, `request-user-verification-instance.md`) | DR-001 (waiting; instance `iso-51163-a6aa` had exited) | Prepared instance `iso-51775-c59d` ready; still waiting for user verification | handoff-summary.md (How To Verify), release-deployment-report.md (cleanup), delivery-evidence/user-verification-setup/ |
 | DR-003 | User feedback UF-001 on AC-011 (relayed by Solution Designer, 2026-10-11) | DR-002 (instance ready, waiting) | **On hold.** AC-011 not passed; user feedback is waiting for a Solution Designer decision; finalization frozen; instance kept running | release-deployment-report.md (User Verification), handoff-summary.md (status), delivery-evidence/user-feedback/ |
+| DR-004 | User instruction 2026-10-17: API/E2E evidence on the final state counts as AC-011 verification and approval | DR-003 (on hold) | Refreshed onto `origin/personal` `db00ba16a9` (`45cb47aefc`), two test fixes, checks green; API/E2E evidence requested; finalization waits for that evidence | release-deployment-report.md, handoff-summary.md, delivery-evidence/dr004/ |
 
 ## Revision Entries
 
@@ -79,3 +80,32 @@ The latest docs sync report, handoff summary, and release/publication/deployment
     - Delivery confirmed it read-only (fetch plus `git merge-tree`; branch unchanged at `2b7648350`). The base is 82 commits ahead. There is one textual conflict, in `TESTING.md`. These files auto-merge: `AgentRunTaskRows.vue`, `WorkspaceHistoryWorkspaceSection.vue` (+ spec), `WorkspaceTeamExecutionTree.vue`, `WorkspaceTransientExecutionRow.vue`, en/zh-CN `workspace.ts`, `autobyteus-web/package.json`, `team-activity-presentation.page.vue` and `nested-team-aggregate-status-probe.mjs`.
     - Additional risk not covered by that dry run: the uncommitted DR-001 docs sync overlaps base changes in `autobyteus-web/docs/agent_execution_architecture.md`, `autobyteus-web/docs/settings.md` and `autobyteus-server-ts/docs/modules/projects.md`. The base added the two-line Task-worker row and Task summaries. At refresh time, Delivery checkpoints those docs before merging and re-checks them against the merged text.
     - Per Solution Designer, the refresh is **deferred** until the DEC-004 presentation decision. If the presentation changes, the implementation round runs on the refreshed base. Otherwise Delivery refreshes and then reruns the row specs, the probes (`nested-team-aggregate-status`, `team-group-icon`, `team-status-live`) and a rendered check before landing. The handoff state is therefore **not** current with the latest base.
+
+### DR-004 — User delegates AC-011 to API/E2E evidence; refresh onto the latest base
+
+- Delivery round and trigger: the user, directly to Delivery on 2026-10-17: "Can you please ask API E2E engineer to provide you with evidences? If API E2E engineer is able to provide you evidences, then … you already get my approval. It's already verified because if API E2E is able to provide you with evidences."
+- Interpretation recorded:
+  - The user accepts the shipped presentation (DEC-004 option A, a dot before the slate icon). No new presentation was asked for.
+  - AC-011 counts as verified, and the user's approval to finalize is given, **on condition** that the API/E2E engineer provides passing evidence on the final integrated state.
+  - Release: the user did not ask for one, so per `RELEASE.md` the default is **no release**.
+  - DEC-004 is owned by Solution Designer and is reported to it in the terminal package.
+- Prior authoritative result: DR-003 (on hold for UF-001 / DEC-004). Since then:
+  - Code review CRR-001 passed (9.4/10, no findings) and test-code review CRR-002 passed; both were user-requested.
+  - Instance `iso-51775-c59d` was closed outside Delivery. Its lifecycle record and log are gone, but its data root `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-3xrelv` remains and is removed in cleanup.
+- Integration refresh:
+  - **Checkpoint:** `3896c11d14` (docs sync, delivery, review and Solution Designer ticket edits).
+  - **Merge:** `origin/personal` `db00ba16a9` (705 commits) merged as `45cb47aefc`.
+  - **Conflicts, three, resolved:**
+    - `WorkspaceTransientExecutionRow.vue` keeps both prop defaults (`teamStatus`, upstream `stopRoot`).
+    - `WorkspaceAgentOrgHistoryCollection.vue` keeps upstream's per-copy `DelegatedStopButton` wrappers, plus this ticket's `TeamAggregateStatusDot` before the slate icon on the task-Team row. This branch's only change in that hunk was the dot line.
+    - `TESTING.md` takes upstream unchanged. Upstream rewrote it as global-only and moved per-probe descriptions into probe headers, so the "Universal Team status (live)" section is dropped; `team-status-live-probe.mjs` carries that header.
+  - The docs-sync text survived in all seven docs. No other Team-status feature came in with the base. `772c69249c` (mounted team status) was already an ancestor.
+- Post-integration checks (`delivery-evidence/dr004/`):
+  - `pnpm install --frozen-lockfile`, server `prebuild`, `nuxt prepare` and server `build`: pass.
+  - Changed specs: 3 failures, all in one upstream-added test that asserted the removed binary `team-activity-dot`. Aligned in `1455045654` to assert `team-aggregate-status-dot` `data-status=running` on the alive run row.
+  - Full `test:nuxt`: 1 further failure, `RightSideTabs.workspaceTarget.spec.ts`. **It also fails on clean `origin/personal`** (throwaway worktree, since removed). Cause: base commit `a3f65bfe6e` moved unsaved drafts to `openFiles[].editorDraft`, but the spec still read the removed `vm.fileContent`. Fixed under Rule 9 in `ebf5ca614c` (`test(baseline): …`).
+  - Rerun: **628 files passed (2 skipped), 4455 tests passed, 0 failed** (`vitest-test-nuxt-rerun.log`).
+- User verification/finalization state: approval is conditional on API/E2E evidence. Requested from `/software_engineering_team/api_e2e_engineer` for head `ebf5ca614c`.
+- Terminal return to `/solution_designer`: `Not yet eligible`
+- Next recipient/action: API/E2E evidence. If it passes, finalize per `RELEASE.md`: archive, `finalize/delegated-team-aggregate-status` with `--no-ff`, push to `personal`, no release, cleanup. Then return the terminal package to Solution Designer.
+- Remaining blockers, rollback concerns, or untested scope: the API/E2E evidence.

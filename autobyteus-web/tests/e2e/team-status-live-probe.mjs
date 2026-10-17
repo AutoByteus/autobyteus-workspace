@@ -13,6 +13,8 @@
 // No provider inference and no mocked routes: every Team dot is derived from real AGENT_STATUS / lifecycle events.
 // Cases: TS-001 delegated Team under an Agent run; TS-002 TEAMS run and group rows across three runs;
 // TS-003 a Team delegated by a Team run's member; TS-004 delegated and Org-internal Teams under an Org run.
+// TS-001/003/004 also check the delegated Team row's layout: dot → people-group icon → name, the dot centered on the
+// name line, no overlap with the Task summary line or the per-copy Stop icon, and Stop shown only while the copy is live.
 // The probe owns a private data root, free ports, the backend and Nuxt process groups and Chrome, and removes
 // them in finally. It never uses the installed app or user data.
 import fs from 'node:fs';
@@ -333,6 +335,37 @@ const consistency = async (page, kind, s, alive, where) => {
   for (const m of [s.coordinator, s.member]) assert(await agentRow(page, kind, m.agentRunId).locator(TEAM_DOT).count() === 0, `${where}: an agent row shows a Team dot`);
   return { members, dot };
 };
+/**
+ * The geometry of a delegated Team row next to the per-copy Stop icon and (Agent/Team roots) the Task summary line:
+ * dot, people-group icon, name, summary and Stop as rendered boxes. The Org row's Stop sits beside its row button.
+ */
+const rowLayoutOf = async (page, kind, teamRunId) => taskTeamRow(page, kind, teamRunId).evaluate((row, isOrg) => {
+  const box = (el) => { if (!el) return null; const r = el.getBoundingClientRect(); return { left: r.left, right: r.right, top: r.top, bottom: r.bottom, width: r.width, height: r.height }; };
+  const scope = isOrg ? row.parentElement : row;
+  const dot = row.querySelector('[data-test="team-aggregate-status-dot"]');
+  return { dot: box(dot), icon: box(row.querySelector('[data-team-icon]')),
+    name: box(isOrg ? row.querySelector(':scope > span.truncate') : row.querySelector('.min-w-0.flex-1 > span.block.truncate')),
+    summary: box(row.querySelector('[data-test="workspace-task-worker-task-summary"]')),
+    stop: box(scope.querySelector('[data-test="workspace-delegated-stop"]')),
+    stopLabel: scope.querySelector('[data-test="workspace-delegated-stop"]')?.getAttribute('aria-label') ?? null,
+    row: box(row), dotStatus: dot?.getAttribute('data-status') ?? null };
+}, kind === 'org');
+const overlaps = (a, b) => !!a && !!b && a.left < b.right - 0.5 && b.left < a.right - 0.5 && a.top < b.bottom - 0.5 && b.top < a.bottom - 0.5;
+/** Merged-row regression: the dot stays first, aligned with the name line, and overlaps neither the summary line nor Stop. */
+const assertRowLayout = (layout, where, { stop, summary }) => {
+  const { dot, icon, name } = layout;
+  assert(dot && icon && name, `${where}: dot, icon or name not rendered`, layout);
+  assert(dot.right <= icon.left + 0.5 && icon.right <= name.left + 0.5, `${where}: order is not dot → icon → name`, layout);
+  const nameLineMid = name.top + name.height / 2; const dotMid = dot.top + dot.height / 2;
+  assert(Math.abs(dotMid - nameLineMid) <= 2, `${where}: dot not centered on the name line`, layout);
+  for (const other of ['summary', 'stop']) for (const own of ['dot', 'icon']) assert(!overlaps(layout[own], layout[other]), `${where}: ${own} overlaps ${other}`, layout);
+  assert(!overlaps(layout.name, layout.stop), `${where}: name overlaps Stop`, layout);
+  if (summary) {
+    assert(layout.summary, `${where}: Task summary line missing`, layout);
+    assert(layout.summary.top >= name.bottom - 0.5 && layout.summary.left >= icon.right, `${where}: summary not under the name, right of the icon`, layout);
+  }
+  assert(stop ? !!layout.stop : !layout.stop, `${where}: per-copy Stop ${stop ? 'missing on a live copy' : 'shown on a stopped copy'}`, layout);
+};
 
 // ---------------------------------------------------------------- journeys
 /** TS-001 (SCN-001; AC-001..005, AC-007, AC-009, AC-010): a delegated Team under an Agent run. */
@@ -352,6 +385,9 @@ const agentRootJourney = async () => {
     assert(/, idle, /.test(out.idle.dot.rowLabel ?? ''), 'Team row accessible label lacks the status word', out.idle.dot);
     assert(await runRow.locator(TEAM_DOT).count() === 0, 'the Agent run row shows a Team dot (BEH-006)');
     await shot(page, 'ts001-agent-idle-expanded');
+    // Merged rows: the dot beside upstream's Task summary line and per-copy Stop icon.
+    out.layoutIdle = await rowLayoutOf(page, 'agent', s.team.teamRunId);
+    assertRowLayout(out.layoutIdle, 'TS-001 idle row', { stop: true, summary: true });
     // AC-001/AC-005: collapsed, the delegator messages the coordinator, which starts working → blue, live, no expand/reload.
     await collapseTaskTeam(page, 'agent', s.team.teamRunId);
     await until('members hidden', async () => (await agentRow(page, 'agent', s.coordinator.agentRunId).count()) === 0, 10000);
@@ -364,6 +400,8 @@ const agentRootJourney = async () => {
     assert((await row.getAttribute('aria-expanded')) === 'false', 'Team row expanded by itself');
     out.busyCollapsed = await teamDotOf(row);
     assertTeamDot(out.busyCollapsed, 'running', 'collapsed busy Team');
+    out.layoutBusy = await rowLayoutOf(page, 'agent', s.team.teamRunId);
+    assertRowLayout(out.layoutBusy, 'TS-001 busy collapsed row', { stop: true, summary: true });
     await shot(page, 'ts001-agent-busy-collapsed');
     // AC-004 alternate: a member fails while the coordinator still works → still blue (busy > error).
     s.input.send(callTool('send_message_to', { target_agent_run_id: s.member.agentRunId, content: FAIL_TURN }));
@@ -388,6 +426,9 @@ const agentRootJourney = async () => {
     await waitTeamStatus('stopped run → gray', row, 'offline', 60000);
     out.stopped = await teamDotOf(row);
     assertTeamDot(out.stopped, 'offline', 'stopped Team');
+    await until('per-copy Stop gone after the host stops', async () => !(await rowLayoutOf(page, 'agent', s.team.teamRunId)).stop, 30000);
+    out.layoutStopped = await rowLayoutOf(page, 'agent', s.team.teamRunId);
+    assertRowLayout(out.layoutStopped, 'TS-001 stopped row', { stop: false, summary: true });
     await shot(page, 'ts001-agent-stopped');
     assert(errors.length === 0, 'browser errors', errors);
     return out;
@@ -471,6 +512,8 @@ const teamRootJourney = async () => {
     await waitTeamStatus('run row idle', runRow, 'idle');
     const managerRow = page.locator(`[data-test="workspace-team-member-${s.root.rootId}-/manager"]`);
     assert(await managerRow.locator(TEAM_DOT).count() === 0, 'a Team member (agent) row shows a Team dot (BEH-006)');
+    out.layoutIdle = await rowLayoutOf(page, 'team', s.team.teamRunId);
+    assertRowLayout(out.layoutIdle, 'TS-003 idle row', { stop: true, summary: true });
     await shot(page, 'ts003-team-root-idle');
     // The Manager stays idle; only the delegated coordinator works → the delegated Team row AND the run row read busy.
     await collapseTaskTeam(page, 'team', s.team.teamRunId);
@@ -482,6 +525,8 @@ const teamRootJourney = async () => {
     assertTeamDot(out.busy.team, 'running', 'delegated Team busy (collapsed)');
     assertTeamDot(out.busy.run, 'running', 'run row', { icon: false });
     assertTeamDot(out.busy.group, 'running', 'group row', { icon: false });
+    out.layoutBusy = await rowLayoutOf(page, 'team', s.team.teamRunId);
+    assertRowLayout(out.layoutBusy, 'TS-003 busy collapsed row', { stop: true, summary: true });
     await shot(page, 'ts003-team-root-busy');
     // AC-007: the user stops the Team run → every Team row of it gray.
     await runRow.locator('xpath=..').locator('button[aria-label="Terminate team"]').click();
@@ -489,6 +534,9 @@ const teamRootJourney = async () => {
     await waitTeamStatus('run row gray', runRow, 'offline', 60000);
     out.stopped = { team: await teamDotOf(row), run: await teamDotOf(runRow) };
     assertTeamDot(out.stopped.team, 'offline', 'stopped delegated Team');
+    await until('per-copy Stop gone after the Team run stops', async () => !(await rowLayoutOf(page, 'team', s.team.teamRunId)).stop, 30000);
+    out.layoutStopped = await rowLayoutOf(page, 'team', s.team.teamRunId);
+    assertRowLayout(out.layoutStopped, 'TS-003 stopped row', { stop: false, summary: true });
     await shot(page, 'ts003-team-root-stopped');
     assert(errors.length === 0, 'browser errors', errors);
     return out;
@@ -520,6 +568,9 @@ const orgRootJourney = async () => {
       out.configured.push(dot);
     }
     assert(out.configured.length >= 1, 'no Org-internal Team row rendered');
+    // The Org task-Team row has no Task summary line; its Stop sits beside the row button.
+    out.layoutIdle = await rowLayoutOf(page, 'org', s.team.teamRunId);
+    assertRowLayout(out.layoutIdle, 'TS-004 idle row', { stop: true, summary: false });
     await shot(page, 'ts004-org-idle');
     s.input.send(callTool('send_message_to', { target_agent_run_id: s.coordinator.agentRunId, content: 'Another look please. HOLD_TURN' }));
     await waitTeamStatus('Org task Team busy', row, 'running', 60000);
@@ -533,6 +584,9 @@ const orgRootJourney = async () => {
     out.stopped = await teamDotOf(row);
     assertTeamDot(out.stopped, 'offline', 'stopped Org task Team');
     for (let i = 0; i < await configured.count(); i += 1) assert((await teamDotOf(configured.nth(i))).status === 'offline', 'Org-internal Team not gray after stop');
+    await until('per-copy Stop gone after the Org stops', async () => !(await rowLayoutOf(page, 'org', s.team.teamRunId)).stop, 30000);
+    out.layoutStopped = await rowLayoutOf(page, 'org', s.team.teamRunId);
+    assertRowLayout(out.layoutStopped, 'TS-004 stopped row', { stop: false, summary: false });
     await shot(page, 'ts004-org-stopped');
     assert(errors.length === 0, 'browser errors', errors);
     return out;
