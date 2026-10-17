@@ -8,6 +8,7 @@ The latest `docs-sync-report.md`, `handoff-summary.md` and `release-deployment-r
 | --- | --- | --- | --- | --- |
 | DR-001 | CRR-003 Pass (test-code review) after API-REV-001 Pass, from `/software_engineering_team/code_reviewer` | N/A | **Blocked — Local Fix** (`/software_engineering_team/implementation_engineer`): integrated with `e579e82b7f`, docs synced, verified from evidence. The pre-merge target refresh found `personal` advanced to `a716a4632e` (project-tool-split), and its merge conflicts in the agent-tool contract | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, this record; docs `autobyteus-web/docs/projects.md`, `autobyteus-server-ts/docs/modules/agent_tools_mcp_server.md`, `autobyteus-server-ts/docs/modules/agent_tools.md`; `api-e2e-test-case-ledger.md` (snapshot reference) |
 | DR-002 | CRR-005 Pass after IR-004 (Local Fix for DR-001), CRR-004 and API-REV-002, from `/software_engineering_team/code_reviewer` | DR-001 Blocked — Local Fix | **Delivery Completed**: re-verified from evidence at `c95e0138e8` (current with `origin/personal@66429d6f31`), docs re-checked, archived, finalized into `personal` with `--no-ff`, No release, cleanup | `docs-sync-report.md` (DR-002 re-check), `handoff-summary.md`, `release-deployment-report.md`, this record; ticket archived to `tickets/done/` |
+| DR-003 | Solution Designer receipt check: Delivery Receipt Evidence Gap (the Task asks for a beta release and the user's check) | DR-002 Delivery Completed (No release, user check No) | **Beta `v1.5.5-beta.3` released** (4/4 workflows, 17 assets, Docker `1.5.5-beta.3` / `beta`); **user check pending** | `release-deployment-report.md`, `handoff-summary.md`, this record |
 
 ## Revision Entries
 
@@ -113,3 +114,19 @@ The pre-merge refresh found `origin/personal` at `a716a4632e`, 12 commits past t
 - Release: none (No release). No tag, pipeline or version bump; `autobyteus-web/package.json` stays `1.5.5-beta.2`.
 - Repository finalization status: `Completed`.
 - Cleanup: worktree removal, prune, local branch deletion and receipt export follow this record's push; confirmed in the terminal message.
+
+### DR-003 — Beta release requested by the Task; user check pending
+
+- Delivery round and trigger: the Solution Designer's receipt check of DR-002 found a gap (`_delivery-receipts/task-keys-and-dependencies/solution-designer-receipt-verification.md`). The delegating Task's "Done when" asks for "tests, a beta release, and the user's check in the app". DR-001 and DR-002 wrongly recorded `No release` and `User check needed: No`.
+- Prior authoritative result: DR-002 `Delivery Completed` (No release).
+- Current authoritative result: **Beta released; the user's check is pending**, so the terminal return is not yet eligible.
+- What was done:
+  - Release worktree `task-keys-and-dependencies-beta` from `origin/personal@1e8b45486b`; licensing and hygiene checks passed.
+  - `desktop-release.sh beta --no-push` → `516e592d7b` plus tag `v1.5.5-beta.3`.
+  - After re-fetching (`personal` unchanged), pushed `1e8b45486b..516e592d7b` and the tag.
+  - Release workflows: Desktop, Android, iOS and Server Docker succeeded. The pre-release has 17 assets, and Docker `1.5.5-beta.3` and `beta` share digest `sha256:2620dcf053bf…`; `latest` is unchanged.
+  - The AutoByteus NFS Release workflow failed. The user said this is no problem (NFS is moving out of the superrepo), so it is not counted against this release.
+  - Follow-ups from DR-002 were sent to `/project_task_manager` at the user's request: `graphql.ts` regeneration, FU-002 to FU-004, FU-API-002, -004 and -005, and OBS-001 to -004.
+- User check: asked of the user directly on 2026-10-17 (steps in `release-deployment-report.md` → Final Status). Pending.
+- Terminal return to `/solution_designer`: `Not yet eligible`. It is sent after the user's check is recorded (DR-004).
+- Remaining blockers: none besides the pending user check.
