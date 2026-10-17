@@ -380,6 +380,11 @@ exports[`agent loop golden event sequences > after-final compaction requested an
         "ingestion_kind": "autobyteus_llm_phase",
         "latest_prompt_tokens": 200,
         "llm_call_id": "turn_0001:llm:1",
+        "output_throughput": {
+          "duration_ms": "<clock>",
+          "method": "end_to_end",
+          "output_tokens": 5,
+        },
         "runtime_kind": "autobyteus",
         "turn_id": "turn_0001",
         "usage": {
@@ -609,6 +614,11 @@ exports[`agent loop golden event sequences > after-final compaction requested an
         "ingestion_kind": "autobyteus_llm_phase",
         "latest_prompt_tokens": 200,
         "llm_call_id": "turn_0002:llm:1",
+        "output_throughput": {
+          "duration_ms": "<clock>",
+          "method": "end_to_end",
+          "output_tokens": 5,
+        },
         "runtime_kind": "autobyteus",
         "turn_id": "turn_0002",
         "usage": {
@@ -850,6 +860,11 @@ exports[`agent loop golden event sequences > after-final compaction requested an
         "ingestion_kind": "autobyteus_llm_phase",
         "latest_prompt_tokens": 200,
         "llm_call_id": "turn_0003:llm:1",
+        "output_throughput": {
+          "duration_ms": "<clock>",
+          "method": "end_to_end",
+          "output_tokens": 5,
+        },
         "runtime_kind": "autobyteus",
         "turn_id": "turn_0003",
         "usage": {
@@ -1103,6 +1118,11 @@ exports[`agent loop golden event sequences > after-final compaction requested an
         "ingestion_kind": "autobyteus_llm_phase",
         "latest_prompt_tokens": 7000,
         "llm_call_id": "turn_0004:llm:1",
+        "output_throughput": {
+          "duration_ms": "<clock>",
+          "method": "end_to_end",
+          "output_tokens": 5,
+        },
         "runtime_kind": "autobyteus",
         "turn_id": "turn_0004",
         "usage": {
@@ -1465,6 +1485,11 @@ exports[`agent loop golden event sequences > after-final compaction requested an
         "ingestion_kind": "autobyteus_llm_phase",
         "latest_prompt_tokens": 200,
         "llm_call_id": "turn_0005:llm:1",
+        "output_throughput": {
+          "duration_ms": "<clock>",
+          "method": "end_to_end",
+          "output_tokens": 5,
+        },
         "runtime_kind": "autobyteus",
         "turn_id": "turn_0005",
         "usage": {
@@ -1974,6 +1999,11 @@ exports[`agent loop golden event sequences > compaction_blocked, then the retry 
         "ingestion_kind": "autobyteus_llm_phase",
         "latest_prompt_tokens": 200,
         "llm_call_id": "turn_0001:llm:1",
+        "output_throughput": {
+          "duration_ms": "<clock>",
+          "method": "end_to_end",
+          "output_tokens": 5,
+        },
         "runtime_kind": "autobyteus",
         "turn_id": "turn_0001",
         "usage": {
@@ -2203,6 +2233,11 @@ exports[`agent loop golden event sequences > compaction_blocked, then the retry 
         "ingestion_kind": "autobyteus_llm_phase",
         "latest_prompt_tokens": 200,
         "llm_call_id": "turn_0002:llm:1",
+        "output_throughput": {
+          "duration_ms": "<clock>",
+          "method": "end_to_end",
+          "output_tokens": 5,
+        },
         "runtime_kind": "autobyteus",
         "turn_id": "turn_0002",
         "usage": {
@@ -2444,6 +2479,11 @@ exports[`agent loop golden event sequences > compaction_blocked, then the retry 
         "ingestion_kind": "autobyteus_llm_phase",
         "latest_prompt_tokens": 200,
         "llm_call_id": "turn_0003:llm:1",
+        "output_throughput": {
+          "duration_ms": "<clock>",
+          "method": "end_to_end",
+          "output_tokens": 5,
+        },
         "runtime_kind": "autobyteus",
         "turn_id": "turn_0003",
         "usage": {
@@ -2971,6 +3011,11 @@ exports[`agent loop golden event sequences > compaction_blocked, then the retry 
         "ingestion_kind": "autobyteus_llm_phase",
         "latest_prompt_tokens": 200,
         "llm_call_id": "turn_0004:llm:2",
+        "output_throughput": {
+          "duration_ms": "<clock>",
+          "method": "end_to_end",
+          "output_tokens": 5,
+        },
         "runtime_kind": "autobyteus",
         "turn_id": "turn_0004",
         "usage": {
@@ -3230,6 +3275,11 @@ exports[`agent loop golden event sequences > compaction_blocked, then the retry 
         "ingestion_kind": "autobyteus_llm_phase",
         "latest_prompt_tokens": 200,
         "llm_call_id": "turn_0005:llm:1",
+        "output_throughput": {
+          "duration_ms": "<clock>",
+          "method": "end_to_end",
+          "output_tokens": 5,
+        },
         "runtime_kind": "autobyteus",
         "turn_id": "turn_0005",
         "usage": {
@@ -3864,6 +3914,11 @@ exports[`agent loop golden event sequences > final text answer with reasoning 1`
         "ingestion_kind": "autobyteus_llm_phase",
         "latest_prompt_tokens": 10,
         "llm_call_id": "turn_0001:llm:1",
+        "output_throughput": {
+          "duration_ms": "<clock>",
+          "method": "end_to_end",
+          "output_tokens": 5,
+        },
         "runtime_kind": "autobyteus",
         "turn_id": "turn_0001",
         "usage": {
@@ -4922,6 +4977,11 @@ exports[`agent loop golden event sequences > malformed tool call is rejected, th
         "ingestion_kind": "autobyteus_llm_phase",
         "latest_prompt_tokens": 10,
         "llm_call_id": "turn_0001:llm:1",
+        "output_throughput": {
+          "duration_ms": "<clock>",
+          "method": "end_to_end",
+          "output_tokens": 5,
+        },
         "runtime_kind": "autobyteus",
         "turn_id": "turn_0001",
         "usage": {
@@ -5163,6 +5223,11 @@ exports[`agent loop golden event sequences > malformed tool call is rejected, th
         "ingestion_kind": "autobyteus_llm_phase",
         "latest_prompt_tokens": 10,
         "llm_call_id": "turn_0001:llm:2",
+        "output_throughput": {
+          "duration_ms": "<clock>",
+          "method": "end_to_end",
+          "output_tokens": 5,
+        },
         "runtime_kind": "autobyteus",
         "turn_id": "turn_0001",
         "usage": {
@@ -5640,6 +5705,11 @@ exports[`agent loop golden event sequences > one tool cycle 1`] = `
         "ingestion_kind": "autobyteus_llm_phase",
         "latest_prompt_tokens": 10,
         "llm_call_id": "turn_0001:llm:1",
+        "output_throughput": {
+          "duration_ms": "<clock>",
+          "method": "end_to_end",
+          "output_tokens": 5,
+        },
         "runtime_kind": "autobyteus",
         "turn_id": "turn_0001",
         "usage": {
@@ -5927,6 +5997,11 @@ weather: sunny",
         "ingestion_kind": "autobyteus_llm_phase",
         "latest_prompt_tokens": 20,
         "llm_call_id": "turn_0001:llm:2",
+        "output_throughput": {
+          "duration_ms": "<clock>",
+          "method": "end_to_end",
+          "output_tokens": 5,
+        },
         "runtime_kind": "autobyteus",
         "turn_id": "turn_0001",
         "usage": {
@@ -6298,6 +6373,11 @@ System note: your previous response hit the output limit of 256 tokenâ€¦(989 cha
         "ingestion_kind": "autobyteus_llm_phase",
         "latest_prompt_tokens": 10,
         "llm_call_id": "turn_0001:llm:1",
+        "output_throughput": {
+          "duration_ms": "<clock>",
+          "method": "end_to_end",
+          "output_tokens": 5,
+        },
         "runtime_kind": "autobyteus",
         "turn_id": "turn_0001",
         "usage": {
@@ -6428,6 +6508,11 @@ System note: your previous response hit the output limit of 256 tokenâ€¦(341 cha
         "ingestion_kind": "autobyteus_llm_phase",
         "latest_prompt_tokens": 10,
         "llm_call_id": "turn_0001:llm:2",
+        "output_throughput": {
+          "duration_ms": "<clock>",
+          "method": "end_to_end",
+          "output_tokens": 5,
+        },
         "runtime_kind": "autobyteus",
         "turn_id": "turn_0001",
         "usage": {
@@ -6558,6 +6643,11 @@ System note: your previous response hit the output limit of 256 tokenâ€¦(665 cha
         "ingestion_kind": "autobyteus_llm_phase",
         "latest_prompt_tokens": 10,
         "llm_call_id": "turn_0001:llm:3",
+        "output_throughput": {
+          "duration_ms": "<clock>",
+          "method": "end_to_end",
+          "output_tokens": 5,
+        },
         "runtime_kind": "autobyteus",
         "turn_id": "turn_0001",
         "usage": {
@@ -6688,6 +6778,11 @@ System note: your previous response hit the output limit of 256 tokenâ€¦(989 cha
         "ingestion_kind": "autobyteus_llm_phase",
         "latest_prompt_tokens": 10,
         "llm_call_id": "turn_0001:llm:4",
+        "output_throughput": {
+          "duration_ms": "<clock>",
+          "method": "end_to_end",
+          "output_tokens": 5,
+        },
         "runtime_kind": "autobyteus",
         "turn_id": "turn_0001",
         "usage": {
@@ -7115,6 +7210,11 @@ System note: your previous response hit the output limit of 256 tokens while gâ€
         "ingestion_kind": "autobyteus_llm_phase",
         "latest_prompt_tokens": 10,
         "llm_call_id": "turn_0001:llm:1",
+        "output_throughput": {
+          "duration_ms": "<clock>",
+          "method": "end_to_end",
+          "output_tokens": 5,
+        },
         "runtime_kind": "autobyteus",
         "turn_id": "turn_0001",
         "usage": {
@@ -7238,6 +7338,11 @@ System note: your previous response hit the output limit of 256 tokens while gâ€
         "ingestion_kind": "autobyteus_llm_phase",
         "latest_prompt_tokens": 10,
         "llm_call_id": "turn_0001:llm:2",
+        "output_throughput": {
+          "duration_ms": "<clock>",
+          "method": "end_to_end",
+          "output_tokens": 5,
+        },
         "runtime_kind": "autobyteus",
         "turn_id": "turn_0001",
         "usage": {
@@ -7529,6 +7634,11 @@ System note: your previous response hit the output limit of 256 tokens while gâ€
         "ingestion_kind": "autobyteus_llm_phase",
         "latest_prompt_tokens": 10,
         "llm_call_id": "turn_0001:llm:3",
+        "output_throughput": {
+          "duration_ms": "<clock>",
+          "method": "end_to_end",
+          "output_tokens": 5,
+        },
         "runtime_kind": "autobyteus",
         "turn_id": "turn_0001",
         "usage": {
@@ -7934,6 +8044,11 @@ exports[`agent loop golden event sequences > output-limit recovery: text cut, th
         "ingestion_kind": "autobyteus_llm_phase",
         "latest_prompt_tokens": 10,
         "llm_call_id": "turn_0001:llm:1",
+        "output_throughput": {
+          "duration_ms": "<clock>",
+          "method": "end_to_end",
+          "output_tokens": 5,
+        },
         "runtime_kind": "autobyteus",
         "turn_id": "turn_0001",
         "usage": {
@@ -8054,6 +8169,11 @@ exports[`agent loop golden event sequences > output-limit recovery: text cut, th
         "ingestion_kind": "autobyteus_llm_phase",
         "latest_prompt_tokens": 10,
         "llm_call_id": "turn_0001:llm:2",
+        "output_throughput": {
+          "duration_ms": "<clock>",
+          "method": "end_to_end",
+          "output_tokens": 5,
+        },
         "runtime_kind": "autobyteus",
         "turn_id": "turn_0001",
         "usage": {
