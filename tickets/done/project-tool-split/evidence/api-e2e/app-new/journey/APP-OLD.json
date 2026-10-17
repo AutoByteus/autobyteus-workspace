@@ -1,0 +1,156 @@
+{
+  "runId": "pts_old_tool_7adf68be50504b108881cb6a6531fb0d",
+  "toolNames": [
+    "create_or_update_project",
+    "delegate_task",
+    "list_projects",
+    "send_message_to"
+  ],
+  "oldDescription": "Create a required-name Project or patch a known project_id on the current node. Omitted fields are preserved; blank description clears. Optional workspaces reference absolute node-local folder paths: a supplied list replaces ALL links, [] unlinks only. Retained links preserve omitted descriptions. Returns saved metadata and links; does not register/delete workspaces or delegate work.",
+  "oldSchema": {
+    "type": "object",
+    "properties": {
+      "project_id": {
+        "description": "Known Project identity for patch; omit to create. Never resolved by name.",
+        "type": "string"
+      },
+      "name": {
+        "description": "Trimmed non-empty Project name; required for create, optional for patch.",
+        "type": "string"
+      },
+      "description": {
+        "description": "Project description; omit to preserve on patch, blank to clear.",
+        "type": "string"
+      },
+      "workspaces": {
+        "description": "Complete desired workspace links, not append. Omit to preserve on patch; [] unlinks all without deleting folders. Use absolute folder paths on this node; registration and existence are not required.",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "workspace_path": {
+              "description": "Absolute folder path on this node; no shell expansion or registration required.",
+              "type": "string"
+            },
+            "description": {
+              "description": "Link description; omit to preserve a retained link, blank to clear. New links default to blank.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "workspace_path"
+          ]
+        }
+      }
+    },
+    "required": [],
+    "additionalProperties": false
+  },
+  "projectId": "project_61bf7e3d-b460-493b-ac69-b3a21bb2481d",
+  "stored": {
+    "projectId": "project_61bf7e3d-b460-493b-ac69-b3a21bb2481d",
+    "name": "PTS Old ee28",
+    "description": "Patched by the old tool.",
+    "workspaces": []
+  },
+  "calls": [
+    {
+      "tool": "list_projects",
+      "arguments": {},
+      "isError": false,
+      "result": {
+        "projects": [
+          {
+            "projectId": "project_d7109746-b9c2-4783-ba04-aaec5317161b",
+            "name": "PTS New b4fe renamed",
+            "description": "Changed by update_project."
+          }
+        ]
+      }
+    },
+    {
+      "tool": "create_or_update_project",
+      "arguments": {
+        "name": "PTS Old ee28",
+        "description": "Made by the old tool.",
+        "workspaces": [
+          {
+            "workspace_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split/tickets/in-progress/project-tool-split/evidence/api-e2e/app-new/journey/workspace/linked-a",
+            "description": "A"
+          }
+        ]
+      },
+      "isError": false,
+      "result": {
+        "project": {
+          "projectId": "project_61bf7e3d-b460-493b-ac69-b3a21bb2481d",
+          "name": "PTS Old ee28",
+          "description": "Made by the old tool.",
+          "workspaces": [
+            {
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split/tickets/in-progress/project-tool-split/evidence/api-e2e/app-new/journey/workspace/linked-a",
+              "description": "A"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "tool": "create_or_update_project",
+      "arguments": {
+        "project_id": "project_61bf7e3d-b460-493b-ac69-b3a21bb2481d",
+        "description": "Patched by the old tool.",
+        "workspaces": []
+      },
+      "isError": false,
+      "result": {
+        "project": {
+          "projectId": "project_61bf7e3d-b460-493b-ac69-b3a21bb2481d",
+          "name": "PTS Old ee28",
+          "description": "Patched by the old tool.",
+          "workspaces": []
+        }
+      }
+    },
+    {
+      "tool": "create_or_update_project",
+      "arguments": {
+        "project_id": "project_61bf7e3d-b460-493b-ac69-b3a21bb2481d"
+      },
+      "isError": true,
+      "result": {
+        "error": {
+          "code": "PROJECT_PATCH_REQUIRED",
+          "message": "Supply name, description and/or workspaces to update a Project."
+        }
+      }
+    },
+    {
+      "tool": "create_or_update_project",
+      "arguments": {
+        "description": "no name"
+      },
+      "isError": true,
+      "result": {
+        "error": {
+          "code": "PROJECT_NAME_REQUIRED",
+          "message": "Project name is required."
+        }
+      }
+    },
+    {
+      "tool": "create_or_update_project",
+      "arguments": {
+        "name": "x",
+        "extra": 1
+      },
+      "isError": true,
+      "result": {
+        "error": {
+          "code": "PROJECT_TOOL_ARGUMENT_INVALID",
+          "message": "Unsupported tool argument."
+        }
+      }
+    }
+  ]
+}

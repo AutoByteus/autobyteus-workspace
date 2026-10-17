@@ -1,0 +1,1906 @@
+[
+  {
+    "at": 1792223002838,
+    "type": "connected"
+  },
+  {
+    "at": 1792223014864,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223014876,
+    "type": "task_upserted",
+    "taskId": "project_task_c1489692-31d0-4170-abe3-e6bc6aea06fc"
+  },
+  {
+    "at": 1792223014877,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223014887,
+    "type": "task_upserted",
+    "taskId": "project_task_040e6ec7-3aeb-4b2b-b14c-d16f4687ef9b"
+  },
+  {
+    "at": 1792223014887,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223017171,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223017185,
+    "type": "task_upserted",
+    "taskId": "project_task_1dcf69ad-15de-44e9-b7d8-312cd93fdc95"
+  },
+  {
+    "at": 1792223017185,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223017555,
+    "type": "task_upserted",
+    "taskId": "project_task_e9e69d36-41d8-41e6-98a5-ba741aecc7ae"
+  },
+  {
+    "at": 1792223017555,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223022253,
+    "type": "task_upserted",
+    "taskId": "project_task_c1489692-31d0-4170-abe3-e6bc6aea06fc",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223022254,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223022425,
+    "type": "task_worker_status",
+    "taskId": "project_task_c1489692-31d0-4170-abe3-e6bc6aea06fc",
+    "status": "running"
+  },
+  {
+    "at": 1792223022429,
+    "type": "task_worker_status",
+    "taskId": "project_task_c1489692-31d0-4170-abe3-e6bc6aea06fc",
+    "status": "idle"
+  },
+  {
+    "at": 1792223022439,
+    "type": "task_upserted",
+    "taskId": "project_task_c1489692-31d0-4170-abe3-e6bc6aea06fc",
+    "status": "idle"
+  },
+  {
+    "at": 1792223022440,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223022531,
+    "type": "task_upserted",
+    "taskId": "project_task_c1489692-31d0-4170-abe3-e6bc6aea06fc",
+    "status": "idle"
+  },
+  {
+    "at": 1792223022533,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223023106,
+    "type": "task_upserted",
+    "taskId": "project_task_c1489692-31d0-4170-abe3-e6bc6aea06fc",
+    "status": "offline"
+  },
+  {
+    "at": 1792223023107,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223023185,
+    "type": "task_upserted",
+    "taskId": "project_task_c1489692-31d0-4170-abe3-e6bc6aea06fc",
+    "status": "offline"
+  },
+  {
+    "at": 1792223023193,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223023205,
+    "type": "task_worker_status",
+    "taskId": "project_task_c1489692-31d0-4170-abe3-e6bc6aea06fc",
+    "status": "offline"
+  },
+  {
+    "at": 1792223023677,
+    "type": "task_upserted",
+    "taskId": "project_task_040e6ec7-3aeb-4b2b-b14c-d16f4687ef9b",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223023677,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223023691,
+    "type": "task_worker_status",
+    "taskId": "project_task_040e6ec7-3aeb-4b2b-b14c-d16f4687ef9b",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223023845,
+    "type": "task_worker_status",
+    "taskId": "project_task_040e6ec7-3aeb-4b2b-b14c-d16f4687ef9b",
+    "status": "running"
+  },
+  {
+    "at": 1792223023847,
+    "type": "task_worker_status",
+    "taskId": "project_task_040e6ec7-3aeb-4b2b-b14c-d16f4687ef9b",
+    "status": "idle"
+  },
+  {
+    "at": 1792223023856,
+    "type": "task_upserted",
+    "taskId": "project_task_040e6ec7-3aeb-4b2b-b14c-d16f4687ef9b",
+    "status": "idle"
+  },
+  {
+    "at": 1792223023856,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223026223,
+    "type": "task_upserted",
+    "taskId": "project_task_08aeaa09-b98d-44a1-8bd3-59c0679ded9e"
+  },
+  {
+    "at": 1792223026230,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223026721,
+    "type": "task_upserted",
+    "taskId": "project_task_08aeaa09-b98d-44a1-8bd3-59c0679ded9e",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223026722,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223026862,
+    "type": "task_worker_status",
+    "taskId": "project_task_08aeaa09-b98d-44a1-8bd3-59c0679ded9e",
+    "status": "running"
+  },
+  {
+    "at": 1792223026867,
+    "type": "task_worker_status",
+    "taskId": "project_task_08aeaa09-b98d-44a1-8bd3-59c0679ded9e",
+    "status": "idle"
+  },
+  {
+    "at": 1792223026874,
+    "type": "task_upserted",
+    "taskId": "project_task_08aeaa09-b98d-44a1-8bd3-59c0679ded9e",
+    "status": "idle"
+  },
+  {
+    "at": 1792223026875,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223029068,
+    "type": "task_upserted",
+    "taskId": "project_task_8bd2dc23-bf75-40c1-a91d-2ef1f05c8c99"
+  },
+  {
+    "at": 1792223029072,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223029366,
+    "type": "task_upserted",
+    "taskId": "project_task_8bd2dc23-bf75-40c1-a91d-2ef1f05c8c99",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223029367,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223029510,
+    "type": "task_worker_status",
+    "taskId": "project_task_8bd2dc23-bf75-40c1-a91d-2ef1f05c8c99",
+    "status": "running"
+  },
+  {
+    "at": 1792223029513,
+    "type": "task_worker_status",
+    "taskId": "project_task_8bd2dc23-bf75-40c1-a91d-2ef1f05c8c99",
+    "status": "idle"
+  },
+  {
+    "at": 1792223029521,
+    "type": "task_upserted",
+    "taskId": "project_task_8bd2dc23-bf75-40c1-a91d-2ef1f05c8c99",
+    "status": "idle"
+  },
+  {
+    "at": 1792223029522,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223031723,
+    "type": "task_worker_status",
+    "taskId": "project_task_c1489692-31d0-4170-abe3-e6bc6aea06fc",
+    "status": "offline"
+  },
+  {
+    "at": 1792223031723,
+    "type": "task_worker_status",
+    "taskId": "project_task_040e6ec7-3aeb-4b2b-b14c-d16f4687ef9b",
+    "status": "offline"
+  },
+  {
+    "at": 1792223038043,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_e79acfad-0420-49b4-91fb-e9ed2431e4df"
+  },
+  {
+    "at": 1792223038052,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_e79acfad-0420-49b4-91fb-e9ed2431e4df",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223038221,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_e79acfad-0420-49b4-91fb-e9ed2431e4df",
+    "status": "running"
+  },
+  {
+    "at": 1792223038222,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_e79acfad-0420-49b4-91fb-e9ed2431e4df",
+    "status": "idle"
+  },
+  {
+    "at": 1792223038229,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_e79acfad-0420-49b4-91fb-e9ed2431e4df",
+    "status": "idle"
+  },
+  {
+    "at": 1792223038670,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_e79acfad-0420-49b4-91fb-e9ed2431e4df",
+    "status": "offline"
+  },
+  {
+    "at": 1792223038709,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_e79acfad-0420-49b4-91fb-e9ed2431e4df",
+    "status": "offline"
+  },
+  {
+    "at": 1792223038733,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_e79acfad-0420-49b4-91fb-e9ed2431e4df",
+    "status": "offline"
+  },
+  {
+    "at": 1792223039304,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_b19ce6e1-6b0c-4a4c-bc1b-7baffff9159a"
+  },
+  {
+    "at": 1792223039312,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_b19ce6e1-6b0c-4a4c-bc1b-7baffff9159a",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223039472,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_b19ce6e1-6b0c-4a4c-bc1b-7baffff9159a",
+    "status": "running"
+  },
+  {
+    "at": 1792223039473,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_b19ce6e1-6b0c-4a4c-bc1b-7baffff9159a",
+    "status": "running"
+  },
+  {
+    "at": 1792223039473,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_b19ce6e1-6b0c-4a4c-bc1b-7baffff9159a",
+    "status": "idle"
+  },
+  {
+    "at": 1792223039480,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_b19ce6e1-6b0c-4a4c-bc1b-7baffff9159a",
+    "status": "idle"
+  },
+  {
+    "at": 1792223046864,
+    "type": "connected"
+  },
+  {
+    "at": 1792223047464,
+    "type": "task_upserted",
+    "taskId": "project_task_eab3686b-7ffe-4411-9f1f-505dfc00a56d"
+  },
+  {
+    "at": 1792223047466,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223050345,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_b603a54a-80f0-4afa-bf44-0d240e137325"
+  },
+  {
+    "at": 1792223050353,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_b603a54a-80f0-4afa-bf44-0d240e137325",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223050518,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_b603a54a-80f0-4afa-bf44-0d240e137325",
+    "status": "running"
+  },
+  {
+    "at": 1792223050521,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_b603a54a-80f0-4afa-bf44-0d240e137325",
+    "status": "idle"
+  },
+  {
+    "at": 1792223050528,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_b603a54a-80f0-4afa-bf44-0d240e137325",
+    "status": "idle"
+  },
+  {
+    "at": 1792223050738,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223050746,
+    "type": "task_upserted",
+    "taskId": "project_task_affded4f-a85c-4889-8fac-43fa8b226664"
+  },
+  {
+    "at": 1792223050747,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223057279,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_6c65650e-3dca-4b83-88ff-04f1c8377039"
+  },
+  {
+    "at": 1792223057288,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_6c65650e-3dca-4b83-88ff-04f1c8377039",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223057456,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_6c65650e-3dca-4b83-88ff-04f1c8377039",
+    "status": "running"
+  },
+  {
+    "at": 1792223057458,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_6c65650e-3dca-4b83-88ff-04f1c8377039",
+    "status": "running"
+  },
+  {
+    "at": 1792223057459,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_6c65650e-3dca-4b83-88ff-04f1c8377039",
+    "status": "idle"
+  },
+  {
+    "at": 1792223057466,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_6c65650e-3dca-4b83-88ff-04f1c8377039",
+    "status": "idle"
+  },
+  {
+    "at": 1792223057594,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_6c65650e-3dca-4b83-88ff-04f1c8377039",
+    "status": "offline"
+  },
+  {
+    "at": 1792223057654,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_6c65650e-3dca-4b83-88ff-04f1c8377039",
+    "status": "offline"
+  },
+  {
+    "at": 1792223057680,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_6c65650e-3dca-4b83-88ff-04f1c8377039",
+    "status": "offline"
+  },
+  {
+    "at": 1792223057718,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_6c65650e-3dca-4b83-88ff-04f1c8377039",
+    "status": "offline"
+  },
+  {
+    "at": 1792223059340,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_6c65650e-3dca-4b83-88ff-04f1c8377039",
+    "status": "offline"
+  },
+  {
+    "at": 1792223059502,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_6c65650e-3dca-4b83-88ff-04f1c8377039",
+    "status": "running"
+  },
+  {
+    "at": 1792223059507,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_6c65650e-3dca-4b83-88ff-04f1c8377039",
+    "status": "idle"
+  },
+  {
+    "at": 1792223060176,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_0bbdf0bf-465c-4ac0-aea2-e1fefb280f2d"
+  },
+  {
+    "at": 1792223060183,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_0bbdf0bf-465c-4ac0-aea2-e1fefb280f2d",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223060330,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_0bbdf0bf-465c-4ac0-aea2-e1fefb280f2d",
+    "status": "running"
+  },
+  {
+    "at": 1792223060333,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_0bbdf0bf-465c-4ac0-aea2-e1fefb280f2d",
+    "status": "idle"
+  },
+  {
+    "at": 1792223060343,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_0bbdf0bf-465c-4ac0-aea2-e1fefb280f2d",
+    "status": "idle"
+  },
+  {
+    "at": 1792223064019,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_6c65650e-3dca-4b83-88ff-04f1c8377039",
+    "status": "offline"
+  },
+  {
+    "at": 1792223064019,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_0bbdf0bf-465c-4ac0-aea2-e1fefb280f2d",
+    "status": "offline"
+  },
+  {
+    "at": 1792223064367,
+    "type": "task_removed",
+    "taskId": "ad_hoc_task_6c65650e-3dca-4b83-88ff-04f1c8377039"
+  },
+  {
+    "at": 1792223064368,
+    "type": "task_removed",
+    "taskId": "ad_hoc_task_0bbdf0bf-465c-4ac0-aea2-e1fefb280f2d"
+  },
+  {
+    "at": 1792223066225,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223071241,
+    "type": "task_upserted",
+    "taskId": "project_task_39e13f7b-8b31-4390-a251-3e1095db2cc5"
+  },
+  {
+    "at": 1792223071241,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223071660,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223071676,
+    "type": "task_upserted",
+    "taskId": "project_task_739953c1-91c8-4e66-8bf7-e823f38b8dfc"
+  },
+  {
+    "at": 1792223071677,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223072013,
+    "type": "task_upserted",
+    "taskId": "project_task_739953c1-91c8-4e66-8bf7-e823f38b8dfc",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223072013,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223072172,
+    "type": "task_worker_status",
+    "taskId": "project_task_739953c1-91c8-4e66-8bf7-e823f38b8dfc",
+    "status": "running"
+  },
+  {
+    "at": 1792223072175,
+    "type": "task_worker_status",
+    "taskId": "project_task_739953c1-91c8-4e66-8bf7-e823f38b8dfc",
+    "status": "idle"
+  },
+  {
+    "at": 1792223072184,
+    "type": "task_upserted",
+    "taskId": "project_task_739953c1-91c8-4e66-8bf7-e823f38b8dfc",
+    "status": "idle"
+  },
+  {
+    "at": 1792223072184,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223074939,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223074954,
+    "type": "task_upserted",
+    "taskId": "project_task_a8ca12fc-eb3c-4f9d-bbd9-4037c1aabbb9"
+  },
+  {
+    "at": 1792223074954,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223074965,
+    "type": "task_upserted",
+    "taskId": "project_task_516bc675-6b6b-4bcd-be91-60c2e54a58da"
+  },
+  {
+    "at": 1792223074965,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223074986,
+    "type": "task_upserted",
+    "taskId": "project_task_336449b7-cdac-42a8-afdf-1dd3b2403dff"
+  },
+  {
+    "at": 1792223074987,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223075633,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_e93f8a5e-71fe-4eb0-8bae-63266afc6896"
+  },
+  {
+    "at": 1792223075648,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_e93f8a5e-71fe-4eb0-8bae-63266afc6896",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223075918,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_e93f8a5e-71fe-4eb0-8bae-63266afc6896",
+    "status": "running"
+  },
+  {
+    "at": 1792223075926,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_e93f8a5e-71fe-4eb0-8bae-63266afc6896",
+    "status": "running"
+  },
+  {
+    "at": 1792223075928,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_e93f8a5e-71fe-4eb0-8bae-63266afc6896",
+    "status": "idle"
+  },
+  {
+    "at": 1792223075936,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_e93f8a5e-71fe-4eb0-8bae-63266afc6896",
+    "status": "idle"
+  },
+  {
+    "at": 1792223076104,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_709a057e-961a-430e-ab16-05e831ac01c6"
+  },
+  {
+    "at": 1792223076111,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_709a057e-961a-430e-ab16-05e831ac01c6",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223076332,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_709a057e-961a-430e-ab16-05e831ac01c6",
+    "status": "running"
+  },
+  {
+    "at": 1792223076338,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_709a057e-961a-430e-ab16-05e831ac01c6",
+    "status": "idle"
+  },
+  {
+    "at": 1792223076345,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_709a057e-961a-430e-ab16-05e831ac01c6",
+    "status": "idle"
+  },
+  {
+    "at": 1792223086925,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223086982,
+    "type": "task_upserted",
+    "taskId": "project_task_957b5568-e404-4816-a232-d7d013175194"
+  },
+  {
+    "at": 1792223086982,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223086992,
+    "type": "task_upserted",
+    "taskId": "project_task_dc31e221-61e1-4b43-9ddb-85bf626583da"
+  },
+  {
+    "at": 1792223086993,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223087001,
+    "type": "task_upserted",
+    "taskId": "project_task_f784515e-65b3-4670-a790-ab40350b59ce"
+  },
+  {
+    "at": 1792223087002,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223087014,
+    "type": "task_upserted",
+    "taskId": "project_task_a7e1de83-8afe-4add-a1ac-add31fab4e5b"
+  },
+  {
+    "at": 1792223087015,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223087596,
+    "type": "task_upserted",
+    "taskId": "project_task_957b5568-e404-4816-a232-d7d013175194",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223087596,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223087770,
+    "type": "task_worker_status",
+    "taskId": "project_task_957b5568-e404-4816-a232-d7d013175194",
+    "status": "running"
+  },
+  {
+    "at": 1792223087772,
+    "type": "task_worker_status",
+    "taskId": "project_task_957b5568-e404-4816-a232-d7d013175194",
+    "status": "idle"
+  },
+  {
+    "at": 1792223087785,
+    "type": "task_upserted",
+    "taskId": "project_task_957b5568-e404-4816-a232-d7d013175194",
+    "status": "idle"
+  },
+  {
+    "at": 1792223087785,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223087934,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_2c824730-6756-43d6-8dc3-bc1c0e322ade"
+  },
+  {
+    "at": 1792223087941,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_2c824730-6756-43d6-8dc3-bc1c0e322ade",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223088098,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_2c824730-6756-43d6-8dc3-bc1c0e322ade",
+    "status": "running"
+  },
+  {
+    "at": 1792223088099,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_2c824730-6756-43d6-8dc3-bc1c0e322ade",
+    "status": "idle"
+  },
+  {
+    "at": 1792223088113,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_2c824730-6756-43d6-8dc3-bc1c0e322ade",
+    "status": "idle"
+  },
+  {
+    "at": 1792223100896,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223100907,
+    "type": "task_upserted",
+    "taskId": "project_task_69bb5af8-0915-48c8-9bbf-ecdf51c32ac5"
+  },
+  {
+    "at": 1792223100907,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223103522,
+    "type": "task_upserted",
+    "taskId": "project_task_191d1826-d03c-4cc2-9b92-9780e19a00a5"
+  },
+  {
+    "at": 1792223103522,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223103709,
+    "type": "task_upserted",
+    "taskId": "project_task_69bb5af8-0915-48c8-9bbf-ecdf51c32ac5",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223103710,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223103867,
+    "type": "task_worker_status",
+    "taskId": "project_task_69bb5af8-0915-48c8-9bbf-ecdf51c32ac5",
+    "status": "running"
+  },
+  {
+    "at": 1792223103869,
+    "type": "task_worker_status",
+    "taskId": "project_task_69bb5af8-0915-48c8-9bbf-ecdf51c32ac5",
+    "status": "idle"
+  },
+  {
+    "at": 1792223103877,
+    "type": "task_upserted",
+    "taskId": "project_task_69bb5af8-0915-48c8-9bbf-ecdf51c32ac5",
+    "status": "idle"
+  },
+  {
+    "at": 1792223103878,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223105658,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223105794,
+    "type": "task_upserted",
+    "taskId": "project_task_4aee9ecb-97d9-4929-90e2-e5fe1de590d5"
+  },
+  {
+    "at": 1792223105794,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223106356,
+    "type": "task_upserted",
+    "taskId": "project_task_4aee9ecb-97d9-4929-90e2-e5fe1de590d5",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223106356,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223106516,
+    "type": "task_worker_status",
+    "taskId": "project_task_4aee9ecb-97d9-4929-90e2-e5fe1de590d5",
+    "status": "running"
+  },
+  {
+    "at": 1792223106519,
+    "type": "task_worker_status",
+    "taskId": "project_task_4aee9ecb-97d9-4929-90e2-e5fe1de590d5",
+    "status": "idle"
+  },
+  {
+    "at": 1792223106526,
+    "type": "task_upserted",
+    "taskId": "project_task_4aee9ecb-97d9-4929-90e2-e5fe1de590d5",
+    "status": "idle"
+  },
+  {
+    "at": 1792223106527,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223109321,
+    "type": "task_upserted",
+    "taskId": "project_task_561bbae2-d413-4613-af17-89d43123aa13"
+  },
+  {
+    "at": 1792223109321,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223109805,
+    "type": "task_upserted",
+    "taskId": "project_task_561bbae2-d413-4613-af17-89d43123aa13",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223109805,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223109989,
+    "type": "task_worker_status",
+    "taskId": "project_task_561bbae2-d413-4613-af17-89d43123aa13",
+    "status": "running"
+  },
+  {
+    "at": 1792223109994,
+    "type": "task_worker_status",
+    "taskId": "project_task_561bbae2-d413-4613-af17-89d43123aa13",
+    "status": "idle"
+  },
+  {
+    "at": 1792223110007,
+    "type": "task_upserted",
+    "taskId": "project_task_561bbae2-d413-4613-af17-89d43123aa13",
+    "status": "idle"
+  },
+  {
+    "at": 1792223110008,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223113295,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223113309,
+    "type": "task_upserted",
+    "taskId": "project_task_29c9d4ee-f128-4783-baf5-0792f61309a7"
+  },
+  {
+    "at": 1792223113309,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223113318,
+    "type": "task_upserted",
+    "taskId": "project_task_335efd7a-6df0-46a3-bc52-1c3aa0d74fd3"
+  },
+  {
+    "at": 1792223113318,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223113331,
+    "type": "task_upserted",
+    "taskId": "project_task_a15b82a2-9a93-4ee3-b8c6-3f368064ca38"
+  },
+  {
+    "at": 1792223113332,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223113945,
+    "type": "task_upserted",
+    "taskId": "project_task_29c9d4ee-f128-4783-baf5-0792f61309a7",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223113946,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223114142,
+    "type": "task_worker_status",
+    "taskId": "project_task_29c9d4ee-f128-4783-baf5-0792f61309a7",
+    "status": "running"
+  },
+  {
+    "at": 1792223114143,
+    "type": "task_worker_status",
+    "taskId": "project_task_29c9d4ee-f128-4783-baf5-0792f61309a7",
+    "status": "idle"
+  },
+  {
+    "at": 1792223114150,
+    "type": "task_upserted",
+    "taskId": "project_task_29c9d4ee-f128-4783-baf5-0792f61309a7",
+    "status": "idle"
+  },
+  {
+    "at": 1792223114151,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223114224,
+    "type": "task_upserted",
+    "taskId": "project_task_a15b82a2-9a93-4ee3-b8c6-3f368064ca38"
+  },
+  {
+    "at": 1792223114225,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223116456,
+    "type": "task_upserted",
+    "taskId": "project_task_29c9d4ee-f128-4783-baf5-0792f61309a7",
+    "status": "offline"
+  },
+  {
+    "at": 1792223116456,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223116502,
+    "type": "task_upserted",
+    "taskId": "project_task_29c9d4ee-f128-4783-baf5-0792f61309a7",
+    "status": "offline"
+  },
+  {
+    "at": 1792223116502,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223116527,
+    "type": "task_worker_status",
+    "taskId": "project_task_29c9d4ee-f128-4783-baf5-0792f61309a7",
+    "status": "offline"
+  },
+  {
+    "at": 1792223119261,
+    "type": "task_upserted",
+    "taskId": "project_task_29c9d4ee-f128-4783-baf5-0792f61309a7",
+    "status": "offline"
+  },
+  {
+    "at": 1792223119265,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223119483,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_4357ad42-7a31-4554-9147-86479e79cab0"
+  },
+  {
+    "at": 1792223119489,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_4357ad42-7a31-4554-9147-86479e79cab0",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223119662,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_4357ad42-7a31-4554-9147-86479e79cab0",
+    "status": "running"
+  },
+  {
+    "at": 1792223119663,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_4357ad42-7a31-4554-9147-86479e79cab0",
+    "status": "idle"
+  },
+  {
+    "at": 1792223119672,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_4357ad42-7a31-4554-9147-86479e79cab0",
+    "status": "idle"
+  },
+  {
+    "at": 1792223121483,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_4357ad42-7a31-4554-9147-86479e79cab0",
+    "status": "offline"
+  },
+  {
+    "at": 1792223121538,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_4357ad42-7a31-4554-9147-86479e79cab0",
+    "status": "offline"
+  },
+  {
+    "at": 1792223121563,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_4357ad42-7a31-4554-9147-86479e79cab0",
+    "status": "offline"
+  },
+  {
+    "at": 1792223124168,
+    "type": "task_upserted",
+    "taskId": "project_task_335efd7a-6df0-46a3-bc52-1c3aa0d74fd3"
+  },
+  {
+    "at": 1792223124168,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223124884,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223125341,
+    "type": "task_upserted",
+    "taskId": "project_task_816e6660-030c-4987-a3d7-96adafd9adc0"
+  },
+  {
+    "at": 1792223125343,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223125866,
+    "type": "task_upserted",
+    "taskId": "project_task_816e6660-030c-4987-a3d7-96adafd9adc0",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223125867,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223126058,
+    "type": "task_worker_status",
+    "taskId": "project_task_816e6660-030c-4987-a3d7-96adafd9adc0",
+    "status": "running"
+  },
+  {
+    "at": 1792223126060,
+    "type": "task_worker_status",
+    "taskId": "project_task_816e6660-030c-4987-a3d7-96adafd9adc0",
+    "status": "running"
+  },
+  {
+    "at": 1792223126060,
+    "type": "task_worker_status",
+    "taskId": "project_task_816e6660-030c-4987-a3d7-96adafd9adc0",
+    "status": "idle"
+  },
+  {
+    "at": 1792223126067,
+    "type": "task_upserted",
+    "taskId": "project_task_816e6660-030c-4987-a3d7-96adafd9adc0",
+    "status": "idle"
+  },
+  {
+    "at": 1792223126067,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223130147,
+    "type": "task_upserted",
+    "taskId": "project_task_eb6e4cf5-642c-42b7-94ef-cb3372823039"
+  },
+  {
+    "at": 1792223130147,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223130648,
+    "type": "task_upserted",
+    "taskId": "project_task_eb6e4cf5-642c-42b7-94ef-cb3372823039",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223130649,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223130676,
+    "type": "task_worker_status",
+    "taskId": "project_task_eb6e4cf5-642c-42b7-94ef-cb3372823039",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223130856,
+    "type": "task_worker_status",
+    "taskId": "project_task_eb6e4cf5-642c-42b7-94ef-cb3372823039",
+    "status": "running"
+  },
+  {
+    "at": 1792223130858,
+    "type": "task_worker_status",
+    "taskId": "project_task_eb6e4cf5-642c-42b7-94ef-cb3372823039",
+    "status": "idle"
+  },
+  {
+    "at": 1792223130874,
+    "type": "task_upserted",
+    "taskId": "project_task_eb6e4cf5-642c-42b7-94ef-cb3372823039",
+    "status": "idle"
+  },
+  {
+    "at": 1792223130875,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223134789,
+    "type": "task_upserted",
+    "taskId": "project_task_9afb5c52-117e-47cf-bb66-740038182091"
+  },
+  {
+    "at": 1792223134798,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223135343,
+    "type": "task_upserted",
+    "taskId": "project_task_9afb5c52-117e-47cf-bb66-740038182091",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223135344,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223135505,
+    "type": "task_worker_status",
+    "taskId": "project_task_9afb5c52-117e-47cf-bb66-740038182091",
+    "status": "running"
+  },
+  {
+    "at": 1792223135507,
+    "type": "task_worker_status",
+    "taskId": "project_task_9afb5c52-117e-47cf-bb66-740038182091",
+    "status": "idle"
+  },
+  {
+    "at": 1792223135514,
+    "type": "task_upserted",
+    "taskId": "project_task_9afb5c52-117e-47cf-bb66-740038182091",
+    "status": "idle"
+  },
+  {
+    "at": 1792223135514,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223144006,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223144156,
+    "type": "task_upserted",
+    "taskId": "project_task_2f62d5d7-bf29-4d5e-84ec-94ddedd3ec1c"
+  },
+  {
+    "at": 1792223144157,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223144717,
+    "type": "task_upserted",
+    "taskId": "project_task_2f62d5d7-bf29-4d5e-84ec-94ddedd3ec1c",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223144717,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223144730,
+    "type": "task_worker_status",
+    "taskId": "project_task_2f62d5d7-bf29-4d5e-84ec-94ddedd3ec1c",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223144898,
+    "type": "task_worker_status",
+    "taskId": "project_task_2f62d5d7-bf29-4d5e-84ec-94ddedd3ec1c",
+    "status": "running"
+  },
+  {
+    "at": 1792223144900,
+    "type": "task_worker_status",
+    "taskId": "project_task_2f62d5d7-bf29-4d5e-84ec-94ddedd3ec1c",
+    "status": "idle"
+  },
+  {
+    "at": 1792223144907,
+    "type": "task_upserted",
+    "taskId": "project_task_2f62d5d7-bf29-4d5e-84ec-94ddedd3ec1c",
+    "status": "idle"
+  },
+  {
+    "at": 1792223144907,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223161402,
+    "type": "task_upserted",
+    "taskId": "project_task_91df7f78-4ce4-4235-aae3-d018a72f21a8"
+  },
+  {
+    "at": 1792223161404,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223161789,
+    "type": "task_upserted",
+    "taskId": "project_task_91df7f78-4ce4-4235-aae3-d018a72f21a8",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223161790,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223161971,
+    "type": "task_worker_status",
+    "taskId": "project_task_91df7f78-4ce4-4235-aae3-d018a72f21a8",
+    "status": "running"
+  },
+  {
+    "at": 1792223161973,
+    "type": "task_worker_status",
+    "taskId": "project_task_91df7f78-4ce4-4235-aae3-d018a72f21a8",
+    "status": "idle"
+  },
+  {
+    "at": 1792223161984,
+    "type": "task_upserted",
+    "taskId": "project_task_91df7f78-4ce4-4235-aae3-d018a72f21a8",
+    "status": "idle"
+  },
+  {
+    "at": 1792223161985,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223200003,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223200013,
+    "type": "task_upserted",
+    "taskId": "project_task_553b1c0e-8910-4059-93e2-8f846ec640c1"
+  },
+  {
+    "at": 1792223200013,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223200022,
+    "type": "task_upserted",
+    "taskId": "project_task_1bcf132c-021b-466e-acf6-02e79577aa1c"
+  },
+  {
+    "at": 1792223200022,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223200033,
+    "type": "task_upserted",
+    "taskId": "project_task_8d16f589-6013-4474-a6f2-9a641fd36e46"
+  },
+  {
+    "at": 1792223200033,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223200042,
+    "type": "task_upserted",
+    "taskId": "project_task_eb36fc1d-7a81-4fd0-9c14-22adc0b078b3"
+  },
+  {
+    "at": 1792223200042,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223200050,
+    "type": "task_upserted",
+    "taskId": "project_task_436e7982-b480-4761-8373-aaf9212166ec"
+  },
+  {
+    "at": 1792223200050,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223200058,
+    "type": "task_upserted",
+    "taskId": "project_task_ec42b1c7-f758-4c73-b3e2-0a4c7e0543a9"
+  },
+  {
+    "at": 1792223200059,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223200066,
+    "type": "task_upserted",
+    "taskId": "project_task_6fe98e24-75e8-4b93-8f69-aaf53f7503cf"
+  },
+  {
+    "at": 1792223200067,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223200074,
+    "type": "task_upserted",
+    "taskId": "project_task_8a69fd97-fb4a-4241-93cd-3a1215b23b25"
+  },
+  {
+    "at": 1792223200075,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223200084,
+    "type": "task_upserted",
+    "taskId": "project_task_8168c592-ae51-4237-9bbf-0dad67e97c8d"
+  },
+  {
+    "at": 1792223200085,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223200092,
+    "type": "task_upserted",
+    "taskId": "project_task_a393a323-0ee2-4b96-9149-5cc72000c682"
+  },
+  {
+    "at": 1792223200092,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223200100,
+    "type": "task_upserted",
+    "taskId": "project_task_40ca81ea-a4a2-4496-b004-c99b046a4984"
+  },
+  {
+    "at": 1792223200101,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223200108,
+    "type": "task_upserted",
+    "taskId": "project_task_8b1af4cb-7da8-4987-904a-915869b12c69"
+  },
+  {
+    "at": 1792223200109,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223200117,
+    "type": "task_upserted",
+    "taskId": "project_task_e3068ccd-e6ea-4659-8ed9-c1a981f04159"
+  },
+  {
+    "at": 1792223200117,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223200125,
+    "type": "task_upserted",
+    "taskId": "project_task_54bbd15b-c0c5-4ced-b050-35cb887ec893"
+  },
+  {
+    "at": 1792223200125,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223200134,
+    "type": "task_upserted",
+    "taskId": "project_task_d9454cb0-21c9-43b9-a75f-cad555f6540e"
+  },
+  {
+    "at": 1792223200134,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223200142,
+    "type": "task_upserted",
+    "taskId": "project_task_ace2acc6-5f8f-4c1b-99b1-b51f09bc9aa8"
+  },
+  {
+    "at": 1792223200143,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223200158,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223200167,
+    "type": "task_upserted",
+    "taskId": "project_task_1a2506a7-94ba-44c8-ad39-0bec0910894b"
+  },
+  {
+    "at": 1792223200167,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223200175,
+    "type": "task_upserted",
+    "taskId": "project_task_3041824a-b3db-40a0-be17-3631f1f8a036"
+  },
+  {
+    "at": 1792223200175,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223200683,
+    "type": "task_upserted",
+    "taskId": "project_task_553b1c0e-8910-4059-93e2-8f846ec640c1",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223200684,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223200845,
+    "type": "task_worker_status",
+    "taskId": "project_task_553b1c0e-8910-4059-93e2-8f846ec640c1",
+    "status": "running"
+  },
+  {
+    "at": 1792223200852,
+    "type": "task_upserted",
+    "taskId": "project_task_553b1c0e-8910-4059-93e2-8f846ec640c1",
+    "status": "running"
+  },
+  {
+    "at": 1792223200853,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223201017,
+    "type": "task_upserted",
+    "taskId": "project_task_1bcf132c-021b-466e-acf6-02e79577aa1c",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223201018,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223201028,
+    "type": "task_worker_status",
+    "taskId": "project_task_1bcf132c-021b-466e-acf6-02e79577aa1c",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223201067,
+    "type": "task_upserted",
+    "taskId": "project_task_553b1c0e-8910-4059-93e2-8f846ec640c1",
+    "status": "running"
+  },
+  {
+    "at": 1792223201068,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223201188,
+    "type": "task_worker_status",
+    "taskId": "project_task_1bcf132c-021b-466e-acf6-02e79577aa1c",
+    "status": "running"
+  },
+  {
+    "at": 1792223201189,
+    "type": "task_worker_status",
+    "taskId": "project_task_1bcf132c-021b-466e-acf6-02e79577aa1c",
+    "status": "running"
+  },
+  {
+    "at": 1792223201189,
+    "type": "task_worker_status",
+    "taskId": "project_task_1bcf132c-021b-466e-acf6-02e79577aa1c",
+    "status": "idle"
+  },
+  {
+    "at": 1792223201195,
+    "type": "task_upserted",
+    "taskId": "project_task_1bcf132c-021b-466e-acf6-02e79577aa1c",
+    "status": "idle"
+  },
+  {
+    "at": 1792223201196,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223201226,
+    "type": "task_upserted",
+    "taskId": "project_task_553b1c0e-8910-4059-93e2-8f846ec640c1",
+    "status": "running"
+  },
+  {
+    "at": 1792223201227,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223201229,
+    "type": "task_worker_status",
+    "taskId": "project_task_553b1c0e-8910-4059-93e2-8f846ec640c1",
+    "status": "running"
+  },
+  {
+    "at": 1792223201230,
+    "type": "task_worker_status",
+    "taskId": "project_task_553b1c0e-8910-4059-93e2-8f846ec640c1",
+    "status": "idle"
+  },
+  {
+    "at": 1792223201326,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_8343bd1c-6ffc-412d-a92c-4ddda488e455"
+  },
+  {
+    "at": 1792223201333,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_8343bd1c-6ffc-412d-a92c-4ddda488e455",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223201475,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_8343bd1c-6ffc-412d-a92c-4ddda488e455",
+    "status": "running"
+  },
+  {
+    "at": 1792223201476,
+    "type": "task_worker_status",
+    "taskId": "ad_hoc_task_8343bd1c-6ffc-412d-a92c-4ddda488e455",
+    "status": "idle"
+  },
+  {
+    "at": 1792223201484,
+    "type": "task_upserted",
+    "taskId": "ad_hoc_task_8343bd1c-6ffc-412d-a92c-4ddda488e455",
+    "status": "idle"
+  },
+  {
+    "at": 1792223201968,
+    "type": "task_upserted",
+    "taskId": "project_task_1a2506a7-94ba-44c8-ad39-0bec0910894b",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223201968,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223202115,
+    "type": "task_worker_status",
+    "taskId": "project_task_1a2506a7-94ba-44c8-ad39-0bec0910894b",
+    "status": "running"
+  },
+  {
+    "at": 1792223202117,
+    "type": "task_worker_status",
+    "taskId": "project_task_1a2506a7-94ba-44c8-ad39-0bec0910894b",
+    "status": "idle"
+  },
+  {
+    "at": 1792223202127,
+    "type": "task_upserted",
+    "taskId": "project_task_1a2506a7-94ba-44c8-ad39-0bec0910894b",
+    "status": "idle"
+  },
+  {
+    "at": 1792223202128,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223251754,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223251772,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223251783,
+    "type": "task_upserted",
+    "taskId": "project_task_74aafb72-36fa-4e35-a0d4-0804c7cb6c5d"
+  },
+  {
+    "at": 1792223251784,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223251794,
+    "type": "task_upserted",
+    "taskId": "project_task_19dbbcb2-f280-40c2-8f89-52846d548b0e"
+  },
+  {
+    "at": 1792223251794,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223251803,
+    "type": "task_upserted",
+    "taskId": "project_task_3631100c-8835-4d61-836a-e19fcbd6678c"
+  },
+  {
+    "at": 1792223251803,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223251814,
+    "type": "task_upserted",
+    "taskId": "project_task_0fbe9309-5472-4b1d-ace8-65338a956ae6"
+  },
+  {
+    "at": 1792223251814,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223252361,
+    "type": "task_upserted",
+    "taskId": "project_task_74aafb72-36fa-4e35-a0d4-0804c7cb6c5d",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223252361,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223252543,
+    "type": "task_worker_status",
+    "taskId": "project_task_74aafb72-36fa-4e35-a0d4-0804c7cb6c5d",
+    "status": "running"
+  },
+  {
+    "at": 1792223252546,
+    "type": "task_worker_status",
+    "taskId": "project_task_74aafb72-36fa-4e35-a0d4-0804c7cb6c5d",
+    "status": "idle"
+  },
+  {
+    "at": 1792223252555,
+    "type": "task_upserted",
+    "taskId": "project_task_74aafb72-36fa-4e35-a0d4-0804c7cb6c5d",
+    "status": "idle"
+  },
+  {
+    "at": 1792223252555,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223252755,
+    "type": "task_upserted",
+    "taskId": "project_task_3631100c-8835-4d61-836a-e19fcbd6678c",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223252756,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223253088,
+    "type": "task_worker_status",
+    "taskId": "project_task_3631100c-8835-4d61-836a-e19fcbd6678c",
+    "status": "running"
+  },
+  {
+    "at": 1792223253095,
+    "type": "task_worker_status",
+    "taskId": "project_task_3631100c-8835-4d61-836a-e19fcbd6678c",
+    "status": "idle"
+  },
+  {
+    "at": 1792223253100,
+    "type": "task_upserted",
+    "taskId": "project_task_3631100c-8835-4d61-836a-e19fcbd6678c",
+    "status": "idle"
+  },
+  {
+    "at": 1792223253101,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223253295,
+    "type": "task_upserted",
+    "taskId": "project_task_0fbe9309-5472-4b1d-ace8-65338a956ae6",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223253295,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223253309,
+    "type": "task_worker_status",
+    "taskId": "project_task_0fbe9309-5472-4b1d-ace8-65338a956ae6",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223253471,
+    "type": "task_worker_status",
+    "taskId": "project_task_0fbe9309-5472-4b1d-ace8-65338a956ae6",
+    "status": "running"
+  },
+  {
+    "at": 1792223253472,
+    "type": "task_worker_status",
+    "taskId": "project_task_0fbe9309-5472-4b1d-ace8-65338a956ae6",
+    "status": "running"
+  },
+  {
+    "at": 1792223253472,
+    "type": "task_worker_status",
+    "taskId": "project_task_0fbe9309-5472-4b1d-ace8-65338a956ae6",
+    "status": "idle"
+  },
+  {
+    "at": 1792223253481,
+    "type": "task_upserted",
+    "taskId": "project_task_0fbe9309-5472-4b1d-ace8-65338a956ae6",
+    "status": "idle"
+  },
+  {
+    "at": 1792223253483,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223256612,
+    "type": "task_upserted",
+    "taskId": "project_task_74aafb72-36fa-4e35-a0d4-0804c7cb6c5d",
+    "status": "idle"
+  },
+  {
+    "at": 1792223256612,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223261615,
+    "type": "task_upserted",
+    "taskId": "project_task_74aafb72-36fa-4e35-a0d4-0804c7cb6c5d",
+    "status": "idle"
+  },
+  {
+    "at": 1792223261616,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223268392,
+    "type": "task_upserted",
+    "taskId": "project_task_74aafb72-36fa-4e35-a0d4-0804c7cb6c5d",
+    "status": "offline"
+  },
+  {
+    "at": 1792223268393,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223268434,
+    "type": "task_upserted",
+    "taskId": "project_task_74aafb72-36fa-4e35-a0d4-0804c7cb6c5d",
+    "status": "offline"
+  },
+  {
+    "at": 1792223268436,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223268459,
+    "type": "task_worker_status",
+    "taskId": "project_task_74aafb72-36fa-4e35-a0d4-0804c7cb6c5d",
+    "status": "offline"
+  },
+  {
+    "at": 1792223268700,
+    "type": "task_upserted",
+    "taskId": "project_task_19dbbcb2-f280-40c2-8f89-52846d548b0e",
+    "status": "initializing"
+  },
+  {
+    "at": 1792223268701,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223268906,
+    "type": "task_worker_status",
+    "taskId": "project_task_19dbbcb2-f280-40c2-8f89-52846d548b0e",
+    "status": "running"
+  },
+  {
+    "at": 1792223268909,
+    "type": "task_worker_status",
+    "taskId": "project_task_19dbbcb2-f280-40c2-8f89-52846d548b0e",
+    "status": "idle"
+  },
+  {
+    "at": 1792223268933,
+    "type": "task_upserted",
+    "taskId": "project_task_19dbbcb2-f280-40c2-8f89-52846d548b0e",
+    "status": "idle"
+  },
+  {
+    "at": 1792223268934,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223269106,
+    "type": "task_upserted",
+    "taskId": "project_task_19dbbcb2-f280-40c2-8f89-52846d548b0e",
+    "status": "offline"
+  },
+  {
+    "at": 1792223269106,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223269151,
+    "type": "task_upserted",
+    "taskId": "project_task_19dbbcb2-f280-40c2-8f89-52846d548b0e",
+    "status": "offline"
+  },
+  {
+    "at": 1792223269157,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223269177,
+    "type": "task_worker_status",
+    "taskId": "project_task_19dbbcb2-f280-40c2-8f89-52846d548b0e",
+    "status": "offline"
+  },
+  {
+    "at": 1792223269800,
+    "type": "task_removed",
+    "taskId": "project_task_3631100c-8835-4d61-836a-e19fcbd6678c"
+  },
+  {
+    "at": 1792223269800,
+    "type": "project_upserted"
+  },
+  {
+    "at": 1792223269921,
+    "type": "project_removed"
+  }
+]

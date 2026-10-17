@@ -1,0 +1,34 @@
+{
+  "runId": "pts_no_project_tool_8b7bee80db1e4d7fa5b790d5d019f5ea",
+  "toolNames": [
+    "delegate_task",
+    "list_projects",
+    "send_message_to"
+  ],
+  "calls": [
+    {
+      "tool": "list_projects",
+      "arguments": {},
+      "isError": false,
+      "result": {
+        "projects": [
+          {
+            "projectId": "project_9eba7106-b343-425b-bc5f-169fb0bc5509",
+            "name": "PTS Mix a7d3",
+            "description": "via old tool"
+          },
+          {
+            "projectId": "project_d7109746-b9c2-4783-ba04-aaec5317161b",
+            "name": "PTS New b4fe renamed",
+            "description": "Changed by update_project."
+          },
+          {
+            "projectId": "project_61bf7e3d-b460-493b-ac69-b3a21bb2481d",
+            "name": "PTS Old ee28",
+            "description": "Patched by the old tool."
+          }
+        ]
+      }
+    }
+  ]
+}

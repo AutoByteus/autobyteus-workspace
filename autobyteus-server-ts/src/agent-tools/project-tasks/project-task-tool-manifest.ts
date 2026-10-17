@@ -5,7 +5,7 @@ import type { TaskAssignmentView } from "../../projects/domain/task-execution-re
 import type { TaskAssignmentViews } from "../../projects/services/task-execution-resource-service.js";
 import type { ProjectTaskContextFile } from "../../projects/domain/project-task-context.js";
 import { ProjectError } from "../../projects/domain/project-errors.js";
-import { PROJECT_TASK_TOOL_NAMES, PROJECT_TASK_TOOL_DESCRIPTIONS, buildProjectTaskToolSchema, parseProjectTaskToolInput, type ProjectTaskToolName } from "./project-task-tool-contract.js";
+import { PROJECT_TASK_TOOL_NAMES, PROJECT_TASK_TOOL_DESCRIPTIONS, buildProjectTaskToolSchema, effectiveProjectTaskToolName, parseProjectTaskToolInput, type ProjectTaskToolName } from "./project-task-tool-contract.js";
 
 const projectAcknowledgement = ({projectId, name, description, workspaces}: Project) => ({
   projectId, name, description,
@@ -46,9 +46,11 @@ export const projectTaskToolError = (error: unknown) => {
   return { error: { code: "PROJECT_OPERATION_FAILED", message: "Project operation failed." } };
 };
 export async function executeProjectTaskTool(name: ProjectTaskToolName, raw: unknown): Promise<unknown> {
-  const input = parseProjectTaskToolInput(name, raw);
-  if (name === "list_projects") return { projects: await getProjectService().listProjectSummaries() };
-  if (name === "create_or_update_project") {
+  // The deprecated create_or_update_project runs as create_project or update_project.
+  const tool = effectiveProjectTaskToolName(name, raw);
+  const input = parseProjectTaskToolInput(tool, raw);
+  if (tool === "list_projects") return { projects: await getProjectService().listProjectSummaries() };
+  if (tool === "create_project" || tool === "update_project") {
     const fields = {
       ...(Object.hasOwn(input, "name") ? {name: input.name as string} : {}),
       ...(Object.hasOwn(input, "description") ? {description: input.description as string} : {}),
@@ -58,7 +60,7 @@ export async function executeProjectTaskTool(name: ProjectTaskToolName, raw: unk
       })) as ProjectWorkspaceInput[]} : {}),
     };
     try {
-      const project = Object.hasOwn(input, "project_id")
+      const project = tool === "update_project"
         ? await getProjectService().patchProjectRecord({projectId: input.project_id as string, ...fields})
         : await getProjectService().createProjectRecord({...fields, name: input.name as string});
       return {project: projectAcknowledgement(project)};
@@ -67,7 +69,7 @@ export async function executeProjectTaskTool(name: ProjectTaskToolName, raw: unk
       throw new ProjectMutationUnconfirmed("Project", error);
     }
   }
-  if (name === "list_project_tasks") {
+  if (tool === "list_project_tasks") {
     const projectId = input.project_id as string;
     const tasks = await getProjectTaskService().listTasks(projectId, input.status as ProjectTaskStatus | undefined);
     const assignments = await getProjectTaskService().assignments(tasks.map(task => task.taskId));
@@ -77,7 +79,7 @@ export async function executeProjectTaskTool(name: ProjectTaskToolName, raw: unk
   // fabricated acknowledgement nor a rollback claim is safe without its result.
   const localContextFiles = (input.context_files as string[] | undefined) ?? [];
   try {
-    if (name === "update_task") {
+    if (tool === "update_task") {
       const ack = await getProjectTaskService().updateTaskById({ taskId: input.task_id as string,
         ...(Object.hasOwn(input, "description") ? { description: input.description as string } : {}),
         ...(Object.hasOwn(input, "status") ? { status: input.status as ProjectTaskStatus } : {}),

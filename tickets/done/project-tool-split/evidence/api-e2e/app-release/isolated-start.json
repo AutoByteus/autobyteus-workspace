@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-54883-ce19",
+    "pid": 88340,
+    "executablePath": "/private/tmp/pts-release-beta2.CgbZ/app/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:54884",
+    "graphqlUrl": "http://127.0.0.1:54884/graphql",
+    "controlEndpoint": "http://127.0.0.1:54883",
+    "controlPort": 54883,
+    "serverPort": 54884,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-FxWBPt",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-FxWBPt/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-54883-ce19.log"
+  }
+}

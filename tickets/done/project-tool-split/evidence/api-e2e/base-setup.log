@@ -1,0 +1,101 @@
+Preparing worktree (detached HEAD 8a970f214c)
+Updating files:  10% (7192/69558)Updating files:  11% (7652/69558)Updating files:  12% (8347/69558)Updating files:  13% (9043/69558)Updating files:  13% (9156/69558)Updating files:  14% (9739/69558)Updating files:  15% (10434/69558)Updating files:  16% (11130/69558)Updating files:  17% (11825/69558)Updating files:  18% (12521/69558)Updating files:  19% (13217/69558)Updating files:  19% (13716/69558)Updating files:  20% (13912/69558)Updating files:  21% (14608/69558)Updating files:  22% (15303/69558)Updating files:  23% (15999/69558)Updating files:  24% (16694/69558)Updating files:  24% (17275/69558)Updating files:  25% (17390/69558)Updating files:  26% (18086/69558)Updating files:  27% (18781/69558)Updating files:  28% (19477/69558)Updating files:  28% (19769/69558)Updating files:  29% (20172/69558)Updating files:  30% (20868/69558)Updating files:  31% (21563/69558)Updating files:  31% (21652/69558)Updating files:  32% (22259/69558)Updating files:  33% (22955/69558)Updating files:  34% (23650/69558)Updating files:  35% (24346/69558)Updating files:  35% (24726/69558)Updating files:  36% (25041/69558)Updating files:  37% (25737/69558)Updating files:  38% (26433/69558)Updating files:  38% (27072/69558)Updating files:  39% (27128/69558)Updating files:  40% (27824/69558)Updating files:  41% (28519/69558)Updating files:  42% (29215/69558)Updating files:  42% (29769/69558)Updating files:  43% (29910/69558)Updating files:  44% (30606/69558)Updating files:  45% (31302/69558)Updating files:  45% (31755/69558)Updating files:  46% (31997/69558)Updating files:  47% (32693/69558)Updating files:  48% (33388/69558)Updating files:  49% (34084/69558)Updating files:  50% (34779/69558)Updating files:  51% (35475/69558)Updating files:  51% (36113/69558)Updating files:  52% (36171/69558)Updating files:  53% (36866/69558)Updating files:  54% (37562/69558)Updating files:  55% (38257/69558)Updating files:  56% (38953/69558)Updating files:  57% (39649/69558)Updating files:  57% (40145/69558)Updating files:  58% (40344/69558)Updating files:  59% (41040/69558)Updating files:  60% (41735/69558)Updating files:  61% (42431/69558)Updating files:  62% (43126/69558)Updating files:  62% (43576/69558)Updating files:  63% (43822/69558)Updating files:  64% (44518/69558)Updating files:  65% (45213/69558)Updating files:  66% (45909/69558)Updating files:  67% (46604/69558)Updating files:  68% (47300/69558)Updating files:  69% (47996/69558)Updating files:  69% (47998/69558)Updating files:  70% (48691/69558)Updating files:  71% (49387/69558)Updating files:  72% (50082/69558)Updating files:  72% (50727/69558)Updating files:  73% (50778/69558)Updating files:  74% (51473/69558)Updating files:  75% (52169/69558)Updating files:  76% (52865/69558)Updating files:  77% (53560/69558)Updating files:  77% (53832/69558)Updating files:  78% (54256/69558)Updating files:  79% (54951/69558)Updating files:  79% (55442/69558)Updating files:  80% (55647/69558)Updating files:  81% (56342/69558)Updating files:  82% (57038/69558)Updating files:  83% (57734/69558)Updating files:  84% (58429/69558)Updating files:  85% (59125/69558)Updating files:  85% (59420/69558)Updating files:  86% (59820/69558)Updating files:  87% (60516/69558)Updating files:  88% (61212/69558)Updating files:  89% (61907/69558)Updating files:  89% (62193/69558)Updating files:  90% (62603/69558)Updating files:  91% (63298/69558)Updating files:  92% (63994/69558)Updating files:  93% (64689/69558)Updating files:  94% (65385/69558)Updating files:  94% (65629/69558)Updating files:  95% (66081/69558)Updating files:  96% (66776/69558)Updating files:  97% (67472/69558)Updating files:  98% (68167/69558)Updating files:  99% (68863/69558)Updating files:  99% (69021/69558)Updating files: 100% (69558/69558)Updating files: 100% (69558/69558), done.
+HEAD is now at 8a970f214c docs(migration): require a shape inventory and faithful synthesized fixtures
+Scope: all 13 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1689
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 1689, reused 1687, downloaded 0, added 0
+Progress: resolved 1689, reused 1687, downloaded 0, added 333
+Progress: resolved 1689, reused 1687, downloaded 0, added 575
+Progress: resolved 1689, reused 1687, downloaded 0, added 753
+Progress: resolved 1689, reused 1687, downloaded 0, added 983
+Progress: resolved 1689, reused 1687, downloaded 0, added 1477
+Progress: resolved 1689, reused 1687, downloaded 0, added 1689, done
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split-api-base/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split-api-base/autobyteus-application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split-api-base/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split-api-base/autobyteus-application-devkit/dist/cli.js'
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] repaired: /Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split-api-base/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+autobyteus-ts postinstall: Done
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split-api-base/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split-api-base/applications/brief-studio/node_modules/@autobyteus/application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split-api-base/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split-api-base/applications/socratic-math-teacher/node_modules/@autobyteus/application-devkit/dist/cli.js'
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @google/genai@2.24.0.                               │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 8.3s using pnpm v10.28.2
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split-api-base/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split-api-base/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 137ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Help us improve the Prisma ORM for everyone. Share your feedback in a short 2-min survey: https://pris.ly/orm/survey/release-5-22
+
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split-api-base/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split-api-base/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 112ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to react to database changes in your app as they happen? Discover how with Pulse: https://pris.ly/tip-1-pulse
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.23                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split-api-base/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split-api-base/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+exit 0

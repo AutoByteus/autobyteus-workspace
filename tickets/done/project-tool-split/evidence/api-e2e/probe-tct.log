@@ -1,0 +1,6 @@
+
+> autobyteus@1.5.5-beta.2 test:e2e:task-closure-tree /Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split/autobyteus-web
+> node tests/e2e/task-closure-tree-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split/tickets/in-progress/project-tool-split/evidence/api-e2e/probe-tct
+
+Task closure tree probe: Pass. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/project-tool-split/tickets/in-progress/project-tool-split/evidence/api-e2e/probe-tct/evidence.json
+exit 0

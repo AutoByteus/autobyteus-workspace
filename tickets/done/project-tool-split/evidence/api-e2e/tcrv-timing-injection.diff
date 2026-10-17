@@ -1,0 +1,13 @@
+diff --git a/autobyteus-server-ts/tests/e2e/projects/task-closure-root-visibility.e2e.test.ts b/autobyteus-server-ts/tests/e2e/projects/task-closure-root-visibility.e2e.test.ts
+index 031f4be9c3..cf91a818c3 100644
+--- a/autobyteus-server-ts/tests/e2e/projects/task-closure-root-visibility.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/projects/task-closure-root-visibility.e2e.test.ts
+@@ -268,7 +268,7 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
+     send(callTool("send_message_to", { target_agent_run_id: aAssigned.agentRunId, content: "Status of Task A?" }));
+     // ... and to the copy Task A's worker sub-delegated to (messaging a copy by its run ID).
+     const subCopy = aNodes.find((node) => node !== aAssigned && node.agentRunId)!;
+-    send(callTool("send_message_to", { target_agent_run_id: subCopy.agentRunId, content: "Status of the sub-work?" }));
++    setTimeout(() => send(callTool("send_message_to", { target_agent_run_id: subCopy.agentRunId, content: "Status of the sub-work?" })), 4_000); // PTS-API-E2E TEMP timing injection
+     const touchesTaskA = (message: Record<string, any>) => taskARefs.some((ref) => JSON.stringify(message).includes((ref as any).agentRunId));
+     let before = snapshotOf(view.frames);
+     await until(async () => {

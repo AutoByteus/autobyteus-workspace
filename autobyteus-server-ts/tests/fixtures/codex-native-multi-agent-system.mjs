@@ -126,7 +126,7 @@ const mcpChecks = async thread => {
   const rejectedTarget = await call("send_message_to", { target_agent_run_id: "native-policy-probe-missing-run", content: "No target must be started." });
   assert.equal(rejectedTarget.isError, true); assert.equal(rejectedTarget.structuredContent.accepted, false);
   assert.equal(rejectedTarget.structuredContent.code, "TARGET_AGENT_RUN_NOT_ACTIVE");
-  await assert.rejects(call("create_or_update_project", { name: "Must not be created" }), /tool 'create_or_update_project' is disabled/);
+  await assert.rejects(call("create_project", { name: "Must not be created" }), /tool 'create_project' is disabled/);
   return { enabledTools: [...serverConfig.enabled_tools], toolNames: Object.keys(status.tools),
     handoff: handoff.structuredContent, projects: projects.structuredContent, rejectedTarget: rejectedTarget.structuredContent,
     ungrantedToolRejected: true };
