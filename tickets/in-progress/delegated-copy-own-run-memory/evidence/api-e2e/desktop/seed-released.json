@@ -1,0 +1,54 @@
+{
+  "crewBuilder": {
+    "id": "crew-builder",
+    "name": "Crew Builder"
+  },
+  "crewChecker": {
+    "id": "crew-checker",
+    "name": "Crew Checker"
+  },
+  "buildCrew": {
+    "id": "build-crew",
+    "name": "Build Crew"
+  },
+  "squadLead": {
+    "id": "squad-lead",
+    "name": "Squad Lead"
+  },
+  "squadPeer": {
+    "id": "squad-peer",
+    "name": "Squad Peer"
+  },
+  "researchSquad": {
+    "id": "research-squad",
+    "name": "Research Squad"
+  },
+  "forestLead": {
+    "id": "forest-lead",
+    "name": "Forest Lead"
+  },
+  "forestMate": {
+    "id": "forest-mate",
+    "name": "Forest Mate"
+  },
+  "forestTeam": {
+    "id": "forest-team",
+    "name": "Forest Team"
+  },
+  "studioManager": {
+    "id": "studio-manager",
+    "name": "Studio Manager"
+  },
+  "studio": {
+    "id": "studio",
+    "name": "Studio"
+  },
+  "codeReviewer": {
+    "id": "code-reviewer",
+    "name": "Code Reviewer"
+  },
+  "hubAssistant": {
+    "id": "hub-assistant",
+    "name": "Hub Assistant"
+  }
+}

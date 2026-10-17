@@ -437,10 +437,11 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     const launches = (await readBytes(process.env["AGY_FAKE_ARGV_LOG"]!)).trim().split("\n").slice(argvBefore).map((line) => JSON.parse(line).argv as string[]);
     const resumed = launches.filter((argv) => argv.includes("--conversation")).map((argv) => argv[argv.indexOf("--conversation") + 1]!);
     expect(resumed, JSON.stringify(launches)).toHaveLength(1);
-    // The resumed provider conversation is the one stored on this worker's node of the root's run tree before DONE.
+    // The resumed provider conversation is the one stored with this worker before DONE: a task agent owns its facts, so its
+    // platform session id is in its own run_metadata.json (delegated-copy-own-run-memory REQ-004, contract §3.1).
     const conversationHits = spawnSync("grep", ["-rl", resumed[0]!, path.join(dataDir, "memory")], { encoding: "utf8" }).stdout.trim().split("\n").filter(Boolean);
     const boundToWorker = (await Promise.all(conversationHits.map(async (file) => objectsIn(JSON.parse(await readBytes(file)))
-      .some((node) => (node.agentRunId ?? node.agent_run_id) === worker && JSON.stringify(node).includes(resumed[0]!))))).some(Boolean);
+      .some((node) => (node.agentRunId ?? node.agent_run_id ?? node.runId) === worker && JSON.stringify(node).includes(resumed[0]!))))).some(Boolean);
     expect(boundToWorker, JSON.stringify(conversationHits)).toBe(true);
     // Only the worker's entry is open; the Task status is what the agent set; task.json was not written (REQ-003/004).
     const entries = await closedAtByKey(aDir);

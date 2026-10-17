@@ -240,3 +240,7 @@
   `/software_engineering_team/implementation_engineer`, which resumes on SR-009. Reviewer notes passed to the
   implementer: `configured_place` own files keep `agentDefinitionId` (AC-013); versioned string values (e.g.
   `"interrupt_cancel_queued_v1"`) are values, not names, and are not renamed; the U-5 dead-path removal needs evidence.
+- Editorial (2026-10-17): DS-005's arrow chain still read `MessageStore.write(composed list)`; aligned with its narrative and contract L6 (append only the new messages). No design change.
+- SR-009 addendum (2026-10-17, code reviewer's scope question routed from API/E2E): DEC-017 keep REQ-017; AC-020
+  locator sub-case verified by composition (no end-to-end fixture, the user's decision; no follow-up Task). DEC-018:
+  the Memory page groups task agents under the definition's name (id only as fallback), clarifying D-5. User informed.

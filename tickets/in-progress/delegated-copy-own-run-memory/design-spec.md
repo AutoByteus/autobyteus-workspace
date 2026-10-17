@@ -217,7 +217,7 @@ Task agent, task agent team, coordinating run, delegating agent, link, own file 
 
 - DS-001: `delegate_task → RootTaskExecutionLifecycle → <Family>TaskExecutionAdapter.planActivation → registry / TeamRun → handles (memoryDir = layout(placement)) → commit → TreeStore.write(composed tree) → [split] write the new task agent's own file → write links tree → release work`
 - DS-003: `root load → TreeStore.read(dir) → links tree → for each link: own file (task-agent reader) → compose today's in-memory record → execution index (unchanged)`
-- DS-005: `engine.deliver → adapter.commitAppend(messages) → family persistence coordinator (lock) → MessageStore.write(composed list) → [split] receiver's log, then sender's log (only the logs the new message belongs to)`
+- DS-005: `engine.deliver → adapter.commitAppend(new messages) → family persistence coordinator (lock) → MessageStore.append(new messages) → receiver's run log, then sender's run log (a task agent's own log only when it is available; each entry added only if its messageId is absent; no log rewritten from the loaded list)`
 
 ## Spine Narratives (Mandatory)
 
