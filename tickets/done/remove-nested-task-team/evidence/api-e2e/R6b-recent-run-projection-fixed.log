@@ -1,0 +1,144 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:40816) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts[2m > [22m[2mrecent run projection GraphQL e2e
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-Ga3RWE
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-Ga3RWE/.env
+AgentRunManager initialized.
+
+[90mstderr[2m | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts[2m > [22m[2mrecent run projection GraphQL e2e[2m > [22m[2mhydrates native reasoning through standalone and team GraphQL projections
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-Ga3RWE/memory/agents/native-reasoning-standalone/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts[2m > [22m[2mrecent run projection GraphQL e2e[2m > [22m[2mhydrates native reasoning through standalone and team GraphQL projections
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-Ga3RWE/memory/agent_teams/native-reasoning-team/native-reasoning-member/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts[2m > [22m[2mrecent run projection GraphQL e2e[2m > [22m[2mhydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-Ga3RWE/memory/agents/system-instruction-baseline/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts[2m > [22m[2mrecent run projection GraphQL e2e[2m > [22m[2mhydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-Ga3RWE/memory/agents/system-instruction-standalone/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts[2m > [22m[2mrecent run projection GraphQL e2e[2m > [22m[2mhydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-Ga3RWE/memory/agent_teams/system-instruction-team/system-instruction-member/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts[2m > [22m[2mrecent run projection GraphQL e2e[2m > [22m[2mprojects the newest 100 events from a >=5 MB active file without reading or changing its standalone archive
+[22m[39m[recent-run-projection-metrics] {"fixtureBytes":5416102,"canonicalActiveEvents":620,"returnedConversationRows":100,"returnedActivityRows":0,"payloadBytes":868832,"totalMs":24.268}
+
+[90mstderr[2m | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts[2m > [22m[2mrecent run projection GraphQL e2e[2m > [22m[2mtraverses exactly 275 team-member active events and rejects its cursor for another subject
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-Ga3RWE/memory/agents/active-page-275-other-subject/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts[2m > [22m[2mrecent run projection GraphQL e2e[2m > [22m[2mserializes production media and shallow tool state without multi-megabyte result or log payload
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-Ga3RWE/memory/agents/active-page-closed-payload/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts[2m > [22m[2mrecent run projection GraphQL e2e[2m > [22m[2mserializes production media and shallow tool state without multi-megabyte result or log payload
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-Ga3RWE/memory/agents/active-page-closed-payload/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts[2m > [22m[2mrecent run projection GraphQL e2e[2m > [22m[2mserializes production media and shallow tool state without multi-megabyte result or log payload
+[22m[39m[active-trace-page-closed-payload-metrics] {"fixtureBytes":4861018,"returnedEvents":3,"returnedVisuals":7,"serializedEventBytes":2386,"totalMs":10.001}
+
+ [32m✓[39m tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 548[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m9 passed[39m[22m[90m (9)[39m
+[2m   Start at [22m 11:35:55
+[2m   Duration [22m 7.12s[2m (transform 4.41s, setup 28ms, import 6.02s, tests 548ms, environment 0ms)[22m
+

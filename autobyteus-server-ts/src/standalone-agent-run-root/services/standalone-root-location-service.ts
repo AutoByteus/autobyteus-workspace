@@ -38,45 +38,58 @@ type ActiveRoots = Readonly<{
 }>;
 type AgentLookup = { rootRunId?: string | null; agentRunId?: string | null; memberAddress?: string | null; containingTeamRunId?: string | null };
 const STORED_ONLY: ActiveRoots = Object.freeze({ getActiveTree: () => null });
+const warnToConsole = (message: string): void => console.warn(message);
+
+/** One standalone run's tree and its index, or `null` for a run without children. */
+type ReadRoot = Readonly<{ tree: StandaloneRootTreeSnapshot; index: StandaloneRootExecutionIndex }> | null;
 
 /**
  * The third location family: children of Agent roots, stored under
  * `memory/agents/<hostRunId>/collaboration/`. A run without a package has no children.
+ *
+ * Containment (DESIGN.md rule 7): a lookup without a root ID scans every standalone run; a run whose
+ * collaboration tree cannot be read is skipped with a warning naming it, so one bad run never breaks
+ * lookups for the others. A lookup with an explicit root ID still throws, so opening that run reports
+ * its error.
  */
 export class StandaloneRootLocationService {
   private readonly layout: AgentMemoryLayout;
   private readonly store: StandaloneRootPackageStore;
   private readonly roots: ActiveRoots;
+  private readonly warn: (message: string) => void;
 
-  constructor(input: { memoryDir: string; roots?: ActiveRoots; store?: StandaloneRootPackageStore }) {
+  constructor(input: { memoryDir: string; roots?: ActiveRoots; store?: StandaloneRootPackageStore; warn?: (message: string) => void }) {
     this.layout = new AgentMemoryLayout(input.memoryDir);
     this.store = input.store ?? new StandaloneRootPackageStore();
     this.roots = input.roots ?? STORED_ONLY;
+    this.warn = input.warn ?? warnToConsole;
   }
 
   async findAgent(input: AgentLookup): Promise<LocatedStandaloneRootAgentExecution | null> {
+    const scan = !this.requestedRootRunId(input);
     for (const hostRunId of await this.lookupHostRunIds(input)) {
-      const located = this.findInTree(await this.readTree(hostRunId), input);
+      const located = this.findInRoot(await this.readRoot(hostRunId, scan), input);
       if (located) return located;
     }
     return null;
   }
 
   findAgentSync(input: AgentLookup): LocatedStandaloneRootAgentExecution | null {
+    const scan = !this.requestedRootRunId(input);
     for (const hostRunId of this.lookupHostRunIdsSync(input)) {
-      const located = this.findInTree(this.readTreeSync(hostRunId), input);
+      const located = this.findInRoot(this.readRootSync(hostRunId, scan), input);
       if (located) return located;
     }
     return null;
   }
 
   async listAgents(input: { rootRunId?: string | null } = {}): Promise<LocatedStandaloneRootAgentExecution[]> {
+    const scan = !this.requestedRootRunId(input);
     const output: LocatedStandaloneRootAgentExecution[] = [];
     for (const hostRunId of await this.lookupHostRunIds(input)) {
-      const tree = await this.readTree(hostRunId);
-      if (!tree) continue;
-      const index = new StandaloneRootExecutionIndex(tree);
-      output.push(...index.listChildAgents().map((agent) => this.toLocation(tree, index, agent.agentRunId)));
+      const root = await this.readRoot(hostRunId, scan);
+      if (!root) continue;
+      output.push(...root.index.listChildAgents().map((agent) => this.toLocation(root.tree, root.index, agent.agentRunId)));
     }
     return output;
   }
@@ -105,14 +118,48 @@ export class StandaloneRootLocationService {
       .sort();
   }
 
+  private requestedRootRunId(input: { rootRunId?: string | null }): string | null {
+    return input.rootRunId?.trim() || null;
+  }
+
   private async lookupHostRunIds(input: { rootRunId?: string | null }): Promise<string[]> {
-    const requested = input.rootRunId?.trim() || null;
+    const requested = this.requestedRootRunId(input);
     return requested ? [requested] : this.listHostRunIds();
   }
 
   private lookupHostRunIdsSync(input: { rootRunId?: string | null }): string[] {
-    const requested = input.rootRunId?.trim() || null;
+    const requested = this.requestedRootRunId(input);
     return requested ? [requested] : this.listHostRunIdsSync();
+  }
+
+  /** Reads one run's tree and builds its index; in a scan, a tree that cannot be read is skipped with a warning. */
+  private async readRoot(hostRunId: string, scan: boolean): Promise<ReadRoot> {
+    try {
+      return this.indexed(await this.readTree(hostRunId));
+    } catch (error) {
+      if (!scan) throw error;
+      this.warnSkipped(hostRunId, error);
+      return null;
+    }
+  }
+
+  private readRootSync(hostRunId: string, scan: boolean): ReadRoot {
+    try {
+      return this.indexed(this.readTreeSync(hostRunId));
+    } catch (error) {
+      if (!scan) throw error;
+      this.warnSkipped(hostRunId, error);
+      return null;
+    }
+  }
+
+  private indexed(tree: StandaloneRootTreeSnapshot | null): ReadRoot {
+    return tree ? Object.freeze({ tree, index: new StandaloneRootExecutionIndex(tree) }) : null;
+  }
+
+  private warnSkipped(hostRunId: string, error: unknown): void {
+    const reason = error instanceof Error ? error.message : String(error);
+    this.warn(`Skipping standalone run '${hostRunId}': its collaboration tree cannot be read: ${reason}`);
   }
 
   private treePath(hostRunId: string): string {
@@ -130,12 +177,9 @@ export class StandaloneRootLocationService {
       ?? this.store.readTreeSync(this.layout.getAgentRunCollaborationDirPath(hostRunId), hostRunId);
   }
 
-  private findInTree(
-    tree: StandaloneRootTreeSnapshot | null,
-    input: AgentLookup,
-  ): LocatedStandaloneRootAgentExecution | null {
-    if (!tree) return null;
-    const index = new StandaloneRootExecutionIndex(tree);
+  private findInRoot(root: ReadRoot, input: AgentLookup): LocatedStandaloneRootAgentExecution | null {
+    if (!root) return null;
+    const { tree, index } = root;
     const agentRunId = input.agentRunId?.trim() || null;
     const memberAddress = input.memberAddress?.trim() || null;
     const containingTeamRunId = input.containingTeamRunId?.trim() || null;

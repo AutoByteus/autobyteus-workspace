@@ -1,4 +1,4 @@
-import type { ConfiguredMemberExecutionDto, TeamRunExecutionTreeDto } from '@autobyteus/team-stream-contracts'
+import type { TeamRunExecutionTreeDto } from '@autobyteus/team-stream-contracts'
 import type { AgentOrgDefinition } from '~/stores/agentOrgDefinitionStore'
 import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore'
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
@@ -354,25 +354,16 @@ export const buildSavedRunMemberTree = (
       workspaceRootPath: launch.workspace_root_path,
     })
     const root = values('/', teamLaunch(input.tree.root_team.default_launch_configuration))
-    const visit = (members: readonly ConfiguredMemberExecutionDto[], parent: RunSettingsValues, coordinator: string): RunMemberNode[] =>
-      members.map((member) => {
-        if (member.kind === 'configured_agent') {
-          return memberNode({
-            key: member.address, kind: 'agent', name: nameAt(member.address), isCoordinator: member.address === coordinator,
-            values: { ...values(member.address, teamLaunch(member.launch_configuration)), workspace: parent.workspace },
-            parentValues: parent, fields: MEMBER_RUN_SETTING_FIELDS,
-          }, deps)
-        }
-        const teamValues = { ...values(member.address, teamLaunch(member.default_launch_configuration)), workspace: parent.workspace }
-        return memberNode({
-          key: member.address, kind: 'team', name: nameAt(member.address), values: teamValues, parentValues: parent,
-          fields: MEMBER_RUN_SETTING_FIELDS, children: visit(member.members, teamValues, member.coordinator_address),
-        }, deps)
-      })
+    // Teams are flat: the root Team's members are its Agents.
+    const coordinator = input.tree.root_team.coordinator_address
     return Object.freeze({
       name: input.tree.root_team.team_definition_name,
       root,
-      nodes: Object.freeze(visit(input.tree.root_team.members, root, input.tree.root_team.coordinator_address)),
+      nodes: Object.freeze(input.tree.root_team.members.map((member) => memberNode({
+        key: member.address, kind: 'agent', name: nameAt(member.address), isCoordinator: member.address === coordinator,
+        values: { ...values(member.address, teamLaunch(member.launch_configuration)), workspace: root.workspace },
+        parentValues: root, fields: MEMBER_RUN_SETTING_FIELDS,
+      }, deps))),
     })
   }
   const org = input.tree.rootOrg

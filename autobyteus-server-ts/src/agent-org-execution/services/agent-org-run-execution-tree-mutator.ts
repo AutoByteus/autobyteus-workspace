@@ -15,13 +15,11 @@ import type {
   ConfiguredTeamExecutionNode,
   TaskExecution,
   TaskTeamExecution,
-  TaskTeamMemberExecution,
-  TaskTeamNestedTeamExecution,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import { validateAgentOrgRunExecutionTreePayload } from "../../run-history/store/agent-org-run-execution-tree-schema.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../domain/agent-org-run-execution-tree.js";
 
-type TeamWithTasks = ConfiguredTeamExecutionNode | TaskTeamExecution | TaskTeamNestedTeamExecution;
+type TeamWithTasks = ConfiguredTeamExecutionNode | TaskTeamExecution;
 
 const mapTeam = (
   team: TeamWithTasks,
@@ -29,13 +27,10 @@ const mapTeam = (
   change: (team: TeamWithTasks) => TeamWithTasks,
 ): TeamWithTasks => {
   if (team.teamRunId === targetTeamRunId) return change(team);
-  const members = team.members.map((member) => "agentRunId" in member
-    ? member
-    : mapTeam(member, targetTeamRunId, change) as TaskTeamNestedTeamExecution);
   const taskExecutions = team.taskExecutions.map((task) => "agentRunId" in task
     ? task
     : mapTeam(task, targetTeamRunId, change) as TaskTeamExecution);
-  return { ...team, members, taskExecutions } as TeamWithTasks;
+  return { ...team, taskExecutions } as TeamWithTasks;
 };
 
 export const addAgentOrgTaskExecution = (input: {
@@ -96,14 +91,9 @@ export const adoptAgentOrgPlatformBinding = (input: {
     changed = true;
     return { ...value, platformAgentRunId: input.binding.platformAgentRunId };
   };
-  const taskMember = (value: TaskTeamMemberExecution): TaskTeamMemberExecution => "agentRunId" in value ? agent(value) : {
-    ...value,
-    members: value.members.map(taskMember),
-    taskExecutions: value.taskExecutions.map(task),
-  };
   const task = (value: TaskExecution): TaskExecution => "agentRunId" in value ? agent(value) : {
     ...value,
-    members: value.members.map(taskMember),
+    members: value.members.map(agent),
     taskExecutions: value.taskExecutions.map(task),
   };
   const configured = (value: ConfiguredExecutionNode): ConfiguredExecutionNode => "agentRunId" in value ? agent(value) : {
@@ -144,14 +134,9 @@ export const replaceAgentOrgPlatformBindingWithoutConversation = (input: {
     }
     return { ...value, platformAgentRunId: input.replacement.binding.platformAgentRunId };
   };
-  const taskMember = (value: TaskTeamMemberExecution): TaskTeamMemberExecution => "agentRunId" in value ? agent(value) : {
-    ...value,
-    members: value.members.map(taskMember),
-    taskExecutions: value.taskExecutions.map(task),
-  };
   const task = (value: TaskExecution): TaskExecution => "agentRunId" in value ? agent(value) : {
     ...value,
-    members: value.members.map(taskMember),
+    members: value.members.map(agent),
     taskExecutions: value.taskExecutions.map(task),
   };
   const configured = (value: ConfiguredExecutionNode): ConfiguredExecutionNode => "agentRunId" in value ? agent(value) : {

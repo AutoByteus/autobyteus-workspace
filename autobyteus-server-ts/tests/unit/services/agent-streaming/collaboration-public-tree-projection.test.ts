@@ -44,7 +44,7 @@ const setup = (kind: "agent" | "agent_org", linked = true) => {
 afterEach(() => vi.restoreAllMocks());
 
 describe.each(["agent", "agent_org"] as const)("%s camel-case public projection", kind => {
-  it("keeps the entire public nested forest and identity; dev-residue Task stamps never reach the current tree (C-1)", () => {
+  it("keeps the entire public delegation forest and identity; dev-residue Task stamps never reach the current tree (C-1)", () => {
     const current = setup(kind), before = JSON.stringify(current.tree), view = current.projectView();
     const publicTree = view.root_subject_kind === "agent" ? view.root_agent.execution_tree : view.root_org.execution_tree;
     // Unstamped current trees already ARE the strict public shape. Exact equality
@@ -57,7 +57,7 @@ describe.each(["agent", "agent_org"] as const)("%s camel-case public projection"
     expect(before).not.toContain("taskLifetime");
     expect(JSON.stringify(current.tree)).toBe(JSON.stringify(setup(kind, false).tree));
   });
-  it.each(["solo-copy", "packet-copy", "nested-task-team", "nested-helper", "follow-on-agent", "follow-on-team", "review-helper", "shared-helper", "borrowed-run", "shared-team"])("projects the actual indexed started execution %s", id => {
+  it.each(["solo-copy", "packet-copy", "delegated-subteam", "subteam-helper", "follow-on-agent", "follow-on-team", "review-helper", "shared-helper", "borrowed-run", "shared-team"])("projects the actual indexed started execution %s", id => {
     const current = setup(kind), unlinked = setup(kind, false);
     const reference = id.endsWith("team") || id === "packet-copy" ? { teamRunId: id } : { agentRunId: id };
     const indexed = current.index.getTaskExecution(reference)!;

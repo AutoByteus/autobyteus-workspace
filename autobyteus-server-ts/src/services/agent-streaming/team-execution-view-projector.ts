@@ -1,10 +1,10 @@
 import {
   parseTeamStreamServerMessage,
   type AgentLaunchConfigurationDto,
-  type ConfiguredMemberExecutionDto,
+  type ConfiguredAgentExecutionDto,
   type LaunchConfigurationSourceDto,
   type TaskExecutionDto,
-  type TaskTeamMemberExecutionDto,
+  type TaskTeamAgentExecutionDto,
   type TeamCommunicationMessageDto,
   type TeamReferenceFileDto,
   type TeamRunExecutionTreeDto,
@@ -19,9 +19,8 @@ import type {
   ConfiguredExecutionNode,
   RootConfiguredTeamExecutionNode,
   TaskExecution,
+  TaskTeamAgentExecution,
   TaskTeamExecution,
-  TaskTeamMemberExecution,
-  TaskTeamNestedTeamExecution,
   TeamRunExecutionTreeSnapshot,
 } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import { TeamRunEventSourceType, type TeamRunEvent } from "../../agent-team-execution/domain/team-run-event.js";
@@ -180,7 +179,7 @@ const optionalSelection = <K extends "user_launch_selection" | "user_team_launch
 const optionalSource = <K extends string>(key: K, source: LaunchConfigurationSource | undefined) =>
   (source ? { [key]: projectLaunchSource(source) } : {}) as Partial<Record<K, LaunchConfigurationSourceDto>>;
 
-const projectConfiguredMember = (member: ConfiguredExecutionNode): ConfiguredMemberExecutionDto => {
+const projectConfiguredMember = (member: ConfiguredExecutionNode): ConfiguredAgentExecutionDto => {
   return {
     kind: "configured_agent", address: member.address, agent_definition_id: member.agentDefinitionId,
     role: member.role, description: member.description, agent_run_id: member.agentRunId,
@@ -230,19 +229,10 @@ const projectTaskExecution = (execution: TaskExecution): TaskExecutionDto => {
   };
 };
 
-const projectTaskTeamMember = (member: TaskTeamMemberExecution): TaskTeamMemberExecutionDto => {
-  if ("agentRunId" in member) return {
-    kind: "task_team_agent", address: member.address, agent_run_id: member.agentRunId,
-    platform_agent_run_id: member.platformAgentRunId,
-    ...optionalSelection("user_launch_selection", member.userLaunchSelection),
-  };
-  return projectNestedTaskTeam(member);
-};
-
-const projectNestedTaskTeam = (team: TaskTeamNestedTeamExecution): TaskTeamMemberExecutionDto => ({
-  kind: "task_team_member", address: team.address, team_run_id: team.teamRunId,
-  members: team.members.map(projectTaskTeamMember),
-  task_executions: team.taskExecutions.map(projectTaskExecution),
+const projectTaskTeamMember = (member: TaskTeamAgentExecution): TaskTeamAgentExecutionDto => ({
+  kind: "task_team_agent", address: member.address, agent_run_id: member.agentRunId,
+  platform_agent_run_id: member.platformAgentRunId,
+  ...optionalSelection("user_launch_selection", member.userLaunchSelection),
 });
 
 const findTaskExecution = (
@@ -250,22 +240,17 @@ const findTaskExecution = (
   reference: TaskExecutionReference,
 ): { parentTeamRunId: string; execution: TaskExecution } | null => {
   const visit = (
-    team: RootConfiguredTeamExecutionNode | TaskTeamExecution | TaskTeamNestedTeamExecution,
+    team: RootConfiguredTeamExecutionNode | TaskTeamExecution,
   ): { parentTeamRunId: string; execution: TaskExecution } | null => {
     const own = team.taskExecutions.find((execution) =>
       "agentRunId" in reference
         ? "agentRunId" in execution && execution.agentRunId === reference.agentRunId
         : "teamRunId" in execution && execution.teamRunId === reference.teamRunId);
     if (own) return { parentTeamRunId: team.teamRunId, execution: own };
-    if (!("teamDefinitionName" in team)) for (const member of team.members) {
-      if (!("teamRunId" in member)) continue;
-      const nested = visit(member);
-      if (nested) return nested;
-    }
     for (const task of team.taskExecutions) {
       if ("teamRunId" in task) {
-        const nested = visit(task);
-        if (nested) return nested;
+        const found = visit(task);
+        if (found) return found;
       }
     }
     return null;

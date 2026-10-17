@@ -152,7 +152,8 @@ Agent teams use the same streaming protocol but connect to a different WebSocket
 - Mutation: `createAgentTeamRun`
 - Required launch input:
   - `teamDefinitionId`
-  - complete `teamConfigs[]` for the root and every nested Team
+  - `teamConfigs[]` with exactly one root Team configuration (`teamAddress: "/"`);
+    Teams are flat
   - complete `memberConfigs[]` for every configured Agent
 - The frontend resolves editable root/Team/Agent intent before this boundary;
   GraphQL does not infer missing scoped configuration.

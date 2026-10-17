@@ -1,0 +1,5 @@
+
+> autobyteus@1.5.5-beta.2 test:e2e:team-status-live /Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-web
+> node tests/e2e/team-status-live-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/tickets/in-progress/remove-nested-task-team/evidence/api-e2e/round2/probes/team-status-live-nested-3 --cases TS-005,TS-006,TS-007
+
+Team status live probe: Pass. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/tickets/in-progress/remove-nested-task-team/evidence/api-e2e/round2/probes/team-status-live-nested-3/evidence.json

@@ -119,17 +119,10 @@ type TaskTeamAgentExecutionDto = Readonly<{
     platformAgentRunId: string | null;
     userLaunchSelection?: UserLaunchSelectionDto;
 }>;
-type TaskTeamNestedExecutionDto = Readonly<{
-    address: string;
-    teamRunId: string;
-    members: readonly TaskTeamMemberExecutionDto[];
-    taskExecutions: readonly TaskExecutionDto[];
-}>;
-type TaskTeamMemberExecutionDto = TaskTeamAgentExecutionDto | TaskTeamNestedExecutionDto;
 type TaskTeamExecutionDto = Readonly<{
     address: string;
     teamRunId: string;
-    members: readonly TaskTeamMemberExecutionDto[];
+    members: readonly TaskTeamAgentExecutionDto[];
     taskExecutions: readonly TaskExecutionDto[];
     /** Absent for children recorded before the delegator was stored. */
     delegatorAgentRunId?: string;

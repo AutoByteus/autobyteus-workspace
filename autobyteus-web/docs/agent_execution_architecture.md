@@ -437,7 +437,7 @@ with the Agent status colours: busy is a pulsing blue dot, error red, idle
 green, offline gray. Missing or unknown statuses count as offline. When the run
 that contains the Team is not alive, the Team is offline whatever its Agents
 last reported. A Team row counts every Agent row shown under it (its members,
-Agents of Teams nested in it, and Agents its members delegated), whether the
+and Agents and Teams its members delegated, at any depth), whether the
 row is expanded or collapsed. It never counts closed (DONE/CANCELLED) task work
 hidden from the tree, or Agents outside its subtree. Each Agent counts with the
 status its own row shows.
@@ -453,8 +453,8 @@ No Team row calls the shared fold directly. Each root keeps its own counting
 and passes the counted statuses and its liveness to the rule:
 
 - Team runs (`workspaceHistoryTeamBranchStatus.ts`): `teamBranchStatus` counts
-  every Agent row beneath any `agent_team` row by depth, configured or
-  delegated. `teamRunStatus` counts all Agent rows of a run, gated by
+  every Agent row beneath an `agent_team` row by depth; in a Team run those are
+  the delegated task-Team rows (Teams are flat, so configured rows are Agents). `teamRunStatus` counts all Agent rows of a run, gated by
   `TeamTreeNode.isActive`. `teamDefinitionGroupStatus` gives a TEAMS group row the
   highest status among its listed runs. `WorkspaceTeamExecutionTree` derives
   these at render time from `executionRows`, so navigation patches stay current.
@@ -464,7 +464,7 @@ and passes the counted statuses and its liveness to the rule:
   `isActive`.
 - Org runs (`agentOrgTeamBranchStatus.ts`): one listed-Agent collector serves a
   configured mounted Team (`projectAgentOrgTeamBranchStatus`) and a delegated
-  or nested task Team (`projectAgentOrgTaskTeamStatus`). The Org counts as alive
+  task Team (`projectAgentOrgTaskTeamStatus`). The Org counts as alive
   only while its status authority is `live`. The Org root row is an Org, not a
   Team, and keeps its own dot.
 
@@ -1167,10 +1167,10 @@ Browser-uploaded composer files now follow the same high-level orchestration pat
 2. `ContextFileUploadStore` owns upload, delete, and finalize transport. It stages browser uploads under an explicit draft owner and returns descriptors that keep `storedFilename` separate from the user-visible `displayName`.
 3. Shared UI helpers (`useContextAttachmentComposer` and `contextAttachmentPresentation`) own attachment-list mutation, display-label rendering, preview/open behavior, and pending-upload coordination so individual components do not parse locators themselves.
 4. `hydrateContextAttachment` is the single persisted-locator convergence boundary. It transforms a valid legacy absolute POSIX or Windows-drive `local-file://` locator into the canonical fixed-authority form before normal classification/presentation, leaves canonical locators unchanged, and classifies opaque, adorned, or malformed local locators as `unsupported_local_file` rather than guessing a filesystem identity.
-5. Send stores create or restore the final run/team identity and then finalize through exact logical ownership. Standalone final owners use the AgentRun id. Team-member final owners use the focused AgentRun's canonical execution location (`containingTeamRunId` plus canonical `agentRunId`) rather than assuming the root TeamRun owns every nested member; the draft owner remains the launch/root draft scope. Org owners use the exact `orgRunId` plus canonical `agentRunId`, captured before awaiting preparation. A missing exact Team location or Org owner fails rather than guessing a configured member. After local admission, `/context-files/finalize` receives `attachments[{ storedFilename, displayName }]`, and the store replaces draft uploaded descriptors with final run/member locators on the already-visible canonical reactive local message before runtime send. The submission handle retains that same proxy so the mounted chip observes the update.
+5. Send stores create or restore the final run/team identity and then finalize through exact logical ownership. Standalone final owners use the AgentRun id. Team-member final owners use the focused AgentRun's canonical execution location (`containingTeamRunId` plus canonical `agentRunId`) rather than assuming the root TeamRun owns every member it shows (a delegated Team copy's members belong to that copy's TeamRun); the draft owner remains the launch/root draft scope. Org owners use the exact `orgRunId` plus canonical `agentRunId`, captured before awaiting preparation. A missing exact Team location or Org owner fails rather than guessing a configured member. After local admission, `/context-files/finalize` receives `attachments[{ storedFilename, displayName }]`, and the store replaces draft uploaded descriptors with final run/member locators on the already-visible canonical reactive local message before runtime send. The submission handle retains that same proxy so the mounted chip observes the update.
 6. After finalization, `contextAttachmentSend.planContextAttachmentSubmission` is the only executable partition. The optimistic local message retains every current attachment, while only eligible current kinds enter `context_file_paths` or `image_urls`. A newly unsupported local locator remains visible/removable in the current composer/message and identity-matched live echo, but is excluded from every runtime/server media array and may disappear after a fresh reload because there is deliberately no metadata-only persistence transport. Historical unsupported records remain readable as non-executable metadata.
 7. The stable `storedFilename` remains the attachment identity key while `displayName` preserves the original uploaded filename even when the stored path has been sanitized.
-8. Removal follows one rule for every run kind: standalone, New chat, Team and sub-Team member, Org member, delegated Agent copy and delegated Team-copy member. `ContextFileUploadStore.deleteDraftAttachment(attachment)` sends `DELETE` to the attachment's own draft locator. It resolves the locator with `utils/contextFiles/contextAttachmentUrl.ts` and sends the request through `authorizedFetch`, and it throws the server `detail` on a non-2xx response. No client code rebuilds a draft URL from an owner; the per-kind endpoint builder was removed.
+8. Removal follows one rule for every run kind: standalone, New chat, Team member, Org member, delegated Agent copy and delegated Team-copy member. `ContextFileUploadStore.deleteDraftAttachment(attachment)` sends `DELETE` to the attachment's own draft locator. It resolves the locator with `utils/contextFiles/contextAttachmentUrl.ts` and sends the request through `authorizedFetch`, and it throws the server `detail` on a non-2xx response. No client code rebuilds a draft URL from an owner; the per-kind endpoint builder was removed.
    - The composer (`useContextAttachmentComposer`) deletes the server copy only when the attachment's locator owner equals the target's `draftOwner`.
    - A draft from another composer, or any draft in a composer without an upload owner, leaves the list without a server call. That file is reclaimed by the 24 h draft TTL.
    - Path attachments never call the server.
@@ -1669,7 +1669,7 @@ Incoming events are routed based on their `type`:
 | `TOOL_LOG`                | `toolLifecycleHandler.handleToolLog`               | Appends diagnostic execution logs only.                         |
 | `ARTIFACT_PERSISTED`      | inline no-op compatibility                         | Ignored by the current client; published artifacts are not displayed in the current web UI. |
 | `FILE_CHANGE`             | `fileChangeHandler.handleFileChange`        | Syncs touched files and generated outputs into the run-scoped Agent Artifact store. |
-| `MEMBER_INPUT_MESSAGE`    | `memberInputMessageHandler.handleMemberInputMessage` | Inserts or updates an accepted team/member input row by backend `message_id` / `dedupe_key`, including local team sends and parent-to-task-Team delivery prompts in the target leaf transcript before assistant output. Deduped local submissions preserve existing non-empty `contextFilePaths` when a lower-fidelity echo omits attachments, while incoming non-empty context-file locators update the row. |
+| `MEMBER_INPUT_MESSAGE`    | `memberInputMessageHandler.handleMemberInputMessage` | Inserts or updates an accepted team/member input row by backend `message_id` / `dedupe_key`, including local team sends and agent-to-agent deliveries (shown as "From <Sender>:") in the target member's transcript before assistant output. Deduped local submissions preserve existing non-empty `contextFilePaths` when a lower-fidelity echo omits attachments, while incoming non-empty context-file locators update the row. |
 | `SYSTEM_TASK_NOTIFICATION` | `systemTaskNotificationHandler.handleSystemTaskNotification` | Appends backend-provided system-task notification content as a `system_task_notification` AI message segment without rewriting the display text. |
 | `INTER_AGENT_MESSAGE`      | `teamHandler.handleInterAgentMessage`       | Preserves existing conversation rendering only. |
 | `TEAM_COMMUNICATION_MESSAGE`| `teamHandler.handleTeamCommunicationMessage` | Upserts normalized Team Communication messages and child reference files into the Team Communication store. |

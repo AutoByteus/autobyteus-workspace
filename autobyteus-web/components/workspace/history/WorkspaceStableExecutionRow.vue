@@ -58,27 +58,9 @@
     <div class="flex min-w-0 flex-1 items-center justify-between py-1 pr-2">
       <div class="flex min-w-0 flex-1 items-center">
         <span class="member-status inline-flex flex-shrink-0 items-center">
-          <StatusDot
-            v-if="row.memberKind === 'agent'"
-            class="mr-1.5"
-            :status="row.row.currentStatus"
-          />
-          <TeamAggregateStatusDot
-            v-else
-            class="mr-1.5"
-            :status="aggregateStatus"
-          />
+          <StatusDot class="mr-1.5" :status="row.row.currentStatus" />
         </span>
         <span
-          v-if="row.memberKind === 'agent_team'"
-          class="mr-1.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center text-slate-500"
-          data-team-icon="user-group-solid"
-          aria-hidden="true"
-        >
-          <Icon icon="heroicons:user-group-20-solid" class="h-4 w-4" />
-        </span>
-        <span
-          v-else
           class="mr-1.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.5625rem] font-semibold text-gray-600"
           data-test="workspace-team-member-avatar"
         >
@@ -126,20 +108,17 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
-import TeamAggregateStatusDot from '~/components/workspace/history/TeamAggregateStatusDot.vue';
 import WorkspaceHierarchyBranches from '~/components/workspace/history/WorkspaceHierarchyBranches.vue';
 import StatusDot from '~/components/workspace/common/StatusDot.vue';
 import { useLocalization } from '~/composables/useLocalization';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { WorkspaceHistoryAvatarBindings } from '~/components/workspace/history/workspaceHistorySectionContracts';
 import type { RunHistoryStableExecutionRow } from '~/stores/runHistoryTypes';
-import type { TeamStatus } from '~/utils/workspaceTeamAggregateStatus';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 
 const props = defineProps<{
   row: RunHistoryStableExecutionRow;
   avatars: WorkspaceHistoryAvatarBindings;
-  aggregateStatus: TeamStatus;
   age: string;
   isSelected: boolean;
   hasChildren: boolean;
@@ -162,15 +141,10 @@ const inspectionAttempt = computed(() => props.row.agentRunId
 const displayName = computed(() =>
   props.row.displayName || props.avatars.getTeamMemberDisplayName(props.row.row));
 
-const roleLabel = computed(() => t(
-  props.row.memberKind === 'agent_team'
-    ? 'workspace.history.hierarchy.role.agent_team'
-    : 'workspace.history.hierarchy.role.agent',
-));
+// A stable row is a configured member of the root Team; Teams are flat, so it is an Agent.
+const roleLabel = computed(() => t('workspace.history.hierarchy.role.agent'));
 
-const status = computed(() => props.row.memberKind === 'agent_team'
-  ? props.aggregateStatus
-  : props.row.row.currentStatus ?? AgentStatus.Offline);
+const status = computed(() => props.row.row.currentStatus ?? AgentStatus.Offline);
 
 const statusLabel = computed(() => t(`workspace.history.hierarchy.status.${status.value}`));
 
@@ -202,7 +176,6 @@ const rowStyle = computed(() => ({
 const rowClasses = computed(() => ({
   'is-selected text-indigo-900': props.isSelected,
   'text-gray-600 hover:bg-gray-50': !props.isSelected,
-  'font-semibold': props.row.memberKind === 'agent_team',
 }));
 </script>
 

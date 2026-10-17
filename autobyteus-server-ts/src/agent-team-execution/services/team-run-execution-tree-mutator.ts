@@ -8,27 +8,13 @@ import type {
   RootConfiguredTeamExecutionNode,
   TaskExecution,
   TaskTeamExecution,
-  TaskTeamMemberExecution,
-  TaskTeamNestedTeamExecution,
   TeamRunExecutionTreeSnapshot,
 } from "../domain/team-run-execution-tree.js";
 import { validateTeamRunExecutionTreePayload } from "../../run-history/store/team-run-execution-tree-schema.js";
 import type { TeamAgentPlatformBinding } from "../domain/team-agent-platform-binding.js";
 import { TeamAgentPlatformBindingError } from "../domain/team-agent-platform-binding.js";
 
-type TeamWithTasks =
-  | RootConfiguredTeamExecutionNode
-  | TaskTeamNestedTeamExecution
-  | Extract<TaskExecution, { teamRunId: string }>;
-
-const mapTaskTeamMember = (
-  member: TaskTeamMemberExecution,
-  targetTeamRunId: string,
-  change: (team: TeamWithTasks) => TeamWithTasks,
-): TaskTeamMemberExecution => {
-  if (!("teamRunId" in member)) return member;
-  return mapTeam(member, targetTeamRunId, change) as TaskTeamNestedTeamExecution;
-};
+type TeamWithTasks = RootConfiguredTeamExecutionNode | TaskTeamExecution;
 
 const mapTask = (
   task: TaskExecution,
@@ -45,11 +31,8 @@ const mapTeam = (
   change: (team: TeamWithTasks) => TeamWithTasks,
 ): TeamWithTasks => {
   if (team.teamRunId === targetTeamRunId) return change(team);
-  const members = "teamDefinitionName" in team
-    ? team.members
-    : team.members.map((member) => mapTaskTeamMember(member, targetTeamRunId, change));
   const taskExecutions = team.taskExecutions.map((task) => mapTask(task, targetTeamRunId, change));
-  return { ...team, members, taskExecutions } as TeamWithTasks;
+  return { ...team, taskExecutions } as TeamWithTasks;
 };
 
 /** Applies `change` to the owner TeamRun: the root or a task Team. */
@@ -122,16 +105,10 @@ export const adoptAgentPlatformBindingInTree = (input: {
     changed = true;
     return { ...agent, platformAgentRunId: input.binding.platformAgentRunId };
   };
-  const mapTaskMember = (member: TaskTeamMemberExecution): TaskTeamMemberExecution =>
-    "agentRunId" in member ? mapAgent(member) : {
-      ...member,
-      members: member.members.map(mapTaskMember),
-      taskExecutions: member.taskExecutions.map(mapTask),
-    };
   const mapTask = (task: TaskExecution): TaskExecution =>
     "agentRunId" in task ? mapAgent(task) : {
       ...task,
-      members: task.members.map(mapTaskMember),
+      members: task.members.map(mapAgent),
       taskExecutions: task.taskExecutions.map(mapTask),
     } as TaskTeamExecution;
   const next = {
@@ -181,15 +158,9 @@ export const replaceAgentPlatformBindingWithoutConversationInTree = (input: {
     }
     return { ...agent, platformAgentRunId: input.replacement.binding.platformAgentRunId };
   };
-  const mapTaskMember = (member: TaskTeamMemberExecution): TaskTeamMemberExecution =>
-    "agentRunId" in member ? mapAgent(member) : {
-      ...member,
-      members: member.members.map(mapTaskMember),
-      taskExecutions: member.taskExecutions.map(mapTask),
-    };
   const mapTask = (task: TaskExecution): TaskExecution => "agentRunId" in task ? mapAgent(task) : {
     ...task,
-    members: task.members.map(mapTaskMember),
+    members: task.members.map(mapAgent),
     taskExecutions: task.taskExecutions.map(mapTask),
   } as TaskTeamExecution;
   const next = {

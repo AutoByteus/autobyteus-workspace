@@ -65,6 +65,22 @@ These are separate evidence layers; none substitutes for another. A browser prob
 web-equivalent behavior, not the Electron shell. A scripted runtime proves the transport,
 not paid inference. Agent-run testing is not the user's verification.
 
+**Rerun by impact.** A run that passed stays valid for the code it ran on. Plan each later
+round (review fixes, a merge, a rebase) before running anything:
+
+1. Record every case with the commit it last passed on, in the ticket's validation ledger.
+2. List what changed since then: `git diff --name-only <validated> HEAD`.
+3. Mark each recorded case **Still valid** (nothing it exercises changed) or **Rerun**
+   (its own files or the code it exercises changed), with the reason. Add cases for new
+   behavior. Find what a test exercises by reading what it drives. For server E2E,
+   `vitest --changed` does not narrow anything, because every test starts the whole server.
+4. Mark everything **Rerun** when a shared foundation changed: dependencies or the
+   lockfile, the database schema or migrations, `autobyteus-ts`, the contract packages,
+   the test harness or fixtures, or build configuration.
+5. Run only the cases marked Rerun or new, and record their new commit.
+
+The plan, with the validated commit and the diff, goes in the validation report.
+
 ## Environments, credentials and data
 
 - **Install and build first.** `pnpm install`, then `pnpm -C autobyteus-server-ts prebuild`

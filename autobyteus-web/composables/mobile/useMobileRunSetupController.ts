@@ -272,7 +272,7 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
     if (!draftId) return
     try {
       const seed = await seedMemberLaunchDefaults({
-        members: resolveLeafTeamMembers(definition, { getTeamDefinitionById: () => null }),
+        members: resolveLeafTeamMembers(definition),
         getAgentDefault: (id) => normalizeDefaultLaunchConfig(agentDefinitionStore.getAgentDefinitionById(id)?.defaultLaunchConfig),
         catalog: startModelCatalog(),
         modelConfigFor: (choice) => choice.llmConfig,

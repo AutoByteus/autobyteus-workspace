@@ -1,0 +1,573 @@
+{
+  "startedAt": "2026-10-17T12:20:27.314Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "webDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-web",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-web/tests/e2e/fixtures/team-activity-presentation.page.vue",
+  "installedPagePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-web/pages/api-e2e-team-activity-presentation.vue",
+  "routePath": "/api-e2e-team-activity-presentation",
+  "scenarios": {},
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:59235/_nuxt/layouts/default.vue net::ERR_ABORTED"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace:browser-fixture, workspaceRootPath: /browser-fixture, workspaceName: Browser Fixture Workspace, workspaceKind: filesystem, canRemoveFromWorkspaces: false} workspace-teams= [Object, Object] workspace-team-history-groups= [Object]  ... > \n  at <ApiE2eTeamActivityPresentation onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > \n  at <RouteProvider key=\"/api-e2e-team-activity-presentation\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-team-activity-presentation, hash: , query: Object, name: api-e2e-team-activity-presentation, path: /api-e2e-team-activity-presentation}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< undefined > > \n  at <AsyncComponentWrapper ref=Ref< undefined > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>"
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to fetch all workspace metadata: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=c613a31c:59:28)\n    at http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/QueryManager.js?v=c613a31c:823:71\n    at both (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=c613a31c:35:31)\n    at http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=c613a31c:24:72\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=c613a31c:24:24)\n    at Object.error (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=c613a31c:37:49)\n    at notifySubscription (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=c613a31c:137:18)\n    at onNotify (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=c613a31c:176:3)\n    at SubscriptionObserver.error (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=c613a31c:229:5)"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to fetch agent definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=c613a31c:59:28)\n    at http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/QueryManager.js?v=c613a31c:823:71\n    at both (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=c613a31c:35:31)\n    at http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=c613a31c:24:72\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=c613a31c:24:24)\n    at Object.error (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=c613a31c:37:49)\n    at notifySubscription (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=c613a31c:137:18)\n    at onNotify (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=c613a31c:176:3)\n    at SubscriptionObserver.error (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=c613a31c:229:5)"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to fetch agent team definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=c613a31c:59:28)\n    at http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/QueryManager.js?v=c613a31c:823:71\n    at both (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=c613a31c:35:31)\n    at http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=c613a31c:24:72\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=c613a31c:24:24)\n    at Object.error (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=c613a31c:37:49)\n    at notifySubscription (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=c613a31c:137:18)\n    at onNotify (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=c613a31c:176:3)\n    at SubscriptionObserver.error (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=c613a31c:229:5)"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:59235/_nuxt/node_modules/.cache/vite/client/deps/katex.js?v=ab004469 net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:59235/_nuxt/node_modules/.cache/vite/client/deps/chunk-V226WHAP.js?v=8daa0d95 net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:59235/_nuxt/stores/extensionsStore.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:59235/_nuxt/components/conversation/segments/renderer/MermaidDiagramViewer.vue net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:59235/_nuxt/node_modules/.cache/vite/client/deps/chunk-LQBIKZ6L.js?v=8daa0d95 net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:59235/_nuxt/node_modules/.cache/vite/client/deps/chunk-US53JEWZ.js?v=8daa0d95 net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:59235/_nuxt/node_modules/.cache/vite/client/deps/vue-pdf-embed.js?v=f026409c net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:59235/_nuxt/builds/meta/dev.json net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:59235/_nuxt/node_modules/.cache/vite/client/deps/chunk-RZ55PUNP.js?v=8daa0d95 net::ERR_ABORTED"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue warn]: Invalid prop: type check failed for prop \"workspaceId\". Expected String with value \"undefined\", got Undefined  \n  at <WorkspaceAgentOrgHistoryCollection avatars= {showAgentAvatar: , onAgentAvatarError: , getAgentInitials: , showTeamAvatar: , getTeamAvatarUrl: } workspace-id=undefined groups= []  ... > \n  at <WorkspaceHistoryWorkspaceSection workspace-node= {workspaceId: workspace:browser-fixture, workspaceRootPath: /browser-fixture, workspaceName: Browser Fixture Workspace, workspaceKind: filesystem, canRemoveFromWorkspaces: false} workspace-teams= [Object, Object] workspace-team-history-groups= [Object]  ... > \n  at <ApiE2eTeamActivityPresentation onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > \n  at <RouteProvider key=\"/api-e2e-team-activity-presentation\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /api-e2e-team-activity-presentation, hash: , query: Object, name: api-e2e-team-activity-presentation, path: /api-e2e-team-activity-presentation}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <Default ref=Ref< undefined > > \n  at <AsyncComponentWrapper ref=Ref< undefined > > \n  at <LayoutLoader key=\"default\" layoutProps= {ref: RefImpl} name=\"default\" > \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=\"default\" name=\"default\"  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>"
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to fetch all workspace metadata: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=8daa0d95:59:28)\n    at http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/QueryManager.js?v=8daa0d95:823:71\n    at both (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=8daa0d95:35:31)\n    at http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=8daa0d95:24:72\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=8daa0d95:24:24)\n    at Object.error (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=8daa0d95:37:49)\n    at notifySubscription (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=8daa0d95:137:18)\n    at onNotify (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=8daa0d95:176:3)\n    at SubscriptionObserver.error (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=8daa0d95:229:5)"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to fetch agent definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=8daa0d95:59:28)\n    at http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/QueryManager.js?v=8daa0d95:823:71\n    at both (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=8daa0d95:35:31)\n    at http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=8daa0d95:24:72\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=8daa0d95:24:24)\n    at Object.error (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=8daa0d95:37:49)\n    at notifySubscription (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=8daa0d95:137:18)\n    at onNotify (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=8daa0d95:176:3)\n    at SubscriptionObserver.error (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=8daa0d95:229:5)"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to fetch agent team definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=8daa0d95:59:28)\n    at http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/QueryManager.js?v=8daa0d95:823:71\n    at both (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=8daa0d95:35:31)\n    at http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=8daa0d95:24:72\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=8daa0d95:24:24)\n    at Object.error (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=8daa0d95:37:49)\n    at notifySubscription (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=8daa0d95:137:18)\n    at onNotify (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=8daa0d95:176:3)\n    at SubscriptionObserver.error (http://127.0.0.1:59235/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=8daa0d95:229:5)"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:log",
+      "text": "Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    }
+  ],
+  "failures": [
+    {
+      "id": "HARNESS",
+      "description": "Run team activity browser probe",
+      "message": "locator.waitFor: Timeout 90000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"team-activity-probe\"]') to be visible\n    2 × waiting for\" http://127.0.0.1:59235/api-e2e-team-activity-presentation\" navigation to finish...\n      - navigated to \"http://127.0.0.1:59235/api-e2e-team-activity-presentation\"\n",
+      "stack": "locator.waitFor: Timeout 90000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"team-activity-probe\"]') to be visible\n    2 × waiting for\" http://127.0.0.1:59235/api-e2e-team-activity-presentation\" navigation to finish...\n      - navigated to \"http://127.0.0.1:59235/api-e2e-team-activity-presentation\"\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-web/tests/e2e/team-activity-presentation-probe.mjs:325:59"
+    }
+  ],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 37168,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": null,
+      "finalSignalCode": "SIGTERM"
+    },
+    "nuxtLog": "closed",
+    "installedFixture": "removed"
+  },
+  "port": 59235,
+  "baseUrl": "http://127.0.0.1:59235",
+  "result": "Fail",
+  "finishedAt": "2026-10-17T12:22:06.215Z",
+  "artifacts": {
+    "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/tickets/in-progress/remove-nested-task-team/evidence/api-e2e/round2/probes/final-team-activity-presentation/out/evidence.json",
+    "nuxtLogPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/tickets/in-progress/remove-nested-task-team/evidence/api-e2e/round2/probes/final-team-activity-presentation/out/nuxt.log",
+    "initialScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/tickets/in-progress/remove-nested-task-team/evidence/api-e2e/round2/probes/final-team-activity-presentation/out/mixed-active-inactive.png",
+    "finalScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/tickets/in-progress/remove-nested-task-team/evidence/api-e2e/round2/probes/final-team-activity-presentation/out/settled-zh-cn.png"
+  }
+}

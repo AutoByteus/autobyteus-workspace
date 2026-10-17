@@ -11,8 +11,9 @@ const agentStatusesOf = (
 });
 
 /**
- * The status of one Team row (configured or delegated) in a Team run's rows: every Agent row
- * beneath it by depth, collapsed or not. Closed task rows are not in `executionRows`.
+ * The status of one delegated Team row in a Team run's rows (Teams are flat, so a Team run's
+ * configured rows are Agents): every Agent row beneath it by depth, collapsed or not. Closed
+ * task rows are not in `executionRows`.
  */
 export const teamBranchStatus = (
   rows: readonly RunHistoryTeamExecutionRow[],

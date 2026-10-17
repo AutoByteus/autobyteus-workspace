@@ -233,8 +233,9 @@ configured Agent remains Offline: the Team stream can reopen scope without
 starting providers. Green/Idle is not evidence of model reasoning. Do not copy
 Org container-status expectations onto a Team or start workers to reconcile status.
 
-Every Team row in the Workspaces tree (TEAMS run rows, nested and delegated
-Team rows under Agent, Team and Org runs, and Org-internal Team rows) shows one
+Every Team row in the Workspaces tree (TEAMS run rows, delegated Team rows —
+including a Team delegated inside a delegated Team — under Agent, Team and Org
+runs, and Org-internal Team rows) shows one
 universal Team status dot before the slate people-group icon. It shows the
 highest state among the Agents shown under the row, collapsed or not:
 busy (running or starting, pulsing blue) > error (red) > idle (green) >

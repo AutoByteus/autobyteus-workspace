@@ -4,7 +4,7 @@ import {
   buildTestTeamContext,
   testAgentNode,
   testDelegation,
-  testSubTeamNode,
+  testTaskTeamLayout,
 } from '~/test-support/currentTeamTestFixtures';
 import { buildRunHistoryTeamExecutionRows } from '../runHistoryTeamExecutionRows';
 
@@ -18,8 +18,9 @@ const solution = testAgentNode('/solution_designer', { agentRunId: 'solution-des
 const worker = testAgentNode('/worker', { agentRunId: 'worker-run' });
 const reviewer = testAgentNode('/reviewer', { agentRunId: 'reviewer-run' });
 const reviewLead = testAgentNode('/SoftwareEngineeringTeam/review_lead', { agentRunId: 'review-lead-run' });
-const softwareTeam = testSubTeamNode('/SoftwareEngineeringTeam', [reviewLead], {
-  teamDefinitionId: 'software-team', teamRunId: 'software-team-run', coordinatorAddress: reviewLead.address,
+/** A catalog Team the solution designer delegates a copy of; not a member of the root Team (Teams are flat). */
+const softwareTeam = testTaskTeamLayout('/SoftwareEngineeringTeam', [reviewLead], {
+  teamDefinitionId: 'software-team', coordinatorAddress: reviewLead.address,
 });
 const TASK_TEAM_MEMBER = 'task-team-run-1:review-lead-run';
 
@@ -30,17 +31,16 @@ const historyTeam = () => {
   });
   const children = [
     stable(solution.address, solution.agentRunId), stable(worker.address, worker.agentRunId), stable(reviewer.address, reviewer.agentRunId),
-    stable(softwareTeam.address, null, [stable(reviewLead.address, reviewLead.agentRunId)], { teamRunIdForNode: 'software-team-run' }),
   ];
   return { teamRunId: ROOT, rootTeam: { children }, members: children } as any;
 };
 
 const build = (closed: Array<{ agentRunId: string } | { teamRunId: string }> = [], focusedAgentRunId?: string) => buildTestTeamContext({
-  teamRunId: ROOT, coordinatorAddress: solution.address, rootChildren: [solution, worker, reviewer, softwareTeam],
+  teamRunId: ROOT, coordinatorAddress: solution.address, rootChildren: [solution, worker, reviewer],
   baseChangeSequence: 3, closedTaskExecutions: closed, focusedAgentRunId,
   delegations: [
     testDelegation({ delegatorAgentRunId: solution.agentRunId, recipientAddress: worker.address, target: { agentRunId: 'task-agent-run-1' } }),
-    testDelegation({ delegatorAgentRunId: solution.agentRunId, recipientAddress: softwareTeam.address, target: { teamRunId: 'task-team-run-1' } }),
+    testDelegation({ delegatorAgentRunId: solution.agentRunId, recipientAddress: softwareTeam.address, target: { teamRunId: 'task-team-run-1', team: softwareTeam } }),
     // Started by a worker of Task A, at another address: its delegator is itself closed with Task A.
     testDelegation({ delegatorAgentRunId: 'task-agent-run-1', recipientAddress: reviewer.address, target: { agentRunId: 'sub-task-run' } }),
     testDelegation({ delegatorAgentRunId: solution.agentRunId, recipientAddress: worker.address, target: { agentRunId: 'other-task-run' } }),
@@ -58,7 +58,7 @@ describe('Team root closed task executions', () => {
     const context = build([{ teamRunId: 'task-team-run-1' }, { agentRunId: 'task-agent-run-1' }]);
     const ids = treeRunIds(context);
     for (const hidden of ['task-agent-run-1', 'task-team-run-1', TASK_TEAM_MEMBER]) expect(ids).not.toContain(hidden);
-    expect(ids).toEqual(expect.arrayContaining(['solution-designer-run', 'worker-run', 'reviewer-run', 'review-lead-run', 'sub-task-run', 'other-task-run']));
+    expect(ids).toEqual(expect.arrayContaining(['solution-designer-run', 'worker-run', 'reviewer-run', 'sub-task-run', 'other-task-run']));
     // Shared navigation rows and contexts are unchanged (members panel, running list, token usage, mobile focus).
     expect(context.view.listNavigationRows()).toEqual(open.view.listNavigationRows());
     expect(context.view.getAgentContext(TASK_TEAM_MEMBER)).not.toBeNull();

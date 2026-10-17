@@ -33,20 +33,6 @@ const memberTreeRow = (
   children: [],
 });
 
-const stableTeamRow = (key: string, depth: number): RunHistoryStableExecutionRow => ({
-  kind: 'stable_member',
-  rowKey: `team:${key}`,
-  teamRunId: 'root-team-run',
-  memberAddress: `/${key}`,
-  agentRunId: null,
-  teamRunIdForNode: `${key}-team-run`,
-  memberKind: 'agent_team',
-  displayName: key,
-  depth,
-  hasChildren: true,
-  row: memberTreeRow('agent_team', key, null),
-});
-
 const stableAgentRow = (
   key: string,
   depth: number,
@@ -134,7 +120,7 @@ describe('teamBranchStatus', () => {
     [[AgentStatus.Idle, AgentStatus.Offline], AgentStatus.Idle],
     [[AgentStatus.Offline, null, 'unexpected'], AgentStatus.Offline],
   ] as const)('applies the universal rule to descendant Agent statuses %j', (statuses, expected) => {
-    const team = stableTeamRow('team-a', 0);
+    const team = taskTeamRow('team-a', 0, null);
     const rows: RunHistoryTeamExecutionRow[] = [
       team,
       ...statuses.map((status, index) => taskAgentRow(`agent-${index}`, 1, status)),
@@ -156,10 +142,10 @@ describe('teamBranchStatus', () => {
       expected: leftRank >= rightRank ? leftTeam : rightTeam,
     }))),
   )('selects $expected over the pair $left + $right', ({ left, right, expected }) => {
-    const team = stableTeamRow('pair-team', 0);
+    const team = taskTeamRow('pair-team', 0, null);
     const rows: RunHistoryTeamExecutionRow[] = [
       team,
-      stableAgentRow('left-agent', 1, left),
+      taskAgentRow('left-agent', 1, left, 'task_team_child'),
       taskAgentRow('right-agent', 1, right),
     ];
 
@@ -167,9 +153,9 @@ describe('teamBranchStatus', () => {
   });
 
   it('is offline for empty descendants, non-Team targets and a stopped run', () => {
-    const team = stableTeamRow('empty-team', 0);
-    const agent = stableAgentRow('agent', 1, AgentStatus.Running);
-    const absentTeam = stableTeamRow('absent-team', 0);
+    const team = taskTeamRow('empty-team', 0, null);
+    const agent = taskAgentRow('member', 1, AgentStatus.Running, 'task_team_child');
+    const absentTeam = taskTeamRow('absent-team', 0, null);
 
     expect(teamBranchStatus([team], team, true)).toBe(AgentStatus.Offline);
     expect(teamBranchStatus([agent], agent, true)).toBe(AgentStatus.Offline);
@@ -179,38 +165,38 @@ describe('teamBranchStatus', () => {
 
   it('gives delegated (transient) Team rows the same status from their own subtree', () => {
     const delegated = taskTeamRow('delegated-team', 0, null);
-    const nestedDelegated = taskTeamRow('nested-delegated-team', 1, null);
+    const innerDelegated = taskTeamRow('inner-delegated-team', 1, null);
     const rows: RunHistoryTeamExecutionRow[] = [
       delegated,
       taskAgentRow('coordinator', 1, AgentStatus.Idle, 'task_team_child'),
-      nestedDelegated,
-      taskAgentRow('nested-member', 2, AgentStatus.Running, 'task_team_child'),
+      innerDelegated,
+      taskAgentRow('inner-member', 2, AgentStatus.Running, 'task_team_child'),
       taskAgentRow('outside', 0, AgentStatus.Error),
     ];
 
     expect(teamBranchStatus(rows, delegated, true)).toBe(AgentStatus.Running);
-    expect(teamBranchStatus(rows, nestedDelegated, true)).toBe(AgentStatus.Running);
+    expect(teamBranchStatus(rows, innerDelegated, true)).toBe(AgentStatus.Running);
     expect(teamBranchStatus(rows, delegated, false)).toBe(AgentStatus.Offline);
   });
 
-  it('includes recursive task-scoped Agent kinds while isolating ancestors, containers, and sibling Teams', () => {
+  it('includes recursive task-scoped Agent kinds (a task Team delegated inside a task Team) while isolating ancestors, containers, and sibling Teams', () => {
     const outsideAncestor = stableAgentRow('outside-ancestor', 0, AgentStatus.Running);
-    const teamA = stableTeamRow('team-a', 0);
-    const nestedTeam = stableTeamRow('nested-team', 1);
-    const teamB = stableTeamRow('team-b', 0);
+    const teamA = taskTeamRow('team-a', 0, null);
+    const innerTeam = taskTeamRow('inner-delegated-team', 1, null);
+    const teamB = taskTeamRow('team-b', 0, null);
     const rows: RunHistoryTeamExecutionRow[] = [
       outsideAncestor,
       teamA,
-      stableAgentRow('team-a-agent', 1, AgentStatus.Idle),
-      nestedTeam,
-      stableAgentRow('nested-offline-agent', 2, AgentStatus.Offline),
-      taskTeamRow('nested-task-team-container', 2, AgentStatus.Running),
-      taskAgentRow('nested-task-team-child', 3, AgentStatus.Error, 'task_team_child'),
+      taskAgentRow('team-a-member', 1, AgentStatus.Idle, 'task_team_child'),
+      innerTeam,
+      taskAgentRow('inner-offline-member', 2, AgentStatus.Offline, 'task_team_child'),
+      taskTeamRow('innermost-delegated-team', 2, AgentStatus.Running),
+      taskAgentRow('innermost-member', 3, AgentStatus.Error, 'task_team_child'),
       teamB,
       taskAgentRow('sibling-running-agent', 1, AgentStatus.Running),
     ];
 
-    expect(teamBranchStatus(rows, nestedTeam, true)).toBe(AgentStatus.Error);
+    expect(teamBranchStatus(rows, innerTeam, true)).toBe(AgentStatus.Error);
     expect(teamBranchStatus(rows, teamA, true)).toBe(AgentStatus.Error);
     expect(teamBranchStatus(rows, teamB, true)).toBe(AgentStatus.Running);
   });
@@ -224,12 +210,12 @@ describe('teamRunStatus and teamDefinitionGroupStatus', () => {
   ]);
   const busyRun = (isActive = true) => teamNode('busy-run', isActive, [
     stableAgentRow('lead', 0, AgentStatus.Offline),
-    stableTeamRow('sub-team', 0),
-    taskAgentRow('sub-member', 1, AgentStatus.Running),
+    taskTeamRow('delegated-team', 0, null),
+    taskAgentRow('delegated-member', 1, AgentStatus.Running, 'task_team_child'),
   ]);
   const stoppedRun = () => teamNode('stopped-run', false, [stableAgentRow('lead', 0, AgentStatus.Running)]);
 
-  it('reads a run from all of its Agent rows (nested and delegated too), gray when stopped', () => {
+  it('reads a run from all of its Agent rows (delegated Teams too), gray when stopped', () => {
     expect(teamRunStatus(idleRun())).toBe(AgentStatus.Idle);
     expect(teamRunStatus(busyRun())).toBe(AgentStatus.Running);
     expect(teamRunStatus(stoppedRun())).toBe(AgentStatus.Offline);

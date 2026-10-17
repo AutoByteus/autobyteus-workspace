@@ -1,7 +1,4 @@
-import type {
-  TaskExecution,
-  TaskTeamMemberExecution,
-} from "../../run-history/domain/run-execution-tree-shared-records.js";
+import type { TaskExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { DelegatedLaunchForest, DelegatedRunReference } from "./delegated-launch-selection.js";
 
 /** The Stop target: one delegated copy (Agent or Team), by its run identity. */
@@ -31,9 +28,6 @@ type Node = Readonly<{
 const keyOf = (reference: DelegatedRunReference): string =>
   "agentRunId" in reference ? `agent:${reference.agentRunId}` : `team:${reference.teamRunId}`;
 
-const memberAgentRunIds = (members: readonly TaskTeamMemberExecution[]): string[] =>
-  members.flatMap((member) => "agentRunId" in member ? [member.agentRunId] : memberAgentRunIds(member.members));
-
 /**
  * AR-002: the Stop set of a copy X is X plus, recursively, every task copy whose
  * delegator is an agent of the set and
@@ -50,15 +44,9 @@ export const delegatedStopSet = (forest: DelegatedLaunchForest, target: Delegate
       nodes.push({
         reference, key, hostKey,
         ...(task.delegatorAgentRunId !== undefined ? { delegatorAgentRunId: task.delegatorAgentRunId } : {}),
-        agentRunIds: "agentRunId" in task ? [task.agentRunId] : memberAgentRunIds(task.members),
+        agentRunIds: "agentRunId" in task ? [task.agentRunId] : task.members.map((member) => member.agentRunId),
       });
-      if ("teamRunId" in task) {
-        collect(task.taskExecutions, key);
-        const nested = (members: readonly TaskTeamMemberExecution[]): void => members.forEach((member) => {
-          if ("teamRunId" in member) { collect(member.taskExecutions, key); nested(member.members); }
-        });
-        nested(task.members);
-      }
+      if ("teamRunId" in task) collect(task.taskExecutions, key);
     }
   };
   forest.taskExecutionLists.forEach((list) => collect(list, null));

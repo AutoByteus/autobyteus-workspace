@@ -1,6 +1,5 @@
 import type {
   AgentLaunchConfigurationDto,
-  ConfiguredMemberExecutionDto,
   TeamRunExecutionTreeDto,
 } from '@autobyteus/team-stream-contracts'
 import { AgentContext } from '~/types/agent/AgentContext'
@@ -11,7 +10,7 @@ import type {
   ResolvedAgentLaunchView,
   ResolvedTeamRunLaunchConfig,
   ResolvedTeamScopeView,
-  StoredTeamRunMemberNode,
+  StoredTeamRunAgentNode,
   TeamRunConfigurationView,
 } from '~/types/agent/TeamRunConfig'
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
@@ -20,7 +19,7 @@ import { teamAgentSourceAt, type TeamAgentSource } from '~/services/collaborator
 import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
 import { readsAsDisplayName } from './teamExecutionTreeSelectors'
 import { initializeRuntimeStatusState } from '~/services/runStatus/agentRuntimeStatusState'
-import { modelConfigsEqual, resolvedTeamRunLaunchConfigsEqual } from '~/utils/teamRunConfigUtils'
+import { modelConfigsEqual } from '~/utils/teamRunConfigUtils'
 
 const runtimeKind = (value: AgentLaunchConfigurationDto['runtime_kind']): AgentRuntimeKind => value as AgentRuntimeKind
 const deepFreeze = <T>(value: T): T => {
@@ -115,54 +114,24 @@ export const createTeamConfigurationView = (input: {
     ),
   })
   teamsByAddress['/'] = root
-  const visit = (
-    members: readonly ConfiguredMemberExecutionDto[],
-    parent: ResolvedTeamScopeView,
-    depth: number,
-  ): readonly StoredTeamRunMemberNode[] => members.map((member): StoredTeamRunMemberNode => {
-      if (member.kind === 'configured_team') {
-        const effectiveConfig = storedLaunchConfiguration(
-          member.default_launch_configuration,
-          input.workspaceMetadataByAddress.get(member.address) ?? null,
-        )
-        const team: ResolvedTeamScopeView = deepFreeze({
-          address: member.address,
-          parentAddress: parent.address,
-          displayName: memberAddressBasename(member.address),
-          teamDefinitionId: member.team_definition_id,
-          depth,
-          isCustomized: !resolvedTeamRunLaunchConfigsEqual(effectiveConfig, parent.effectiveConfig),
-          override: null,
-          effectiveConfig,
-        })
-        teamsByAddress[member.address] = team
-        return deepFreeze({
-          kind: 'agent_team' as const,
-          address: member.address,
-          displayName: memberAddressBasename(member.address),
-          teamDefinitionId: member.team_definition_id,
-          coordinatorAddress: member.coordinator_address,
-          children: visit(member.members, team, depth + 1),
-        })
-      }
-
-      agentsByAddress[member.address] = deepFreeze({
-        address: member.address, containingTeamAddress: parent.address,
-        displayName: memberAddressBasename(member.address), agentDefinitionId: member.agent_definition_id,
-        override: null,
-        effectiveConfig: storedLaunchConfiguration(
-          member.launch_configuration,
-          input.workspaceMetadataByAddress.get(member.address) ?? null,
-        ),
-      })
-      return deepFreeze({
-        kind: 'agent' as const,
-        address: member.address,
-        displayName: memberAddressBasename(member.address),
-        agentDefinitionId: member.agent_definition_id,
-      })
+  // Teams are flat: the root Team's members are its Agents.
+  const memberNodes = input.tree.root_team.members.map((member): StoredTeamRunAgentNode => {
+    agentsByAddress[member.address] = deepFreeze({
+      address: member.address, containingTeamAddress: root.address,
+      displayName: memberAddressBasename(member.address), agentDefinitionId: member.agent_definition_id,
+      override: null,
+      effectiveConfig: storedLaunchConfiguration(
+        member.launch_configuration,
+        input.workspaceMetadataByAddress.get(member.address) ?? null,
+      ),
     })
-  const memberNodes = visit(input.tree.root_team.members, root, 1)
+    return deepFreeze({
+      kind: 'agent' as const,
+      address: member.address,
+      displayName: memberAddressBasename(member.address),
+      agentDefinitionId: member.agent_definition_id,
+    })
+  })
   return deepFreeze({
     source: 'STORED_SNAPSHOT' as const,
     teamDefinitionId: input.tree.root_team.team_definition_id,

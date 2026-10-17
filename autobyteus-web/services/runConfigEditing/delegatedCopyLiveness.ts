@@ -1,4 +1,4 @@
-import type { TaskExecutionDto, TaskTeamMemberExecutionDto, TeamRunExecutionTreeDto } from '@autobyteus/team-stream-contracts'
+import type { TaskExecutionDto, TeamRunExecutionTreeDto } from '@autobyteus/team-stream-contracts'
 import { AgentStatus } from '~/types/agent/AgentStatus'
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
@@ -6,19 +6,13 @@ import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationSto
 import type { DelegatedReference, DelegatedRoot } from '~/services/runConfigEditing/delegatedLaunchSelectionClient'
 
 type AgentContextReader = Readonly<{ getAgentContext?(agentRunId: string): { state: { currentStatus: unknown } } | null }>
-type CamelMember = Readonly<{ agentRunId: string }> | Readonly<{ members: readonly CamelMember[] }>
-
-const camelAgentIds = (members: readonly CamelMember[]): string[] =>
-  members.flatMap((member) => 'agentRunId' in member ? [member.agentRunId] : camelAgentIds(member.members))
-const snakeAgentIds = (members: readonly TaskTeamMemberExecutionDto[]): string[] =>
-  members.flatMap((member) => member.kind === 'task_team_agent' ? [member.agent_run_id] : snakeAgentIds(member.members))
 
 /** The agents of a Team copy of a Team root, by its run ID. */
 const teamRootTeamAgents = (tree: TeamRunExecutionTreeDto, teamRunId: string): string[] => {
   const visit = (tasks: readonly TaskExecutionDto[]): string[] | null => {
     for (const task of tasks) {
       if (task.kind !== 'task_team') continue
-      if (task.team_run_id === teamRunId) return snakeAgentIds(task.members)
+      if (task.team_run_id === teamRunId) return task.members.map((member) => member.agent_run_id)
       const nested = visit(task.task_executions)
       if (nested) return nested
     }
@@ -44,14 +38,14 @@ export const isDelegatedCopyLive = (root: DelegatedRoot, reference: DelegatedRef
     context = org
     teamAgents = (teamRunId) => {
       const team = org?.index?.teams?.get(teamRunId)?.execution
-      return team && 'members' in team ? camelAgentIds(team.members as readonly CamelMember[]) : []
+      return team ? team.members.map((member) => member.agentRunId) : []
     }
   } else {
     const collaboration = useAgentRunCollaborationStore().contextFor(root.rootRunId)
     context = collaboration
     teamAgents = (teamRunId) => {
       const team = collaboration?.index?.teams?.get(teamRunId)?.execution
-      return team ? camelAgentIds(team.members as readonly CamelMember[]) : []
+      return team ? team.members.map((member) => member.agentRunId) : []
     }
   }
   if (!context) return false

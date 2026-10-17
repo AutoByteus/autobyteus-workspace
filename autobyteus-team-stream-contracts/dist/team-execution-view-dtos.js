@@ -93,25 +93,12 @@ const taskTeamAgentSchema = z.object({
     kind: z.literal("task_team_agent"), address: agentTeamAddressDtoSchema,
     agent_run_id: nonEmptyStringSchema, platform_agent_run_id: nullableNonEmptyStringSchema, ...agentSelectionSchema,
 }).strict();
-const taskTeamNestedSchema = z.lazy(() => z.object({
-    kind: z.literal("task_team_member"), address: agentTeamAddressDtoSchema, team_run_id: nonEmptyStringSchema,
-    members: z.array(z.union([taskTeamAgentSchema, taskTeamNestedSchema])),
-    task_executions: z.array(z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema])),
-}).strict());
 export const taskTeamExecutionDtoSchema = z.lazy(() => z.object({
     kind: z.literal("task_team"), address: agentTeamAddressDtoSchema, team_run_id: nonEmptyStringSchema,
-    members: z.array(z.union([taskTeamAgentSchema, taskTeamNestedSchema])),
+    members: z.array(taskTeamAgentSchema),
     task_executions: z.array(z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema])),
     delegator_agent_run_id: nullableNonEmptyStringSchema, started_at: nonEmptyStringSchema,
     source: taskTeamSourceSchema.optional(), ...teamSelectionSchema,
-}).strict());
-const configuredTeamSchema = z.lazy(() => z.object({
-    kind: z.literal("configured_team"), address: agentTeamAddressDtoSchema,
-    team_definition_id: nonEmptyStringSchema, role: z.string().nullable(), description: z.string().nullable(),
-    team_run_id: nonEmptyStringSchema, coordinator_address: agentTeamAddressDtoSchema,
-    default_launch_configuration: launchConfigurationSchema,
-    members: z.array(z.union([configuredAgentSchema, configuredTeamSchema])),
-    task_executions: z.array(z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema])),
 }).strict());
 export const teamRunExecutionTreeDtoSchema = z.object({
     created_at: nonEmptyStringSchema, archived_at: nullableNonEmptyStringSchema,
@@ -122,7 +109,7 @@ export const teamRunExecutionTreeDtoSchema = z.object({
         team_definition_id: nonEmptyStringSchema, team_definition_name: nonEmptyStringSchema,
         team_run_id: nonEmptyStringSchema, coordinator_address: agentTeamAddressDtoSchema,
         default_launch_configuration: launchConfigurationSchema,
-        members: z.array(z.union([configuredAgentSchema, configuredTeamSchema])),
+        members: z.array(configuredAgentSchema),
         task_executions: z.array(z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema])),
     }).strict(),
 }).strict();

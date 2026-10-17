@@ -72,7 +72,7 @@ export const collectClosedSubtrees = <Node>(
   return hidden
 }
 
-/** A node of the collaboration contracts' trees (Agent and Org roots): Agents, and Teams with members and task executions. */
+/** A node of the collaboration contracts' trees (Agent and Org roots): Agents, and Teams with Agent members (Teams are flat) and task executions. */
 export type CollaborationTreeNode = Readonly<{ agentRunId: string; delegatorAgentRunId?: string }>
   | Readonly<{ teamRunId: string; members: readonly unknown[]; taskExecutions?: readonly unknown[]; delegatorAgentRunId?: string }>
 

@@ -359,7 +359,7 @@ try {
     return details;
   });
 
-  await runScenario('SR006-BR-002', 'Collapsed history group follows member status (not representative, subscription or Stop state); running surface stays binary', async () => {
+  await runScenario('SR006-BR-002', 'Collapsed history group follows member status (not representative or Stop state); running surface stays binary', async () => {
     await page.locator('[data-test="workspace-team-definition-row-team-def-browser"]').click();
     await page.locator('[data-test="running-surface"] .group-header').click();
     assert(await page.locator('[data-test="workspace-team-row-team-run-active-browser"]').count() === 0, 'History child rows must be collapsed');
@@ -369,7 +369,7 @@ try {
       running: await assertDot(runningGroup, { isActive: true, label: 'Active team runs' }),
     };
 
-    // The member goes from error to running (plus unrelated representative/subscription flips).
+    // The member goes from error to running (plus an unrelated representative flip).
     await page.evaluate(() => window.__teamActivityProbe.varyIndependentFacts());
     await page.locator('[data-test="independent-facts"]').filter({ hasText: 'member=running' }).waitFor();
     await page.evaluate(() => window.__teamActivityProbe.beginStop());

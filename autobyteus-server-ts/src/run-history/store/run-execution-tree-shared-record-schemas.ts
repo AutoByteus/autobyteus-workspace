@@ -10,7 +10,7 @@ import type {
   ConfiguredExecutionNode,
   ConfiguredTeamExecutionNode,
   TaskExecution,
-  TaskTeamMemberExecution,
+  TaskTeamAgentExecution,
   TeamRunApplicationBinding,
 } from "../domain/run-execution-tree-shared-records.js";
 import { parseTaskAgentExecutionSource, parseTaskTeamExecutionSource } from "./task-execution-source-schema.js";
@@ -159,24 +159,15 @@ export const parseConfiguredTeam = (value: unknown, label: string): ConfiguredTe
   };
 };
 
-const parseTaskTeamMember = (value: unknown, label: string): TaskTeamMemberExecution => {
+/** A task Team's member: an agent (teams are flat; a team member that is a team is not a supported shape). */
+const parseTaskTeamMember = (value: unknown, label: string): TaskTeamAgentExecution => {
   const member = objectRecord(value, label);
-  if ("agentRunId" in member) {
-    requireKeys(member, ["address", "agentRunId", "platformAgentRunId"], label);
-    return {
-      address: canonicalNonRootAddress(member.address, `${label}.address`),
-      agentRunId: requiredString(member.agentRunId, `${label}.agentRunId`),
-      platformAgentRunId: nullableString(member.platformAgentRunId, `${label}.platformAgentRunId`),
-      ...parseOptionalUserLaunchSelection(member, "userLaunchSelection", label),
-    };
-  }
-  requireKeys(member, ["address", "teamRunId", "members", "taskExecutions"], label);
+  requireKeys(member, ["address", "agentRunId", "platformAgentRunId"], label);
   return {
     address: canonicalNonRootAddress(member.address, `${label}.address`),
-    teamRunId: requiredString(member.teamRunId, `${label}.teamRunId`),
-    members: requiredArray(member.members, `${label}.members`).map((child, index) =>
-      parseTaskTeamMember(child, `${label}.members[${index}]`)),
-    taskExecutions: parseTaskExecutions(member.taskExecutions, `${label}.taskExecutions`),
+    agentRunId: requiredString(member.agentRunId, `${label}.agentRunId`),
+    platformAgentRunId: nullableString(member.platformAgentRunId, `${label}.platformAgentRunId`),
+    ...parseOptionalUserLaunchSelection(member, "userLaunchSelection", label),
   };
 };
 
@@ -233,21 +224,13 @@ export const validateTaskExecutionDelegators = (
 ): void => {
   const agentRunIds = new Set(configuredAgentRunIds);
   const executions: TaskExecution[] = [];
-  const visitMember = (member: TaskTeamMemberExecution): void => {
-    if ("agentRunId" in member) {
-      agentRunIds.add(member.agentRunId);
-      return;
-    }
-    member.members.forEach(visitMember);
-    member.taskExecutions.forEach(visitTask);
-  };
   const visitTask = (task: TaskExecution): void => {
     executions.push(task);
     if ("agentRunId" in task) {
       agentRunIds.add(task.agentRunId);
       return;
     }
-    task.members.forEach(visitMember);
+    task.members.forEach((member) => agentRunIds.add(member.agentRunId));
     task.taskExecutions.forEach(visitTask);
   };
   owners.forEach((owner) => owner.taskExecutions.forEach(visitTask));
@@ -297,16 +280,10 @@ export const validateConfiguredPlacementUniqueness = (
 /** Every run ID (AgentRun and TeamRun) inside a task execution forest. */
 export const collectTaskExecutionRunIds = (tasks: readonly TaskExecution[]): string[] => {
   const ids: string[] = [];
-  const visitMember = (member: TaskTeamMemberExecution): void => {
-    if ("agentRunId" in member) { ids.push(member.agentRunId); return; }
-    ids.push(member.teamRunId);
-    member.members.forEach(visitMember);
-    member.taskExecutions.forEach(visitTask);
-  };
   const visitTask = (task: TaskExecution): void => {
     if ("agentRunId" in task) { ids.push(task.agentRunId); return; }
     ids.push(task.teamRunId);
-    task.members.forEach(visitMember);
+    task.members.forEach((member) => ids.push(member.agentRunId));
     task.taskExecutions.forEach(visitTask);
   };
   tasks.forEach(visitTask);

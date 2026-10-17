@@ -265,32 +265,37 @@ export class AgentRunCollaborationContext {
       agentRunId: agent.agentRunId, teamRunIdForNode: null, memberKind: 'agent', displayName: nameAt(agent.address),
       currentStatus: statusOf(agent.agentRunId), delegatedBy: delegatorName(agent.delegatorAgentRunId), depth, hasChildren: false,
     })
-    type Node = AgentRunCollaborationViewDto['execution_tree']['taskExecutions'][number]
-      | Extract<AgentRunCollaborationViewDto['execution_tree']['taskExecutions'][number], { teamRunId: string }>['members'][number]
+    type TaskExecution = AgentRunCollaborationViewDto['execution_tree']['taskExecutions'][number]
+    const listed = (node: CollaborationTreeNode) => !hidden.has(collaborationTreeWalk.keyOf(node))
+    const visitAgent = (agentRunId: string, depth: number, shown: boolean): AgentStatus[] => {
+      if (shown) flat.push({ row: agentRow(this.index.requireAgent(agentRunId), depth), teamStatus: null })
+      return [statusOf(agentRunId)]
+    }
     // Every listed node is walked, so a collapsed Team still counts its agents; only shown rows are emitted.
-    // Returns the statuses of the listed agents in the node's subtree.
-    const visit = (node: Node, depth: number, shown: boolean): AgentStatus[] => {
-      if (hidden.has(collaborationTreeWalk.keyOf(node))) return []
-      if ('agentRunId' in node) {
-        if (shown) flat.push({ row: agentRow(this.index.requireAgent(node.agentRunId), depth), teamStatus: null })
-        return [statusOf(node.agentRunId)]
-      }
-      const team = this.index.teams.get(node.teamRunId)!
-      const children = [...node.members, ...node.taskExecutions]
-        .filter((child) => !hidden.has(collaborationTreeWalk.keyOf(child)))
+    // Returns the statuses of the listed agents in the task's subtree. Teams are flat: a task Team's members
+    // are Agents; the Teams under it are the copies its members delegated (its own task executions).
+    const visit = (task: TaskExecution, depth: number, shown: boolean): AgentStatus[] => {
+      if (!listed(task)) return []
+      if ('agentRunId' in task) return visitAgent(task.agentRunId, depth, shown)
+      const team = this.index.teams.get(task.teamRunId)!
+      const members = task.members.filter(listed)
+      const tasks = task.taskExecutions.filter(listed)
       const entry: { row: RunHistoryTransientExecutionRow; teamStatus: TeamStatus | null } = { row: {
-        kind: 'transient_execution', transientKind: 'task_team', rowKey: `team:${node.teamRunId}`, teamRunId: this.hostRunId,
-        memberAddress: node.address, agentRunId: null, teamRunIdForNode: node.teamRunId, memberKind: 'agent_team',
-        displayName: nameAt(node.address), currentStatus: null, delegatedBy: delegatorName(team.delegatorAgentRunId),
-        depth, hasChildren: children.length > 0,
+        kind: 'transient_execution', transientKind: 'task_team', rowKey: `team:${task.teamRunId}`, teamRunId: this.hostRunId,
+        memberAddress: task.address, agentRunId: null, teamRunIdForNode: task.teamRunId, memberKind: 'agent_team',
+        displayName: nameAt(task.address), currentStatus: null, delegatedBy: delegatorName(team.delegatorAgentRunId),
+        depth, hasChildren: members.length + tasks.length > 0,
       }, teamStatus: null }
       if (shown) flat.push(entry)
-      const childrenShown = shown && isTeamExpanded(node.teamRunId)
-      const statuses = children.flatMap((child) => visit(child, depth + 1, childrenShown))
+      const childrenShown = shown && isTeamExpanded(task.teamRunId)
+      const statuses = [
+        ...members.flatMap((member) => visitAgent(member.agentRunId, depth + 1, childrenShown)),
+        ...tasks.flatMap((child) => visit(child, depth + 1, childrenShown)),
+      ]
       entry.teamStatus = resolveTeamStatus(statuses, this.isActive)
       return statuses
     }
-    this.rootExecutionNodes().forEach((task) => visit(task as Node, 0, true))
+    this.rootExecutionNodes().forEach((task) => visit(task, 0, true))
     const hasSibling = (index: number, depth: number): boolean => {
       for (let next = index + 1; next < flat.length; next += 1) {
         if (flat[next]!.row.depth < depth) return false
