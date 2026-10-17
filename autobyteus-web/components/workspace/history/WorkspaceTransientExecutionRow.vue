@@ -68,6 +68,11 @@
           data-test="workspace-transient-status-dot"
           :status="row.currentStatus"
         />
+        <TeamAggregateStatusDot
+          v-else
+          class="mr-1.5"
+          :status="teamStatus"
+        />
       </span>
       <span class="mr-1.5 inline-flex h-5 flex-shrink-0 items-center" aria-hidden="true">
         <!-- Teams share the people-group identity, in the tree's slate. -->
@@ -128,6 +133,7 @@
 import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
 import StatusDot from '~/components/workspace/common/StatusDot.vue';
+import TeamAggregateStatusDot from '~/components/workspace/history/TeamAggregateStatusDot.vue';
 import WorkspaceHierarchyBranches from '~/components/workspace/history/WorkspaceHierarchyBranches.vue';
 import TaskWorkerTaskSummary from '~/components/workspace/history/TaskWorkerTaskSummary.vue';
 import DelegatedStopButton from '~/components/workspace/history/DelegatedStopButton.vue';
@@ -138,9 +144,12 @@ import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes';
 import type { TaskWorkerTask } from '~/types/project';
 import { taskSummaryLabel } from '~/utils/projects/taskSummary';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
+import type { TeamStatus } from '~/utils/workspaceTeamAggregateStatus';
 
 const props = withDefaults(defineProps<{
   row: RunHistoryTransientExecutionRow;
+  /** The Team status of a Team row; agent rows show their own status. */
+  teamStatus?: TeamStatus;
   isSelected?: boolean;
   hasChildren?: boolean;
   expanded?: boolean;
@@ -151,6 +160,7 @@ const props = withDefaults(defineProps<{
   /** The run this copy belongs to, when its rows offer the per-copy stop icon (SR-007). */
   stopRoot?: DelegatedRoot | null;
 }>(), {
+  teamStatus: AgentStatus.Offline,
   stopRoot: null,
   isSelected: false,
   hasChildren: false,
@@ -175,7 +185,9 @@ const roleLabel = computed(() => t(
     : 'workspace.history.hierarchy.role.temporary_task_agent',
 ));
 
-const status = computed(() => props.row.currentStatus || AgentStatus.Offline);
+const status = computed(() => props.row.memberKind === 'agent_team'
+  ? props.teamStatus
+  : props.row.currentStatus || AgentStatus.Offline);
 const statusLabel = computed(() => t(`workspace.history.hierarchy.status.${status.value}`));
 const startedByLabel = computed(() => props.row.delegatedBy
   ? t('workspace.members.started_by', { name: props.row.delegatedBy })

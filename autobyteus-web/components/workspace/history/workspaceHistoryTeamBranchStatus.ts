@@ -1,32 +1,39 @@
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import type { RunHistoryTeamExecutionRow } from '~/stores/runHistoryTypes';
-import { foldTeamAggregateStatus } from '~/utils/workspaceTeamAggregateStatus';
+import type { RunHistoryTeamExecutionRow, TeamTreeNode } from '~/stores/runHistoryTypes';
+import { resolveTeamStatus, type TeamStatus } from '~/utils/workspaceTeamAggregateStatus';
 
-const rowAgentStatus = (
-  row: RunHistoryTeamExecutionRow,
-): AgentStatus | string | null | undefined => {
-  if (row.memberKind !== 'agent') return AgentStatus.Offline;
-  return row.kind === 'stable_member' ? row.row.currentStatus : row.currentStatus;
-};
+/** The statuses the Agent rows among `rows` show (a Team row counts through its own Agent rows). */
+const agentStatusesOf = (
+  rows: readonly RunHistoryTeamExecutionRow[],
+): Array<AgentStatus | string | null | undefined> => rows.flatMap((row) => {
+  if (row.memberKind !== 'agent') return [];
+  return [row.kind === 'stable_member' ? row.row.currentStatus : row.currentStatus];
+});
 
-export const aggregateTeamBranchAgentStatus = (
+/**
+ * The status of one Team row (configured or delegated) in a Team run's rows: every Agent row
+ * beneath it by depth, collapsed or not. Closed task rows are not in `executionRows`.
+ */
+export const teamBranchStatus = (
   rows: readonly RunHistoryTeamExecutionRow[],
   teamRow: RunHistoryTeamExecutionRow,
-): AgentStatus => {
-  if (teamRow.kind !== 'stable_member' || teamRow.memberKind !== 'agent_team') {
-    return AgentStatus.Offline;
-  }
-
+  runAlive: boolean,
+): TeamStatus => {
+  if (teamRow.memberKind !== 'agent_team') return AgentStatus.Offline;
   const teamIndex = rows.findIndex(
     (row) => row === teamRow || row.rowKey === teamRow.rowKey,
   );
   if (teamIndex < 0) return AgentStatus.Offline;
 
-  const statuses: Array<AgentStatus | string | null | undefined> = [];
-  for (let index = teamIndex + 1; index < rows.length; index += 1) {
-    const row = rows[index];
-    if (!row || row.depth <= teamRow.depth) break;
-    if (row.memberKind === 'agent') statuses.push(rowAgentStatus(row));
-  }
-  return foldTeamAggregateStatus(statuses, 'live');
+  let end = teamIndex + 1;
+  while (end < rows.length && rows[end]!.depth > teamRow.depth) end += 1;
+  return resolveTeamStatus(agentStatusesOf(rows.slice(teamIndex + 1, end)), runAlive);
 };
+
+/** The status of a Team run's row: every Agent row of the run; offline when the run is stopped. */
+export const teamRunStatus = (team: TeamTreeNode): TeamStatus =>
+  resolveTeamStatus(agentStatusesOf(team.executionRows), team.isActive);
+
+/** The status of a Team group row: the highest status among its runs. */
+export const teamDefinitionGroupStatus = (runs: readonly TeamTreeNode[]): TeamStatus =>
+  resolveTeamStatus(runs.map(teamRunStatus), true);

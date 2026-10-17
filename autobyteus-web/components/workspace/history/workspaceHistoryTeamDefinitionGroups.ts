@@ -6,7 +6,6 @@ export type WorkspaceHistoryTeamDefinitionDisplayGroup = {
   teamDefinitionName: string;
   runs: TeamTreeNode[];
   representativeRun: TeamTreeNode;
-  hasActiveRuns: boolean;
 };
 
 export const resolveTeamDefinitionGroupKey = (
@@ -24,7 +23,6 @@ const buildDisplayGroupsFromTeamNodes = (
     const existing = groups.get(key);
     if (existing) {
       existing.runs.push(team);
-      existing.hasActiveRuns ||= team.isActive;
       if (existing.representativeRun.lastActivityAt < team.lastActivityAt) {
         existing.representativeRun = team;
       }
@@ -37,7 +35,6 @@ const buildDisplayGroupsFromTeamNodes = (
       teamDefinitionName: team.teamDefinitionName || 'Team',
       runs: [team],
       representativeRun: team,
-      hasActiveRuns: team.isActive,
     });
   }
 
@@ -83,7 +80,6 @@ const buildDisplayGroupsFromHistory = (
       teamDefinitionName: historyGroup.teamDefinitionName || representativeRun.teamDefinitionName || 'Team',
       runs,
       representativeRun,
-      hasActiveRuns: runs.some((run) => run.isActive),
     });
   }
 

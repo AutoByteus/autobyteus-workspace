@@ -193,12 +193,14 @@ Agent teams use the same streaming protocol but connect to a different WebSocket
   refresh, or recovery. Missing member-scoped status means
   the member is unknown/offline and non-interruptible until a member
   `AGENT_STATUS` arrives.
-- Presents binary team activity without creating an aggregate team status:
-  each exact team-run row reads only that run's `isActive`, while a rendered
-  team-definition group may derive `runs.some(run => run.isActive)` solely as
-  an any-active display cue over its visible child runs. The group projection
-  is not persisted or transported and must ignore representative/member
-  status, subscription, and Stop/pending state.
+- Presents the universal Team status on Team rows only as a client-side
+  projection, never as a transported or persisted Team status. A team-run row
+  shows `resolveTeamStatus(agent statuses of its rows, isActive)`: the highest
+  state among its Agents, ranked busy (running or initializing) > error > idle >
+  offline, and offline when the run is not alive. A team-definition group row
+  shows the highest status among its listed runs. Neither projection changes
+  member status, subscription, or Stop/archive/delete availability, which
+  stays driven by `isActive`.
 
 ### Minimal team file checklist
 

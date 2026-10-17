@@ -179,7 +179,6 @@ const runScenario = async (id, description, fn) => {
 
 const statusPresentation = {
   running: { color: 'rgb(59, 130, 246)', pulse: true },
-  initializing: { color: 'rgb(245, 158, 11)', pulse: true },
   error: { color: 'rgb(239, 68, 68)', pulse: false },
   idle: { color: 'rgb(34, 197, 94)', pulse: false },
   offline: { color: 'rgb(153, 153, 153)', pulse: false },
@@ -189,14 +188,15 @@ const dotDetails = async (locator) => {
   await locator.waitFor({ state: 'visible', timeout: timeoutMs });
   return await locator.evaluate((element) => {
     const inner = element.querySelector('[aria-hidden="true"]');
+    // Tree rows hold the dot in a status slot; TEAMS run and group rows place it inline.
     const statusContainer = element.closest('.member-status');
-    const next = statusContainer?.nextElementSibling;
+    const next = statusContainer ? statusContainer.nextElementSibling : element.nextElementSibling;
     const stableRow = element.closest('[data-row-kind="stable_member"]');
     const leading = stableRow?.querySelector(
       ':scope > [data-test="workspace-team-member-disclosure"], :scope > span.ml-2[aria-hidden="true"]',
     );
     if (!(inner instanceof HTMLElement) || !(next instanceof HTMLElement)) {
-      throw new Error('Aggregate wrapper is missing its solid dot or following configured-Team identity');
+      throw new Error('Team status wrapper is missing its solid dot or the element that follows it');
     }
     const outerRect = element.getBoundingClientRect();
     const innerRect = inner.getBoundingClientRect();
@@ -338,6 +338,8 @@ try {
       body: JSON.stringify({ status: 'ok' }),
     });
   });
+  // app.vue opens the node's agent-package definition change feed on every page; the fixture has no backend.
+  await context.routeWebSocket(/\/ws\/agent-package-definitions(\?|$)/, (ws) => ws.send(JSON.stringify({ type: 'connected' })));
   page = await context.newPage();
   page.on('console', (message) => {
     evidence.browserEvents.push({ type: `console:${message.type()}`, text: message.text() });
@@ -380,7 +382,7 @@ try {
 
   await runScenario(
     'NTAS-BR-001',
-    'All five aggregate states render with the approved visual, accessibility, placement, one-dot, and route-exclusion behavior',
+    'All four universal Team states (starting reads busy) render with the approved visual, accessibility, placement and one-dot behavior on every Team row',
     async () => {
       const cases = [
         {
@@ -389,8 +391,9 @@ try {
           input: { direct: 'idle', deep: 'error', task: 'running', sibling: 'offline' },
         },
         {
-          expected: 'initializing',
-          label: 'Team status: Initializing',
+          name: 'starting',
+          expected: 'running',
+          label: 'Team status: Running',
           input: { direct: 'error', deep: 'idle', task: 'initializing', sibling: 'offline' },
         },
         {
@@ -414,7 +417,7 @@ try {
         await page.evaluate((input) => window.__nestedTeamAggregateStatusProbe.setStatuses(input), testCase.input);
         await waitFor(`product aggregate ${testCase.expected}`, async () =>
           await productDot.getAttribute('data-status') === testCase.expected);
-        presentations[testCase.expected] = await assertDot(productDot, {
+        presentations[testCase.name ?? testCase.expected] = await assertDot(productDot, {
           status: testCase.expected,
           label: testCase.label,
           placement: true,
@@ -433,21 +436,29 @@ try {
       const teamRunRow = page.locator(`[data-test="workspace-team-row-${TEAM_RUN_ID}"]`);
       const rootAgentRow = page.locator(ROOT_AGENT_ROW_SELECTOR);
       const transientTaskTeam = page.locator('[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]');
-      assert(await definitionRow.locator('[data-test="team-activity-dot"]').count() === 1,
-        'Team-definition row must retain its binary activity dot');
-      assert(await definitionRow.locator('[data-test="team-aggregate-status-dot"]').count() === 0,
-        'Team-definition row must not receive an aggregate dot');
-      assert(await teamRunRow.locator('[data-test="team-activity-dot"]').count() === 1,
-        'Root TeamRun row must retain its binary activity dot');
-      assert(await teamRunRow.locator('[data-test="team-aggregate-status-dot"]').count() === 0,
-        'Root TeamRun row must not receive an aggregate dot');
+      // delegated-team-aggregate-status: the binary alive cue is replaced by the universal Team status.
+      assert(await page.locator('[data-test="team-activity-dot"]').count() === 0,
+        'No Team row may keep the binary activity dot');
+      await assertDot(definitionRow.locator('[data-test="team-aggregate-status-dot"]'), {
+        status: 'running', label: 'Team status: Running',
+      });
+      await assertDot(teamRunRow.locator('[data-test="team-aggregate-status-dot"]'), {
+        status: 'running', label: 'Team status: Running',
+      });
       assert(await rootAgentRow.locator('[data-test="team-aggregate-status-dot"]').count() === 0,
         'Stable Agent row must not receive an aggregate dot');
       assert(await rootAgentRow.locator('[aria-hidden="true"].h-2.w-2').count() === 1,
         'Stable Agent row must retain its exact solid Agent dot');
       assert(await transientTaskTeam.count() === 1, 'Transient task-Team row must remain present');
-      assert(await transientTaskTeam.locator('[data-test="team-aggregate-status-dot"]').count() === 0,
-        'Transient task-Team row must not receive an aggregate dot');
+      // A delegated Team with nothing under it reads offline, with the same single dot.
+      await assertDot(transientTaskTeam.locator('[data-test="team-aggregate-status-dot"]'), {
+        status: 'offline', label: 'Team status: Offline',
+      });
+      assert(await transientTaskTeam.evaluate((row) => {
+        const dot = row.querySelector('[data-test="team-aggregate-status-dot"]');
+        const icon = row.querySelector('[data-team-icon="temporary-task-team"]');
+        return Boolean(dot && icon && (dot.compareDocumentPosition(icon) & Node.DOCUMENT_POSITION_FOLLOWING));
+      }), 'Delegated Team dot must precede the slate people-group icon');
 
       await page.evaluate((key) => window.__nestedTeamAggregateStatusProbe.setExpanded(key, true), PRODUCT_TEAM_KEY);
       await page.locator(DEEP_ROW_SELECTOR).waitFor({ state: 'visible', timeout: timeoutMs });
@@ -456,11 +467,13 @@ try {
         label: 'Team status: Running',
         placement: true,
       });
+      await page.waitForTimeout(400); // let the row enter transition settle for the evidence screenshot
       await page.screenshot({ path: expandedScreenshotPath, fullPage: true });
       return {
         presentations,
         visibleAggregateCount: await page.locator('[data-test="team-aggregate-status-dot"]').count(),
         binaryActivityCount: await page.locator('[data-test="team-activity-dot"]').count(),
+        teamDotCount: await page.locator('[data-test="team-aggregate-status-dot"]').count(),
         screenshot: expandedScreenshotPath,
       };
     },
@@ -474,12 +487,13 @@ try {
         window.__nestedTeamAggregateStatusProbe.setExpanded(productKey, false);
         window.__nestedTeamAggregateStatusProbe.setExpanded(deepKey, false);
       }, { productKey: PRODUCT_TEAM_KEY, deepKey: DEEP_TEAM_KEY });
+      await page.locator(DEEP_ROW_SELECTOR).waitFor({ state: 'detached', timeout: timeoutMs });
       await page.evaluate((input) => window.__nestedTeamAggregateStatusProbe.setStatuses(input), {
         direct: 'offline', deep: 'offline', task: 'initializing', sibling: 'running',
       });
-      await waitFor('collapsed Product Team initializing from task child', async () =>
-        await productDot.getAttribute('data-status') === 'initializing');
-      await assertDot(productDot, { status: 'initializing', label: 'Team status: Initializing' });
+      await waitFor('collapsed Product Team busy from a starting task child', async () =>
+        await productDot.getAttribute('data-status') === 'running');
+      await assertDot(productDot, { status: 'running', label: 'Team status: Running' });
       await assertDot(siblingDot, { status: 'running', label: 'Team status: Running' });
       assert(await page.locator(DEEP_ROW_SELECTOR).count() === 0,
         'Collapsed Product Team must hide the deep configured Team row');
@@ -487,10 +501,10 @@ try {
       await page.evaluate((key) => window.__nestedTeamAggregateStatusProbe.setExpanded(key, true), PRODUCT_TEAM_KEY);
       await page.locator(DEEP_ROW_SELECTOR).waitFor({ state: 'visible', timeout: timeoutMs });
       const deepDot = page.locator(DEEP_ROW_SELECTOR).locator('[data-test="team-aggregate-status-dot"]');
-      await assertDot(deepDot, { status: 'initializing', label: 'Team status: Initializing', placement: true });
+      await assertDot(deepDot, { status: 'running', label: 'Team status: Running', placement: true });
       assert(await page.locator('[data-member-address="/product_team/deep_team/task_worker"]').count() === 0,
         'Collapsed deep Team must hide its task-scoped Agent while its aggregate remains current');
-      await assertDot(productDot, { status: 'initializing', label: 'Team status: Initializing' });
+      await assertDot(productDot, { status: 'running', label: 'Team status: Running' });
 
       await page.evaluate((key) => window.__nestedTeamAggregateStatusProbe.setExpanded(key, false), PRODUCT_TEAM_KEY);
       await page.locator(DEEP_ROW_SELECTOR).waitFor({ state: 'detached', timeout: timeoutMs });
@@ -529,8 +543,8 @@ try {
       const idleDetails = await assertDot(productDot, { status: 'idle', label: 'Team status: Idle' });
       await page.screenshot({ path: collapsedScreenshotPath, fullPage: true });
       return {
-        recursiveProductStatus: 'initializing',
-        recursiveDeepStatus: 'initializing',
+        recursiveProductStatus: 'running',
+        recursiveDeepStatus: 'running',
         isolatedSiblingStatus: 'running',
         collapsedLiveStatus: idleDetails,
         patchRequests,
@@ -586,15 +600,15 @@ try {
       await teamRunRow.click();
       counters = await page.evaluate(() => window.__nestedTeamAggregateStatusProbe.getCounters());
       assert(counters.teamSelections === 1, 'Root TeamRun selection must remain exactly-once and independent', counters);
-      const rootActivity = teamRunRow.locator('[data-test="team-activity-dot"]');
-      assert(await rootActivity.getAttribute('data-active') === 'true',
-        'Root TeamRun binary activity must remain authoritative and unchanged');
+      const rootStatus = teamRunRow.locator('[data-test="team-aggregate-status-dot"]');
+      assert(await rootStatus.getAttribute('data-status') === 'running',
+        'Root TeamRun row must show the universal Team status of its agents');
 
       await page.evaluate(async () => window.__nestedTeamAggregateStatusProbe.setLocale('zh-CN'));
       await page.locator('[data-test="resolved-locale"]').filter({ hasText: 'zh-CN' }).waitFor({ timeout: timeoutMs });
       const localizedCases = [
         { status: 'running', label: '团队状态：运行中', input: { direct: 'offline', deep: 'offline', task: 'running', sibling: 'offline' } },
-        { status: 'initializing', label: '团队状态：正在初始化', input: { direct: 'offline', deep: 'offline', task: 'initializing', sibling: 'offline' } },
+        { name: 'starting', status: 'running', label: '团队状态：运行中', input: { direct: 'offline', deep: 'offline', task: 'initializing', sibling: 'offline' } },
         { status: 'error', label: '团队状态：错误', input: { direct: 'error', deep: 'offline', task: 'offline', sibling: 'offline' } },
         { status: 'idle', label: '团队状态：空闲', input: { direct: 'idle', deep: 'offline', task: 'offline', sibling: 'offline' } },
         { status: 'offline', label: '团队状态：离线', input: { direct: 'offline', deep: 'offline', task: 'unexpected', sibling: 'offline' } },
@@ -604,7 +618,7 @@ try {
         await page.evaluate((input) => window.__nestedTeamAggregateStatusProbe.setStatuses(input), testCase.input);
         await waitFor(`Simplified Chinese ${testCase.status} label`, async () =>
           await productDot.getAttribute('aria-label') === testCase.label);
-        localized[testCase.status] = await assertDot(productDot, {
+        localized[testCase.name ?? testCase.status] = await assertDot(productDot, {
           status: testCase.status,
           label: testCase.label,
         });

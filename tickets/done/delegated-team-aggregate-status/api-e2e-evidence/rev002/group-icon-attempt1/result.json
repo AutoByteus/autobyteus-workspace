@@ -1,0 +1,56 @@
+{
+  "startedAt": "2026-10-17T07:18:30.433Z",
+  "layer": "Renderer browser integration",
+  "source": "ebf5ca614c3deeab419b43f2ce47ec913d96ab6a",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "cases": {
+    "B01": {
+      "description": "Shared + Agent/Team parent icons, pointer/keyboard/disclosure/focus at normal/constrained widths",
+      "startedAt": "2026-10-17T07:19:04.470Z",
+      "result": "Fail",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   {\n+     kind: 'error',\n+     text: \"WebSocket connection to 'ws://127.0.0.1:53076/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED\"\n+   },\n+   {\n+     kind: 'error',\n+     text: \"WebSocket connection to 'ws://127.0.0.1:53076/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED\"\n+   },\n+   {\n+     kind: 'error',\n+     text: \"WebSocket connection to 'ws://127.0.0.1:53076/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED\"\n+   }\n+ ]\n- []\n\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:160:12\n    at async runCase (file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:69:27)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:130:3"
+    }
+  },
+  "events": [
+    {
+      "kind": "error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:53076/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "kind": "error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:53076/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "kind": "error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:53076/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    }
+  ],
+  "cleanup": {
+    "browserClosed": true,
+    "nuxtExited": {
+      "pid": 24383,
+      "exitCode": 0,
+      "signal": null
+    },
+    "routeRemoved": true,
+    "portsReleased": true
+  },
+  "sourceFiles": {
+    "tests/e2e/team-group-icon-probe.mjs": "3443cb3bb6bfbce446aaa6d3c8843d59adc03195277a3ae5398e44e3f71a0119",
+    "tests/e2e/fixtures/team-group-icon.page.vue": "9bb043feee34456977c66cb04a4ea13f8304baa30e5d10e1708e29de38aca9d4",
+    "components/workspace/history/WorkspaceTransientExecutionRow.vue": "c8273a56dd74e8c9a79f983f7f94463f4c1ae03f2435dfc2b68be37d8f4407f8",
+    "components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue": "38562e7062bb8028cbaeb5ec15a3528c9d0b154b36c7adaf5a248dc0f2827224",
+    "components/projects/ProjectTaskWorkers.vue": "83a752369c41a6f5e3232561fe02418e8968d980f7853c36c5a402b51e184726",
+    "components/memory/CollaborationMemoryDetail.vue": "ca77320d9c9742059c1f0d4a59bdf8d1112e62f8e4afe649abb1efe474798472"
+  },
+  "ports": {
+    "port": 53075,
+    "backendPort": 53076
+  },
+  "nuxtPid": 24383,
+  "browser": "155.0.8059.84",
+  "result": "Fail",
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   {\n+     kind: 'error',\n+     text: \"WebSocket connection to 'ws://127.0.0.1:53076/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED\"\n+   },\n+   {\n+     kind: 'error',\n+     text: \"WebSocket connection to 'ws://127.0.0.1:53076/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED\"\n+   },\n+   {\n+     kind: 'error',\n+     text: \"WebSocket connection to 'ws://127.0.0.1:53076/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED\"\n+   }\n+ ]\n- []\n\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:160:12\n    at async runCase (file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:69:27)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:130:3",
+  "finishedAt": "2026-10-17T07:19:30.358Z"
+}

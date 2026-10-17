@@ -7,6 +7,7 @@
 | DR-001 | CRR-005 test-code review pass from `code_reviewer` | N/A | **Blocked**: post-integration check found a flaky integration test caused by a seen-versions write race (Local Fix, routed to the implementation engineer); docs synced | `docs-sync-report.md`, `handoff-summary.md` (draft), `release-notes.md`, `release-deployment-report.md`, `delivery-evidence/dr-001/` |
 | DR-002 | CRR-007 test-review pass after the IR-004 fix (CRR-006, API-REV-003) | DR-001 blocked | Re-integrated (300 base commits), checked (flake gone 5/5), docs re-verified; release decided as beta; waiting for user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/dr-002/` |
 | DR-003 | User verification "verified, go ahead" (beta decided) | DR-002 waiting for verification | Re-integrated (18 commits, one `llm-phase.ts` conflict resolved), checks pass; finalization and beta `v1.5.5-beta.2` in progress | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/dr-003/` |
+| DR-004 | Finalization and beta rollout | DR-003 in progress | **Delivery Completed**: on `personal`; beta `v1.5.5-beta.2` published; cleanup done; follow-up Tasks created for two base failures | `release-deployment-report.md`, this record |
 
 ## Revision Entries
 
@@ -83,3 +84,19 @@
   - In the inherited-shell run, 3 live OpenAI/Gemini tests also failed. They ran only because this shell has provider keys, and they skip in the clean environment `TESTING.md` requires.
 - Renewed user verification: not needed. The re-applied change is identical in behavior and the refactor declared no behavior change.
 - Next: archive, commit, push the ticket branch, `--no-ff` finalize merge with a fetch-and-check, push `personal`, hygiene and licensing on the merged state, beta tag, rollout watch, cleanup, terminal return.
+
+### DR-004 — Finalized; beta v1.5.5-beta.2 published
+
+- Repository finalization:
+  - ticket branch pushed;
+  - `--no-ff` merge `2d730b5b12` and release commit `1192c2f893` pushed to `personal` after a fetch-and-check;
+  - tag `v1.5.5-beta.2` pushed.
+- Rollout:
+  - Desktop, Android, iOS and Docker succeeded (Docker: success);
+  - the GitHub pre-release has 17 assets;
+  - the AutoByteus NFS Release stopped at `prepare` (gated, as for `v1.5.5-beta.1`). It is out of scope: the user said the NFS release is moving out of this repository in a separate ticket.
+- Base failures found during delivery: the user asked for follow-up Tasks, and the Project Task Manager created them:
+  - `project_task_18d94e04-ce1c-4fd0-a060-0ae7fd508574` (RightSideTabs web spec);
+  - `project_task_ac18e978-c003-40b5-86ea-897c16cedb05` (read-media integration test, removed `gemini-3.5-flash`).
+- Cleanup: the local worktree and the local `codex/` and `finalize/` branches are removed; the remote ticket branch is kept by convention.
+- Terminal return to `/solution_designer`: `Sent` after this record commit is on `personal`.

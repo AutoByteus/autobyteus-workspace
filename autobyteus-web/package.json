@@ -49,6 +49,7 @@
     "test:e2e:nested-team-aggregate-status": "node tests/e2e/nested-team-aggregate-status-probe.mjs",
     "test:e2e:agent-team-detail": "node tests/e2e/agent-team-detail-probe.mjs",
     "test:e2e:team-group-icon": "node tests/e2e/team-group-icon-probe.mjs",
+    "test:e2e:team-status-live": "node tests/e2e/team-status-live-probe.mjs",
     "test:e2e:nested-team-hierarchy": "node tests/e2e/nested-team-hierarchy-probe.mjs",
     "test:e2e:existing-run-model-config": "node tests/e2e/existing-run-model-config-probe.mjs",
     "test:e2e:team-task-conversation": "node tests/e2e/team-task-conversation-probe.mjs",

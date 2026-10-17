@@ -17,6 +17,7 @@
       v-for="display in rows"
       :key="display.row.rowKey"
       :row="display.row"
+      :team-status="display.teamStatus ?? undefined"
       :is-selected="isSelected(display.row)"
       :has-children="display.row.hasChildren"
       :expanded="isExpanded(display.row)"
