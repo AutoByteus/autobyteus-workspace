@@ -150,6 +150,23 @@ describe("merged AGY fixture scenario routing (local process boundary, not serve
     expect((await run.send("READ_SKILLS")).at(-1)!.result.response).toBe("SKILLS:[]");
   });
 
+  it("linked_skills HOLD_TURN keeps the turn running until stopped; a tool call or invalid tool JSON is never held", async () => {
+    const owned = await ownedRoot(); const run = await launch("linked_skills", owned, boundConversation);
+    // Invalid tool-call JSON ends the turn with a provider ERROR (the Team status probe's failing member).
+    expect((await run.send("CALL_TOOL:{this is not json}")).at(-1)!.result.status).toBe("ERROR");
+    // A message that asks for a tool call is handled as the call, even when it mentions HOLD_TURN.
+    const call = await run.send(`CALL_TOOL:${JSON.stringify({ name: "send_message_to", arguments: { content: "HOLD_TURN" } })}`);
+    expect(call.some((frame) => frame.step_update?.state === "ACTIVE")).toBe(false);
+    const from = run.frames.length;
+    run.child.stdin!.write(JSON.stringify({ message: { content: "Review it. HOLD_TURN" } }) + "\n");
+    await until(() => run.frames.length > from);
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    const held = run.frames.slice(from);
+    expect(held).toHaveLength(1);
+    expect(held[0]!.step_update).toMatchObject({ step_index: 30, step_type: "tool", state: "ACTIVE", tool_name: "run_command" });
+    expect(held.some((frame) => frame.event === "result")).toBe(false);
+  });
+
   it("context_files records the raw input line and opens each listed absolute path with view_file", async () => {
     const owned = await ownedRoot(); const run = await launch("context_files", owned, boundConversation);
     const image = path.join(owned.root, "shot.png"); await fs.writeFile(image, "image bytes");

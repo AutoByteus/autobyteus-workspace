@@ -133,12 +133,13 @@ import { useLocalization } from '~/composables/useLocalization';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { WorkspaceHistoryAvatarBindings } from '~/components/workspace/history/workspaceHistorySectionContracts';
 import type { RunHistoryStableExecutionRow } from '~/stores/runHistoryTypes';
+import type { TeamStatus } from '~/utils/workspaceTeamAggregateStatus';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 
 const props = defineProps<{
   row: RunHistoryStableExecutionRow;
   avatars: WorkspaceHistoryAvatarBindings;
-  aggregateStatus: AgentStatus;
+  aggregateStatus: TeamStatus;
   age: string;
   isSelected: boolean;
   hasChildren: boolean;

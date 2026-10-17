@@ -210,12 +210,7 @@ const mountSubject = (options: {
       stubs: options.stubs ?? {},
       mocks: { $t: (key: string) => ({
         'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.temporary_execution_title': 'Temporary task execution',
-        'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.active_team_runs': 'Active team runs',
-        'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.no_active_team_runs': 'No active team runs',
-        'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.active_team_run': 'Active team run',
-        'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.inactive_team_run': 'Inactive team run',
         'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_running': 'Team status: Running',
-        'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_initializing': 'Team status: Initializing',
         'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_error': 'Team status: Error',
         'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_idle': 'Team status: Idle',
         'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_offline': 'Team status: Offline',
@@ -258,7 +253,8 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     expect(actions.onSelectTeam).not.toHaveBeenCalled();
     expect(actions.onOpenAgentOrgRun).not.toHaveBeenCalled();
     expect(state.toggleAgentOrgRun).not.toHaveBeenCalled();
-    expect(wrapper.get('[data-test="workspace-team-row-team-run-1"] [data-test="team-activity-dot"]').attributes('data-active')).toBe('true');
+    // The alive Team run row shows the universal Team status (its worker is running), not a binary activity dot.
+    expect(wrapper.get('[data-test="workspace-team-row-team-run-1"] [data-test="team-aggregate-status-dot"]').attributes('data-status')).toBe(AgentStatus.Running);
     expect(wrapper.get('[data-test="agent-org-run-open-org-run"] .bg-emerald-500').exists()).toBe(true);
     await wrapper.setProps({ state: { ...state, isRunTerminating: () => true, isTeamTerminating: () => true, isAgentOrgTerminating: () => true } });
     expect(button.attributes('disabled')).toBeDefined();
@@ -329,27 +325,62 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     expect(actions.onTerminateAgentOrg).toHaveBeenCalledWith(group.runs[0])
   })
 
-  it('renders any-active definition activity and exact sibling run activity reactively', async () => {
-    const activeRun: TeamTreeNode = {
-      teamRunId: 'team-run-active', teamDefinitionId: 'team-def-1', teamDefinitionName: 'Team Alpha',
-      workspaceRootPath: '/ws/a', summary: 'Active task', lastActivityAt: '2026-06-29T00:00:00.000Z',
-      isActive: true, deleteLifecycle: 'READY', focusedAgentRunId: '', rootTeam: rootRow([], 'team-run-active'),
-      members: [], executionRows: [],
+  // delegated-team-aggregate-status REQ-001..004/006/007, AC-002/007/008/010: TEAMS run and group rows.
+  it('gives TEAMS run and group rows the universal Team status reactively, keeping Stop on alive runs', async () => {
+    const teamRun = (
+      teamRunId: string,
+      isActive: boolean,
+      statuses: AgentStatus[],
+      lastActivityAt = '2026-06-29T00:00:00.000Z',
+    ): TeamTreeNode => {
+      const children = statuses.map((currentStatus, index) => stableAgent(`/member_${index}`, {
+        teamRunId, agentRunId: `${teamRunId}-member-${index}`, currentStatus,
+      }));
+      const node: TeamTreeNode = {
+        teamRunId, teamDefinitionId: 'team-def-1', teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a', summary: teamRunId, lastActivityAt,
+        isActive, deleteLifecycle: 'READY', focusedAgentRunId: '', rootTeam: rootRow(children, teamRunId),
+        members: children, executionRows: [],
+      };
+      return { ...node, executionRows: buildRunHistoryTeamExecutionRows(node) };
     };
-    const inactiveRun: TeamTreeNode = {
-      ...activeRun, teamRunId: 'team-run-inactive', rootTeam: rootRow([], 'team-run-inactive'),
-      summary: 'Inactive task', lastActivityAt: '2026-06-30T00:00:00.000Z', isActive: false,
-    };
-    const { wrapper } = mountSubject({ workspaceTeams: [activeRun, inactiveRun], teamExpanded: false });
-    const groupRow = wrapper.get('[data-test="workspace-team-definition-row-team-def-1"]');
-    expect(groupRow.get('[data-test="team-activity-dot"]').attributes()).toMatchObject({
-      'data-active': 'true', 'aria-label': 'Active team runs', title: 'Active team runs',
+    const idleRun = teamRun('team-run-idle', true, [AgentStatus.Idle, AgentStatus.Offline]);
+    const busyRun = teamRun('team-run-busy', true, [AgentStatus.Offline, AgentStatus.Running], '2026-06-30T00:00:00.000Z');
+    const stoppedRun = teamRun('team-run-stopped', false, [AgentStatus.Running]);
+    const { wrapper } = mountSubject({ workspaceTeams: [stoppedRun, idleRun, busyRun], teamExpanded: false });
+    const groupDot = () => wrapper.get('[data-test="workspace-team-definition-row-team-def-1"] [data-test="team-aggregate-status-dot"]');
+    const runDot = (teamRunId: string) => wrapper.get(`[data-test="workspace-team-row-${teamRunId}"] [data-test="team-aggregate-status-dot"]`);
+    const stopButtons = () => wrapper.findAll('button[title$="terminate_team"]');
+
+    expect(wrapper.find('[data-test="team-activity-dot"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="workspace-team-definition-row-team-def-1"]').findAll('[data-test="team-aggregate-status-dot"]')).toHaveLength(1);
+    expect(groupDot().attributes()).toMatchObject({
+      'data-status': AgentStatus.Running, 'aria-label': 'Team status: Running', title: 'Team status: Running',
     });
-    expect(wrapper.get('[data-test="workspace-team-row-team-run-active"] [data-test="team-activity-dot"]').attributes('data-active')).toBe('true');
-    expect(wrapper.get('[data-test="workspace-team-row-team-run-inactive"] [data-test="team-activity-dot"]').attributes('data-active')).toBe('false');
-    await wrapper.setProps({ workspaceTeams: [{ ...activeRun, isActive: false }, inactiveRun] });
+    // An alive run whose members are idle reads green, not blue.
+    expect(runDot('team-run-idle').attributes()).toMatchObject({ 'data-status': AgentStatus.Idle, 'aria-label': 'Team status: Idle' });
+    expect(runDot('team-run-idle').get('[aria-hidden="true"]').classes()).toContain('bg-green-500');
+    expect(runDot('team-run-busy').attributes('data-status')).toBe(AgentStatus.Running);
+    expect(runDot('team-run-stopped').attributes('data-status')).toBe(AgentStatus.Offline);
+    expect(runDot('team-run-stopped').element.nextElementSibling?.textContent).toContain('team-run-stopped');
+    expect(stopButtons()).toHaveLength(2);
+
+    await wrapper.setProps({ workspaceTeams: [stoppedRun, idleRun, { ...busyRun, isActive: false }] });
     await wrapper.vm.$nextTick();
-    expect(groupRow.get('[data-test="team-activity-dot"]').attributes('data-active')).toBe('false');
+    expect(groupDot().attributes('data-status')).toBe(AgentStatus.Idle);
+    expect(runDot('team-run-busy').attributes('data-status')).toBe(AgentStatus.Offline);
+    expect(stopButtons()).toHaveLength(1);
+
+    await wrapper.setProps({ workspaceTeams: [stoppedRun, { ...idleRun, isActive: false }, { ...busyRun, isActive: false }] });
+    await wrapper.vm.$nextTick();
+    expect(groupDot().attributes()).toMatchObject({ 'data-status': AgentStatus.Offline, 'aria-label': 'Team status: Offline' });
+    expect(stopButtons()).toHaveLength(0);
+
+    // An alive run with no started member reads gray while Stop stays (ASM-002).
+    await wrapper.setProps({ workspaceTeams: [teamRun('team-run-restored', true, [AgentStatus.Offline])] });
+    await wrapper.vm.$nextTick();
+    expect(runDot('team-run-restored').attributes('data-status')).toBe(AgentStatus.Offline);
+    expect(stopButtons()).toHaveLength(1);
   });
 
   it('renders mutually exclusive active Stop and inactive Archive/Delete actions', async () => {
@@ -496,6 +527,48 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     // REQ-009: the starter is not a visible line; it stays in the accessible label.
     expect(wrapper.text()).not.toContain('Started by worker');
     expect(taskRows[0].attributes('aria-label')).toContain('Started by worker');
+  });
+
+  // delegated-team-aggregate-status REQ-002/003/005, AC-005/007/009: delegated Teams under a Team run.
+  it('gives a delegated Team row under a Team run one Team status dot, collapsed included, gray when the run stops', async () => {
+    const worker = stableAgent('/worker', { agentRunId: 'worker-run' });
+    const stableReviewer = stableAgent('/study_group/reviewer', { displayName: 'reviewer', agentRunId: 'reviewer-run', currentStatus: AgentStatus.Offline });
+    const stableStudyGroup: TeamMemberTreeRow = {
+      ...stableAgent('/study_group', { displayName: 'Study Group' }), kind: 'agent_team', agentRunId: null,
+      teamDefinitionId: 'study-group-definition', teamRunIdForNode: 'study-group-run',
+      coordinatorAddress: '/study_group/reviewer', currentStatus: null, children: [stableReviewer],
+    };
+    const liveContext = buildTestTeamContext({
+      teamRunId: 'team-run-1',
+      rootChildren: [
+        testAgentNode('/worker', { agentRunId: 'worker-run' }),
+        testSubTeamNode('/study_group', [testAgentNode('/study_group/reviewer', { agentRunId: 'reviewer-run' })], {
+          teamRunId: 'study-group-run',
+        }),
+      ],
+      coordinatorAddress: '/worker', focusedAgentRunId: 'worker-run',
+      delegations: [testDelegation({ delegatorAgentRunId: 'worker-run', recipientAddress: '/study_group', target: { teamRunId: 'task-team-run-1' } })],
+    });
+    liveContext.view.getAgentContext('reviewer-run')!.state.currentStatus = AgentStatus.Offline;
+    liveContext.view.getAgentContext('task-team-run-1:reviewer-run')!.state.currentStatus = AgentStatus.Running;
+    const { wrapper, team } = mountSubject({ stableChildren: [worker, stableStudyGroup], liveContext });
+    await wrapper.get('[data-test="workspace-team-member-team-run-1-/study_group"]').trigger('click');
+    await wrapper.vm.$nextTick();
+
+    const taskTeamRow = () => wrapper.get('[data-transient-kind="task_team"]');
+    expect(taskTeamRow().attributes('aria-expanded')).toBe('false');
+    expect(taskTeamRow().findAll('[data-test="team-aggregate-status-dot"]')).toHaveLength(1);
+    expect(taskTeamRow().get('[data-test="team-aggregate-status-dot"]').attributes('data-status')).toBe(AgentStatus.Running);
+    expect(taskTeamRow().attributes('aria-label')).toContain('running');
+    // The configured Team row counts the delegated work under it too.
+    expect(wrapper.get('[data-test="workspace-team-member-team-run-1-/study_group"] [data-test="team-aggregate-status-dot"]')
+      .attributes('data-status')).toBe(AgentStatus.Running);
+    // Agent rows keep their own status dot and never get a Team dot.
+    expect(wrapper.get('[data-test="workspace-team-member-team-run-1-/worker"]').find('[data-test="team-aggregate-status-dot"]').exists()).toBe(false);
+
+    await wrapper.setProps({ workspaceTeams: [{ ...team, isActive: false }] });
+    await wrapper.vm.$nextTick();
+    expect(taskTeamRow().get('[data-test="team-aggregate-status-dot"]').attributes('data-status')).toBe(AgentStatus.Offline);
   });
 
   it('removes transient execution rows when the exact live projection disappears', async () => {

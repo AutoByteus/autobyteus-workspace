@@ -1,0 +1,4 @@
+HEAD ebf5ca614c3deeab419b43f2ce47ec913d96ab6a
+tracked changes:  M autobyteus-web/tests/e2e/nested-team-aggregate-status-probe.mjs  M autobyteus-web/tests/e2e/team-group-icon-probe.mjs  M autobyteus-web/tests/e2e/team-status-live-probe.mjs  M tickets/in-progress/delegated-team-aggregate-status/delivery-revision-record.md 
+app bundle mtime Oct 17 09:27:33 2026
+identity recorded 2026-10-17 09:32:02

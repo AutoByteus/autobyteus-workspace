@@ -819,8 +819,9 @@ running), the one the left panel shows:
 - Otherwise the hosting root answers through
   `ActiveRootMessageBoundary.taskExecutionStatus`: the agent's status snapshot,
   or for a team the shared fold of its members
-  (`foldTeamAggregateStatus` in `@autobyteus/collaboration-stream-contracts`,
-  the same rule as the web). A root that is not active, not admitting, or does
+  (`foldTeamAggregateStatus` in `@autobyteus/collaboration-stream-contracts`).
+  The web's Workspaces-tree Team rows build on the same fold but show a
+  starting member as busy. Here a starting team stays `initializing`. A root that is not active, not admitting, or does
   not know the run answers `offline`. Reading never wakes or starts anything.
 - `RootTaskExecutionLifecycle` forwards every agent status change inside a task
   execution to `TaskExecutionResourcePort.taskExecutionsStatusChanged` (also after
