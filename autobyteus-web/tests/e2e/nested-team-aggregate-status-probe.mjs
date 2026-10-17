@@ -338,6 +338,8 @@ try {
       body: JSON.stringify({ status: 'ok' }),
     });
   });
+  // app.vue opens the node's agent-package definition change feed on every page; the fixture has no backend.
+  await context.routeWebSocket(/\/ws\/agent-package-definitions(\?|$)/, (ws) => ws.send(JSON.stringify({ type: 'connected' })));
   page = await context.newPage();
   page.on('console', (message) => {
     evidence.browserEvents.push({ type: `console:${message.type()}`, text: message.text() });
