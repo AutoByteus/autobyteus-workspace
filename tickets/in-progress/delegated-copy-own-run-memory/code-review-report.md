@@ -16,8 +16,8 @@
 - Implementation Revision Record Reviewed As Context: `.../implementation-revision-record.md`
 - Relevant Implementation Revision IDs: `IR-001` (`8bbd081c8d` D-10, `5a5359e707` D-9, `6bcb206e4e` D-1..D-8), `IR-002` (`2f7f5b3f4b`)
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/tickets/in-progress/delegated-copy-own-run-memory/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-007`
-- Current Review Round: `5`
+- Current Code Review Revision ID: `CRR-009`
+- Current Review Round: `6`
 - Review Scope: round 3 is a `Full Review` completion at the user's request, over all 120 changed source files of `66429d6f31..2f7f5b3f4b`. Round 1, though recorded as a Full Review, read only the core modules and the five areas the implementer flagged; this round reads the rest (see Round 3). Round 2 was a `Targeted Delta Review` of `2f7f5b3f4b`: nine source files, all within CR-001..CR-003 (unused declarations, the metadata store's sync reader, the link-check warning), plus two tests and the handoff. Round 1 was a `Full Review` (`66429d6f31..6bcb206e4e`: 221 files, of which 130 are source, +5035/−1001 source lines)
 - Trigger: the user asked whether round 1 followed the criteria strictly; it did not cover every file, so the Full Review was completed
 - Prior Review Round Reviewed: `2` (CRR-002, Pass)
@@ -48,6 +48,20 @@
   - The five new test files: 5 files / 28 tests pass. They cover the migration (every shape, second start, a stop at each step, F-RERUN-MSG, the per-run gate), the stores (L4–L6, U-4, C6), the message logs, the Memory page attribution and Memory Sync.
   - The frozen copy `run-execution-tree-shared-record-schemas.ts` matches its base file apart from import paths and the header. No file outside `app-data-migrations/` imports `legacy/`.
 - **Explicit exclusions:** the broad unit, integration and e2e suites were not rerun by the reviewer; the implementer's results and its pre-existing failure list are carried. AC-016 (the real-app journey) is for API/E2E.
+
+## Round 6 — Delivery Integration Delta (IR-004, DR-001, CRR-009)
+
+- **Scope:** delivery's merge `1dd3cedadf` (origin/personal `2d076088dd` into the branch), its blocker record `1251a9b491`, and the test-only fix `217430a404`.
+- **Merge:** `git show --remerge-diff` is empty, so the merge had no conflicts and no hand-made resolution.
+  - The only `src` overlap with this branch is `app-data-migration-registry.ts`. Upstream added `ProjectTaskKeysV1AppDataMigration` (project files, independent of memory trees), and ours is still registered last.
+  - The upstream Task-key changes in `root-task-execution-lifecycle.ts` and the projects code don't touch the memory layout.
+  - Reviewer: tsc on the merged HEAD exits 0.
+- **`217430a404` (tests only, no `src`):**
+  - `team-run-v1-production-upgrade`: the Org's configured-team task execution is asserted as a link without `settledAt`. Current saves already drop `settledAt` (asserted at base by `team-run-current-package-schema`), so this isn't new data loss. It also asserts the task agent's own file at L1 (`origin: configured_place`, the place's definition, the Org coordinating run). The mixed-root case asserts `WAITING_FOR_PREDECESSOR` while `20260901` is FAILED (`RESTART_TO_RETRY`), with the tree byte-identical and attempts 1 → 2. That matches contract §5.4, R-8 and AC-020 F-PENDING-FAILED.
+  - The two `token-usage/*-backfill-startup` tests delete only their own migration rows in `beforeAll` (the helper's set is seeded with the file's migration id, so the `IN (...)` is never empty).
+  - `model-metadata-provenance-graphql` binds Prisma to its own database and closes it in `afterAll`.
+  - These test-isolation fixes are outside this ticket's code, but they block its merged-state validation, so fixing them here is proportionate. The shared-database pattern is sent as a follow-up.
+- **Evidence:** `evidence/implementation/IR-004-server-e2e-merged.log`: 161 files, 113 pass, 47 skipped, 1 failed (`terminal-websocket-lifecycle`, known, autobyteus-59). The four changed files and the TAU file pass.
 
 ## Round 5 — CR-004 Delta (IR-003, CRR-007)
 
@@ -275,9 +289,9 @@ N/A (Pass). CR-001..CR-004 are resolved.
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Review Entry Point: `Implementation Review` (round 5, Targeted Delta Review of CR-004)
+- Review Entry Point: `Implementation Review` (round 6, Targeted Delta Review of the delivery merge and IR-004)
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
 - Score Summary: 9.3/10; every category ≥ 9.0
 - Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
-- Notes: API/E2E reruns the affected Memory page coverage (TAU-1's Agents list now shows the definition name). Any durable test change then returns for the test-code review before delivery.
+- Notes: API/E2E re-validates the merged state by impact (the merge diff and the IR-004 tests), then the test-code review follows, then delivery.

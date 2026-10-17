@@ -2,7 +2,7 @@
 
 ## Review Meta
 
-- Review Round: 3 (CR-004 rerun delta; rounds 1–2 = CRR-004, CRR-006)
+- Review Round: 4 (merged-state delta; rounds 1–3 = CRR-004, CRR-006, CRR-008)
 - Trigger: `api_e2e_engineer` API-REV-001 Pass (~93%)
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (REQ-004, REQ-008, REQ-009, REQ-017, REQ-019; AC-004..AC-016, AC-019, AC-020)
 - Investigation Notes Reviewed As Context: through the design and contract
@@ -13,7 +13,7 @@
 - Implementation Revision Record Reviewed As Context: IR-001, IR-002
 - Original Code Review Report: `code-review-report.md` (CRR-003 Pass)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-008`
+- Current Code Review Revision ID: `CRR-010`
 - Coverage Investigation: `api-e2e-coverage-investigation.md`
 - Execution Coverage Report: `api-e2e-execution-coverage-report.md`, `api-e2e-test-case-ledger.md`
 - API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-001)
@@ -101,22 +101,27 @@ Evidence checked by the reviewer:
 
 - Rerun by impact from `2f7f5b3f4b`: only the explorer service and its test changed, so the selection was right. The desktop rerun was correctly skipped, because the web shows the server's displayName as it is.
 
+## Round 4 — Merged State (CRR-010, API-REV-004)
+
+- **Changed durable test:** `004a3a965b` (baseline fix) in `tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts` UC-2.
+  - The old code stopped waiting at the first "Server listening at" line and took the last URL seen. The agent-tools MCP host logs its own line about 20 ms before the Studio app, so a read in between hit the MCP host's URL (POST /graphql → 404).
+  - It now waits for the server's "Server listening on 127.0.0.1:0" (the same readiness line TAU uses), then uses the listener whose POST `/graphql {__typename}` succeeds. It fails clearly if none does.
+  - The cause is in the test (two real listeners are product behavior); no assertion was weakened.
+- **Evidence:**
+  - `round3/UC-fixed-1..3.log`: 2/2 each.
+  - `round3/M6-e2e-all.log`: 112 files pass. Two failed: `terminal-websocket-lifecycle` (autobyteus-59), and UC-2 before the fix.
+  - The rerun-by-impact choice is sound: the merge added a startup migration (a shared foundation), so the full server set reran. TAU rebuilds its faithful ledger from the merged build.
+
 ## Latest Authoritative Result
 
 - Result: `Pass`
 - Changed durable test paths reviewed:
-  - added `task-agent-own-run-startup.e2e.test.ts` (TAU-1..3, including the round-3 Memory page block);
-  - updated `task-reactivation-root-visibility.e2e.test.ts` and `delegated-launch-config-defaults.e2e.test.ts`.
+  - rounds 1–3: TAU file and the two projects tests;
+  - round 4: UC-2 fix `004a3a965b`;
+  - also on the branch: IR-004 test commits reviewed in CRR-009.
 - Unresolved finding IDs: None
 - Recommended Recipient: `delivery_engineer`
 - Notes:
-  - All three durable test files are uncommitted.
-  - The branch base `66429d6f31` is behind `origin/personal`. The baseline repairs `ec934ca753` and `42965d5043` are there, so integration is due.
-  - Follow-ups:
-    - FU-1 → autobyteus-125
-    - FU-2 → autobyteus-131
-    - FU-3 → various Tasks
-    - FU-4 (in-memory narrowing)
-    - FU-6 → `7e13a4af`
-    - FU-5 withdrawn (DEC-018, fixed in scope)
-  - DEC-017 closes the AC-020 locator-pending sub-case by composition.
+  - The branch is already integrated with origin/personal `2d076088dd` (merge `1dd3cedadf`).
+  - Commits after delivery's blocker: `217430a404` (IR-004 tests) and `004a3a965b` (UC-2 fix).
+  - Follow-ups: FU-1..FU-4, FU-6, FU-7 with `/project_task_manager`. FU-5 was withdrawn (DEC-018).

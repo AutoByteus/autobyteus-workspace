@@ -14,6 +14,8 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) remains 
 | CRR-006 | `api-e2e-test-review-report.md` | API/E2E test-code review, round 2, delta (API-REV-002) | Fail (Local Fix) | Pass (test code); delivery waits for CR-004 | TR-001, TR-002 resolved |
 | CRR-007 | `code-review-report.md` | Implementation Review, round 5, Targeted Delta Review (IR-003) | Fail (Local Fix) | Pass (9.3/10) | CR-004 resolved |
 | CRR-008 | `api-e2e-test-review-report.md` | API/E2E test-code review, round 3 (API-REV-003, CR-004 rerun) | Pass (test code; delivery held) | Pass → delivery | none |
+| CRR-009 | `code-review-report.md` | Implementation Review, round 6, Targeted Delta Review (delivery merge `1dd3cedadf`, IR-004) | Pass (9.3/10) | Pass (9.3/10) | none |
+| CRR-010 | `api-e2e-test-review-report.md` | API/E2E test-code review, round 4 (API-REV-004, merged state) | Pass | Pass → delivery | none |
 
 ## Revision Entries
 
@@ -277,3 +279,59 @@ None (first test review).
 - Remaining risks or uncertainty:
   - Integration with the latest origin/personal.
   - FU-4 and the frozen classifier's coupling to the current indexes.
+
+### CRR-009 — Delivery integration delta (merge + IR-004)
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/tickets/in-progress/delegated-copy-own-run-memory/code-review-report.md`
+- Review entry point and round: Implementation Review, round 6
+- Review scope: `Targeted Delta Review`: merge `1dd3cedadf` (remerge diff, overlapping `src`, typecheck) and `217430a404` (4 test files)
+- Triggering role, report path, and finding or scenario IDs: implementation_engineer, `implementation-revision-record.md` IR-004; delivery `delivery-integration-blocker.md` DR-001
+- Relevant solution revision IDs: `SR-009` + DEC-017/DEC-018
+- Relevant architecture-review revision IDs: `ARCH-REV-004`
+- Relevant implementation revision IDs: `IR-004`
+- Relevant API/E2E revision IDs: `API-REV-003`
+- Relevant delivery revision IDs: `DR-001`
+- Prior authoritative result: Pass, 9.3/10 (CRR-007)
+- Current authoritative result: Pass, 9.3/10, every category ≥ 9.0
+- What changed in the review result and why:
+  - The merge is clean and our migration is still registered last.
+  - The test updates assert the designed behavior: links without `settledAt`, which current saves already drop, and WAITING_FOR_PREDECESSOR while a predecessor is FAILED.
+  - The test-isolation fixes are scoped to their own files.
+  - Merged e2e: 113 pass, 1 known failure.
+- Supported product scenario / material-premise basis changes: None
+
+#### Prior Finding Resolution
+
+None open.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: none. Large / High unchanged.
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer` (informational: `/software_engineering_team/implementation_engineer`)
+- Remaining risks or uncertainty: the shared e2e database pattern in other files (follow-up FU-7)
+
+### CRR-010 — Test-code review of the merged-state round
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/tickets/in-progress/delegated-copy-own-run-memory/api-e2e-test-review-report.md`
+- Review entry point and round: API/E2E test-code review, round 4
+- Review scope: `Targeted Delta Review` of `004a3a965b` (UC-2 readiness and listener selection); `round3/` evidence
+- Triggering role, report path, and finding or scenario IDs: api_e2e_engineer, `api-e2e-revision-record.md` API-REV-004 (Pass, 94%)
+- Relevant solution revision IDs: `SR-009` + DEC-017/DEC-018
+- Relevant architecture-review revision IDs: `ARCH-REV-004`
+- Relevant implementation revision IDs: `IR-004`
+- Relevant API/E2E revision IDs: `API-REV-004`
+- Relevant delivery revision IDs: `DR-001`
+- Prior authoritative result: test review Pass (CRR-008)
+- Current authoritative result: test review Pass; to delivery
+- What changed in the review result and why:
+  - UC-2 now waits for the server's own readiness line and picks the listener that serves GraphQL, which removes a race with the agent-tools MCP host's earlier line. It's a test-side cause with no weakened assertion.
+  - Reruns 3/3. Merged e2e: 112 pass, 1 known failure.
+- Supported product scenario / material-premise basis changes: None
+
+#### Prior Finding Resolution
+
+None open.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty: none new

@@ -3,6 +3,7 @@
 ## Revision Index
 | ID | Trigger / round | Related revisions | Prior result/confidence | Current result/confidence |
 | --- | --- | --- | --- | --- |
+| API-REV-004 | `code_reviewer` CRR-009 Pass (merged state, HEAD `217430a404`) | CRR-009, IR-004, DR-001 | Pass / 94% | Pass / 94% |
 | API-REV-003 | `code_reviewer` CRR-007 Pass (CR-004 / DEC-018 in `3e3a7b08cc`) | CRR-007, IR-003, DEC-018, DEC-017 | Pass / 93% | Pass / 94% |
 | API-REV-002 | `code_reviewer` CRR-004 Fail (Local Fix) TR-001, TR-002 | CRR-004 | Pass / 93% | Pass / 93% |
 | API-REV-001 | `code_reviewer` CRR-002 Pass (commits `8bbd081c8d`, `5a5359e707`, `6bcb206e4e`, `2f7f5b3f4b`; base `66429d6f31`) / round 1 | SR-009, ARCH-REV-004, IR-001/IR-002, CRR-001/CRR-002 | N/A | Pass / 93% |
@@ -44,3 +45,9 @@ api-e2e-coverage-investigation.md; api-e2e-execution-coverage-report.md; api-e2e
 - **TAU-1 updated:** it now asserts the group shows the definition's name ("Code Reviewer", created through the API), the id fallback (`helper`, no definition), and search by name. Uncommitted, for test-code review.
 - **DEC-017:** closes the AC-020 locator-pending sub-case (verified by composition).
 - **Confidence 94%:** the earlier AC-020 gap is closed by decision; durable test quality is pending review.
+
+## API-REV-004 — merged state, rerun by impact
+- **Diff since `3e3a7b08cc`:** a new migration (`project-task-keys-v1`) in the startup registry, which is a shared foundation, so the full server set reran. Plus 24 server `src` files and 41 web files.
+- **Results:** unit 5842; integration 393 (plus the 2 known product-defect cases); web 4473; guards pass; whole e2e 112 pass, including TAU 3/3 on the merged build.
+- **Still valid:** contracts and the desktop journey (reasons in the ledger plan).
+- **Fixed:** my UC-2 readiness race, as baseline fix `004a3a965b` (3/3). The other e2e failure is terminal-websocket-lifecycle (autobyteus-59).

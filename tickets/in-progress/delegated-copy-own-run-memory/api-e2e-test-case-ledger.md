@@ -43,3 +43,25 @@ Last validated commit `2f7f5b3f4b`. Diff: `agent-memory/services/agent-memory-ex
 | M2 unit `tests/unit/agent-memory` | 16 files, 112 tests pass (incl. the new name case) | Pass | 3e3a7b08cc | round2/M2-unit-agent-memory.log |
 | M6 Memory e2e | memory-collaboration, imported-team-memory, memory-explorer, memory-view, memory-sync-api pass. memory-sync-multiprocess (picked up by the `tests/e2e/memory` filter) fails at line 323, the known baseline failure fixed upstream in `42965d5043` | Pass | 3e3a7b08cc | round2/M6-memory-e2e-and-tau.log |
 | TAU-1 (updated) | creates the "Code Reviewer" definition as the user would (id `code-reviewer`); the task agents' group shows **"Code Reviewer"**; the `helper` group (no definition) falls back to **"helper"**; a search for "Code Reviewer" finds the group; the rest of TAU-1 unchanged. TAU-2, TAU-3 pass | Pass | 3e3a7b08cc + file | round2/M6-memory-e2e-and-tau.log |
+
+## Round 3 rerun plan (CRR-009; HEAD `217430a404` on the merge `1dd3cedadf` with origin/personal `2d076088dd`)
+Last validated commit `3e3a7b08cc`. Diff: a new app-data migration (`project-task-keys-v1`) and registry change, 24 server `src` files, 1 test fixture, 41 web files (Task keys and dependencies, v1.5.5); IR-004 test-only fixes. Unchanged: lockfile, Prisma schema, `autobyteus-ts`, contract packages, e2e helpers. My TAU file and the two updated `projects` tests were checkpointed by delivery in `52f2837ca7`, unchanged.
+
+| Prior case | Decision | Reason |
+| --- | --- | --- |
+| R0 contracts | Still valid | contract packages unchanged |
+| R1 typecheck, R2 unit, R3 integration | Rerun | server `src` changed |
+| R5 web, guards | Rerun | 41 web files changed |
+| R6 whole server e2e (incl. TAU) | **Rerun in full** | a shared foundation changed (a new migration in the startup registry); TAU's faithful ledger now comes from the merged build, so it covers the real upgrade from personal (every earlier migration, incl. `project-task-keys-v1`, done; ours pending) |
+| DJ-0..7 desktop upgrade | Still valid | proved on the pre-merge build; the merge had no conflicts; the new UI is upstream's Task keys feature (validated upstream); our migration's code is unchanged, and its registration order (last) is rechecked by TAU on the merged build |
+
+### Round 3 results (HEAD `217430a404`; evidence `evidence/api-e2e/round3/`)
+| Case | Observed | Result | Commit | Evidence |
+| --- | --- | --- | --- | --- |
+| M0 builds | install, server build, nuxt prepare, integration prepare exit 0 | Pass | 217430a404 | round3/M0*.log |
+| M1 typecheck | clean | Pass | 217430a404 | round3/M1-typecheck.log |
+| M2 unit | 720 files, 5842 pass | Pass | 217430a404 | round3/M2-unit.log |
+| M3 integration | 393 pass; 2 `agent-status-websocket` (the product defect, Task 4577620f) | Pass for this ticket | 217430a404 | round3/M3-integration.log |
+| M5 web, guards | 4473 pass; guards pass | Pass | 217430a404 | round3/M5-*.log |
+| M6 whole server e2e (scripted AGY on) | 112 files pass, including TAU 3/3 on the merged build (faithful ledger now includes `project-task-keys-v1`), task-reactivation, delegated-launch-config-defaults, collaborators F-PENDING. 2 fail: terminal-websocket-lifecycle (PTY home path, autobyteus-59) and UC-2 (M6a) | Pass after M6a | 217430a404 | round3/M6-e2e-all.log |
+| M6a | `run-history/standalone-unreadable-tree-containment` UC-2 (my test, from remove-nested-task-team) | `Route POST:/graphql not found` (404). Cause in the test: the server prints two "Server listening at" lines, the agent-tools MCP host's (no `/graphql`, 404) about 20 ms before the Studio app's (200), then "Server listening on 127.0.0.1:0". UC-2 stopped waiting at the first and took the last URL seen, which could be the MCP host's. Reproduced by starting the merged dist (62818 → 404, 62819 → 200). Baseline fix `004a3a965b`: wait for "Server listening on" and use the listener that serves GraphQL → 3/3 in a row | Pass (baseline fix) | 004a3a965b | round3/UC-fixed-1..3.log |

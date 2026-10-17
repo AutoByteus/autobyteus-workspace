@@ -127,3 +127,12 @@ No production code changed in this stage.
   - a search by the name finds the group.
 - **DEC-017** closes the AC-020 locator-pending sub-case.
 - **Durable change for review:** the TAU-1 Memory page assertions in `autobyteus-server-ts/tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts` (uncommitted).
+
+## Round 3 — merged state (CRR-009), API-REV-004, Pass, 94%
+- **Rerun by impact** from `3e3a7b08cc`: a new startup migration (a shared foundation), so the full server set:
+  - typecheck clean; unit 5842; integration 393 (plus the 2 known `agent-status-websocket` cases);
+  - web 4473; guards pass;
+  - whole e2e 112 files pass, including TAU 3/3 on a faithful ledger of the merged build, task-reactivation, delegated-launch-config-defaults and the collaborators F-PENDING path.
+- **Still valid:** contracts (unchanged) and the desktop journey (merge without conflicts; our migration unchanged and still registered last).
+- **e2e failures:** terminal-websocket-lifecycle (autobyteus-59). UC-2 of standalone-unreadable-tree-containment was a race in my test: it took the agent-tools MCP host's earlier "Server listening at" URL. Fixed as baseline fix `004a3a965b`, 3/3 in a row.
+- **Durable change for review:** `autobyteus-server-ts/tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts` (commit `004a3a965b`).
