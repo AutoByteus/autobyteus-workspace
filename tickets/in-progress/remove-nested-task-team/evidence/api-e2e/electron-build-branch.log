@@ -1,0 +1,123 @@
+
+> autobyteus@1.5.5-beta.2 build:electron:mac /Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-web
+> cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --mac
+
+
+> autobyteus@1.5.5-beta.2 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+
+> autobyteus@1.5.5-beta.2 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+
+> autobyteus@1.5.5-beta.2 audit:localization-literals /Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+
+[audit:localization-literals] Passed with zero unresolved findings.
+(node:84595) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+> autobyteus@1.5.5-beta.2 prepare-server /Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-web
+> node ./scripts/prepare-server-dispatch.mjs
+
+[0;32m=======================================[0m
+[0;32m   Preparing AutoByteus Server Files   [0m
+[0;32m=======================================[0m
+[0;32m✓[0m Created target directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-web/resources/server
+
+[0;33mBuilding server and dependencies...[0m
+Scope: all 13 workspace projects
+
+../autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+../autobyteus-ts postinstall: [node-pty-fix] ok: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+../autobyteus-ts postinstall: Done
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @google/genai@2.24.0.                               │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 1.2s using pnpm v10.28.1
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 117ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to react to database changes in your app as they happen? Discover how with Pulse: https://pris.ly/tip-1-pulse
+
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 105ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want real-time updates to your database without manual polling? Discover how with Pulse: https://pris.ly/tip-0-pulse
+
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+node:internal/modules/esm/resolve:275
+    throw new ERR_MODULE_NOT_FOUND(
+          ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-server-ts/dist/built-in-agents/built-in-agent-registry.js' imported from /Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-server-ts/scripts/smoke-built-in-agents-bootstrap.mjs
+    at finalizeResolution (node:internal/modules/esm/resolve:275:11)
+    at moduleResolve (node:internal/modules/esm/resolve:861:10)
+    at defaultResolve (node:internal/modules/esm/resolve:985:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+    at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+    at onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:680:36)
+    at TracingChannel.tracePromise (node:diagnostics_channel:350:14)
+    at ModuleLoader.import (node:internal/modules/esm/loader:679:21)
+    at defaultImportModuleDynamicallyForModule (node:internal/modules/esm/utils:222:31) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-server-ts/dist/built-in-agents/built-in-agent-registry.js'
+}
+
+Node.js v22.23.1
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-server-ts/scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs:21
+  throw new Error(`Sanitized built-in agents bootstrap smoke exited with status ${String(result.status)}.`);
+        ^
+
+Error: Sanitized built-in agents bootstrap smoke exited with status 1.
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-server-ts/scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs:21:9
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+
+Node.js v22.23.1
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
+Command failed (1): bash /Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/autobyteus-web/scripts/prepare-server.sh
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
