@@ -13,7 +13,7 @@ Current for delivery round **DR-002**. The DR-001 blocker (seen-versions write r
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/active-run-skill-update-notice/tickets/in-progress/active-run-skill-update-notice/handoff-summary.md`
 - Handoff summary status: `Updated` (DR-002)
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/active-run-skill-update-notice/tickets/in-progress/active-run-skill-update-notice/delivery-revision-record.md`
-- Current delivery revision ID: `DR-002`
+- Current delivery revision ID: `DR-004`
 
 ## Initial Delivery Integration Refresh (DR-002)
 
@@ -30,19 +30,63 @@ Current for delivery round **DR-002**. The DR-001 blocker (seen-versions write r
 
 ## User Verification
 
-- Initial explicit user verification received: `No`. Pending. The release decision (beta) was given in advance.
+- Initial explicit user verification received: `Yes`. The user said on 2026-10-17: "verified, go ahead". The release decision, "we could release a beta for this", was given earlier the same day.
+- Renewed verification required after later re-integration: `No`.
+  - After verification, `origin/personal` advanced 18 commits (agent-loop-structure-refactor, declared "no behavior change").
+  - The one conflict, in `llm-phase.ts`, was resolved by re-applying this ticket's single field (`inputRawTraceIds`) to the refactored call.
+  - The checks passed again (DR-003), so the user-facing behavior is unchanged.
 
 ## Docs Sync Result
 
-- Docs sync artifact: `docs-sync-report.md` (DR-002 delta).
-- Docs sync result: `Updated`.
-  - IR-004's module-doc update was verified against the code.
-  - The accepted limitation was added (`480d9f4aa4`).
-  - `TESTING.md` is unchanged, by policy.
+- Docs sync artifact: `docs-sync-report.md` (DR-002 delta). Result: `Updated`. `TESTING.md` is unchanged by policy.
 
-## Ticket State Transition / Repository Finalization / Release / Cleanup
+## Ticket State Transition
 
-- Pending user verification. Nothing is pushed or merged.
+- Ticket moved to `tickets/done/active-run-skill-update-notice`: `Yes` (`02481bebda`).
+
+## Version / Tag / Release Commit
+
+- `bash scripts/desktop-release.sh beta --branch finalize/active-run-skill-update-notice --no-push`, run after deleting the untracked `*/dist/` folders.
+- It produced release commit `1192c2f893` "chore(release): bump workspace release version to 1.5.5-beta.2" and the annotated tag `v1.5.5-beta.2`.
+
+## Repository Finalization
+
+- Ticket branch `codex/active-run-skill-update-notice`:
+  - committed: archive `02481bebda` on top of re-integration merge `9703a38fff`;
+  - pushed as a new branch to `origin`.
+- Finalization target: `origin` / `personal`. It advanced after verification and was re-integrated before the final merge (see above).
+- `finalize/active-run-skill-update-notice` from `origin/personal` @ `c600028072`, then `git merge --no-ff codex/active-run-skill-update-notice` → `2d730b5b12`.
+- Hygiene and licensing checks passed on the merged state.
+- After a fetch-and-check (`personal` still at `c600028072`), pushed `c600028072..1192c2f893` to `personal`, then pushed the tag `v1.5.5-beta.2`.
+- Repository finalization status: `Completed`.
+
+## Release / Publication / Deployment
+
+- Applicable: `Yes` (beta). Method: `Release Script` (`RELEASE.md` § Cutting The Release).
+- Rollout (tag `v1.5.5-beta.2`):
+
+  | Workflow | Run | Result |
+  | --- | --- | --- |
+  | Desktop Release | 39005383964 | success |
+  | Android APK Release | 39005383973 | success |
+  | iOS App Store Connect Release | 39005383978 | success |
+  | Server Docker Release | 39005383975 | success |
+  | AutoByteus NFS Release | 39005383965 | failure at `prepare`. **Out of scope**: per `RELEASE.md` § AutoByteus NFS assets, NFS publication is gated, and tag runs stop at `prepare` (the same happened for `v1.5.5-beta.1`). The user said the NFS release is moving out of this repository in a separate ticket already in progress, and asked not to investigate it. |
+
+- GitHub release `v1.5.5-beta.2`: pre-release with 17 assets, the complete count per `RELEASE.md`.
+- Release notes handoff: `Not required`. A beta uses generated notes. The archived `release-notes.md` stays available for a future stable release.
+
+## Post-Finalization Cleanup
+
+- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/active-run-skill-update-notice`: removed and pruned after this record was pushed.
+- Local branches `codex/active-run-skill-update-notice` and `finalize/active-run-skill-update-notice`: deleted. Both are contained in `origin`.
+- Remote ticket branch: kept, following the repository convention.
+
+## Follow-up Tasks For The Base Failures Found During Delivery (user-requested)
+
+- `project_task_18d94e04-ce1c-4fd0-a060-0ae7fd508574`: `RightSideTabs.workspaceTarget.spec.ts` failure (File Explorer draft regression).
+- `project_task_ac18e978-c003-40b5-86ea-897c16cedb05`: `read-media-file-continuation-flow.test.ts` references the removed `gemini-3.5-flash` model.
+- Both were created by the Project Task Manager on 2026-10-17 as TODO, not dispatched.
 
 ## Release Notes Summary
 
@@ -84,10 +128,10 @@ Current for delivery round **DR-002**. The DR-001 blocker (seen-versions write r
 
 ## Final Status
 
-- Explicit user testing/verification complete: `No`
-- Repository finalization complete: `No`
-- Applicable release (beta) complete: `No`
-- Applicable safe cleanup complete: `No`
-- Unresolved blocker: `None`. Waiting for user verification.
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
+- Explicit user testing/verification complete: `Yes`
+- Repository finalization complete: `Yes` (`personal` includes `1192c2f893`, plus this record commit)
+- Applicable release (beta) complete: `Yes`. Desktop, Android, iOS and Docker succeeded, and the GitHub release has 17 assets. NFS is out of scope.
+- Applicable safe cleanup complete: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: `Yes`, after this record is pushed (DR-004)
