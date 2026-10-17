@@ -10,17 +10,49 @@
 - Supplemental task artifacts: Product `ui-ux-spec.md` + VIS-001–015 (`/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/task-keys-and-dependencies/`); design repo `personal@1ebf4c6` (ported from `git diff b31a5b1 1ff2edf`).
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/architecture-review-revision-record.md`
-- Triggering rework report: N/A (no downstream round yet).
+- Triggering rework report: DR-001 (Blocked, Local Fix): `/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/delivery-revision-record.md`, `release-deployment-report.md` (same folder).
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (IR-001 SR-001 base; IR-002 SR-002 / SR-003; IR-003 CRR-001 Local Fix)
+- Implementation cycle: `Rework` (IR-001 SR-001 base; IR-002 SR-002 / SR-003; IR-003 CRR-001 Local Fix; IR-004 DR-001 Local Fix)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-keys-and-dependencies/tickets/in-progress/task-keys-and-dependencies/implementation-revision-record.md`
-- Current implementation revision ID: `IR-003` (delta: CR-001 `TaskDependencyWrites.idsOf` collapses resolved IDs; CR-002 wording in server `docs/modules/projects.md` and web `types/project.ts`)
+- Current implementation revision ID: `IR-004`. Delta:
+  - branch merged up to `origin/personal@66429d6f31`: `6c1fa46436` with conflict resolution against project-tool-split, then `08ce2f0483` with no conflicts;
+  - three baseline test fixes (TESTING.md Rule 9);
+  - no product source change of this ticket beyond the conflict resolution.
 - Related solution revision IDs: `SR-001`, `SR-002`, `SR-003`
 - Related architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-003`
-- Related code-review revision IDs: `CRR-001` (Fail, Local Fix CR-001/CR-002 → IR-003), `CRR-002` (Pass, targeted delta, 9.4/10; `code-review-report.md`); API-E2E / delivery: `N/A` (package forwarded to API/E2E by the code reviewer)
-- Triggering finding IDs: `CR-001`, `CR-002` (REC-001–REC-004, REC-007, REC-008 applied as guidance)
+- Related code-review revision IDs: `CRR-001` (Fail, Local Fix CR-001/CR-002 → IR-003), `CRR-002` (Pass, targeted delta), `CRR-003` (Pass, test code). API-E2E: `API-REV-001` (Pass). Delivery: `DR-001` (Blocked, Local Fix → IR-004).
+- Triggering finding IDs: DR-001 items 1–4 (merge, conflict resolution keeping both tool sets, overlapping reruns, Rule 9 items (a) and (b)).
+
+### IR-004 merge resolution (review focus)
+
+- `autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-contract.ts`: this ticket's `dependsOnDefinition` (`depends_on`, on `create_task` and `update_task`) next to the base's module-level `p` helper and the shared `workspacesDefinition` of `create_project`, `update_project` and deprecated `create_or_update_project`. Task tool texts keep the key wording (REQ-018–REQ-020); Project tool texts are the base's, unchanged.
+- `autobyteus-server-ts/docs/modules/projects.md`: one tools table with `create_project`, `update_project`, `create_or_update_project` (**deprecated**), `create_task {project_id, description, context_files?, depends_on?}` ("with the Project's next key") and `update_task {task_id, description?, status?, context_files?, depends_on?}` ("a Project Task's key or long ID, or a Task with no Project's ID").
+- `autobyteus-server-ts/docs/modules/agent_tools_mcp_server.md`: the same as bullets.
+- Unchanged by the merge and rechecked: the manifest's key mapping and `dependsOn`, `project-task-keys-tools.test.ts`, the `task-tool-runtime-parity` snapshot, the `delegate_task` description hash.
+
+### IR-004 baseline test fixes (TESTING.md Rule 9; own commits; failing on base `origin/personal@66429d6f31`)
+
+| Commit | File | Cause | Fix |
+| --- | --- | --- | --- |
+| `fa49138794` | `autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts` | Ledger check hardcoded `beforeRows.length + 4`; every registered startup migration adds a row (base: 24 vs 19; this ticket adds one more). | Derive the expected new rows from the migrations the startup ran (`migrationStatuses`). |
+| `9eeb58fb9d` | `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts` | remove-nested-task-team (`065430dd61`) replaced `FlatTeamExecutionFactory`'s "cannot contain a configured Team" runtime check with the type; the test still asserted the message. | Assert the type `children: readonly TeamRunAgentNode[]` in `team-run-config.ts`. |
+| `361eea070d` | `autobyteus-web/tests/e2e/projects-feature-probe.mjs` | Measured the Task form right after `setViewportSize`, before the shell's `resize` re-layout: at 390 px it saw a 70 px page next to the 320 px docked panel (PT-E2E-005 or -006 by run). Because the cases share one page, PT-E2E-007, -008, -009 and -011 then failed too. | Wait until the shell shows the docked left panel (wide) or the left strip (narrow), then measure; a real overflow still fails the same assertion. |
+
+### IR-004 Rule 9 failures reported with cause (not fixed here: outside this ticket's scope, failing on base)
+
+- **`team-run-v1-production-upgrade` e2e, 3 of 4 cases** (FU-API-002), also on clean `66429d6f31`.
+  - The ENOENT on `agent_teams/<root>/team_run_execution_tree.json`, the team-resume `TEST_GRAPHQL_REQUEST_FAILED` and `restoreAgentTeamRun success:false` all come from `20260901_agent_org_flat_team_families_v1` (flat-agent-organization-model, `37d05c7f71`).
+  - That migration turns the nested released Team into an AgentOrg run (`agent_orgs/<root>/agent_org_run_execution_tree.json`; the ledger shows it "migrated 3"). The test's Team V2 final-state assertions predate it.
+  - Re-expressing the e2e for the AgentOrg final state belongs to that migration's owner.
+- **`task-copy-idle-lifetime` e2e (gated).**
+  - `origin/personal` `45291d105f` documents it in TESTING.md as a known intermittent e2e, reported to the idle-shutdown and AGY model-discovery owners, with three causes:
+    - 15 s stop deadlines;
+    - a shutdown measured from when the test notices the step exit, which can land under 59 s;
+    - a 3 s `agy --help` model-discovery limit under load.
+  - Delivery's logs (load 12–131) show "model discovery timed out", "model … is not available on antigravity_cli" and a 41 s stop. A quiet-host run (load 5–9; `evidence/implementation/idle-lifetime-quiet-host.log`) showed the 58,171 ms against 59,000 ms case for the Team and Org copies; the Agent root passed.
+  - It failed on base too in delivery's comparison. This ticket does not touch idle shutdown.
 
 Every Project Task has an immutable `taskKey` (`<prefix>-<number>`), allocated by `ProjectStore.createTask` from the Project's `taskKeys {prefix, lastNumber}` under the catalog lock. `ProjectService` reserves a prefix unique among current and retired (deleted Projects') prefixes. Released data is keyed by the startup migration `project-task-keys-v1`. Tasks store `dependsOnTaskIds`, validated (self / unknown / other-Project / loop) before any context step or write; updates that supply a list are serialized per Project; delete drops the Task from dependents. GraphQL, the feed and `taskWorkerTasks` carry the new fields. For agents the key is the Task ID: tool results show it, `task_id` / `depends_on` accept key or long ID (resolved once by `TaskReferences`, only the long ID travels inward), agent-facing texts name Tasks by key or "a deleted Task". The web ports the approved prototype components, derives badges and lists client-side, and uses key URLs (`taskPagePath`; `useProjectTaskPage` the only resolver; long-ID URLs replaced by the key URL).
 
@@ -104,14 +136,30 @@ Web (`autobyteus-web/`):
 
 ## Environment Or Dependency Notes
 
-- All changes are uncommitted in the worktree (branch `codex/task-keys-and-dependencies`); no commit was made without the user asking.
-
+- Branch `codex/task-keys-and-dependencies`, merged up to `origin/personal@66429d6f31`. Commits in IR-004: merges `6c1fa46436` and `08ce2f0483`; baseline fixes `fa49138794`, `9eeb58fb9d`, `361eea070d`. Untracked `*/dist/` build output stays uncommitted. Nothing pushed; release decision stays No release (DR-001).
 - `generated/graphql.ts` was already behind the server schema at the base (delegated-launch types). Only this ticket's fields were applied by hand, matching the regenerated output. Follow-up: regenerate once to catch up the unrelated drift.
-- Pre-existing failures outside scope (TESTING Rule 9; both also fail on base `c600028072`, checked in temporary base worktrees):
-  - server `tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts` 3/4 (ENOENT on the converted `team_run_execution_tree.json`; ledger row count). With this change the count is +1 for the new migration's ledger row.
-  - web `components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts` "retains A while canonical B metadata fails; prior consumers mounted: true" (file explorer content).
+- The earlier web `RightSideTabs.workspaceTarget` failure is fixed on the new base (`66c61595d2`); it passes on the merged state.
+- Base worktrees used for the comparisons (`/tmp/tkd-base-66429`, `/tmp/tkd-base-66429b`, detached at `origin/personal@66429d6f31`) are removed after use.
 
 ## Local Implementation Checks Run
+
+IR-004, on the merged state (`origin/personal@66429d6f31` + this ticket). The server dist was rebuilt after the merge, e2e ran in a clean env with a disposable HOME, and logs are in `evidence/implementation/`:
+
+- `pnpm -C autobyteus-server-ts build` and `typecheck`: pass.
+- `pnpm -C autobyteus-server-ts test:unit`: 715 files / 5,811 tests pass (4 files / 7 tests skipped by their gates). This includes `tests/unit/agent-tools/project-tasks/project-task-tools.test.ts`, `project-task-keys-tools.test.ts` and the tool-manifest and parity tests (`server-unit-merged.log`).
+- `tests/architecture`: 4 files / 44 tests pass, after the `9eeb58fb9d` baseline fix.
+- Server e2e (`e2e-merged-summary.log`):
+  - core: `projects-graphql` 11/11, `projects-startup-migration` 6/6, `project-task-boundaries` 14/14 (TKD-API-001);
+  - gated scripted AGY (`RUN_AGY_FAILURE_E2E=1`, `ANTIGRAVITY_CLI_COMMAND=tests/fixtures/agy-failure-cli.mjs`): `project-change-feed` 7/7, `project-task-context-files-delegation` 1/1, `task-existing-copy-assignment` 7 pass / 2 skipped (TKD-AGY-001; the skips are `RUN_CLAUDE_E2E` live-model cases), `task-reactivation-root-visibility` 6 pass / 1 skipped.
+- `team-run-v1-production-upgrade` e2e: 1/4. The ledger check passes after `fa49138794`; the 3 failures are reported above, and the same 3 fail on clean `66429d6f31` (`base-66429-team-run-v1-production-upgrade.log`).
+- `task-copy-idle-lifetime` e2e (gated): reported above (`idle-lifetime-quiet-host.log`).
+- `pnpm -C autobyteus-web test:nuxt --run`: 632 files / 4,473 tests pass (2 files / 3 tests skipped). No failures (`web-nuxt-merged.log`).
+- `pnpm -C autobyteus-web guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals`: pass.
+- Web probes (own backend + Nuxt + headless Chrome, private data root):
+  - `project-manager-ux-probe.mjs`, with `project-manager-ux-task-locator-cases.mjs`: Pass (`web-probe-project-manager-ux-merged.log`, `-evidence.json`).
+  - `projects-feature-probe.mjs`: before the probe fix, PT-E2E-005 to -011 failed, and the same failures appear on clean `66429d6f31` (`web-probe-projects-feature-merged.log`, `-rerun.log`, `base-66429-web-probe-projects-feature.log`). After the fix (`361eea070d`), all 17 pass, including PT-E2E-017 keys and depends on (`web-probe-projects-feature-fixed-result.json`). The same fix on clean `66429d6f31` passes all 16 of the base's cases (`base-66429-web-probe-projects-feature-fixed.log`).
+
+Earlier rounds (pre-merge base `c600028072`):
 
 - `pnpm -C autobyteus-server-ts typecheck` — pass (also after IR-003).
 - IR-003 delta: `tests/unit/agent-tools` + `tests/unit/projects` — 60 files / 535 tests pass, including the new CR-001 case.

@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-001 | Architecture Reviewer, `design-review-report.md`, round 1 (Pass) | N/A (REC-001–REC-004 applied as guidance) | `Initial Baseline` | SR-001, ARCH-REV-001 | SR-001 implemented and locally checked; held (not handed downstream) on the Solution Designer's instruction pending SR-002 |
 | IR-002 | Architecture Reviewer, `design-review-report.md` (ARCH-REV-003 Pass on SR-001 + SR-002 + SR-003) | N/A (REC-001–REC-008 applied as guidance) | `Initial Baseline` (scope extension of IR-001 before any downstream round) | SR-001, SR-002, SR-003, ARCH-REV-001, ARCH-REV-003 | Full package implemented and locally checked; ready for Code Review |
 | IR-003 | Code Reviewer, `code-review-report.md`, CRR-001 round 1 (Fail, Local Fix) | CR-001, CR-002 | `Local Fix` | SR-003, ARCH-REV-003, CRR-001 | Both fixed; targeted-delta source review requested |
+| IR-004 | Delivery Engineer, `delivery-revision-record.md` / `release-deployment-report.md`, DR-001 (Blocked, Local Fix) | DR-001 items 1–4 (merge conflict with project-tool-split; TESTING.md Rule 9 items (a) and (b)) | `Local Fix` | SR-003, ARCH-REV-003, CRR-002, API-REV-001, CRR-003, DR-001 | Merged up to `origin/personal@66429d6f31`; conflicts resolved keeping both features; three baseline test fixes; Rule 9 causes recorded; merged-state checks pass |
 
 ## Revision Entries
 
@@ -63,3 +64,35 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: `tests/unit/agent-tools` + `tests/unit/projects` 60 files / 535 tests pass; server typecheck pass.
 - Next recipient or routing: Code Reviewer (targeted-delta source review), per handoff rules.
 - Remaining limitations or risks: none new.
+
+### IR-004 — DR-001 Local Fix: merge the latest `personal`, keep both tool sets, Rule 9 failures
+
+- Triggering role, report path, and round: `/software_engineering_team/delivery_engineer`, `delivery-revision-record.md` and `release-deployment-report.md`, DR-001 (Blocked, Local Fix).
+- Triggering finding IDs: DR-001 items 1–4:
+  1. merge `origin/personal`;
+  2. resolve the conflict with project-tool-split (`create_project`, `update_project`, deprecated `create_or_update_project`) keeping Task keys and `depends_on`;
+  3. rerun the overlapping suites;
+  4. TESTING.md Rule 9: (a) `team-run-v1-production-upgrade` e2e (FU-API-002); (b) gated `task-copy-idle-lifetime` e2e.
+- Classification: `Local Fix`. Task size `Large`, architecture risk `High`: rechecked, unchanged.
+- Prior authoritative result: CRR-003 / API-REV-001 validated package on base `c600028072`; `personal` had moved on and the merge conflicted.
+- Current authoritative result: branch merged up to `origin/personal@66429d6f31`; both features present; all merged-state checks pass (handoff "Local Implementation Checks Run").
+- Related solution revision IDs: SR-003. Architecture review: ARCH-REV-003. Code review: CRR-002, CRR-003. API-E2E: API-REV-001. Delivery: DR-001.
+- Why recorded: integration rework before finalization.
+- Approved behavior or requirement IDs affected: none changed. BEH-010 / REQ-017–REQ-020 re-checked against the merged tool contract.
+- Implementation delta:
+  - `6c1fa46436` merge of `origin/personal@a716a4632e`. Conflicts resolved in:
+    - `src/agent-tools/project-tasks/project-task-tool-contract.ts`: kept this ticket's `dependsOnDefinition` and the base's module-level `p` and `workspacesDefinition`;
+    - `docs/modules/projects.md`: one tools table with `create_project`, `update_project`, deprecated `create_or_update_project`, and `create_task` / `update_task` with `depends_on` and keys;
+    - `docs/modules/agent_tools_mcp_server.md`: the same, as bullets.
+  - `08ce2f0483` merge of `origin/personal@66429d6f31` (remove-nested-task-team and its baseline fixes): no conflicts.
+  - Baseline test fixes (TESTING.md Rule 9), each its own commit:
+    - `fa49138794`: `tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts`. The ledger check derives the new rows from the migrations that ran, instead of a hardcoded `beforeRows.length + 4`. This ticket's migration is one of those rows.
+    - `9eeb58fb9d`: `tests/architecture/application-framework-boundaries.test.ts`. Asserts flat Teams by the team node type (`children: readonly TeamRunAgentNode[]`). remove-nested-task-team (`065430dd61`) replaced the factory's runtime message with that type, and the test still asserted the message, so it failed on `origin/personal`.
+    - `361eea070d`: `autobyteus-web/tests/e2e/projects-feature-probe.mjs` waits for the shell to show the docked left panel (wide) or the left strip (narrow) after `setViewportSize`, then measures. Before this fix it measured the previous viewport's layout, a race. PT-E2E-005 or -006 failed at 390 px with a 70 px page next to the 320 px docked panel. Because the cases share one page, PT-E2E-007, -008, -009 and -011 then failed in turn. Fails the same way on clean `origin/personal@66429d6f31`; with the fix, all cases pass on both the base and this branch.
+  - Rule 9 causes reported, not fixed (outside this ticket):
+    - (a) remaining `team-run-v1-production-upgrade` failures, 3 of 4, also on clean `66429d6f31`. The ENOENT on `agent_teams/<root>/team_run_execution_tree.json`, the team-resume `TEST_GRAPHQL_REQUEST_FAILED` and `restoreAgentTeamRun success:false` all come from `20260901_agent_org_flat_team_families_v1` (flat-agent-organization-model, `37d05c7f71`). That migration turns the nested released Team into an AgentOrg run, so the test's Team V2 final-state assertions predate it. Owner: the flat-agent-organization-model / migration owner.
+    - (b) `task-copy-idle-lifetime`: `origin/personal` `45291d105f` added a TESTING.md "Known intermittent e2e" note naming its causes, already reported to the idle-shutdown and AGY model-discovery owners. The delivery logs show two of them: a 3 s `agy --help` discovery limit under load, and 15 s stop deadlines. A run on a quiet host (load 5–9) showed the third: the Team and Org copies shut down 58,171 ms after the test saw the step exit, against a 59,000 ms lower bound. The Agent root passed. Fails on base too; this ticket does not touch idle shutdown.
+- Changed files or areas: merge resolution files above; the three test files above; ticket artifacts.
+- Local validation and result: see `implementation-handoff.md` "Local Implementation Checks Run" (merged state).
+- Next recipient or routing: Code Reviewer, per handoff rules (Large / High).
+- Remaining limitations or risks: the two reported Rule 9 failures above stay open with their owners.
