@@ -1,6 +1,6 @@
 # Handoff Summary — task-keys-declutter
 
-> **Status (DR-001): stable `v1.5.5` released and checked by the user. Android APK asset missing (transient upload failure, rerun pending); everything else published.**
+> **Status (DR-002): Delivery Completed. Stable `v1.5.5` fully published (17/17 assets, Docker `1.5.5` / `latest`), and the user checked it in the app.**
 
 ## What Shipped
 
