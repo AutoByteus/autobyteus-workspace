@@ -1,0 +1,7 @@
+
+> autobyteus@1.5.5-beta.3 test:e2e:run-settings-live /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-web
+> node tests/e2e/run-settings-live-probe.mjs --cases R03 --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/tickets/in-progress/baseline-e2e-probe-repair/evidence/api-e2e/probes/run-settings-live-R03
+
+R03 Pass S2 AC-003: the server rejects the Org launch → "Couldn't start this Agent Org. Try again.", values kept, Run enabled, no run created
+Summary: 1 Pass, 0 Fail, 0 Blocked
+exit=0
