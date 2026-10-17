@@ -10,7 +10,7 @@ The latest docs sync report, handoff summary, and release/publication/deployment
 | DR-002 | CRR-004 package after IR-002 | DR-001: blocked | Integrated with `2e9bd209c` (`4612c8066`); checks pass; docs verified; held for user verification | `release-deployment-report.md`, `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `delivery-evidence/dr-002/` |
 | DR-003 | User: bring the branch on top of the latest base | DR-002: held for verification | Merged `1ea74caa2` (`5f1b45f46`), checks pass, still held for verification | `release-deployment-report.md`, `handoff-summary.md`, `delivery-evidence/dr-003/` |
 | DR-004 | CRR-007 package after IR-003 (`002207b11`) | DR-003: held, superseded by IR-003 | Blocked: `llm-phase.ts` conflict with per-call TPS; rerouted as Local Fix | `release-deployment-report.md`, `delivery-evidence/dr-004/trial-merge.log` |
-| DR-005 | CRR-009 package after IR-004 (`04b879d55`) | DR-004: blocked | Already current with `c2e366806`; golden and core unit pass; held for user verification | `release-deployment-report.md`, `handoff-summary.md`, `delivery-evidence/dr-005/` |
+| DR-005 | CRR-009 package after IR-004 (`04b879d55`) | DR-004: blocked | Already current with `c2e366806`; verified "finalize, no release"; merged `5e19addc1`; cleaned up | `release-deployment-report.md`, `handoff-summary.md`, `delivery-evidence/dr-005/` |
 
 ## Revision Entries
 
@@ -72,4 +72,7 @@ The latest docs sync report, handoff summary, and release/publication/deployment
 - Prior authoritative result: DR-004, blocked by the TPS conflict.
 - Current authoritative result: `04b879d55` contains the latest `origin/personal` (`c2e366806`), so no merge was needed. Golden 12/12 and core unit 2035 pass. The doc bullet was verified. Nothing is pushed.
 - Terminal return to `/solution_designer`: `Not yet eligible`
-- Next action: user verification of `04b879d55` and the release choice. Finalize promptly, to avoid another base collision on `llm-phase.ts`.
+- User verification: 2026-10-17, "finalize, no release".
+- Finalization: archived (`fa5414326`); ticket branch pushed; `--no-ff` merge `5e19addc1` pushed to `personal` (tree identical to the verified branch; licensing and hygiene exit 0). No release.
+- Cleanup: worktree and local branches, after this record is pushed.
+- Terminal return to `/solution_designer`: sent after cleanup (Delivery Completed).

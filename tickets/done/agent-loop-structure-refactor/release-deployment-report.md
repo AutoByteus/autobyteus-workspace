@@ -13,6 +13,35 @@ Current delivery revision: `DR-005`. DR-001..DR-004 are kept below.
 - Release: `Not required`. The user chose no release (the RELEASE.md default); the change ships with the next release. `release-notes.md` stays as the internal note.
 - Finalization, cleanup and terminal status: see "DR-005 Finalization" (added after the merge).
 
+## DR-005 Finalization
+
+- Ticket branch: `codex/agent-loop-structure-refactor` @ `fa5414326`, which archives the ticket on top of the verified `04b879d55`.
+  - Commit result: `Completed`; untracked `*/dist/` excluded.
+  - Push: `Completed` (`[new branch]`).
+- Finalization target: `origin` / `personal`. The target had not moved after verification (`c2e366806`), so no protection of delivery edits and no re-integration were needed.
+- Merge: `Completed`, per RELEASE.md. In the ticket worktree: `git checkout -b finalize/agent-loop-structure-refactor origin/personal`, then `git merge --no-ff`, giving `5e19addc1`.
+  - The tree is identical to `fa5414326`.
+  - Licensing exit 0; hygiene exit 0 (`delivery-evidence/dr-005/finalization-hygiene.log`); longest new path 117 characters.
+- Push: `Completed`. `c2e366806..5e19addc1 HEAD -> personal`, after re-fetching to confirm the target had not moved.
+- Repository finalization status: `Completed`.
+- Release / publication / deployment: `Not required` (the user chose no release). No version bump, tag or workflow.
+- Cleanup, after this record is pushed:
+  - remove the worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-loop-structure-refactor` (holds only untracked `*/dist/`) and prune;
+  - delete the local branches `codex/agent-loop-structure-refactor` and `finalize/agent-loop-structure-refactor` (both contained in `origin/personal`);
+  - keep `origin/codex/agent-loop-structure-refactor` as the review reference.
+  - Already done in DR-002: three leftover `compaction-cache-e2e-*` temp dirs.
+- Rollback: revert `5e19addc1` on `personal`. Nothing was released, so no published artifact is affected.
+
+## Final Status
+
+- Explicit user testing/verification complete: `Yes` (2026-10-17)
+- Repository finalization complete: `Yes` (`5e19addc1`)
+- Applicable release/deployment/rollout complete or not required: `Not required`
+- Applicable safe cleanup complete or not required: `Yes`, done right after this record is pushed (worktree, prune, local branches)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+
+
 
 ## DR-004 Initial Delivery Integration Refresh (blocked)
 
