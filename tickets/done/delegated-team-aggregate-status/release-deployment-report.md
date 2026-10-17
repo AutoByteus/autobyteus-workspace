@@ -93,7 +93,11 @@
 - Target advanced after verification / acceptance: `No` (`db00ba16a9`, re-fetched)
 - Delivery-owned edits protected before re-integration: `Not needed`
 - Re-integration before final merge result: `Not needed`
-- Target branch update, merge into target, push target branch, repository finalization status: recorded in DR-005 (`delivery-revision-record.md`) once complete.
+- Target branch update result: `Completed`. `finalize/delegated-team-aggregate-status` was created from `origin/personal` `db00ba16a9`.
+- Merge into target result: `Completed`. `git merge --no-ff` → `c027745d53`; its tree is identical to the verified ticket branch `b6ec2cc087`.
+- Push target branch result: `Completed`. `db00ba16a9..c027745d53` to `origin/personal`, after a re-fetch confirmed the base had not moved.
+- Repository finalization status: `Completed`
+- Blocker: none
 
 ## Release / Publication / Deployment
 
@@ -106,11 +110,11 @@
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status`
-- Worktree removal, prune, and local branch cleanup: recorded in DR-005.
+- Worktree removal, prune, and local branch cleanup (`codex/…` and `finalize/…`): run immediately after this record is pushed, and confirmed in the terminal message to Solution Designer (DR-005).
 - Remote branch cleanup result: `Not required`. The ticket branch was never pushed.
 - Isolated instances:
   - `iso-51163-a6aa` (DR-001): exited by itself; record cleared (`wasRunning: false`, data root removed, ports released).
-  - `iso-51775-c59d` (DR-002): closed outside Delivery between 2026-10-11 and 2026-10-17; its lifecycle record and log were gone. Delivery removes its orphan data root `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-3xrelv`; see DR-005.
+  - `iso-51775-c59d` (DR-002): closed outside Delivery between 2026-10-11 and 2026-10-17; its lifecycle record and log were gone. Delivery removed its orphan data root `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-3xrelv` after checking that no process or record used it.
   - `iso-55445-b74c` (API-REV-002): stopped by API/E2E (`wasRunning: true`, `forced: true`, data root removed, ports released), `api-e2e-evidence/rev002/desktop/isolated-stop.json`.
 - Throwaway base worktree `/tmp/dtas-base-check` (DR-004 base-failure check): removed and pruned.
 - Blocker: none
@@ -142,9 +146,9 @@
 ## Final Status
 
 - Explicit user testing/verification complete: `Yes` (by the user's delegation to API-REV-002 evidence)
-- Repository finalization complete: see DR-005
+- Repository finalization complete: `Yes` (`origin/personal` = `c027745d53`)
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: see DR-005
-- Unresolved blocker: see DR-005
-- Successful terminal package eligible for return: see DR-005
-- Terminal package sent to `/solution_designer`: see DR-005
+- Applicable safe cleanup complete or not required: `Yes`. The worktree and local branches are removed right after this record is pushed, and that is confirmed in the terminal message.
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: after cleanup (terminal message)

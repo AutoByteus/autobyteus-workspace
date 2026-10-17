@@ -125,4 +125,23 @@ The latest docs sync report, handoff summary, and release/publication/deployment
   - `97a7d430de`: live-probe layout checks plus API-REV-002 artifacts and evidence.
 - Base re-check before finalization: `origin/personal` was still `db00ba16a9` (0 new commits), so no re-integration and no renewed verification were needed.
 - Release: none (`RELEASE.md` default; the user did not ask for one).
-- Finalization and cleanup results: recorded below once complete.
+- **Repository finalization: `Completed`** (`RELEASE.md` flow).
+  - Ticket branch final commit: `b6ec2cc087` (archive).
+  - Pre-merge checks on the ticket branch: `scripts/check_licensing.py` (consistent, 6758 files) and `scripts/check_repository_artifact_hygiene.py` (pass; longest path 200).
+  - `git checkout -b finalize/delegated-team-aggregate-status origin/personal` (`db00ba16a9`), then `git merge --no-ff codex/delegated-team-aggregate-status` → `c027745d53`. The merge tree is identical to the verified ticket branch.
+  - Re-fetch: `origin/personal` unchanged. `git push origin HEAD:personal`: `db00ba16a9..c027745d53`. A further re-fetch confirmed `origin/personal` = `c027745d53`.
+  - The ticket branch was not pushed; the `RELEASE.md` flow does not require it.
+- Release/publication/deployment: `Not required` (no release requested).
+- Cleanup:
+  - The orphan data root of `iso-51775-c59d` (`…/T/autobyteus-isolated-root-3xrelv`) was removed after checking that no process or instance record used it.
+  - Delivery's temporary setup scripts in `/tmp/dtas-verify` were removed; copies are kept under `delivery-evidence/user-verification-setup/scripts/`.
+  - `iso-55445-b74c` was stopped by API/E2E.
+  - Worktree removal, `git worktree prune`, and deletion of local branches `codex/delegated-team-aggregate-status` and `finalize/delegated-team-aggregate-status` run immediately after this record is pushed (the worktree holds this record). Their results are confirmed in the terminal message to Solution Designer.
+  - No remote ticket branch exists.
+- Terminal return to `/solution_designer`: sent after the cleanup above (see the terminal message).
+- Remaining blockers: none.
+- Follow-ups and residual risks, outside this ticket:
+  - A real-model desktop rerun is possible after the Codex quota resets on 2026-10-22.
+  - ASM-001 freshness.
+  - SR-006 Team-status rule ownership; removal of the unmounted `running/*` + `TeamActivityDot` code.
+  - DEC-004 was resolved by the user as option A (dot); Solution Designer should record it in the requirements.
