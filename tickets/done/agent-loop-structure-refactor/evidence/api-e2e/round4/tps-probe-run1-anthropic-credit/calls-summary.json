@@ -1,0 +1,66 @@
+[
+  {
+    "index": 0,
+    "phase": "TPS-001",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 400,
+    "stopSignals": [],
+    "maxReportedOutputTokens": null,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": false,
+    "errorBody": "{\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011Cg7AgxoKYzb3g5G5shVfK\"}",
+    "usage": null,
+    "strictInjected": false
+  },
+  {
+    "index": 1,
+    "phase": "TPS-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 400,
+    "stopSignals": [],
+    "maxReportedOutputTokens": null,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": false,
+    "errorBody": "{\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011Cg7Ah1hhJZ3oYgaTWUbtd\"}",
+    "usage": null,
+    "strictInjected": false
+  },
+  {
+    "index": 2,
+    "phase": "TPS-003",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 384000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "stop"
+    ],
+    "maxReportedOutputTokens": 193,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 4073,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "output": 193
+    },
+    "strictInjected": false
+  }
+]

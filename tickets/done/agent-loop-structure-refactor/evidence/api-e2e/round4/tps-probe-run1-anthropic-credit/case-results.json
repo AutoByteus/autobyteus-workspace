@@ -1,0 +1,76 @@
+[
+  {
+    "case": "TPS-001",
+    "name": "TPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output",
+    "state": "fail",
+    "errors": [
+      "{\"code\":\"LLM_PROVIDER_ERROR\",\"message\":\"Error in Anthropic streaming: Error: 400 {\\\"type\\\":\\\"error\\\",\\\"error\\\":{\\\"type\\\":\\\"invalid_request_error\\\",\\\"message\\\":\\\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\\\"},\\\"request_id\\\":\\\"req_011Cg7AgxoKYzb3g5G5shVfK\\\"}\",\"error_scope\":\"turn\",\"error_effect\":\"diagnostic\",\"turn_id\":\"turn_0001\"}: expected { type: 'ERROR', payload: { …(5) } } to be null"
+    ],
+    "details": {
+      "model": "claude-opus-5-5",
+      "llmConfig": null,
+      "elapsedMs": 601,
+      "reasoningSegments": 0,
+      "readings": [],
+      "error": {
+        "code": "LLM_PROVIDER_ERROR",
+        "message": "Error in Anthropic streaming: Error: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011Cg7AgxoKYzb3g5G5shVfK\"}",
+        "error_scope": "turn",
+        "error_effect": "diagnostic",
+        "turn_id": "turn_0001"
+      }
+    },
+    "at": "2026-10-17T04:20:30.843Z"
+  },
+  {
+    "case": "TPS-002",
+    "name": "TPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app",
+    "state": "fail",
+    "errors": [
+      "{\"code\":\"LLM_PROVIDER_ERROR\",\"message\":\"Error in Anthropic streaming: Error: 400 {\\\"type\\\":\\\"error\\\",\\\"error\\\":{\\\"type\\\":\\\"invalid_request_error\\\",\\\"message\\\":\\\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\\\"},\\\"request_id\\\":\\\"req_011Cg7Ah1hhJZ3oYgaTWUbtd\\\"}\",\"error_scope\":\"turn\",\"error_effect\":\"diagnostic\",\"turn_id\":\"turn_0001\"}: expected { type: 'ERROR', payload: { …(5) } } to be null"
+    ],
+    "details": {
+      "model": "claude-opus-5-5",
+      "llmConfig": null,
+      "elapsedMs": 301,
+      "reasoningSegments": 0,
+      "readings": [],
+      "error": {
+        "code": "LLM_PROVIDER_ERROR",
+        "message": "Error in Anthropic streaming: Error: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011Cg7Ah1hhJZ3oYgaTWUbtd\"}",
+        "error_scope": "turn",
+        "error_effect": "diagnostic",
+        "turn_id": "turn_0001"
+      }
+    },
+    "at": "2026-10-17T04:20:31.227Z"
+  },
+  {
+    "case": "TPS-003",
+    "name": "TPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "model": "deepseek-v4-flash",
+      "llmConfig": null,
+      "elapsedMs": 2404,
+      "reasoningSegments": 1,
+      "readings": [
+        {
+          "llm_call_id": "turn_0001:llm:1",
+          "ingestion_kind": "autobyteus_llm_phase",
+          "reports_model_call": true,
+          "reported_output_tokens": 193,
+          "reasoning_output_tokens": 29,
+          "output_throughput": {
+            "method": "generation",
+            "output_tokens": 193,
+            "duration_ms": 1265
+          }
+        }
+      ],
+      "error": null
+    },
+    "at": "2026-10-17T04:20:33.718Z"
+  }
+]

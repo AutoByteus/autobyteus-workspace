@@ -1,0 +1,54 @@
+[
+  {
+    "index": 0,
+    "phase": "ALSR-TU-default",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 4,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 7915,
+      "cacheRead": 0,
+      "cacheWrite": 7911,
+      "output": 4
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 1,
+    "phase": "ALSR-TU-ratio-0.5",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 4,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 7915,
+      "cacheRead": 0,
+      "cacheWrite": 7911,
+      "output": 4
+    },
+    "strictInjected": false
+  }
+]
