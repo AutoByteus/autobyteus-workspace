@@ -5,6 +5,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | code_reviewer package after CRR-008 pass | N/A | Blocked: merged-state e2e failures (Local Fix) | delivery-integration-blocker.md, release-notes.md, evidence/delivery/ |
+| DR-002 | code_reviewer package after CRR-010 pass (merged state) | Blocked | Verified; finalized; no release | docs-sync-report.md, handoff-summary.md, release-deployment-report.md |
 
 ## Revision Entries
 
@@ -16,3 +17,9 @@
 - Verification: not concluded. The pre-merge evidence is strong (94%, AC-016 real released-install upgrade on test-owned data), but the merged state is not green.
 - Terminal return: not eligible.
 - Next: `/software_engineering_team/implementation_engineer` (see delivery-integration-blocker.md).
+
+### DR-002 — Verified and finalized on the merged state
+
+- Trigger: CRR-010 pass; API-REV-004 94% on the merged build.
+- Prior result: DR-001 Blocked.
+- Current result: Verified from evidence. Docs consistent with no delivery edits. Finalized with no release.
