@@ -1,0 +1,221 @@
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:541
+  throw new Error(`Interrupt result presentation probe failed after cleanup: ${summary}`, {
+        ^
+
+Error: Interrupt result presentation probe failed after cleanup: SR008-BR-001: locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('button[title="Stop generation"]')
+; probe: locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('button[title="Stop generation"]')
+; browser-console:error: 17 console:error event(s): WebSocket connection to 'ws://127.0.0.1:65534/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED | Failed to parse WebSocket message: ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [],
+    "message": "Invalid input: expected object, received undefined"
+  }
+]
+    at validateCanonicalBoundary (http://127.0.0.1:60493/_nuxt/services/agentStreaming/protocol/messageParser.ts:36:46)
+    at parseServerMessage (http://127.0.0.1:60493/_nuxt/services/agentStreaming/protocol/messageParser.ts:73:3)
+    at handleMessage (http://127.0.0.1:60493/_nuxt/services/agentStreaming/AgentStreamingService.ts:179:23)
+    at WebSocketClient.emit (http://127.0.0.1:60493/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:146:9)
+    at socket.onmessage (http://127.0.0.1:60493/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:86:12) | Rejected invalid Team WebSocket message: ZodError: [
+  {
+    "code": "invalid_value",
+    "values": [
+      "/"
+    ],
+    "path": [
+      "payload",
+      "execution_tree",
+      "root_team",
+      "address"
+    ],
+    "message": "Invalid input: expected \"/\""
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "execution_tree",
+      "root_team",
+      "default_launch_configuration"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "code": "invalid_union",
+    "errors": [
+      [
+        {
+          "code": "invalid_value",
+          "values": [
+            "autobyteus",
+            "claude_agent_sdk",
+            "codex_app_server",
+            "antigravity_cli",
+            "grok_build"
+          ],
+          "path": [
+            "launch_configuration",
+            "runtime_kind"
+          ],
+          "message": "Invalid option: expected one of \"autobyteus\"|\"claude_agent_sdk\"|\"codex_app_server\"|\"antigravity_cli\"|\"grok_build\""
+        }
+      ],
+      [
+        {
+          "code": "invalid_value",
+          "values": [
+            "configured_team"
+          ],
+          "path": [
+            "kind"
+          ],
+          "message": "Invalid input: expected \"configured_team\""
+        },
+        {
+          "expected": "string",
+          "code": "invalid_type",
+          "path": [
+            "team_definition_id"
+          ],
+          "message": "Invalid input: expected string, received undefined"
+        },
+        {
+          "expected": "string",
+          "code": "invalid_type",
+          "path": [
+            "team_run_id"
+          ],
+          "message": "Invalid input: expected string, received undefined"
+        },
+        {
+          "expected": "string",
+          "code": "invalid_type",
+          "path": [
+            "coordinator_address"
+          ],
+          "message": "Invalid input: expected string, received undefined"
+        },
+        {
+          "expected": "object",
+          "code": "invalid_type",
+          "path": [
+            "default_launch_configuration"
+          ],
+          "message": "Invalid input: expected object, received undefined"
+        },
+        {
+          "expected": "array",
+          "code": "invalid_type",
+          "path": [
+            "members"
+          ],
+          "message": "Invalid input: expected array, received undefined"
+        },
+        {
+          "expected": "array",
+          "code": "invalid_type",
+          "path": [
+            "task_executions"
+          ],
+          "message": "Invalid input: expected array, received undefined"
+        },
+        {
+          "code": "unrecognized_keys",
+          "keys": [
+            "agent_definition_id",
+            "agent_run_id",
+            "platform_agent_run_id",
+            "launch_configuration"
+          ],
+          "path": [],
+          "message": "Unrecognized keys: \"agent_definition_id\", \"agent_run_id\", \"platform_agent_run_id\", \"launch_configuration\""
+        }
+      ]
+    ],
+    "path": [
+      "payload",
+      "execution_tree",
+      "root_team",
+      "members",
+      0
+    ],
+    "message": "Invalid input"
+  },
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "schema_version"
+    ],
+    "path": [
+      "payload",
+      "execution_tree"
+    ],
+    "message": "Unrecognized key: \"schema_version\""
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "closed_task_executions"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  },
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "tasks"
+    ],
+    "path": [
+      "payload"
+    ],
+    "message": "Unrecognized key: \"tasks\""
+  }
+]
+    at parseTeamStreamServerMessage (http://127.0.0.1:60493/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-team-stream-contracts/dist/team-stream-server-message.js:61:57)
+    at handleMessage (http://127.0.0.1:60493/_nuxt/services/agentStreaming/TeamStreamingService.ts:202:28)
+    at WebSocketClient.emit (http://127.0.0.1:60493/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:146:9)
+    at socket.onmessage (http://127.0.0.1:60493/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:86:12) | Rejected invalid Team WebSocket message: Error: Team lifecycle message is invalid during 'awaiting_snapshot'.
+    at TeamStreamingService.dispatchMessage (http://127.0.0.1:60493/_nuxt/services/agentStreaming/TeamStreamingService.ts:271:41)
+    at handleMessage (http://127.0.0.1:60493/_nuxt/services/agentStreaming/TeamStreamingService.ts:202:12)
+    at WebSocketClient.emit (http://127.0.0.1:60493/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:146:9)
+    at socket.onmessage (http://127.0.0.1:60493/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:86:12) | An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22providerModelCatalogSnapshots%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22applicationsCapability%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22enabled%5C%22%3A%20false%2C%5Cn%20%20%20%20%5C%22scope%5C%22%3A%20%5C%22BOUND_NODE%5C%22%2C%5Cn%20%20%20%20%5C%22settingKey%5C%22%3A%20%5C%22ENABLE_APPLICATIONS%5C%22%2C%5Cn%20%20%20%20%5C%22source%5C%22%3A%20%5C%22INITIALIZED_EMPTY_CATALOG%5C%22%5Cn%20%20%7D%2C%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22agentTeamDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaces%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaceInfos%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspacesWithMetadata%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D | An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%5Cn%20%20%5C%22providerModelCatalogSnapshots%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22applicationsCapability%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22enabled%5C%22%3A%20false%2C%5Cn%20%20%20%20%5C%22scope%5C%22%3A%20%5C%22BOUND_NODE%5C%22%2C%5Cn%20%20%20%20%5C%22settingKey%5C%22%3A%20%5C%22ENABLE_APPLICATIONS%5C%22%2C%5Cn%20%20%20%20%5C%22source%5C%22%3A%20%5C%22INITIALIZED_EMPTY_CATALOG%5C%22%5Cn%20%20%7D%2C%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22agentTeamDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaces%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaceInfos%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspacesWithMetadata%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D | An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22agentOrgDefinitions%22%2C%22%7B%5Cn%20%20%5C%22providerModelCatalogSnapshots%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22applicationsCapability%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22enabled%5C%22%3A%20false%2C%5Cn%20%20%20%20%5C%22scope%5C%22%3A%20%5C%22BOUND_NODE%5C%22%2C%5Cn%20%20%20%20%5C%22settingKey%5C%22%3A%20%5C%22ENABLE_APPLICATIONS%5C%22%2C%5Cn%20%20%20%20%5C%22source%5C%22%3A%20%5C%22INITIALIZED_EMPTY_CATALOG%5C%22%5Cn%20%20%7D%2C%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22agentTeamDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaces%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaceInfos%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspacesWithMetadata%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D | An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22providerModelCatalogSnapshots%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22applicationsCapability%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22enabled%5C%22%3A%20false%2C%5Cn%20%20%20%20%5C%22scope%5C%22%3A%20%5C%22BOUND_NODE%5C%22%2C%5Cn%20%20%20%20%5C%22settingKey%5C%22%3A%20%5C%22ENABLE_APPLICATIONS%5C%22%2C%5Cn%20%20%20%20%5C%22source%5C%22%3A%20%5C%22INITIALIZED_EMPTY_CATALOG%5C%22%5Cn%20%20%7D%2C%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22agentTeamDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaces%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaceInfos%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspacesWithMetadata%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D | An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%5Cn%20%20%5C%22providerModelCatalogSnapshots%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22applicationsCapability%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22enabled%5C%22%3A%20false%2C%5Cn%20%20%20%20%5C%22scope%5C%22%3A%20%5C%22BOUND_NODE%5C%22%2C%5Cn%20%20%20%20%5C%22settingKey%5C%22%3A%20%5C%22ENABLE_APPLICATIONS%5C%22%2C%5Cn%20%20%20%20%5C%22source%5C%22%3A%20%5C%22INITIALIZED_EMPTY_CATALOG%5C%22%5Cn%20%20%7D%2C%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22agentTeamDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaces%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaceInfos%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspacesWithMetadata%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D | An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22providerModelCatalogSnapshots%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22applicationsCapability%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22enabled%5C%22%3A%20false%2C%5Cn%20%20%20%20%5C%22scope%5C%22%3A%20%5C%22BOUND_NODE%5C%22%2C%5Cn%20%20%20%20%5C%22settingKey%5C%22%3A%20%5C%22ENABLE_APPLICATIONS%5C%22%2C%5Cn%20%20%20%20%5C%22source%5C%22%3A%20%5C%22INITIALIZED_EMPTY_CATALOG%5C%22%5Cn%20%20%7D%2C%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22agentTeamDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaces%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaceInfos%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspacesWithMetadata%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D | An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%5Cn%20%20%5C%22providerModelCatalogSnapshots%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22applicationsCapability%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22enabled%5C%22%3A%20false%2C%5Cn%20%20%20%20%5C%22scope%5C%22%3A%20%5C%22BOUND_NODE%5C%22%2C%5Cn%20%20%20%20%5C%22settingKey%5C%22%3A%20%5C%22ENABLE_APPLICATIONS%5C%22%2C%5Cn%20%20%20%20%5C%22source%5C%22%3A%20%5C%22INITIALIZED_EMPTY_CATALOG%5C%22%5Cn%20%20%7D%2C%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22agentTeamDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaces%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaceInfos%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspacesWithMetadata%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D | An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22providerModelCatalogSnapshots%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22applicationsCapability%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22enabled%5C%22%3A%20false%2C%5Cn%20%20%20%20%5C%22scope%5C%22%3A%20%5C%22BOUND_NODE%5C%22%2C%5Cn%20%20%20%20%5C%22settingKey%5C%22%3A%20%5C%22ENABLE_APPLICATIONS%5C%22%2C%5Cn%20%20%20%20%5C%22source%5C%22%3A%20%5C%22INITIALIZED_EMPTY_CATALOG%5C%22%5Cn%20%20%7D%2C%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22agentTeamDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaces%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaceInfos%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspacesWithMetadata%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D | An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%5Cn%20%20%5C%22providerModelCatalogSnapshots%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22applicationsCapability%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22enabled%5C%22%3A%20false%2C%5Cn%20%20%20%20%5C%22scope%5C%22%3A%20%5C%22BOUND_NODE%5C%22%2C%5Cn%20%20%20%20%5C%22settingKey%5C%22%3A%20%5C%22ENABLE_APPLICATIONS%5C%22%2C%5Cn%20%20%20%20%5C%22source%5C%22%3A%20%5C%22INITIALIZED_EMPTY_CATALOG%5C%22%5Cn%20%20%7D%2C%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22agentTeamDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaces%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaceInfos%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspacesWithMetadata%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D | An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22providerModelCatalogSnapshots%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22applicationsCapability%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22enabled%5C%22%3A%20false%2C%5Cn%20%20%20%20%5C%22scope%5C%22%3A%20%5C%22BOUND_NODE%5C%22%2C%5Cn%20%20%20%20%5C%22settingKey%5C%22%3A%20%5C%22ENABLE_APPLICATIONS%5C%22%2C%5Cn%20%20%20%20%5C%22source%5C%22%3A%20%5C%22INITIALIZED_EMPTY_CATALOG%5C%22%5Cn%20%20%7D%2C%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22agentTeamDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaces%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaceInfos%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspacesWithMetadata%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D | An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%5Cn%20%20%5C%22providerModelCatalogSnapshots%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22applicationsCapability%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22enabled%5C%22%3A%20false%2C%5Cn%20%20%20%20%5C%22scope%5C%22%3A%20%5C%22BOUND_NODE%5C%22%2C%5Cn%20%20%20%20%5C%22settingKey%5C%22%3A%20%5C%22ENABLE_APPLICATIONS%5C%22%2C%5Cn%20%20%20%20%5C%22source%5C%22%3A%20%5C%22INITIALIZED_EMPTY_CATALOG%5C%22%5Cn%20%20%7D%2C%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22agentTeamDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaces%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaceInfos%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspacesWithMetadata%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D | An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%5Cn%20%20%5C%22providerModelCatalogSnapshots%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22applicationsCapability%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22enabled%5C%22%3A%20false%2C%5Cn%20%20%20%20%5C%22scope%5C%22%3A%20%5C%22BOUND_NODE%5C%22%2C%5Cn%20%20%20%20%5C%22settingKey%5C%22%3A%20%5C%22ENABLE_APPLICATIONS%5C%22%2C%5Cn%20%20%20%20%5C%22source%5C%22%3A%20%5C%22INITIALIZED_EMPTY_CATALOG%5C%22%5Cn%20%20%7D%2C%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22agentTeamDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaces%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaceInfos%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspacesWithMetadata%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D | An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%5Cn%20%20%5C%22providerModelCatalogSnapshots%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22applicationsCapability%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22enabled%5C%22%3A%20false%2C%5Cn%20%20%20%20%5C%22scope%5C%22%3A%20%5C%22BOUND_NODE%5C%22%2C%5Cn%20%20%20%20%5C%22settingKey%5C%22%3A%20%5C%22ENABLE_APPLICATIONS%5C%22%2C%5Cn%20%20%20%20%5C%22source%5C%22%3A%20%5C%22INITIALIZED_EMPTY_CATALOG%5C%22%5Cn%20%20%7D%2C%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22agentTeamDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaces%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaceInfos%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspacesWithMetadata%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:541:9 {
+  [cause]: locator.click: Timeout 30000ms exceeded.
+  Call log:
+    - waiting for locator('button[title="Stop generation"]')
+  
+      at /Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:363:61
+      at async runScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:234:57)
+      at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/baseline-e2e-probe-repair/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:359:3 {
+    name: 'TimeoutError'
+  }
+}
+
+Node.js v22.23.1
+EXIT 1
