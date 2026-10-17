@@ -210,6 +210,8 @@ try {
     await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: graphQlData(operationName, query) }) });
   });
 
+  // The definitions change feed the Workspaces shell opens; the fixture has no backend (baseline fix).
+  await page.routeWebSocket(/\/ws\/agent-package-definitions(\?|$)/, (ws) => ws.send(JSON.stringify({ type: 'connected' })));
   await page.goto(`${baseUrl}${routePath}`, { waitUntil: 'domcontentloaded', timeout: timeoutMs });
   await page.locator('[data-test="ttrc-disclosure-probe-root"]').waitFor({ state: 'visible' });
   await page.waitForFunction(() => Boolean(window.__taskTeamDisclosureProbe));
@@ -223,7 +225,9 @@ try {
   const agentRow = (id) => page.locator(`[data-test="agent-org-agent-row-${id}"]`);
   const mountedTeam = (id) => page.locator(`[data-test="agent-org-team-row-${id}"]`);
   const MOUNTED_CHEVRON = '[data-test="agent-org-team-row-ssg-configured"] > :nth-child(2)';
-  const rowOrder = () => page.locator('[role="tree"] > [role="treeitem"]').evaluateAll((rows) => rows.map((row) => row.getAttribute('data-test')));
+  // Delegated rows sit in a wrapper beside their stop button (SR-007 of delegated-copy-model-change).
+  const rowOrder = () => page.locator('[role="tree"] > [role="treeitem"], [role="tree"] > div > [role="treeitem"]')
+    .evaluateAll((rows) => rows.map((row) => row.getAttribute('data-test')));
   const followingSibling = (locator) => locator.locator('[data-test="workspace-hierarchy-branches"] > [data-has-following-sibling]')
     .getAttribute('data-has-following-sibling');
   const rotation = (locator) => locator.evaluate((el) => {
