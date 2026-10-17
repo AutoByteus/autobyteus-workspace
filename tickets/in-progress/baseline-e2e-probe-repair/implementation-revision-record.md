@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Solution Designer, `handoff-sr-001.md` and the SR-002 message; the user's rebase instruction | N/A | `Initial Baseline` (handed off as `Requirement Gap` for UC-006) | SR-001, SR-002; ARCH-REV N/A; CRR N/A; API-REV N/A; DR N/A | 8 baseline-fix commits on `516e592d7b`; UC-001/UC-007 fixed upstream (verified); UC-006 suite removed upstream (Requirement Gap) |
+| IR-002 | Solution Designer, `handoff-sr-003.md` (SR-003) | IR-001 Requirement Gap (UC-006) | `Initial Baseline` update (docs only) | SR-003; ARCH-REV N/A; CRR N/A; API-REV N/A; DR N/A | Handoff on the SR-003 basis; route direct API/E2E; no code change |
 
 ## Revision Entries
 
@@ -36,3 +37,20 @@ The current code and `implementation-handoff.md` remain authoritative.
   - UC-004 warning case classified as synthetic corruption with a fail-closed contract (not a product defect); evidence in the handoff.
   - FU-4: one unreadable derived Team history index makes every history list fail until it is corrected (product follow-up).
   - R03 needs signed-in CLIs.
+
+### IR-002 — Handoff updated to SR-003 (UC-006 withdrawn); route to direct API/E2E
+
+- Triggering role, report path, and round: Solution Designer, `tickets/in-progress/baseline-e2e-probe-repair/handoff-sr-003.md` (SR-003, docs commit `48dec15def`).
+- Triggering finding IDs: the IR-001 Requirement Gap (UC-006 / REQ-006 / AC-006).
+- Classification: documentation update to the initial baseline; no implementation delta.
+- Prior authoritative result: IR-001, routed to the Solution Designer as a Requirement Gap.
+- Current authoritative result: the same 8 baseline-fix commits. UC-006 is withdrawn (DEC-009); the UC-004 warning-case classification is accepted (DEC-010) and RSK-001 is closed. The package is ready for direct API/E2E.
+- Related solution revision IDs: SR-003
+- Related architecture-review, code-review, API/E2E and delivery revision IDs: `N/A`
+- Why this revision is recorded: the requirements basis changed (SR-003). The handoff's scope, route and BEH-006 row now follow it.
+- Approved behavior or requirement IDs affected: BEH-006 / REQ-006 / AC-006 (withdrawn); RSK-001 (closed).
+- Implementation delta: none in code. `implementation-handoff.md` and this record were updated.
+- Changed files or areas: `tickets/in-progress/baseline-e2e-probe-repair/implementation-handoff.md`, `implementation-revision-record.md`.
+- Local validation and result: none re-run. HEAD's code is identical to IR-001 (only ticket docs changed), and `origin/personal` is still `516e592d7b`, so the IR-001 local checks stand.
+- Next recipient or routing: `/software_engineering_team/api_e2e_engineer` (direct route, Medium / Low).
+- Remaining limitations or risks: FU-4 and FU-5 are product and doc follow-ups recorded by the Solution Designer; R03 needs signed-in CLIs.

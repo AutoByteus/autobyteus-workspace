@@ -6,22 +6,22 @@
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: direct route (`Medium` / `Low`); architecture review not selected. This handoff matches the `Requirement Gap` rule (see Routing Classification), so it goes to the Solution Designer.
-- Requirements doc: `tickets/in-progress/baseline-e2e-probe-repair/requirements-doc.md` (Approved, SR-001)
-- Investigation notes: `…/investigation-notes.md` (SR-002)
-- Solution revision record: `…/solution-revision-record.md` (SR-001, SR-002)
-- Design spec: `…/design-spec.md` (Ready, SR-002)
+- Upstream review applicability and handoff-rule result: direct route (`Medium` / `Low`); architecture review not selected. IR-001 went to the Solution Designer as a Requirement Gap (UC-006). SR-003 resolved it, and IR-002 takes the direct API/E2E rule.
+- Requirements doc: `tickets/in-progress/baseline-e2e-probe-repair/requirements-doc.md` (Approved, SR-003: UC-006 / REQ-006 / AC-006 withdrawn, DEC-009; DEC-010)
+- Investigation notes: `…/investigation-notes.md` (SR-003)
+- Solution revision record: `…/solution-revision-record.md` (SR-001..SR-003)
+- Design spec: `…/design-spec.md` (Ready, SR-003); latest designer handoff `…/handoff-sr-003.md`
 - Supplemental task artifacts: None
 - Design review report: `N/A — not applicable`
 - Architecture review revision record: `N/A — not applicable`
-- Triggering rework report or evidence: SR-002 message from the Solution Designer (2026-10-17); the user's instruction to base the branch on the latest `origin/personal`.
+- Triggering rework report or evidence: SR-002 and SR-003 messages from the Solution Designer (2026-10-17); the user's instruction to base the branch on the latest `origin/personal`.
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial` (with a rebase onto the latest base)
+- Implementation cycle: `Initial`, updated to the SR-003 basis (IR-002: documentation only, no code change)
 - Implementation revision record: `…/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-001`, `SR-002`
+- Current implementation revision ID: `IR-002`
+- Related solution revision IDs: `SR-001`, `SR-002`, `SR-003`
 - Related architecture-review, code-review, API/E2E and delivery revision IDs: `N/A`
 - Triggering finding IDs: `N/A`
 
@@ -40,7 +40,7 @@ The branch contains 8 baseline-fix commits (TESTING.md Rule 9), one per remainin
 
 Not repaired here:
 - **UC-001** `team-run-config-graphql` and **UC-007** `recent-run-projection-graphql`: fixed upstream (`e6ba249a96`/`2e70401f18`/`57d388a7fd` and `149bce0be9`). Verified only: 7/7 and 9/9 pass, twice, on `516e592d7b`. My earlier duplicate commits were dropped.
-- **UC-006** `nested-team-history-restart`: **the suite no longer exists upstream.** It was deleted with `remove-nested-task-team` (merged `8a8d322144`). The user decided the retired nested shape is unsupported with no migration (that ticket's DEC-001 (e), DEC-008, REQ-003; AC-001 "no nested task-team … fixture remains outside migrations"). My earlier repair (`ab4c1dd2bc` on the backup branch, including a derived `case-006` fixture) was dropped. **REQ-006 / AC-006 / UC-006 no longer match the base; this is the Requirement Gap below.**
+- **UC-006** `nested-team-history-restart`: **withdrawn at SR-003 (DEC-009).** The suite was removed upstream with a stated reason: `remove-nested-task-team` (merge `8a8d322144`), the user's DEC-008. Its supported parts stay covered by UC-004, `tests/unit/app-data-migrations/team-agent-memory-layout-app-data-migration.test.ts` and `tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts`. My earlier repair (`ab4c1dd2bc`, backup branch only) stays out of the branch.
 
 ## Routing Classification (Mandatory)
 
@@ -49,9 +49,9 @@ Not repaired here:
 - Design classification section / evidence reference: design-spec "Task Size And Architectural Risk"
 - Classification confirmed or changed: `Confirmed`
 - Evidence and rationale: test files, one new script line and nothing else; `git diff origin/personal..HEAD` shows no production file (see Local Implementation Checks). The remaining scope is smaller than designed.
-- Selected route: `Solution Designer` (`Requirement Gap`). REQ-006 / AC-006 require a suite that the user-approved `remove-nested-task-team` change removed upstream. The requirements basis must drop or replace UC-006 before API/E2E can validate the package. Everything else is ready for the direct API/E2E route.
+- Selected route: `Direct API/E2E`. The IR-001 Requirement Gap (UC-006) was resolved by SR-003 (DEC-009: withdrawn); no code change followed.
 - Lightweight implementation self-review completed for the direct route: `Yes`
-- New design impact or escalation trigger: none in production. The UC-004 warning case was checked against the REQ-011 gate and is not a product defect (see Known Risks).
+- New design impact or escalation trigger: none. The UC-004 warning case is classified as not a product defect; the Solution Designer accepted that in SR-003 (DEC-010), and RSK-001 is closed.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -62,14 +62,14 @@ Not repaired here:
 | BEH-003 | Activation via `beginActivation`, no cascade | `tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts` | 2/2 ×2; each test passes alone |
 | BEH-004 | Assert the AgentOrg end state; no hard-coded ledger count | `tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts` | 4/4 ×2. Ledger derivation from `fa49138794` kept. RSK-001: no released content lost (members, configs, task records, messages, memory bytes, token accounting) |
 | BEH-005 | Current-shape packages only | `tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts` | 1/1 ×2 |
-| BEH-006 | Nested history restart | — | **Suite removed upstream**: Requirement Gap |
+| BEH-006 | Nested history restart | — | Withdrawn at SR-003 (DEC-009); suite removed upstream |
 | BEH-007 | Admitted, complete seeded packages | upstream `recent-run-projection-graphql.e2e.test.ts` | Fixed upstream; verified 9/9 ×2 |
 | BEH-008 | Public preparation entry | `tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts` | 2/2 ×2 |
 | BEH-009 | Fixture answers every operation | `autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs` | A–F Pass; 0 browser errors; cleanup complete |
 | BEH-010 | Current shapes, served boundaries, script | `interrupt-result-presentation-probe.mjs`, `fixtures/interrupt-result-presentation.page.vue`, `package.json` | SR008-BR-001..004 Pass; 0 browser errors; cleanup complete |
 | BEH-011 | Server rejection the client cannot pre-check | `autobyteus-web/tests/e2e/run-settings-live-probe.mjs` (R03) | Pass; values kept, Run enabled, history unchanged, 1 launch request, 0 page errors |
 
-- Changes stayed within the requirements doc's Scope Guardrail: `Yes`. UC-006 is routed as a Requirement Gap rather than reworked.
+- Changes stayed within the requirements doc's Scope Guardrail: `Yes` (SR-003 scope).
 
 ## Key Files Or Areas
 
@@ -95,7 +95,7 @@ The 9 test files above, plus `autobyteus-web/package.json` (1 line). Evidence: `
     - new current work admitted;
     - a restart retries (attempts 2) and changes nothing else.
   - Evidence: `evidence/implementation/uc004-warning-case-flat-families-failure.txt`, `uc004-warning-case-served-behavior-516e592d7b.txt`.
-- **Follow-up (non-blocking, for `/project_task_manager`): FU-4.** While that derived index is unreadable, `listWorkspaceRunHistory` and `listCollaborationRootHistory` fail for every run, standalone runs included, and the state persists across restarts until someone corrects the file by hand. The data is intact and the index is derived. DESIGN.md rule 7 ("contain bad data to its own run") is scoped to one run's data, but one bad shared index taking the whole history list down may deserve a product look (for example, rebuild from admitted packages). This is not this ticket's scope.
+- **Follow-up (non-blocking, recorded by the Solution Designer as FU-4 for `/project_task_manager`).** While that derived index is unreadable, `listWorkspaceRunHistory` and `listCollaborationRootHistory` fail for every run, standalone runs included, and the state persists across restarts until someone corrects the file by hand. The data is intact and the index is derived. DESIGN.md rule 7 ("contain bad data to its own run") is scoped to one run's data, but one bad shared index taking the whole history list down may deserve a product look (for example, rebuild from admitted packages). This is not this ticket's scope.
 - R03 depends on the signed-in `claude` CLI with the real HOME, USER and LOGNAME (RSK-002). It ran successfully here.
 
 ## Task Design Health Assessment Implementation Check
@@ -112,7 +112,7 @@ The 9 test files above, plus `autobyteus-web/package.json` (1 line). Evidence: `
 - Backward-compatibility mechanisms introduced: `None`
 - Legacy old-behavior retained in scope: `No`
 - Dead code in the touched files removed: `Yes`. Examples: the duplicate inline standalone writer (UC-007, now upstream's), the probe's catch-all GraphQL body fields the page no longer requests, and the `harnesses`/`closeStudioServices`/`dataRoot` bookkeeping in UC-003.
-- Dead code found elsewhere, listed as follow-up: the `team-run-execution-tree-v1` fixture README says "the repository's V1 package-schema suite validates every case", but no suite enumerates the cases (documentation drift, follow-up).
+- Dead code found elsewhere, listed as follow-up: the `team-run-execution-tree-v1` fixture README says "the repository's V1 package-schema suite validates every case", but no suite enumerates the cases (documentation drift; recorded as FU-5).
 - Shared structures remain tight: `Yes`
 - Shared design guidance reapplied during implementation: `Yes`
 - Changed source implementation files stayed within size guardrails: `Yes`. No source files were changed; the guardrail doesn't apply to test files.
@@ -149,4 +149,4 @@ These are implementation-scoped checks, not API/E2E sign-off.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-API/E2E validation of AC-001..AC-005 and AC-007..AC-012, once the Solution Designer resolves AC-006/UC-006.
+API/E2E validation of AC-001..AC-005 and AC-007..AC-012 (AC-006 withdrawn at SR-003). AC-001 and AC-007 cover upstream fixes and are verify-only.
