@@ -95,7 +95,7 @@ const firstAutoByteusModel = async (serverUrl: string): Promise<string> => {
     .flatMap((snapshot) => snapshot.llmModels)
     .map(({ modelIdentifier }) => modelIdentifier.trim())
     .find(Boolean);
-  if (!model) throw new Error("HIERARCHY_E2E_AUTOBYTEUS_MODEL_MISSING");
+  if (!model) throw new Error("TEAM_RUN_CONFIG_E2E_AUTOBYTEUS_MODEL_MISSING");
   return model;
 };
 
@@ -297,7 +297,7 @@ describe("TeamRun configuration GraphQL and V2 lifecycle", () => {
       },
     });
     if (!created.createAgentTeamRun.success) {
-      throw new Error(`HIERARCHICAL_TEAM_RUN_CREATE_FAILED: ${created.createAgentTeamRun.message}`);
+      throw new Error(`TEAM_RUN_CREATE_FAILED: ${created.createAgentTeamRun.message}`);
     }
     expect(created.createAgentTeamRun).toMatchObject({ success: true, teamRunId: expect.any(String) });
     const teamRunId = created.createAgentTeamRun.teamRunId as string;
