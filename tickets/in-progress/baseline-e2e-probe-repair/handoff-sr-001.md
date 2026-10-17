@@ -63,3 +63,8 @@ Requirements approved by the Solution Designer within the Task's direction (all 
 ## Expected Output
 
 Implementation commits on the branch, implementation handoff with per-item cause, fix, commands and results (each repaired file run twice in a clean env; probes once; server `test:unit` and `typecheck` as a no-production-change check), then your configured route.
+
+## Route Record
+
+- `get_handoff_rules` (2026-10-17): matched "Small or Medium and architectural_risk=Low" → `/software_engineering_team/implementation_engineer`. No other rule matched (not Large/High; no delivery receipt).
+- Ticket documents committed on the branch: `476752deda` (amended commit; the doc commit itself is followed by this route note in a separate commit).
