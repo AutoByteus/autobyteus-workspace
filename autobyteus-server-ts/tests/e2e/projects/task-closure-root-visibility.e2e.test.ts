@@ -275,8 +275,9 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
       view.socket.close();
       view = await openView();
       before = snapshotOf(view.frames);
-      return before.messages.some((message) => touchesTaskA(message) && JSON.stringify(message).includes(managerRunId));
-    }, "Manager message with Task A's worker", 60_000);
+      // Both Manager messages (to Task A's worker and to its sub-delegated copy) are in the snapshot.
+      return before.messages.filter((message) => touchesTaskA(message) && JSON.stringify(message).includes(managerRunId)).length >= 2;
+    }, "Manager messages with Task A's worker and its sub-delegated copy", 60_000);
     expect(before.closed).toEqual([]);
     const aMessageIdsBefore = before.messages.filter(touchesTaskA).map((m) => m.messageId);
     expect(aMessageIdsBefore.length).toBeGreaterThanOrEqual(2);
