@@ -24,6 +24,9 @@ import { closeLiveRuntimeSecretVault, initializeLiveRuntimeSecretVaultFromEnviro
  *  4. The codeword changes while the run is idle: nothing is sent until the next message, which
  *     is one turn carrying the notice, answered with the newest codeword.
  *  5. The run's history shows both notices as system notices and the user's messages as typed.
+ * A second case per runtime (AC-003, DR-001): the seen record appears once the runtime has created
+ * the run's memory folder; a run stopped and continued after a change gets one notice and re-reads;
+ * a run deleted from history keeps its memory folder deleted.
  *
  * Gate: RUN_SKILL_NOTICE_E2E=1 and SKILL_NOTICE_E2E_RUNTIMES (comma list of codex_app_server,
  * claude_agent_sdk, autobyteus, grok_build; default codex_app_server,claude_agent_sdk).
@@ -221,6 +224,120 @@ suite("active-run skill update notice (live E2E)", () => {
       expect(systemNotices).toHaveLength(2);
       expect(userMessages.filter((content) => content === question)).toHaveLength(3);
       expect(userMessages.some((content) => content.includes("[Platform notice"))).toBe(false);
+    } finally {
+      socket.close();
+      await gql("mutation($runId: String!) { terminateAgentRun(agentRunId: $runId) { success } }", { runId }).catch(() => undefined);
+    }
+  }, 900_000);
+
+  /** The run's memory folder (a folder named after the run under `<app data>/memory`), or null when it does not exist. */
+  const findRunMemoryDir = async (runId: string): Promise<string | null> => {
+    const search = async (dir: string, depth: number): Promise<string | null> => {
+      const entries = await fs.readdir(dir, { withFileTypes: true }).catch(() => []);
+      for (const entry of entries) {
+        if (!entry.isDirectory()) continue;
+        const child = path.join(dir, entry.name);
+        if (entry.name === runId) return child;
+        if (depth > 0) {
+          const found = await search(child, depth - 1);
+          if (found) return found;
+        }
+      }
+      return null;
+    };
+    return search(path.join(root, "app-data", "memory"), 3);
+  };
+
+  // AC-003 on a live runtime whose run memory folder appears only with its first trace (DR-001): the
+  // seen record is written once that folder exists; a run stopped and continued after a change gets
+  // one notice; a deleted run's memory folder is never re-created by a late record write.
+  it.each(runtimes)("%s: a stopped run continued after a change gets one notice; a deleted run's memory stays deleted", async (runtimeKind) => {
+    await fs.writeFile(skillMdPath, skillMd("CEDAR-1357"));
+    const workspaceRootPath = path.join(root, `workspace-restore-${runtimeKind}`);
+    await fs.mkdir(workspaceRootPath, { recursive: true });
+    const definitionId = (await gql("mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }", {
+      input: {
+        name: `skill-notice-restore-${runtimeKind}-${randomUUID().slice(0, 8)}`, role: "assistant", description: "skill notice probe",
+        instructions: "Answer briefly. Use the notice-probe skill for codeword questions.", category: "runtime-e2e",
+        toolNames: runtimeKind === "autobyteus" ? ["run_bash", "read_file"] : [], skillNames: ["notice-probe"],
+      },
+    })).createAgentDefinition.id;
+    const created = (await gql("mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }", {
+      input: {
+        agentDefinitionId: definitionId, workspaceRootPath, llmModelIdentifier: pickModel(runtimeKind),
+        autoExecuteTools: true, runtimeKind,
+        llmConfig: runtimeKind === "codex_app_server" || runtimeKind === "grok_build" ? { reasoning_effort: "low" } : null,
+      },
+    })).createAgentRun;
+    expect(created.success, created.message).toBe(true);
+    const runId = created.runId as string;
+
+    const socket = new WebSocket(`ws://${url.host}/ws/agent/${runId}`);
+    const frames: Frame[] = [];
+    socket.on("message", (raw) => { try { frames.push(JSON.parse(String(raw)) as Frame); } catch { /* ignore */ } });
+    await new Promise<void>((resolve, reject) => { socket.once("open", () => resolve()); socket.once("error", reject); });
+    const until = async (predicate: () => boolean | Promise<boolean>, label: string, ms = 300_000) => {
+      const deadline = Date.now() + ms;
+      while (Date.now() < deadline) { if (await predicate()) return; await new Promise((r) => setTimeout(r, 200)); }
+      throw new Error(`Timed out waiting for ${label}: ${frames.slice(-25).map((f) => f.type).join(",")}`);
+    };
+    const count = (type: string) => frames.filter((f) => f.type === type).length;
+    const notices = () => frames.filter((f) => f.type === "SYSTEM_TASK_NOTIFICATION" && f.payload.sender_id === SENDER);
+    const idle = () => [...frames].reverse().find((f) => f.type === "AGENT_STATUS")?.payload.status === "idle";
+    const textSince = (index: number) => frames.slice(index).filter((f) => f.type === "SEGMENT_CONTENT")
+      .map((f) => String(f.payload.delta ?? "")).join("");
+    const terminate = async () => {
+      expect((await gql("mutation($runId: String!) { terminateAgentRun(agentRunId: $runId) { success } }", { runId }))
+        .terminateAgentRun.success).toBe(true);
+    };
+    const question = "What is the current codeword in the notice-probe skill? Reply with only the codeword.";
+
+    try {
+      await until(() => frames.some((f) => f.type === "CONNECTED"), "CONNECTED", 30_000);
+
+      // 1. First turn: the runtime creates the run's memory folder; the seen record follows within the
+      //    retry schedule (1 s, 5 s, 15 s after the first missing-folder attempt).
+      const firstCompleted = count("TURN_COMPLETED");
+      const first = frames.length;
+      sendE2eSendMessageCommand(socket, { content: question });
+      await until(() => count("TURN_COMPLETED") > firstCompleted && idle(), "the first turn");
+      expect(textSince(first)).toContain("CEDAR-1357");
+      const memoryDir = await findRunMemoryDir(runId);
+      expect(memoryDir, "the run's memory folder").toBeTruthy();
+      const recordPath = path.join(memoryDir!, "seen_skill_versions.json");
+      const turnDoneAt = Date.now();
+      await until(async () => (await fs.stat(recordPath).catch(() => null)) !== null, "the seen record", 30_000);
+      const record = JSON.parse(await fs.readFile(recordPath, "utf8")) as { skills: Record<string, { skillMdPath: string }> };
+      expect(record.skills["notice-probe"]?.skillMdPath).toBe(skillMdPath);
+      console.info(`[skill notice restore ${runtimeKind}]`, JSON.stringify({ recordSeenWithinMsOfTurnEnd: Date.now() - turnDoneAt }));
+
+      // 2. Stopped, then the skill changes: nothing is sent to a stopped run.
+      await terminate();
+      await new Promise((r) => setTimeout(r, 1500));
+      await fs.writeFile(skillMdPath, skillMd("BIRCH-8642"));
+      await new Promise((r) => setTimeout(r, 5000));
+      expect(notices()).toHaveLength(0);
+
+      // 3. Continued: one notice with the message (from the record), then the re-read answer.
+      const continueCompleted = count("TURN_COMPLETED");
+      const resumed = frames.length;
+      sendE2eSendMessageCommand(socket, { content: question });
+      await until(() => count("TURN_COMPLETED") > continueCompleted && idle() && notices().length >= 1, "the continued turn");
+      await new Promise((r) => setTimeout(r, 1000));
+      expect(notices()).toHaveLength(1);
+      expect(notices()[0]!.payload.content).toContain(`- notice-probe (${skillMdPath}): SKILL.md`);
+      expect(textSince(resumed)).toContain("BIRCH-8642");
+
+      // 4. Stopped and deleted from history: its memory folder is removed and does not come back,
+      //    even after the longest retry delay before the 60 s steady state.
+      await terminate();
+      expect((await gql("mutation($runId: String!) { deleteStoredRun(runId: $runId) { success message } }", { runId }))
+        .deleteStoredRun.success).toBe(true);
+      await until(async () => (await fs.stat(memoryDir!).catch(() => null)) === null, "the deleted memory folder", 10_000);
+      await fs.writeFile(skillMdPath, skillMd("ALDER-9753"));
+      await new Promise((r) => setTimeout(r, 22_000));
+      expect(await fs.stat(memoryDir!).catch(() => null)).toBeNull();
+      expect(notices()).toHaveLength(1);
     } finally {
       socket.close();
       await gql("mutation($runId: String!) { terminateAgentRun(agentRunId: $runId) { success } }", { runId }).catch(() => undefined);
