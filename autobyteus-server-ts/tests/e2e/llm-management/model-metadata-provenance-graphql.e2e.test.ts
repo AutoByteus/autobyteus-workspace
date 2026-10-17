@@ -4,6 +4,7 @@ import { createRequire } from 'node:module';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import type { graphql as graphqlFn, GraphQLSchema } from 'graphql';
 import { SecretValue } from 'autobyteus-ts';
+import { initializePrisma, shutdownPrisma } from 'repository_prisma';
 import { LLMProvider } from 'autobyteus-ts/llm/providers.js';
 import { buildGraphqlSchema } from '../../../src/api/graphql/schema.js';
 import { appConfigProvider } from '../../../src/config/app-config-provider.js';
@@ -97,6 +98,11 @@ describe('local Gemini model metadata GraphQL E2E', () => {
       databaseUrlOverride: database.databaseUrl,
     });
     await migrationServer.stop();
+    // The vault's repository uses the process Prisma client, which the e2e setup binds to the shared test
+    // database (an earlier file may keep a vault there under another root key). Bind it to this file's own
+    // database, where the migration server created the vault this file's root key belongs to.
+    await shutdownPrisma();
+    await initializePrisma({ datasourceUrl: database.databaseUrl });
     appConfigProvider.resetForTests();
     const config = appConfigProvider.initialize({ appDataDir: tempDirectory });
     config.initialize();
@@ -130,6 +136,7 @@ describe('local Gemini model metadata GraphQL E2E', () => {
     vi.unstubAllGlobals();
     getModelMetadataProvisioningService().invalidate();
     await resetSecretVaultRuntimeForTests();
+    await shutdownPrisma();
     appConfigProvider.resetForTests();
     await removeOwnedTestRuntime(tempDirectory, database);
     for (const [name, value] of Object.entries(originalEnvironment)) {

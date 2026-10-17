@@ -6,6 +6,14 @@ import {
   createRootExecutionPhysicalScope,
   type RootExecutionPhysicalScope,
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import {
+  runPartPlacement,
+  taskAgentTeamMemberPlacement,
+  type AgentRunMemoryPlacement,
+} from "../../agent-memory/domain/agent-run-memory-placement.js";
+
+/** `configured`: a team run or an organization's mounted team; `task`: a task agent team (a run of its own). */
+export type TeamRunKind = "configured" | "task";
 
 export interface TeamAgentMemberRuntimeContext {
   readonly kind: "agent";
@@ -20,6 +28,7 @@ export type RuntimeTeamRunContext = FlatTeamExecutionContext | null;
 /** Root-neutral local context for one physical TeamRun. */
 export class TeamRunContext<TRuntimeContext = RuntimeTeamRunContext> {
   readonly physicalScope: RootExecutionPhysicalScope;
+  readonly teamKind: TeamRunKind;
   readonly teamRunId: string;
   readonly teamBackendKind: TeamBackendKind;
   readonly teamNode: TeamRunAgentTeamNode;
@@ -29,6 +38,7 @@ export class TeamRunContext<TRuntimeContext = RuntimeTeamRunContext> {
 
   constructor(input: {
     physicalScope: RootExecutionPhysicalScope;
+    teamKind: TeamRunKind;
     teamRunId: string;
     teamBackendKind: TeamBackendKind;
     teamNode: TeamRunAgentTeamNode;
@@ -38,6 +48,7 @@ export class TeamRunContext<TRuntimeContext = RuntimeTeamRunContext> {
   }) {
     this.physicalScope = createRootExecutionPhysicalScope(input.physicalScope);
     this.teamRunId = required(input.teamRunId, "teamRunId");
+    this.teamKind = input.teamKind;
     const containingTeamRunId = this.physicalScope.ancestorTeamRunIds.at(-1)
       ?? (this.physicalScope.root.rootSubjectKind === "agent_team"
         ? this.physicalScope.root.rootRunId
@@ -60,6 +71,10 @@ export class TeamRunContext<TRuntimeContext = RuntimeTeamRunContext> {
   }
 
   get rootIdentity() { return this.physicalScope.root; }
+  /** Where this team's members keep their memory (contract L1): inside the run, or inside the task agent team's own folder. */
+  get memberMemoryPlacement(): AgentRunMemoryPlacement {
+    return this.teamKind === "task" ? taskAgentTeamMemberPlacement(this.teamRunId) : runPartPlacement(this.physicalScope);
+  }
   get teamAddress() { return this.teamNode.address; }
 }
 

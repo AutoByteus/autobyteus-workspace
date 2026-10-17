@@ -26,7 +26,7 @@ async function ingress(kind:'agent_team'|'agent_org', f:Awaited<ReturnType<typeo
   execution:{agentDefinitionId:'test',llmModelIdentifier:'parent',llmConfig:null,autoExecuteTools:false,runtimeKind:'autobyteus',workspaceRootPath:null,platformAgentRunId:null},
   activationMode:'fresh',memberExecutionContext,callbacks:{publishAgentEvent:vi.fn(),commitPlatformBindingChange:vi.fn()},
   agentRunManager:testActivationManager({newPreparation: prepareNewAgentRun,getActiveRun:()=>f.run}) as any,
-  memoryLocator:{getLocation:()=>({memoryDir:'/unused/test-owned'})} as any});
+  memoryLocator:{getMemoryDir:()=>'/unused/test-owned'} as any});
  const activation=await handle.prepareConfiguredActivation();activation.commitAfterDurability();
  const send=vi.fn(); const connection={send,close:vi.fn()};
  const publisher=new RootEventPublisher<any>();

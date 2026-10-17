@@ -601,6 +601,9 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
           if (!targets.includes(entry.teamRunId)) continue;
           stripTeam(entry); stripTeam(entry.source); stripped += 1;
         }
+        // A task agent team owns its facts: its own tree keeps the team's default launch source in `taskAgent.launchSource`
+        // (delegated-copy-own-run-memory contract §3.2), which the store composes back as `defaultLaunchSource`.
+        if (saved.taskAgent && targets.includes(saved.rootTeam?.teamRunId)) delete saved.taskAgent.launchSource;
         await fs.writeFile(file, JSON.stringify(saved, null, 2));
       }
       expect(stripped, `${kind}: stripped records`).toBeGreaterThan(0);

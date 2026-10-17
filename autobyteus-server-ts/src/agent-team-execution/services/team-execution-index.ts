@@ -26,6 +26,7 @@ import {
   createTeamRootExecutionIdentity,
   type RootExecutionPhysicalScope,
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { placementForAgentChain, type AgentRunMemoryPlacement } from "../../agent-memory/domain/agent-run-memory-placement.js";
 
 export type AgentExecutionKind = "configured" | "task" | "task_team_member";
 /** A team in a team run: the configured root, or a task agent team (teams are flat: no team is a member of a team). */
@@ -211,6 +212,12 @@ export class TeamExecutionIndex implements MessageRecipientIndexPort, MentionVie
 
   listContainingTeamAncestorsForAgent(agentRunId: string): readonly IndexedTeamExecution[] {
     return this.listTeamAncestorsDeepestFirst(this.requireAgent(agentRunId).containingTeamRunId);
+  }
+
+  /** Where the agent's memory directory is (contract L1), from its task execution chain. */
+  getMemoryPlacementForAgent(agentRunId: string): AgentRunMemoryPlacement {
+    return placementForAgentChain(agentRunId, this.listTaskExecutionChainForAgent(agentRunId),
+      this.getTeamRunPhysicalScope(this.requireAgent(agentRunId).containingTeamRunId));
   }
 
   getTeamRunPhysicalScope(teamRunId: string): RootExecutionPhysicalScope {

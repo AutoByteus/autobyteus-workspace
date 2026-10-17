@@ -1,0 +1,697 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:45537) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "team-v1-supported-startup-45537-1792263927049-142149a25bfb8.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts/db/team-v1-supported-startup-45537-1792263927049-142149a25bfb8.db"
+
+SQLite database team-v1-supported-startup-45537-1792263927049-142149a25bfb8.db created at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts/db/team-v1-supported-startup-45537-1792263927049-142149a25bfb8.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.23                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+[90mstdout[2m | tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts[2m > [22m[2mTeamRun released-shape production upgrade to the current AgentOrg end state through actual startup[2m > [22m[2mmigrates the exact supported cohort, serves history and new work, and remains immutable on relaunch
+[22m[39mRunning Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Database migrations completed successfully.
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "team-v1-warning-startup-45537-1792263929657-f9cc0373f00e6.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts/db/team-v1-warning-startup-45537-1792263929657-f9cc0373f00e6.db"
+
+SQLite database team-v1-warning-startup-45537-1792263929657-f9cc0373f00e6.db created at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts/db/team-v1-warning-startup-45537-1792263929657-f9cc0373f00e6.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+[90mstdout[2m | tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts[2m > [22m[2mTeamRun released-shape production upgrade to the current AgentOrg end state through actual startup[2m > [22m[2misolates mixed root and token warnings and fails closed on an unreadable history index without changing the released root
+[22m[39mRunning Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Database migrations completed successfully.
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "token-consolidation-retry-startup-45537-1792263933321-6eeea5b32aa99.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts/db/token-consolidation-retry-startup-45537-1792263933321-6eeea5b32aa99.db"
+
+SQLite database token-consolidation-retry-startup-45537-1792263933321-6eeea5b32aa99.db created at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts/db/token-consolidation-retry-startup-45537-1792263933321-6eeea5b32aa99.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+[90mstdout[2m | tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts[2m > [22m[2mTeamRun released-shape production upgrade to the current AgentOrg end state through actual startup[2m > [22m[2mkeeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry
+[22m[39mRunning Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Database migrations completed successfully.
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "token-consolidation-overlap-startup-45537-1792263937327-ea898f8aabfb7.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts/db/token-consolidation-overlap-startup-45537-1792263937327-ea898f8aabfb7.db"
+
+SQLite database token-consolidation-overlap-startup-45537-1792263937327-ea898f8aabfb7.db created at file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts/db/token-consolidation-overlap-startup-45537-1792263937327-ea898f8aabfb7.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+[90mstdout[2m | tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts[2m > [22m[2mTeamRun released-shape production upgrade to the current AgentOrg end state through actual startup[2m > [22m[2mrejects a legacy/current run-ID overlap before source cleanup while preserving both stores
+[22m[39mRunning Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Database migrations completed successfully.
+
+ [31m❯[39m tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts [2m([22m[2m4 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[33m 12272[2mms[22m[39m
+[31m     [31m×[31m migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch[39m[33m 2609[2mms[22m[39m
+[31m     [31m×[31m isolates mixed root and token warnings and fails closed on an unreadable history index without changing the released root[39m[33m 3664[2mms[22m[39m
+[31m     [31m×[31m keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry[39m[33m 4005[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects a legacy/current run-ID overlap before source cleanup while preserving both stores [33m 1992[2mms[22m[39m
+[90mstdout[2m | tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:45671) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts[2m > [22m[2mlocal Gemini model metadata GraphQL E2E
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts/tests/.tmp/metadata-provenance-45671-1792263942496-4c053b1caac7d
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts/tests/.tmp/metadata-provenance-45671-1792263942496-4c053b1caac7d/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts/tests/.tmp/metadata-provenance-45671-1792263942496-4c053b1caac7d/.env
+[dotenv@17.3.1] injecting env (5) from tests/.tmp/metadata-provenance-45671-1792263942496-4c053b1caac7d/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:55912
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:55912
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts/tests/.tmp/metadata-provenance-45671-1792263942496-4c053b1caac7d
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts/tests/.tmp/metadata-provenance-45671-1792263942496-4c053b1caac7d/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts/tests/.tmp/metadata-provenance-45671-1792263942496-4c053b1caac7d/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts/tests/.tmp/metadata-provenance-45671-1792263942496-4c053b1caac7d/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts/tests/.tmp/metadata-provenance-45671-1792263942496-4c053b1caac7d/memory
+============================================================
+
+[90mstdout[2m | tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts[2m > [22m[2mlocal Gemini model metadata GraphQL E2E
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+ [32m✓[39m tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 1787[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:45734) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts[2m > [22m[2mtoken usage provider-name snapshot backfill startup e2e
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+ [32m✓[39m tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 68[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:45743) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts[2m > [22m[2mtoken usage custom-provider model-value backfill startup e2e
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+ [32m✓[39m tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 45[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 3 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts[2m > [22mTeamRun released-shape production upgrade to the current AgentOrg end state through actual startup[2m > [22mmigrates the exact supported cohort, serves history and new work, and remains immutable on relaunch
+[31m[1mAssertionError[22m: expected { schemaVersion: 1, …(6) } to match object { schemaVersion: 1, …(6) }
+(15 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -22,11 +22,11 @@[39m
+[2m        "runtimeKind": "autobyteus",[22m
+[2m        "skillAccessMode": "PRELOADED_ONLY",[22m
+[2m        "workspaceRootPath": "/tmp/autobyteus-team-v1-root-workspace",[22m
+[2m      },[22m
+[2m      "members": [[22m
+[32m-       {[39m
+[31m+       ObjectContaining {[39m
+[2m          "address": "/lead",[22m
+[2m          "agentDefinitionId": "autobyteus-memory-compactor",[22m
+[2m          "agentRunId": "team-v1-supported-root-lead-run",[22m
+[2m          "description": "Synthetic released-shape member",[22m
+[2m          "launchConfiguration": {[22m
+[33m@@ -74,11 +74,10 @@[39m
+[2m          "role": "Research",[22m
+[2m          "taskExecutions": [[22m
+[2m            {[22m
+[2m              "address": "/research/reviewer",[22m
+[2m              "agentRunId": "team-v1-supported-root-task-reviewer-run",[22m
+[32m-             "settledAt": "2026-08-16T12:05:00.000Z",[39m
+[2m              "startedAt": "2026-08-16T12:03:00.000Z",[22m
+[2m            },[22m
+[2m          ],[22m
+[2m          "teamDefinitionId": "synthetic-released-child-definition",[22m
+[2m          "teamRunId": "team-v1-supported-root-explicit-child-team-run",[22m
+
+[36m [2m❯[22m assertAgentOrgPackage tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:[2m773:16[22m[39m
+    [90m771| [39m  [34mexpect[39m(fs[33m.[39m[34mexistsSync[39m(supported[33m.[39mrootDir))[33m.[39m[34mtoBe[39m([35mfalse[39m)[33m;[39m
+    [90m772| [39m  const tree = JSON.parse(fs.readFileSync(path.join(supported.orgDir, …
+    [90m773| [39m  [34mexpect[39m(tree)[33m.[39m[34mtoMatchObject[39m({
+    [90m   | [39m               [31m^[39m
+    [90m774| [39m    schemaVersion[33m:[39m [34m1[39m[33m,[39m
+    [90m775| [39m    subjectKind[33m:[39m [32m"agent_org"[39m[33m,[39m
+[90m [2m❯[22m tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:[2m1343:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts[2m > [22mTeamRun released-shape production upgrade to the current AgentOrg end state through actual startup[2m > [22misolates mixed root and token warnings and fails closed on an unreadable history index without changing the released root
+[31m[1mAssertionError[22m: expected [ { …(11) }, { …(11) }, …(23) ] to deeply equal [ { …(11) }, { …(11) }, …(23) ][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -310,18 +310,18 @@[39m
+[2m      "status": "SUCCEEDED",[22m
+[2m      "summary": "Scanned 2; migrated 0; skipped 2; failed 0.",[22m
+[2m      "updated_at": "2026-10-17 19:05:31",[22m
+[2m    },[22m
+[2m    {[22m
+[32m-     "attempts": 1,[39m
+[32m-     "completed_at": 1792263931411,[39m
+[31m+     "attempts": 2,[39m
+[31m+     "completed_at": 1792263933103,[39m
+[2m      "created_at": "2026-10-17 19:05:31",[22m
+[2m      "display_name": "Task agents as their own runs",[22m
+[2m      "error_message": "1 task agent item(s) are not migrated yet; the next start continues.",[22m
+[32m-     "log_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts/tests/.tmp/team-v1-warning-startup-45537-1792263929657-f9cc0373f00e6/logs/app-data-migrations/20261017_task_agent_own_run_v1-2026-10-17T19-05-31-410Z.log",[39m
+[31m+     "log_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-own-run-memory/autobyteus-server-ts/tests/.tmp/team-v1-warning-startup-45537-1792263929657-f9cc0373f00e6/logs/app-data-migrations/20261017_task_agent_own_run_v1-2026-10-17T19-05-33-103Z.log",[39m
+[2m      "migration_id": "20261017_task_agent_own_run_v1",[22m
+[32m-     "started_at": 1792263931406,[39m
+[31m+     "started_at": 1792263933096,[39m
+[2m      "status": "FAILED",[22m
+[2m      "summary": "Scanned 1; migrated 0; skipped 0; failed 1.",[22m
+[32m-     "updated_at": "2026-10-17 19:05:31",[39m
+[31m+     "updated_at": "2026-10-17 19:05:33",[39m
+[2m    },[22m
+[2m  ][22m
+
+[36m [2m❯[22m tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:[2m1471:50[22m[39m
+    [90m1469| [39m    [35mconst[39m withoutRetriedRow [33m=[39m (rows[33m:[39m [33mArray[39m[33m<[39m[33mRecord[39m[33m<[39mstring[33m,[39m unknown[33m>>[39m) [33m=>[39m
+    [90m1470| [39m      rows.filter(({ migration_id }) => migration_id !== FLAT_FAMILIES…
+    [90m1471| [39m    expect(withoutRetriedRow(ledgerAfterSecond)).toEqual(withoutRetrie…
+    [90m   | [39m                                                 [31m^[39m
+    [90m1472| [39m    [34mexpect[39m(fs[33m.[39m[34mreadFileSync[39m(treePath))[33m.[39m[34mtoEqual[39m(treeBytes)[33m;[39m
+    [90m1473| [39m    [34massertV2TeamPackage[39m(scenario)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts[2m > [22mTeamRun released-shape production upgrade to the current AgentOrg end state through actual startup[2m > [22mkeeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry
+[31m[1mAssertionError[22m: expected { schemaVersion: 1, …(6) } to match object { schemaVersion: 1, …(6) }
+(15 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -22,11 +22,11 @@[39m
+[2m        "runtimeKind": "autobyteus",[22m
+[2m        "skillAccessMode": "PRELOADED_ONLY",[22m
+[2m        "workspaceRootPath": "/tmp/autobyteus-team-v1-root-workspace",[22m
+[2m      },[22m
+[2m      "members": [[22m
+[32m-       {[39m
+[31m+       ObjectContaining {[39m
+[2m          "address": "/lead",[22m
+[2m          "agentDefinitionId": "autobyteus-memory-compactor",[22m
+[2m          "agentRunId": "team-v1-supported-root-lead-run",[22m
+[2m          "description": "Synthetic released-shape member",[22m
+[2m          "launchConfiguration": {[22m
+[33m@@ -74,11 +74,10 @@[39m
+[2m          "role": "Research",[22m
+[2m          "taskExecutions": [[22m
+[2m            {[22m
+[2m              "address": "/research/reviewer",[22m
+[2m              "agentRunId": "team-v1-supported-root-task-reviewer-run",[22m
+[32m-             "settledAt": "2026-08-16T12:05:00.000Z",[39m
+[2m              "startedAt": "2026-08-16T12:03:00.000Z",[22m
+[2m            },[22m
+[2m          ],[22m
+[2m          "teamDefinitionId": "synthetic-released-child-definition",[22m
+[2m          "teamRunId": "team-v1-supported-root-explicit-child-team-run",[22m
+
+[36m [2m❯[22m assertAgentOrgPackage tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:[2m773:16[22m[39m
+    [90m771| [39m  [34mexpect[39m(fs[33m.[39m[34mexistsSync[39m(supported[33m.[39mrootDir))[33m.[39m[34mtoBe[39m([35mfalse[39m)[33m;[39m
+    [90m772| [39m  const tree = JSON.parse(fs.readFileSync(path.join(supported.orgDir, …
+    [90m773| [39m  [34mexpect[39m(tree)[33m.[39m[34mtoMatchObject[39m({
+    [90m   | [39m               [31m^[39m
+    [90m774| [39m    schemaVersion[33m:[39m [34m1[39m[33m,[39m
+    [90m775| [39m    subjectKind[33m:[39m [32m"agent_org"[39m[33m,[39m
+[90m [2m❯[22m tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:[2m1565:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m3 passed[39m[22m[90m (4)[39m
+[2m      Tests [22m [1m[31m3 failed[39m[22m[2m | [22m[1m[32m9 passed[39m[22m[90m (12)[39m
+[2m   Start at [22m 21:05:23
+[2m   Duration [22m 22.72s[2m (transform 3.98s, setup 44ms, import 7.72s, tests 14.17s, environment 0ms)[22m
+

@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
-import { TeamCommunicationV1Store } from "../../../../src/services/team-communication/team-communication-v1-store.js";
+import { TeamCommunicationStore } from "../../../../src/services/team-communication/team-communication-store.js";
 import {
   resetTeamRunPackageCatalog,
   TeamRunPackageCatalog,
@@ -40,7 +40,7 @@ describe("TeamRunPackageCatalog V2 current-only readiness", () => {
     const state = createPackage(rootTeamRunId);
     const teamMemoryDir = layout.getTeamDirPath({ rootTeamRunId, ancestorTeamRunIds: [] });
     await new TeamRunExecutionTreeStore().write(teamMemoryDir, state.executionTree);
-    await new TeamCommunicationV1Store().write(teamMemoryDir, state.communicationMessages);
+    await new TeamCommunicationStore().write(teamMemoryDir, state.communicationMessages);
     return teamMemoryDir;
   };
 

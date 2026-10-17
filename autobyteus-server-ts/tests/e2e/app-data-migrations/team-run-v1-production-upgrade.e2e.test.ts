@@ -51,6 +51,7 @@ const TEAM_AGENT_MEMORY_LAYOUT_MIGRATION_ID = "20260823_repair_team_agent_memory
 const V2_MIGRATION_ID = "20260824_team_run_execution_tree_v2";
 // Converts an Org-like released Team (a Team member inside the root) into an AgentOrg V1 package.
 const FLAT_FAMILIES_MIGRATION_ID = "20260901_agent_org_flat_team_families_v1";
+const TASK_AGENT_OWN_RUN_MIGRATION_ID = "20261017_task_agent_own_run_v1";
 const TOKEN_USAGE_CONSOLIDATION_MIGRATION_ID = "20260819_token_usage_run_records_v1";
 const HISTORICAL_AUDIT_SENTINEL_MIGRATION_ID = "20260730_token_usage_provider_name_snapshot_backfill";
 const REMOVED_CANONICAL_MIGRATION_ID = "20260801_team_canonical_identity";
@@ -587,6 +588,13 @@ const flatFamiliesStatus = async (serverUrl: string): Promise<MigrationStatus> =
   return status;
 };
 
+const taskAgentOwnRunStatus = async (serverUrl: string): Promise<MigrationStatus> => {
+  const statuses = await migrationStatuses(serverUrl);
+  const status = statuses.find(({ migrationId }) => migrationId === TASK_AGENT_OWN_RUN_MIGRATION_ID);
+  if (!status) throw new Error("TASK_AGENT_OWN_RUN_STATUS_MISSING");
+  return status;
+};
+
 const readAttemptLog = (logPath: string): {
   counts: ExecutionCounts;
   details: AttemptLogDetail[];
@@ -810,16 +818,27 @@ const assertAgentOrgPackage = (scenario: Awaited<ReturnType<typeof seedScenario>
             agentRunId: `${rootTeamRunId}-reviewer-run`,
             launchConfiguration: NESTED_COORDINATOR_CONFIGURATION,
           })],
-          taskExecutions: [expect.objectContaining({
+          // The task agent is its own run (20261017_task_agent_own_run_v1, contract L1): the tree keeps a
+          // link and its facts are in its own run_metadata.json. A link has no `settledAt` (current trees
+          // never record it; the released field survived only while nothing rewrote this tree).
+          taskExecutions: [{
             address: "/research/reviewer",
             agentRunId: supported.taskAgentRunId,
             startedAt: "2026-08-16T12:03:00.000Z",
-            settledAt: "2026-08-16T12:05:00.000Z",
-          })],
+          }],
         }),
       ],
       taskExecutions: [],
     },
+  });
+  expect(tree.rootOrg.members[1].taskExecutions[0]).not.toHaveProperty("settledAt");
+  const memoryRoot = path.dirname(path.dirname(supported.orgDir));
+  const own = JSON.parse(fs.readFileSync(path.join(memoryRoot, "agents", supported.taskAgentRunId!, "run_metadata.json"), "utf8"));
+  // A copy of the configured place `/research/reviewer` (no recorded source, U-4): it follows the place.
+  expect(own).toMatchObject({
+    runId: supported.taskAgentRunId,
+    agentDefinitionId: "autobyteus-memory-compactor",
+    taskAgent: { coordinatingRun: { kind: "agent_org", runId: rootTeamRunId }, address: "/research/reviewer", origin: "configured_place" },
   });
   const messages = JSON.parse(fs.readFileSync(path.join(supported.orgDir, "agent_org_communication_messages.json"), "utf8"));
   expect(messages).toMatchObject({
@@ -1418,6 +1437,16 @@ describe("TeamRun released-shape production upgrade to the current AgentOrg end 
       status: "FAILED",
       message: expect.stringContaining("Invalid team run history index format"),
     })]);
+    // The task-agent own-run migration (registered last) waits for the Org conversion of this root: the
+    // Team tree is not in its input shape and its predecessor can still convert it, so the tree stays
+    // untouched and the migration stays non-terminal; it retries each start (contract §5.4, R-8).
+    const waiting = await taskAgentOwnRunStatus(first.serverUrl);
+    expect(waiting).toMatchObject({ status: "FAILED", attempts: 1 });
+    expect(readAttemptLog(waiting.logPath!).details).toEqual([expect.objectContaining({
+      itemId: `agent_team:${scenario.rootTeamRunId}`,
+      status: "FAILED",
+      message: expect.stringContaining("WAITING_FOR_PREDECESSOR"),
+    })]);
     // The preserved V1 warning package is intentionally excluded by the V1
     // promotion, so the follow-on V2 migration itself remains clean.
     expect(first.output()).not.toContain("startup continues with strict current-package admission");
@@ -1465,9 +1494,11 @@ describe("TeamRun released-shape production upgrade to the current AgentOrg end 
       attempts: 2,
       recoveryAction: "RESTART_TO_RETRY",
     });
+    // The waiting task-agent migration retries with its predecessor and still changes nothing.
+    expect(await taskAgentOwnRunStatus(second.serverUrl)).toMatchObject({ status: "FAILED", attempts: 2 });
     const ledgerAfterSecond = readMigrationLedger(target.database.databasePath);
     const withoutRetriedRow = (rows: Array<Record<string, unknown>>) =>
-      rows.filter(({ migration_id }) => migration_id !== FLAT_FAMILIES_MIGRATION_ID);
+      rows.filter(({ migration_id }) => migration_id !== FLAT_FAMILIES_MIGRATION_ID && migration_id !== TASK_AGENT_OWN_RUN_MIGRATION_ID);
     expect(withoutRetriedRow(ledgerAfterSecond)).toEqual(withoutRetriedRow(ledgerAfterFirst));
     expect(fs.readFileSync(treePath)).toEqual(treeBytes);
     assertV2TeamPackage(scenario);

@@ -6,7 +6,7 @@ import { AgentDefinition } from '../../../src/agent-definition/domain/models.js'
 import { AgentTeamDefinition, TeamMember } from '../../../src/agent-team-definition/domain/agent-team-definition.js';
 import { createCollaboratorAdmission } from '../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js';
 import { ActiveCollaborationRootDirectory } from '../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js';
-import { RootedAgentMemoryLocator } from '../../../src/agent-collaboration/execution/services/rooted-agent-memory-locator.js';
+import { AgentRunMemoryLocator } from '../../../src/agent-collaboration/execution/services/agent-run-memory-locator.js';
 import { StandaloneAgentRunRootManager } from '../../../src/standalone-agent-run-root/services/standalone-agent-run-root-manager.js';
 import { FlatTeamExecutionFactory } from '../../../src/agent-team-execution/local/flat-team-execution-factory.js';
 import { createTaskExecutionIdentityCapabilities } from '../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js';
@@ -86,7 +86,7 @@ export async function createNativeRootFixture(kind: 'agent' | 'agent_team', post
         return result;
       },
     });
-    const memoryLocator = new RootedAgentMemoryLocator({ memoryDir });
+    const memoryLocator = new AgentRunMemoryLocator({ memoryDir });
     const hostRun = { runId: HOST, isActive: () => true, publishEvent: vi.fn() };
     const metadata = {
       runId: HOST, agentDefinitionId: 'host', memoryDir: path.join(memoryDir, 'agents', HOST),

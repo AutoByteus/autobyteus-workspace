@@ -143,11 +143,17 @@ suite("An unreadable standalone tree is contained to its own run (real HTTP/Grap
     child.stderr!.on("data", (chunk) => { output += String(chunk); });
     try {
       const deadline = Date.now() + 120_000;
-      while (!/Server listening at (http:\/\/127\.0\.0\.1:\d+)/.test(output)) {
+      // Ready only after the server's own line: the agent-tools MCP host logs its own "Server listening at …" first.
+      while (!output.includes("Server listening on 127.0.0.1:0")) {
         if (child.exitCode !== null || Date.now() > deadline) throw new Error(`server did not start: ${output.slice(-1500)}`);
         await new Promise((resolve) => setTimeout(resolve, 300));
       }
-      processUrl = [...output.matchAll(/Server listening at (http:\/\/127\.0\.0\.1:\d+)/g)].at(-1)![1]!;
+      // The Studio app is the listener that serves GraphQL (the MCP host's URL answers 404 there).
+      for (const [, candidate] of output.matchAll(/Server listening at (http:\/\/127\.0\.0\.1:\d+)/g)) {
+        const probe = await fetch(`${candidate}/graphql`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query: "{__typename}" }) });
+        if (probe.ok) { processUrl = candidate!; break; }
+      }
+      if (!processUrl) throw new Error(`no listener serves GraphQL: ${output.slice(-1500)}`);
       // The new process logs to its own output; collect its warnings there.
       const mark = output.length;
       await expectContained("new server process", () => output.slice(mark).split("\n"));

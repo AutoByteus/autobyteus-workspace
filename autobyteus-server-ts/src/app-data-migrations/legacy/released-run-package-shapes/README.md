@@ -11,4 +11,22 @@ field), and the task-records runtime code is deleted. Released app-data migratio
 validators as classifiers ("already current" versus "old shape") and read records files, so they
 depend on these frozen copies to keep their released behavior on skip-version installs.
 
+## Before task-agent-own-run (as of `origin/personal@66429d6f31`)
+
+Named after the migration they precede (`20261017_task_agent_own_run_v1`; DESIGN.md rule 8). Before
+it, a coordinating run's tree embeds every task agent's facts and a task agent's memory sits nested
+inside its coordinating run. The current stores, readiness validator and location services compose
+task agents from their own files instead, so the released migrations that still run on the old
+layout read through these copies (contract §5.4):
+
+- `released-trees-before-task-agent-own-run.ts` (+ folder): verbatim tree records, types and parsers
+  (team, org, standalone) and whole-file readers of trees and message logs. Used by
+  `20261015_collaborators_to_delegated_runs_v1`, `20260905_agent_org_history_first_message_summary_v1`
+  and `20261017_task_agent_own_run_v1` (its source side).
+- `released-root-packages-before-task-agent-own-run.ts`: today's root-package validator (nested
+  owners) and the Org package catalog over it. Used by `20260926_team_context_file_execution_locators_v1`
+  and `20260905_agent_org_history_first_message_summary_v1`.
+- `released-memory-locations-before-task-agent-own-run.ts`: today's runtime memory location
+  classifier and stored location derivation. Used by both `20260731` working-context snapshot migrations.
+
 Current runtime code must never import this module.

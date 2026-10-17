@@ -1,8 +1,9 @@
+import { messageLogOwners, type MessageLogOwner } from "../../run-history/store/task-agent-message-logs.js";
 import type { RootCommunicationAdapter } from "../../agent-collaboration/execution/communication/root-communication-adapter.js";
 import { buildRootCommunicationInputMessage } from "../../agent-collaboration/execution/communication/root-communication-runtime-builder.js";
 import type { AgentRunInputReservationResult } from "../../agent-execution/input/agent-run-input-contract.js";
-import type { AgentOrgCommunicationMessagesFileV1 } from "../persistence/agent-org-communication-messages-v1.js";
-import { validateAgentOrgCommunicationMessagesV1 } from "../persistence/agent-org-communication-messages-v1-schema.js";
+import type { AgentOrgCommunicationMessagesFile } from "../persistence/agent-org-communication-messages.js";
+import { validateAgentOrgCommunicationMessages } from "../persistence/agent-org-communication-messages-schema.js";
 import type { AgentOrgRunPersistenceCoordinator } from "./agent-org-run-persistence-coordinator.js";
 
 /** Org-private sidecar/input/event adapter for RootCommunicationEngine. */
@@ -12,16 +13,18 @@ export class AgentOrgCommunicationAdapter implements RootCommunicationAdapter {
 
   constructor(private readonly options: Readonly<{
     root: RootCommunicationAdapter["root"];
-    initial: AgentOrgCommunicationMessagesFileV1;
+    initial: AgentOrgCommunicationMessagesFile;
     persistence: AgentOrgRunPersistenceCoordinator;
     isOpen(): boolean;
     isCurrentAgent: RootCommunicationAdapter["isCurrentAgent"];
+    /** The log an endpoint's messages belong to (the organization run's, or a task agent's own, D-4). */
+    messageLogOwnerOf(agentRunId: string): MessageLogOwner;
   assertDeliveryAllowed: RootCommunicationAdapter["assertDeliveryAllowed"];
     reserveRecipientInput(agentRunId: string, message: ReturnType<RootCommunicationAdapter["buildRecipientInput"]>): Promise<AgentRunInputReservationResult>;
-    replaceMessages(messages: AgentOrgCommunicationMessagesFileV1): void;
-    publish(message: AgentOrgCommunicationMessagesFileV1["messages"][number]): void;
+    replaceMessages(messages: AgentOrgCommunicationMessagesFile): void;
+    publish(message: AgentOrgCommunicationMessagesFile["messages"][number]): void;
     presentCommittedMessage(
-      message: AgentOrgCommunicationMessagesFileV1["messages"][number],
+      message: AgentOrgCommunicationMessagesFile["messages"][number],
       receiverInput: ReturnType<RootCommunicationAdapter["buildRecipientInput"]>,
     ): void;
   }>) {
@@ -46,7 +49,7 @@ export class AgentOrgCommunicationAdapter implements RootCommunicationAdapter {
       input.reservation.cancel();
       return Object.freeze({ committed: false as const, code: "AGENT_ORG_MESSAGE_COMMIT_CONFLICT", message: "Message append conflicts with current AgentOrg state." });
     }
-    const next = validateAgentOrgCommunicationMessagesV1({
+    const next = validateAgentOrgCommunicationMessages({
       schemaVersion: 1,
       subjectKind: "agent_org",
       orgRunId: this.root.rootRunId,
@@ -56,6 +59,8 @@ export class AgentOrgCommunicationAdapter implements RootCommunicationAdapter {
     try {
       return await this.options.persistence.commitCommunication({
         nextMessages: next,
+        message: input.message,
+        logOwners: messageLogOwners(input.message, (agentRunId) => this.options.messageLogOwnerOf(agentRunId)),
         cancelBeforeDurability: () => input.reservation.cancel(),
         commitAfterDurability: () => {
           input.commitMessages(next.messages);

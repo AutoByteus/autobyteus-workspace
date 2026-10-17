@@ -3,8 +3,8 @@ import { ROOT_NOT_ACTIVE_MESSAGE } from "../../agent-collaboration/execution/tas
 import { createRootExecutionPhysicalScope, createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { MemberTaskCommandCapability } from "../../agent-collaboration/execution/task/member-task-command-capability.js";
-import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-v1-types.js";
-import type { TeamCommunicationV1Store } from "../../services/team-communication/team-communication-v1-store.js";
+import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-messages-file.js";
+import type { TeamCommunicationStore } from "../../services/team-communication/team-communication-store.js";
 import type { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-execution-tree-store.js";
 import type { ConfiguredMemberActivationMode } from "../local/flat-team-execution-context.js";
 import type { FlatTeamExecutionFactory } from "../local/flat-team-execution-factory.js";
@@ -32,7 +32,7 @@ export type TeamRootMaterializationInput = Readonly<{
   taskExecutionIdentity: TaskExecutionIdentityCapabilities;
   taskExecutionResources?: TaskExecutionResourcePort;
   executionTreeStore: TeamRunExecutionTreeStore;
-  communicationStore: TeamCommunicationV1Store;
+  communicationStore: TeamCommunicationStore;
   /** The process admission coordinator unless given. */
   collaboratorAdmission?: CollaboratorAdmission;
   onTerminated: (root: RootTeamRun) => void;
@@ -70,6 +70,7 @@ export const materializeTeamRoot = async (
     assertExecutionInputAllowed: (identity) => requireActiveRoot().assertExecutionInputAllowed(identity.agentRunId),
     teamContext: new TeamRunContext({
       physicalScope,
+      teamKind: "configured",
       teamRunId: input.config.rootTeam.teamRunId,
       teamBackendKind: input.config.teamBackendKind,
       teamNode: input.config.rootTeam,
@@ -92,6 +93,7 @@ export const materializeTeamRoot = async (
   });
   const prepared = await input.factory.beginMaterialization({
     physicalScope,
+    teamKind: "configured",
     teamNode: input.config.rootTeam,
     handoffs: input.config.handoffs,
     applicationBinding: input.config.applicationBinding,

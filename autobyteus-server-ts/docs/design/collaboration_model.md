@@ -88,8 +88,8 @@ memory/
 - A Team's members and an Org's units live inside that run's folder (they are
   parts of it).
 - A delegated run lives in its own folder at the standard place for its kind,
-  wherever its delegator sits, with a back-link naming its kind and its
-  coordinating run.
+  wherever its delegator sits; its own run file (`run_metadata.json` or a team
+  tree) carries a `taskAgent` section naming its coordinating run.
 - The coordinating run's folder holds its own memory, its parts, its execution
   tree (including the links to its delegated runs) and its message log.
 
@@ -116,8 +116,8 @@ Status as of the change that published this document (Task 259ddae7,
 | CM-1 … CM-7 | Holds | Since `collaboration-model-contract`: teammate delegation is refused; `send_message_to` no longer brings in collaborators or Task helper copies; stored collaborators were converted into delegated runs. Delegated runs made of a teammate before that change remain ordinary delegated runs. |
 | CM-6 exception: unowned delegated runs | Holds as stored history | Delegated runs recorded before Task ownership existed, and collaborators converted into delegated runs, belong to no Task. They behave like any delegated run (sleep, wake by run ID, stop by the user) but are not closed by a Task. New delegations always belong to a Task. |
 | Task tools configured, not automatic | Holds | Since `task-tool-split` (`create_task`, `update_task`). |
-| CM-8 Delegated run memory in its own folder | **Target** — Task 8641c0ac (`delegated-copy-own-run-memory`) | Today a delegated run's memory is stored inside the coordinating run's folder (`agents/<host>/collaboration/<copy>/`, or inside the Team/Org root folder). |
-| CM-9 Per-run message logs | **Target** — Task 8641c0ac | Today each coordinating run keeps one message log for every message in its whole tree, including messages inside its delegated Team runs. Each agent's own raw traces already record sent and received messages. |
+| CM-8 Delegated run memory in its own folder | Holds | Since `delegated-copy-own-run-memory` (Task 8641c0ac): a task agent is a run of its own (`agents/<id>/` or `agent_teams/<id>/`) with its own file (a `taskAgent` section); the coordinating run's tree keeps links; deleting a coordinating run keeps its task agents' folders. Startup migration `20261017_task_agent_own_run_v1` moved existing data. |
+| CM-9 Per-run message logs | Holds | Since `delegated-copy-own-run-memory`: a message between parts of one run is stored once in that run's log; a message between two runs in both logs (receiver's first) with one message ID. The coordinating log keeps its older entries; the migration gave each task agent its own log. |
 | CM-7 through links instead of hosting | **Later** (cross-node) | Today the coordinating run hosts its delegated runs' runtimes in its own process, and nested delegations are recorded in the topmost coordinating run's tree. |
 
 ## 6. Where The Mechanics Live

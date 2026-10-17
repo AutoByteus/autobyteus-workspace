@@ -9,21 +9,21 @@ import type {
   RootCommunicationAdapter,
   RootCommunicationDeliveryInput,
 } from "./root-communication-adapter.js";
-import { validateCollaborationCommunicationMessageArrayV1 } from "./collaboration-communication-message-v1-schema.js";
-import type { CollaborationCommunicationMessageV1 } from "./collaboration-communication-message-v1.js";
+import { validateCollaborationCommunicationMessageArray } from "./collaboration-communication-message-schema.js";
+import type { CollaborationCommunicationMessage } from "./collaboration-communication-message.js";
 
 const DELIVERY_REFUSAL_CODES: ReadonlySet<string> = new Set(["TASK_AGENT_RESOURCE_CLOSED", "TASK_AGENT_RESOURCE_CONFLICT"]);
 
 /** Same-root message validation, accepted-record construction, and reservation lifecycle. */
 export class RootCommunicationEngine {
-  private current: readonly CollaborationCommunicationMessageV1[];
+  private current: readonly CollaborationCommunicationMessage[];
   private accepting = true;
 
   constructor(private readonly adapter: RootCommunicationAdapter) {
-    this.current = validateCollaborationCommunicationMessageArrayV1(adapter.initialMessages);
+    this.current = validateCollaborationCommunicationMessageArray(adapter.initialMessages);
   }
 
-  getMessages(): readonly CollaborationCommunicationMessageV1[] { return this.current; }
+  getMessages(): readonly CollaborationCommunicationMessage[] { return this.current; }
   closeAdmission(): void { this.accepting = false; }
 
   async deliver(input: RootCommunicationDeliveryInput): Promise<AgentOperationResult> {
@@ -51,7 +51,7 @@ export class RootCommunicationEngine {
     const content = input.content.trim();
     if (!content) return { accepted: false, code: "INVALID_MESSAGE", message: "Message content is required." };
     const createdAt = new Date().toISOString();
-    const message: CollaborationCommunicationMessageV1 = Object.freeze({
+    const message: CollaborationCommunicationMessage = Object.freeze({
       messageId: this.messageId(input, content, createdAt),
       senderAgentRunId: input.senderIdentity.agentRunId,
       receiverAgentRunId: input.receiverIdentity.agentRunId,
@@ -76,7 +76,7 @@ export class RootCommunicationEngine {
       inputMessage,
       reservation: guarded,
       getCurrentMessages: () => this.current,
-      commitMessages: (messages) => { this.current = validateCollaborationCommunicationMessageArrayV1(messages); },
+      commitMessages: (messages) => { this.current = validateCollaborationCommunicationMessageArray(messages); },
     });
     return result.committed
       ? { accepted: true, agentRunId: input.receiverIdentity.agentRunId, displayName: input.receiverDisplayName }

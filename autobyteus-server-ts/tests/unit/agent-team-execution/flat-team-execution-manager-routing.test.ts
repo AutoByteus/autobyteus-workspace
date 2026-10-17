@@ -66,6 +66,7 @@ const createMixedManager = () => {
     children: [solutionNode, reviewerNode],
   });
   const context = new TeamRunContext({
+    teamKind: "configured",
     physicalScope: createRootExecutionPhysicalScope({
       root: createTeamRootExecutionIdentity(teamRunId),
       ancestorTeamRunIds: [],
@@ -101,9 +102,7 @@ const createMixedManager = () => {
     subTeamRunFactory: { createOrRestore: vi.fn() } as never,
     agentRunManager: testActivationManager({ newPreparation: prepareNewAgentRun }) as never,
     memoryLocator: {
-      getLocation: (_scope: unknown, agentRunId: string) => ({
-        memoryDir: `/tmp/team-manager-member-interrupt/${agentRunId}`,
-      }),
+      getMemoryDir: (_placement: unknown, agentRunId: string) => `/tmp/team-manager-member-interrupt/${agentRunId}`,
     } as never,
     activityInspector: { inspect: vi.fn(() => ({ kind: "none" })) } as never,
     callbacks: {

@@ -28,7 +28,8 @@ afterEach(async () => { await Promise.all(memoryDirs.splice(0).map((dir) => fs.r
 const harness = async (physicalOutcome = 'committed', readback = 'ok', runtimeKind = 'codex_app_server') => {
   let saved: any = testExecutionTree({ rootTeamRunId: 'root', coordinatorAddress: '/member', children: [testAgentNode('/member', { platformAgentRunId: 'retained-provider-id' })] });
   saved = structuredClone(saved);
-  saved.rootTeam.taskExecutions = [{ address: '/task-run', agentRunId: 'retained-task', platformAgentRunId: 'platform-task',
+  // A source-less task agent is a copy of the configured place at its address (U-4).
+  saved.rootTeam.taskExecutions = [{ address: '/member', agentRunId: 'retained-task', platformAgentRunId: 'platform-task',
     delegatorAgentRunId: 'run-member', startedAt: '2026-09-01T00:00:00.000Z' }];
   const root = saved.rootTeam.defaultLaunchConfiguration;
   root.runtimeKind = runtimeKind; root.llmModelIdentifier = 'small'; root.workspaceRootPath = '/workspace'; root.llmConfig = null;

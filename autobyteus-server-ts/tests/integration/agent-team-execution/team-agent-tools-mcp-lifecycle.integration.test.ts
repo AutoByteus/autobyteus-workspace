@@ -15,7 +15,7 @@ import { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/loca
 import type { TeamRunAgentNode } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
-import { RootedAgentMemoryLocator } from "../../../src/agent-collaboration/execution/services/rooted-agent-memory-locator.js";
+import { AgentRunMemoryLocator } from "../../../src/agent-collaboration/execution/services/agent-run-memory-locator.js";
 import { ActiveCollaborationRootDirectory } from "../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { createAgentToolsMcpHost } from "../../../src/agent-tools/mcp/agent-tools-mcp-host.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
@@ -176,7 +176,7 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
       let hasNativeConversationActivity = false;
       const teamExecutionFactory = new FlatTeamExecutionFactory({
         agentRunManager,
-        memoryLocator: new RootedAgentMemoryLocator({ memoryDir }),
+        memoryLocator: new AgentRunMemoryLocator({ memoryDir }),
         activityInspector: {
           inspect: vi.fn(() => hasNativeConversationActivity
             ? { kind: "present" as const }

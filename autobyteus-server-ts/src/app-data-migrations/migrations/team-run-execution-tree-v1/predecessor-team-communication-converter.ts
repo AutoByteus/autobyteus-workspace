@@ -1,11 +1,9 @@
 import { createAgentTeamAddress, type AgentTeamAddress } from "../../../agent-collaboration/domain/agent-team-address.js";
 import type { TeamRunExecutionTreeSnapshot } from "./team-run-execution-tree-v1-types.js";
 import { TeamExecutionIndex } from "./team-execution-v1-index.js";
-import type {
-  TeamCommunicationMessageV1,
-  TeamCommunicationMessagesSnapshot,
-} from "../../../services/team-communication/team-communication-v1-types.js";
-import { validateTeamCommunicationMessagesV1Payload } from "../../../services/team-communication/team-communication-v1-schema.js";
+import type { CollaborationCommunicationMessage } from "../../../agent-collaboration/execution/communication/collaboration-communication-message.js";
+import type { TeamCommunicationMessagesSnapshot } from "../../../services/team-communication/team-communication-messages-file.js";
+import { validateTeamCommunicationMessagesPayload } from "../../../services/team-communication/team-communication-messages-schema.js";
 import { normalizePredecessorTeamExecutionAddress } from "./predecessor-team-execution-address-normalizer.js";
 import {
   addressKey,
@@ -148,7 +146,7 @@ export const convertPredecessorTeamCommunication = (input: {
     ? array(file.messages, "Communication records.messages")
     : [];
   const index = new TeamExecutionIndex(input.tree);
-  const messages: TeamCommunicationMessageV1[] = rawMessages.map((raw, position) => {
+  const messages: CollaborationCommunicationMessage[] = rawMessages.map((raw, position) => {
     const label = `messages[${position}]`;
     const row = object(raw, label);
     const senderAddress = aliased(row, "senderAddress", "sender_address", label);
@@ -190,7 +188,7 @@ export const convertPredecessorTeamCommunication = (input: {
       ),
     });
   });
-  return validateTeamCommunicationMessagesV1Payload({
+  return validateTeamCommunicationMessagesPayload({
     schemaVersion: 1,
     rootTeamRunId: input.rootTeamRunId,
     messages,

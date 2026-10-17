@@ -232,7 +232,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     const dir = this.layout.getAgentRunCollaborationDirPath(hostRunId);
     const tree = await this.store.readTree(dir, hostRunId);
     if (!tree) return null;
-    const messages = await this.store.readMessages(dir, hostRunId) ?? emptyStandaloneRootMessages(hostRunId);
+    const messages = await this.store.readMessages(dir, tree) ?? emptyStandaloneRootMessages(hostRunId);
     return Object.freeze({ hostRunId, isActive: false, baseChangeSequence: 0, snapshot: Object.freeze({
       tree, closedTaskExecutions: this.closedTaskExecutionsFor(hostRunId, tree), messages,
       statuses: Object.freeze([]), inputStates: Object.freeze([]),
@@ -336,7 +336,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     await this.storedEdits.get(hostRunId)?.catch(() => undefined);
     const collaborationDir = this.layout.getAgentRunCollaborationDirPath(hostRunId);
     const storedTree = await this.store.readTree(collaborationDir, hostRunId);
-    const storedMessages = storedTree ? await this.store.readMessages(collaborationDir, hostRunId) : null;
+    const storedMessages = storedTree ? await this.store.readMessages(collaborationDir, storedTree) : null;
     if (storedTree && !storedMessages) throw new Error(`Agent root '${hostRunId}' package has no communication messages.`);
     const tree = storedTree ?? emptyStandaloneRootTree({
       host: {

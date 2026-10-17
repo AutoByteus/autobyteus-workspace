@@ -13,8 +13,7 @@ import { FlatTeamExecutionFactory } from "../../agent-team-execution/local/flat-
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { createTaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { MemberExecutionContextBuilder } from "../../agent-team-execution/services/member-team-context-builder.js";
-import { createTeamFlatExecutionCallbacks } from "../../agent-team-execution/services/team-flat-execution-callbacks.js";
-import { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
+import { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import { TeamRunIdentityAllocator } from "../../agent-team-execution/services/team-run-identity-allocator.js";
 import { TeamRunService } from "../../agent-team-execution/services/team-run-service.js";
 import type { ScopedAgentToolMcpSessionAuthority } from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
@@ -30,7 +29,7 @@ import { PublishedArtifactProjectionStore } from "../../services/published-artif
 import { PublishedArtifactPublicationService } from "../../services/published-artifacts/published-artifact-publication-service.js";
 import { PublishedArtifactSnapshotStore } from "../../services/published-artifacts/published-artifact-snapshot-store.js";
 import { RunFileChangeService } from "../../services/run-file-changes/run-file-change-service.js";
-import { TeamCommunicationV1Store } from "../../services/team-communication/team-communication-v1-store.js";
+import { TeamCommunicationStore } from "../../services/team-communication/team-communication-store.js";
 import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
 import { ApplicationExecutionShutdownCoordinator } from "./application-execution-shutdown-coordinator.js";
 import type { ApplicationExecutionScopeBuildInput } from "./application-execution-scope-contracts.js";
@@ -152,7 +151,7 @@ export const buildApplicationExecutionScopeKernel = (
     const memberExecutionContextBuilder = new MemberExecutionContextBuilder(
       input.agentTeamDefinitionService,
     );
-    const memoryLocator = new RootedAgentMemoryLocator({ memoryDir: input.memoryDir });
+    const memoryLocator = new AgentRunMemoryLocator({ memoryDir: input.memoryDir });
     const activityInspector = new AgentConversationActivityInspector();
     const teamRunManager = new AgentTeamRunManager({
       memoryDir: input.memoryDir,
@@ -166,7 +165,7 @@ export const buildApplicationExecutionScopeKernel = (
       }),
       memberExecutionContextBuilder,
       executionTreeStore: new TeamRunExecutionTreeStore(),
-      communicationStore: new TeamCommunicationV1Store(),
+      communicationStore: new TeamCommunicationStore(),
     });
     const { agentRunService, teamRunService } = buildRunServices(input, {
       memoryLocationService,

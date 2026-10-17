@@ -2,7 +2,9 @@ import { testActivationManager } from "../../fixtures/agent-run-preparation-fixt
 import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
+import path from "node:path";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
+import { TASK_AGENT_PLACEMENT, type AgentRunMemoryPlacement } from "../../../src/agent-memory/domain/agent-run-memory-placement.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import {
@@ -77,7 +79,7 @@ describe("TaskAgentDurabilityEventGate", () => {
 });
 
 describe("TaskAgentExecutionRegistry task-agent memory", () => {
-  it("keeps a fresh task Agent as a leaf in its containing task TeamRun scope and releases work only after commit", async () => {
+  it("keeps a fresh task Agent as a leaf of its hosting task TeamRun, places its memory as its own run, and releases work only after commit", async () => {
     const workerNode = testAgentNode("/review/worker", {
       agentRunId: "worker-template-run",
       agentDefinitionId: "agent-worker",
@@ -103,6 +105,7 @@ describe("TaskAgentExecutionRegistry task-agent memory", () => {
     });
     const teamContext = new TeamRunContext({
       physicalScope,
+      teamKind: "task",
       teamRunId: reviewTeam.teamRunId,
       teamBackendKind: TeamBackendKind.MIXED,
       teamNode: reviewTeam,
@@ -153,19 +156,14 @@ describe("TaskAgentExecutionRegistry task-agent memory", () => {
       };
     });
     const memoryRoot = appConfigProvider.config.getMemoryDir();
-    const getRootedLocation = vi.fn((scope: typeof physicalScope, agentRunId: string) => ({
-      scope,
-      agentRunId,
-      memoryDir: new AgentMemoryLayout(memoryRoot).getRootedAgentRunDirPath(scope, agentRunId),
-    }));
+    const getMemoryDir = vi.fn((placement: AgentRunMemoryPlacement, agentRunId: string) =>
+      new AgentMemoryLayout(memoryRoot).getAgentRunMemoryDirPath(placement, agentRunId));
     const taskAgentRunId = "worker_00000000000000000000000000000001";
     const publish = vi.fn((_identity, _event) => undefined);
     const registry = new TaskAgentExecutionRegistry({
       teamContext,
       agentRunManager: testActivationManager({ newPreparation: prepareNewAgentRun }) as never,
-      memoryLocator: {
-        getLocation: getRootedLocation,
-      } as never,
+      memoryLocator: { getMemoryDir } as never,
       activityInspector: { inspect: vi.fn(() => ({ kind: "none" })) } as never,
       callbacks: {
       assertExecutionInputAllowed: vi.fn(),
@@ -252,16 +250,17 @@ describe("TaskAgentExecutionRegistry task-agent memory", () => {
     expect(canonical()).toHaveLength(3);
 
     await vi.waitFor(() => expect(postedMessages).toEqual([message]));
+    // A task agent is a normal run: its memory is its own folder `agents/<agentRunId>/` (contract L1),
+    // never inside the task agent team that hosts it.
     expect(prepareNewAgentRun).toHaveBeenCalledWith(
       expect.objectContaining({
         runId: taskAgentRunId,
         config: expect.objectContaining({
-          memoryDir: new AgentMemoryLayout(memoryRoot)
-            .getRootedAgentRunDirPath(physicalScope, taskAgentRunId),
+          memoryDir: path.join(memoryRoot, "agents", taskAgentRunId),
         }),
       }),
     );
-    expect(getRootedLocation).toHaveBeenCalledWith(physicalScope, taskAgentRunId);
+    expect(getMemoryDir).toHaveBeenCalledWith(TASK_AGENT_PLACEMENT, taskAgentRunId);
     expect((createdConfigs[0] as { memoryDir?: string }).memoryDir).not.toBe("/tmp/template-member-memory-dir");
 
     const disposedTaskAgentRunId = "worker_00000000000000000000000000000002";

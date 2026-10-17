@@ -219,7 +219,7 @@ export class StandaloneRootLocationService {
         executionKind: team.executionKind,
         startedAt: team.startedAt,
       }))),
-      memoryDir: this.layout.getRootedAgentRunDirPath(scope, agentRunId),
+      memoryDir: this.layout.getAgentRunMemoryDirPath(index.getMemoryPlacementForAgent(agentRunId), agentRunId),
       tree,
       isActive: this.roots.getActiveTree(tree.host.agentRunId) !== null,
     });

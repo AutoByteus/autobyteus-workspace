@@ -4,7 +4,7 @@ import { RootCommunicationEngine } from "../../agent-collaboration/execution/com
 import type { InterAgentMessageDeliveryIntent } from "../../agent-team-execution/domain/inter-agent-message-delivery.js";
 import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { TeamCommunicationAdapter, type TeamCommunicationAdapterOptions } from "./team-communication-adapter.js";
-import type { TeamCommunicationMessagesSnapshot } from "./team-communication-v1-types.js";
+import type { TeamCommunicationMessagesSnapshot } from "./team-communication-messages-file.js";
 
 /** Team-private facade over the root-neutral accepted-message engine. */
 export class TeamCommunicationService {

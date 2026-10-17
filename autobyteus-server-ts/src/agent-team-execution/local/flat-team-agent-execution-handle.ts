@@ -15,7 +15,8 @@ import type {
   AgentModelChoice,
   RetainedAgentExecutionControl,
 } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
-import type { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
+import type { AgentRunMemoryPlacement } from "../../agent-memory/domain/agent-run-memory-placement.js";
+import type { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import {
   createCollaborationMemberExecutionIdentity,
   sameCollaborationMemberExecutionIdentity,
@@ -43,10 +44,12 @@ export class FlatTeamAgentExecutionHandle implements RetainedAgentExecutionContr
     teamContext: TeamRunContext<FlatTeamExecutionContext>;
     context: FlatAgentExecutionContext;
     config: TeamRunAgentNode;
+    /** Where this agent's memory directory is (contract L1): a team member at its team's placement, a task agent as its own run. */
+    memoryPlacement: AgentRunMemoryPlacement;
     activationMode: ConfiguredMemberActivationMode;
     callbacks: FlatTeamExecutionCallbacks;
     agentRunManager?: AgentRunManager;
-    memoryLocator?: RootedAgentMemoryLocator;
+    memoryLocator?: AgentRunMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
     executionFactory?: ConfiguredAgentExecutionFactory;
@@ -155,6 +158,7 @@ export class FlatTeamAgentExecutionHandle implements RetainedAgentExecutionContr
     const handle = (this.options.executionFactory ?? new ConfiguredAgentExecutionFactory()).create({
       identity,
       physicalScope: this.options.teamContext.physicalScope,
+      memoryPlacement: this.options.memoryPlacement,
       execution,
       activationMode: this.options.activationMode,
       memberExecutionContext,

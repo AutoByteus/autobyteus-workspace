@@ -14,7 +14,7 @@ import {
   type RootExecutionPhysicalScope,
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { RootEventPublisher } from "../../agent-collaboration/execution/services/root-event-publisher.js";
-import type { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
+import type { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import { RootTaskPersistenceFinalizationIndeterminateError, TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
@@ -30,7 +30,7 @@ import { StandaloneAgentRunRoot } from "../domain/standalone-agent-run-root.js";
 import type { StandaloneHostAgentHandle } from "../domain/standalone-host-agent-handle.js";
 import type { StandaloneRootEvent } from "../domain/standalone-root-event.js";
 import type {
-  StandaloneRootMessagesFileV1,
+  StandaloneRootMessagesFile,
   StandaloneRootTreeSnapshot,
 } from "../domain/standalone-root-tree.js";
 import { StandaloneRootPersistenceCoordinator } from "./standalone-root-persistence-coordinator.js";
@@ -42,7 +42,7 @@ export type StandaloneRootBuilderDependencies = Readonly<{
   teamDefinitions: Pick<AgentTeamDefinitionService, "getDefinitionById">;
   packageStore: StandaloneRootPackageStore;
   agentRunManager?: AgentRunManager;
-  memoryLocator?: RootedAgentMemoryLocator;
+  memoryLocator?: AgentRunMemoryLocator;
   activityInspector?: AgentConversationActivityInspector;
   workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
   collaboratorAdmission?: CollaboratorAdmission;
@@ -54,7 +54,7 @@ export class StandaloneRootBuilder {
 
   async build(input: Readonly<{
     tree: StandaloneRootTreeSnapshot;
-    messages: StandaloneRootMessagesFileV1;
+    messages: StandaloneRootMessagesFile;
     packageExists: boolean;
     collaborationDir: string;
     host: StandaloneHostAgentHandle;

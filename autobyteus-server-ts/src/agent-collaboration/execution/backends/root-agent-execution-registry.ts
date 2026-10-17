@@ -7,8 +7,9 @@ import type { AgentConversationActivityInspector } from "../../../agent-memory/s
 import type { WorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import { ConfiguredAgentExecutionFactory } from "./configured-agent-execution-factory.js";
 import type { ConfiguredAgentExecutionHandle, PreparedConfiguredAgentActivation } from "./configured-agent-execution-handle.js";
-import type { RootedAgentMemoryLocator } from "../services/rooted-agent-memory-locator.js";
-import { createCollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../domain/root-execution-identity.js";
+import type { AgentRunMemoryLocator } from "../services/agent-run-memory-locator.js";
+import { createCollaborationMemberExecutionIdentity, createRootExecutionPhysicalScope, type RootExecutionIdentity } from "../domain/root-execution-identity.js";
+import { TASK_AGENT_PLACEMENT, runPartPlacement, type AgentRunMemoryPlacement } from "../../../agent-memory/domain/agent-run-memory-placement.js";
 import { TaskAgentDurabilityEventGate } from "../services/task-agent-durability-event-gate.js";
 import type { FlatTeamExecutionCallbacks } from "../../../agent-team-execution/local/flat-team-execution-callbacks.js";
 import { createTaskExecutionPreparation, type TaskExecutionPreparationOperation } from "../../../agent-team-execution/domain/prepared-task-execution.js";
@@ -42,7 +43,7 @@ export class RootAgentExecutionRegistry {
     root: RootExecutionIdentity;
     callbacks: FlatTeamExecutionCallbacks;
     agentRunManager?: AgentRunManager;
-    memoryLocator?: RootedAgentMemoryLocator;
+    memoryLocator?: AgentRunMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
     executionFactory?: ConfiguredAgentExecutionFactory;
@@ -81,7 +82,7 @@ export class RootAgentExecutionRegistry {
   freezeMaterialization(): void { this.materializationOpen = false; }
 
   async prepareConfigured(sourceNode: TeamRunAgentNode, mode: ConfiguredAgentActivationMode): Promise<PreparedRootConfiguredAgent> {
-    const handle = await this.createHandle(sourceNode, mode, this.options.callbacks);
+    const handle = await this.createHandle(sourceNode, mode, this.options.callbacks, runPartPlacement(this.rootScope()));
     this.reserve(sourceNode.agentRunId, handle);
     try {
       let state: "prepared" | "committed" | "aborted" = "prepared";
@@ -132,6 +133,7 @@ export class RootAgentExecutionRegistry {
       Object.freeze({ ...input.sourceNode, agentRunId: input.agentRunId, platformAgentRunId: null }),
       "fresh",
       callbacks,
+      TASK_AGENT_PLACEMENT,
     ).catch((error) => { eventGate.abort(); throw error; });
     assertAccepting();
     this.reserve(input.agentRunId, handle);
@@ -234,7 +236,7 @@ export class RootAgentExecutionRegistry {
     if (this.prepared.has(sourceNode.agentRunId)) throw new Error(`Task AgentRun '${sourceNode.agentRunId}' is prepared.`);
     let handle = this.active.get(sourceNode.agentRunId);
     if (!handle) {
-      const created = await this.createHandle(sourceNode, "restore", this.options.callbacks);
+      const created = await this.createHandle(sourceNode, "restore", this.options.callbacks, TASK_AGENT_PLACEMENT);
       if (!this.materializationOpen || this.active.has(sourceNode.agentRunId)) {
         created.dispose();
         throw new Error(`The task agent ${sourceNode.agentRunId} could not continue with its conversation.`);
@@ -299,13 +301,14 @@ export class RootAgentExecutionRegistry {
     sourceNode: TeamRunAgentNode,
     mode: ConfiguredAgentActivationMode,
     callbacks: FlatTeamExecutionCallbacks,
+    memoryPlacement: AgentRunMemoryPlacement,
   ): Promise<ConfiguredAgentExecutionHandle> {
     const identity = createCollaborationMemberExecutionIdentity({
       root: this.options.root,
       memberAddress: sourceNode.address,
       agentRunId: sourceNode.agentRunId,
     });
-    const physicalScope = Object.freeze({ root: this.options.root, ancestorTeamRunIds: Object.freeze([]) });
+    const physicalScope = this.rootScope();
     const execution = Object.freeze({
       agentDefinitionId: sourceNode.agentDefinitionId,
       llmModelIdentifier: sourceNode.llmModelIdentifier,
@@ -319,6 +322,7 @@ export class RootAgentExecutionRegistry {
     return (this.options.executionFactory ?? new ConfiguredAgentExecutionFactory()).create({
       identity,
       physicalScope,
+      memoryPlacement,
       execution,
       activationMode: mode,
       memberExecutionContext,
@@ -333,6 +337,9 @@ export class RootAgentExecutionRegistry {
       activityInspector: this.options.activityInspector,
       workspaceManager: this.options.workspaceManager,
     });
+  }
+  private rootScope() {
+    return createRootExecutionPhysicalScope({ root: this.options.root, ancestorTeamRunIds: [] });
   }
   private reserve(agentRunId: string, handle: ConfiguredAgentExecutionHandle): void {
     if (!this.materializationOpen || this.active.has(agentRunId) || this.prepared.has(agentRunId)) {

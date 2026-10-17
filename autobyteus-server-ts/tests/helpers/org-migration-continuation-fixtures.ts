@@ -9,7 +9,7 @@ import { AgentRunActivationRegistry } from "../../src/agent-execution/runtime/ag
 import { AgentRunResourceManager } from "../../src/agent-execution/services/agent-run-resource-manager.js";
 import { AgentRunMemoryRecorder } from "../../src/agent-memory/services/agent-run-memory-recorder.js";
 import { AgentConversationActivityInspector } from "../../src/agent-memory/services/agent-conversation-activity-inspector.js";
-import { RootedAgentMemoryLocator } from "../../src/agent-collaboration/execution/services/rooted-agent-memory-locator.js";
+import { AgentRunMemoryLocator } from "../../src/agent-collaboration/execution/services/agent-run-memory-locator.js";
 import { ActiveCollaborationRootDirectory } from "../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { FlatTeamExecutionFactory } from "../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import { AgentOrgExecutionScopeBuilder } from "../../src/agent-org-execution/services/agent-org-execution-scope-builder.js";
@@ -83,7 +83,7 @@ export const createMigrationContinuationRuntime = (memoryDir: string, store: Tok
     activationRegistry: new AgentRunActivationRegistry(new AgentRunResourceManager({ runSessions: sessions,
       memoryRecorder: recorder, runFileChangeService: noAttachment as never, publishedArtifactRelayService: noAttachment as never })),
   });
-  const dependencies = { agentRunManager: agentManager, memoryLocator: new RootedAgentMemoryLocator({ memoryDir }),
+  const dependencies = { agentRunManager: agentManager, memoryLocator: new AgentRunMemoryLocator({ memoryDir }),
     activityInspector: new AgentConversationActivityInspector() };
   const manager = new AgentOrgRunManager({ memoryDir, tokenUsageRunStore: store,
     activeRootDirectory: new ActiveCollaborationRootDirectory(),

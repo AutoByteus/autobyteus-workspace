@@ -6,7 +6,7 @@ import { AGENT_ORG_FLAT_TEAM_FAMILIES_V1_MIGRATION_ID } from "../agent-org-flat-
 import { RAW_TRACE_ROTATION_LAYOUT_MIGRATION_ID } from "../raw-trace-rotation-layout-migration.js";
 import { RAW_TRACE_ACTIVE_FILE_NAME_MIGRATION_ID } from "../raw-trace-active-file-name-migration.js";
 import { TeamContextFileLocatorTransition } from "./team-context-file-locator-transition.js";
-import { packageKey } from "../../../run-history/services/root-run-package-current-validator.js";
+import { packageKey } from "../../legacy/released-run-package-shapes/released-root-packages-before-task-agent-own-run.js";
 import { isContextFileReferenceUnavailable } from "./context-file-current-locator-validator.js";
 
 export const TEAM_CONTEXT_FILE_EXECUTION_LOCATORS_V1_MIGRATION_ID = "20260926_team_context_file_execution_locators_v1";

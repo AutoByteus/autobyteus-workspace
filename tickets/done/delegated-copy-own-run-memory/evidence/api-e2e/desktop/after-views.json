@@ -1,0 +1,69 @@
+{
+  "history": {
+    "data": {
+      "listWorkspaceRunHistory": [
+        {
+          "agentDefinitions": [
+            {
+              "agentName": "Hub Assistant",
+              "runs": [
+                {
+                  "runId": "hub_assistant_480199d96db54d0db7e0ba82d5948710"
+                }
+              ]
+            }
+          ],
+          "teamDefinitions": [
+            {
+              "teamDefinitionName": "Forest Team",
+              "runs": [
+                {
+                  "teamRunId": "forest_team_fc4883b644734e7d865fec4dfabe6067"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "orgs": [
+    {
+      "orgRunId": "studio_e42c6e903a6643a6ae83f20eae1568e5"
+    }
+  ],
+  "hub": {
+    "id": "hub_assistant_480199d96db54d0db7e0ba82d5948710",
+    "tasks": [
+      "/build_crew build_crew_7978e7f7be7741aabfa031295aba9795",
+      "/code_reviewer code_reviewer_a90b133f73ca44588b160c24b59b4576",
+      "/research_squad research_squad_dea6dd13f31843b38b78fe9a9119ee6d"
+    ]
+  },
+  "team": {
+    "id": "forest_team_fc4883b644734e7d865fec4dfabe6067",
+    "tasks": [
+      "/research_squad research_squad_91fda655adc84addab25ef8981c2fdc1"
+    ]
+  },
+  "org": {
+    "id": "studio_e42c6e903a6643a6ae83f20eae1568e5",
+    "tasks": [
+      "/build_crew build_crew_14b6c2246eb3405da5fef82ddf1cb956",
+      "/research_squad research_squad_e4572ed368a2416e9c2bacb6b97d6c7f"
+    ]
+  },
+  "reviewerFileChanges": [
+    {
+      "path": "review-notes.md",
+      "type": "file"
+    }
+  ],
+  "hubTokens": {
+    "data": {
+      "getStandaloneRunTokenUsageSummary": {
+        "runId": "hub_assistant_480199d96db54d0db7e0ba82d5948710"
+      }
+    }
+  }
+}
