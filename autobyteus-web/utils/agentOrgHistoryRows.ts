@@ -1,5 +1,5 @@
 import type { AgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgExecutionContext'
-import { projectAgentOrgTeamBranchStatus } from '~/services/agentOrgExecution/agentOrgTeamBranchStatus'
+import { projectAgentOrgTaskTeamStatus, projectAgentOrgTeamBranchStatus } from '~/services/agentOrgExecution/agentOrgTeamBranchStatus'
 import type { AgentOrgRunHistoryItem } from '~/stores/runHistoryTypes'
 import { AgentStatus } from '~/types/agent/AgentStatus'
 import {
@@ -8,7 +8,7 @@ import {
   type AgentOrgTaskExecutionNode,
   type AgentOrgTaskTeamMember,
 } from '~/types/collaboration/agentOrgExecution'
-import { foldTeamAggregateStatus, type TeamStatusAuthority } from '~/utils/workspaceTeamAggregateStatus'
+import { foldTeamAggregateStatus, type TeamStatus, type TeamStatusAuthority } from '~/utils/workspaceTeamAggregateStatus'
 import {
   catalogTeamSourceAt,
   collaborationTaskExecutionLists,
@@ -19,7 +19,7 @@ export type AgentOrgHistoryAgentRow = Readonly<{
   key: string; kind: 'agent'; address: string; agentRunId: string; status: AgentStatus; depth: number
 }>
 export type AgentOrgHistoryTeamRow = Readonly<{
-  key: string; kind: 'team'; address: string; teamRunId: string; status: AgentStatus; depth: number
+  key: string; kind: 'team'; address: string; teamRunId: string; status: TeamStatus; depth: number
 }>
 /**
  * Delegated rows carry who started them (REQ-013): the delegator's address when it resolves
@@ -31,7 +31,8 @@ export type AgentOrgHistoryTaskAgentRow = Readonly<{
   agentRunId: string; status: AgentStatus; depth: number; delegatedBy: AgentOrgHistoryDelegator | null
 }>
 export type AgentOrgHistoryTaskTeamRow = Readonly<{
-  key: string; kind: 'task_team'; address: string; teamRunId: string; depth: number; coordinatorAgentRunId: string; coordinatorAddress: string
+  key: string; kind: 'task_team'; address: string; teamRunId: string; status: TeamStatus; depth: number
+  coordinatorAgentRunId: string; coordinatorAddress: string
   delegatedBy: AgentOrgHistoryDelegator | null
   /** Disclosure state: descendants are emitted only while expanded. */
   hasChildren: boolean; expanded: boolean
@@ -132,6 +133,14 @@ const statusSource = (
 const exactAgentStatus = (source: StatusSource, agentRunId: string): AgentStatus =>
   foldTeamAggregateStatus([source.statusForAgentRunId(agentRunId)], source.authority)
 
+/** The Team status inputs: the Org run is alive only while its statuses are live. */
+const teamStatusInput = <TTeam>(source: StatusSource, team: TTeam) => ({
+  team,
+  runAlive: source.authority === 'live',
+  isListed: source.isListed,
+  statusForAgentRunId: source.statusForAgentRunId,
+})
+
 const flattenTaskTeam = (team: TaskTeamNode, depth: number, source: StatusSource): AgentOrgHistoryRow[] => {
   const coordinator = source.coordinatorFor(team)
   const members = team.members.filter((member) => source.isListed(member))
@@ -143,6 +152,7 @@ const flattenTaskTeam = (team: TaskTeamNode, depth: number, source: StatusSource
     kind: 'task_team',
     address: team.address,
     teamRunId: team.teamRunId,
+    status: projectAgentOrgTaskTeamStatus(teamStatusInput(source, team)),
     coordinatorAgentRunId: coordinator.agentRunId, coordinatorAddress: coordinator.address,
     depth,
     delegatedBy: source.delegatorFor(team.delegatorAgentRunId),
@@ -210,7 +220,7 @@ export const projectAgentOrgHistoryRows = (input: Readonly<{
       kind: 'team',
       address: member.address,
       teamRunId: member.teamRunId,
-      status: projectAgentOrgTeamBranchStatus({ team: member, ...source }),
+      status: projectAgentOrgTeamBranchStatus(teamStatusInput(source, member)),
       depth: 0,
     })
     if (!input.isTeamExpanded(member.address)) continue

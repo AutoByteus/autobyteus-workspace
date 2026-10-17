@@ -1,0 +1,79 @@
+{
+  "runId": "pts_transition_019892f19a98492d8f8a055f4d514907",
+  "toolNames": [
+    "create_or_update_project",
+    "create_project",
+    "delegate_task",
+    "list_projects",
+    "send_message_to",
+    "update_project"
+  ],
+  "calls": [
+    {
+      "tool": "list_projects",
+      "arguments": {},
+      "isError": false,
+      "result": {
+        "projects": [
+          {
+            "projectId": "project_d7109746-b9c2-4783-ba04-aaec5317161b",
+            "name": "PTS New b4fe renamed",
+            "description": "Changed by update_project."
+          },
+          {
+            "projectId": "project_61bf7e3d-b460-493b-ac69-b3a21bb2481d",
+            "name": "PTS Old ee28",
+            "description": "Patched by the old tool."
+          }
+        ]
+      }
+    },
+    {
+      "tool": "create_project",
+      "arguments": {
+        "name": "PTS Mix a7d3"
+      },
+      "isError": false,
+      "result": {
+        "project": {
+          "projectId": "project_9eba7106-b343-425b-bc5f-169fb0bc5509",
+          "name": "PTS Mix a7d3",
+          "description": "",
+          "workspaces": []
+        }
+      }
+    },
+    {
+      "tool": "update_project",
+      "arguments": {
+        "project_id": "project_9eba7106-b343-425b-bc5f-169fb0bc5509",
+        "description": "via update_project"
+      },
+      "isError": false,
+      "result": {
+        "project": {
+          "projectId": "project_9eba7106-b343-425b-bc5f-169fb0bc5509",
+          "name": "PTS Mix a7d3",
+          "description": "via update_project",
+          "workspaces": []
+        }
+      }
+    },
+    {
+      "tool": "create_or_update_project",
+      "arguments": {
+        "project_id": "project_9eba7106-b343-425b-bc5f-169fb0bc5509",
+        "description": "via old tool"
+      },
+      "isError": false,
+      "result": {
+        "project": {
+          "projectId": "project_9eba7106-b343-425b-bc5f-169fb0bc5509",
+          "name": "PTS Mix a7d3",
+          "description": "via old tool",
+          "workspaces": []
+        }
+      }
+    }
+  ]
+}

@@ -90,6 +90,8 @@ try {
   browser = await chromium.launch({ headless: true, executablePath: executable });
   evidence.browser = browser.version();
   const page = await browser.newPage({ viewport: { width: 1440, height: 1200 }, locale: 'en-US' });
+  // app.vue opens the node's agent-package definition change feed on every page; the fixture has no backend.
+  await page.routeWebSocket(/\/ws\/agent-package-definitions(\?|$)/, (ws) => ws.send(JSON.stringify({ type: 'connected' })));
   page.on('response', response => { if (response.status() >= 400) evidence.events.push({ kind: 'http-error', status: response.status(), url: response.url() }); });
   page.on('pageerror', error => evidence.events.push({ kind: 'pageerror', text: error.message }));
   page.on('console', message => { if (['error', 'warning'].includes(message.type())) evidence.events.push({ kind: message.type(), text: message.text() }); });

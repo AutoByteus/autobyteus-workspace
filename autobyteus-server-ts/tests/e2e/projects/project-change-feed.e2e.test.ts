@@ -29,7 +29,7 @@ const suite = enabled ? describe : describe.skip;
 type Frame = Record<string, any> & { type: string };
 type Kind = "agent" | "team" | "org";
 type TaskNode = Record<string, any> & { startedAt: string };
-const PROJECT_TOOLS = ["list_projects", "list_project_tasks", "create_or_update_project", "create_task", "update_task"];
+const PROJECT_TOOLS = ["list_projects", "list_project_tasks", "create_project", "update_project", "create_task", "update_task"];
 const segment = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
 const callTool = (name: string, args: object) => `CALL_TOOL:${JSON.stringify({ name, arguments: args })}`;
 const AD_HOC_ID = /ad_hoc_task_[0-9a-f-]{36}/;
@@ -342,7 +342,7 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     const record: Record<string, unknown> = {};
     // AC-001: the agent creates a Project; it arrives (QR-001: ~2 s on a local node).
     let from = monitor.frames.length;
-    const created = await root.managerCalls(callTool("create_or_update_project", { name: `PCF Launch ${randomUUID().slice(0, 6)}`, description: "Agent-made.", workspaces: [{workspace_path: path.join(dataDir, "missing #?雪"), description: "Agent path"}] }));
+    const created = await root.managerCalls(callTool("create_project", { name: `PCF Launch ${randomUUID().slice(0, 6)}`, description: "Agent-made.", workspaces: [{workspace_path: path.join(dataDir, "missing #?雪"), description: "Agent path"}] }));
     const projectId = (JSON.stringify(created).match(/"projectId":"([^"]+)"/) ?? [])[1]!;
     expect(projectId, JSON.stringify(created)).toBeTruthy();
     await until(() => monitor.frames.slice(from).some((f) => f.type === "project_upserted" && f.project.projectId === projectId), "project arrives", 2_000);

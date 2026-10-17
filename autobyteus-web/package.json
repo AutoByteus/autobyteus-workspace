@@ -48,6 +48,7 @@
     "test:e2e:diagram-zoom-viewer": "node tests/e2e/diagram-zoom-viewer-probe.mjs",
     "test:e2e:agent-team-detail": "node tests/e2e/agent-team-detail-probe.mjs",
     "test:e2e:team-group-icon": "node tests/e2e/team-group-icon-probe.mjs",
+    "test:e2e:team-status-live": "node tests/e2e/team-status-live-probe.mjs",
     "test:e2e:existing-run-model-config": "node tests/e2e/existing-run-model-config-probe.mjs",
     "test:e2e:team-task-conversation": "node tests/e2e/team-task-conversation-probe.mjs",
     "test:e2e:token-statistics-ui": "node tests/e2e/token-statistics-ui-probe.mjs",

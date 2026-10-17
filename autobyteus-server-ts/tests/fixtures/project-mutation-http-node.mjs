@@ -31,7 +31,7 @@ try {
   });
   const selected = authority.runSessions.activateForRun({owner: {runId: "fixture-selected"},
     sender: buildAgentRunMessageSenderContext({senderRunId: "fixture-selected", senderName: "Fixture selected"}),
-    runtimeExposure: buildRuntimeAgentToolExposure(["list_projects", "create_or_update_project"]),
+    runtimeExposure: buildRuntimeAgentToolExposure(["list_projects", "create_project", "update_project"]),
   });
   if (selected.kind !== "active") throw new Error("Selected session missing");
   process.send({origin, mcpUrl: selected.descriptor.serverUrl});

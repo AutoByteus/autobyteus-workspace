@@ -1,0 +1,67 @@
+{
+  "runtimeKind": "claude_agent_sdk",
+  "model": "haiku",
+  "launch": {
+    "success": true,
+    "message": "Agent run created successfully.",
+    "runId": "pts_old_tool_7e9cdf1c52ae4da7b9a2349c450f32ac"
+  },
+  "outcome": {
+    "projectId": "project_ecdebb3e-8c5e-4c4a-81a1-8cea683c763d",
+    "name": "PTS Real Old 3044",
+    "description": "real old update",
+    "workspaces": []
+  },
+  "conversation": [
+    {
+      "kind": "message",
+      "role": "user",
+      "content": "Create a Project named \"PTS Real Old 3044\" with description \"real old create\". Then change that Project's description to \"real old update\". Report both tool results.",
+      "media": null,
+      "ts": 1792224559.875
+    },
+    {
+      "kind": "tool_call",
+      "invocationId": "toolu_013o3Hu1jAYQnoAVnkVg4kxt",
+      "role": null,
+      "content": "",
+      "toolName": "create_or_update_project",
+      "toolArgs": {
+        "name": "PTS Real Old 3044",
+        "description": "real old create"
+      },
+      "toolResult": "{\"project\":{\"projectId\":\"project_ecdebb3e-8c5e-4c4a-81a1-8cea683c763d\",\"name\":\"PTS Real Old 3044\",\"description\":\"real old create\",\"workspaces\":[]}}",
+      "toolError": null,
+      "media": null,
+      "ts": 1792224562.868
+    },
+    {
+      "kind": "tool_call",
+      "invocationId": "toolu_017LfwA4mRoPzgLqSG5ofngn",
+      "role": null,
+      "content": "",
+      "toolName": "create_or_update_project",
+      "toolArgs": {
+        "project_id": "project_ecdebb3e-8c5e-4c4a-81a1-8cea683c763d",
+        "description": "real old update"
+      },
+      "toolResult": "{\"project\":{\"projectId\":\"project_ecdebb3e-8c5e-4c4a-81a1-8cea683c763d\",\"name\":\"PTS Real Old 3044\",\"description\":\"real old update\",\"workspaces\":[]}}",
+      "toolError": null,
+      "media": null,
+      "ts": 1792224563.98
+    }
+  ],
+  "frameTypes": [
+    "CONNECTED",
+    "AGENT_STATUS",
+    "AGENT_INPUT_STATE",
+    "AGENT_COMMAND_ACK",
+    "TURN_STARTED",
+    "SYSTEM_INSTRUCTIONS_SUPPLIED",
+    "SEGMENT_START",
+    "TOOL_EXECUTION_STARTED",
+    "TOKEN_USAGE_UPDATED",
+    "SEGMENT_END",
+    "TOOL_EXECUTION_SUCCEEDED"
+  ]
+}

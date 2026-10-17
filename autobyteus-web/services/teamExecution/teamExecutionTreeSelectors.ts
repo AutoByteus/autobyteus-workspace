@@ -198,7 +198,7 @@ export const projectNavigationRows = (inputTree: {
   return Object.freeze(rows);
 };
 
-/** A node of the Team tree: Agents, and Teams with members and task executions. */
+/** A node of the Team tree: Agents, and Teams with Agent members (Teams are flat) and task executions. */
 export type TeamTreeNode = Readonly<{ agent_run_id: string }> | Readonly<{
   team_run_id: string; members?: readonly unknown[]; task_executions?: readonly unknown[];
   delegator_agent_run_id?: string | null;

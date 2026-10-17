@@ -1,0 +1,12 @@
+{
+  "toolNames": ["list_projects", "create_or_update_project", "create_project", "update_project"],
+  "skillNames": [],
+  "skillScope": "CONFIGURED",
+  "inputProcessorNames": [],
+  "llmResponseProcessorNames": [],
+  "toolExecutionResultProcessorNames": [],
+  "toolInvocationPreprocessorNames": [],
+  "lifecycleProcessorNames": [],
+  "avatarUrl": null,
+  "defaultLaunchConfig": null
+}

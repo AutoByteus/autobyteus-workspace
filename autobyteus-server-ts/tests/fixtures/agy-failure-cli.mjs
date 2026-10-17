@@ -128,6 +128,13 @@ if (arg === "--version") {
     try { content = String(JSON.parse(line)?.message?.content ?? ""); } catch { /* Not a user event. */ }
     const backgroundStep = /BACKGROUND_STEP:(\{[^}]*\})/.exec(content);
     if (backgroundStep && !content.includes("CALL_TOOL:")) { backgroundStepTurn(JSON.parse(backgroundStep[1])); return; }
+    // HOLD_TURN opens one long tool step and leaves the turn running (the agent reads Running) until the
+    // user stops it or its run is terminated. A message that also asks for a tool call is not held.
+    if (content.includes("HOLD_TURN") && !content.includes("CALL_TOOL:") && !content.includes("CALL_TOOLS:")) {
+      emit({ event: "step_update", step_update: { conversation_id, step_index: turns * 10, step_type: "tool",
+        state: "ACTIVE", tool_name: "run_command", tool_info: { parameters: { CommandLine: "sleep 600 # HOLD_TURN" } } } });
+      return;
+    }
     // `CALL_TOOLS:[{"name","arguments","delayMs"?}, …]` issues every call at once (parallel tool calls in one
     // turn, as a model batches them), each after its own optional delay, and replies `CALLED_ALL:[results]`.
     const parallelTools = /CALL_TOOLS:(\[.*\])/s.exec(content);

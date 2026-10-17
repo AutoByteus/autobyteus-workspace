@@ -495,17 +495,24 @@ reactivating the task, or replacing it with a same-address execution.
 
 ## Status And Hierarchy
 
-Each Agent row shows its exact runtime status. Every direct mounted Team row also
-shows a presentation-only aggregate over the Agent rows in that Team branch:
+Each Agent row shows its exact runtime status. Every Team row inside the Org (a
+direct mounted Team, and a delegated task Team, also one delegated inside
+another) also shows the
+presentation-only universal Team status over the listed Agent rows in its
+branch:
 
 ```text
-running > initializing > error > idle > offline
+busy (running or initializing) > error > idle > offline
 ```
 
-Configured and task-scoped descendant Agents contribute. Direct Org Agents,
-sibling Teams, ancestors, and the Team container itself do not. Empty/unknown
-input is offline. The aggregate remains visible while the Team is collapsed and
-does not own polling, lifecycle, focus, readiness, or command authority.
+Configured and task-scoped descendant Agents contribute; closed task work does
+not. Direct Org Agents, sibling Teams, ancestors, and the Team container itself
+do not. Empty/unknown input is offline. The Org counts as alive only while its
+status authority is `live`; otherwise every Team row in it is offline (gray).
+The Org root row is not a Team and keeps its own dot. The Team status remains
+visible while the Team is collapsed and does not own polling, lifecycle, focus,
+readiness, or command authority. The rule owner is described in
+[Agent Execution Architecture](agent_execution_architecture.md).
 
 Task Agents and task Teams are transient execution projections. They can be
 nested by task delegation without changing the fixed configured Org topology.

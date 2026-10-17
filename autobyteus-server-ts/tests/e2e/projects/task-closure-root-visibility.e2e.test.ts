@@ -27,7 +27,7 @@ type Frame = { type: string; payload: Record<string, any> };
 type Kind = "agent" | "team" | "org";
 type Ref = { agentRunId: string } | { teamRunId: string };
 type TaskNode = Record<string, any> & { startedAt: string };
-const PROJECT_TOOLS = ["list_projects", "list_project_tasks", "create_or_update_project", "create_task", "update_task"];
+const PROJECT_TOOLS = ["list_projects", "list_project_tasks", "create_project", "update_project", "create_task", "update_task"];
 const segment = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
 const refOf = (node: Record<string, any>): Ref => node.teamRunId ? { teamRunId: node.teamRunId } : { agentRunId: node.agentRunId };
 const keyOf = (ref: Record<string, any>) => ref.teamRunId ?? ref.team_run_id ? `team:${ref.teamRunId ?? ref.team_run_id}` : `agent:${ref.agentRunId ?? ref.agent_run_id}`;
@@ -275,9 +275,11 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
       view.socket.close();
       view = await openView();
       before = snapshotOf(view.frames);
-      // Both Manager messages (to Task A's worker and to its sub-delegated copy) are in the snapshot.
-      return before.messages.filter((message) => touchesTaskA(message) && JSON.stringify(message).includes(managerRunId)).length >= 2;
-    }, "Manager messages with Task A's worker and its sub-delegated copy", 60_000);
+      // Both messages above are separate Manager turns, so one can reach the root view before the other: wait for
+      // what the assertions below need, not only for the first message.
+      return before.messages.some((message) => touchesTaskA(message) && JSON.stringify(message).includes(managerRunId))
+        && before.messages.filter(touchesTaskA).length >= 2;
+    }, "Manager messages with Task A's worker and its sub-copy", 60_000);
     expect(before.closed).toEqual([]);
     const aMessageIdsBefore = before.messages.filter(touchesTaskA).map((m) => m.messageId);
     expect(aMessageIdsBefore.length).toBeGreaterThanOrEqual(2);

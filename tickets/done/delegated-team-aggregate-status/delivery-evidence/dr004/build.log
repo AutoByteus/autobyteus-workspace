@@ -1,0 +1,92 @@
+Scope: all 13 workspace projects
+Lockfile is up to date, resolution step is skipped
+Already up to date
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/autobyteus-application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/autobyteus-application-devkit/dist/cli.js'
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] ok: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+autobyteus-ts postinstall: Done
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/applications/brief-studio/node_modules/@autobyteus/application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/applications/socratic-math-teacher/node_modules/@autobyteus/application-devkit/dist/cli.js'
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @google/genai@2.24.0.                               │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 1.9s using pnpm v10.28.2
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 137ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+│
+◆  Types generated in .nuxt.
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 107ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Easily identify and fix slow SQL queries in your app. Optimize helps you enhance your visibility: https://pris.ly/--optimize
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.23                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.

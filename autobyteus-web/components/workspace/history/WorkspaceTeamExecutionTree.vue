@@ -28,6 +28,7 @@
       <WorkspaceTransientExecutionRow
         v-else
         :row="displayRow.row"
+        :team-status="teamStatusOf(displayRow.row)"
         :is-selected="isSelected(displayRow.row)"
         :has-children="displayRow.hasChildren"
         :expanded="isRowExpanded(displayRow.row.rowKey)"
@@ -48,6 +49,8 @@ import { computed } from 'vue';
 import WorkspaceStableExecutionRow from '~/components/workspace/history/WorkspaceStableExecutionRow.vue';
 import WorkspaceTransientExecutionRow from '~/components/workspace/history/WorkspaceTransientExecutionRow.vue';
 import { useLeavingTreeRows } from '~/components/workspace/history/useLeavingTreeRows';
+import { teamBranchStatus } from '~/components/workspace/history/workspaceHistoryTeamBranchStatus';
+import type { TeamStatus } from '~/utils/workspaceTeamAggregateStatus';
 import { useLocalization } from '~/composables/useLocalization';
 import { useTaskWorkerTasks } from '~/composables/projects/useTaskWorkerTasks';
 import type { TaskWorkerTask } from '~/types/project';
@@ -126,6 +129,10 @@ const isSelected = (row: RunHistoryTeamExecutionRow): boolean =>
   props.isTeamSelected
   && row.agentRunId !== null
   && row.agentRunId === props.team.focusedAgentRunId;
+
+/** Derived from the current rows on every render, so member status patches and collapse stay current. */
+const teamStatusOf = (row: RunHistoryTeamExecutionRow): TeamStatus =>
+  teamBranchStatus(props.team.executionRows, row, props.team.isActive);
 
 const activateStableRow = (row: RunHistoryStableExecutionRow): void => {
   if (row.hasChildren) emit('toggle', row);

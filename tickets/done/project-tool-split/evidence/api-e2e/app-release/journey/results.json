@@ -1,0 +1,223 @@
+{
+  "mode": "release",
+  "backend": "http://127.0.0.1:54884",
+  "startedAt": "2026-10-17T08:12:56.426Z",
+  "cases": {
+    "REL-MIX": {
+      "result": "Pass",
+      "runId": "pts_transition_ee00d817a5934295a4d7c8a17f7eaa35",
+      "toolNames": [
+        "create_or_update_project",
+        "delegate_task",
+        "list_projects",
+        "send_message_to"
+      ],
+      "calls": [
+        {
+          "tool": "list_projects",
+          "arguments": {},
+          "isError": false,
+          "result": {
+            "projects": []
+          }
+        },
+        {
+          "tool": "create_or_update_project",
+          "arguments": {
+            "name": "PTS Rel Mix e46e"
+          },
+          "isError": false,
+          "result": {
+            "project": {
+              "projectId": "project_76c8a6c5-7296-4f77-a555-eaf1f6bfad45",
+              "name": "PTS Rel Mix e46e",
+              "description": "",
+              "workspaces": []
+            }
+          }
+        },
+        {
+          "tool": "create_or_update_project",
+          "arguments": {
+            "project_id": "project_76c8a6c5-7296-4f77-a555-eaf1f6bfad45",
+            "description": "patched on release"
+          },
+          "isError": false,
+          "result": {
+            "project": {
+              "projectId": "project_76c8a6c5-7296-4f77-a555-eaf1f6bfad45",
+              "name": "PTS Rel Mix e46e",
+              "description": "patched on release",
+              "workspaces": []
+            }
+          }
+        }
+      ]
+    },
+    "REL-OLD": {
+      "result": "Pass",
+      "runId": "pts_old_tool_027e4a5c1ad14d81b32ba7de393bc573",
+      "toolNames": [
+        "create_or_update_project",
+        "delegate_task",
+        "list_projects",
+        "send_message_to"
+      ],
+      "oldDescription": "Create a required-name Project or patch a known project_id on the current node. Omitted fields are preserved; blank description clears. Optional workspaces reference absolute node-local folder paths: a supplied list replaces ALL links, [] unlinks only. Retained links preserve omitted descriptions. Returns saved metadata and links; does not register/delete workspaces or delegate work.",
+      "oldSchema": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "description": "Known Project identity for patch; omit to create. Never resolved by name.",
+            "type": "string"
+          },
+          "name": {
+            "description": "Trimmed non-empty Project name; required for create, optional for patch.",
+            "type": "string"
+          },
+          "description": {
+            "description": "Project description; omit to preserve on patch, blank to clear.",
+            "type": "string"
+          },
+          "workspaces": {
+            "description": "Complete desired workspace links, not append. Omit to preserve on patch; [] unlinks all without deleting folders. Use absolute folder paths on this node; registration and existence are not required.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "workspace_path": {
+                  "description": "Absolute folder path on this node; no shell expansion or registration required.",
+                  "type": "string"
+                },
+                "description": {
+                  "description": "Link description; omit to preserve a retained link, blank to clear. New links default to blank.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "workspace_path"
+              ]
+            }
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "calls": [
+        {
+          "tool": "list_projects",
+          "arguments": {},
+          "isError": false,
+          "result": {
+            "projects": [
+              {
+                "projectId": "project_76c8a6c5-7296-4f77-a555-eaf1f6bfad45",
+                "name": "PTS Rel Mix e46e",
+                "description": "patched on release"
+              }
+            ]
+          }
+        },
+        {
+          "tool": "create_or_update_project",
+          "arguments": {
+            "name": "PTS Rel Old 9117"
+          },
+          "isError": false,
+          "result": {
+            "project": {
+              "projectId": "project_4044749b-c881-464f-aa10-7abd8af9f35d",
+              "name": "PTS Rel Old 9117",
+              "description": "",
+              "workspaces": []
+            }
+          }
+        }
+      ]
+    },
+    "REL-NEW": {
+      "result": "Pass",
+      "runId": "pts_new_tools_4e1b6f0f0e9245598dd5206ab70b0607",
+      "toolNames": [
+        "delegate_task",
+        "list_projects",
+        "send_message_to"
+      ],
+      "calls": [
+        {
+          "tool": "list_projects",
+          "arguments": {},
+          "isError": false,
+          "result": {
+            "projects": [
+              {
+                "projectId": "project_76c8a6c5-7296-4f77-a555-eaf1f6bfad45",
+                "name": "PTS Rel Mix e46e",
+                "description": "patched on release"
+              },
+              {
+                "projectId": "project_4044749b-c881-464f-aa10-7abd8af9f35d",
+                "name": "PTS Rel Old 9117",
+                "description": ""
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "REL-REAL-MIX": {
+      "result": "Pass",
+      "runtimeKind": "claude_agent_sdk",
+      "model": "haiku",
+      "launch": {
+        "success": true,
+        "message": "Agent run created successfully.",
+        "runId": "pts_transition_a29a976ad0aa408d82e47ae346fd19e2"
+      },
+      "outcome": {
+        "projectId": "project_f68ca8c2-3445-47b5-81af-a1c948198f3f",
+        "name": "PTS Rel Real 6be4",
+        "description": "release real",
+        "workspaces": []
+      },
+      "conversation": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Create a Project named \"PTS Rel Real 6be4\" with description \"release real\". Report the tool result.",
+          "media": null,
+          "ts": 1792224781.045
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "toolu_01Pk4vHuanLesyziwzoyf8AE",
+          "role": null,
+          "content": "",
+          "toolName": "create_or_update_project",
+          "toolArgs": {
+            "name": "PTS Rel Real 6be4",
+            "description": "release real"
+          },
+          "toolResult": "{\"project\":{\"projectId\":\"project_f68ca8c2-3445-47b5-81af-a1c948198f3f\",\"name\":\"PTS Rel Real 6be4\",\"description\":\"release real\",\"workspaces\":[]}}",
+          "toolError": null,
+          "media": null,
+          "ts": 1792224784.537
+        }
+      ],
+      "frameTypes": [
+        "CONNECTED",
+        "AGENT_STATUS",
+        "AGENT_INPUT_STATE",
+        "AGENT_COMMAND_ACK",
+        "TURN_STARTED",
+        "SYSTEM_INSTRUCTIONS_SUPPLIED",
+        "SEGMENT_START",
+        "TOOL_EXECUTION_STARTED",
+        "TOKEN_USAGE_UPDATED",
+        "SEGMENT_END",
+        "TOOL_EXECUTION_SUCCEEDED"
+      ]
+    }
+  },
+  "finishedAt": "2026-10-17T08:13:06.907Z"
+}

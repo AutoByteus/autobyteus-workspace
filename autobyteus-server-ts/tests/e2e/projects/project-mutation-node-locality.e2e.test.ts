@@ -88,25 +88,25 @@ it("E-008: separate built nodes accept the same local path but cannot patch remo
     const rootPath = path.join(a.root, "registered-source"); await fs.mkdir(rootPath); await fs.writeFile(path.join(rootPath, "source.txt"), "owned source");
     const {createWorkspace: ws} = await a.gql<{createWorkspace: {workspaceId: string; workspaceRootPath: string}}>(
       "mutation($i:CreateWorkspaceInput!){createWorkspace(input:$i){workspaceId workspaceRootPath}}", {i: {rootPath}});
-    const created = await a.call("create_or_update_project", {name: "Node local", description: "Saved goal", workspaces: [{workspace_path: rootPath, description: "Source"}]});
+    const created = await a.call("create_project", {name: "Node local", description: "Saved goal", workspaces: [{workspace_path: rootPath, description: "Source"}]});
     expect(created.isError).not.toBe(true); const projectId = created.structuredContent.project.projectId as string;
     const query = "query($id:String!){project(projectId:$id){projectId name description createdAt updatedAt workspaces{workspaceRootPath description availability}}}";
     const saved = await a.gql<{project: Record<string, unknown>}>(query, {id: projectId});
     expect(saved.project).toMatchObject({...created.structuredContent.project, workspaces: [{workspaceRootPath: rootPath, description: "Source", availability: "AVAILABLE"}]});
     expect(await b.gql(query, {id: projectId})).toEqual({project: null});
     expect((await b.call("list_projects", {})).structuredContent).toEqual({projects: []});
-    const rejectedPatch = await b.call("create_or_update_project", {project_id: projectId, name: "No remote upsert"});
+    const rejectedPatch = await b.call("update_project", {project_id: projectId, name: "No remote upsert"});
     expect(rejectedPatch).toMatchObject({isError: true, structuredContent: {error: {code: "PROJECT_NOT_FOUND"}}});
     // Equal absolute strings are references on the executing node, not remote registry identities.
     // Node A's registration does not make B's association AVAILABLE or grant access.
     const bRegistry = await fs.readFile(path.join(b.root, "workspaces.json"), "utf8").catch(e => {if (e.code === "ENOENT") return null; throw e;});
-    const localB = await b.call("create_or_update_project", {name: "Node local", workspaces: [{workspace_path: rootPath, description: "B reference"}]});
+    const localB = await b.call("create_project", {name: "Node local", workspaces: [{workspace_path: rootPath, description: "B reference"}]});
     expect(localB.isError).not.toBe(true); expect(localB.structuredContent.project.projectId).not.toBe(projectId);
     const savedB = await b.gql<{project: {workspaces: unknown[]}}>(query, {id: localB.structuredContent.project.projectId});
     expect(savedB.project.workspaces).toEqual([{workspaceRootPath: rootPath, description: "B reference", availability: "UNREGISTERED"}]);
     expect(await fs.readFile(path.join(b.root, "workspaces.json"), "utf8").catch(e => {if (e.code === "ENOENT") return null; throw e;})).toBe(bRegistry);
     const missingPath = path.join(b.root, "not-created #?雪");
-    const unregistered = await b.call("create_or_update_project", {name: "Absent local path", workspaces: [{workspace_path: missingPath}]});
+    const unregistered = await b.call("create_project", {name: "Absent local path", workspaces: [{workspace_path: missingPath}]});
     expect(unregistered.structuredContent.project.workspaces).toEqual([{workspaceRootPath: missingPath, description: ""}]);
     await expect(fs.stat(missingPath)).rejects.toMatchObject({code: "ENOENT"});
     expect(await a.gql(query, {id: projectId})).toEqual(saved);
@@ -123,7 +123,7 @@ it("E-008: separate built nodes accept the same local path but cannot patch remo
     expect(await a.gql(query, {id: projectId})).toEqual(saved);
     expect(await fs.readFile(recordPath, "utf8")).toBe(recordBytes);
     expect(await fs.readFile(path.join(a.root, "workspaces.json"), "utf8")).toBe(registry);
-    const patched = await a.call("create_or_update_project", {project_id: projectId, description: "After restart"});
+    const patched = await a.call("update_project", {project_id: projectId, description: "After restart"});
     expect(patched).toMatchObject({structuredContent: {project: {projectId, name: "Node local", description: "After restart", workspaces: [{workspaceRootPath: rootPath, description: "Source"}]}}});
     expect(await fs.readFile(path.join(rootPath, "source.txt"), "utf8")).toBe("owned source");
     expect(await b.gql(query, {id: projectId})).toEqual({project: null});

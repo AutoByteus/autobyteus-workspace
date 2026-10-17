@@ -220,8 +220,6 @@ const messages = {
     "Temporary task execution",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_running":
     "Team status: Running",
-  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_initializing":
-    "Team status: Initializing",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_error":
     "Team status: Error",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_idle":

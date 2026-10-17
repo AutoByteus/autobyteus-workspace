@@ -9,6 +9,7 @@ implementation rounds only.
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | architecture_reviewer — ARCH-REV-002 Pass; solution_designer SR-006 scope reduction | N/A | `Initial Baseline` | SR-001..SR-006, ARCH-REV-002 | Implemented; local checks pass; to Code Review |
 | IR-002 | code_reviewer — `code-review-report.md` CRR-001 (Fail, Local Fix) | CR-001 | `Local Fix` | CRR-001 | Unused imports removed; `--noUnusedLocals` clean in touched files; back to Code Review |
+| IR-003 | delivery_engineer — `delivery-integration-blocker.md` DR-001 (Blocked, Local Fix) | DR-001 integration conflicts | `Local Fix` | DR-001, CRR-002 | `origin/personal` `a716a4632e` merged; upstream universal Team status refactored to the flat model; checks green; to Code Review |
 
 ## Revision Entries
 
@@ -72,3 +73,45 @@ implementation rounds only.
 - Remaining limitations or risks: follow-ups — unused locals in untouched files (41 server reports; contracts
   `team-stream-server-message.ts` `compactionRecoveryBlockSchema`); optional narrowing of `RunHistoryStableExecutionRow.memberKind`
   to `'agent'` (non-blocking, not done: the type is shared with the root display row and transient rows via `TeamMemberTreeRow['kind']`).
+
+### IR-003 — Merge latest `origin/personal` (universal Team status) into the flat-Team model
+
+- Triggering role, report path, and round: delivery_engineer, `delivery-integration-blocker.md` / `delivery-revision-record.md`, DR-001 (Blocked).
+- Triggering finding IDs: DR-001 (10 merge conflicts with `origin/personal` `a716a4632e`, 25 commits ahead of `db00ba16a9`).
+- Classification: `Local Fix`
+- Prior authoritative result: IR-002 (CRR-002 Pass; API/E2E validated on `db00ba16a9`).
+- Current authoritative result: merge commit on `codex/remove-nested-task-team`; the upstream universal Team status
+  (`d1a66feca9`, delegated-team-aggregate-status) works on the flat model; code that assumed a Team could be a member
+  of a Team was refactored, not only its tests (the user, 2026-10-17: the retired shape no longer exists).
+- Related revision IDs: SR-006 / ARCH-REV-002 / CRR-001..002 / API-REV (see api-e2e-revision-record.md) / DR-001
+- Conflict resolutions:
+  - `WorkspaceStableExecutionRow.vue`: no Team status (stable team-run rows are Agents); upstream's `TeamStatus` prop dropped.
+  - `WorkspaceTeamExecutionTree.vue`: upstream `teamStatusOf` kept, now only for delegated (transient) task-Team rows.
+  - `workspaceHistoryTeamBranchStatus.ts`: kept (upstream owns run / group / delegated-Team status there); comment says
+    it applies to delegated Team rows. Its spec's configured-sub-team rows (`stableTeamRow`) are rewritten to delegated
+    task-Team rows (a task Team delegated inside a task Team where it nested before).
+  - `agentOrgTeamBranchStatus.ts`: upstream `isListed` / `runAlive` / `resolveTeamStatus` kept; a task Team's members are
+    counted as Agents (no recursion into members); `AgentOrgTaskTeamNode` = a task execution with `teamRunId`.
+  - `package.json`: `test:e2e:team-status-live` kept; `nested-team-aggregate-status` and `nested-team-hierarchy` stay removed
+    (upstream only modified the aggregate probe; its fixture page is a configured nested Team; delegated/run/group/Org
+    Team dots are covered by `team-status-live-probe` and `team-activity-presentation-probe`).
+  - `nested-team-aggregate-status-probe.mjs`: deletion kept.
+  - `task-closure-root-visibility.e2e.test.ts`, `RightSideTabs.workspaceTarget.spec.ts`: upstream's versions of the same
+    baseline fixes taken.
+  - `TESTING.md`: upstream taken as is (the "Known baseline exception" and this branch's "Known intermittent e2e" notes are
+    gone; FU-1 stays in Task 7e13a4af).
+- Refactor of merged upstream code to the flat model:
+  - `services/agentCollaboration/agentRunCollaborationContext.ts` `listTaskRows`: the walk no longer types a task Team's
+    members as possible Teams; members are visited as Agents, only task executions recurse.
+  - Comments: `taskExecutionClosure.ts` `CollaborationTreeNode`, `teamExecutionTreeSelectors.ts` `TeamTreeNode`
+    ("Teams with Agent members").
+  - Upstream specs rewritten to delegation shapes: `agentOrgTeamBranchStatus.spec.ts` (`projectAgentOrgTaskTeamStatus`),
+    `WorkspaceHistoryWorkspaceSection.spec.ts` (delegated Team status test; no configured sub-team row).
+  - Docs merged from upstream: `agent_teams.md`, `agent_orgs.md`, `agent_execution_architecture.md` no longer describe
+    nested Teams.
+- Local validation and result (merged state): server `typecheck` pass; `--noUnusedLocals` clean in server src files changed vs
+  `origin/personal`; server unit 710 files / 5745 tests pass; server integration 75 files pass, 2 failed cases in `agent-status-websocket.integration.test.ts` (content cadence) — cause per upstream `7af116e8de`: product defect (AGENT_INPUT_STATE flushes the egress content window), reported to its owner as its own item, unrelated to this ticket; web (after `nuxt prepare`)
+  628 files / 4446 tests pass; scripted-AGY e2e (clean env): `task-closure-root-visibility` 3/3,
+  `delegation-forest-restore` 3/3, `standalone-unreadable-tree-containment` 2/2; AC-001 symbol search clean.
+- Next recipient or routing: `get_handoff_rules` → Code Reviewer (Team status changed on both sides), then API/E2E.
+- Remaining limitations or risks: the live `team-status-live` probe (real backend) was not run here — for API/E2E.

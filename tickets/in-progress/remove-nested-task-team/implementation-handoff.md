@@ -19,13 +19,13 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-te
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (IR-002: CR-001 Local Fix — three unused imports removed in touched server files; see revision record)
+- Implementation cycle: `Rework` (IR-003: DR-001 Local Fix — `origin/personal` `a716a4632e` merged; upstream universal Team status refactored to the flat model; see revision record IR-003 for every conflict resolution)
 - Implementation revision record: `tickets/in-progress/remove-nested-task-team/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
+- Current implementation revision ID: `IR-003`
 - Related solution revision IDs: SR-001..SR-006 (SR-006 authoritative)
 - Related architecture-review revision IDs: ARCH-REV-002
-- Related code-review revision IDs: CRR-001; API/E2E / delivery: N/A
-- Triggering finding IDs: CR-001
+- Related code-review revision IDs: CRR-001..CRR-002; API/E2E: see `api-e2e-revision-record.md`; delivery: DR-001
+- Triggering finding IDs: DR-001 (merge conflicts); earlier CR-001
 
 A team inside a team is no longer represented anywhere in current code:
 

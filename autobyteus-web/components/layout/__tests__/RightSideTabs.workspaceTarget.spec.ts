@@ -149,8 +149,8 @@ for (const previouslyMounted of [false, true]) {
       expect(acquire).toHaveBeenCalledWith('C', expect.any(String))
       wrapper.getComponent(EditorRenderer).vm.$emit('update:modelValue', 'dirty-C-not-saved')
       await flush()
-      // The unsaved edit is the file's editor draft in the File Explorer store (FileExplorerTabs keeps no local copy).
-      expect(files.getActiveFileData('C')?.editorDraft).toEqual({ content: 'dirty-C-not-saved' })
+      // The unsaved edit is the open file's session-only editor draft (fileExplorerState `editorDraft`).
+      expect(files._getWorkspaceState('C')?.openFiles.find((file) => file.path === 'C.txt')?.editorDraft?.content).toBe('dirty-C-not-saved')
       expect(write).not.toHaveBeenCalled()
       await wrapper.getComponent(FileExplorer).find('input').setValue('pending search')
     } else expect(wrapper.findComponent(FileExplorer).exists()).toBe(false)
