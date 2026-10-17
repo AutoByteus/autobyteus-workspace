@@ -2,7 +2,13 @@
 
 ## User Verification
 
-- Status: **On hold (DR-003).** AC-011 has not passed. In the test copy, the user expected the Team's people-group icon itself to be coloured by status instead of a separate dot before it (UF-001, `delivery-evidence/user-feedback/uf-001-screenshot-25.png`). Solution Designer is settling this with the user. Nothing has been pushed or merged. Instance `iso-51775-c59d` stays running.
+- **Verified (DR-004/DR-005).**
+  - 2026-10-11: the user questioned the dot presentation (UF-001).
+  - 2026-10-17: the user approved finalizing on the condition that the API/E2E engineer provides passing evidence ("If API E2E engineer is able to provide you evidences … you already get my approval. It's already verified.").
+  - API-REV-002 passed on the final integrated state: probes 12/12, packaged-desktop AC-011 6/6, merged-row layout pass.
+  - Presentation kept as shipped: a dot before the slate icon (DEC-004 option A).
+  - Release: none (`RELEASE.md` default).
+- The sections below are the historical DR-001/DR-002 handoff state. Current integration and finalization facts are in `release-deployment-report.md` and `delivery-revision-record.md`.
 
 ## State For User Verification
 

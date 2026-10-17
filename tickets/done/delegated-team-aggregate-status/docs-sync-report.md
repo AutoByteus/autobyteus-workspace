@@ -24,7 +24,7 @@
 | `autobyteus-web/docs/agent_orgs.md` (§ Status And Hierarchy) | Described mounted-Team aggregate as `running > initializing > …` (found by grep) | Updated | Now covers mounted and task Teams, starting as busy, closed work excluded, the `live` gate, and the Org root row as not a Team |
 | `autobyteus-server-ts/docs/modules/agent_orgs.md` (l.315-318) | Same five-state precedence stated for the web row | Updated | States the web-side universal status; server sends no Team status |
 | `autobyteus-server-ts/docs/modules/projects.md` (l.789-791) | Said Project Task worker status uses "the same rule as the web" | Updated | Clarifies the server worker status keeps the shared fold (`initializing` stays). Web Team rows map starting to busy |
-| `TESTING.md` | New live probe | No change (by Delivery) | API/E2E already added "Universal Team status (live)" with the command, prerequisites and limits; verified accurate on the integrated state |
+| `TESTING.md` | New live probe | No change | DR-001: API/E2E had added a "Universal Team status (live)" section. DR-004: upstream rewrote `TESTING.md` as global-only ("Do not add descriptions of one suite or probe"), so the merge took upstream's file and the section was dropped. The probe's purpose, prerequisites, command and cases live in the `team-status-live-probe.mjs` header |
 | `autobyteus-web/docs/agent_orgs.md` l.612, `agent_execution_architecture.md` l.340/1559/1843 | Mention root lifecycle / "mounted-Team aggregates" as separate authorities | No change | Still accurate: the Team status remains a separate, presentation-only fact |
 
 ## Docs Updated
@@ -70,3 +70,9 @@
 - Result: `Pass`
 - Next delivery action: handoff summary → explicit user verification (AC-011) on an isolated worktree build.
 - Notes: Two passages not listed in the design spec (`settings.md`, both `agent_orgs.md` files, `projects.md`) were found by grep and synced. They described the same superseded behavior.
+
+## Re-Check After Refresh 2 (DR-004, `origin/personal` `db00ba16a9`)
+
+- All seven updated docs kept the universal Team status text through the merge. Three of them (`agent_execution_architecture.md`, `settings.md` and server `projects.md`) had base changes, which merged cleanly; the base added the two-line Task-worker row and Task summaries.
+- No contradicting passage was found. Remaining "binary" wording describes the root `isActive` lifecycle fact, which is unchanged. The `running/*` + `TeamActivityDot` note is still accurate: those files still exist, unmounted.
+- Result: `Pass`. No further doc change needed.

@@ -10,6 +10,7 @@ The latest docs sync report, handoff summary, and release/publication/deployment
 | DR-002 | User request "setup the test copy for me" (via Solution Designer, `request-user-verification-instance.md`) | DR-001 (waiting; instance `iso-51163-a6aa` had exited) | Prepared instance `iso-51775-c59d` ready; still waiting for user verification | handoff-summary.md (How To Verify), release-deployment-report.md (cleanup), delivery-evidence/user-verification-setup/ |
 | DR-003 | User feedback UF-001 on AC-011 (relayed by Solution Designer, 2026-10-11) | DR-002 (instance ready, waiting) | **On hold.** AC-011 not passed; user feedback is waiting for a Solution Designer decision; finalization frozen; instance kept running | release-deployment-report.md (User Verification), handoff-summary.md (status), delivery-evidence/user-feedback/ |
 | DR-004 | User instruction 2026-10-17: API/E2E evidence on the final state counts as AC-011 verification and approval | DR-003 (on hold) | Refreshed onto `origin/personal` `db00ba16a9` (`45cb47aefc`), two test fixes, checks green; API/E2E evidence requested; finalization waits for that evidence | release-deployment-report.md, handoff-summary.md, delivery-evidence/dr004/ |
+| DR-005 | API-REV-002 Pass on the final integrated state (user's conditional approval met) | DR-004 (evidence requested) | Verified; archived; finalized to `personal` (no release); cleanup | all delivery artifacts (archived to `tickets/done/`) |
 
 ## Revision Entries
 
@@ -109,3 +110,19 @@ The latest docs sync report, handoff summary, and release/publication/deployment
 - Terminal return to `/solution_designer`: `Not yet eligible`
 - Next recipient/action: API/E2E evidence. If it passes, finalize per `RELEASE.md`: archive, `finalize/delegated-team-aggregate-status` with `--no-ff`, push to `personal`, no release, cleanup. Then return the terminal package to Solution Designer.
 - Remaining blockers, rollback concerns, or untested scope: the API/E2E evidence.
+
+### DR-005 — Verified by API-REV-002 evidence; archive, finalize, clean up
+
+- Delivery round and trigger: `/software_engineering_team/api_e2e_engineer` returned API-REV-002 **Pass (96%)** on HEAD `ebf5ca614c`. The user's DR-004 condition is met.
+  - Probes: `team-status-live` 4/4, `nested-team-aggregate-status` 4/4, `team-group-icon` 4/4.
+  - Packaged-desktop AC-011 6/6 in `iso-55445-b74c`, built from this HEAD.
+  - Merged-row layout: Pass.
+  - No product defect.
+- Evidence check by Delivery: `ac011-evidence.json` reports `Pass` for steps A1, A2, A3, B1, C1 and C2. `live` and `nested` report `Pass` with 0 failures; `group-icon` reports `Pass`. The instance stop record shows the data root removed and ports released. Screenshots `a2`, `b1` and `c2` show the expected colours, with the dot before the icon next to the Task summary and Stop.
+- Disclosed limit: the desktop run used the scripted AGY runtime, because the Codex account quota was exhausted until 2026-10-22. Rendering, streams and the packaged server are real; paid inference was not under test.
+- Integrated commits:
+  - `c30bc4fe80`: baseline probe fix (agent-package-definitions WebSocket).
+  - `97a7d430de`: live-probe layout checks plus API-REV-002 artifacts and evidence.
+- Base re-check before finalization: `origin/personal` was still `db00ba16a9` (0 new commits), so no re-integration and no renewed verification were needed.
+- Release: none (`RELEASE.md` default; the user did not ask for one).
+- Finalization and cleanup results: recorded below once complete.
