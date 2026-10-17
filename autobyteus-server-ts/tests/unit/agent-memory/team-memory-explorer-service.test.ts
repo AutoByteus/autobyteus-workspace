@@ -14,8 +14,9 @@ import { TeamRunHistoryIndexStore } from "../../../src/run-history/store/team-ru
 import { TeamCommunicationStore } from "../../../src/services/team-communication/team-communication-store.js";
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { addTaskExecutionToTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-mutator.js";
-import { projectTaskAgentExecution, projectTaskTeamExecution } from "../../../src/agent-collaboration/execution/task/task-execution-tree-projection.js";
+import { projectTaskAgentExecution } from "../../../src/agent-collaboration/execution/task/task-execution-tree-projection.js";
 import { address, testAgentNode, testAgentTeamNode, testExecutionTree, writeCurrentTeamRunPackage } from "../../fixtures/current-team-run-fixtures.js";
+import { testCatalogTeamCopy } from "../../fixtures/current-team-run-fixtures.js";
 
 const STORED_ONLY_MANAGER = { getManagedTeamRun: () => null, listManagedTeamRunIds: () => [] };
 
@@ -207,7 +208,7 @@ describe("TeamMemoryExplorerService member identity and invalid roots", () => {
   });
 
   it("reports a delegated task instance with its own run ID (AC-011)", async () => {
-    await touch(path.join(memoryDir, "agent_teams", "writer-root", "task-writer-run", "episodic.jsonl"), Date.parse("2026-08-15T02:00:00.000Z"));
+    await touch(path.join(memoryDir, "agents", "task-writer-run", "episodic.jsonl"), Date.parse("2026-08-15T02:00:00.000Z"));
     const page = await serviceWithoutHistory().listAgentTeamRunsWithMemory("writing-team");
     expect(page.entries[0]?.memberTargets).toEqual([expect.objectContaining({
       memberAddress: "/Teacher",
@@ -222,7 +223,7 @@ describe("TeamMemoryExplorerService member identity and invalid roots", () => {
 
   it("lists the configured member and its task instance as separate runs", async () => {
     await touch(path.join(memoryDir, "agent_teams", "writer-root", "teacher-run", "semantic.jsonl"), Date.parse("2026-08-15T01:00:00.000Z"));
-    await touch(path.join(memoryDir, "agent_teams", "writer-root", "task-writer-run", "episodic.jsonl"), Date.parse("2026-08-15T02:00:00.000Z"));
+    await touch(path.join(memoryDir, "agents", "task-writer-run", "episodic.jsonl"), Date.parse("2026-08-15T02:00:00.000Z"));
     const teams = await serviceWithoutHistory().listAgentTeamsWithMemory();
     expect(teams.entries).toEqual([expect.objectContaining({ teamDefinitionId: "writing-team", teamRunCount: 1, memberMemoryCount: 1 })]);
     const page = await serviceWithoutHistory().listAgentTeamRunsWithMemory("writing-team");
@@ -287,13 +288,11 @@ describe("TeamMemoryExplorerService execution structure (REQ-012)", () => {
     });
     const withTaskAgent = addTaskExecutionToTree({
       tree: base,
-      ownerTeamRunId: "structure-root",
       execution: projectTaskAgentExecution({ address: address("/writer"), agentRunId: "task-writer-run", delegatorAgentRunId: "structure-writer-run", startedAt: "2026-08-15T00:01:00.000Z" }),
     });
     const withTaskTeam = addTaskExecutionToTree({
       tree: withTaskAgent,
-      ownerTeamRunId: "structure-root",
-      execution: projectTaskTeamExecution({
+      execution: testCatalogTeamCopy({
         // A flat team delegates a task team to a configured agent address; it keeps its own teamRunId.
         node: testAgentTeamNode({
           address: "/reviewer",
@@ -306,11 +305,11 @@ describe("TeamMemoryExplorerService execution structure (REQ-012)", () => {
         delegatorAgentRunId: "structure-writer-run", startedAt: "2026-08-15T00:02:00.000Z",
       }),
     });
-    // The task team's member delegates another task team in turn (a delegation forest; teams stay flat).
+    // The task team's member delegates another task team in turn; the coordinating run links it at its
+    // top level (CM-7, U-5), so its group path holds only its own team.
     const tree = addTaskExecutionToTree({
       tree: withTaskTeam,
-      ownerTeamRunId: "review-team-run",
-      execution: projectTaskTeamExecution({
+      execution: testCatalogTeamCopy({
         node: testAgentTeamNode({
           address: "/reviewer/Inner",
           coordinatorAddress: "/reviewer/Inner/checker",
@@ -324,9 +323,10 @@ describe("TeamMemoryExplorerService execution structure (REQ-012)", () => {
     await new TeamRunExecutionTreeStore().write(packageDir, tree);
     await new TeamCommunicationStore().write(packageDir, { schemaVersion: 1, rootTeamRunId: "structure-root", messages: [] });
     await touch(teamDir("structure-writer-run", "semantic.jsonl"), Date.parse("2026-08-15T01:00:00.000Z"));
-    await touch(teamDir("task-writer-run", "semantic.jsonl"), Date.parse("2026-08-15T02:00:00.000Z"));
-    await touch(teamDir("review-team-run", "reviewer-run", "semantic.jsonl"), Date.parse("2026-08-15T03:00:00.000Z"));
-    await touch(teamDir("review-team-run", "inner-team-run", "checker-run", "episodic.jsonl"), Date.parse("2026-08-15T04:00:00.000Z"));
+    // Task agents are normal runs (contract L1): an agent at `agents/<id>/`, task team members at `agent_teams/<team>/<id>/`.
+    await touch(path.join(memoryDir, "agents", "task-writer-run", "semantic.jsonl"), Date.parse("2026-08-15T02:00:00.000Z"));
+    await touch(path.join(memoryDir, "agent_teams", "review-team-run", "reviewer-run", "semantic.jsonl"), Date.parse("2026-08-15T03:00:00.000Z"));
+    await touch(path.join(memoryDir, "agent_teams", "inner-team-run", "checker-run", "episodic.jsonl"), Date.parse("2026-08-15T04:00:00.000Z"));
     resetTeamRunHistoryCatalogState(memoryDir);
     resetRootRunPackageReadinessIndex(memoryDir);
     const readiness = new RootRunPackageReadinessIndex(memoryDir);
@@ -355,7 +355,7 @@ describe("TeamMemoryExplorerService execution structure (REQ-012)", () => {
       { displayName: "writer", agentRunId: "structure-writer-run", executionKind: "CONFIGURED", startedAt: null, groupPath: [] },
       { displayName: "writer", agentRunId: "task-writer-run", executionKind: "TASK_AGENT", startedAt: "2026-08-15T00:01:00.000Z", groupPath: [] },
       { displayName: "lead", agentRunId: "reviewer-run", executionKind: "TASK_TEAM_MEMBER", startedAt: null, groupPath: [reviewSquad] },
-      { displayName: "checker", agentRunId: "checker-run", executionKind: "TASK_TEAM_MEMBER", startedAt: null, groupPath: [reviewSquad, inner] },
+      { displayName: "checker", agentRunId: "checker-run", executionKind: "TASK_TEAM_MEMBER", startedAt: null, groupPath: [inner] },
     ]);
     expect(page.entries[0]).toMatchObject({ lastUpdatedAt: "2026-08-15T04:00:00Z", memory: expect.objectContaining({ hasEpisodic: true }) });
   });

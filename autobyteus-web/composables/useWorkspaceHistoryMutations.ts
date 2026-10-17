@@ -43,12 +43,12 @@ export const useWorkspaceHistoryMutations = (params: {
     : 'Delete');
   const deleteConfirmationMessage = computed(() => {
     if (pendingDeleteTarget.value?.kind === 'team') {
-      return 'Delete this Team history permanently? This cannot be undone.';
+      return 'Delete this Team history permanently? Its task agents\' memory is kept. This cannot be undone.';
     }
     if (pendingDeleteTarget.value?.kind === 'agent_org') {
       return t('workspace.agentOrg.history.deleteConfirmation');
     }
-    return 'Delete this history permanently. This cannot be undone.';
+    return 'Delete this history permanently. Its task agents\' memory is kept. This cannot be undone.';
   });
 
   const markPending = (target: Ref<Record<string, boolean>>, id: string): void => {

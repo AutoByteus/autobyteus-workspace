@@ -14,7 +14,7 @@ import {
   type RootExecutionPhysicalScope,
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { RootEventPublisher } from "../../agent-collaboration/execution/services/root-event-publisher.js";
-import type { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
+import type { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import { RootTaskPersistenceFinalizationIndeterminateError, TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
@@ -42,7 +42,7 @@ export type StandaloneRootBuilderDependencies = Readonly<{
   teamDefinitions: Pick<AgentTeamDefinitionService, "getDefinitionById">;
   packageStore: StandaloneRootPackageStore;
   agentRunManager?: AgentRunManager;
-  memoryLocator?: RootedAgentMemoryLocator;
+  memoryLocator?: AgentRunMemoryLocator;
   activityInspector?: AgentConversationActivityInspector;
   workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
   collaboratorAdmission?: CollaboratorAdmission;

@@ -7,12 +7,12 @@ import { AgentMemoryLocationService } from "../../../src/agent-memory/services/a
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
 import { addTaskExecutionToTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-mutator.js";
-import { projectTaskTeamExecution } from "../../../src/agent-collaboration/execution/task/task-execution-tree-projection.js";
 import { TeamRunExecutionTreeLocationService } from "../../../src/run-history/services/team-run-execution-tree-location-service.js";
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { AgentOrgCommunicationMessagesStore } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
 import { address, testAgentNode, testAgentTeamNode, testExecutionTree, writeCurrentTeamRunPackage } from "../../fixtures/current-team-run-fixtures.js";
+import { testCatalogTeamCopy } from "../../fixtures/current-team-run-fixtures.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 
 const STORED_ONLY_MANAGER = { getManagedTeamRun: () => null, listManagedTeamRunIds: () => [] };
@@ -46,8 +46,7 @@ describe("AgentMemoryLocationService current V1 tree", () => {
     }));
     const tree = addTaskExecutionToTree({
       tree: baseTree,
-      ownerTeamRunId: "root-team-run",
-      execution: projectTaskTeamExecution({
+      execution: testCatalogTeamCopy({
         node: testAgentTeamNode({
           address: "/ReviewSquad",
           coordinatorAddress: "/ReviewSquad/reviewer",
@@ -91,14 +90,14 @@ describe("AgentMemoryLocationService current V1 tree", () => {
         run: "task-writer-run",
         ancestors: [],
         configured: true,
-        memoryDir: path.join(memoryDir, "agent_teams", "root-team-run", "task-writer-run"),
+        memoryDir: path.join(memoryDir, "agents", "task-writer-run"),
       },
       {
         address: "/ReviewSquad/reviewer",
         run: "reviewer-run",
         ancestors: ["review-team-run"],
         configured: false,
-        memoryDir: path.join(memoryDir, "agent_teams", "root-team-run", "review-team-run", "reviewer-run"),
+        memoryDir: path.join(memoryDir, "agent_teams", "review-team-run", "reviewer-run"),
       },
     ]);
   });
@@ -148,7 +147,7 @@ describe("AgentMemoryLocationService current V1 tree", () => {
         kind: "team_member",
         rootTeamRunId: "root-team-run",
         agentRunId: "task-writer-run",
-        memoryDir: path.join(memoryDir, "agent_teams", "root-team-run", "task-writer-run"),
+        memoryDir: path.join(memoryDir, "agents", "task-writer-run"),
       });
     expect(read.mock.calls.map(([, rootTeamRunId]) => rootTeamRunId)).toEqual(["root-team-run"]);
   });

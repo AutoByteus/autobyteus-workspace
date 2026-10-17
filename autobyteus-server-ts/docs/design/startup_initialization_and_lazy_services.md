@@ -136,7 +136,7 @@ Use lazy service access patterns to avoid import-time construction:
 - `src/run-history/services/team-run-history-index-row-projector.ts`
 - `src/run-history/store/team-run-history-index-store.ts`
 - `src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.ts`
-- `src/agent-memory/services/runtime-memory-location-classifier.ts`
+- `src/app-data-migrations/legacy/released-run-package-shapes/released-memory-locations-before-task-agent-own-run.ts`
 
 ## Observed Risk Areas
 

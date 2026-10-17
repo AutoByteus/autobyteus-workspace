@@ -313,7 +313,7 @@ describe("AgentOrg committed communication presentation", () => {
         orgMemoryDir: "/memory/org-communication",
         executionTreeStore: {} as never,
         communicationStore: {
-          write: vi.fn(async () => ({ outcome: "committed" as const, file: "communication_messages" })),
+          appendMessage: vi.fn(async () => ({ outcome: "committed" as const, file: "communication_messages" })),
         } as never,
         enterPersistenceFailStop,
       }),

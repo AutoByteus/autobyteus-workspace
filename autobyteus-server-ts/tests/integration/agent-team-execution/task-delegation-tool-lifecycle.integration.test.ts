@@ -140,6 +140,8 @@ class TestTeamBackend implements TeamRunBackend {
     });
     this.context = new TeamRunContext({
       physicalScope,
+      // The test root is a team run; every child backend models a task agent team it delegated.
+      teamKind: physicalScope.ancestorTeamRunIds.length > 0 ? "task" : "configured",
       teamRunId: teamNode.teamRunId,
       teamBackendKind: TeamBackendKind.MIXED,
       teamNode,

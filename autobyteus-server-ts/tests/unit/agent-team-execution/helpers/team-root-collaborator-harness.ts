@@ -84,7 +84,7 @@ export const harness = async (options: { runnable?: boolean; withTeammate?: bool
   });
   const reopen = async () => {
     const tree = (await dependencies.executionTreeStore.read(teamMemoryDir, ROOT))!;
-    const messages = (await dependencies.communicationStore.read(teamMemoryDir, ROOT))!;
+    const messages = (await dependencies.communicationStore.read(teamMemoryDir, tree))!;
     return materializeTeamRoot({
       config: buildTeamRunConfigFromExecutionTree(tree), tree, messages,
       teamMemoryDir, mode: "restore", persistInitialPackage: false, ...dependencies,

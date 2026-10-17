@@ -2,6 +2,8 @@ import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { TeamCommunicationStore } from "./team-communication-store.js";
+import type { TeamCommunicationMessagesSnapshot } from "./team-communication-messages-file.js";
+import { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-execution-tree-store.js";
 import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import type {
   TeamCommunicationMessage,
@@ -21,16 +23,19 @@ const required = (value: string, field: string): string => {
 export class TeamCommunicationProjectionService {
   private readonly manager: AgentTeamRunManager;
   private readonly store: TeamCommunicationStore;
+  private readonly treeStore: TeamRunExecutionTreeStore;
   private readonly layout: AgentMemoryLayout;
 
   constructor(options: {
     teamRunManager?: AgentTeamRunManager;
     communicationStore?: TeamCommunicationStore;
+    executionTreeStore?: TeamRunExecutionTreeStore;
     memoryDir?: string;
   } = {}) {
     const memoryDir = options.memoryDir ?? appConfigProvider.config.getMemoryDir();
     this.manager = options.teamRunManager ?? AgentTeamRunManager.getInstance();
     this.store = options.communicationStore ?? new TeamCommunicationStore();
+    this.treeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
     this.layout = new AgentMemoryLayout(memoryDir);
   }
 
@@ -50,13 +55,20 @@ export class TeamCommunicationProjectionService {
     return message && reference ? { message, reference } : null;
   }
 
+  /**
+   * A stored team run's view: its composed tree decides which task agents' logs it includes (D-4). Without a
+   * tree there are no task agents: the run's own log is read as it is (strictly).
+   */
+  private async readStored(rootTeamRunId: string): Promise<TeamCommunicationMessagesSnapshot | null> {
+    const dir = this.layout.getTeamDirPath({ rootTeamRunId, ancestorTeamRunIds: [] });
+    const tree = await this.treeStore.read(dir, rootTeamRunId);
+    return tree ? this.store.read(dir, tree) : this.store.readLog(dir, rootTeamRunId);
+  }
+
   private async readProjection(teamRunId: string): Promise<TeamCommunicationProjection> {
     const rootTeamRunId = required(teamRunId, "teamRunId");
     const managed = this.manager.getManagedTeamRun(rootTeamRunId);
-    const snapshot = managed?.getCommunicationSnapshot() ?? await this.store.read(
-      this.layout.getTeamDirPath({ rootTeamRunId, ancestorTeamRunIds: [] }),
-      rootTeamRunId,
-    );
+    const snapshot = managed?.getCommunicationSnapshot() ?? await this.readStored(rootTeamRunId);
     return {
       teamRunId: rootTeamRunId,
       messages: (snapshot?.messages ?? []).map(projectMessage),

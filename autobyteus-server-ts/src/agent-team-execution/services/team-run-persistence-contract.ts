@@ -1,6 +1,8 @@
 import { RootTaskPersistenceFinalizationIndeterminateError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-messages-file.js";
+import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
+import type { MessageLogOwner } from "../../run-history/store/task-agent-message-logs.js";
 import type {
   RunPackageDirectoryFinalizationStage,
 } from "../../run-history/store/atomic-run-package-file-commit-writer.js";
@@ -52,6 +54,9 @@ export type TeamMessageAppendRejectionCode =
 
 export type PreparedTeamMessageCommit = Readonly<{
   nextMessages: TeamCommunicationMessagesSnapshot;
+  /** The one message this commit adds, and the logs it belongs to (receiver's first; D-4). */
+  message: CollaborationCommunicationMessage;
+  logOwners: readonly MessageLogOwner[];
   cancelBeforeDurability(code: TeamMessageAppendRejectionCode): void;
   commitAfterDurability(): void;
 }>;

@@ -13,11 +13,14 @@ import {
 import { buildInterAgentDeliveryInputMessage } from "../../agent-team-execution/services/inter-agent-message-runtime-builders.js";
 import { createTeamCommunicationMessageAppendPlan } from "./team-communication-message-append-plan.js";
 import type { TeamCommunicationMessagesSnapshot } from "./team-communication-messages-file.js";
+import { messageLogOwners, type MessageLogOwner } from "../../run-history/store/task-agent-message-logs.js";
 
 export type TeamCommunicationAdapterOptions = Readonly<{
   rootTeamRunId: string;
   initial: TeamCommunicationMessagesSnapshot;
   isCurrentAgent: RootCommunicationAdapter["isCurrentAgent"];
+  /** The log an endpoint's messages belong to (its memory placement, D-4). */
+  messageLogOwnerOf(agentRunId: string): MessageLogOwner;
   assertDeliveryAllowed: RootCommunicationAdapter["assertDeliveryAllowed"];
   requireContainingTeamRun(agentRunId: string): Promise<TeamRun>;
   commit(plan: PreparedTeamMessageAppend): Promise<TeamMessageCommitResult>;
@@ -79,6 +82,7 @@ export class TeamCommunicationAdapter implements RootCommunicationAdapter {
       reservation: input.reservation,
       isAccepting: this.isAccepting,
       getCurrent: () => this.envelope(input.getCurrentMessages()),
+      resolveLogOwners: () => messageLogOwners(input.message, (agentRunId) => this.options.messageLogOwnerOf(agentRunId)),
       replaceCurrent: (messages) => {
         input.commitMessages(messages.messages);
         this.options.replaceSnapshot(messages);

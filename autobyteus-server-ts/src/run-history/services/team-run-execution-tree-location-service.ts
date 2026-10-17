@@ -1,4 +1,3 @@
-import fs from "node:fs";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type {
   LocatedExecutionGroup,
@@ -10,8 +9,6 @@ import { AgentTeamRunManager as DefaultManager } from "../../agent-team-executio
 import { TeamExecutionIndex } from "../../agent-team-execution/services/team-execution-index.js";
 import type { ConfiguredAgentExecutionNode, TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
-import { getTeamRunExecutionTreePath } from "../store/team-run-execution-tree-path.js";
-import { validateTeamRunExecutionTreePayload } from "../store/team-run-execution-tree-schema.js";
 import { TeamRunExecutionTreeStore } from "../store/team-run-execution-tree-store.js";
 import { TeamRunPackageCatalog } from "./team-run-package-catalog.js";
 
@@ -205,7 +202,7 @@ export class TeamRunExecutionTreeLocationService {
       executionKind: agent.executionKind,
       startedAt: "startedAt" in agent.source ? agent.source.startedAt : null,
       groupPath: Object.freeze(groupPath),
-      memoryDir: this.layout.getRootedAgentRunDirPath(scope, agent.agentRunId),
+      memoryDir: this.layout.getAgentRunMemoryDirPath(index.getMemoryPlacementForAgent(agent.agentRunId), agent.agentRunId),
       tree,
       isActive,
     });
@@ -221,14 +218,7 @@ export class TeamRunExecutionTreeLocationService {
   }
 
   private readStoredTreeSync(rootTeamRunId: string): TeamRunExecutionTreeSnapshot | null {
-    const rootDir = this.layout.getTeamDirPath({ rootTeamRunId, ancestorTeamRunIds: [] });
-    try {
-      const raw = JSON.parse(fs.readFileSync(getTeamRunExecutionTreePath(rootDir), "utf8")) as unknown;
-      return validateTeamRunExecutionTreePayload(raw, rootTeamRunId);
-    } catch (error) {
-      if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
-      throw error;
-    }
+    return this.store.readSync(this.layout.getTeamDirPath({ rootTeamRunId, ancestorTeamRunIds: [] }), rootTeamRunId);
   }
 }
 

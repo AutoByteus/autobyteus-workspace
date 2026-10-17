@@ -32,8 +32,10 @@ const tree = (): StandaloneRootTreeSnapshot => ({
       source: { kind: "agent_team", teamDefinitionId: "product-team", coordinatorAddress: "/product_team/lead" as never, handoffs: [],
         members: [{ address: "/product_team/lead" as never, agentDefinitionId: "lead" }, { address: "/product_team/designer" as never, agentDefinitionId: "designer" }],
         defaultLaunchConfiguration: launch },
-      taskExecutions: [{ address: "/product_team/designer" as never, agentRunId: "designer-copy-run", platformAgentRunId: null,
-        delegatorAgentRunId: "lead-run", startedAt: at, source: agentSource("designer") }] },
+      taskExecutions: [] },
+    // A Team member's own copy is linked at the run's top level (CM-7, U-5).
+    { address: "/product_team/designer" as never, agentRunId: "designer-copy-run", platformAgentRunId: null,
+      delegatorAgentRunId: "lead-run", startedAt: at, source: agentSource("designer") },
     { address: "/code_reviewer" as never, agentRunId: "reviewer-copy-run", platformAgentRunId: null, delegatorAgentRunId: HOST, startedAt: at,
       source: agentSource("code-reviewer") },
   ],

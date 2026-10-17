@@ -73,7 +73,7 @@ const fixture = () => {
     prepareAgentRunTermination: async (run: any) => termination(run) });
   const dependencies = { agentRunManager: agentRunManager as never,
     activityInspector: { inspect: () => ({ kind: 'none' }) } as never,
-    memoryLocator: { getLocation: () => ({ memoryDir: dir }) } as never,
+    memoryLocator: { getMemoryDir: () => dir } as never,
     workspaceManager: { ensureWorkspaceByRootPath: async () => ({ workspaceId: 'ws' }) } as never };
   return { dir, order, inputs, active, prepareNewAgentRun, dependencies,
     useTeamTree() { treeFile = 'team_run_execution_tree.json'; },

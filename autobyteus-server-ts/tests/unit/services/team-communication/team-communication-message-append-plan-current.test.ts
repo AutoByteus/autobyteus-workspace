@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { COORDINATING_LOG } from "../../../../src/run-history/store/task-agent-message-logs.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import { createTeamCommunicationMessageAppendPlan } from "../../../../src/services/team-communication/team-communication-message-append-plan.js";
@@ -30,6 +31,7 @@ describe("current Team communication append plan", () => {
       reservation: Object.freeze({ agentRunId: "receiver-run", cancel, commit }),
       isAccepting: () => true,
       getCurrent: () => current,
+      resolveLogOwners: () => [COORDINATING_LOG],
       replaceCurrent,
       publish,
     });

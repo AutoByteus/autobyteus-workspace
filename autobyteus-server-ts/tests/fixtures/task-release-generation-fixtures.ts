@@ -52,7 +52,7 @@ export function releaseGenerationFixture(kind: RootSubjectKind = 'agent_team', a
       collaboration: new MemberCollaborationContext({ deliverLogicalMessage: async () => ({ accepted: true }) }),
       tasks: { root: identity.root, delegateToNewCopy: async () => { throw Error('Not a business dispatch witness.'); }, assignToExistingCopy: async () => { throw Error('Not a business dispatch witness.'); } } as never }) };
   const dependencies = { agentRunManager: manager as never, activityInspector: { inspect: () => ({ kind: 'present' }) } as never,
-    memoryLocator: { getLocation: (_scope: unknown, id: string) => ({ memoryDir: `/tmp/test-unused-${id}` }) } as never };
+    memoryLocator: { getMemoryDir: (_placement: unknown, id: string) => `/tmp/test-unused-${id}` } as never };
   const factory = new FlatTeamExecutionFactory(dependencies);
   const teams = new RootTeamExecutionDirectory(factory);
   const rootAgents = new RootAgentExecutionRegistry({ root, callbacks, ...dependencies });
@@ -88,7 +88,7 @@ export async function nestedReleaseScenario(kind: RootSubjectKind) {
   let rootTeam: any = null, resolver: TeamRunResolver | null = null;
   if (kind === 'agent_team') {
     const rootNode = testAgentTeamNode({ address: '/', teamRunId: 'root', coordinatorAddress: '/Manager', children: [managerNode] });
-    const prepared = await f.factory.beginMaterialization({ physicalScope: createRootExecutionPhysicalScope({ root: f.root, ancestorTeamRunIds: [] }),
+    const prepared = await f.factory.beginMaterialization({ teamKind: 'configured', physicalScope: createRootExecutionPhysicalScope({ root: f.root, ancestorTeamRunIds: [] }),
       teamNode: rootNode, handoffs: [], activationMode: 'fresh', callbacks: f.callbacks }).prepare();
     prepared.commitAfterDurability(); rootTeam = prepared.teamRun;
     await activateTeamMembers(rootTeam, ['manager']);

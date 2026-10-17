@@ -1,6 +1,12 @@
 import path from "node:path";
 import fs from "node:fs/promises";
-import type { AgentRunMetadata } from "./agent-run-metadata-types.js";
+import type { AgentRunMetadata, TaskAgentRunMetadata } from "./agent-run-metadata-types.js";
+import { hasTaskAgentSection, parseTaskAgentRunMetadata } from "./task-agent-own-file-schema.js";
+import {
+  getAtomicRunPackageFileCommitWriter,
+  type AtomicRunPackageFileCommitWriter,
+  type RunPackageFileWriteResult,
+} from "./atomic-run-package-file-commit-writer.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
@@ -60,10 +66,26 @@ export type AgentRunMetadataReadState =
   | Readonly<{ kind: "missing" }>
   | Readonly<{ kind: "unreadable"; error: Error }>;
 
+export type TaskAgentRunMetadataReadState =
+  | Readonly<{ kind: "present"; metadata: TaskAgentRunMetadata }>
+  | Readonly<{ kind: "missing" }>
+  | Readonly<{ kind: "unreadable"; error: Error }>;
+
+const asError = (error: unknown): Error => error instanceof Error ? error : new Error(String(error));
+
+/**
+ * The one reader and writer of `run_metadata.json`. A standalone run is a file without a `taskAgent`
+ * section (G1): every standalone read treats a task agent's own file as absent, so no listing, admission
+ * or restore of standalone runs sees a task agent. Task agents' own files are read and written only through
+ * the task-agent reader / writer (contract §3.1, §5.1).
+ */
 export class AgentRunMetadataStore {
   private readonly layout: AgentMemoryLayout;
 
-  constructor(memoryDir: string) {
+  constructor(
+    memoryDir: string,
+    private readonly writer: AtomicRunPackageFileCommitWriter = getAtomicRunPackageFileCommitWriter(),
+  ) {
     this.layout = new AgentMemoryLayout(memoryDir);
   }
 
@@ -89,6 +111,8 @@ export class AgentRunMetadataStore {
       if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
         throw new Error("Run metadata must be a JSON object.");
       }
+      // G1: a task agent's own file is not a standalone run.
+      if (hasTaskAgentSection(parsed)) return { kind: "missing" };
       const metadata = normalizeMetadata(
         parsed as AgentRunMetadata,
         this.layout.getStandaloneRunDirPath(normalizedRunId),
@@ -106,11 +130,34 @@ export class AgentRunMetadataStore {
       return { kind: "present", metadata };
     } catch (error) {
       if ((error as NodeJS.ErrnoException)?.code === "ENOENT") return { kind: "missing" };
-      return {
-        kind: "unreadable",
-        error: error instanceof Error ? error : new Error(String(error)),
-      };
+      return { kind: "unreadable", error: asError(error) };
     }
+  }
+
+  /** A task agent's own file; `missing` when there is no file or the file is a standalone run's. */
+  async readTaskAgentMetadataState(runId: string): Promise<TaskAgentRunMetadataReadState> {
+    const normalizedRunId = runId.trim();
+    try {
+      const parsed: unknown = JSON.parse(await fs.readFile(this.getMetadataPath(normalizedRunId), "utf-8"));
+      if (!hasTaskAgentSection(parsed)) return { kind: "missing" };
+      return { kind: "present", metadata: parseTaskAgentRunMetadata(parsed, normalizedRunId) };
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException)?.code === "ENOENT") return { kind: "missing" };
+      return { kind: "unreadable", error: asError(error) };
+    }
+  }
+
+  async readTaskAgentMetadata(runId: string): Promise<TaskAgentRunMetadata | null> {
+    const state = await this.readTaskAgentMetadataState(runId);
+    if (state.kind === "present") return state.metadata;
+    if (state.kind === "unreadable") logger.warn(`Failed reading task agent metadata for ${runId}: ${state.error.message}`);
+    return null;
+  }
+
+  /** Writes a task agent's own file atomically at its own folder `agents/<runId>/` (contract L1). */
+  writeTaskAgentMetadata(metadata: TaskAgentRunMetadata): Promise<RunPackageFileWriteResult<"task_agent_run_metadata">> {
+    const normalized = parseTaskAgentRunMetadata(metadata, metadata.runId.trim());
+    return this.writer.write({ file: "task_agent_run_metadata", filePath: this.getMetadataPath(normalized.runId), payload: normalized });
   }
 
   async writeMetadata(runId: string, metadata: AgentRunMetadata): Promise<void> {

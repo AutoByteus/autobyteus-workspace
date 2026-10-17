@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 import { validateTeamRunStatePackage } from "../../../src/run-history/services/team-run-state-package-validator.js";
 import { validateTeamRunExecutionTreePayload } from "../../../src/run-history/store/team-run-execution-tree-schema.js";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
+import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { getTeamRunExecutionTreePath } from "../../../src/run-history/store/team-run-execution-tree-path.js";
 import { validateTeamCommunicationMessagesPayload } from "../../../src/services/team-communication/team-communication-messages-schema.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
@@ -122,35 +123,44 @@ describe("TeamRun execution tree tolerant reading and exact writing", () => {
     ])).rootTeam.taskExecutions).toHaveLength(2);
   });
 
-  it("writes the exact current shape: no schemaVersion, no settledAt, the delegator on new children", async () => {
-    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "team-tree-exact-"));
+  it("writes the exact current shape: links in the tree, facts in each task agent's own file, the delegator on new children", async () => {
+    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "team-tree-exact-"));
+    const dir = new AgentMemoryLayout(memoryDir).getTeamDirPath({ rootTeamRunId: "team-run-current", ancestorTeamRunIds: [] });
+    const LINK_AGENT_KEYS = ["address", "agentRunId", "delegatorAgentRunId", "startedAt"];
+    const LINK_TEAM_KEYS = ["address", "delegatorAgentRunId", "startedAt", "teamRunId"];
     try {
       const store = new TeamRunExecutionTreeStore();
       const loaded = validateTeamRunExecutionTreePayload(releasedShape());
-      const withNewChild = {
+      const launch = loaded.rootTeam.defaultLaunchConfiguration;
+      // A team run is flat: a Team copy is always a catalog copy with its recorded source.
+      const catalogTeam = { ...loaded.rootTeam.taskExecutions[1]!, source: { kind: "agent_team", teamDefinitionId: "review-team",
+        coordinatorAddress: "/reviewer/lead", members: [{ address: "/reviewer/lead", agentDefinitionId: "lead" }], handoffs: [],
+        defaultLaunchConfiguration: launch } };
+      const withNewChild = validateTeamRunExecutionTreePayload({
         ...loaded,
         rootTeam: {
           ...loaded.rootTeam,
           taskExecutions: [
-            ...loaded.rootTeam.taskExecutions,
+            loaded.rootTeam.taskExecutions[0]!, catalogTeam,
             taskAgent({ agentRunId: "new-run", delegatorAgentRunId: "agent-run-coordinator" }),
           ],
         },
-      } as never;
+      });
       await store.write(dir, withNewChild);
       const written = JSON.parse(await fs.readFile(getTeamRunExecutionTreePath(dir), "utf8")) as Record<string, any>;
       expect(keys(written)).toEqual(TOP_LEVEL_KEYS);
       expect(written.rootTeam.taskExecutions.map(keys)).toEqual([
-        TASK_AGENT_KEYS.filter((key) => key !== "delegatorAgentRunId"),
-        TASK_TEAM_KEYS.filter((key) => key !== "delegatorAgentRunId"),
-        TASK_AGENT_KEYS,
+        LINK_AGENT_KEYS.filter((key) => key !== "delegatorAgentRunId"),
+        LINK_TEAM_KEYS.filter((key) => key !== "delegatorAgentRunId"),
+        LINK_AGENT_KEYS,
       ]);
-      expect(written.rootTeam.taskExecutions[1].members.map(keys)).toEqual([["address", "agentRunId", "platformAgentRunId"]]);
+      // Composing the links with the own files gives back today's records exactly.
+      expect(await store.read(dir, "team-run-current")).toEqual(withNewChild);
       // Even a caller that passes stray fields cannot write them.
       await store.write(dir, { ...(withNewChild as object), schemaVersion: 3, extra: true } as never);
       expect(keys(JSON.parse(await fs.readFile(getTeamRunExecutionTreePath(dir), "utf8")))).toEqual(TOP_LEVEL_KEYS);
     } finally {
-      await fs.rm(dir, { recursive: true, force: true });
+      await fs.rm(memoryDir, { recursive: true, force: true });
     }
   });
 });

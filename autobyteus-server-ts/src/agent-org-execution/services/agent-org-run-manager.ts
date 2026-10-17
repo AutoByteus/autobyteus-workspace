@@ -149,7 +149,10 @@ export class AgentOrgRunManager {
     const orgRunId = required(orgRunIdInput, "orgRunId");
     const active = this.getActive(orgRunId);
     if (active) return Object.freeze({ messages: active.getCommunicationSnapshot() });
-    const messages = await this.communicationStore.read(this.layout.getOrgDirPath(orgRunId), orgRunId);
+    const dir = this.layout.getOrgDirPath(orgRunId);
+    const tree = await this.executionTreeStore.read(dir, orgRunId);
+    // The stored view composes the run's task agents' logs (D-4); without a tree it is the run's own log.
+    const messages = tree ? await this.communicationStore.read(dir, tree) : await this.communicationStore.readLog(dir, orgRunId);
     if (!messages) {
       throw new Error(`AgentOrg collaboration records for '${orgRunId}' were not found.`);
     }
@@ -185,10 +188,8 @@ export class AgentOrgRunManager {
         } finally { connection.close(); }
       }
       const dir = this.layout.getOrgDirPath(orgRunId);
-      const [tree, messages] = await Promise.all([
-        this.executionTreeStore.read(dir, orgRunId),
-        this.communicationStore.read(dir, orgRunId),
-      ]);
+      const tree = await this.executionTreeStore.read(dir, orgRunId);
+      const messages = tree ? await this.communicationStore.read(dir, tree) : null;
       if (!tree || !messages) throw new Error(`AgentOrg '${orgRunId}' inspection package is unavailable.`);
       const state = validateAgentOrgStatePackage({ executionTree: tree, communicationMessages: messages });
       // The current DTO carries statuses for live executions only. Inactive

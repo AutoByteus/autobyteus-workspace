@@ -1,4 +1,3 @@
-import fs from "node:fs";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type {
   LocatedExecutionGroup,
@@ -6,8 +5,6 @@ import type {
 } from "../../agent-collaboration/execution/domain/located-execution-structure.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { AgentOrgRunExecutionTreeStore } from "../../run-history/store/agent-org-run-execution-tree-store.js";
-import { getAgentOrgRunExecutionTreePath } from "../../run-history/store/agent-org-run-execution-tree-path.js";
-import { validateAgentOrgRunExecutionTreePayload } from "../../run-history/store/agent-org-run-execution-tree-schema.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../domain/agent-org-run-execution-tree.js";
 import type { AgentOrgRunManager } from "./agent-org-run-manager.js";
 import { AgentOrgExecutionIndex } from "./agent-org-execution-index.js";
@@ -138,7 +135,7 @@ export class AgentOrgExecutionTreeLocationService {
       executionKind: agent.executionKind,
       startedAt: "startedAt" in agent.source ? agent.source.startedAt : null,
       groupPath: Object.freeze(groupPath),
-      memoryDir: this.layout.getRootedAgentRunDirPath(scope, agentRunId),
+      memoryDir: this.layout.getAgentRunMemoryDirPath(index.getMemoryPlacementForAgent(agentRunId), agentRunId),
       tree,
       // A shut-down child of an active root stays addressable: input wakes it.
       isActive,
@@ -171,8 +168,7 @@ export class AgentOrgExecutionTreeLocationService {
     return this.store.read(this.layout.getOrgDirPath(id), id);
   }
   private readStoredTreeSync(id: string): AgentOrgRunExecutionTreeSnapshot | null {
-    try { return validateAgentOrgRunExecutionTreePayload(JSON.parse(fs.readFileSync(getAgentOrgRunExecutionTreePath(this.layout.getOrgDirPath(id)), "utf8")), id); }
-    catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return null; throw error; }
+    return this.store.readSync(this.layout.getOrgDirPath(id), id);
   }
 }
 

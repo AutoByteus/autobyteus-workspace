@@ -22,7 +22,7 @@ it.each(['success', 'failed-first', 'rejecting-second'] as const)('starts every 
     }
     return f.stop(run);
   });
-  const op = f.factory.beginMaterialization({ physicalScope: createRootExecutionPhysicalScope({ root: f.root, ancestorTeamRunIds: [] }),
+  const op = f.factory.beginMaterialization({ teamKind: 'configured', physicalScope: createRootExecutionPhysicalScope({ root: f.root, ancestorTeamRunIds: [] }),
     teamNode: twoMemberTeam(), handoffs: [], activationMode: 'fresh', callbacks: f.callbacks });
   const prepared = await op.prepare();
   expect(f.acquired).toEqual([]);
@@ -53,7 +53,7 @@ it('a member whose first-work activation fails releases its own acquired run and
     listener({ eventType: AgentRunEventType.AGENT_STATUS, runId: run.runId, payload: { status: 'idle' }, statusHint: 'IDLE' });
     return () => undefined;
   };
-  const op = f.factory.beginMaterialization({ physicalScope: createRootExecutionPhysicalScope({ root: f.root, ancestorTeamRunIds: [] }),
+  const op = f.factory.beginMaterialization({ teamKind: 'configured', physicalScope: createRootExecutionPhysicalScope({ root: f.root, ancestorTeamRunIds: [] }),
     teamNode: twoMemberTeam(), handoffs: [], activationMode: 'fresh', callbacks: f.callbacks });
   const prepared = await op.prepare();
   prepared.commitAfterDurability();

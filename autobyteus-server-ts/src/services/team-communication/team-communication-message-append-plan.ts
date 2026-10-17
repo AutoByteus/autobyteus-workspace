@@ -5,6 +5,7 @@ import { buildTeamMemberInputEventPayload } from "../../agent-team-execution/ser
 import { validateTeamCommunicationMessagesPayload } from "./team-communication-messages-schema.js";
 import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import type { TeamCommunicationMessagesSnapshot } from "./team-communication-messages-file.js";
+import type { MessageLogOwner } from "../../run-history/store/task-agent-message-logs.js";
 
 type AppendPlanState = "sealed" | "prepared" | "cancelled" | "committed" | "fail_stop_disposed";
 
@@ -20,6 +21,8 @@ export const createTeamCommunicationMessageAppendPlan = (input: {
   reservation: AgentRunInputReservation;
   isAccepting(): boolean;
   getCurrent(): TeamCommunicationMessagesSnapshot;
+  /** The logs the message belongs to, resolved against the current tree. */
+  resolveLogOwners(): readonly MessageLogOwner[];
   replaceCurrent(messages: TeamCommunicationMessagesSnapshot): void;
   publish(event: TeamRunEvent): void;
 }): PreparedTeamMessageAppend => {
@@ -65,6 +68,8 @@ export const createTeamCommunicationMessageAppendPlan = (input: {
         prepared: true as const,
         commit: Object.freeze({
           nextMessages,
+          message: input.message,
+          logOwners: input.resolveLogOwners(),
           cancelBeforeDurability: () => {
             if (state !== "prepared") return;
             state = "cancelled";

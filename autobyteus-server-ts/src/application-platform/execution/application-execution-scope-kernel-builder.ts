@@ -14,7 +14,7 @@ import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-t
 import { createTaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { MemberExecutionContextBuilder } from "../../agent-team-execution/services/member-team-context-builder.js";
 import { createTeamFlatExecutionCallbacks } from "../../agent-team-execution/services/team-flat-execution-callbacks.js";
-import { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
+import { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import { TeamRunIdentityAllocator } from "../../agent-team-execution/services/team-run-identity-allocator.js";
 import { TeamRunService } from "../../agent-team-execution/services/team-run-service.js";
 import type { ScopedAgentToolMcpSessionAuthority } from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
@@ -152,7 +152,7 @@ export const buildApplicationExecutionScopeKernel = (
     const memberExecutionContextBuilder = new MemberExecutionContextBuilder(
       input.agentTeamDefinitionService,
     );
-    const memoryLocator = new RootedAgentMemoryLocator({ memoryDir: input.memoryDir });
+    const memoryLocator = new AgentRunMemoryLocator({ memoryDir: input.memoryDir });
     const activityInspector = new AgentConversationActivityInspector();
     const teamRunManager = new AgentTeamRunManager({
       memoryDir: input.memoryDir,

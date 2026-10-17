@@ -1,3 +1,4 @@
+import { messageLogOwnerOf } from "../../run-history/store/task-agent-message-logs.js";
 import type {
   DelegatedLaunchSelectionCommand,
   DelegatedLaunchUpdateResult,
@@ -151,6 +152,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       isOpen: () => this.isAdmitting(),
       assertDeliveryAllowed: (sender, receiver) => this.taskExecutions.assertMessageScope(sender.agentRunId, receiver.agentRunId),
       isCurrentAgent: (identity) => this.isPublishedAgent(identity),
+      messageLogOwnerOf: (agentRunId) => messageLogOwnerOf(agentRunId, this.index.getMemoryPlacementForAgent(agentRunId)),
       reserveRecipientInput: (agentRunId, message) => this.delivery.reserveAgentInput(agentRunId, message),
       replaceMessages: (messages) => { this.messages = messages; },
       publish: (message) => options.publisher.publish({ kind: "communication", message }),

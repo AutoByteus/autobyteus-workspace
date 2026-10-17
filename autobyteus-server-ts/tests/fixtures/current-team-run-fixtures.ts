@@ -1,3 +1,5 @@
+import { projectTaskTeamExecution } from "../../src/agent-collaboration/execution/task/task-execution-tree-projection.js";
+import type { TaskTeamExecutionSource } from "../../src/run-history/domain/run-execution-tree-shared-records.js";
 import {
   assertAgentTeamAddress,
   getAgentTeamAddressBasename,
@@ -78,6 +80,23 @@ export const testAgentTeamNode = (input: {
     children: input.children,
   };
 };
+
+/**
+ * The recorded source of a Team copy started from the catalog: in a flat team run every Team copy is one
+ * (its configured places are agents). A source-less copy is a copy of a configured place (U-4).
+ */
+export const testCatalogTeamSource = (node: TeamRunAgentTeamNode): TaskTeamExecutionSource => ({
+  kind: "agent_team",
+  teamDefinitionId: node.teamDefinitionId,
+  coordinatorAddress: node.coordinatorAddress,
+  members: node.children.map((child) => ({ address: child.address, agentDefinitionId: child.agentDefinitionId })),
+  handoffs: [],
+  defaultLaunchConfiguration: node.defaultLaunchConfiguration,
+});
+
+/** A Team copy started from the catalog, as the delegation adapters record it (with its source). */
+export const testCatalogTeamCopy = (input: Omit<Parameters<typeof projectTaskTeamExecution>[0], "source">) =>
+  projectTaskTeamExecution({ ...input, source: testCatalogTeamSource(input.node) });
 
 export const testTeamRunConfig = (input: {
   children: readonly TeamRunAgentNode[];

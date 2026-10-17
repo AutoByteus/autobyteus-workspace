@@ -1,0 +1,57 @@
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import { afterEach, describe, expect, it } from "vitest";
+import { AgentMemoryExplorerService } from "../../../src/agent-memory/services/agent-memory-explorer-service.js";
+import { MemoryFileStore } from "../../../src/agent-memory/store/memory-file-store.js";
+import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
+import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
+import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { emptyStandaloneRootTree } from "../../../src/standalone-agent-run-root/domain/standalone-root-tree.js";
+import { StandaloneRootPackageStore } from "../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
+import { validateStandaloneRootTreePayload } from "../../../src/standalone-agent-run-root/persistence/standalone-root-tree-schema.js";
+import { testOrgLaunchConfiguration } from "../../fixtures/current-agent-org-run-fixtures.js";
+
+/** Design D-5, contract §4 (Memory page — Agents list), AC-013. */
+
+const T0 = "2026-10-17T09:00:00.000Z";
+const touch = (filePath: string, mtime: number) => {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, "{}", "utf-8");
+  fs.utimesSync(filePath, mtime, mtime);
+};
+
+describe("Memory page Agents list with task agents (D-5)", () => {
+  let memory: string;
+  afterEach(() => fs.rmSync(memory, { recursive: true, force: true }));
+
+  it("lists a task agent under its definition, never Unattributed, and leaves out a detached one", async () => {
+    memory = fs.mkdtempSync(path.join(os.tmpdir(), "agent-memory-explorer-task-agents-"));
+    const layout = new AgentMemoryLayout(memory);
+    await new AgentRunMetadataStore(memory).writeMetadata("hub", {
+      runId: "hub", agentDefinitionId: "assistant", workspaceRootPath: "/workspace", memoryDir: layout.getStandaloneRunDirPath("hub"),
+      llmModelIdentifier: "model", llmConfig: null, autoExecuteTools: true, runtimeKind: RuntimeKind.AUTOBYTEUS, platformAgentRunId: null, startedAt: T0,
+    });
+    const copy = (agentRunId: string) => ({ address: "/code_reviewer", agentRunId, platformAgentRunId: null, delegatorAgentRunId: "hub", startedAt: T0,
+      source: { kind: "agent", agentDefinitionId: "code-reviewer", launchConfiguration: testOrgLaunchConfiguration("/workspace/reviews") } });
+    const store = new StandaloneRootPackageStore();
+    const dir = layout.getAgentRunCollaborationDirPath("hub");
+    await store.writeTree(dir, validateStandaloneRootTreePayload({
+      ...emptyStandaloneRootTree({ host: { address: "/assistant" as never, agentRunId: "hub", agentDefinitionId: "assistant" }, createdAt: T0 }),
+      taskExecutions: [copy("linked-copy"), copy("detached-copy")],
+    }, "hub"));
+    // The hub no longer links `detached-copy` (as after deleting the coordinating run that linked it).
+    const raw = JSON.parse(fs.readFileSync(path.join(dir, "collaboration_tree.json"), "utf8"));
+    raw.taskExecutions = raw.taskExecutions.filter((link: { agentRunId: string }) => link.agentRunId === "linked-copy");
+    fs.writeFileSync(path.join(dir, "collaboration_tree.json"), JSON.stringify(raw));
+    for (const runId of ["hub", "linked-copy", "detached-copy"]) touch(path.join(memory, "agents", runId, "raw_traces_active.jsonl"), 1000);
+
+    const service = new AgentMemoryExplorerService(new MemoryFileStore(memory), memory);
+    const groups = (await service.listAgentsWithMemory()).entries;
+    expect(groups.map((group) => [group.attribution, group.agentDefinitionId, group.runCount]).sort())
+      .toEqual([["DEFINITION", "assistant", 1], ["DEFINITION", "code-reviewer", 1]]);
+    const runs = (await service.listAgentRunsWithMemory({ attribution: "DEFINITION", agentDefinitionId: "code-reviewer" })).entries;
+    expect(runs).toEqual([expect.objectContaining({ runId: "linked-copy", agentDefinitionId: "code-reviewer", workspaceRootPath: "/workspace/reviews", createdAt: T0 })]);
+    expect((await service.listAgentsWithMemory("reviews")).entries.map((group) => group.agentDefinitionId)).toEqual(["code-reviewer"]);
+  });
+});

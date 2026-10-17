@@ -1,3 +1,4 @@
+import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -61,7 +62,9 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
   vi.spyOn(TokenUsageMigrationReadiness.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
   const handles = observeConfiguredHandles();
   const root = createAgentOrgRootExecutionIdentity("org-collaborators");
-  const orgMemoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "org-collaborators-")); directories.push(orgMemoryDir);
+  // A real memory root: task agents' own files live beside the org's folder (contract L1).
+  const memoryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "org-collaborators-")); directories.push(memoryRoot);
+  const orgMemoryDir = new AgentMemoryLayout(memoryRoot).getOrgDirPath(root.rootRunId);
   const tree = testAgentOrgExecutionTree({ orgRunId: root.rootRunId, members: [
     { ...testOrgAgentNode("/director", "director"), agentDefinitionId: "definition-director" },
     testOrgTeamNode({ address: "/target", teamRunId: "configured-team", coordinatorAddress: "/target/lead",

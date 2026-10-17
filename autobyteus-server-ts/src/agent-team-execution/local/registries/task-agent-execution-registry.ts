@@ -9,7 +9,8 @@ import type { TeamRunContext } from "../../domain/team-run-context.js";
 import { FlatAgentExecutionContext, type FlatTeamExecutionContext } from "../flat-team-execution-context.js";
 import { FlatTeamAgentExecutionHandle } from "../flat-team-agent-execution-handle.js";
 import { createTeamAgentStatusSnapshot, type TeamAgentStatusSnapshot } from "../../domain/team-agent-status.js";
-import type { RootedAgentMemoryLocator } from "../../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
+import { TASK_AGENT_PLACEMENT } from "../../../agent-memory/domain/agent-run-memory-placement.js";
+import type { AgentRunMemoryLocator } from "../../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import type { AgentConversationActivityInspector } from "../../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { WorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import type { FlatTeamExecutionCallbacks } from "../flat-team-execution-callbacks.js";
@@ -31,7 +32,7 @@ export class TaskAgentExecutionRegistry {
   constructor(private readonly options: {
     teamContext: TeamRunContext<FlatTeamExecutionContext>;
     agentRunManager?: AgentRunManager;
-    memoryLocator?: RootedAgentMemoryLocator;
+    memoryLocator?: AgentRunMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
     callbacks: FlatTeamExecutionCallbacks;
@@ -88,6 +89,7 @@ export class TaskAgentExecutionRegistry {
           platformAgentRunId: input.platformAgentRunId,
         }),
         config: Object.freeze({ ...input.sourceNode, agentRunId: runId, platformAgentRunId: input.platformAgentRunId }),
+        memoryPlacement: TASK_AGENT_PLACEMENT,
         activationMode: "restore",
         agentRunManager: this.options.agentRunManager,
         memoryLocator: this.options.memoryLocator,
@@ -123,6 +125,7 @@ export class TaskAgentExecutionRegistry {
         platformAgentRunId: null,
       }),
       config: Object.freeze({ ...input.sourceNode, agentRunId: runId, platformAgentRunId: null }),
+      memoryPlacement: TASK_AGENT_PLACEMENT,
       activationMode: "fresh",
       agentRunManager: this.options.agentRunManager,
       memoryLocator: this.options.memoryLocator,

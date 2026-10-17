@@ -4,6 +4,8 @@ import type { RunPackageFileWriteResult } from "../../run-history/store/atomic-r
 import type { AgentOrgRunExecutionTreeSnapshot } from "../domain/agent-org-run-execution-tree.js";
 import type { AgentOrgCommunicationMessagesFile } from "../persistence/agent-org-communication-messages.js";
 import type { AgentOrgCommunicationMessagesStore } from "../persistence/agent-org-communication-messages-store.js";
+import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
+import type { MessageLogOwner } from "../../run-history/store/task-agent-message-logs.js";
 
 export class AgentOrgPersistenceFailStoppedError extends Error {
   constructor(readonly orgRunId: string) {
@@ -91,11 +93,15 @@ export class AgentOrgRunPersistenceCoordinator {
 
   commitCommunication(input: Readonly<{
     nextMessages: AgentOrgCommunicationMessagesFile;
+    /** The one message this commit adds, and the logs it belongs to (receiver's first; D-4). */
+    message: CollaborationCommunicationMessage;
+    logOwners: readonly MessageLogOwner[];
     commitAfterDurability(): void;
     cancelBeforeDurability(): void;
   }>): Promise<Readonly<{ committed: true }> | Readonly<{ committed: false; code: string; message: string }>> {
     return this.withLock(async () => {
-      const result = await this.options.communicationStore.write(this.options.orgMemoryDir, input.nextMessages);
+      const result = await this.options.communicationStore.appendMessage(
+        this.options.orgMemoryDir, this.options.orgRunId, input.message, input.logOwners);
       if (result.outcome === "not_renamed") {
         input.cancelBeforeDurability();
         return { committed: false, code: "AGENT_ORG_MESSAGE_HISTORY_COMMIT_FAILED", message: result.cause.message };

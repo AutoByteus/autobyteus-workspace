@@ -12,9 +12,6 @@ import { TEAM_RUN_EXECUTION_TREE_FILE_NAME } from "../store/team-run-execution-t
 import { validateTeamRunStatePackage } from "./team-run-state-package-validator.js";
 
 import { AgentRunMetadataStore } from "../store/agent-run-metadata-store.js";
-import { TeamExecutionIndex } from "../../agent-team-execution/services/team-execution-index.js";
-import { AgentOrgExecutionIndex } from "../../agent-org-execution/services/agent-org-execution-index.js";
-import type { ContextFileFinalOwnerDescriptor } from "../../context-files/domain/context-file-owner-types.js";
 
 export type RootRunPackageFamily = "agent_team" | "agent_org" | "agent";
 export type RootRunPackageReadinessDiagnostic = Readonly<{
@@ -24,13 +21,9 @@ export type RootRunPackageReadinessDiagnostic = Readonly<{
     | "FAILED_ATTEMPT";
   reason: string;
 }>;
-export type CurrentContextFileOwner = Readonly<{
-  descriptor: ContextFileFinalOwnerDescriptor; directory: string;
-}> & ({ descriptor: Extract<ContextFileFinalOwnerDescriptor, {kind: "team_member_final"}>; address: string }
-  | { descriptor: Exclude<ContextFileFinalOwnerDescriptor, {kind: "team_member_final"}> });
+/** One admitted root run's package (its family folder). */
 export type CurrentRunPackage = Readonly<{
   key: string; family: RootRunPackageFamily; id: string; directory: string;
-  rootDirectories: string[]; agentDirectories: string[]; owners: CurrentContextFileOwner[];
 }>;
 export type CurrentPackageSnapshot = { groups: CurrentRunPackage[]; diagnostics: RootRunPackageReadinessDiagnostic[] };
 export const packageKey = (family: RootRunPackageFamily, id: string): string => `${family}:${id}`;
@@ -60,7 +53,12 @@ const retiredOrgFiles = Object.freeze([
 ]);
 
 
-/** Strict current structure only; shared by startup conversion and runtime admission. */
+/**
+ * Strict current structure only; the runtime's admission of root runs (runs the user started). A task
+ * agent's folder is never a root candidate (G1, G2): `agents/<id>/` with a task agent's own file and
+ * `agent_teams/<id>/` with a task agent team's own tree are skipped without a diagnostic, linked or
+ * detached (contract §4, §10).
+ */
 export class RootRunPackageCurrentValidator {
   private readonly layout: AgentMemoryLayout;
   constructor(
@@ -118,7 +116,9 @@ export class RootRunPackageCurrentValidator {
         this.record(candidate, "agent", id, entry.packagePath, "ROOT_RUN_PACKAGE_NOT_DIRECTORY", "Package root is not a directory.");
         continue;
       }
-      const state = await new AgentRunMetadataStore(this.memoryDir).readMetadataState(id);
+      const metadataStore = new AgentRunMetadataStore(this.memoryDir);
+      const state = await metadataStore.readMetadataState(id);
+      if (state.kind === "missing" && (await metadataStore.readTaskAgentMetadataState(id)).kind !== "missing") continue;
       if (state.kind !== "present") {
         this.record(candidate, "agent", id, entry.packagePath,
           state.kind === "unreadable" && isAttemptError(state.error) ? "FAILED_ATTEMPT" : "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED",
@@ -126,9 +126,7 @@ export class RootRunPackageCurrentValidator {
         continue;
       }
       const key = packageKey("agent", id);
-      candidate.groups.push({ key, family: "agent", id, directory: entry.packagePath,
-        rootDirectories: [], agentDirectories: [entry.packagePath],
-        owners: [{ descriptor: {kind: "agent_final", runId: id}, directory: entry.packagePath }] });
+      candidate.groups.push({ key, family: "agent", id, directory: entry.packagePath });
     }
     return candidate;
   }
@@ -146,30 +144,25 @@ export class RootRunPackageCurrentValidator {
       this.record(target, "agent_team", rootRunId, entry.packagePath, "ROOT_RUN_PACKAGE_MISSING_TREE", "Execution tree is missing; package preserved.");
       return;
     }
+    try {
+      if (await this.stores.teamTree.isTaskAgentTeamDir(entry.packagePath)) return;
+    } catch (error) {
+      this.record(target, "agent_team", rootRunId, entry.packagePath, isAttemptError(error) ? "FAILED_ATTEMPT" : "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED", message(error));
+      return;
+    }
     const manifestError = await this.validateManifest(entry.packagePath, requiredTeamFiles, retiredTeamFiles);
     if (manifestError) {
       this.record(target, "agent_team", rootRunId, entry.packagePath, "ROOT_RUN_PACKAGE_MANIFEST_INVALID", manifestError);
       return;
     }
     try {
-      const [executionTree, communicationMessages] = await Promise.all([
-        this.stores.teamTree.read(entry.packagePath, rootRunId),
-        this.stores.teamMessages.read(entry.packagePath, rootRunId),
-      ]);
+      const executionTree = await this.stores.teamTree.read(entry.packagePath, rootRunId);
+      const communicationMessages = executionTree ? await this.stores.teamMessages.read(entry.packagePath, executionTree) : null;
       if (!executionTree || !communicationMessages) {
         throw new Error("Team Run V3 tree and strict Team communication messages are required.");
       }
       validateTeamRunStatePackage({ executionTree, communicationMessages });
-      const index = new TeamExecutionIndex(executionTree);
-      const key = packageKey("agent_team", rootRunId);
-      const owners: CurrentContextFileOwner[] = index.listAgentExecutions().map((agent) => ({
-        descriptor: { kind: "team_member_final", teamRunId: agent.containingTeamRunId, agentRunId: agent.agentRunId },
-        address: agent.address,
-        directory: this.layout.getRootedAgentRunDirPath(index.getTeamRunPhysicalScope(agent.containingTeamRunId), agent.agentRunId),
-      }));
-      target.groups.push({ key, family: "agent_team", id: rootRunId, directory: entry.packagePath, owners,
-        rootDirectories: index.listTeamExecutions().map((team) => this.layout.getRootExecutionDirPath(index.getTeamRunPhysicalScope(team.teamRunId))),
-        agentDirectories: owners.map((owner) => owner.directory) });
+      target.groups.push({ key: packageKey("agent_team", rootRunId), family: "agent_team", id: rootRunId, directory: entry.packagePath });
     } catch (error) {
       this.record(target, "agent_team", rootRunId, entry.packagePath, isAttemptError(error) ? "FAILED_ATTEMPT" : "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED", message(error));
     }
@@ -194,23 +187,13 @@ export class RootRunPackageCurrentValidator {
       return;
     }
     try {
-      const [executionTree, communicationMessages] = await Promise.all([
-        this.stores.orgTree.read(entry.packagePath, rootRunId),
-        this.stores.orgMessages.read(entry.packagePath, rootRunId),
-      ]);
+      const executionTree = await this.stores.orgTree.read(entry.packagePath, rootRunId);
+      const communicationMessages = executionTree ? await this.stores.orgMessages.read(entry.packagePath, executionTree) : null;
       if (!executionTree || !communicationMessages) {
         throw new Error("AgentOrg Run V2 tree and strict Org communication messages are required.");
       }
       validateAgentOrgStatePackage({ executionTree, communicationMessages });
-      const index = new AgentOrgExecutionIndex(executionTree);
-      const key = packageKey("agent_org", rootRunId);
-      const owners: CurrentContextFileOwner[] = index.listAgents().map((agent) => ({
-        descriptor: { kind: "org_member_final", orgRunId: rootRunId, agentRunId: agent.agentRunId },
-        directory: this.layout.getRootedAgentRunDirPath(index.getPhysicalScopeForAgent(agent.agentRunId), agent.agentRunId),
-      }));
-      target.groups.push({ key, family: "agent_org", id: rootRunId, directory: entry.packagePath, owners,
-        rootDirectories: [entry.packagePath, ...index.listTeams().map((team) => this.layout.getRootExecutionDirPath(index.getPhysicalScopeForTeam(team.teamRunId)))],
-        agentDirectories: owners.map((owner) => owner.directory) });
+      target.groups.push({ key: packageKey("agent_org", rootRunId), family: "agent_org", id: rootRunId, directory: entry.packagePath });
     } catch (error) {
       this.record(target, "agent_org", rootRunId, entry.packagePath, isAttemptError(error) ? "FAILED_ATTEMPT" : "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED", message(error));
     }

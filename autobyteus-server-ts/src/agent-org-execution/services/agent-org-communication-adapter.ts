@@ -1,3 +1,4 @@
+import { messageLogOwners, type MessageLogOwner } from "../../run-history/store/task-agent-message-logs.js";
 import type { RootCommunicationAdapter } from "../../agent-collaboration/execution/communication/root-communication-adapter.js";
 import { buildRootCommunicationInputMessage } from "../../agent-collaboration/execution/communication/root-communication-runtime-builder.js";
 import type { AgentRunInputReservationResult } from "../../agent-execution/input/agent-run-input-contract.js";
@@ -16,6 +17,8 @@ export class AgentOrgCommunicationAdapter implements RootCommunicationAdapter {
     persistence: AgentOrgRunPersistenceCoordinator;
     isOpen(): boolean;
     isCurrentAgent: RootCommunicationAdapter["isCurrentAgent"];
+    /** The log an endpoint's messages belong to (the organization run's, or a task agent's own, D-4). */
+    messageLogOwnerOf(agentRunId: string): MessageLogOwner;
   assertDeliveryAllowed: RootCommunicationAdapter["assertDeliveryAllowed"];
     reserveRecipientInput(agentRunId: string, message: ReturnType<RootCommunicationAdapter["buildRecipientInput"]>): Promise<AgentRunInputReservationResult>;
     replaceMessages(messages: AgentOrgCommunicationMessagesFile): void;
@@ -56,6 +59,8 @@ export class AgentOrgCommunicationAdapter implements RootCommunicationAdapter {
     try {
       return await this.options.persistence.commitCommunication({
         nextMessages: next,
+        message: input.message,
+        logOwners: messageLogOwners(input.message, (agentRunId) => this.options.messageLogOwnerOf(agentRunId)),
         cancelBeforeDurability: () => input.reservation.cancel(),
         commitAfterDurability: () => {
           input.commitMessages(next.messages);

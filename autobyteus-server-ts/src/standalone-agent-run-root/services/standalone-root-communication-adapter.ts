@@ -5,6 +5,7 @@ import type { AgentRunInputReservationResult } from "../../agent-execution/input
 import { validateStandaloneRootMessages } from "../persistence/standalone-root-tree-schema.js";
 import type { StandaloneRootMessagesFile } from "../domain/standalone-root-tree.js";
 import type { StandaloneRootPersistenceCoordinator } from "./standalone-root-persistence-coordinator.js";
+import { messageLogOwners, type MessageLogOwner } from "../../run-history/store/task-agent-message-logs.js";
 
 /** Agent-root sidecar/input/event adapter for RootCommunicationEngine (v1 messages, subjectKind `agent`). */
 export class StandaloneRootCommunicationAdapter implements RootCommunicationAdapter {
@@ -17,6 +18,8 @@ export class StandaloneRootCommunicationAdapter implements RootCommunicationAdap
     persistence: StandaloneRootPersistenceCoordinator;
     isOpen(): boolean;
     isCurrentAgent: RootCommunicationAdapter["isCurrentAgent"];
+    /** The log an endpoint's messages belong to (the host's, or a task agent's own, D-4). */
+    messageLogOwnerOf(agentRunId: string): MessageLogOwner;
   assertDeliveryAllowed: RootCommunicationAdapter["assertDeliveryAllowed"];
     reserveRecipientInput(agentRunId: string, message: ReturnType<RootCommunicationAdapter["buildRecipientInput"]>): Promise<AgentRunInputReservationResult>;
     replaceMessages(messages: StandaloneRootMessagesFile): void;
@@ -59,6 +62,8 @@ export class StandaloneRootCommunicationAdapter implements RootCommunicationAdap
     try {
       return await this.options.persistence.commitCommunication({
         nextMessages: next,
+        message: input.message,
+        logOwners: messageLogOwners(input.message, (agentRunId) => this.options.messageLogOwnerOf(agentRunId)),
         cancelBeforeDurability: () => input.reservation.cancel(),
         commitAfterDurability: () => {
           input.commitMessages(next.messages);

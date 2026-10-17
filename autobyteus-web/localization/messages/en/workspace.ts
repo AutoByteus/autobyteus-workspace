@@ -57,7 +57,7 @@ const messages = {
   "workspace.agentOrg.history.stopLabel": "Stop Agent Org",
   "workspace.agentOrg.history.archiveLabel": "Archive Agent Org history",
   "workspace.agentOrg.history.deleteLabel": "Delete Agent Org history permanently",
-  "workspace.agentOrg.history.deleteConfirmation": "Delete this Agent Org history permanently? This removes only this run and cannot be undone.",
+  "workspace.agentOrg.history.deleteConfirmation": "Delete this Agent Org history permanently? This removes only this run and cannot be undone; its task agents' memory is kept.",
   "workspace.agentOrg.history.archived": "Agent Org history archived.",
   "workspace.agentOrg.history.archiveFailed": "Failed to archive Agent Org history. Please try again.",
   "workspace.agentOrg.history.deleted": "Agent Org history deleted permanently.",

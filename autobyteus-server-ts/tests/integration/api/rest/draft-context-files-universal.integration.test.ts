@@ -1,4 +1,6 @@
 import fs from "node:fs/promises";
+import { StandaloneRootPackageStore } from "../../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
+import { validateStandaloneRootTreePayload } from "../../../../src/standalone-agent-run-root/persistence/standalone-root-tree-schema.js";
 import http from "node:http";
 import os from "node:os";
 import path from "node:path";
@@ -88,13 +90,14 @@ const writeAgentCollaborationFixture = async (memoryDir: string) => {
     runId: "host", agentDefinitionId: "def", workspaceRootPath: "/workspace", memoryDir: hostDir,
     llmModelIdentifier: "model", runtimeKind: "autobyteus",
   });
-  await put(path.join(hostDir, "collaboration", "collaboration_tree.json"), {
+  // Written as the app writes it: the copy's own file at `agents/child/`, its link in the host's tree (D-1).
+  await new StandaloneRootPackageStore().writeTree(path.join(hostDir, "collaboration"), validateStandaloneRootTreePayload({
     subjectKind: "agent", createdAt: "2026-09-30T00:00:00.000Z",
     host: { address: "/assistant", agentRunId: "host", agentDefinitionId: "def" },
     taskExecutions: [{ address: "/code_reviewer", agentRunId: "child", platformAgentRunId: null,
       delegatorAgentRunId: "host", startedAt: "2026-09-30T00:00:01.000Z",
       source: { kind: "agent", agentDefinitionId: "reviewer", launchConfiguration: testOrgLaunchConfiguration() } }],
-  });
+  }, "host"));
   await put(path.join(hostDir, "collaboration", "communication_messages.json"),
     { schemaVersion: 1, subjectKind: "agent", hostRunId: "host", messages: [] });
 };

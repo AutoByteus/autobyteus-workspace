@@ -29,6 +29,7 @@ import {
   type InstanceDefinitions,
   type MentionViewerIndexPort,
 } from "../../agent-collaboration/collaborators/mention-viewer.js";
+import { placementForAgentChain, type AgentRunMemoryPlacement } from "../../agent-memory/domain/agent-run-memory-placement.js";
 
 export type AgentOrgExecutionKind = "configured" | "task" | "task_team_member";
 /** A team in an Org run: a team of the organization, or a task agent team (teams are flat: no team is a member of a team). */
@@ -174,6 +175,10 @@ export class AgentOrgExecutionIndex implements MessageRecipientIndexPort, Mentio
   getPhysicalScopeForAgent(agentRunId: string): RootExecutionPhysicalScope {
     const agent = this.requireAgent(agentRunId);
     return this.getPhysicalScopeForHost(agent.host);
+  }
+  /** Where the agent's memory directory is (contract L1), from its task execution chain. */
+  getMemoryPlacementForAgent(agentRunId: string): AgentRunMemoryPlacement {
+    return placementForAgentChain(agentRunId, this.listTaskExecutionChainForAgent(agentRunId), this.getPhysicalScopeForAgent(agentRunId));
   }
   getPhysicalScopeForTeam(teamRunId: string): RootExecutionPhysicalScope {
     const chain: string[] = [];

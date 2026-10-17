@@ -116,9 +116,11 @@ export class TeamRunPersistenceCoordinator {
     if (!prepared.prepared) {
       return { outcome: "conflict", code: prepared.code, message: prepared.message };
     }
-    const result = await this.options.communicationStore.write(
+    const result = await this.options.communicationStore.appendMessage(
       this.options.teamMemoryDir,
-      prepared.commit.nextMessages,
+      this.options.rootTeamRunId,
+      prepared.commit.message,
+      prepared.commit.logOwners,
     );
     if (result.outcome === "not_renamed") {
       prepared.commit.cancelBeforeDurability("TEAM_MESSAGE_HISTORY_COMMIT_FAILED");

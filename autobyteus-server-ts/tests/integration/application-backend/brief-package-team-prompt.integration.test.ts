@@ -81,6 +81,7 @@ describe("Brief package team prompt authority", () => {
       definitions.agentTeamDefinitionService,
     ).build({
       teamContext: new TeamRunContext({
+        teamKind: "configured",
         physicalScope: createRootExecutionPhysicalScope({
           root: createTeamRootExecutionIdentity("brief-team-run"),
           ancestorTeamRunIds: [],

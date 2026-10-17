@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { COORDINATING_LOG } from "../../../../src/run-history/store/task-agent-message-logs.js";
 import { buildDeliveryEndpointForParticipant } from "../../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
 import type { CollaborationMemberExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TeamRun } from "../../../../src/agent-team-execution/domain/team-run.js";
@@ -56,6 +57,7 @@ const buildHarness = (input: {
     initial: Object.freeze({ schemaVersion: 1 as const, rootTeamRunId, messages: Object.freeze([]) }),
     assertDeliveryAllowed,
     isCurrentAgent: input.currentAgent ?? (() => true),
+    messageLogOwnerOf: () => COORDINATING_LOG,
     requireContainingTeamRun: vi.fn(async () => ({ reserveDirectAgentInput }) as unknown as TeamRun),
     commit,
     publish,

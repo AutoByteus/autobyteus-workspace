@@ -1,4 +1,5 @@
 import fs from "node:fs/promises";
+import { getAgentOrgRunExecutionTreePath } from "../../../src/run-history/store/agent-org-run-execution-tree-path.js";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -55,7 +56,8 @@ const createPackage = async (options: { summary?: string; tie?: boolean; taskEvi
   const orgDir = layout.getOrgDirPath(orgRunId);
   await fs.mkdir(orgDir, { recursive: true });
   await Promise.all([
-    new AgentOrgRunExecutionTreeStore().write(orgDir, tree),
+    // The released shape this migration meets: the tree as the released app wrote it (full task records).
+    fs.writeFile(getAgentOrgRunExecutionTreePath(orgDir), `${JSON.stringify(tree, null, 2)}\n`),
     // Released records sidecar retained on disk after the delegator-tree migration.
     fs.writeFile(path.join(orgDir, "agent_org_task_delegation_records.json"), JSON.stringify({
       schemaVersion: 1,

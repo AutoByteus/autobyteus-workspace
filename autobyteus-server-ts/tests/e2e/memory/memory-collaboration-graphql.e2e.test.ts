@@ -150,7 +150,8 @@ describe("Memory collaboration (team + org) GraphQL e2e", () => {
     await writeTeamRoot(memoryDir, writingTeamTree("gql-team-run-2", "2026-08-15T00:00:00.000Z"));
     semantic(teamDir("gql-team-run-1", "gql-team-run-1-writer"), "team one", "2026-08-14T01:00:00.000Z");
     semantic(teamDir("gql-team-run-2", "gql-team-run-2-writer"), "team two", "2026-08-15T01:00:00.000Z");
-    semantic(teamDir("gql-team-run-2", "gql-team-run-2-task-writer"), "team two task", "2026-08-15T02:00:00.000Z");
+    // Task agents are runs of their own (contract L1): their memory is at `agents/<id>/` or `agent_teams/<team>/<id>/`.
+    semantic(path.join(memoryDir, "agents", "gql-team-run-2-task-writer"), "team two task", "2026-08-15T02:00:00.000Z");
     // Team root with memory but without the strict sidecars: not admitted by the readiness index.
     await writeTeamRoot(memoryDir, writingTeamTree("gql-team-unadmitted", "2026-08-16T00:00:00.000Z"), { sidecars: false });
     semantic(teamDir("gql-team-unadmitted", "gql-team-unadmitted-writer"), "hidden", "2026-08-16T01:00:00.000Z");
@@ -168,8 +169,8 @@ describe("Memory collaboration (team + org) GraphQL e2e", () => {
     await writeOrgRoot(memoryDir, orgTree("gql-org-b-1", "gql-org-b"));
     semantic(orgDir("gql-org-a-1", "gql-org-a-1-ceo"), "org ceo", "2026-09-01T01:00:00.000Z");
     semantic(orgDir("gql-org-a-1", "gql-org-a-1-engineering", "gql-org-a-1-designer"), "org designer", "2026-09-01T02:00:00.000Z");
-    semantic(orgDir("gql-org-a-1", "gql-org-a-1-task-ceo"), "org task ceo", "2026-09-01T03:00:00.000Z");
-    semantic(orgDir("gql-org-a-1", "gql-org-a-1-engineering-task", "gql-org-a-1-task-team-designer"), "org task team member", "2026-09-01T04:00:00.000Z");
+    semantic(path.join(memoryDir, "agents", "gql-org-a-1-task-ceo"), "org task ceo", "2026-09-01T03:00:00.000Z");
+    semantic(path.join(memoryDir, "agent_teams", "gql-org-a-1-engineering-task", "gql-org-a-1-task-team-designer"), "org task team member", "2026-09-01T04:00:00.000Z");
     semantic(orgDir("gql-org-a-2", "gql-org-a-2-ceo"), "org second run", "2026-09-02T01:00:00.000Z");
     await new AgentOrgRunHistoryIndexStore(memoryDir).writeIndex([
       { orgRunId: "gql-org-a-1", orgDefinitionId: "gql-org-a", orgDefinitionName: "Alpha Org", workspaceRootPath: "/tmp/alpha", summary: "first alpha run", createdAt: "2026-09-01T00:00:00.000Z", archivedAt: null, terminatedAt: null },

@@ -56,13 +56,15 @@ local AgentRun identity. For current Team execution trees,
 continuation uses the local AgentRun ID plus its persisted memory state, and new
 native nodes keep `platformAgentRunId: null`.
 
-Member memory is root-hierarchical. A standalone Team begins with the Team root
-identity and an empty task-Team ancestor chain. Direct configured Agents use the
-root TeamRun ID plus their AgentRun ID. A task Team appends its concrete
-TeamRun ID to the immutable `RootExecutionPhysicalScope`; its Agent and deeper
-task-Team descendants use that task ancestry. `RootedAgentMemoryLocator` owns
-physical path resolution. Consumers do not derive paths from logical addresses
-or provider IDs.
+Member memory follows one placement rule (`AgentRunMemoryPlacement`). Direct
+configured Agents are parts of the team run: the root TeamRun ID plus their
+AgentRun ID. A task agent is a normal run: `memory/agents/<taskAgentRunId>/`.
+A task agent team is a run of its own: `memory/agent_teams/<taskTeamRunId>/`,
+its members inside it. A task Team still appends its concrete TeamRun ID to the
+immutable `RootExecutionPhysicalScope` (its logical identity); the memory folder
+comes from the placement, which `TeamRunContext.teamKind` (`configured` or
+`task`) decides for a team's members. `AgentRunMemoryLocator` resolves the path.
+Consumers do not derive paths from logical addresses or provider IDs.
 
 Required startup migration `20260823_repair_team_agent_memory_layout` contains
 the only knowledge of the previously released nested-member memory defect. The
@@ -773,6 +775,18 @@ validated current package per root TeamRun:
 
 - `team_run_execution_tree.json`; and
 - versioned `team_communication_messages.json`.
+
+On disk a team run's tree links its task agents (`{address, agentRunId |
+teamRunId, delegatorAgentRunId?, startedAt}`); each task agent's facts are in its
+own file (`agents/<id>/run_metadata.json` or `agent_teams/<id>/team_run_execution_tree.json`,
+each with a `taskAgent` section). `TeamRunExecutionTreeStore` composes today's
+records on load and splits them on save (a task agent's own file first, then its
+link; only changed own files are written; records it did not load are written
+back unchanged). A tree with a `taskAgent` section is a task agent team's own
+tree and is never read or admitted as a team run (G2). Messages are stored with
+the run(s) they belong to: a message between the team run's parts in its own log,
+a message with a task agent in both logs (receiver's first); the stored view
+composes the run's log with its loaded task agents' logs.
 
 The execution tree is **read tolerantly and written exactly** (see the
 [data migration guideline](../design/data_migration_guideline.md) section 3).

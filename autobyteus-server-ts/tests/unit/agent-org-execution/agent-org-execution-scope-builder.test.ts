@@ -95,7 +95,7 @@ describe("AgentOrgExecutionScopeBuilder restore", () => {
       teamDefinitions: { getDefinitionById: enclosingDefinitionLookup } as never,
       agentRunManager: testActivationManager({ newPreparation: prepareNewAgentRun }) as never,
       memoryLocator: {
-        getLocation: () => ({ memoryDir: `/memory/agent_org/${orgRunId}/${agentRunId}` }),
+        getMemoryDir: () => `/memory/agent_org/${orgRunId}/${agentRunId}`,
       } as never,
       activityInspector: { inspect: () => ({ kind: "none" as const }) } as never,
     });
