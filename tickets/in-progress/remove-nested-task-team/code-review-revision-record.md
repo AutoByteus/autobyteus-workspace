@@ -11,6 +11,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) remains 
 | CRR-003 | `api-e2e-test-review-report.md` | API/E2E test-code review, round 1 (API-REV-001 + `45291d105f`) | N/A (first test review) | Fail (Local Fix) | TR-001, TR-002, TR-003, TR-004 |
 | CRR-004 | `api-e2e-test-review-report.md` | API/E2E test-code review, round 2, delta (API-REV-002, `2e70401f18`) | Fail (Local Fix) | Fail (Local Fix) | TR-001, TR-002, TR-004 resolved; TR-003 open |
 | CRR-005 | `api-e2e-test-review-report.md` | API/E2E test-code review, round 3, delta (API-REV-003, `57d388a7fd`) | Fail (Local Fix) | Pass | TR-003 resolved |
+| CRR-006 | `code-review-report.md` | Implementation Review, round 3, Targeted Delta Review of merge `78ffa51225` (IR-003, DR-001) | Pass (9.3/10, CRR-002) | Fail (Local Fix, 9.2/10) | CR-002 |
 
 ## Revision Entries
 
@@ -166,3 +167,35 @@ None (first test review).
 - Material score or classification changes: N/A
 - Recommended recipient: `/software_engineering_team/delivery_engineer`
 - Remaining risks or uncertainty: FU-1 (idle-lifetime intermittency, TESTING.md note) and FU-2 (freshness probe E-005) are tracked in existing PTM Tasks and fail the same way on the base
+
+### CRR-006 — DR-001 integration merge review (IR-003)
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/tickets/in-progress/remove-nested-task-team/code-review-report.md`
+- Review entry point and round: Implementation Review, round 3
+- Review scope: `Targeted Delta Review`: the resolution of merge `78ffa51225` (remerge diff, 20 files), the 18 files changed on both sides, and a marker search of every upstream-touched file
+- Triggering role, report path, and finding or scenario IDs: implementation_engineer, `implementation-revision-record.md` IR-003; delivery `delivery-integration-blocker.md` DR-001
+- Relevant solution revision IDs: `SR-006`
+- Relevant architecture-review revision IDs: `ARCH-REV-002`
+- Relevant implementation revision IDs: `IR-003`
+- Relevant API/E2E revision IDs: `API-REV-003` (validated pre-merge state)
+- Relevant delivery revision IDs: `DR-001`
+- Prior authoritative result: Pass, 9.3/10 (CRR-002)
+- Current authoritative result: Fail, `Local Fix` (9.2/10; Cleanup Completeness 8.8)
+- What changed in the review result and why:
+  - The merged source is correct on the flat model: task Teams count their members as Agents, there is one Team status path, the stable rows carry no Team status, and the removed probes are gone.
+  - Reviewer checks: server typecheck passes; 36 web files / 377 tests pass.
+  - CR-002: the mechanically rewritten upstream specs still build retired-shape trees (stable Agent rows under delegated Team rows, a delegated Team at a sub-Team address, and a dead `agent_team` helper branch).
+- Supported product scenario / material-premise basis changes: None
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001 | Resolved | Resolved | IR-002 | unchanged |
+
+- New or remaining finding IDs: CR-002
+- Material score or classification changes: 9.3 → 9.2 (Cleanup Completeness 9.3 → 8.8). Large / High unchanged.
+- Recommended recipient: `/software_engineering_team/implementation_engineer`
+- Remaining risks or uncertainty:
+  - The live `team-status-live` probe and AC-003 on the merged state are for API/E2E after the CR-002 pass.
+  - Docs-sync inputs for delivery: three stale sub-Team lines.

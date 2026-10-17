@@ -10,6 +10,7 @@ implementation rounds only.
 | IR-001 | architecture_reviewer — ARCH-REV-002 Pass; solution_designer SR-006 scope reduction | N/A | `Initial Baseline` | SR-001..SR-006, ARCH-REV-002 | Implemented; local checks pass; to Code Review |
 | IR-002 | code_reviewer — `code-review-report.md` CRR-001 (Fail, Local Fix) | CR-001 | `Local Fix` | CRR-001 | Unused imports removed; `--noUnusedLocals` clean in touched files; back to Code Review |
 | IR-003 | delivery_engineer — `delivery-integration-blocker.md` DR-001 (Blocked, Local Fix) | DR-001 integration conflicts | `Local Fix` | DR-001, CRR-002 | `origin/personal` `a716a4632e` merged; upstream universal Team status refactored to the flat model; checks green; to Code Review |
+| IR-004 | code_reviewer — `code-review-report.md` CRR-006 (Fail, Local Fix) | CR-002 | `Local Fix` | CRR-006 | Two rewritten upstream specs now build only flat-product trees; assertions unchanged; back to Code Review |
 
 ## Revision Entries
 
@@ -115,3 +116,25 @@ implementation rounds only.
   `delegation-forest-restore` 3/3, `standalone-unreadable-tree-containment` 2/2; AC-001 symbol search clean.
 - Next recipient or routing: `get_handoff_rules` → Code Reviewer (Team status changed on both sides), then API/E2E.
 - Remaining limitations or risks: the live `team-status-live` probe (real backend) was not run here — for API/E2E.
+
+### IR-004 — CR-002: rewritten upstream specs build only trees the flat product can produce
+
+- Triggering role, report path, and round: code_reviewer, `code-review-report.md` / `code-review-revision-record.md`, CRR-006 (round 3).
+- Triggering finding IDs: CR-002 (Low)
+- Classification: `Local Fix` (test fixtures only; no source change)
+- Prior authoritative result: IR-003 (merge 78ffa51225; source accepted in CRR-006).
+- Current authoritative result: fixtures realistic for the flat model; assertions unchanged.
+- Related revision IDs: CRR-006, DR-001
+- Implementation delta:
+  - `autobyteus-web/components/workspace/history/__tests__/workspaceHistoryTeamBranchStatus.spec.ts`: the stable Agent rows
+    placed under delegated Team rows (`left-agent`, `agent`, `team-a-agent`, `nested-offline-agent`) are now
+    `task_team_child` transient rows (a delegated Team's members); stable rows stay the root Team's Agents at depth 0;
+    `nested-*` / `sub-team` ids renamed to delegated wording (`inner-delegated-team`, `innermost-delegated-team`,
+    `delegated-team` / `delegated-member`, …). `memberTreeRow`'s `agent_team` branch is kept: `teamNode` still builds the
+    run's root display row with `memberTreeRow('agent_team', 'root', null)` (the root row is `agent_team` in the product).
+  - `autobyteus-web/services/agentOrgExecution/__tests__/agentOrgTeamBranchStatus.spec.ts`: the inner delegated copy is
+    addressed by its recipient Team (`/review`, member `/review/reviewer`) instead of a sub-Team address;
+    `nested-*` ids renamed `inner-*`.
+- Local validation and result: both specs pass (39 tests).
+- Next recipient or routing: `get_handoff_rules` → Code Reviewer (delta re-review of CR-002).
+- Remaining limitations or risks: none new; the three older doc lines CRR-006 lists are for delivery's docs sync.

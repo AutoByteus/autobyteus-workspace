@@ -21,7 +21,7 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-te
 
 - Implementation cycle: `Rework` (IR-003: DR-001 Local Fix — `origin/personal` `a716a4632e` merged; upstream universal Team status refactored to the flat model; see revision record IR-003 for every conflict resolution)
 - Implementation revision record: `tickets/in-progress/remove-nested-task-team/implementation-revision-record.md`
-- Current implementation revision ID: `IR-003`
+- Current implementation revision ID: `IR-004` (CR-002 spec-fixture fix on top of IR-003's merge)
 - Related solution revision IDs: SR-001..SR-006 (SR-006 authoritative)
 - Related architecture-review revision IDs: ARCH-REV-002
 - Related code-review revision IDs: CRR-001..CRR-002; API/E2E: see `api-e2e-revision-record.md`; delivery: DR-001

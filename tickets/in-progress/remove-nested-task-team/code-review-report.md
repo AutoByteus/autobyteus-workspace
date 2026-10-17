@@ -14,15 +14,15 @@
 - Relevant Architecture Review Revision IDs: `ARCH-REV-001`, `ARCH-REV-002`
 - Implementation Handoff Reviewed As Context: `.../implementation-handoff.md` (including the R-1 classification table)
 - Implementation Revision Record Reviewed As Context: `.../implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-001` (`065430dd61`; baseline fixes `66c61595d2`, `4ec3dd9eb3`), `IR-002` (`cbecdc076d`)
+- Relevant Implementation Revision IDs: `IR-001` (`065430dd61`; baseline fixes `66c61595d2`, `4ec3dd9eb3`), `IR-002` (`cbecdc076d`), `IR-003` (merge `78ffa51225`)
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/tickets/in-progress/remove-nested-task-team/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-002`
-- Current Review Round: `2`
-- Review Scope: `Targeted Delta Review` (round 2); round 1 was a `Full Review` of `db00ba16a9..065430dd61` (180 files; 75 source files, +491/−1288 source lines)
+- Current Code Review Revision ID: `CRR-006`
+- Current Review Round: `3`
+- Review Scope: round 3 is a `Targeted Delta Review` of the DR-001 integration merge `78ffa51225` (parents `bb1ff56137` and `origin/personal` `a716a4632e`, 25 commits). It covers the merge resolution (`git show --remerge-diff`, 20 files) and the 18 files changed on both sides. The upstream server `src` delta (project-task tools, 3 files) is unrelated to Team shape. Round 2 was a `Targeted Delta Review`; round 1 was a `Full Review` of `db00ba16a9..065430dd61` (180 files; 75 source files, +491/−1288 source lines)
 - Review Scope Evidence (round >1): the delta `065430dd61..cbecdc076d` touches only the two CR-001 source files (import lines) plus ticket artifacts; no behavior, shape or spine change. Round-1 evidence for every other check is carried forward.
-- Trigger: implementation_engineer, IR-002 (CR-001 Local Fix)
-- Prior Review Round Reviewed: `1` (CRR-001, Fail, CR-001)
-- Latest Authoritative Round: `2`
+- Trigger: implementation_engineer, IR-003 (DR-001 Local Fix: merge of the latest `origin/personal`, universal Team status)
+- Prior Review Round Reviewed: `2` (CRR-002, Pass)
+- Latest Authoritative Round: `3`
 
 (`...` = `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-nested-task-team/tickets/in-progress/remove-nested-task-team`)
 
@@ -53,6 +53,25 @@
   - Web (teamExecution, runConfigEditing, collaborators, agentOrgExecution, agentCollaboration, runHydration, stores, utils, workspace history): 222 files / 1935 tests pass.
   - AC-001 symbol search over the repo, excluding migrations, `dist` and tickets: no hit for any removed type, DTO, helper, fixture or localization key.
   - No changed source file over 500 effective lines; the largest is `chatDraftStore.ts` at 500, unchanged.
+
+## Round 3 — DR-001 Merge Review (IR-003)
+
+- **Conflict resolutions checked against the flat model and upstream universal Team status (`d1a66feca9`):**
+  - `WorkspaceStableExecutionRow.vue` has no Team status (stable rows are the root Team's configured Agents), and the template keeps no leftover.
+  - In `WorkspaceTeamExecutionTree.vue`, `teamStatusOf` is passed only to transient rows. `teamBranchStatus` returns Offline unless `memberKind === 'agent_team'`, which is only a delegated task-Team row.
+  - `workspaceHistoryTeamBranchStatus.ts`: `teamRunStatus` and `teamDefinitionGroupStatus` are used by `WorkspaceHistoryWorkspaceSection.vue`, and `teamBranchStatus` by the tree. Nothing in it is dead.
+  - In `agentOrgTeamBranchStatus.ts` and `agentOrgHistoryRows.ts`, a task Team's members are pushed as Agents and only `taskExecutions` recurse. `TaskTeamNode`/`AgentOrgTaskTeamNode` are `Extract<…, { teamRunId }>`, and `delegatedBy` is always the copy's delegator. `foldTeamAggregateStatus` is left only for single-Agent normalization in `agentOrgHistoryRows.ts:134`, as upstream documents (`workspaceTeamAggregateStatus.ts:11`), so there is one Team status path (`resolveTeamStatus`).
+  - The rewritten `agentRunCollaborationContext.ts` `listTaskRows` keeps member-then-task order and `hasChildren`. Members go through `visitAgent`, and the `Node` union is gone.
+  - `package.json`: `nested-team-hierarchy` existed on the base `db00ba16a9` (it was not added upstream), as the implementer said. No reference to either removed probe remains.
+  - TESTING.md is taken from upstream, and the FU-1 note goes with it (the Task keeps it).
+- **Reviewer-run evidence:**
+  - Server `pnpm typecheck` exits 0.
+  - Web `vitest` on `components/workspace/history`, `services/agentOrgExecution`, `services/agentCollaboration`, `agentOrgHistoryRows.spec` and `workspaceTeamAggregateStatus.spec`: 36 files / 377 tests pass.
+- **CR-002:** the upstream specs were rewritten mechanically, and some still build trees that the flat product cannot produce (see Findings).
+- **Docs-sync inputs for delivery (not findings):** older lines that still describe configured sub-Teams:
+  - `agent_execution_architecture.md:1173` "Team and sub-Team member";
+  - `agent_integration_minimal_bridge.md:155` "teamConfigs[] for the root and every nested Team";
+  - `settings.md:1511` "parent-to-subteam delivery prompts".
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
@@ -151,8 +170,8 @@ None new. The ARCH-REV-001 material premise (one retired Org failing a released 
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): 9.3
-- Overall score (`/100`): 93
+- Overall score (`/10`): 9.2 (round 3)
+- Overall score (`/100`): 92
 
 | Priority | Category | Score | Why This Score | What Is Weak | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
@@ -165,11 +184,28 @@ None new. The ARCH-REV-001 material premise (one retired Org failing a released 
 | 7 | API/E2E Readiness | 9.2 | AC-002/003 scenarios listed; probes updated | live delegated task team not driven | API/E2E |
 | 8 | Runtime Correctness And Behavioral Fidelity | 9.3 | delegation preserved at every level; 1456 + 1935 + 43 tests pass | — | — |
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.5 | clean cut, no tolerant reader | — | — |
-| 10 | Cleanup Completeness | 9.3 | broad removal including strings, fixtures and docs; round 2 removed the remaining unused imports | — | — |
+| 10 | Cleanup Completeness | 8.8 | The source refactor of upstream code to the flat model is complete | Rewritten upstream specs still build retired-shape trees: stable Agent rows under delegated Team rows, and a delegated Team at a sub-Team address (CR-002) | Rebuild those fixtures with the shapes the flat product emits |
 
 ## Findings
 
-None open. CR-001 is resolved in IR-002 (`cbecdc076d`): the three imports are removed; tsc is clean; `--noUnusedLocals` reports nothing in the touched files. The optional `memberKind` narrowing was declined with a valid reason: the shared `TeamMemberTreeRow['kind']` also serves the root display row and the transient task-team rows.
+| ID | Severity | Classification | Location | Evidence | Required Action |
+| --- | --- | --- | --- | --- | --- |
+| CR-002 | Low | `Local Fix` | `autobyteus-web/components/workspace/history/__tests__/workspaceHistoryTeamBranchStatus.spec.ts`; `autobyteus-web/services/agentOrgExecution/__tests__/agentOrgTeamBranchStatus.spec.ts` | See the issues below this table | See the actions below this table |
+
+CR-002 evidence:
+- **History status spec.** The swap from `stableTeamRow` to `taskTeamRow` leaves `stableAgentRow` children under delegated task-Team rows: line 148 (`left-agent`, depth 1), 157 (`agent`, depth 1 under a task Team), 190 (`team-a-agent`, depth 1) and 192 (`nested-offline-agent`, depth 2). The flat product never emits this. A delegated Team's members are `task_team_child` transient rows (`agentRunCollaborationContext.ts:263`, `runHistoryTeamExecutionRows`), and stable rows are the root Team's configured Agents at depth 0.
+- **Dead branch.** In the same spec, `memberTreeRow`'s `kind === 'agent_team'` branch is now dead: it is called only with `'agent'`.
+- **Org status spec.** The inner delegated Team has address `/design/review` with member `/design/review/reviewer`, a configured sub-Team address. A delegated Team copy is addressed by its recipient Team (`/review`, members `/review/<member>`; compare DF-3's `/squad`).
+- **Leftover names.** The fixtures keep the retired names `nested-*` and `sub-team`. This ticket's AC-001 excludes retired-shape fixtures, and the user asked for the flat model to be reflected, not only adapted.
+
+CR-002 required action:
+- Use `taskAgentRow(…, 'task_team_child')` for Agents under delegated Team rows.
+- Drop the dead `memberTreeRow` branch.
+- Give the inner delegated Team a recipient-Team address.
+- Rename the `nested-*` and `sub-team` fixture ids to delegated wording.
+- Assertions stay the same.
+
+Round 2: CR-001 is resolved in IR-002 (`cbecdc076d`): the three imports are removed; tsc is clean; `--noUnusedLocals` reports nothing in the touched files. The optional `memberKind` narrowing was declined with a valid reason: the shared `TeamMemberTreeRow['kind']` also serves the root display row and the transient task-team rows.
 
 ## Follow-ups
 
@@ -179,11 +215,11 @@ None new. Already recorded: follow-up 1 (launch-configuration team scopes) and `
 
 ## Classification
 
-N/A (Pass).
+`Local Fix` (CR-002, implementation-owned: the implementer rewrote these specs in IR-003).
 
 ## Recommended Recipient
 
-`/software_engineering_team/api_e2e_engineer` (primary); `/software_engineering_team/implementation_engineer` (informational).
+`/software_engineering_team/implementation_engineer` (CR-002). After a delta pass: API/E2E for the merged Team status (live `team-status-live` probe; AC-003 on the merged state).
 
 ## Residual Risks
 
@@ -193,11 +229,11 @@ N/A (Pass).
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
-- Review Entry Point: `Implementation Review` (round 2, Targeted Delta Review)
+- Review Decision: `Fail`
+- Review Entry Point: `Implementation Review` (round 3, Targeted Delta Review of merge `78ffa51225`)
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.3/10; every category ≥ 9.0
+- Score Summary: 9.2/10. Cleanup Completeness 8.8 is below 9.0; every other category is unchanged from round 2 and ≥ 9.0.
 - Failure Origin: N/A
-- Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
-- Notes: Proceed to API/E2E. The coverage hints are in the implementation handoff (AC-002 at API level; AC-003 Org and delegation forest; scripted e2e in a clean environment).
+- Recommended Recipient: `/software_engineering_team/implementation_engineer`
+- Notes: The merged source is correct on the flat model with one Team status path. Only the CR-002 test fixtures remain. The next delta covers CR-002 only.
