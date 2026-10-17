@@ -1,0 +1,1771 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/agent-loop-structure-refactor/autobyteus-ts[39m
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mfinal text answer with reasoning
+[22m[39mRegistered AgentContext for agent_id 'golden_tester_2484'. Total registered contexts: 1
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mfinal text answer with reasoning
+[22m[39mUnregistered AgentContext for agent_id 'golden_tester_2484'.
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mone tool cycle
+[22m[39mRegistered AgentContext for agent_id 'golden_tester_6960'. Total registered contexts: 1
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mone tool cycle
+[22m[39mUnregistered AgentContext for agent_id 'golden_tester_6960'.
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2moutput-limit recovery: a cut tool call, then success
+[22m[39mRegistered AgentContext for agent_id 'golden_tester_2017'. Total registered contexts: 1
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2moutput-limit recovery: a cut tool call, then success
+[22m[39mUnregistered AgentContext for agent_id 'golden_tester_2017'.
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2moutput-limit recovery: text cut, then resumed
+[22m[39mRegistered AgentContext for agent_id 'golden_tester_5733'. Total registered contexts: 1
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2moutput-limit recovery: text cut, then resumed
+[22m[39mUnregistered AgentContext for agent_id 'golden_tester_5733'.
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2moutput-limit exhaustion after 3 recoveries
+[22m[39mRegistered AgentContext for agent_id 'golden_tester_1256'. Total registered contexts: 1
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2moutput-limit exhaustion after 3 recoveries
+[22m[39mUnregistered AgentContext for agent_id 'golden_tester_1256'.
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2minterrupt mid-stream
+[22m[39mRegistered AgentContext for agent_id 'golden_tester_9302'. Total registered contexts: 1
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2minterrupt mid-stream
+[22m[39mUnregistered AgentContext for agent_id 'golden_tester_9302'.
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2minterrupt at post_llm_stream after reasoning was streamed (R-3)
+[22m[39mRegistered AgentContext for agent_id 'golden_tester_9746'. Total registered contexts: 1
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2minterrupt at post_llm_stream after reasoning was streamed (R-3)
+[22m[39mUnregistered AgentContext for agent_id 'golden_tester_9746'.
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mprovider error mid-stream
+[22m[39mRegistered AgentContext for agent_id 'golden_tester_3880'. Total registered contexts: 1
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mprovider error mid-stream
+[22m[39mUnregistered AgentContext for agent_id 'golden_tester_3880'.
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mcontent_filter stop error
+[22m[39mRegistered AgentContext for agent_id 'golden_tester_2694'. Total registered contexts: 1
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mcontent_filter stop error
+[22m[39mUnregistered AgentContext for agent_id 'golden_tester_2694'.
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mmalformed tool call is rejected, then the turn continues
+[22m[39mRegistered AgentContext for agent_id 'golden_tester_4932'. Total registered contexts: 1
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mmalformed tool call is rejected, then the turn continues
+[22m[39mUnregistered AgentContext for agent_id 'golden_tester_4932'.
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mafter-final compaction requested and executed
+[22m[39mRegistered AgentContext for agent_id 'golden_tester_3216'. Total registered contexts: 1
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mafter-final compaction requested and executed
+[22m[39mUnregistered AgentContext for agent_id 'golden_tester_3216'.
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mcompaction_blocked, then the retry runs the held turn
+[22m[39mRegistered AgentContext for agent_id 'golden_tester_6944'. Total registered contexts: 1
+
+[90mstdout[2m | tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22m[2magent loop golden event sequences[2m > [22m[2mcompaction_blocked, then the retry runs the held turn
+[22m[39mUnregistered AgentContext for agent_id 'golden_tester_6944'.
+
+ [31m❯[39m tests/integration/agent/agent-loop-event-sequence.test.ts [2m([22m[2m12 tests[22m[2m | [22m[31m7 failed[39m[2m)[22m[33m 4805[2mms[22m[39m
+[31m     [31m×[31m final text answer with reasoning[39m[32m 130[2mms[22m[39m
+[31m     [31m×[31m one tool cycle[39m[32m 213[2mms[22m[39m
+[31m     [31m×[31m output-limit recovery: a cut tool call, then success[39m[32m 111[2mms[22m[39m
+[31m     [31m×[31m output-limit recovery: text cut, then resumed[39m[32m 121[2mms[22m[39m
+     [32m✓[39m output-limit exhaustion after 3 recoveries[32m 110[2mms[22m[39m
+     [32m✓[39m interrupt mid-stream[32m 116[2mms[22m[39m
+     [32m✓[39m interrupt at post_llm_stream after reasoning was streamed (R-3)[32m 113[2mms[22m[39m
+     [32m✓[39m provider error mid-stream[32m 125[2mms[22m[39m
+     [32m✓[39m content_filter stop error[32m 115[2mms[22m[39m
+[31m     [31m×[31m malformed tool call is rejected, then the turn continues[39m[32m 218[2mms[22m[39m
+[31m     [31m×[31m after-final compaction requested and executed[39m[32m 216[2mms[22m[39m
+[31m     [31m×[31m compaction_blocked, then the retry runs the held turn[39m[33m 3215[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 7 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22magent loop golden event sequences[2m > [22mfinal text answer with reasoning
+[31m[1mError[22m: Snapshot `agent loop golden event sequences > final text answer with reasoning 1` mismatched[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -231,10 +231,35 @@[39m
+[2m          "turn_id": "turn_0001",[22m
+[2m          "type": "SEGMENT_END",[22m
+[2m        },[22m
+[2m      },[22m
+[2m      {[22m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "content": "Hello there.",[39m
+[31m+           "finish": {[39m
+[31m+             "providerReason": "stop",[39m
+[31m+             "reason": "stop",[39m
+[31m+           },[39m
+[31m+           "native": false,[39m
+[31m+           "reasoning": "thinking",[39m
+[31m+           "usage": 5,[39m
+[31m+         },[39m
+[31m+         "turn_0001",[39m
+[31m+         "LlmPhase",[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.ingestAssistantResponse",[39m
+[31m+     },[39m
+[31m+     {[39m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "snapshotRequestId": "turn_0001:llm:1",[39m
+[31m+         },[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[31m+     },[39m
+[31m+     {[39m
+[2m        "kind": "event.agent_token_usage_updated",[22m
+[2m        "payload": {[22m
+[2m          "call_sequence": 1,[22m
+[2m          "context_window_usage_percent": null,[22m
+[2m          "effective_context_window_tokens": null,[22m
+[33m@@ -269,35 +294,10 @@[39m
+[2m            "usage_scope": "per_call",[22m
+[2m          },[22m
+[2m        },[22m
+[2m      },[22m
+[2m      {[22m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "content": "Hello there.",[39m
+[32m-           "finish": {[39m
+[32m-             "providerReason": "stop",[39m
+[32m-             "reason": "stop",[39m
+[32m-           },[39m
+[32m-           "native": false,[39m
+[32m-           "reasoning": "thinking",[39m
+[32m-           "usage": 5,[39m
+[32m-         },[39m
+[32m-         "turn_0001",[39m
+[32m-         "LlmPhase",[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.ingestAssistantResponse",[39m
+[32m-     },[39m
+[32m-     {[39m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "snapshotRequestId": "turn_0001:llm:1",[39m
+[32m-         },[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[32m-     },[39m
+[32m-     {[39m
+[2m        "kind": "event.agent_status",[22m
+[2m        "payload": {[22m
+[2m          "previous_status": "awaiting_llm_response",[22m
+[2m          "recoverableBlock": null,[22m
+[2m          "status": "analyzing_llm_response",[22m
+
+[36m [2m❯[22m tests/integration/agent/agent-loop-event-sequence.test.ts:[2m285:27[22m[39m
+    [90m283| [39m    [35mawait[39m [34msend[39m(h[33m,[39m [32m'Say hello.'[39m[33m,[39m [34m1[39m)[33m;[39m
+    [90m284| [39m    [35mawait[39m [34msettle[39m()[33m;[39m
+    [90m285| [39m    [34mexpect[39m([34msnapshotOf[39m(h))[33m.[39m[34mtoMatchSnapshot[39m()[33m;[39m
+    [90m   | [39m                          [31m^[39m
+    [90m286| [39m  })[33m;[39m
+    [90m287| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22magent loop golden event sequences[2m > [22mone tool cycle
+[31m[1mError[22m: Snapshot `agent loop golden event sequences > one tool cycle 1` mismatched[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -340,46 +340,36 @@[39m
+[2m          "turn_id": "turn_0001",[22m
+[2m          "type": "SEGMENT_END",[22m
+[2m        },[22m
+[2m      },[22m
+[2m      {[22m
+[32m-       "[7mkind": "event.agent_token_usage_updated",[27m[39m
+[32m- [7m      "payload":[27m {[39m
+[31m+       "[7margs": [[27m[39m
+[31m+ [7m       [27m {[39m
+[32m-       [7m  [27m[7m"call_sequence": 1,[27m[39m
+[32m- [7m [27m    [7m   [27m"conte[7mxt_window_usage_percent": null[27m,[39m
+[31m+           "conte[7mnt": "Checking."[27m,[39m
+[32m-         [7m"effective_context_window_tokens": null,[27m[39m
+[32m-         "idempotency_key": "<agent>:turn_0001:llm:1",[39m
+[32m- [7m        "ingestion_kind": "autobyteus_llm_phase[27m",[39m
+[31m+         [7m [27m[7m "finish": {[27m[39m
+[31m+             "providerReason": "tool_calls",[39m
+[31m+ [7m            "reason": "tool_calls[27m",[39m
+[32m-         [7m"latest_prompt_tokens": 10,[27m[39m
+[32m-         "llm_call_id": "turn_0001:llm:1",[39m
+[32m-         "runtime_kind": "autobyteus",[39m
+[32m- [7m        "turn_id": "turn_0001[27m",[39m
+[31m+         [7m [27m[7m },[27m[39m
+[31m+           "native": false,[39m
+[31m+ [7m          "reasoning": "need weather[27m",[39m
+[32m-         "usage": [7m{[27m[39m
+[31m+ [7m  [27m        "usage": [7m5,[27m[39m
+[32m-         [7m  "billable_input_tokens": null[27m,[39m
+[31m+         [7m}[27m,[39m
+[32m-         [7m [27m[7m "billable_output_tokens": null,[27m[39m
+[32m-           "cache_creation_1h_input_tokens": null,[39m
+[32m-           "cache_creation_5m_input_tokens": null,[39m
+[32m-           "cache_creation_input_tokens": null,[39m
+[32m-           "cache_miss_input_tokens": null,[39m
+[32m- [7m          "cache_read_input_tokens": null[27m,[39m
+[31m+         [7m[[27m[39m
+[31m+           {[39m
+[31m+             "arguments": {[39m
+[31m+ [7m              "city": "Berlin"[27m,[39m
+[32m-           [7m"input_token_semantic": "unknown",[27m[39m
+[32m-           "input_tokens": 10,[39m
+[32m- [7m          "model_identifie[27mr": null,[39m
+[31m+           [7m [27m[7m },[27m[39m
+[31m+ [7m            "argumentsParseErro[27mr": null,[39m
+[32m-           [7m"model_provider": null[27m,[39m
+[31m+           [7m [27m[7m "id": "call_1"[27m,[39m
+[32m-           [7m"model_value": null,[27m[39m
+[32m-           "output_tokens": 5,[39m
+[32m-           "provider_name": null,[39m
+[32m-           "quality_flags": [[39m
+[32m- [7m            "input_token_semantic_unknown"[27m,[39m
+[31m+           [7m [27m[7m "name": "get_weather",[27m[39m
+[31m+             "turnId": "turn_0001",[39m
+[31m+ [7m          }[27m,[39m
+[32m-         [7m  [27m],[39m
+[31m+         ],[39m
+[32m-         [7m  "raw_usage_json": null,[27m[39m
+[32m-           "reasoning_output_tokens": null,[39m
+[32m-           "standard_input_tokens": null,[39m
+[32m-           "total_tokens": 15,[39m
+[32m-           "usage_scope": "per_call",[39m
+[32m-         },[39m
+[32m- [7m      }[27m,[39m
+[31m+         [7m"turn_0001",[27m[39m
+[31m+         "LlmPhase",[39m
+[31m+       ],[39m
+[31m+ [7m      "kind": "memory.ingestAssistantToolResponse"[27m,[39m
+[2m      },[22m
+[2m      {[22m
+[2m        "args": [[22m
+[2m          {[22m
+[2m            "content": "Checking.",[22m
+[33m@@ -389,53 +379,63 @@[39m
+[2m            },[22m
+[2m            "native": false,[22m
+[2m            "reasoning": "need weather",[22m
+[2m            "usage": 5,[22m
+[2m          },[22m
+[32m-         [7m[[27m[39m
+[32m-           {[39m
+[32m-             "arguments": {[39m
+[32m-             [7m  "city": "Berlin",[27m[39m
+[32m- [7m [27m          [7m },[27m[39m
+[32m-             [7m"argumentsParseError": null,[27m[39m
+[32m-             "id": "call_1",[39m
+[32m- [7m  [27m          "[7mname": "[27mget_[7mweather",[27m[39m
+[32m- [7m            "turnId": "turn_0001"[27m,[39m
+[31m+         [7m"turn_0001",[27m[39m
+[31m+         "LlmPhase",[39m
+[31m+         {[39m
+[31m+           "appendToWorkingContext": false,[39m
+[31m+ [7m  [27m      [7m},[27m[39m
+[31m+       [7m],[27m[39m
+[31m+       "kind": "memory.ingestAssistantResponse",[39m
+[31m+     },[39m
+[31m+     [7m{[27m[39m
+[31m+       [7m"args": [[27m[39m
+[31m+ [7m     [27m   [7m{[27m[39m
+[31m+          [7m "snapshotRequestId": "turn_0001:llm:1",[27m[39m
+[31m+         },[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[31m+     },[39m
+[31m+     [7m{[27m[39m
+[31m+       "[7mkind": "event.a[27mge[7mn[27mt_[7mtoken_usage_updated",[27m[39m
+[31m+       "payload": {[39m
+[31m+ [7m        "call_sequence": 1[27m,[39m
+[32m-         [7m [27m[7m },[27m[39m
+[32m-         ],[39m
+[32m- [7m        "[27mturn_0001",[39m
+[31m+         [7m"context_window_usage_percent": null,[27m[39m
+[31m+         "effective_context_window_tokens": null,[39m
+[31m+ [7m        "idempotency_key": "<agent>:[27mturn_0001[7m:llm:1[27m",[39m
+[32m-         "[7mLlmP[27mhase",[39m
+[31m+         "[7mingestion_kind": "autobyteus_llm_p[27mhase",[39m
+[32m-       [7m][27m,[39m
+[31m+       [7m  [27m[7m"latest_prompt_tokens": 10[27m,[39m
+[32m-       [7m"kind": "memory.ingestAssistantToolResponse[27m",[39m
+[31m+       [7m [27m[7m "llm_call_id": "turn_0001:llm:1",[27m[39m
+[31m+ [7m        "runtime_kind": "autobyteus[27m",[39m
+[32m-     [7m},[27m[39m
+[32m-     [7m{[27m[39m
+[32m-       "[7margs[27m": [7m[[27m[39m
+[31m+         [7m"turn_id": "turn_0001",[27m[39m
+[31m+ [7m  [27m      "[7musage[27m": [7m{[27m[39m
+[32m-         [7m{[27m[39m
+[32m- [7m          "cont[27men[7mt[27m": [7m"Checking."[27m,[39m
+[31m+         [7m  "billable_input_tokens": null,[27m[39m
+[31m+ [7m          "billable_output_tok[27men[7ms[27m": [7mnull[27m,[39m
+[32m-           "[7mfinish": {[27m[39m
+[32m-             "providerReason": "tool_calls",[39m
+[32m-             "reason": "tool_calls",[39m
+[32m-           },[39m
+[32m-           "native": false,[39m
+[32m- [7m          "reasoning": "need weather[27m",[39m
+[31m+           "[7mcache_creation_1h_input_tokens": null,[27m[39m
+[31m+           "cache_creation_5m_input_tokens": null,[39m
+[31m+           "cache_creation_input_tokens": null,[39m
+[31m+           "cache_miss_input_tokens": null,[39m
+[31m+           "cache_read_input_tokens": null,[39m
+[31m+ [7m          "input_token_semantic": "unknown[27m",[39m
+[32m-           "[7musage[27m": [7m5[27m,[39m
+[31m+           "[7minput_tokens[27m": [7m10[27m,[39m
+[32m-         [7m}[27m,[39m
+[31m+         [7m  "model_identifier": null[27m,[39m
+[32m-         [7m"turn_0001"[27m,[39m
+[31m+         [7m [27m[7m "model_provider": null[27m,[39m
+[32m-         [7m"LlmPhase"[27m,[39m
+[31m+         [7m [27m[7m "model_value": null[27m,[39m
+[32m-         [7m{[27m[39m
+[32m-           "appendToWorkingContext": false,[39m
+[32m-         },[39m
+[31m+         [7m [27m[7m "output_tokens": 5,[27m[39m
+[31m+           "provider_name": null,[39m
+[31m+           "quality_flags": [[39m
+[32m-       [7m],[27m[39m
+[32m-       "[7mk[27min[7md": "memory.ingestAssistantResponse[27m",[39m
+[31m+             "in[7mput_token_semantic_unknown[27m",[39m
+[32m-     [7m}[27m,[39m
+[31m+     [7m  [27m[7m    ][27m,[39m
+[32m-     [7m{[27m[39m
+[32m-       "[7margs": [[27m[39m
+[32m-         {[39m
+[32m-           "snapshotRequestId": "turn_0001:llm:1",[39m
+[32m-         },[39m
+[32m-       ],[39m
+[32m- [7m      "kind": "memory.commitLlmRequestRecoverySnapshot"[27m,[39m
+[31m+           "[7mraw_usage_json": null,[27m[39m
+[31m+           "reasoning_output_tokens": null,[39m
+[31m+           "standard_input_tokens": null,[39m
+[31m+           "total_tokens": 15,[39m
+[31m+           "usage_scope": "per_call",[39m
+[31m+         },[39m
+[31m+ [7m      }[27m,[39m
+[2m      },[22m
+[2m      {[22m
+[2m        "kind": "event.agent_status",[22m
+[2m        "payload": {[22m
+[2m          "previous_status": "awaiting_llm_response",[22m
+[33m@@ -626,10 +626,35 @@[39m
+[2m          "turn_id": "turn_0001",[22m
+[2m          "type": "SEGMENT_END",[22m
+[2m        },[22m
+[2m      },[22m
+[2m      {[22m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "content": "It is sunny.",[39m
+[31m+           "finish": {[39m
+[31m+             "providerReason": "stop",[39m
+[31m+             "reason": "stop",[39m
+[31m+           },[39m
+[31m+           "native": false,[39m
+[31m+           "reasoning": null,[39m
+[31m+           "usage": 5,[39m
+[31m+         },[39m
+[31m+         "turn_0001",[39m
+[31m+         "LlmPhase",[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.ingestAssistantResponse",[39m
+[31m+     },[39m
+[31m+     {[39m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "snapshotRequestId": "turn_0001:llm:2",[39m
+[31m+         },[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[31m+     },[39m
+[31m+     {[39m
+[2m        "kind": "event.agent_token_usage_updated",[22m
+[2m        "payload": {[22m
+[2m          "call_sequence": 2,[22m
+[2m          "context_window_usage_percent": null,[22m
+[2m          "effective_context_window_tokens": null,[22m
+[33m@@ -664,35 +689,10 @@[39m
+[2m            "usage_scope": "per_call",[22m
+[2m          },[22m
+[2m        },[22m
+[2m      },[22m
+[2m      {[22m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "content": "It is sunny.",[39m
+[32m-           "finish": {[39m
+[32m-             "providerReason": "stop",[39m
+[32m-             "reason": "stop",[39m
+[32m-           },[39m
+[32m-           "native": false,[39m
+[32m-           "reasoning": null,[39m
+[32m-           "usage": 5,[39m
+[32m-         },[39m
+[32m-         "turn_0001",[39m
+[32m-         "LlmPhase",[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.ingestAssistantResponse",[39m
+[32m-     },[39m
+[32m-     {[39m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "snapshotRequestId": "turn_0001:llm:2",[39m
+[32m-         },[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[32m-     },[39m
+[32m-     {[39m
+[2m        "kind": "event.agent_status",[22m
+[2m        "payload": {[22m
+[2m          "previous_status": "awaiting_llm_response",[22m
+[2m          "recoverableBlock": null,[22m
+[2m          "status": "analyzing_llm_response",[22m
+
+[36m [2m❯[22m tests/integration/agent/agent-loop-event-sequence.test.ts:[2m296:27[22m[39m
+    [90m294| [39m    [35mawait[39m [34msettle[39m()[33m;[39m
+    [90m295| [39m    [34mexpect[39m(weatherCalls)[33m.[39m[34mtoEqual[39m([[32m'Berlin'[39m])[33m;[39m
+    [90m296| [39m    [34mexpect[39m([34msnapshotOf[39m(h))[33m.[39m[34mtoMatchSnapshot[39m()[33m;[39m
+    [90m   | [39m                          [31m^[39m
+    [90m297| [39m  })[33m;[39m
+    [90m298| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22magent loop golden event sequences[2m > [22moutput-limit recovery: a cut tool call, then success
+[31m[1mError[22m: Snapshot `agent loop golden event sequences > output-limit recovery: a cut tool call, then success 1` mismatched[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -450,48 +450,10 @@[39m
+[2m          "turn_id": "turn_0001",[22m
+[2m          "type": "SEGMENT_END",[22m
+[2m        },[22m
+[2m      },[22m
+[2m      {[22m
+[32m-       "kind": "event.agent_token_usage_updated",[39m
+[32m-       "payload": {[39m
+[32m-         "call_sequence": 2,[39m
+[32m-         "context_window_usage_percent": null,[39m
+[32m-         "effective_context_window_tokens": null,[39m
+[32m-         "idempotency_key": "<agent>:turn_0001:llm:2",[39m
+[32m-         "ingestion_kind": "autobyteus_llm_phase",[39m
+[32m-         "latest_prompt_tokens": 10,[39m
+[32m-         "llm_call_id": "turn_0001:llm:2",[39m
+[32m-         "runtime_kind": "autobyteus",[39m
+[32m-         "turn_id": "turn_0001",[39m
+[32m-         "usage": {[39m
+[32m-           "billable_input_tokens": null,[39m
+[32m-           "billable_output_tokens": null,[39m
+[32m-           "cache_creation_1h_input_tokens": null,[39m
+[32m-           "cache_creation_5m_input_tokens": null,[39m
+[32m-           "cache_creation_input_tokens": null,[39m
+[32m-           "cache_miss_input_tokens": null,[39m
+[32m-           "cache_read_input_tokens": null,[39m
+[32m-           "input_token_semantic": "unknown",[39m
+[32m-           "input_tokens": 10,[39m
+[32m-           "model_identifier": null,[39m
+[32m-           "model_provider": null,[39m
+[32m-           "model_value": null,[39m
+[32m-           "output_tokens": 5,[39m
+[32m-           "provider_name": null,[39m
+[32m-           "quality_flags": [[39m
+[32m-             "input_token_semantic_unknown",[39m
+[32m-           ],[39m
+[32m-           "raw_usage_json": null,[39m
+[32m-           "reasoning_output_tokens": null,[39m
+[32m-           "standard_input_tokens": null,[39m
+[32m-           "total_tokens": 15,[39m
+[32m-           "usage_scope": "per_call",[39m
+[32m-         },[39m
+[32m-       },[39m
+[32m-     },[39m
+[32m-     {[39m
+[2m        "args": [[22m
+[2m          {[22m
+[2m            "content": "",[22m
+[2m            "finish": {[22m
+[2m              "providerReason": "tool_calls",[22m
+[33m@@ -542,10 +504,48 @@[39m
+[2m          {[22m
+[2m            "snapshotRequestId": "turn_0001:llm:2",[22m
+[2m          },[22m
+[2m        ],[22m
+[2m        "kind": "memory.commitLlmRequestRecoverySnapshot",[22m
+[31m+     },[39m
+[31m+     {[39m
+[31m+       "kind": "event.agent_token_usage_updated",[39m
+[31m+       "payload": {[39m
+[31m+         "call_sequence": 2,[39m
+[31m+         "context_window_usage_percent": null,[39m
+[31m+         "effective_context_window_tokens": null,[39m
+[31m+         "idempotency_key": "<agent>:turn_0001:llm:2",[39m
+[31m+         "ingestion_kind": "autobyteus_llm_phase",[39m
+[31m+         "latest_prompt_tokens": 10,[39m
+[31m+         "llm_call_id": "turn_0001:llm:2",[39m
+[31m+         "runtime_kind": "autobyteus",[39m
+[31m+         "turn_id": "turn_0001",[39m
+[31m+         "usage": {[39m
+[31m+           "billable_input_tokens": null,[39m
+[31m+           "billable_output_tokens": null,[39m
+[31m+           "cache_creation_1h_input_tokens": null,[39m
+[31m+           "cache_creation_5m_input_tokens": null,[39m
+[31m+           "cache_creation_input_tokens": null,[39m
+[31m+           "cache_miss_input_tokens": null,[39m
+[31m+           "cache_read_input_tokens": null,[39m
+[31m+           "input_token_semantic": "unknown",[39m
+[31m+           "input_tokens": 10,[39m
+[31m+           "model_identifier": null,[39m
+[31m+           "model_provider": null,[39m
+[31m+           "model_value": null,[39m
+[31m+           "output_tokens": 5,[39m
+[31m+           "provider_name": null,[39m
+[31m+           "quality_flags": [[39m
+[31m+             "input_token_semantic_unknown",[39m
+[31m+           ],[39m
+[31m+           "raw_usage_json": null,[39m
+[31m+           "reasoning_output_tokens": null,[39m
+[31m+           "standard_input_tokens": null,[39m
+[31m+           "total_tokens": 15,[39m
+[31m+           "usage_scope": "per_call",[39m
+[31m+         },[39m
+[31m+       },[39m
+[2m      },[22m
+[2m      {[22m
+[2m        "kind": "event.agent_status",[22m
+[2m        "payload": {[22m
+[2m          "previous_status": "awaiting_llm_response",[22m
+[33m@@ -738,10 +738,35 @@[39m
+[2m          "payload": {},[22m
+[2m          "segment_id": "turn_<hex3>:<hex4>",[22m
+[2m          "turn_id": "turn_0001",[22m
+[2m          "type": "SEGMENT_END",[22m
+[2m        },[22m
+[31m+     },[39m
+[31m+     {[39m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "content": "Sunny.",[39m
+[31m+           "finish": {[39m
+[31m+             "providerReason": "stop",[39m
+[31m+             "reason": "stop",[39m
+[31m+           },[39m
+[31m+           "native": false,[39m
+[31m+           "reasoning": null,[39m
+[31m+           "usage": 5,[39m
+[31m+         },[39m
+[31m+         "turn_0001",[39m
+[31m+         "LlmPhase",[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.ingestAssistantResponse",[39m
+[31m+     },[39m
+[31m+     {[39m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "snapshotRequestId": "turn_0001:llm:3",[39m
+[31m+         },[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[2m      },[22m
+[2m      {[22m
+[2m        "kind": "event.agent_token_usage_updated",[22m
+[2m        "payload": {[22m
+[2m          "call_sequence": 3,[22m
+[33m@@ -776,35 +801,10 @@[39m
+[2m            "standard_input_tokens": null,[22m
+[2m            "total_tokens": 15,[22m
+[2m            "usage_scope": "per_call",[22m
+[2m          },[22m
+[2m        },[22m
+[32m-     },[39m
+[32m-     {[39m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "content": "Sunny.",[39m
+[32m-           "finish": {[39m
+[32m-             "providerReason": "stop",[39m
+[32m-             "reason": "stop",[39m
+[32m-           },[39m
+[32m-           "native": false,[39m
+[32m-           "reasoning": null,[39m
+[32m-           "usage": 5,[39m
+[32m-         },[39m
+[32m-         "turn_0001",[39m
+[32m-         "LlmPhase",[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.ingestAssistantResponse",[39m
+[32m-     },[39m
+[32m-     {[39m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "snapshotRequestId": "turn_0001:llm:3",[39m
+[32m-         },[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[2m      },[22m
+[2m      {[22m
+[2m        "kind": "event.agent_status",[22m
+[2m        "payload": {[22m
+[2m          "previous_status": "awaiting_llm_response",[22m
+
+[36m [2m❯[22m tests/integration/agent/agent-loop-event-sequence.test.ts:[2m308:27[22m[39m
+    [90m306| [39m    [35mawait[39m [34msettle[39m()[33m;[39m
+    [90m307| [39m    [34mexpect[39m(weatherCalls)[33m.[39m[34mtoEqual[39m([[32m'Berlin'[39m])[33m;[39m
+    [90m308| [39m    [34mexpect[39m([34msnapshotOf[39m(h))[33m.[39m[34mtoMatchSnapshot[39m()[33m;[39m
+    [90m   | [39m                          [31m^[39m
+    [90m309| [39m  })[33m;[39m
+    [90m310| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22magent loop golden event sequences[2m > [22moutput-limit recovery: text cut, then resumed
+[31m[1mError[22m: Snapshot `agent loop golden event sequences > output-limit recovery: text cut, then resumed 1` mismatched[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -387,10 +387,35 @@[39m
+[2m          "turn_id": "turn_0001",[22m
+[2m          "type": "SEGMENT_END",[22m
+[2m        },[22m
+[2m      },[22m
+[2m      {[22m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "content": " and part two.",[39m
+[31m+           "finish": {[39m
+[31m+             "providerReason": "stop",[39m
+[31m+             "reason": "stop",[39m
+[31m+           },[39m
+[31m+           "native": false,[39m
+[31m+           "reasoning": null,[39m
+[31m+           "usage": 5,[39m
+[31m+         },[39m
+[31m+         "turn_0001",[39m
+[31m+         "LlmPhase",[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.ingestAssistantResponse",[39m
+[31m+     },[39m
+[31m+     {[39m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "snapshotRequestId": "turn_0001:llm:2",[39m
+[31m+         },[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[31m+     },[39m
+[31m+     {[39m
+[2m        "kind": "event.agent_token_usage_updated",[22m
+[2m        "payload": {[22m
+[2m          "call_sequence": 2,[22m
+[2m          "context_window_usage_percent": null,[22m
+[2m          "effective_context_window_tokens": null,[22m
+[33m@@ -425,35 +450,10 @@[39m
+[2m            "usage_scope": "per_call",[22m
+[2m          },[22m
+[2m        },[22m
+[2m      },[22m
+[2m      {[22m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "content": " and part two.",[39m
+[32m-           "finish": {[39m
+[32m-             "providerReason": "stop",[39m
+[32m-             "reason": "stop",[39m
+[32m-           },[39m
+[32m-           "native": false,[39m
+[32m-           "reasoning": null,[39m
+[32m-           "usage": 5,[39m
+[32m-         },[39m
+[32m-         "turn_0001",[39m
+[32m-         "LlmPhase",[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.ingestAssistantResponse",[39m
+[32m-     },[39m
+[32m-     {[39m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "snapshotRequestId": "turn_0001:llm:2",[39m
+[32m-         },[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[32m-     },[39m
+[32m-     {[39m
+[2m        "kind": "event.agent_status",[22m
+[2m        "payload": {[22m
+[2m          "previous_status": "awaiting_llm_response",[22m
+[2m          "recoverableBlock": null,[22m
+[2m          "status": "analyzing_llm_response",[22m
+
+[36m [2m❯[22m tests/integration/agent/agent-loop-event-sequence.test.ts:[2m318:27[22m[39m
+    [90m316| [39m    [35mawait[39m [34msend[39m(h[33m,[39m [32m'Write a long answer.'[39m[33m,[39m [34m1[39m)[33m;[39m
+    [90m317| [39m    [35mawait[39m [34msettle[39m()[33m;[39m
+    [90m318| [39m    [34mexpect[39m([34msnapshotOf[39m(h))[33m.[39m[34mtoMatchSnapshot[39m()[33m;[39m
+    [90m   | [39m                          [31m^[39m
+    [90m319| [39m  })[33m;[39m
+    [90m320| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22magent loop golden event sequences[2m > [22mmalformed tool call is rejected, then the turn continues
+[31m[1mError[22m: Snapshot `agent loop golden event sequences > malformed tool call is rejected, then the turn continues 1` mismatched[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -266,48 +266,36 @@[39m
+[2m          "turn_id": "turn_0001",[22m
+[2m          "type": "SEGMENT_END",[22m
+[2m        },[22m
+[2m      },[22m
+[2m      {[22m
+[32m-       "[7mkind": "event.agent_token_usage_updated",[27m[39m
+[32m-       "payload": {[39m
+[32m-         "call_sequence": 1,[39m
+[32m-       [7m  [27m"conte[7mxt_window_usage_perce[27mnt": [7mnull[27m,[39m
+[31m+       "[7margs": [[27m[39m
+[31m+         {[39m
+[31m+ [7m    [27m      "content": [7m""[27m,[39m
+[32m-         [7m"effective_context_window_tokens": null,[27m[39m
+[32m- [7m        "idempotency_key": "<agent>:turn_0001:llm:1[27m",[39m
+[31m+         [7m  "finish": {[27m[39m
+[31m+ [7m            "providerReason": "tool_calls[27m",[39m
+[32m-         [7m"ingestion_kind": "autobyteus_llm_phase",[27m[39m
+[32m-         "latest_prompt_tokens": 10,[39m
+[32m-         "llm_call_id": "turn_0001:llm:1",[39m
+[32m-         "runtime_kind": "autobyteus",[39m
+[32m- [7m        "turn_id": "turn_0001"[27m,[39m
+[31m+         [7m  [27m[7m  "reason": "tool_calls",[27m[39m
+[31m+           },[39m
+[31m+           "native": false,[39m
+[31m+ [7m          "reasoning": null[27m,[39m
+[32m-         "usage": [7m{[27m[39m
+[32m- [7m  [27m        [7m"billable_input_tokens": null,[27m[39m
+[32m-           "billable_output_tokens": null,[39m
+[32m-           "cache_creation_1h_input_tokens": null,[39m
+[32m-           "cache_creation_5m_input_tokens": null,[39m
+[32m-           "cache_creation_input_tokens": null,[39m
+[32m-           "cache_miss_input_tokens": null,[39m
+[32m- [7m          "cache_read_input_tokens": null[27m,[39m
+[31m+         [7m [27m[7m [27m"usage": [7m5,[27m[39m
+[31m+         [7m},[27m[39m
+[31m+         [[39m
+[31m+           {[39m
+[31m+             "arguments": {},[39m
+[31m+ [7m            "argumentsParseError": "Unexpected token 'B', "{"city": Berlin}" is not valid JSON"[27m,[39m
+[32m-           "i[7mnput_token_semantic": "unknown[27m",[39m
+[31m+           [7m [27m[7m [27m"i[7md": "call_bad[27m",[39m
+[32m-           "[7minput_tokens": 10,[27m[39m
+[32m-           "model_identifier": null,[39m
+[32m-           "model_provider": null,[39m
+[32m-           "model_value": null,[39m
+[32m-           "output_tokens": 5,[39m
+[32m-           "provider_name": null,[39m
+[32m-           "quality_flags": [[39m
+[32m- [7m            "input_token_semantic_unknown[27m",[39m
+[31m+ [7m  [27m          "[7mname": "get_weather",[27m[39m
+[31m+             "turnId": "turn_0001",[39m
+[31m+           },[39m
+[31m+         ],[39m
+[31m+         "turn_0001",[39m
+[31m+ [7m        "LlmPhase[27m",[39m
+[32m-       [7m  [27m[7m  [27m],[39m
+[31m+       ],[39m
+[32m- [7m    [27m      "[7mraw_usage_json": null,[27m[39m
+[32m-           "reasoning_output_tokens": null,[39m
+[32m-           "standard_input_tokens": null,[39m
+[32m-           "total_tokens": 15,[39m
+[32m-           "usage_scope": "per_call",[39m
+[32m-         },[39m
+[32m-       },[39m
+[32m-     },[39m
+[32m-    [7m [27m{[39m
+[31m+       "[7mkind": "memory.ingestAssistantToolResponse",[27m[39m
+[31m+     },[39m
+[31m+ [7m [27m   {[39m
+[2m        "args": [[22m
+[2m          {[22m
+[2m            "content": "",[22m
+[2m            "finish": {[22m
+[2m              "providerReason": "tool_calls",[22m
+[33m@@ -315,51 +303,63 @@[39m
+[2m            },[22m
+[2m            "native": false,[22m
+[2m            "reasoning": null,[22m
+[2m            "usage": 5,[22m
+[2m          },[22m
+[32m-         [7m[[27m[39m
+[32m-           {[39m
+[32m- [7m            "arguments": {[27m},[39m
+[31m+         [7m"turn_0001",[27m[39m
+[31m+         "LlmPhase",[39m
+[31m+         {[39m
+[31m+           "appendToWorkingContext": false,[39m
+[31m+ [7m        [27m},[39m
+[32m-             "[7margumentsParseError": "Unexpected token 'B', "{"city": Berlin}" is not valid JSON"[27m,[39m
+[31m+       [7m],[27m[39m
+[31m+       "[7mkind": "memory.ingestAssistantResponse",[27m[39m
+[31m+     },[39m
+[31m+     {[39m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "snapshotRequestId": "turn_0001:llm:1",[39m
+[31m+ [7m        }[27m,[39m
+[32m-             "[7mi[27md": "[7mcall_bad",[27m[39m
+[32m- [7m  [27m          "[7mname": "[27mget_[7mweather",[27m[39m
+[32m-             "turnId": "turn_0001",[39m
+[32m-           },[39m
+[32m- [7m        ][27m,[39m
+[31m+       [7m],[27m[39m
+[31m+       "[7mkin[27md": "[7mmemory.commitLlmRequestRecoverySnapshot",[27m[39m
+[31m+     },[39m
+[31m+     [7m{[27m[39m
+[31m+       "[7mkind": "event.a[27mge[7mn[27mt_[7mtoken_usage_updated",[27m[39m
+[31m+       "payload": {[39m
+[31m+         "call_sequence": 1,[39m
+[31m+         "context_window_usage_percent": null,[39m
+[31m+ [7m        "effective_context_window_tokens": null[27m,[39m
+[32m-        [7m [27m"turn_0001",[39m
+[31m+        [7m [27m"[7midempotency_key": "<agent>:[27mturn_0001[7m:llm:1[27m",[39m
+[32m-         "[7mLlmPhase",[27m[39m
+[32m-       ],[39m
+[32m- [7m      "kind": "memory.ingestAssistantToolResponse[27m",[39m
+[31m+         "[7mingestion_kind": "autobyteus_llm_phase",[27m[39m
+[31m+         "latest_prompt_tokens": 10,[39m
+[31m+ [7m        "llm_call_id": "turn_0001:llm:1[27m",[39m
+[32m-     [7m},[27m[39m
+[32m-     [7m{[27m[39m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m- [7m          "cont[27men[7mt[27m": [7m""[27m,[39m
+[31m+         [7m"runtime_kind": "autobyteus",[27m[39m
+[31m+         "turn_id": "turn_0001",[39m
+[31m+         "usage": {[39m
+[31m+ [7m          "billable_input_tok[27men[7ms[27m": [7mnull[27m,[39m
+[32m-           "[7mfinish": {[27m[39m
+[32m-             "providerReason": "tool_calls",[39m
+[32m-             "reason": "tool_calls",[39m
+[32m-           },[39m
+[32m-           "native": false,[39m
+[32m-           "reasoning": null,[39m
+[32m-           "usage": 5,[39m
+[32m-         },[39m
+[32m- [7m        "turn_0001"[27m,[39m
+[31m+           "[7mbillable_output_tokens": null,[27m[39m
+[31m+           "cache_creation_1h_input_tokens": null,[39m
+[31m+           "cache_creation_5m_input_tokens": null,[39m
+[31m+           "cache_creation_input_tokens": null,[39m
+[31m+           "cache_miss_input_tokens": null,[39m
+[31m+           "cache_read_input_tokens": null,[39m
+[31m+           "input_token_semantic": "unknown",[39m
+[31m+           "input_tokens": 10,[39m
+[31m+           "model_identifier": null,[39m
+[31m+ [7m          "model_provider": null[27m,[39m
+[32m-         [7m"LlmPhase",[27m[39m
+[32m-         {[39m
+[32m-           "appendToWorkingContext": false,[39m
+[32m-         },[39m
+[31m+         [7m [27m[7m "model_value": null,[27m[39m
+[31m+           "output_tokens": 5,[39m
+[31m+           "provider_name": null,[39m
+[31m+           "quality_flags": [[39m
+[32m-       [7m],[27m[39m
+[32m-       "[7mk[27min[7md": "memory.ingestAssistantResponse[27m",[39m
+[31m+             "in[7mput_token_semantic_unknown[27m",[39m
+[32m-     [7m}[27m,[39m
+[31m+     [7m  [27m[7m    ][27m,[39m
+[32m-     [7m{[27m[39m
+[32m-       "[7margs": [[27m[39m
+[32m-         {[39m
+[32m-           "snapshotRequestId": "turn_0001:llm:1",[39m
+[32m-         },[39m
+[32m-       ],[39m
+[32m- [7m      "kind": "memory.commitLlmRequestRecoverySnapshot"[27m,[39m
+[31m+           "[7mraw_usage_json": null,[27m[39m
+[31m+           "reasoning_output_tokens": null,[39m
+[31m+           "standard_input_tokens": null,[39m
+[31m+           "total_tokens": 15,[39m
+[31m+           "usage_scope": "per_call",[39m
+[31m+         },[39m
+[31m+ [7m      }[27m,[39m
+[2m      },[22m
+[2m      {[22m
+[2m        "kind": "event.agent_status",[22m
+[2m        "payload": {[22m
+[2m          "previous_status": "awaiting_llm_response",[22m
+[33m@@ -506,10 +506,35 @@[39m
+[2m          "turn_id": "turn_0001",[22m
+[2m          "type": "SEGMENT_END",[22m
+[2m        },[22m
+[2m      },[22m
+[2m      {[22m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "content": "Retrying differently.",[39m
+[31m+           "finish": {[39m
+[31m+             "providerReason": "stop",[39m
+[31m+             "reason": "stop",[39m
+[31m+           },[39m
+[31m+           "native": false,[39m
+[31m+           "reasoning": null,[39m
+[31m+           "usage": 5,[39m
+[31m+         },[39m
+[31m+         "turn_0001",[39m
+[31m+         "LlmPhase",[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.ingestAssistantResponse",[39m
+[31m+     },[39m
+[31m+     {[39m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "snapshotRequestId": "turn_0001:llm:2",[39m
+[31m+         },[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[31m+     },[39m
+[31m+     {[39m
+[2m        "kind": "event.agent_token_usage_updated",[22m
+[2m        "payload": {[22m
+[2m          "call_sequence": 2,[22m
+[2m          "context_window_usage_percent": null,[22m
+[2m          "effective_context_window_tokens": null,[22m
+[33m@@ -544,35 +569,10 @@[39m
+[2m            "usage_scope": "per_call",[22m
+[2m          },[22m
+[2m        },[22m
+[2m      },[22m
+[2m      {[22m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "content": "Retrying differently.",[39m
+[32m-           "finish": {[39m
+[32m-             "providerReason": "stop",[39m
+[32m-             "reason": "stop",[39m
+[32m-           },[39m
+[32m-           "native": false,[39m
+[32m-           "reasoning": null,[39m
+[32m-           "usage": 5,[39m
+[32m-         },[39m
+[32m-         "turn_0001",[39m
+[32m-         "LlmPhase",[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.ingestAssistantResponse",[39m
+[32m-     },[39m
+[32m-     {[39m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "snapshotRequestId": "turn_0001:llm:2",[39m
+[32m-         },[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[32m-     },[39m
+[32m-     {[39m
+[2m        "kind": "event.agent_status",[22m
+[2m        "payload": {[22m
+[2m          "previous_status": "awaiting_llm_response",[22m
+[2m          "recoverableBlock": null,[22m
+[2m          "status": "analyzing_llm_response",[22m
+
+[36m [2m❯[22m tests/integration/agent/agent-loop-event-sequence.test.ts:[2m389:27[22m[39m
+    [90m387| [39m    [35mawait[39m [34msettle[39m()[33m;[39m
+    [90m388| [39m    [34mexpect[39m(weatherCalls)[33m.[39m[34mtoEqual[39m([])[33m;[39m
+    [90m389| [39m    [34mexpect[39m([34msnapshotOf[39m(h))[33m.[39m[34mtoMatchSnapshot[39m()[33m;[39m
+    [90m   | [39m                          [31m^[39m
+    [90m390| [39m  })[33m;[39m
+    [90m391| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22magent loop golden event sequences[2m > [22mafter-final compaction requested and executed
+[31m[1mError[22m: Snapshot `agent loop golden event sequences > after-final compaction requested and executed 1` mismatched[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -365,10 +365,35 @@[39m
+[2m          "turn_id": "turn_0001",[22m
+[2m          "type": "SEGMENT_END",[22m
+[2m        },[22m
+[2m      },[22m
+[2m      {[22m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "content": "assistant-turn-1",[39m
+[31m+           "finish": {[39m
+[31m+             "providerReason": "stop",[39m
+[31m+             "reason": "stop",[39m
+[31m+           },[39m
+[31m+           "native": false,[39m
+[31m+           "reasoning": null,[39m
+[31m+           "usage": 5,[39m
+[31m+         },[39m
+[31m+         "turn_0001",[39m
+[31m+         "LlmPhase",[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.ingestAssistantResponse",[39m
+[31m+     },[39m
+[31m+     {[39m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "snapshotRequestId": "turn_0001:llm:1",[39m
+[31m+         },[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[31m+     },[39m
+[31m+     {[39m
+[2m        "kind": "event.agent_token_usage_updated",[22m
+[2m        "payload": {[22m
+[2m          "call_sequence": 1,[22m
+[2m          "context_window_usage_percent": 1.6666666666666667,[22m
+[2m          "effective_context_window_tokens": 12000,[22m
+[33m@@ -401,35 +426,10 @@[39m
+[2m            "standard_input_tokens": null,[22m
+[2m            "total_tokens": 205,[22m
+[2m            "usage_scope": "per_call",[22m
+[2m          },[22m
+[2m        },[22m
+[32m-     },[39m
+[32m-     {[39m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "content": "assistant-turn-1",[39m
+[32m-           "finish": {[39m
+[32m-             "providerReason": "stop",[39m
+[32m-             "reason": "stop",[39m
+[32m-           },[39m
+[32m-           "native": false,[39m
+[32m-           "reasoning": null,[39m
+[32m-           "usage": 5,[39m
+[32m-         },[39m
+[32m-         "turn_0001",[39m
+[32m-         "LlmPhase",[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.ingestAssistantResponse",[39m
+[32m-     },[39m
+[32m-     {[39m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "snapshotRequestId": "turn_0001:llm:1",[39m
+[32m-         },[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[2m      },[22m
+[2m      {[22m
+[2m        "kind": "event.agent_status",[22m
+[2m        "payload": {[22m
+[2m          "previous_status": "awaiting_llm_response",[22m
+[33m@@ -593,10 +593,35 @@[39m
+[2m          "turn_id": "turn_0002",[22m
+[2m          "type": "SEGMENT_END",[22m
+[2m        },[22m
+[2m      },[22m
+[2m      {[22m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "content": "assistant-turn-2",[39m
+[31m+           "finish": {[39m
+[31m+             "providerReason": "stop",[39m
+[31m+             "reason": "stop",[39m
+[31m+           },[39m
+[31m+           "native": false,[39m
+[31m+           "reasoning": null,[39m
+[31m+           "usage": 5,[39m
+[31m+         },[39m
+[31m+         "turn_0002",[39m
+[31m+         "LlmPhase",[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.ingestAssistantResponse",[39m
+[31m+     },[39m
+[31m+     {[39m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "snapshotRequestId": "turn_0002:llm:1",[39m
+[31m+         },[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[31m+     },[39m
+[31m+     {[39m
+[2m        "kind": "event.agent_token_usage_updated",[22m
+[2m        "payload": {[22m
+[2m          "call_sequence": 1,[22m
+[2m          "context_window_usage_percent": 1.6666666666666667,[22m
+[2m          "effective_context_window_tokens": 12000,[22m
+[33m@@ -629,35 +654,10 @@[39m
+[2m            "standard_input_tokens": null,[22m
+[2m            "total_tokens": 205,[22m
+[2m            "usage_scope": "per_call",[22m
+[2m          },[22m
+[2m        },[22m
+[32m-     },[39m
+[32m-     {[39m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "content": "assistant-turn-2",[39m
+[32m-           "finish": {[39m
+[32m-             "providerReason": "stop",[39m
+[32m-             "reason": "stop",[39m
+[32m-           },[39m
+[32m-           "native": false,[39m
+[32m-           "reasoning": null,[39m
+[32m-           "usage": 5,[39m
+[32m-         },[39m
+[32m-         "turn_0002",[39m
+[32m-         "LlmPhase",[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.ingestAssistantResponse",[39m
+[32m-     },[39m
+[32m-     {[39m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "snapshotRequestId": "turn_0002:llm:1",[39m
+[32m-         },[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[2m      },[22m
+[2m      {[22m
+[2m        "kind": "event.agent_status",[22m
+[2m        "payload": {[22m
+[2m          "previous_status": "awaiting_llm_response",[22m
+[33m@@ -831,10 +831,35 @@[39m
+[2m          "payload": {},[22m
+[2m          "segment_id": "turn_<hex5>:<hex6>",[22m
+[2m          "turn_id": "turn_0003",[22m
+[2m          "type": "SEGMENT_END",[22m
+[2m        },[22m
+[31m+     },[39m
+[31m+     {[39m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "content": "assistant-turn-3",[39m
+[31m+           "finish": {[39m
+[31m+             "providerReason": "stop",[39m
+[31m+             "reason": "stop",[39m
+[31m+           },[39m
+[31m+           "native": false,[39m
+[31m+           "reasoning": null,[39m
+[31m+           "usage": 5,[39m
+[31m+         },[39m
+[31m+         "turn_0003",[39m
+[31m+         "LlmPhase",[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.ingestAssistantResponse",[39m
+[31m+     },[39m
+[31m+     {[39m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "snapshotRequestId": "turn_0003:llm:1",[39m
+[31m+         },[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[2m      },[22m
+[2m      {[22m
+[2m        "kind": "event.agent_token_usage_updated",[22m
+[2m        "payload": {[22m
+[2m          "call_sequence": 1,[22m
+[33m@@ -869,37 +894,12 @@[39m
+[2m            "standard_input_tokens": null,[22m
+[2m            "total_tokens": 205,[22m
+[2m            "usage_scope": "per_call",[22m
+[2m          },[22m
+[2m        },[22m
+[32m-     },[39m
+[32m-     {[39m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "content": "assistant-turn-3",[39m
+[32m-           "finish": {[39m
+[32m-             "providerReason": "stop",[39m
+[32m-             "reason": "stop",[39m
+[32m-           },[39m
+[32m-           "native": false,[39m
+[32m-           "reasoning": null,[39m
+[32m-           "usage": 5,[39m
+[32m-         },[39m
+[32m-         "turn_0003",[39m
+[32m-         "LlmPhase",[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.ingestAssistantResponse",[39m
+[2m      },[22m
+[2m      {[22m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "snapshotRequestId": "turn_0003:llm:1",[39m
+[32m-         },[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[32m-     },[39m
+[32m-     {[39m
+[2m        "kind": "event.agent_status",[22m
+[2m        "payload": {[22m
+[2m          "previous_status": "awaiting_llm_response",[22m
+[2m          "recoverableBlock": null,[22m
+[2m          "status": "analyzing_llm_response",[22m
+[33m@@ -1083,10 +1083,35 @@[39m
+[2m          "payload": {},[22m
+[2m          "segment_id": "turn_<hex7>:<hex8>",[22m
+[2m          "turn_id": "turn_0004",[22m
+[2m          "type": "SEGMENT_END",[22m
+[2m        },[22m
+[31m+     },[39m
+[31m+     {[39m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "content": "assistant-turn-4",[39m
+[31m+           "finish": {[39m
+[31m+             "providerReason": "stop",[39m
+[31m+             "reason": "stop",[39m
+[31m+           },[39m
+[31m+           "native": false,[39m
+[31m+           "reasoning": null,[39m
+[31m+           "usage": 5,[39m
+[31m+         },[39m
+[31m+         "turn_0004",[39m
+[31m+         "LlmPhase",[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.ingestAssistantResponse",[39m
+[31m+     },[39m
+[31m+     {[39m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "snapshotRequestId": "turn_0004:llm:1",[39m
+[31m+         },[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[2m      },[22m
+[2m      {[22m
+[2m        "kind": "event.agent_token_usage_updated",[22m
+[2m        "payload": {[22m
+[2m          "call_sequence": 1,[22m
+[33m@@ -1121,37 +1146,12 @@[39m
+[2m            "standard_input_tokens": null,[22m
+[2m            "total_tokens": 7005,[22m
+[2m            "usage_scope": "per_call",[22m
+[2m          },[22m
+[2m        },[22m
+[32m-     },[39m
+[32m-     {[39m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "content": "assistant-turn-4",[39m
+[32m-           "finish": {[39m
+[32m-             "providerReason": "stop",[39m
+[32m-             "reason": "stop",[39m
+[32m-           },[39m
+[32m-           "native": false,[39m
+[32m-           "reasoning": null,[39m
+[32m-           "usage": 5,[39m
+[32m-         },[39m
+[32m-         "turn_0004",[39m
+[32m-         "LlmPhase",[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.ingestAssistantResponse",[39m
+[2m      },[22m
+[2m      {[22m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "snapshotRequestId": "turn_0004:llm:1",[39m
+[32m-         },[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[32m-     },[39m
+[32m-     {[39m
+[2m        "kind": "event.agent_compaction_status_updated",[22m
+[2m        "payload": {[22m
+[2m          "compacted_block_count": null,[22m
+[2m          "compaction_operation_id": "compaction_operation_<t9>_1",[22m
+[2m          "execution_turn_id": null,[22m
+[33m@@ -1444,12 +1444,37 @@[39m
+[2m          "payload": {},[22m
+[2m          "segment_id": "turn_<hex10>:<hex11>",[22m
+[2m          "turn_id": "turn_0005",[22m
+[2m          "type": "SEGMENT_END",[22m
+[2m        },[22m
+[31m+     },[39m
+[31m+     {[39m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "content": "assistant-turn-5",[39m
+[31m+           "finish": {[39m
+[31m+             "providerReason": "stop",[39m
+[31m+             "reason": "stop",[39m
+[31m+           },[39m
+[31m+           "native": false,[39m
+[31m+           "reasoning": null,[39m
+[31m+           "usage": 5,[39m
+[31m+         },[39m
+[31m+         "turn_0005",[39m
+[31m+         "LlmPhase",[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.ingestAssistantResponse",[39m
+[2m      },[22m
+[2m      {[22m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "snapshotRequestId": "turn_0005:llm:1",[39m
+[31m+         },[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[31m+     },[39m
+[31m+     {[39m
+[2m        "kind": "event.agent_token_usage_updated",[22m
+[2m        "payload": {[22m
+[2m          "call_sequence": 1,[22m
+[2m          "context_window_usage_percent": 1.6666666666666667,[22m
+[2m          "effective_context_window_tokens": 12000,[22m
+[33m@@ -1482,35 +1507,10 @@[39m
+[2m            "standard_input_tokens": null,[22m
+[2m            "total_tokens": 205,[22m
+[2m            "usage_scope": "per_call",[22m
+[2m          },[22m
+[2m        },[22m
+[32m-     },[39m
+[32m-     {[39m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "content": "assistant-turn-5",[39m
+[32m-           "finish": {[39m
+[32m-             "providerReason": "stop",[39m
+[32m-             "reason": "stop",[39m
+[32m-           },[39m
+[32m-           "native": false,[39m
+[32m-           "reasoning": null,[39m
+[32m-           "usage": 5,[39m
+[32m-         },[39m
+[32m-         "turn_0005",[39m
+[32m-         "LlmPhase",[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.ingestAssistantResponse",[39m
+[32m-     },[39m
+[32m-     {[39m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "snapshotRequestId": "turn_0005:llm:1",[39m
+[32m-         },[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[2m      },[22m
+[2m      {[22m
+[2m        "kind": "event.agent_status",[22m
+[2m        "payload": {[22m
+[2m          "previous_status": "awaiting_llm_response",[22m
+
+[36m [2m❯[22m tests/integration/agent/agent-loop-event-sequence.test.ts:[2m409:27[22m[39m
+    [90m407| [39m    [35mawait[39m [34msettle[39m()[33m;[39m
+    [90m408| [39m    [34mexpect[39m(h[33m.[39mllm[33m.[39msummaryCalls)[33m.[39m[34mtoBe[39m([34m1[39m)[33m;[39m
+    [90m409| [39m    [34mexpect[39m([34msnapshotOf[39m(h))[33m.[39m[34mtoMatchSnapshot[39m()[33m;[39m
+    [90m   | [39m                          [31m^[39m
+    [90m410| [39m  }[33m,[39m [34m30_000[39m)[33m;[39m
+    [90m411| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent/agent-loop-event-sequence.test.ts[2m > [22magent loop golden event sequences[2m > [22mcompaction_blocked, then the retry runs the held turn
+[31m[1mError[22m: Snapshot `agent loop golden event sequences > compaction_blocked, then the retry runs the held turn 1` mismatched[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -372,10 +372,35 @@[39m
+[2m          "turn_id": "turn_0001",[22m
+[2m          "type": "SEGMENT_END",[22m
+[2m        },[22m
+[2m      },[22m
+[2m      {[22m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "content": "assistant-turn-1",[39m
+[31m+           "finish": {[39m
+[31m+             "providerReason": "stop",[39m
+[31m+             "reason": "stop",[39m
+[31m+           },[39m
+[31m+           "native": false,[39m
+[31m+           "reasoning": null,[39m
+[31m+           "usage": 5,[39m
+[31m+         },[39m
+[31m+         "turn_0001",[39m
+[31m+         "LlmPhase",[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.ingestAssistantResponse",[39m
+[31m+     },[39m
+[31m+     {[39m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "snapshotRequestId": "turn_0001:llm:1",[39m
+[31m+         },[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[31m+     },[39m
+[31m+     {[39m
+[2m        "kind": "event.agent_token_usage_updated",[22m
+[2m        "payload": {[22m
+[2m          "call_sequence": 1,[22m
+[2m          "context_window_usage_percent": 1.6666666666666667,[22m
+[2m          "effective_context_window_tokens": 12000,[22m
+[33m@@ -408,35 +433,10 @@[39m
+[2m            "standard_input_tokens": null,[22m
+[2m            "total_tokens": 205,[22m
+[2m            "usage_scope": "per_call",[22m
+[2m          },[22m
+[2m        },[22m
+[32m-     },[39m
+[32m-     {[39m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "content": "assistant-turn-1",[39m
+[32m-           "finish": {[39m
+[32m-             "providerReason": "stop",[39m
+[32m-             "reason": "stop",[39m
+[32m-           },[39m
+[32m-           "native": false,[39m
+[32m-           "reasoning": null,[39m
+[32m-           "usage": 5,[39m
+[32m-         },[39m
+[32m-         "turn_0001",[39m
+[32m-         "LlmPhase",[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.ingestAssistantResponse",[39m
+[32m-     },[39m
+[32m-     {[39m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "snapshotRequestId": "turn_0001:llm:1",[39m
+[32m-         },[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[2m      },[22m
+[2m      {[22m
+[2m        "kind": "event.agent_status",[22m
+[2m        "payload": {[22m
+[2m          "previous_status": "awaiting_llm_response",[22m
+[33m@@ -600,10 +600,35 @@[39m
+[2m          "turn_id": "turn_0002",[22m
+[2m          "type": "SEGMENT_END",[22m
+[2m        },[22m
+[2m      },[22m
+[2m      {[22m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "content": "assistant-turn-2",[39m
+[31m+           "finish": {[39m
+[31m+             "providerReason": "stop",[39m
+[31m+             "reason": "stop",[39m
+[31m+           },[39m
+[31m+           "native": false,[39m
+[31m+           "reasoning": null,[39m
+[31m+           "usage": 5,[39m
+[31m+         },[39m
+[31m+         "turn_0002",[39m
+[31m+         "LlmPhase",[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.ingestAssistantResponse",[39m
+[31m+     },[39m
+[31m+     {[39m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "snapshotRequestId": "turn_0002:llm:1",[39m
+[31m+         },[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[31m+     },[39m
+[31m+     {[39m
+[2m        "kind": "event.agent_token_usage_updated",[22m
+[2m        "payload": {[22m
+[2m          "call_sequence": 1,[22m
+[2m          "context_window_usage_percent": 1.6666666666666667,[22m
+[2m          "effective_context_window_tokens": 12000,[22m
+[33m@@ -636,35 +661,10 @@[39m
+[2m            "standard_input_tokens": null,[22m
+[2m            "total_tokens": 205,[22m
+[2m            "usage_scope": "per_call",[22m
+[2m          },[22m
+[2m        },[22m
+[32m-     },[39m
+[32m-     {[39m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "content": "assistant-turn-2",[39m
+[32m-           "finish": {[39m
+[32m-             "providerReason": "stop",[39m
+[32m-             "reason": "stop",[39m
+[32m-           },[39m
+[32m-           "native": false,[39m
+[32m-           "reasoning": null,[39m
+[32m-           "usage": 5,[39m
+[32m-         },[39m
+[32m-         "turn_0002",[39m
+[32m-         "LlmPhase",[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.ingestAssistantResponse",[39m
+[32m-     },[39m
+[32m-     {[39m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "snapshotRequestId": "turn_0002:llm:1",[39m
+[32m-         },[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[2m      },[22m
+[2m      {[22m
+[2m        "kind": "event.agent_status",[22m
+[2m        "payload": {[22m
+[2m          "previous_status": "awaiting_llm_response",[22m
+[33m@@ -838,10 +838,35 @@[39m
+[2m          "payload": {},[22m
+[2m          "segment_id": "turn_<hex5>:<hex6>",[22m
+[2m          "turn_id": "turn_0003",[22m
+[2m          "type": "SEGMENT_END",[22m
+[2m        },[22m
+[31m+     },[39m
+[31m+     {[39m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "content": "assistant-turn-3",[39m
+[31m+           "finish": {[39m
+[31m+             "providerReason": "stop",[39m
+[31m+             "reason": "stop",[39m
+[31m+           },[39m
+[31m+           "native": false,[39m
+[31m+           "reasoning": null,[39m
+[31m+           "usage": 5,[39m
+[31m+         },[39m
+[31m+         "turn_0003",[39m
+[31m+         "LlmPhase",[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.ingestAssistantResponse",[39m
+[31m+     },[39m
+[31m+     {[39m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "snapshotRequestId": "turn_0003:llm:1",[39m
+[31m+         },[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[2m      },[22m
+[2m      {[22m
+[2m        "kind": "event.agent_token_usage_updated",[22m
+[2m        "payload": {[22m
+[2m          "call_sequence": 1,[22m
+[33m@@ -876,37 +901,12 @@[39m
+[2m            "standard_input_tokens": null,[22m
+[2m            "total_tokens": 205,[22m
+[2m            "usage_scope": "per_call",[22m
+[2m          },[22m
+[2m        },[22m
+[32m-     },[39m
+[32m-     {[39m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "content": "assistant-turn-3",[39m
+[32m-           "finish": {[39m
+[32m-             "providerReason": "stop",[39m
+[32m-             "reason": "stop",[39m
+[32m-           },[39m
+[32m-           "native": false,[39m
+[32m-           "reasoning": null,[39m
+[32m-           "usage": 5,[39m
+[32m-         },[39m
+[32m-         "turn_0003",[39m
+[32m-         "LlmPhase",[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.ingestAssistantResponse",[39m
+[2m      },[22m
+[2m      {[22m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "snapshotRequestId": "turn_0003:llm:1",[39m
+[32m-         },[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[32m-     },[39m
+[32m-     {[39m
+[2m        "kind": "event.agent_status",[22m
+[2m        "payload": {[22m
+[2m          "previous_status": "awaiting_llm_response",[22m
+[2m          "recoverableBlock": null,[22m
+[2m          "status": "analyzing_llm_response",[22m
+[33m@@ -1364,10 +1364,35 @@[39m
+[2m          "payload": {},[22m
+[2m          "segment_id": "turn_<hex8>:<hex9>",[22m
+[2m          "turn_id": "turn_0004",[22m
+[2m          "type": "SEGMENT_END",[22m
+[2m        },[22m
+[31m+     },[39m
+[31m+     {[39m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "content": "assistant-turn-4",[39m
+[31m+           "finish": {[39m
+[31m+             "providerReason": "stop",[39m
+[31m+             "reason": "stop",[39m
+[31m+           },[39m
+[31m+           "native": false,[39m
+[31m+           "reasoning": null,[39m
+[31m+           "usage": 5,[39m
+[31m+         },[39m
+[31m+         "turn_0004",[39m
+[31m+         "LlmPhase",[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.ingestAssistantResponse",[39m
+[31m+     },[39m
+[31m+     {[39m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "snapshotRequestId": "turn_0004:llm:2",[39m
+[31m+         },[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[2m      },[22m
+[2m      {[22m
+[2m        "kind": "event.agent_token_usage_updated",[22m
+[2m        "payload": {[22m
+[2m          "call_sequence": 2,[22m
+[33m@@ -1402,37 +1427,12 @@[39m
+[2m            "standard_input_tokens": null,[22m
+[2m            "total_tokens": 205,[22m
+[2m            "usage_scope": "per_call",[22m
+[2m          },[22m
+[2m        },[22m
+[32m-     },[39m
+[32m-     {[39m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "content": "assistant-turn-4",[39m
+[32m-           "finish": {[39m
+[32m-             "providerReason": "stop",[39m
+[32m-             "reason": "stop",[39m
+[32m-           },[39m
+[32m-           "native": false,[39m
+[32m-           "reasoning": null,[39m
+[32m-           "usage": 5,[39m
+[32m-         },[39m
+[32m-         "turn_0004",[39m
+[32m-         "LlmPhase",[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.ingestAssistantResponse",[39m
+[2m      },[22m
+[2m      {[22m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "snapshotRequestId": "turn_0004:llm:2",[39m
+[32m-         },[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[32m-     },[39m
+[32m-     {[39m
+[2m        "kind": "event.agent_status",[22m
+[2m        "payload": {[22m
+[2m          "previous_status": "awaiting_llm_response",[22m
+[2m          "recoverableBlock": null,[22m
+[2m          "status": "analyzing_llm_response",[22m
+[33m@@ -1622,12 +1622,37 @@[39m
+[2m          "payload": {},[22m
+[2m          "segment_id": "turn_<hex10>:<hex11>",[22m
+[2m          "turn_id": "turn_0005",[22m
+[2m          "type": "SEGMENT_END",[22m
+[2m        },[22m
+[31m+     },[39m
+[31m+     {[39m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "content": "assistant-turn-5",[39m
+[31m+           "finish": {[39m
+[31m+             "providerReason": "stop",[39m
+[31m+             "reason": "stop",[39m
+[31m+           },[39m
+[31m+           "native": false,[39m
+[31m+           "reasoning": null,[39m
+[31m+           "usage": 5,[39m
+[31m+         },[39m
+[31m+         "turn_0005",[39m
+[31m+         "LlmPhase",[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.ingestAssistantResponse",[39m
+[2m      },[22m
+[2m      {[22m
+[31m+       "args": [[39m
+[31m+         {[39m
+[31m+           "snapshotRequestId": "turn_0005:llm:1",[39m
+[31m+         },[39m
+[31m+       ],[39m
+[31m+       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[31m+     },[39m
+[31m+     {[39m
+[2m        "kind": "event.agent_token_usage_updated",[22m
+[2m        "payload": {[22m
+[2m          "call_sequence": 1,[22m
+[2m          "context_window_usage_percent": 1.6666666666666667,[22m
+[2m          "effective_context_window_tokens": 12000,[22m
+[33m@@ -1660,35 +1685,10 @@[39m
+[2m            "standard_input_tokens": null,[22m
+[2m            "total_tokens": 205,[22m
+[2m            "usage_scope": "per_call",[22m
+[2m          },[22m
+[2m        },[22m
+[32m-     },[39m
+[32m-     {[39m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "content": "assistant-turn-5",[39m
+[32m-           "finish": {[39m
+[32m-             "providerReason": "stop",[39m
+[32m-             "reason": "stop",[39m
+[32m-           },[39m
+[32m-           "native": false,[39m
+[32m-           "reasoning": null,[39m
+[32m-           "usage": 5,[39m
+[32m-         },[39m
+[32m-         "turn_0005",[39m
+[32m-         "LlmPhase",[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.ingestAssistantResponse",[39m
+[32m-     },[39m
+[32m-     {[39m
+[32m-       "args": [[39m
+[32m-         {[39m
+[32m-           "snapshotRequestId": "turn_0005:llm:1",[39m
+[32m-         },[39m
+[32m-       ],[39m
+[32m-       "kind": "memory.commitLlmRequestRecoverySnapshot",[39m
+[2m      },[22m
+[2m      {[22m
+[2m        "kind": "event.agent_status",[22m
+[2m        "payload": {[22m
+[2m          "previous_status": "awaiting_llm_response",[22m
+
+[36m [2m❯[22m tests/integration/agent/agent-loop-event-sequence.test.ts:[2m433:27[22m[39m
+    [90m431| [39m    expect(await waitForCondition(() => h.llm.callIndex === 5 && h.age…
+    [90m432| [39m    [35mawait[39m [34msettle[39m()[33m;[39m
+    [90m433| [39m    [34mexpect[39m([34msnapshotOf[39m(h))[33m.[39m[34mtoMatchSnapshot[39m()[33m;[39m
+    [90m   | [39m                          [31m^[39m
+    [90m434| [39m  }[33m,[39m [34m30_000[39m)[33m;[39m
+    [90m435| [39m})[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯[22m[39m
+
+
+[2m  Snapshots [22m [1m[31m7 failed[39m[22m
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m7 failed[39m[22m[2m | [22m[1m[32m5 passed[39m[22m[90m (12)[39m
+[2m   Start at [22m 14:43:02
+[2m   Duration [22m 5.69s[2m (transform 553ms, setup 15ms, import 770ms, tests 4.81s, environment 0ms)[22m
+
+exit=1

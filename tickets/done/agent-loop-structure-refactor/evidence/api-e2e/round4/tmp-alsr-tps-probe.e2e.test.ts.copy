@@ -1,0 +1,96 @@
+// TEMPORARY ticket-local probe (agent-loop-structure-refactor, API/E2E round 4). Not committed; a copy is kept in
+// tickets/in-progress/agent-loop-structure-refactor/evidence/api-e2e/round4/. Checks that the refactored native
+// LlmPhase's per-call timing reaches the app through the real server: TOKEN_USAGE_UPDATED.output_throughput
+// (after the server's acceptance check) with the method the call dictates (DEC-002). Anthropic was unavailable
+// (account credit balance too low on 2026-10-17), so the cases use DeepSeek, OpenAI and Gemini, the call's own reported output as
+// the numerator, a positive duration no longer than the time since the message was sent, and null below the minimum
+// sample (20 output tokens).
+import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import { NativeRuntimeLiveHarness, type Json, type WsMessage } from "../helpers/native-runtime-live-harness.js";
+
+const ENABLED = process.env.RUN_ALSR_PROBE === "1";
+const run = ENABLED ? describe : describe.skip;
+const hasKey = (alias: string) => Boolean(process.env[alias]?.trim());
+const EVIDENCE_DIR = process.env.OUTPUT_LIMIT_E2E_EVIDENCE_DIR?.trim() || null;
+
+const usage = (frames: WsMessage[]) => frames.filter((frame) => frame.type === "TOKEN_USAGE_UPDATED").map((frame) => frame.payload);
+const view = (payload: Json) => ({
+  llm_call_id: payload.llm_call_id, ingestion_kind: payload.ingestion_kind, reports_model_call: payload.reports_model_call,
+  reported_output_tokens: payload.reported_output_tokens, reasoning_output_tokens: payload.reasoning_output_tokens,
+  output_throughput: payload.output_throughput,
+});
+
+run("native per-call output throughput (live probe)", () => {
+  const harness = new NativeRuntimeLiveHarness({ evidenceDir: EVIDENCE_DIR, stepTimeoutMs: 600_000, tempPrefix: "alsr-tps-probe" });
+  let definitionId = "";
+  beforeAll(async () => {
+    await harness.start();
+    definitionId = await harness.createDefinition("alsr-tps-probe", "You are a helpful assistant. Answer the user's request directly.", []);
+  }, 300_000);
+  afterEach(async (context) => { await harness.finishCase(context); });
+  afterAll(async () => { await harness.stop(); }, 180_000);
+
+  const turn = async (caseId: string, providerId: string, model: string, llmConfig: Json | null, prompt: string) => {
+    const catalog = await harness.catalogModel(providerId, model);
+    const session = await harness.startRun(definitionId, catalog.modelIdentifier, llmConfig);
+    const sentAt = Date.now();
+    const { error, frames } = await harness.runTurn(session, caseId, prompt);
+    const elapsedMs = Date.now() - sentAt;
+    const reasoningSegments = frames.filter((frame) => frame.type === "SEGMENT_START" && /reason|think/i.test(String(frame.payload.segment_type))).length;
+    await harness.stopRun(session);
+    const readings = usage(frames).map(view);
+    harness.recordCase(caseId, { model, llmConfig, elapsedMs, reasoningSegments, readings, error: error?.payload ?? null });
+    return { error, readings, elapsedMs, reasoningSegments };
+  };
+
+  const expectAccepted = (reading: Json, elapsedMs: number, method: "generation" | "end_to_end") => {
+    const tps = reading.output_throughput as Json | null;
+    expect(tps, JSON.stringify(reading)).not.toBeNull();
+    expect(tps!.method).toBe(method);
+    expect(tps!.output_tokens, "numerator = the call's own reported output").toBe(reading.reported_output_tokens);
+    expect(tps!.duration_ms as number).toBeGreaterThanOrEqual(250);
+    expect(tps!.duration_ms as number, "never longer than the time since the message was sent").toBeLessThanOrEqual(elapsedMs);
+  };
+
+  // Expected method per DEC-002, from what the call itself reported: generation when the first chunk carried
+  // reasoning or the call reports no reasoning tokens (a long answer keeps the window above 250 ms); else end to end.
+  const expectedMethod = (reading: Json, reasoningSegments: number): "generation" | "end_to_end" =>
+    reasoningSegments > 0 || !((reading.reasoning_output_tokens as number | null) ?? 0) ? "generation" : "end_to_end";
+
+  it.skipIf(!hasKey("DEEPSEEK_API_KEY"))("TPS-001: DeepSeek, thinking off, a ~150-word answer: generation speed, numerator = reported output", async () => {
+    const result = await turn("TPS-001", "DEEPSEEK", "deepseek-v4-flash", { extra_params: { thinking_type: "disabled" } },
+      "Write one paragraph of about 150 words about the history of lighthouses.");
+    expect(result.error, JSON.stringify(result.error?.payload)).toBeNull();
+    const reading = result.readings.at(-1)!;
+    expect(reading.ingestion_kind).toBe("autobyteus_llm_phase");
+    expect(result.reasoningSegments).toBe(0);
+    expectAccepted(reading, result.elapsedMs, "generation");
+  }, 600_000);
+
+  it.skipIf(!hasKey("DEEPSEEK_API_KEY"))("TPS-002: DeepSeek, a one-word answer: below the minimum sample, so no TPS reaches the app", async () => {
+    const result = await turn("TPS-002", "DEEPSEEK", "deepseek-v4-flash", { extra_params: { thinking_type: "disabled" } }, "Reply with the single word pong.");
+    expect(result.error, JSON.stringify(result.error?.payload)).toBeNull();
+    const reading = result.readings.at(-1)!;
+    expect((reading.reported_output_tokens as number) < 20, JSON.stringify(reading)).toBe(true);
+    expect(reading.output_throughput).toBeNull();
+  }, 600_000);
+
+  for (const [caseId, providerId, model] of [["TPS-004", "OPENAI", "gpt-5.4-mini"], ["TPS-005", "GEMINI", "gemini-3.8-flash"]] as const) {
+    const key = providerId === "OPENAI" ? "OPENAI_API_KEY" : "VERTEX_AI_API_KEY";
+    it.skipIf(!hasKey(key))(`${caseId}: ${providerId} ${model}, a ~120-word answer: the method follows what the call reported (DEC-002)`, async () => {
+      if (providerId === "GEMINI") await harness.gql("mutation($m: GeminiSetupMode!) { useGeminiMode(mode: $m) { setup { activeMode } } }", { m: "VERTEX_EXPRESS" });
+      const result = await turn(caseId, providerId, model, null, "Explain in about 120 words why the sky is blue.");
+      expect(result.error, JSON.stringify(result.error?.payload)).toBeNull();
+      const reading = result.readings.at(-1)!;
+      expectAccepted(reading, result.elapsedMs, expectedMethod(reading, result.reasoningSegments));
+    }, 600_000);
+  }
+
+  it.skipIf(!hasKey("DEEPSEEK_API_KEY"))("TPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk", async () => {
+    const result = await turn("TPS-003", "DEEPSEEK", "deepseek-v4-flash", null, "Explain in about 120 words why the sky is blue.");
+    expect(result.error, JSON.stringify(result.error?.payload)).toBeNull();
+    const reading = result.readings.at(-1)!;
+    expect(result.reasoningSegments, "the call streamed reasoning").toBeGreaterThan(0);
+    expectAccepted(reading, result.elapsedMs, "generation");
+  }, 600_000);
+});

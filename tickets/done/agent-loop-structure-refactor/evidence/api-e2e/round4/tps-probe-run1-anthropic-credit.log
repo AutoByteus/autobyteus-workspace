@@ -1,0 +1,728 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/agent-loop-structure-refactor/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-loop-structure-refactor/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:39882) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-loop-structure-refactor/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-loop-structure-refactor/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/alsr-tps-probe-appdata-TpS5q6
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/alsr-tps-probe-appdata-TpS5q6/.env
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)
+[22m[39mLoading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/alsr-tps-probe-appdata-TpS5q6/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/alsr-tps-probe-appdata-TpS5q6/.env -- tip: ⚙️  override existing env vars with { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-loop-structure-refactor/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-loop-structure-refactor/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/alsr-tps-probe-appdata-TpS5q6
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/alsr-tps-probe-appdata-TpS5q6/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/alsr-tps-probe-appdata-TpS5q6/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/alsr-tps-probe-appdata-TpS5q6/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/alsr-tps-probe-appdata-TpS5q6/memory
+============================================================
+Initialized server settings service with 19 predefined settings
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/alsr-tps-probe-appdata-TpS5q6/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/alsr-tps-probe-appdata-TpS5q6/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/alsr-tps-probe-appdata-TpS5q6/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)
+[22m[39mAgent Definition created successfully with ID: alsr-tps-probe-3c105073
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/alsr-tps-probe-ws-k3WIOI
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/alsr-tps-probe-ws-k3WIOI.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mCreated and registered workspace ID: agent_ws_7f96aefe1a60e10d0975f5c12a07f4153ae33d8857d066d8743b8b32619ea16c
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/alsr-tps-probe-ws-k3WIOI
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/alsr-tps-probe-ws-k3WIOI.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mReusing registered workspace ID: agent_ws_7f96aefe1a60e10d0975f5c12a07f4153ae33d8857d066d8743b8b32619ea16c
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mMediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/alsr-tps-probe-appdata-TpS5q6/media
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgentRuntimeState initialized for agent_id 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac': LLM instance 'AnthropicLLM' and 6 tools prepared and stored in state.
+AgentContext composed for agent_id 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac' with config: 'alsr-tps-probe-3c105073'.
+AgentWorker initialized for agent_id 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac'.
+Registered AgentContext for agent_id 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac'. Context registered.
+Agent facade initialized for agent_id 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac'.
+Agent 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac' created and stored successfully.
+Agent 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac' requesting runtime to start.
+AgentRuntime for 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac': Starting worker.
+AgentWorker 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac': Starting...
+AgentWorker 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac' asyncRun(): Starting.
+Agent 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac': Runtime init completed (event store initialized).
+Agent 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac': Runtime init completed (status deriver initialized).
+Agent 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac': Runtime init completed (AgentEventInbox initialized).
+Agent 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac' to become idle (timeout: 30s)...
+AgentEventStream (ID: b2f3e348-280e-4ff8-8407-ffb9caae1b62) initialized for agent_id 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac'. Subscribed to notifier.
+Agent 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgentExternalEventNotifier (NotifierID: 19afa173-8ff8-4ca1-ad64-8f224a7037a7, AgentID: alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgent 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac': Bootstrapper starting direct lifecycle execution.
+Agent 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgent 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac': Executing SystemPromptProcessingStep.
+Agent 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac': No configured skills. Skipping skill catalog.
+Agent 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac': Final processed system prompt configured and captured. Trace ID: rt_1792210830169_1a758e05-bb29-4ed7-af80-c0bc1e40c1b6. Final length: 4367.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgent 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgentExternalEventNotifier (NotifierID: 19afa173-8ff8-4ca1-ad64-8f224a7037a7, AgentID: alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgentWorker 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgent 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac' has become idle.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgentEventStream (ID: b2f3e348-280e-4ff8-8407-ffb9caae1b62) for 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgentEventStream (ID: 7929af2e-e471-4382-a0e4-e344880e6a16) initialized for agent_id 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac'. Subscribed to notifier.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgent websocket attached for run alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac
+Created agent session 6ddde5eb-767e-4dbc-8e31-8a7f23feb299 for run alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac
+Agent WebSocket connected: session=6ddde5eb-767e-4dbc-8e31-8a7f23feb299, run=alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgentExternalEventNotifier (NotifierID: 19afa173-8ff8-4ca1-ad64-8f224a7037a7, AgentID: alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgentExternalEventNotifier (NotifierID: 19afa173-8ff8-4ca1-ad64-8f224a7037a7, AgentID: alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgent run 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac': UserInputContextBuildingProcessor completed. Final content length: 72
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgentExternalEventNotifier (NotifierID: 19afa173-8ff8-4ca1-ad64-8f224a7037a7, AgentID: alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgentExternalEventNotifier (NotifierID: 19afa173-8ff8-4ca1-ad64-8f224a7037a7, AgentID: alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgentExternalEventNotifier (NotifierID: 19afa173-8ff8-4ca1-ad64-8f224a7037a7, AgentID: alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgentExternalEventNotifier (NotifierID: 19afa173-8ff8-4ca1-ad64-8f224a7037a7, AgentID: alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgentExternalEventNotifier (NotifierID: 19afa173-8ff8-4ca1-ad64-8f224a7037a7, AgentID: alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgentExternalEventNotifier (NotifierID: 19afa173-8ff8-4ca1-ad64-8f224a7037a7, AgentID: alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgentExternalEventNotifier (NotifierID: 19afa173-8ff8-4ca1-ad64-8f224a7037a7, AgentID: alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mRemoving agent 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac'. Attempting graceful shutdown.
+Agent 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac' requesting runtime to stop (timeout: 10s).
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgentExternalEventNotifier (NotifierID: 19afa173-8ff8-4ca1-ad64-8f224a7037a7, AgentID: alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgentWorker 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac': Stop requested.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgentExternalEventNotifier (NotifierID: 19afa173-8ff8-4ca1-ad64-8f224a7037a7, AgentID: alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgentExternalEventNotifier (NotifierID: 19afa173-8ff8-4ca1-ad64-8f224a7037a7, AgentID: alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac' asyncRun() loop has finished.
+AgentWorker 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgentWorker 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac': Shutdown resource cleanup completed successfully.
+AgentWorker 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac': Shutdown sequence completed.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mUnregistered AgentContext for agent_id 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac'.
+AgentRuntime for 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac': Context unregistered.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgentRuntime for 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac' stop() method completed.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgentEventStream (ID: 7929af2e-e471-4382-a0e4-e344880e6a16) for 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mAgentEventStream (ID: 7929af2e-e471-4382-a0e4-e344880e6a16) for 'alsr_tps_probe_3c105073_03368f0139624b63af63b06d300454ac': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[22m[39mClosed agent session 6ddde5eb-767e-4dbc-8e31-8a7f23feb299
+Agent WebSocket disconnected: 6ddde5eb-767e-4dbc-8e31-8a7f23feb299
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/alsr-tps-probe-ws-3Z80Xs
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/alsr-tps-probe-ws-3Z80Xs.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mCreated and registered workspace ID: agent_ws_7437af09ee5a9d00cdbdddfbc8d47f27c7ea90321c80c778aa0a86c25224ca28
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/alsr-tps-probe-ws-3Z80Xs
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/alsr-tps-probe-ws-3Z80Xs.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mReusing registered workspace ID: agent_ws_7437af09ee5a9d00cdbdddfbc8d47f27c7ea90321c80c778aa0a86c25224ca28
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mMediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/alsr-tps-probe-appdata-TpS5q6/media
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgentRuntimeState initialized for agent_id 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d': LLM instance 'AnthropicLLM' and 6 tools prepared and stored in state.
+AgentContext composed for agent_id 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d' with config: 'alsr-tps-probe-3c105073'.
+AgentWorker initialized for agent_id 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d'.
+Registered AgentContext for agent_id 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d'. Context registered.
+Agent facade initialized for agent_id 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d'.
+Agent 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d' created and stored successfully.
+Agent 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d' requesting runtime to start.
+AgentRuntime for 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d': Starting worker.
+AgentWorker 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d': Starting...
+AgentWorker 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d' asyncRun(): Starting.
+Agent 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d': Runtime init completed (event store initialized).
+Agent 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d': Runtime init completed (status deriver initialized).
+Agent 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d': Runtime init completed (AgentEventInbox initialized).
+Agent 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d' to become idle (timeout: 30s)...
+AgentEventStream (ID: c68af76e-3158-4e52-af30-7840623ee2ef) initialized for agent_id 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d'. Subscribed to notifier.
+Agent 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgentExternalEventNotifier (NotifierID: a56a552f-b1e4-4705-b138-11959bd09200, AgentID: alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgent 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d': Bootstrapper starting direct lifecycle execution.
+Agent 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgent 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d': Executing SystemPromptProcessingStep.
+Agent 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d': No configured skills. Skipping skill catalog.
+Agent 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d': Final processed system prompt configured and captured. Trace ID: rt_1792210830879_e5ad9e89-f450-4364-934e-c12203a99aa1. Final length: 4367.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgent 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgentExternalEventNotifier (NotifierID: a56a552f-b1e4-4705-b138-11959bd09200, AgentID: alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgentWorker 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgent 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d' has become idle.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgentEventStream (ID: c68af76e-3158-4e52-af30-7840623ee2ef) for 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgentEventStream (ID: a4b3a42f-0e1c-4aa8-bfe3-5d915644f36a) initialized for agent_id 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d'. Subscribed to notifier.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgent websocket attached for run alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d
+Created agent session f191e6ea-4d3b-40de-89a2-667856c5326e for run alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d
+Agent WebSocket connected: session=f191e6ea-4d3b-40de-89a2-667856c5326e, run=alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgentExternalEventNotifier (NotifierID: a56a552f-b1e4-4705-b138-11959bd09200, AgentID: alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgentExternalEventNotifier (NotifierID: a56a552f-b1e4-4705-b138-11959bd09200, AgentID: alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgent run 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d': UserInputContextBuildingProcessor completed. Final content length: 32
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgentExternalEventNotifier (NotifierID: a56a552f-b1e4-4705-b138-11959bd09200, AgentID: alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgentExternalEventNotifier (NotifierID: a56a552f-b1e4-4705-b138-11959bd09200, AgentID: alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgentExternalEventNotifier (NotifierID: a56a552f-b1e4-4705-b138-11959bd09200, AgentID: alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgentExternalEventNotifier (NotifierID: a56a552f-b1e4-4705-b138-11959bd09200, AgentID: alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgentExternalEventNotifier (NotifierID: a56a552f-b1e4-4705-b138-11959bd09200, AgentID: alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgentExternalEventNotifier (NotifierID: a56a552f-b1e4-4705-b138-11959bd09200, AgentID: alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgentExternalEventNotifier (NotifierID: a56a552f-b1e4-4705-b138-11959bd09200, AgentID: alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mRemoving agent 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d'. Attempting graceful shutdown.
+Agent 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d' requesting runtime to stop (timeout: 10s).
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgentExternalEventNotifier (NotifierID: a56a552f-b1e4-4705-b138-11959bd09200, AgentID: alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgentWorker 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d': Stop requested.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgentExternalEventNotifier (NotifierID: a56a552f-b1e4-4705-b138-11959bd09200, AgentID: alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgentExternalEventNotifier (NotifierID: a56a552f-b1e4-4705-b138-11959bd09200, AgentID: alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d' asyncRun() loop has finished.
+AgentWorker 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgentWorker 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d': Shutdown resource cleanup completed successfully.
+AgentWorker 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d': Shutdown sequence completed.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mUnregistered AgentContext for agent_id 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d'.
+AgentRuntime for 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d': Context unregistered.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgentRuntime for 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d' stop() method completed.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgentEventStream (ID: a4b3a42f-0e1c-4aa8-bfe3-5d915644f36a) for 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mAgentEventStream (ID: a4b3a42f-0e1c-4aa8-bfe3-5d915644f36a) for 'alsr_tps_probe_3c105073_e4f4cf45a4eb4645978900c11ad0537d': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[22m[39mClosed agent session f191e6ea-4d3b-40de-89a2-667856c5326e
+Agent WebSocket disconnected: f191e6ea-4d3b-40de-89a2-667856c5326e
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/alsr-tps-probe-ws-QSD1bM
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/alsr-tps-probe-ws-QSD1bM.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mCreated and registered workspace ID: agent_ws_a52d7901ea8928477925cd85a0ef68b882905bf2a9823fdd06b180ab8ddb2854
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/alsr-tps-probe-ws-QSD1bM
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/alsr-tps-probe-ws-QSD1bM.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mReusing registered workspace ID: agent_ws_a52d7901ea8928477925cd85a0ef68b882905bf2a9823fdd06b180ab8ddb2854
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mMediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/alsr-tps-probe-appdata-TpS5q6/media
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgentRuntimeState initialized for agent_id 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd': LLM instance 'DeepSeekLLM' and 6 tools prepared and stored in state.
+AgentContext composed for agent_id 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd' with config: 'alsr-tps-probe-3c105073'.
+AgentWorker initialized for agent_id 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd'.
+Registered AgentContext for agent_id 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd'. Context registered.
+Agent facade initialized for agent_id 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd'.
+Agent 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd' created and stored successfully.
+Agent 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd' requesting runtime to start.
+AgentRuntime for 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd': Starting worker.
+AgentWorker 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd': Starting...
+AgentWorker 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd' asyncRun(): Starting.
+Agent 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd': Runtime init completed (event store initialized).
+Agent 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd': Runtime init completed (status deriver initialized).
+Agent 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd': Runtime init completed (AgentEventInbox initialized).
+Agent 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd' to become idle (timeout: 30s)...
+AgentEventStream (ID: 0a3c3997-6567-40b1-9a0a-94653eb337a5) initialized for agent_id 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd'. Subscribed to notifier.
+Agent 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgentExternalEventNotifier (NotifierID: ac3c7c2c-fa1c-47e2-8169-7c7936059ec5, AgentID: alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgent 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd': Bootstrapper starting direct lifecycle execution.
+Agent 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgent 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd': Executing SystemPromptProcessingStep.
+Agent 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd': No configured skills. Skipping skill catalog.
+Agent 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd': Final processed system prompt configured and captured. Trace ID: rt_1792210831260_87cab755-0c3b-4974-b1c6-e0e93b512b34. Final length: 4367.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgent 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgentExternalEventNotifier (NotifierID: ac3c7c2c-fa1c-47e2-8169-7c7936059ec5, AgentID: alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgentWorker 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgent 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd' has become idle.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgentEventStream (ID: 0a3c3997-6567-40b1-9a0a-94653eb337a5) for 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgentEventStream (ID: 2891e010-d955-40cb-962d-712acf14786c) initialized for agent_id 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd'. Subscribed to notifier.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgent websocket attached for run alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd
+Created agent session e3fb5f47-ad18-4587-8d86-351a2fdb595f for run alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd
+Agent WebSocket connected: session=e3fb5f47-ad18-4587-8d86-351a2fdb595f, run=alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgentExternalEventNotifier (NotifierID: ac3c7c2c-fa1c-47e2-8169-7c7936059ec5, AgentID: alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgentExternalEventNotifier (NotifierID: ac3c7c2c-fa1c-47e2-8169-7c7936059ec5, AgentID: alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgent run 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd': UserInputContextBuildingProcessor completed. Final content length: 47
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgentExternalEventNotifier (NotifierID: ac3c7c2c-fa1c-47e2-8169-7c7936059ec5, AgentID: alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgentExternalEventNotifier (NotifierID: ac3c7c2c-fa1c-47e2-8169-7c7936059ec5, AgentID: alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgentExternalEventNotifier (NotifierID: ac3c7c2c-fa1c-47e2-8169-7c7936059ec5, AgentID: alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgent run 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgentExternalEventNotifier (NotifierID: ac3c7c2c-fa1c-47e2-8169-7c7936059ec5, AgentID: alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgentExternalEventNotifier (NotifierID: ac3c7c2c-fa1c-47e2-8169-7c7936059ec5, AgentID: alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgentExternalEventNotifier (NotifierID: ac3c7c2c-fa1c-47e2-8169-7c7936059ec5, AgentID: alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgentExternalEventNotifier (NotifierID: ac3c7c2c-fa1c-47e2-8169-7c7936059ec5, AgentID: alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mRemoving agent 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd'. Attempting graceful shutdown.
+Agent 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd' requesting runtime to stop (timeout: 10s).
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgentExternalEventNotifier (NotifierID: ac3c7c2c-fa1c-47e2-8169-7c7936059ec5, AgentID: alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgentWorker 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd': Stop requested.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgentExternalEventNotifier (NotifierID: ac3c7c2c-fa1c-47e2-8169-7c7936059ec5, AgentID: alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgentExternalEventNotifier (NotifierID: ac3c7c2c-fa1c-47e2-8169-7c7936059ec5, AgentID: alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd' asyncRun() loop has finished.
+AgentWorker 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgentWorker 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd': Shutdown resource cleanup completed successfully.
+AgentWorker 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd': Shutdown sequence completed.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mUnregistered AgentContext for agent_id 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd'.
+AgentRuntime for 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd': Context unregistered.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgentRuntime for 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd' stop() method completed.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgentEventStream (ID: 2891e010-d955-40cb-962d-712acf14786c) for 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mAgentEventStream (ID: 2891e010-d955-40cb-962d-712acf14786c) for 'alsr_tps_probe_3c105073_6a40ef4184264ea2ba2583b328d256fd': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)[2m > [22m[2mTPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk
+[22m[39mClosed agent session e3fb5f47-ad18-4587-8d86-351a2fdb595f
+Agent WebSocket disconnected: e3fb5f47-ad18-4587-8d86-351a2fdb595f
+
+[90mstdout[2m | tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22m[2mnative per-call output throughput (live probe)
+[22m[39mAgent Definition with ID alsr-tps-probe-3c105073 deleted successfully.
+
+ [31m❯[39m tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts [2m([22m[2m3 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[33m 6893[2mms[22m[39m
+[31m     [31m×[31m TPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output[39m[33m 722[2mms[22m[39m
+[31m     [31m×[31m TPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app[39m[33m 383[2mms[22m[39m
+     [33m[2m✓[22m[39m TPS-003: DeepSeek with streamed reasoning: generation speed timed from the first reasoning chunk [33m 2493[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22mnative per-call output throughput (live probe)[2m > [22mTPS-001: Opus 5.5, a ~150-word answer: generation speed (no hidden reasoning), numerator = reported output
+[31m[1mAssertionError[22m: {"code":"LLM_PROVIDER_ERROR","message":"Error in Anthropic streaming: Error: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011Cg7AgxoKYzb3g5G5shVfK\"}","error_scope":"turn","error_effect":"diagnostic","turn_id":"turn_0001"}: expected { type: 'ERROR', payload: { …(5) } } to be null[39m
+
+[32m- Expected:[39m 
+null
+
+[31m+ Received:[39m 
+{
+  "payload": {
+    "code": "LLM_PROVIDER_ERROR",
+    "error_effect": "diagnostic",
+    "error_scope": "turn",
+    "message": "Error in Anthropic streaming: Error: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011Cg7AgxoKYzb3g5G5shVfK\"}",
+    "turn_id": "turn_0001",
+  },
+  "type": "ERROR",
+}
+
+[36m [2m❯[22m tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts:[2m56:65[22m[39m
+    [90m 54| [39m  it.skipIf(!hasKey("ANTHROPIC_API_KEY"))("TPS-001: Opus 5.5, a ~150-w…
+    [90m 55| [39m    const result = await turn("TPS-001", "ANTHROPIC", "claude-opus-5-5…
+    [90m 56| [39m    expect(result.error, JSON.stringify(result.error?.payload)).toBeNu…
+    [90m   | [39m                                                                [31m^[39m
+    [90m 57| [39m    [35mconst[39m reading [33m=[39m result[33m.[39mreadings[33m.[39m[34mat[39m([33m-[39m[34m1[39m)[33m![39m[33m;[39m
+    [90m 58| [39m    [34mexpect[39m(reading[33m.[39mingestion_kind)[33m.[39m[34mtoBe[39m([32m"autobyteus_llm_phase"[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts[2m > [22mnative per-call output throughput (live probe)[2m > [22mTPS-002: Opus 5.5, a one-word answer: below the minimum sample, so no TPS reaches the app
+[31m[1mAssertionError[22m: {"code":"LLM_PROVIDER_ERROR","message":"Error in Anthropic streaming: Error: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011Cg7Ah1hhJZ3oYgaTWUbtd\"}","error_scope":"turn","error_effect":"diagnostic","turn_id":"turn_0001"}: expected { type: 'ERROR', payload: { …(5) } } to be null[39m
+
+[32m- Expected:[39m 
+null
+
+[31m+ Received:[39m 
+{
+  "payload": {
+    "code": "LLM_PROVIDER_ERROR",
+    "error_effect": "diagnostic",
+    "error_scope": "turn",
+    "message": "Error in Anthropic streaming: Error: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011Cg7Ah1hhJZ3oYgaTWUbtd\"}",
+    "turn_id": "turn_0001",
+  },
+  "type": "ERROR",
+}
+
+[36m [2m❯[22m tests/e2e/runtime/tmp-alsr-tps-probe.e2e.test.ts:[2m66:65[22m[39m
+    [90m 64| [39m  it.skipIf(!hasKey("ANTHROPIC_API_KEY"))("TPS-002: Opus 5.5, a one-wo…
+    [90m 65| [39m    const result = await turn("TPS-002", "ANTHROPIC", "claude-opus-5-5…
+    [90m 66| [39m    expect(result.error, JSON.stringify(result.error?.payload)).toBeNu…
+    [90m   | [39m                                                                [31m^[39m
+    [90m 67| [39m    [35mconst[39m reading [33m=[39m result[33m.[39mreadings[33m.[39m[34mat[39m([33m-[39m[34m1[39m)[33m![39m[33m;[39m
+    [90m 68| [39m    expect((reading.reported_output_tokens as number) < 20, JSON.strin…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m1 passed[39m[22m[90m (3)[39m
+[2m   Start at [22m 06:20:21
+[2m   Duration [22m 15.53s[2m (transform 6.16s, setup 27ms, import 8.13s, tests 6.89s, environment 0ms)[22m
+
+exit=1

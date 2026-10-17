@@ -1,0 +1,2183 @@
+[
+  {
+    "index": 0,
+    "phase": "OLR-001",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 1200,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 8019,
+      "cacheRead": 0,
+      "cacheWrite": 8015,
+      "output": 1200
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 1,
+    "phase": "OLR-001",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 1200,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 8114,
+      "cacheRead": 7871,
+      "cacheWrite": 239,
+      "output": 1200
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 2,
+    "phase": "OLR-001",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 962,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 8181,
+      "cacheRead": 7871,
+      "cacheWrite": 306,
+      "output": 962
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 3,
+    "phase": "OLR-001",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 742,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 9220,
+      "cacheRead": 8177,
+      "cacheWrite": 1041,
+      "output": 742
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 4,
+    "phase": "OLR-001",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 754,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 10064,
+      "cacheRead": 9218,
+      "cacheWrite": 844,
+      "output": 754
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 5,
+    "phase": "OLR-001",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 736,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 10920,
+      "cacheRead": 10062,
+      "cacheWrite": 856,
+      "output": 736
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 6,
+    "phase": "OLR-001",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 863,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 11758,
+      "cacheRead": 10918,
+      "cacheWrite": 838,
+      "output": 863
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 7,
+    "phase": "OLR-001",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 69,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 12727,
+      "cacheRead": 11756,
+      "cacheWrite": 969,
+      "output": 69
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 8,
+    "phase": "OLR-011",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 400
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 400,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 8020,
+      "cacheRead": 0,
+      "cacheWrite": 8016,
+      "output": 400
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 9,
+    "phase": "OLR-011",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 400
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 400,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 8114,
+      "cacheRead": 7872,
+      "cacheWrite": 238,
+      "output": 400
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 10,
+    "phase": "OLR-011",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 400
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 400,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 8208,
+      "cacheRead": 7872,
+      "cacheWrite": 332,
+      "output": 400
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 11,
+    "phase": "OLR-011",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 400
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 400,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 8274,
+      "cacheRead": 7872,
+      "cacheWrite": 398,
+      "output": 400
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 12,
+    "phase": "OLR-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 111,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 8051,
+      "cacheRead": 0,
+      "cacheWrite": 8047,
+      "output": 111
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 13,
+    "phase": "OLR-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 1200,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 8202,
+      "cacheRead": 8047,
+      "cacheWrite": 153,
+      "output": 1200
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 14,
+    "phase": "OLR-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 1200,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 8292,
+      "cacheRead": 8200,
+      "cacheWrite": 88,
+      "output": 1200
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 15,
+    "phase": "OLR-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 1153,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 8359,
+      "cacheRead": 8200,
+      "cacheWrite": 155,
+      "output": 1153
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 16,
+    "phase": "OLR-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 794,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 9590,
+      "cacheRead": 8355,
+      "cacheWrite": 1233,
+      "output": 794
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 17,
+    "phase": "OLR-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 1200,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 10487,
+      "cacheRead": 9588,
+      "cacheWrite": 897,
+      "output": 1200
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 18,
+    "phase": "OLR-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 621,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 10578,
+      "cacheRead": 10485,
+      "cacheWrite": 89,
+      "output": 621
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 19,
+    "phase": "OLR-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 605,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 11302,
+      "cacheRead": 10574,
+      "cacheWrite": 726,
+      "output": 605
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 20,
+    "phase": "OLR-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 607,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 12010,
+      "cacheRead": 11300,
+      "cacheWrite": 708,
+      "output": 607
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 21,
+    "phase": "OLR-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 656,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 12720,
+      "cacheRead": 12008,
+      "cacheWrite": 710,
+      "output": 656
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 22,
+    "phase": "OLR-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 131,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 13479,
+      "cacheRead": 12718,
+      "cacheWrite": 759,
+      "output": 131
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 23,
+    "phase": "OLR-003",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 300
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 300,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 7947,
+      "cacheRead": 0,
+      "cacheWrite": 7943,
+      "output": 300
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 24,
+    "phase": "OLR-003",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 300
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 300,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 8297,
+      "cacheRead": 7943,
+      "cacheWrite": 350,
+      "output": 300
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 25,
+    "phase": "OLR-003",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 300
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 180,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 8605,
+      "cacheRead": 8293,
+      "cacheWrite": 308,
+      "output": 180
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 26,
+    "phase": "OLR-004",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 20
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 20,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 7929,
+      "cacheRead": 0,
+      "cacheWrite": 7925,
+      "output": 20
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 27,
+    "phase": "OLR-004",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 20
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 20,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 7995,
+      "cacheRead": 7832,
+      "cacheWrite": 159,
+      "output": 20
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 28,
+    "phase": "OLR-004",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 20
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 20,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 8061,
+      "cacheRead": 7832,
+      "cacheWrite": 225,
+      "output": 20
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 29,
+    "phase": "OLR-004",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 20
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 20,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 8127,
+      "cacheRead": 7832,
+      "cacheWrite": 291,
+      "output": 20
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 30,
+    "phase": "OLR-004-next",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 20
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 4,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 8146,
+      "cacheRead": 7832,
+      "cacheWrite": 310,
+      "output": 4
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 31,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 150,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 5422,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "output": 150
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 32,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 150,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 5506,
+      "cacheRead": 5248,
+      "cacheWrite": 0,
+      "output": 150
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 33,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 150,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 5573,
+      "cacheRead": 5376,
+      "cacheWrite": 0,
+      "output": 150
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 34,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 150,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 5640,
+      "cacheRead": 5504,
+      "cacheWrite": 0,
+      "output": 150
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 35,
+    "phase": "OLR-012-OPENAI",
+    "host": "api.openai.com",
+    "pathname": "/v1/responses",
+    "stream": true,
+    "limits": {
+      "max_output_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "status:incomplete",
+      "max_output_tokens"
+    ],
+    "maxReportedOutputTokens": 1200,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": null,
+    "strictInjected": false
+  },
+  {
+    "index": 36,
+    "phase": "OLR-012-OPENAI",
+    "host": "api.openai.com",
+    "pathname": "/v1/responses",
+    "stream": true,
+    "limits": {
+      "max_output_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "status:incomplete",
+      "max_output_tokens"
+    ],
+    "maxReportedOutputTokens": 1200,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": null,
+    "strictInjected": false
+  },
+  {
+    "index": 37,
+    "phase": "OLR-012-OPENAI",
+    "host": "api.openai.com",
+    "pathname": "/v1/responses",
+    "stream": true,
+    "limits": {
+      "max_output_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "status:incomplete",
+      "max_output_tokens"
+    ],
+    "maxReportedOutputTokens": 1200,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": null,
+    "strictInjected": false
+  },
+  {
+    "index": 38,
+    "phase": "OLR-012-OPENAI",
+    "host": "api.openai.com",
+    "pathname": "/v1/responses",
+    "stream": true,
+    "limits": {
+      "max_output_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "status:incomplete",
+      "max_output_tokens"
+    ],
+    "maxReportedOutputTokens": 1200,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": null,
+    "strictInjected": false
+  },
+  {
+    "index": 39,
+    "phase": "OLR-013-OPENAI",
+    "host": "api.openai.com",
+    "pathname": "/v1/responses",
+    "stream": true,
+    "limits": {
+      "max_output_tokens": 300
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "status:incomplete",
+      "max_output_tokens"
+    ],
+    "maxReportedOutputTokens": 300,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": null,
+    "strictInjected": false
+  },
+  {
+    "index": 40,
+    "phase": "OLR-013-OPENAI",
+    "host": "api.openai.com",
+    "pathname": "/v1/responses",
+    "stream": true,
+    "limits": {
+      "max_output_tokens": 300
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "status:incomplete",
+      "max_output_tokens"
+    ],
+    "maxReportedOutputTokens": 300,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": null,
+    "strictInjected": false
+  },
+  {
+    "index": 41,
+    "phase": "OLR-013-OPENAI",
+    "host": "api.openai.com",
+    "pathname": "/v1/responses",
+    "stream": true,
+    "limits": {
+      "max_output_tokens": 300
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "status:completed"
+    ],
+    "maxReportedOutputTokens": 47,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": null,
+    "strictInjected": false
+  },
+  {
+    "index": 42,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 227,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 4933,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "output": 227
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 43,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 418,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 5222,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "output": 418
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 44,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 96,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 5705,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "output": 96
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 45,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 655,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 5863,
+      "cacheRead": 3744,
+      "cacheWrite": 0,
+      "output": 655
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 46,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 595,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 6634,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "output": 595
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 47,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 24,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 7310,
+      "cacheRead": 3781,
+      "cacheWrite": 0,
+      "output": 24
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 48,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 616,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 9599,
+      "cacheRead": 3841,
+      "cacheWrite": 0,
+      "output": 616
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 49,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 539,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 10332,
+      "cacheRead": 7695,
+      "cacheWrite": 0,
+      "output": 539
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 50,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 29,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 10945,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "output": 29
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 51,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 57,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 11460,
+      "cacheRead": 7705,
+      "cacheWrite": 0,
+      "output": 57
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 52,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "MAX_TOKENS"
+    ],
+    "maxReportedOutputTokens": null,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 13795,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "output": 0
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 53,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 618,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 13836,
+      "cacheRead": 11645,
+      "cacheWrite": 0,
+      "output": 618
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 54,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 64,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 14528,
+      "cacheRead": 11652,
+      "cacheWrite": 0,
+      "output": 64
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 55,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 21,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 14654,
+      "cacheRead": 11639,
+      "cacheWrite": 0,
+      "output": 21
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 56,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 474,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 14737,
+      "cacheRead": 11623,
+      "cacheWrite": 0,
+      "output": 474
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 57,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 40,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 15293,
+      "cacheRead": 11625,
+      "cacheWrite": 0,
+      "output": 40
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 58,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 21,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 15395,
+      "cacheRead": 11612,
+      "cacheWrite": 0,
+      "output": 21
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 59,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 17,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 15478,
+      "cacheRead": 11597,
+      "cacheWrite": 0,
+      "output": 17
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 60,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 76,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 126332,
+      "cacheRead": 16261,
+      "cacheWrite": 0,
+      "output": 76
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 61,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 39,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 126540,
+      "cacheRead": 121936,
+      "cacheWrite": 0,
+      "output": 39
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 62,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 78,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 126644,
+      "cacheRead": 121911,
+      "cacheWrite": 0,
+      "output": 78
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 63,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 83,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 294877,
+      "cacheRead": 289798,
+      "cacheWrite": 0,
+      "output": 83
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 64,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 164,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 299501,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "output": 164
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 65,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 173,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 299727,
+      "cacheRead": 293844,
+      "cacheWrite": 0,
+      "output": 173
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 66,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 45,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 299981,
+      "cacheRead": 297897,
+      "cacheWrite": 0,
+      "output": 45
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 67,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 95,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 300233,
+      "cacheRead": 293789,
+      "cacheWrite": 0,
+      "output": 95
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 68,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 1,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 301581,
+      "cacheRead": 297846,
+      "cacheWrite": 0,
+      "output": 1
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 69,
+    "phase": "OLR-013-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 300
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "MAX_TOKENS"
+    ],
+    "maxReportedOutputTokens": 296,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 4855,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "output": 296
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 70,
+    "phase": "OLR-013-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 300
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 150,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 5181,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "output": 150
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 71,
+    "phase": "OLR-E2E-006",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": true,
+    "status": 200,
+    "stopSignals": [
+      "refusal"
+    ],
+    "maxReportedOutputTokens": 132,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 7968,
+      "cacheRead": 0,
+      "cacheWrite": 7964,
+      "output": 132
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 72,
+    "phase": "OLR-E2E-006-next",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 4,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 7957,
+      "cacheRead": 7871,
+      "cacheWrite": 82,
+      "output": 4
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 73,
+    "phase": "OLR-E2E-007",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": true,
+    "status": 200,
+    "stopSignals": [
+      "model_context_window_exceeded"
+    ],
+    "maxReportedOutputTokens": 133,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 7969,
+      "cacheRead": 0,
+      "cacheWrite": 7965,
+      "output": 133
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 74,
+    "phase": "OLR-E2E-007-next",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 4,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 7958,
+      "cacheRead": 7872,
+      "cacheWrite": 82,
+      "output": 4
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 75,
+    "phase": "OLR-008",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": true,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 133,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 7969,
+      "cacheRead": 0,
+      "cacheWrite": 7965,
+      "output": 133
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 76,
+    "phase": "OLR-008-next",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 4,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 7958,
+      "cacheRead": 7872,
+      "cacheWrite": 82,
+      "output": 4
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 77,
+    "phase": "OLR-009b",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 384000
+    },
+    "rewritten": true,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 101,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 5379,
+      "cacheRead": 384,
+      "cacheWrite": 0,
+      "output": 101
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 78,
+    "phase": "OLR-009b",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 384000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 101,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 5445,
+      "cacheRead": 5248,
+      "cacheWrite": 0,
+      "output": 101
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 79,
+    "phase": "OLR-009b",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 384000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 85,
+    "responseHasToolCall": true,
+    "responseHasVisibleText": false,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 5612,
+      "cacheRead": 5376,
+      "cacheWrite": 0,
+      "output": 85
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 80,
+    "phase": "OLR-009b",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 384000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "stop"
+    ],
+    "maxReportedOutputTokens": 1,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 5712,
+      "cacheRead": 5504,
+      "cacheWrite": 0,
+      "output": 1
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 81,
+    "phase": "OLR-010-T1",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 96
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "stop"
+    ],
+    "maxReportedOutputTokens": 1,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 16157,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "output": 1
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 82,
+    "phase": "OLR-010-T2",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 96
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "stop"
+    ],
+    "maxReportedOutputTokens": 1,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 27371,
+      "cacheRead": 16128,
+      "cacheWrite": 0,
+      "output": 1
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 83,
+    "phase": "OLR-010-T2",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 15000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "stop"
+    ],
+    "maxReportedOutputTokens": 679,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 28194,
+      "cacheRead": 27264,
+      "cacheWrite": 0,
+      "output": 679
+    },
+    "strictInjected": false
+  },
+  {
+    "index": 84,
+    "phase": "OLR-010-T3",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 96
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "stop"
+    ],
+    "maxReportedOutputTokens": 5,
+    "responseHasToolCall": false,
+    "responseHasVisibleText": true,
+    "errorBody": null,
+    "usage": {
+      "inputTotal": 6026,
+      "cacheRead": 5120,
+      "cacheWrite": 0,
+      "output": 5
+    },
+    "strictInjected": false
+  }
+]

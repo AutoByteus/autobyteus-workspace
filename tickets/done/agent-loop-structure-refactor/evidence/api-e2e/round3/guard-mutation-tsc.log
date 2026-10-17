@@ -1,0 +1,2 @@
+src/agent/loop/agent-turn-runner.ts(84,19): error TS2322: Type '{ kind: "compaction_blocked"; }' is not assignable to type 'never'.
+exit=2
