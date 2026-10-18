@@ -4,7 +4,6 @@ import { AgentRunContext } from "../../../../../../src/agent-execution/domain/ag
 import { ClaudeSessionBootstrapper } from "../../../../../../src/agent-execution/backends/claude/backend/claude-session-bootstrapper.js";
 import { MemberExecutionContext } from "../../../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
-import { Skill } from "../../../../../../src/skills/domain/models.js";
 import type { ConfiguredAgentSkillBinding } from "../../../../../../src/skills/domain/configured-agent-skill-binding.js";
 import { testMemberExecutionContext } from "../../../../../fixtures/current-team-run-fixtures.js";
 
