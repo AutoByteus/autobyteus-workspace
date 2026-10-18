@@ -432,3 +432,5 @@ Evidence: `evidence/implementation/`.
   - `tests/unit/agent-execution/native-compaction-terminal-drain.test.ts` (base compaction code; not touched by the ticket or the merge) failed once in a batch run (`tests/unit/agent-tools tests/unit/agent-execution tests/unit/projects tests/unit/embeddings`) after about 3.1 s. That run's log was not kept.
   - It then passed 10 times: the same batch again, 3 times alone and 6 times under 6-core CPU load. It also passed in the full suite (IMP-09).
   - Its cause is not known. The test includes a real 1 s + 2 s summarizer backoff and asserts exact compaction phases, so it is timing-sensitive. I am reporting it, not counting it as pass or fail for this ticket.
+
+- CRR-006: **Pass** (targeted review of the IR-004 merge resolutions, DR-001). Report: `code-review-report.md`. The code reviewer hands off to `/software_engineering_team/api_e2e_engineer`.
