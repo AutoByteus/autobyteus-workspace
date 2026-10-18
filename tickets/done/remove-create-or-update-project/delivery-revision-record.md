@@ -28,3 +28,22 @@
 - Remaining risks: Codex was not run live (covered by unit parity).
 
 #### Finalization and rollout refs (appended after publishing)
+
+- Ticket branch: archive commit `a5591571bb`, pushed as `origin/codex/remove-create-or-update-project`.
+- Target recheck: `origin/personal` was still `f3124db10f` before the merge and before the push. No re-integration was needed.
+- Finalization:
+  - `finalize/remove-create-or-update-project` from `origin/personal`;
+  - `--no-ff` merge `3f7e3fb8af`, with a tree identical to the ticket branch;
+  - `check_licensing.py` and `check_repository_artifact_hygiene.py` pass on the merged state;
+  - untracked `*/dist/` deleted so the release script's clean-tree rule holds.
+- Release:
+  - `bash scripts/desktop-release.sh beta --branch finalize/remove-create-or-update-project --no-push` made `1070bbbdf0` (`chore(release): bump workspace release version to 1.5.6-beta.2`) and the annotated tag `v1.5.6-beta.2`;
+  - fetched and checked again, then pushed `origin/personal` `f3124db10f..1070bbbdf0` and pushed the tag.
+- Rollout:
+  - Desktop Release `39103564236`, Android APK Release `39103564220`, iOS App Store Connect Release `39103564207` and Server Docker Release `39103564198` all succeeded.
+  - The GitHub release `v1.5.6-beta.2` is a pre-release with 17 assets, matching RELEASE.md: macOS ARM64/x64 dmg, zip and blockmaps, Linux x64/ARM64 AppImages, the Windows exe, the Android APK and sha256, and 4 `latest*.yml` files.
+  - Docker Hub: `autobyteus/autobyteus-server:1.5.6-beta.2`, with `:beta` moved to the same digest (`sha256:573a38f81cef…`). `:latest` stays on 1.5.5.
+- Release result: `Completed` (not partial).
+- User check: by upgrading to `v1.5.6-beta.2` (Settings > Updates > Receive beta updates). Asked of the user in the delivery report to them.
+- Cleanup: after this record is pushed, remove the worktree and the local branches `codex/remove-create-or-update-project` and `finalize/remove-create-or-update-project`. Confirmed in the terminal message.
+- Terminal return to `/solution_designer`: sent after cleanup.
