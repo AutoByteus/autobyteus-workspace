@@ -16,6 +16,8 @@ import type {
 import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
 import { toAgentPresentationProjectionMessage } from '~/services/agentStreaming/teamStreamDtoAdapters'
 import { dispatchAgentStreamMessage } from '~/services/agentStreaming/agentStreamMessageProjector'
+import { advanceSequencedStream } from '~/services/agentStreaming/sequencedStreamRange'
+import type { AgentPresentationMessage } from '@autobyteus/agent-presentation-contracts'
 import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState'
 import { projectAgentOrgReference } from '~/services/agentOrgExecution/agentOrgReferenceProjection'
 import { createChildContext } from './agentRunCollaborationChildContextFactory'
@@ -120,22 +122,18 @@ export class AgentRunCollaborationContext {
     return this.index.agents.get(agentRunId) ?? null
   }
 
-  applyEvent(changeSequence: number, event: AgentRunCollaborationEventDto): AgentRunCollaborationEventApplication {
+  /** Applies one root event, or a content batch covering `[changeSequence, changeSequenceThrough]`. */
+  applyEvent(changeSequence: number, event: AgentRunCollaborationEventDto, changeSequenceThrough = changeSequence): AgentRunCollaborationEventApplication {
     if (this.phase !== 'live') throw new Error('Agent collaboration context is not accepting stream events.')
-    if (changeSequence !== this.nextChangeSequence) {
+    const following = advanceSequencedStream(this.nextChangeSequence, { first: changeSequence, through: changeSequenceThrough })
+    if (following === null) {
       this.requireReopen(`Agent collaboration change sequence gap: expected ${this.nextChangeSequence}, received ${changeSequence}.`)
       throw new Error(this.error!)
     }
     if (event.kind === 'agent_presentation') {
-      const context = this.contexts.get(event.agent_run_id)
-      if (!context || this.index.agents.get(event.agent_run_id)?.address !== event.member_address) {
-        this.requireReopen(`Agent presentation identity '${event.agent_run_id}' is not a child of this run.`)
-        throw new Error(this.error!)
-      }
-      dispatchAgentStreamMessage(toAgentPresentationProjectionMessage(event.message, event.agent_run_id), {
-        kind: 'agent_collaboration_member', context, hostRunId: this.hostRunId,
-        agentRunId: event.agent_run_id, memberAddress: event.member_address,
-      })
+      this.dispatchPresentation([event])
+    } else if (event.kind === 'agent_presentation_batch') {
+      this.dispatchPresentation(event.items)
     } else if (event.kind === 'task_execution_started') {
       // A new child needs its own context and projection; reload the view.
       return 'checkpoint_required'
@@ -173,8 +171,28 @@ export class AgentRunCollaborationContext {
         messages: [...this.view.communication_messages.messages, event.message],
       } }
     }
-    this.nextChangeSequence += 1
+    this.nextChangeSequence = following
     return 'applied'
+  }
+
+  /** Every identity is checked before any message is dispatched; batch items apply in order. */
+  private dispatchPresentation(entries: readonly Readonly<{
+    agent_run_id: string; member_address: string; message: AgentPresentationMessage
+  }>[]): void {
+    const targets = entries.map((entry) => {
+      const context = this.contexts.get(entry.agent_run_id)
+      if (!context || this.index.agents.get(entry.agent_run_id)?.address !== entry.member_address) {
+        this.requireReopen(`Agent presentation identity '${entry.agent_run_id}' is not a child of this run.`)
+        throw new Error(this.error!)
+      }
+      return { entry, context }
+    })
+    for (const { entry, context } of targets) {
+      dispatchAgentStreamMessage(toAgentPresentationProjectionMessage(entry.message, entry.agent_run_id), {
+        kind: 'agent_collaboration_member', context, hostRunId: this.hostRunId,
+        agentRunId: entry.agent_run_id, memberAddress: entry.member_address,
+      })
+    }
   }
 
   setActive(active: boolean): void {

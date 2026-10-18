@@ -204,6 +204,25 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
     expect(taskStudent.state.conversation.messages).toHaveLength(0);
   });
 
+  it('applies a content batch per member in item order and continues after its covered range (autobyteus-139)', () => {
+    const { callbacks, team } = createHarness();
+    admitReady(callbacks, team);
+    const teacher = team.view.getAgentContext(teacherRunId)!;
+    const taskStudent = team.view.getAgentContext(taskStudentRunId)!;
+    const segment = (agentRunId: string) => ({ agent_run_id: agentRunId, segment_id: `${agentRunId}-segment`, turn_id: 'turn-1', segment_type: 'text' });
+    emit(callbacks, 'SEGMENT_START', { change_sequence: 1, ...segment(teacherRunId), metadata: null });
+    emit(callbacks, 'SEGMENT_START', { change_sequence: 2, ...segment(taskStudentRunId), metadata: null });
+    emit(callbacks, 'SEGMENT_CONTENT_BATCH', { change_sequence: 3, change_sequence_through: 8, items: [
+      { ...segment(teacherRunId), delta: 'xy' }, { ...segment(taskStudentRunId), delta: '12' },
+    ] });
+    emit(callbacks, 'SEGMENT_CONTENT_BATCH', { change_sequence: 9, change_sequence_through: 9, items: [{ ...segment(teacherRunId), delta: 'z' }] });
+
+    expect(teacher.state.conversation.messages[0]?.segments[0]).toMatchObject({ content: 'xyz' });
+    expect(taskStudent.state.conversation.messages[0]?.segments[0]).toMatchObject({ content: '12' });
+    expect(team.view.getChangeSequence()).toBe(9);
+    expect(team.view.needsStreamRecovery()).toBe(false);
+  });
+
   it('adds a member background task only to that member AgentRun (AC-009)', () => {
     const { callbacks, team } = createHarness();
     admitReady(callbacks, team);

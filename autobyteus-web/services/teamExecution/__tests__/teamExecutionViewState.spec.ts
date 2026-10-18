@@ -432,3 +432,45 @@ describe('selected source workspace root', () => {
     expect(state.getAgentWorkspaceRootPath('unknown')).toBeNull();
   });
 });
+
+describe('SEGMENT_CONTENT_BATCH (autobyteus-139)', () => {
+  const item = (agentRunId: string, delta: string) => ({
+    agent_run_id: agentRunId, segment_id: `segment-${agentRunId}`, turn_id: 'turn-1', segment_type: 'text' as const, delta,
+  });
+  const batch = (first: number, through: number, ...items: ReturnType<typeof item>[]): Extract<TeamStreamServerMessage, { type: 'SEGMENT_CONTENT_BATCH' }> => ({
+    type: 'SEGMENT_CONTENT_BATCH', payload: { change_sequence: first, change_sequence_through: through, items },
+  });
+
+  it('dispatches one SEGMENT_CONTENT per item in item order and advances past the whole range', () => {
+    const state = createState();
+    const result = state.applyMessage(batch(1, 6, item('teacher-run', 'xy'), item('student-run', '12')));
+    expectApplied(result);
+    expect(result.effects).toEqual([
+      { kind: 'dispatch_agent', agentRunId: 'teacher-run', message: { type: 'SEGMENT_CONTENT', payload: {
+        change_sequence: 1, agent_run_id: 'teacher-run', segment_id: 'segment-teacher-run', turn_id: 'turn-1', segment_type: 'text', delta: 'xy',
+      } } },
+      { kind: 'dispatch_agent', agentRunId: 'student-run', message: { type: 'SEGMENT_CONTENT', payload: {
+        change_sequence: 1, agent_run_id: 'student-run', segment_id: 'segment-student-run', turn_id: 'turn-1', segment_type: 'text', delta: '12',
+      } } },
+    ]);
+    expect(state.getChangeSequence()).toBe(6);
+    expectApplied(state.applyMessage(started(7, 'root-team-1', taskAgent('after-batch-run', 'teacher-run'))));
+    expect(state.getChangeSequence()).toBe(7);
+  });
+
+  it('rejects a batch that does not start at the next sequence as a gap', () => {
+    const state = createState();
+    expect(state.applyMessage(batch(2, 4, item('teacher-run', 'x')))).toMatchObject({
+      disposition: 'rejected', code: 'TEAM_EXECUTION_CHANGE_SEQUENCE_GAP', effects: [{ kind: 'team_stream_recovery_required' }],
+    });
+    expect(state.getChangeSequence()).toBe(0);
+  });
+
+  it('rejects a batch naming an unknown AgentRun without dispatching any item', () => {
+    const state = createState();
+    expect(state.applyMessage(batch(1, 2, item('teacher-run', 'x'), item('unknown-run', 'y')))).toMatchObject({
+      disposition: 'rejected', code: 'TEAM_EXECUTION_EVENT_INVALID', effects: [],
+    });
+    expect(state.getChangeSequence()).toBe(0);
+  });
+});
