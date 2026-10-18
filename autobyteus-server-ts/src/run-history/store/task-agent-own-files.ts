@@ -5,15 +5,24 @@ import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.
 import type { TaskAgentTeamTreeFile } from "../../agent-team-execution/domain/task-agent-team-tree.js";
 import { TeamCommunicationStore } from "../../services/team-communication/team-communication-store.js";
 import { AgentRunMetadataStore, type TaskAgentRunMetadataReadState } from "./agent-run-metadata-store.js";
-import type { TaskAgentRunMetadata } from "./agent-run-metadata-types.js";
+import type { TaskAgentCoordinatingRun, TaskAgentRunMetadata, TaskAgentSection } from "./agent-run-metadata-types.js";
 import {
   getAtomicRunPackageFileCommitWriter,
   type AtomicRunPackageFileCommitWriter,
   type RunPackageFileWriteResult,
 } from "./atomic-run-package-file-commit-writer.js";
-import { hasTaskAgentSection } from "./task-agent-own-file-schema.js";
+import { hasTaskAgentSection, parseTaskAgentSection } from "./task-agent-own-file-schema.js";
+import {
+  adoptedAgentRunFile,
+  adoptedTeamRunFile,
+  handStartedAgentRunFile,
+  handStartedTeamRunFile,
+} from "./hand-started-run-adoption-shape.js";
 import { validateTaskAgentTeamTreePayload } from "./task-agent-team-tree-schema.js";
 import { getTeamRunExecutionTreePath } from "./team-run-execution-tree-path.js";
+
+/** A run by its own ID: an agent run or a team run. */
+export type OwnFileRun = Readonly<{ agentRunId: string }> | Readonly<{ teamRunId: string }>;
 
 export type TaskAgentTeamTreeReadState =
   | Readonly<{ kind: "present"; tree: TaskAgentTeamTreeFile }>
@@ -96,5 +105,36 @@ export class TaskAgentOwnFiles {
       filePath: getTeamRunExecutionTreePath(dir),
       payload: validateTaskAgentTeamTreePayload(tree, teamRunId),
     });
+  }
+
+  /**
+   * Adoption step 3 (design SR-008): the hand-started run's own file gains `taskAgent` and, for a team, its address
+   * frame moves from `/` to `section.address`; every other key is kept. Raw JSON, written atomically.
+   */
+  adoptOwnFile(run: OwnFileRun, section: TaskAgentSection): Promise<RunPackageFileWriteResult> {
+    return this.rewriteRaw(run, (raw) => "agentRunId" in run ? adoptedAgentRunFile(raw, section) : adoptedTeamRunFile(raw, section));
+  }
+
+  /** The inverse of `adoptOwnFile`: the run's file exactly as it was before the adoption (a team back at `/`). */
+  restoreHandStartedFile(run: OwnFileRun): Promise<RunPackageFileWriteResult> {
+    return this.rewriteRaw(run, (raw) => "agentRunId" in run ? handStartedAgentRunFile(raw) : handStartedTeamRunFile(raw));
+  }
+
+  /** The coordinating run an own file names; `null` without a file or a `taskAgent` section. Reads the raw file. */
+  async coordinatingRunOf(run: OwnFileRun): Promise<TaskAgentCoordinatingRun | null> {
+    let raw: unknown;
+    try { raw = JSON.parse(await fsPromises.readFile(this.ownFilePath(run), "utf-8")); }
+    catch (error) { if (isMissing(error)) return null; throw error; }
+    return hasTaskAgentSection(raw) ? parseTaskAgentSection((raw as Record<string, unknown>).taskAgent).coordinatingRun : null;
+  }
+
+  private ownFilePath(run: OwnFileRun): string {
+    return "agentRunId" in run ? this.metadata.getMetadataPath(run.agentRunId) : getTeamRunExecutionTreePath(this.teamDir(run.teamRunId));
+  }
+
+  private async rewriteRaw(run: OwnFileRun, change: (raw: unknown) => Record<string, unknown>): Promise<RunPackageFileWriteResult> {
+    const filePath = this.ownFilePath(run);
+    const payload = change(JSON.parse(await fsPromises.readFile(filePath, "utf-8")));
+    return this.writer.write({ file: "agentRunId" in run ? "run_metadata" : "team_run_execution_tree", filePath, payload });
   }
 }

@@ -102,7 +102,9 @@ The plan, with the validated commit and the diff, goes in the validation report.
 - **Clean environment elsewhere.** E2E folders, `autobyteus-ts` integration tests and live
   suites inherit the shell, which carries the live app's variables and provider keys. Run
   them with a clean environment, e.g. `env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" …`,
-  or unset the inherited `AUTOBYTEUS_*` roots, as the test file states. A live suite that
+  or unset the inherited `AUTOBYTEUS_*` roots, as the test file states. Give the temp `HOME`
+  its resolved path (`HOME="$(cd "$(mktemp -d)" && pwd -P)"`): on macOS `/var` is a symlink to
+  `/private/var`, and the terminal e2e compares the shell's `$PWD` with `HOME`. A live suite that
   uses a signed-in CLI (`claude`, `codex`) also needs the real `HOME` and, on macOS,
   `USER` and `LOGNAME`; without them the CLI reports "Not logged in" and the run hangs
   until its step timeout.

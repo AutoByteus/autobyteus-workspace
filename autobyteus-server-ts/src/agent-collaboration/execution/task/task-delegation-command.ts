@@ -54,7 +54,9 @@ export type TaskDelegationErrorCode =
   | "TASK_EXECUTION_RESTORE_FAILED"
   | "TASK_REACTIVATION_STOP_PENDING"
   | "TASK_EXECUTION_STOPPING"
-  | "TASK_COPY_NOT_ASSIGNABLE";
+  | "TASK_COPY_NOT_ASSIGNABLE"
+  /** Adopting a run the user started stopped before it was taken over; the same call again finishes it. */
+  | "TASK_ADOPTION_NOT_FINISHED";
 
 /** Refusal text when the root no longer accepts messages or delegations (wording §7.3). */
 export const ROOT_NOT_ACTIVE_MESSAGE = "This work is stopping or has stopped, so the message or delegation was not sent.";

@@ -1,0 +1,79 @@
+{
+  "startedAt": "2026-10-18T09:34:29.259Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "ADOPT": {
+      "result": "Pass",
+      "details": {
+        "beforeAdoption": {
+          "ownRow": 1
+        },
+        "agentLeftOwnGroupMs": 3,
+        "afterAdoption": {
+          "ownRow": 0,
+          "underPm": 1,
+          "retired": {
+            "taskExecution": [
+              "release_notes_writer_adopt_0697_9f3aee259a3b4a508f0fb144951f18c0"
+            ],
+            "departed": []
+          }
+        },
+        "afterHistoryRefresh": {
+          "ownRow": 0,
+          "retired": {
+            "taskExecution": [
+              "release_notes_writer_adopt_0697_9f3aee259a3b4a508f0fb144951f18c0"
+            ],
+            "departed": [
+              "release_notes_writer_adopt_0697_9f3aee259a3b4a508f0fb144951f18c0"
+            ]
+          }
+        },
+        "afterDone": {
+          "ownRow": 0,
+          "underPm": 0
+        },
+        "afterReopen": {
+          "ownRow": 0,
+          "underPm": 1
+        },
+        "teamLeftOwnGroupMs": 4028,
+        "teamRetired": {
+          "taskExecution": [],
+          "departed": [
+            "docs_review_team_adopt_0697_1aa2fd817bd94ab2a90502cd04edd08d"
+          ]
+        },
+        "afterReload": {
+          "workerOwnRow": 0,
+          "teamOwnRow": 0
+        },
+        "browserErrors": []
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 3001,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 2610,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:59628",
+    "frontendUrl": "http://127.0.0.1:59629",
+    "dataRoot": "/private/tmp/ir004-probe-IDuM/task-closure-tree-uBlmwQ"
+  },
+  "browserVersion": "155.0.8059.84",
+  "result": "Pass",
+  "finishedAt": "2026-10-18T09:36:53.995Z"
+}
