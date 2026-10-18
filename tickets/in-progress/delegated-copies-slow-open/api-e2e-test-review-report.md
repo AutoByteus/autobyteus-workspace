@@ -2,25 +2,25 @@
 
 ## Review Meta
 
-- Review Round: 1
-- Trigger: API/E2E Pass from `/software_engineering_team/api_e2e_engineer` (API-REV-001); durable test changes in commit `2a53bc59d0`
+- Review Round: 2
+- Trigger: round 1 — API/E2E Pass (API-REV-001), durable test commit `2a53bc59d0`; round 2 — API/E2E Pass on the merged state (API-REV-002, DR-001 integrated rerun), durable test commit `06faf2b346`
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-002)
 - Investigation Notes Reviewed As Context: through the design spec (no new reading needed)
 - Solution Revision Record Reviewed As Context: SR-004 (no change since CRR-001)
 - Design Spec Reviewed As Context: `design-spec.md` (SR-004)
 - Supplemental Task Artifacts Reviewed As Context: N/A (baseline probes unchanged)
 - Architecture Review Revision Record Reviewed As Context: ARCH-REV-002 (unchanged)
-- Implementation Revision Record Reviewed As Context: IR-001 (product code unchanged since `54e5356ae6`)
-- Original Code Review Report: `code-review-report.md` (CRR-001, Pass)
+- Implementation Revision Record Reviewed As Context: IR-001, IR-002 (product code unchanged since `2cb21ab41e`)
+- Original Code Review Report: `code-review-report.md` (CRR-003, round 2 Pass)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-002`
+- Current Code Review Revision ID: `CRR-004`
 - Coverage Investigation: `api-e2e-coverage-investigation.md`
 - Execution Coverage Report: `api-e2e-execution-coverage-report.md`
-- API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-001)
-- Delivery Revision Record Reviewed As Context: N/A
+- API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-001, API-REV-002)
+- Delivery Revision Record Reviewed As Context: DR-001 (trigger of the integrated rerun)
 - API/E2E Result: Pass
-- Final Validation Confidence: 95.0%
-- Prior unresolved test-review findings rechecked: None (first test review)
+- Final Validation Confidence: 95.0% (round 2)
+- Prior unresolved test-review findings rechecked: None open (round 1 had no findings; note N-1 unchanged)
 - Project testing guideline(s) applied: `TESTING.md` (root), as recorded in the coverage investigation. No conflicts with this skill.
 - Supported Product Scenario Basis Confirmed: `Yes` (SCN-001..SCN-005, MP-001; AC-004's failure alternate for L-011)
 
@@ -34,6 +34,14 @@
 | `autobyteus-web/package.json` | Updated | REQ-008 | Script `test:e2e:delegated-copies-large-hub` | — |
 
 - No durable test file changed: `No`
+
+### Round 2 Change (`06faf2b346`)
+
+| Durable Test Path | Change | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
+| --- | --- | --- | --- | --- |
+| `autobyteus-web/tests/e2e/delegated-copies-large-hub-probe.mjs` | Updated (+17/−4) | REQ-008 / AC-008 seed; OBS-1 observation | The seed's "hub log complete" wait, `messageLogObservation` and `hubMessageLogBytes` read the merged base's append-only hub log instead of `communication_messages.json` | Reader mirrors `run-history/store/message-log.ts#read`: sealed `communication_messages_<6 digits>.jsonl` in index order (zero-padded, so name order = index order), then `_active.jsonl`; only `\n`-terminated lines; first occurrence per `messageId`. Nothing else in the probe changed. Proven by a fresh full seed: `storedReports: 250`, `storedFiles: ["communication_messages_active.jsonl"]` (`evidence/R2-API-04-seed/probe-output.txt`) |
+
+Round 2 checks: scenario and intent unchanged; the reader reads the server's real layout rather than an assumed one, on test-owned data only; no stale reference to the old JSON path remains in the probe. A strict server reader throws on an invalid complete line while the probe's `JSON.parse` also throws, so a corrupted test log fails loudly in both. Calling `hubLog()` three times in one observation is redundant but harmless for a seed step.
 
 ## Proportional Test-Code Checks
 
@@ -64,12 +72,12 @@ None.
 | TFU-3 (OBS-3) | A copy whose messages are 60 KB single unbroken tokens takes ~86 s of client-side processing when opened | `evidence/OBS-3-unbroken-token-conversation.txt` | The base build froze on the same content; the rendering/processing path is outside this ticket | Profile client-side conversation processing/rendering for messages made of very long unbroken tokens and remove the super-linear step |
 | TFU-4 (from the implementation handoff) | `autobyteus-web/generated/graphql.ts` is behind the server schema (`Delegated*` types and mutations, `defaultLaunchConfig` fragment fields); only this ticket's query was spliced in | `implementation-handoff.md` → Environment Or Dependency Notes (Codegen) | Pre-existing drift unrelated to this ticket | Regenerate `autobyteus-web/generated/graphql.ts` from the current server schema (printed in-process, not from a running user app) and fix any resulting type errors |
 
-- Sent to: `/project_task_manager` (the "Requested by" agent in the requirements doc), one message for TFU-1..TFU-4 on 2026-10-18.
+- Sent to: `/project_task_manager` (the "Requested by" agent in the requirements doc), one message for TFU-1..TFU-4 on 2026-10-18; recorded as Tasks autobyteus-161..164. Round 2: no new follow-up (OBS-1 still reproduces on the append-only logs, 14 of 252 messages, already autobyteus-161).
 
 ## Latest Authoritative Result
 
 - Result: `Pass`
-- Changed durable test paths reviewed: the four paths above
+- Changed durable test paths reviewed: the four round-1 paths; round 2: `autobyteus-web/tests/e2e/delegated-copies-large-hub-probe.mjs` (`06faf2b346`)
 - Unresolved finding IDs: none
 - Recommended Recipient: `/software_engineering_team/delivery_engineer`
-- Notes: N-1 is an optional improvement, not a finding. The code-review report's CAND-006 rationale was factually corrected in CRR-002 (see the revision record); the correction does not change CRR-001's result.
+- Notes: round 2 (CRR-004) Pass; the probe change is correct and minimal. N-1 is an optional improvement, not a finding. The code-review report's CAND-006 rationale was factually corrected in CRR-002 (see the revision record); the correction does not change CRR-001's result.

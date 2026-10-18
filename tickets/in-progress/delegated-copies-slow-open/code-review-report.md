@@ -14,18 +14,18 @@
 - Relevant Architecture Review Revision IDs: ARCH-REV-002
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `tickets/in-progress/delegated-copies-slow-open/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: `1`
-- Review Scope: `Full Review`
-- Review Scope Evidence (round >1): N/A
-- Trigger: implementation handoff IR-001 from `/software_engineering_team/implementation_engineer`
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Code Review Revision ID: `CRR-003`
+- Current Review Round: `2`
+- Review Scope: `Full Re-Audit`
+- Review Scope Evidence (round >1): the integration merge `6507c08527` (origin/personal @ `2763e7c678`) rewrote two data-flow spine files (`agentRunCollaborationContext.ts` range-aware `applyEvent` / `agent_presentation_batch`; `agentRunCollaborationStreamingService.ts` `change_sequence_through`, `onTaskExecutionStarted`) and brought base changes into the store and the standalone-root server code. All structural checks and the scorecard were rerun on the merged state; evidence for the ticket's own lines is carried forward after verifying the ticket delta is unchanged (below).
+- Trigger: round 1 — implementation handoff IR-001; round 2 — Local Fix IR-002 for delivery finding DR-001 (integration refresh merge conflicts), from `/software_engineering_team/implementation_engineer`
+- Prior Review Round Reviewed: round 1 (CRR-001 Pass); test review CRR-002 Pass
+- Latest Authoritative Round: 2
 - Coverage Investigation / Execution Coverage / API/E2E Revision Record: N/A — not applicable (implementation review)
 - Relevant API/E2E Revision IDs: N/A
-- Delivery Revision Record / IDs: N/A
+- Delivery Revision Record / IDs: `delivery-revision-record.md`, DR-001 (triggering finding); `release-deployment-report.md`
 - Failing Scenario IDs / Commands / Evidence: N/A
 
 ## Routing Classification Review
@@ -45,6 +45,19 @@
   - Docs: web `agent_execution_architecture.md`, `chat.md`; server `standalone_agent_run_root.md`, `agent_artifacts.md`.
   - Evidence: IMP-01..IMP-09 (Checks Run table; IMP-08 mutation log and IMP-09 request summary read directly).
 - Explicit exclusions: AC-008 timings, server GraphQL E2E for the new query and the isolated desktop instance (API/E2E stage). No recorded check was rerun: the code they exercise has not changed since they ran, and no finding needed a new check.
+
+### Round 2 Delta (IR-002, DR-001 integration merge)
+
+- Commits: `6507c08527` (merge of `origin/personal` @ `2763e7c678`, 56 commits), `2cb21ab41e` (tests + one doc line), `8037ac70e1` (ticket handoff/evidence). Branch head `8037ac70e1`.
+- Merge integrity: `git diff 2763e7c678 6507c08527` outside `tickets/` touches exactly this ticket's 38 files, and for every one of them the added/removed line set equals the ticket's original delta (`5ceb43039a..ecb777a52e`). The merged state is therefore "new base + this ticket's unchanged delta"; no ticket line was lost or altered, and no base line was dropped.
+- Conflict resolution read in full:
+  - `agentRunCollaborationContext.ts`: base's range-aware `applyEvent` (`advanceSequencedStream`, `change_sequence_through`) and `dispatchPresentation` for `agent_presentation` / `agent_presentation_batch` kept; this ticket's `hydratedChildren`, `isChildHydrated`, `markChildHydrated`, adoption carry-over and dead-code removal kept.
+  - `agentRunCollaborationStreamingService.ts`: base's `change_sequence_through`, local `event` and `onTaskExecutionStarted` kept; this ticket's build-and-publish without commit kept.
+  - Store (auto-merged): base's `retireTopLevelRow` / `onTaskExecutionStarted` sit beside this ticket's `ensureChildHydrated`; they do not touch each other's state.
+- Interaction with the hydration mechanism: `agent_presentation_batch` items go through the same `dispatchAgentStreamMessage` path as single events, so a batch for a loading child moves its presentation revision and retries the load (D-2 unchanged), and batches for unopened children only update their Offline context. Confirmed by the two new cases in `agentRunCollaborationLazyChildren.spec.ts`. The run-history mock gained `refreshRunNavigationTopology`, and the checkpoint case now asserts the base's `task_execution_started` handling ran.
+- Server: base changes to the standalone-root store/adoption do not change `StandaloneRootLocationService.findAgent({ rootRunId, … })`; IMP-10 typecheck and IMP-11/IMP-12 (incl. `standalone-root-member-file-changes.test.ts`) pass on the merged state.
+- Checks on `2cb21ab41e` read from evidence (not rerun): IMP-10 typecheck exit 0; IMP-11 318/318; IMP-12 728 files pass; IMP-13 403/403; IMP-14 636 files pass; IMP-15 guards pass; IMP-16 2/2; IMP-17 M1–M5 caught and restored; IMP-18 collapse probe Pass, 7 cases.
+- Test-code blocker for the next stage (not implementation source): `autobyteus-web/tests/e2e/delegated-copies-large-hub-probe.mjs` L278 still reads `collaboration/communication_messages.json`; on the merged state the hub log is `communication_messages_active.jsonl` plus sealed `communication_messages_NNNNNN.jsonl`. API/E2E owns that probe and must update it before the integrated-state rerun.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
@@ -113,19 +126,19 @@
 | Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Tests (a), (b), (c) map to AC-001/002/004/006/007/009 and AR-001; request counts asserted exactly | — |
 | Test fixtures/helpers reusable, structure coherent | Pass | `multiTeamView`/`memberId` fixture reused; `holdChild` gate helper | — |
 | No stale, duplicated, or compatibility-only tests | Pass | Staging spec rewritten; obsolete commit expectations removed from mocks | — |
-| API/E2E readiness | Pass | Real-stack collapse probe passes; scoped query ready for GraphQL E2E and large-hub timing | — |
+| API/E2E readiness | Pass | Round 1 API/E2E passed (API-REV-001). Round 2: merged build passes IMP-10..IMP-18 incl. the collapse probe; batched-content cases added. The large-hub probe needs its test-owned message-log path updated (API/E2E-owned, see Round 2 Delta) before the integrated rerun | — |
 
 ## Source File Size And Structure Audit
 
-Effective non-empty lines, base → after; delta = added + removed lines.
+Effective non-empty lines, base → after; delta = added + removed lines. Round 2: the three merged spine files are recounted against the new base `2763e7c678`; the ticket's delta per file is unchanged (merge integrity check), the other files are unchanged since round 1.
 
 | Source File | Before | After | `>500` | `>220` Delta | SoC / Ownership | Placement | Classification | Required Action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| web `agentRunCollaborationContext.ts` | 353 | 349 | Pass | Pass (64) | Pass | Pass | — | — |
-| web `agentRunCollaborationStore.ts` | 288 | 307 | Pass | Pass (46) | Pass | Pass | — | — |
+| web `agentRunCollaborationContext.ts` | 370 (new base `2763e7c678`) | 366 | Pass | Pass (64) | Pass | Pass | — | — |
+| web `agentRunCollaborationStore.ts` | 288 (new base) | 315 | Pass | Pass (46) | Pass | Pass | — | — |
 | web `agentRunCollaborationHydration.ts` | 120 | 54 | Pass | Pass (98) | Pass | Pass | — | — |
 | web `agentRunCollaborationChildHydration.ts` (new) | 0 | 119 | Pass | Pass (127) | Pass | Pass | — | — |
-| web `agentRunCollaborationStreamingService.ts` | 251 | 247 | Pass | Pass (18) | Pass | Pass | — | — |
+| web `agentRunCollaborationStreamingService.ts` | 253 (new base) | 253 | Pass | Pass (18) | Pass | Pass | — | — |
 | web `userMessageProjection.ts` | 143 | 156 | Pass | Pass (25) | Pass | Pass | — | — |
 | web `memberRunStateHydration.ts` | 51 | 52 | Pass | Pass (11) | Pass | Pass | — | — |
 | server `run-file-change-projection-service.ts` | 127 | 134 | Pass | Pass (20) | Pass | Pass | — | — |
@@ -175,8 +188,8 @@ No new or reclassified premises.
 | 4 | Separation of Concerns and File Placement | 9.5 | Builder, loader, context, store each own one concern; all files well under limits | — | — |
 | 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.3 | One active-vs-stored implementation; shared pending merge rule | On-demand policy duplicated with the team precedent (accepted FU-1) | Extract the shared core under FU-1 |
 | 6 | Naming Quality and Local Readability | 9.4 | Names match responsibilities; comments explain supersession and carry-over | — | — |
-| 7 | API/E2E Readiness | 9.2 | Unit, mutation and real-stack probe evidence; request counts asserted | Large-hub timings and GraphQL E2E for the new query still ahead (expected) | API/E2E per handoff hints |
-| 8 | Runtime Correctness And Behavioral Fidelity | 9.2 | Supersession, conflict retry, pending-input preservation and carry-over verified by tests and mutations | Retry-exhaustion on a very busy copy is an accepted policy (CAND-003) | Observe on a live hub in API/E2E |
+| 7 | API/E2E Readiness | 9.3 | Round 1 API/E2E Pass (AC-001..AC-009); merged build re-verified by IMP-10..IMP-18 and new batched-content cases | Integrated-state rerun of the large-hub probe still ahead; the probe must first read the new append-only hub log files | API/E2E updates the probe and reruns `S`, `L-001`, `L-002`, `L-004` |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.2 | Supersession, conflict retry, pending-input preservation and carry-over verified by tests and mutations; on the merged base, batched presentation retries a load in flight and leaves unopened copies unloaded | Retry-exhaustion on a very busy copy is an accepted policy (CAND-003) | Observe on a live hub in API/E2E |
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.6 | Clean cut; rejected compatibility options not reintroduced | — | — |
 | 10 | Cleanup Completeness | 9.5 | Dead parameters, names and private methods removed with evidence | — | — |
 
@@ -190,7 +203,7 @@ None.
 | --- | --- | --- | --- | --- |
 | — | — | — | — | — |
 
-- Sent to: `None` from this review. The generated-types drift (`autobyteus-web/generated/graphql.ts` behind the server schema) is already reported by the implementation engineer for the Project Task manager; FU-1..FU-4 were sent upstream by the Solution Designer. No new follow-up.
+- Sent to: `None` from this round. Earlier follow-ups are already Tasks: TFU-1..TFU-4 (sent in CRR-002) are autobyteus-161..164; FU-1..FU-4 were sent by the Solution Designer. No new follow-up in round 2.
 
 ## Classification
 
@@ -202,8 +215,7 @@ None.
 
 ## Residual Risks
 
-- AC-008 / QR-001 / QR-002 timings on a large hub (≥50 task Teams, ≥300 unrelated stored runs), ASM-001 (app wall time) and R-002 (hub message payload) are not yet measured.
-- The new query is covered at unit level; GraphQL transport E2E (stored hub, running hub, foreign child rejected) is still required.
+- Round 1 API/E2E proved AC-001..AC-009 on the pre-merge state; the integrated-state rerun (large-hub `S`, `L-001`, `L-002`, `L-004`) is still ahead, and the probe's hub-log path must be updated first.
 - CAND-003: opening a very busy live copy could exhaust three conflict retries (logged; reselect retries). Worth observing in the live-hub scenario.
 - R-004 (accepted): up to two loads when opening a copy under a non-selected hub.
 - R-E (accepted): until a copy loads, its center view shows the empty or previous conversation.
@@ -214,7 +226,7 @@ None.
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass` (MP-001 confirmed; no new premises)
-- Score Summary: 9.4/10; every category ≥ 9.2
+- Score Summary: 9.4/10; every category ≥ 9.2 (round 2, Full Re-Audit of the merged state)
 - Failure Origin: N/A
 - Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
-- Notes: handoff Assumptions 1 and 2 are accepted as sound implementation-level decisions (CAND-001, CAND-002). Classification Medium/High is preserved.
+- Notes: round 2 (CRR-003) — the DR-001 integration merge keeps both sides intact; the ticket's delta is unchanged and composes correctly with the base's batched presentation and task-execution handling. Handoff Assumptions 1 and 2 remain accepted (CAND-001, CAND-002). Classification Medium/High is preserved. Next: API/E2E updates its large-hub probe for the append-only hub log and reruns the integrated-state cases.

@@ -8,6 +8,8 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) remains 
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 / IR-001 handoff | N/A | Pass | None |
 | CRR-002 | `api-e2e-test-review-report.md` | Proportional API/E2E test-code review, round 1 / API-REV-001 Pass | CRR-001 Pass (source review) | Pass | None |
+| CRR-003 | `code-review-report.md` | Implementation Review, round 2 (Full Re-Audit) / IR-002 Local Fix for DR-001 | CRR-001 Pass | Pass | None |
+| CRR-004 | `api-e2e-test-review-report.md` | Proportional API/E2E test-code review, round 2 / API-REV-002 Pass (merged state) | CRR-002 Pass | Pass | None |
 
 ## Revision Entries
 
@@ -62,3 +64,53 @@ None.
 - Follow-ups: TFU-1..TFU-4 sent to `/project_task_manager`
 - Recommended recipient: `/software_engineering_team/delivery_engineer`
 - Remaining risks or uncertainty: CAND-003 (continuous streaming during a fetch) was not reproduced; the probe is a manual layer, not in CI.
+
+### CRR-003 — Re-audit of the integration merge (DR-001 Local Fix, IR-002)
+
+- Canonical review report updated: `tickets/in-progress/delegated-copies-slow-open/code-review-report.md`
+- Review entry point and round: Implementation Review, round 2
+- Review scope: `Full Re-Audit` (the merge rewrote two data-flow spine files and brought base changes into the store and standalone-root server code)
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/implementation_engineer`, `implementation-handoff.md` → "Integration Merge (IR-002)"; delivery finding DR-001 (`delivery-revision-record.md`)
+- Relevant solution revision IDs: SR-002, SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: CRR-001 Pass (source); CRR-002 Pass (test review)
+- Current authoritative result: `Pass`, 9.4/10, every category ≥ 9.2
+- What changed in the review result and why: `6507c08527` merges `origin/personal` @ `2763e7c678`. Verified that, outside `tickets/`, the merged state differs from the new base in exactly this ticket's 38 files with an identical added/removed line set per file, so the ticket delta survived unchanged and no base line was dropped. Read both conflict resolutions in full; the base's `agent_presentation_batch` uses the same dispatch path, so the D-2 retry and the unopened-copy behavior hold (new cases in `2cb21ab41e`). IMP-10..IMP-18 on the merged state pass. Scorecard re-scored: API/E2E Readiness 9.2 → 9.3.
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+None (no findings in CRR-001 or CRR-002).
+
+- New or remaining finding IDs: none
+- Material score or classification changes: API/E2E Readiness 9.2 → 9.3; classification Medium/High preserved
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer`; informational notice to `/software_engineering_team/implementation_engineer`
+- Remaining risks or uncertainty: the large-hub probe (`delegated-copies-large-hub-probe.mjs` L278) still reads `communication_messages.json` and must read the append-only hub log files before the integrated-state rerun (API/E2E-owned test code); CAND-003, R-004, R-E unchanged.
+
+### CRR-004 — Proportional review of the probe change for the merged state
+
+- Canonical review report updated: `tickets/in-progress/delegated-copies-slow-open/api-e2e-test-review-report.md`
+- Review entry point and round: Successful API/E2E test-code review, round 2
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: `/software_engineering_team/api_e2e_engineer`, `api-e2e-execution-coverage-report.md` (API-REV-002, Pass, 95.0%); durable test commit `06faf2b346`
+- Relevant solution revision IDs: SR-002, SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: CRR-002 Pass (test review); CRR-003 Pass (source re-audit)
+- Current authoritative result: test review `Pass`; no findings
+- What changed in the review result and why: the large-hub probe now reads the append-only hub log exactly as the server's `MessageLog.read` does (sealed files in order, then active; complete lines; first occurrence per id). Verified against `run-history/store/message-log.ts` and the fresh-seed evidence. No other durable test changed.
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: none
+- Material score or classification changes: none
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty: unchanged (CAND-003, R-004, R-E; the desktop instance was not rerun on the merged state, and the merge changed no shell code).
