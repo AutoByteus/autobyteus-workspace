@@ -1,0 +1,402 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-skill-collision-fix/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-skill-collision-fix/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:17959) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-skill-collision-fix/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-skill-collision-fix/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/app-data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/app-data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/app-data/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/app-data/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-skill-collision-fix/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-skill-collision-fix/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/app-data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/app-data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/app-data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/app-data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/app-data/memory
+============================================================
+Initialized server settings service with 19 predefined settings
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)
+[22m[39mCreating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/app-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/app-data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/app-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)
+[22m[39mAdded new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)
+[22m[39mSKILL_LINKS_LIVE_MODELS {"codex":"gpt-5.6-luna"}
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mstarts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-run-ws-YtJDxt
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-run-ws-YtJDxt.
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mstarts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102)
+[22m[39mCreated and registered workspace ID: agent_ws_95f5111de9f57ed3ef6974d31ce18dc64a5d8999ef480cc684bd86988cacd472
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mstarts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-run-ws-YtJDxt
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-run-ws-YtJDxt.
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mstarts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102)
+[22m[39mReusing registered workspace ID: agent_ws_95f5111de9f57ed3ef6974d31ce18dc64a5d8999ef480cc684bd86988cacd472
+
+[90mstderr[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mstarts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102)
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-18T09:06:43.171906Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-run-ws-YtJDxt/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-run-ws-YtJDxt as a trusted project in /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-home/config.toml.
+
+[90mstderr[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mstarts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102)
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-18T09:06:43.259823Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-run-ws-YtJDxt/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-run-ws-YtJDxt as a trusted project in /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-home/config.toml.
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mstarts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102)
+[22m[39mAgent websocket attached for run link_probe_agent_34b2e047_ca755c31ee034096975f0e5ddb0ddae5
+Created agent session 940036f6-8620-4e84-b70a-64d7a368322a for run link_probe_agent_34b2e047_ca755c31ee034096975f0e5ddb0ddae5
+Agent WebSocket connected: session=940036f6-8620-4e84-b70a-64d7a368322a, run=link_probe_agent_34b2e047_ca755c31ee034096975f0e5ddb0ddae5
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mstarts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102)
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mstarts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102)
+[22m[39mSKILL_LINKS_LIVE_NEW_RUN codex {"runId":"link_probe_agent_34b2e047_ca755c31ee034096975f0e5ddb0ddae5","text":"**Identifying required read skill**LINKCODE-34b2e047","tools":["run_bash"]}
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mstarts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102)
+[22m[39mClosed agent session 940036f6-8620-4e84-b70a-64d7a368322a
+Agent WebSocket disconnected: 940036f6-8620-4e84-b70a-64d7a368322a
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mstarts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-run-ws-YtJDxt
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-run-ws-YtJDxt.
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mstarts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102)
+[22m[39mReusing registered workspace ID: agent_ws_95f5111de9f57ed3ef6974d31ce18dc64a5d8999ef480cc684bd86988cacd472
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mstarts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102)
+[22m[39mAgent websocket attached for run link_probe_agent_34b2e047_ca755c31ee034096975f0e5ddb0ddae5
+Created agent session 859a7edb-0c81-439a-bd16-55c58b6dd681 for run link_probe_agent_34b2e047_ca755c31ee034096975f0e5ddb0ddae5
+Agent WebSocket connected: session=859a7edb-0c81-439a-bd16-55c58b6dd681, run=link_probe_agent_34b2e047_ca755c31ee034096975f0e5ddb0ddae5
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mstarts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102)
+[22m[39mSKILL_LINKS_LIVE_RESTORED_RUN codex {"runId":"link_probe_agent_34b2e047_ca755c31ee034096975f0e5ddb0ddae5","text":"**Planning cat restoration**RESTORECODE-34b2e047","tools":["run_bash"]}
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mstarts a brand-new team member with configured skills on its first message (AC-105)
+[22m[39mClosed agent session 859a7edb-0c81-439a-bd16-55c58b6dd681
+Agent WebSocket disconnected: 859a7edb-0c81-439a-bd16-55c58b6dd681
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mstarts a brand-new team member with configured skills on its first message (AC-105)
+[22m[39mAgent Team Definition created successfully with ID: link-probe-team-codex-34b2e047
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mstarts a brand-new team member with configured skills on its first message (AC-105)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-team-ws-IhMuOl
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-team-ws-IhMuOl.
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mstarts a brand-new team member with configured skills on its first message (AC-105)
+[22m[39mCreated and registered workspace ID: agent_ws_1e70a42494c6065e7db5b7621fc13c3f0622a6807b3d0ff605e66d03b014b1cf
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mstarts a brand-new team member with configured skills on its first message (AC-105)
+[22m[39mSKILL_LINKS_LIVE_TEAM_MEMORY_BEFORE codex {"teamRunId":"link_probe_team_codex_34b2e047_d01a17b9449447e2a6e197ed7df0dd9b","designerRunId":"link_probe_agent_34b2e047_36a12e4e96fb45a28a4db9606f43c44e","memberFoldersBefore":["team_communication_messages.json","team_run_execution_tree.json"]}
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mstarts a brand-new team member with configured skills on its first message (AC-105)
+[22m[39mAgent team websocket attached for team run link_probe_team_codex_34b2e047_d01a17b9449447e2a6e197ed7df0dd9b
+Created agent session 82c3f800-aec0-4578-bc10-dabd5005e359 for run link_probe_team_codex_34b2e047_d01a17b9449447e2a6e197ed7df0dd9b
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mstarts a brand-new team member with configured skills on its first message (AC-105)
+[22m[39mAgent Team WebSocket connected: session=82c3f800-aec0-4578-bc10-dabd5005e359, run=link_probe_team_codex_34b2e047_d01a17b9449447e2a6e197ed7df0dd9b
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mstarts a brand-new team member with configured skills on its first message (AC-105)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-team-ws-IhMuOl
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-team-ws-IhMuOl.
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mstarts a brand-new team member with configured skills on its first message (AC-105)
+[22m[39mReusing registered workspace ID: agent_ws_1e70a42494c6065e7db5b7621fc13c3f0622a6807b3d0ff605e66d03b014b1cf
+
+[90mstderr[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mstarts a brand-new team member with configured skills on its first message (AC-105)
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-18T09:06:55.193923Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-team-ws-IhMuOl/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-team-ws-IhMuOl as a trusted project in /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-home/config.toml.
+
+[90mstderr[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mstarts a brand-new team member with configured skills on its first message (AC-105)
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-18T09:06:55.261294Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-team-ws-IhMuOl/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-team-ws-IhMuOl as a trusted project in /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-home/config.toml.
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mstarts a brand-new team member with configured skills on its first message (AC-105)
+[22m[39mSKILL_LINKS_LIVE_TEAM_MEMBER codex {"designerRunId":"link_probe_agent_34b2e047_36a12e4e96fb45a28a4db9606f43c44e","text":"**Identifying required read skill**LINKCODE-34b2e047","tools":["run_bash"],"memberFoldersAfter":["link_probe_agent_34b2e047_36a12e4e96fb45a28a4db9606f43c44e","team_communication_messages.json","team_run_execution_tree.json"]}
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mrefuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+[22m[39mClosed agent session 82c3f800-aec0-4578-bc10-dabd5005e359
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mrefuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-collision-ws-OajZ1F
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-collision-ws-OajZ1F.
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mrefuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+[22m[39mCreated and registered workspace ID: agent_ws_5c849047962c830a3bdcdff12dd49d68beb179ce24632fa2481f882c4a6aab00
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mrefuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-collision-ws-OajZ1F
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-collision-ws-OajZ1F.
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mrefuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+[22m[39mReusing registered workspace ID: agent_ws_5c849047962c830a3bdcdff12dd49d68beb179ce24632fa2481f882c4a6aab00
+
+[90mstderr[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mrefuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-18T09:07:00.216675Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-collision-ws-OajZ1F/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-collision-ws-OajZ1F as a trusted project in /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-home/config.toml.
+
+[90mstderr[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mrefuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+[22m[39mcodex-runtime-duplicate: skill='link-probe-34b2e047', codexPaths='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-collision-ws-OajZ1F/.codex/skills/link-probe-34b2e047', chosenPath='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/package/agents/link-probe-agent-34b2e047/skills/link-probe-34b2e047'; exposing the chosen copy in the workspace.
+
+[90mstderr[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mrefuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+[22m[39mError in createAgentRun: Error: Workspace skill path collision for Codex skill 'link-probe-34b2e047': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-collision-ws-OajZ1F/.codex/skills/link-probe-34b2e047' already exists as a directory.
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mrefuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+[22m[39mSKILL_LINKS_LIVE_COLLISION codex {"success":false,"refusal":"Error: Workspace skill path collision for Codex skill 'link-probe-34b2e047': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-collision-ws-OajZ1F/.codex/skills/link-probe-34b2e047' already exists as a directory."}
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mrefuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-collision-ws-OajZ1F
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-collision-ws-OajZ1F.
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mrefuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+[22m[39mReusing registered workspace ID: agent_ws_5c849047962c830a3bdcdff12dd49d68beb179ce24632fa2481f882c4a6aab00
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mrefuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-collision-ws-OajZ1F
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-collision-ws-OajZ1F.
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mrefuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+[22m[39mReusing registered workspace ID: agent_ws_5c849047962c830a3bdcdff12dd49d68beb179ce24632fa2481f882c4a6aab00
+
+[90mstderr[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mrefuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-18T09:07:00.363829Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-collision-ws-OajZ1F/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-collision-ws-OajZ1F as a trusted project in /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-home/config.toml.
+
+[90mstderr[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mrefuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+[22m[39mcodex-runtime-duplicate: skill='link-probe-34b2e047', codexPaths='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-collision-ws-OajZ1F/.codex/skills/link-probe-34b2e047', chosenPath='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/package/agents/link-probe-agent-34b2e047/skills/link-probe-34b2e047'; exposing the chosen copy in the workspace.
+
+[90mstderr[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mrefuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+[22m[39mCodex workspace skill reconciliation: run='link_probe_all_34b2e047_dc08be8b85fa4333ab84236b0b753258', skill='link-probe-34b2e047', path='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-collision-ws-OajZ1F/.codex/skills/link-probe-34b2e047', previousTarget='none', currentSource='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/package/agents/link-probe-agent-34b2e047/skills/link-probe-34b2e047', disposition='skipped-workspace-owned'.
+
+[90mstderr[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mrefuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-18T09:07:00.453262Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-collision-ws-OajZ1F/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-collision-ws-OajZ1F as a trusted project in /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qsAuVf/codex-home/config.toml.
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mrefuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+[22m[39mAgent websocket attached for run link_probe_all_34b2e047_dc08be8b85fa4333ab84236b0b753258
+Created agent session f2939442-7405-4a19-8aa3-560d4efb9658 for run link_probe_all_34b2e047_dc08be8b85fa4333ab84236b0b753258
+Agent WebSocket connected: session=f2939442-7405-4a19-8aa3-560d4efb9658, run=link_probe_all_34b2e047_dc08be8b85fa4333ab84236b0b753258
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mrefuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+[22m[39mSKILL_LINKS_LIVE_ALL_INSTALLED codex {"text":"**Identifying need for read skill**OWNCODE-34b2e047","tools":["run_bash"]}
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)[2m > [22m[2mcodex[2m > [22m[2mrefuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+[22m[39mClosed agent session f2939442-7405-4a19-8aa3-560d4efb9658
+Agent WebSocket disconnected: f2939442-7405-4a19-8aa3-560d4efb9658
+
+[90mstdout[2m | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts[2m > [22m[2mworkspace skill links with real runtimes (REQ-105)
+[22m[39mAgent Team Definition with ID link-probe-team-codex-34b2e047 deleted successfully.
+
+ [32m✓[39m tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 24587[2mms[22m[39m
+       [33m[2m✓[22m[39m starts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102) [33m 11923[2mms[22m[39m
+       [33m[2m✓[22m[39m starts a brand-new team member with configured skills on its first message (AC-105) [33m 5118[2mms[22m[39m
+       [33m[2m✓[22m[39m refuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104) [33m 5796[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m3 passed[39m[22m[90m (3)[39m
+[2m   Start at [22m 11:06:28
+[2m   Duration [22m 38.30s[2m (transform 10.46s, setup 36ms, import 12.99s, tests 24.59s, environment 0ms)[22m
+
+exit=0
