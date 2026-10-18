@@ -40,3 +40,21 @@ export const GetAgentRunCollaborationMemberProjection = gql`
     }
   }
 `
+
+/** One delegated copy's artifact list, located inside its hub only (live while the hub runs). */
+export const GetAgentRunCollaborationMemberFileChanges = gql`
+  query GetAgentRunCollaborationMemberFileChanges($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {
+    agentRunCollaborationMemberFileChanges(hostRunId: $hostRunId, memberAddress: $memberAddress, agentRunId: $agentRunId) {
+      id
+      runId
+      path
+      type
+      status
+      sourceTool
+      sourceInvocationId
+      content
+      createdAt
+      updatedAt
+    }
+  }
+`

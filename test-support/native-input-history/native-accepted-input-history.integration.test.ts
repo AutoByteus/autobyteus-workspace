@@ -15,7 +15,9 @@ import { buildHistoricalReplayEvents } from '../../autobyteus-server-ts/src/run-
 import { buildRunProjectionBundleFromEvents } from '../../autobyteus-server-ts/src/run-history/projection/run-projection-utils';
 import { dedupeRunProjectionConversationEntries } from '../../autobyteus-server-ts/src/run-history/projection/run-projection-dedupe';
 import { AgentRootExecutionViewDtoSchema } from '@autobyteus/collaboration-stream-contracts';
-import { stageAgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationHydration';
+import { buildAgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationHydration';
+import { hydrateAgentRunCollaborationChild } from '~/services/agentCollaboration/agentRunCollaborationChildHydration';
+import { GetAgentRunCollaborationMemberFileChanges } from '~/graphql/queries/collaboratorQueries';
 import { handleAgentInputState } from '~/services/agentStreaming/handlers/agentInputStateHandler';
 
 const query = vi.hoisted(() => vi.fn());
@@ -58,15 +60,19 @@ describe('native-produced saved history joins actual hosted pending input', () =
       ).conversation);
       const savedA = conversation.find(e => e.messageId === 'A')!;
       expect(savedA).toMatchObject({ kind: 'message', role: 'user', dedupeKey: 'input:A' });
-      query.mockImplementation(async ({ variables }) => ({ data: { agentRunCollaborationMemberProjection: {
-        agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
-        conversation: variables.agentRunId === f.run.runId ? conversation : [], activities: [], hasEarlierActiveTraceEvents: false,
-      } } }));
+      query.mockImplementation(async ({ query: document, variables }) => document === GetAgentRunCollaborationMemberFileChanges
+        ? { data: { agentRunCollaborationMemberFileChanges: [] } }
+        : { data: { agentRunCollaborationMemberProjection: {
+          agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
+          conversation: variables.agentRunId === f.run.runId ? conversation : [], activities: [], hasEarlierActiveTraceEvents: false,
+        } } });
+      // A fresh view, then the copy opened: its stored conversation loads under the view's pending input.
       const hydrate = async () => {
         const view = AgentRootExecutionViewDtoSchema.parse(projectAgentCollaborationView((await f.manager.getInspection(HOST))!)).root_agent;
-        const staged = await stageAgentRunCollaborationContext({ hostRunId: HOST, view });
-        staged.commitActivities();
-        return staged.context.getAgentContext(f.run.runId)!;
+        const context = await buildAgentRunCollaborationContext({ hostRunId: HOST, view });
+        expect(await hydrateAgentRunCollaborationChild({ hostRunId: HOST, collaboration: context, agentRunId: f.run.runId,
+          isPublished: () => true, liveToolAuthority: () => false })).toBe('hydrated');
+        return context.getAgentContext(f.run.runId)!;
       };
       for (let i = 0; i < 2; i++) {
         const ctx = await hydrate();

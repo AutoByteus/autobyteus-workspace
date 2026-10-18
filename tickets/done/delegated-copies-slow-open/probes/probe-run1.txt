@@ -1,0 +1,12 @@
+[inspection] readTree 30 ms; readMessages 416 ms; tree+messages JSON 5.0 MB; messages 1325
+[children] 286 child agents
+[projection] hub-scoped location lookup avg 26 ms per member
+[projection] all 286 members sequential 15363 ms (54 ms avg), payload 256.9 MB, failures 0
+[fileChanges] unscoped run lookup avg 2381 ms per member -> x286 = 681.0 s sequential
+[fileChanges] family teams: 650 ms found=false
+[fileChanges] family orgs: 48 ms found=false
+[fileChanges] family agents: 79 ms found=true
+[fileChanges] hub ids with packages: 6
+[fileChanges] unscoped run lookup avg 1954 ms per member -> x286 = 558.8 s sequential
+# Third run of the same probe (same /tmp copy, 2026-10-18), after adding the [host] block; only its [host] line was captured:
+[host] own projection 13 ms, 0.3 MB

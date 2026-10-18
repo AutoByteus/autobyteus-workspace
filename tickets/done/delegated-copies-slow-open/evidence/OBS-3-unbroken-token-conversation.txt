@@ -1,0 +1,14 @@
+# OBS-3 (out of scope, pre-existing): a stored conversation made of 60 KB single-token messages takes ~86 s of client processing
+# how: probe L-010 on a 10-Team seed; the user sends a copy 20 messages of 60 KB each with ECHO_INPUT (scripted AGY echoes them), giving a 2.4 MB member projection; then a cold page opens that copy
+# date: 2026-10-18T13:42:51Z; macOS 26.5.2, node v22.23.1, headless Chrome
+
+## fix build, unbroken 60 KB tokens (--large-shape unbroken, the run before the option existed): API-14-large-copy/evidence.json
+{"clickToStoreLoadedMs": 86679, "clickToLastMessageInDomMs": 86681.5, "projectionBytes": 2461901, "projectionServerMs": 19.5, "ops": {"GetAgentRunCollaborationMemberProjection": 1, "GetAgentRunCollaborationMemberFileChanges": 1}, "state": {"selected": "large_hub_manager_probe_a06c262923b047489847877
+## fix build, same size as prose lines (default --large-shape words): API-14-fix-words/evidence.json
+{"clickToStoreLoadedMs": 261.7000000476837, "clickToLastMessageInDomMs": 263.10000002384186, "projectionBytes": 2369240, "projectionServerMs": 43.1, "ops": {"GetAgentRunCollaborationMemberProjection": 1, "GetAgentRunCollaborationMemberFileChanges": 1}, "state": {"selected": "large_hub_manager_probe_
+## base build 5ceb43039a, unbroken tokens: API-14-base-large-copy/evidence.json (the page stays unresponsive while base stages every copy; the row click times out after 30 s)
+Fail locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('[data-test="workspace-agent-run-task-tree"][data-run-id="large_hub_manager_probe_a06
+
+Look for: clickToStoreLoadedMs 86679 with projectionServerMs 19.5 (unbroken) vs clickToStoreLoadedMs 261.7 (prose, 2.37 MB); one projection + one artifact request in both; base cannot even complete the click.

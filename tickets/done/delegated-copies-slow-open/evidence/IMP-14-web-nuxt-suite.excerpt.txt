@@ -1,0 +1,14 @@
+# Excerpt of IMP-14-web-nuxt-suite.log (full log next to this file)
+# Check: IMP-14-web-nuxt-suite
+# Command: (cd /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open && pnpm -C autobyteus-web test:nuxt --run)
+# Commit: 2cb21ab41e (test(web): copies load correctly under batched live content (DR-001))
+# Working tree: 1 tracked changes
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-18T14:23:29Z
+# ----
+# ---- result lines
+      Tests  4513 passed | 3 skipped (4516)
+   Duration  193.36s (transform 25.51s, setup 1267.18s, collect 121.29s, tests 60.20s, environment 114.95s, prepare 70.15s)
+   Start at  16:23:32
+ Test Files  636 passed | 2 skipped (638)
+# ---- exit code: 0

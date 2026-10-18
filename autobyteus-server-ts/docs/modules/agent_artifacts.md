@@ -77,6 +77,12 @@ Team Communication.
   live projection only for runs attached to it and reads any other run fresh
   from `file_changes.json`, so every recorded artifact stays listable and
   previewable without a restart.
+- A standalone run's delegated copies are listed through the hub-scoped
+  `agentRunCollaborationMemberFileChanges(hostRunId, memberAddress, agentRunId)`
+  (see [Standalone Agent Run Root](./standalone_agent_run_root.md)), which reads
+  only that run's tree and shares
+  `RunFileChangeProjectionService.getLocatedCollaborationMemberProjection` with the
+  run-id path.
 - Serve Agent Artifact bytes by `runId + canonical path` through
   `/runs/:runId/file-change-content`.
 - Keep Team Communication message/reference storage for accepted team-route

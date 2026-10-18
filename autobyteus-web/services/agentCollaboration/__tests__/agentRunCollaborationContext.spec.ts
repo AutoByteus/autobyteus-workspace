@@ -135,6 +135,49 @@ it('post-response recovery projects no held A and cold dormant contexts invent n
   expect(saved.state.inputProjection).toBeNull(); expect(saved.state.recoverableBlock).toBeNull()
 })
 
+/** delegated-copies-slow-open D-4: republication keeps opened children's shown content, never their loaded mark. */
+describe('AgentRunCollaborationContext adoption of loaded children', () => {
+  beforeEach(() => { setActivePinia(createPinia()) })
+  const stored = (text: string) => ({ type: 'ai', text, timestamp: new Date(created), isComplete: true, segments: [] }) as never
+
+  it('carries a loaded child\'s conversation into the new context without its loaded mark; unloaded children start empty', () => {
+    const previous = build()
+    const loaded = previous.getAgentContext('cua-run')!
+    loaded.state.conversation.messages.push(stored('stored answer'))
+    loaded.state.hasEarlierActiveTraceEvents = true
+    previous.markChildHydrated('cua-run')
+    previous.getAgentContext('pp-run')!.state.conversation.messages.push(stored('live partial'))
+    const next = build()
+
+    next.prepareLocalContextAdoption(previous)()
+
+    expect(next.getAgentContext('cua-run')).toBe(loaded)
+    expect(loaded.state.conversation.messages).toMatchObject([{ text: 'stored answer' }])
+    expect(loaded.state.hasEarlierActiveTraceEvents).toBe(true)
+    expect(next.isChildHydrated('cua-run')).toBe(false)
+    expect(previous.isChildHydrated('cua-run')).toBe(true)
+    expect(next.getAgentContext('pp-run')!.state.conversation.messages).toEqual([])
+    expect(() => next.markChildHydrated('host-run')).toThrow('is not a child of this run')
+  })
+
+  it('a carried conversation shows the new view\'s pending input, not the old one', () => {
+    const before = agentRootView()
+    before.agent_input_states = [{ agent_run_id: 'cua-run', state: inputState() }]
+    const previous = build(before)
+    previous.getAgentContext('cua-run')!.state.conversation.messages.unshift(stored('stored answer'))
+    previous.markChildHydrated('cua-run')
+    const after = agentRootView()
+    const fresh = inputState(4); fresh.entries = [fresh.entries[1]!]
+    after.agent_input_states = [{ agent_run_id: 'cua-run', state: fresh }]
+    const next = build(after)
+
+    next.prepareLocalContextAdoption(previous)()
+
+    expect(next.getAgentContext('cua-run')!.state.conversation.messages.map((message: any) => [message.type, message.messageId ?? null, message.pendingInput?.state ?? null]))
+      .toEqual([['ai', null, null], ['user', 'A', null], ['user', 'B', 'queued']])
+  })
+})
+
 it.each(['host-input', 'unknown-input', 'duplicate-input', 'duplicate-status', 'wrong-address'])(
   'rejects %s rather than applying a partial snapshot', kind => {
     const view = agentRootView()

@@ -1,0 +1,37 @@
+# Check: IMP-17-mutation-checks
+# Command: (cd autobyteus-web && bash /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-slow-open/tickets/in-progress/delegated-copies-slow-open/evidence/IMP-08-mutations.sh)
+# Commit: 2cb21ab41e (test(web): copies load correctly under batched live content (DR-001))
+# Working tree: 0 tracked changes
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.1
+# Date: 2026-10-18T14:14:51Z
+# ----
+=== M1 no isPublished check after the fetch (AR-001 supersession)
+    file: services/agentCollaboration/agentRunCollaborationChildHydration.ts
+       × hydrateAgentRunCollaborationChild > ends superseded and writes nothing once its context is no longer published (republication during the load) 5ms
+       × Agent-root children load on demand > republication by inspection during a load: the first load is superseded, the new context loads the child once (AR-001) 11ms
+          Tests  2 failed | 19 passed (21)
+    restored: yes
+=== M2 no pending-input overlay on load (REQ-006 preserved pending input)
+    file: services/agentCollaboration/agentRunCollaborationChildHydration.ts
+       × hydrateAgentRunCollaborationChild > keeps the held or queued input the view showed, even when it is not stored yet 4ms
+          Tests  1 failed | 11 passed (12)
+    restored: yes
+=== M3 carry-over keeps the old pending markers (D-4 carry-over)
+    file: services/agentCollaboration/agentRunCollaborationContext.ts
+       × AgentRunCollaborationContext adoption of loaded children > a carried conversation shows the new view's pending input, not the old one 5ms
+          Tests  1 failed | 16 passed (17)
+    restored: yes
+=== M4 no load for the selected child after publication (D-4)
+    file: stores/agentRunCollaborationStore.ts
+       × Agent-root children load on demand > republication by inspection during a load: the first load is superseded, the new context loads the child once (AR-001) 9ms
+       × Agent-root children load on demand > a new delegation on a live hub with one opened child refreshes exactly that child, and the stream snapshot supersedes its in-flight load (AC-007, AR-001) 6ms
+       × Agent-root children load on demand > a stream snapshot while the selected child is still loading supersedes that load; only the new context commits 3ms
+          Tests  3 failed | 6 passed (9)
+    restored: yes
+=== M5 dedupe not keyed by context (one Map for all contexts; AR-001 / D-5)
+    file: stores/agentRunCollaborationStore.ts
+       × Agent-root children load on demand > republication by inspection during a load: the first load is superseded, the new context loads the child once (AR-001) 8ms
+       × Agent-root children load on demand > a stream snapshot while the selected child is still loading supersedes that load; only the new context commits 3ms
+          Tests  2 failed | 7 passed (9)
+    restored: yes
+# ---- exit code: 0

@@ -1,0 +1,25 @@
+# OBS-2 (non-blocking residual): a hub click issues GetAgentRunCollaboration twice for the hub on the fix build, once on the base build
+# source: request logs in API-05-base/evidence.json and API-06-fix/evidence.json (first sample); ms since the page's first GraphQL request; only view and hub-projection requests listed
+# likely cause (read from code, not verified by instrumentation): useAgentRunCollaborationSync's watch key includes windowNodeContext bindingRevision, so syncHost -> inspect can run twice on host selection, and the store dedupes only an in-flight inspection. On base the first inspection staged every copy (~7 s) and absorbed the second trigger; on the fix it completes in ~50 ms, so the second becomes a new request. That composable is not touched by this ticket.
+# date: 2026-10-18T13:43:31Z
+
+== API-05-base
+  221 GetAgentRunCollaboration OTHER
+  221 GetAgentRunCollaboration HUB
+  7577 GetRunProjection HUB
+  7936 GetAgentRunCollaboration HUB
+  16914 GetRunProjection HUB
+  18158 GetRunProjection HUB
+  19286 GetRunProjection HUB
+  21755 GetAgentRunCollaboration OTHER
+== API-06-fix
+  282 GetAgentRunCollaboration OTHER
+  282 GetAgentRunCollaboration HUB
+  423 GetRunProjection HUB
+  783 GetAgentRunCollaboration HUB
+  1205 GetAgentRunCollaboration HUB
+  2483 GetRunProjection HUB
+  3705 GetRunProjection HUB
+  4843 GetRunProjection HUB
+
+Look for: after the hub click (first 'GetRunProjection HUB'), base has one 'GetAgentRunCollaboration HUB', fix has two. Each carries the 2.73 MB view; hub click -> conversation stays 350-390 ms (QR-002 met).
