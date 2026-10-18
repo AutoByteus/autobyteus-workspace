@@ -76,8 +76,8 @@ The latest docs sync report, handoff summary, and release/publication/deployment
 - Integration and post-integration verification:
   - `origin/personal` was still `8945d0c8a2`, already merged in `8f91efb2cd`. Checkpoint `7b6bb525ec`.
   - Delivery reruns: cadence file 18/18 ×3 (`DLV-11`); `test:integration` 415 passed / 69 skipped (`DLV-12`).
-- Verification and finalization state: re-verified from evidence (behavior evidence unchanged, assertions unchanged; sufficient; no user check needed). Finalization results are in the release report's Finalization Record.
-- Terminal return to `/solution_designer`: `Sent` after finalization and cleanup (see the release report's Final Status).
+- Verification and finalization state: re-verified from evidence (behavior evidence unchanged, assertions unchanged; sufficient; no user check needed). Finalized per `RELEASE.md`: ticket branch `def3b1d644` pushed; `--no-ff` merge `714b27673a` pushed to `origin/personal` (`8945d0c8a2..714b27673a`); licensing and artifact-hygiene checks pass. Worktree and local branches removed; remote ticket branch retained by practice.
+- Terminal return to `/solution_designer`: `Sent` after this record commit (see the release report's Final Status).
 - Why this revision was recorded: the DR-002 blocker was resolved and delivery completed.
 - Next recipient/action: Solution Designer verifies the receipt and returns `Terminal`.
 - Remaining blockers, rollback concerns, or untested scope:
