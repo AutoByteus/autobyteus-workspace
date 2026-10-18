@@ -1,0 +1,2 @@
+# API-L03c/QR-004: server footprint while only searching (latency loop), baseline before any search = 186 MB (measure/l03d-01)
+window 13 s, samples 10, footprint max 625 MB (+439 MB over baseline), median 601 MB

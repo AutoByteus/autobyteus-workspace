@@ -1,0 +1,642 @@
+# API-L04: output of the step named in the execution report Cases row for API-L04; commit 722b9b3918; ENV-2 (app GraphQL) / ENV-4 (production runner from dist); 2026-10-18
+{
+ "model": "granite-embedding-small-english-r2",
+ "calibration": {
+  "clearMatchFloor": 0.78,
+  "nearBestMargin": 0.02
+ },
+ "repoDistractors": 940,
+ "sets": {
+  "fixture": {
+   "tasks": 60,
+   "paraphrases": {
+    "top5": 1,
+    "shownInFirst5": 0.968,
+    "bestScore": {
+     "min": 0.741,
+     "p05": 0.797,
+     "median": 0.854
+    },
+    "shownCount": {
+     "median": 1,
+     "p90": 2,
+     "max": 5
+    }
+   },
+   "unrelatedFixture": {
+    "noMatch": 12,
+    "of": 12,
+    "best": {
+     "max": 0.754,
+     "median": 0.72
+    }
+   },
+   "unrelatedExtended": {
+    "noMatch": 23,
+    "of": 24,
+    "best": {
+     "max": 0.794,
+     "median": 0.72
+    }
+   },
+   "unrelatedRows": [
+    {
+     "q": "recipe for banana bread",
+     "best": 0.702,
+     "bestId": "t47",
+     "shown": 0
+    },
+    {
+     "q": "asdkjh qwezx plmok",
+     "best": 0.725,
+     "bestId": "t52",
+     "shown": 0
+    },
+    {
+     "q": "weather in Berlin tomorrow",
+     "best": 0.722,
+     "bestId": "t56",
+     "shown": 0
+    },
+    {
+     "q": "best hiking trails in the Alps",
+     "best": 0.69,
+     "bestId": "t54",
+     "shown": 0
+    },
+    {
+     "q": "xyz",
+     "best": 0.754,
+     "bestId": "t48",
+     "shown": 0
+    },
+    {
+     "q": "football world cup results",
+     "best": 0.727,
+     "bestId": "t02",
+     "shown": 0
+    },
+    {
+     "q": "how to knit a scarf",
+     "best": 0.72,
+     "bestId": "t52",
+     "shown": 0
+    },
+    {
+     "q": "stock price of apple",
+     "best": 0.722,
+     "bestId": "t06",
+     "shown": 0
+    },
+    {
+     "q": "how long to boil an egg",
+     "best": 0.714,
+     "bestId": "t56",
+     "shown": 0
+    },
+    {
+     "q": "capital city of australia",
+     "best": 0.678,
+     "bestId": "t41",
+     "shown": 0
+    },
+    {
+     "q": "lyrics of a famous love song",
+     "best": 0.676,
+     "bestId": "t37",
+     "shown": 0
+    },
+    {
+     "q": "cheap flights to lisbon",
+     "best": 0.72,
+     "bestId": "t21",
+     "shown": 0
+    },
+    {
+     "q": "how do I bake sourdough",
+     "best": 0.716,
+     "bestId": "t36",
+     "shown": 0
+    },
+    {
+     "q": "translate good morning into Japanese",
+     "best": 0.794,
+     "bestId": "t21",
+     "shown": 1
+    },
+    {
+     "q": "how to change a flat tyre on a bicycle",
+     "best": 0.729,
+     "bestId": "t09",
+     "shown": 0
+    },
+    {
+     "q": "best time of year to plant tomatoes",
+     "best": 0.757,
+     "bestId": "t43",
+     "shown": 0
+    },
+    {
+     "q": "convert 5 miles to kilometers",
+     "best": 0.746,
+     "bestId": "t03",
+     "shown": 0
+    },
+    {
+     "q": "qwertyuiop asdfgh",
+     "best": 0.741,
+     "bestId": "t13",
+     "shown": 0
+    },
+    {
+     "q": "who painted the Mona Lisa",
+     "best": 0.683,
+     "bestId": "t25",
+     "shown": 0
+    },
+    {
+     "q": "symptoms of a common cold",
+     "best": 0.715,
+     "bestId": "t56",
+     "shown": 0
+    },
+    {
+     "q": "train timetable from Munich to Vienna",
+     "best": 0.729,
+     "bestId": "t43",
+     "shown": 0
+    },
+    {
+     "q": "how many calories in an avocado",
+     "best": 0.688,
+     "bestId": "t03",
+     "shown": 0
+    },
+    {
+     "q": "rules of chess castling",
+     "best": 0.709,
+     "bestId": "t55",
+     "shown": 0
+    },
+    {
+     "q": "top rated sushi restaurants nearby",
+     "best": 0.706,
+     "bestId": "t46",
+     "shown": 0
+    }
+   ],
+   "paraphraseMisses": [
+    {
+     "q": "interface in castellano",
+     "best": 0.763,
+     "target": 0.763,
+     "rank": 1,
+     "shownRank": 0,
+     "shown": 0
+    },
+    {
+     "q": "which crew member burned the most money",
+     "best": 0.741,
+     "target": 0.741,
+     "rank": 1,
+     "shownRank": 0,
+     "shown": 0
+    }
+   ]
+  },
+  "templated": {
+   "tasks": 1000,
+   "paraphrases": {
+    "top5": 0.952,
+    "shownInFirst5": 0.937,
+    "bestScore": {
+     "min": 0.741,
+     "p05": 0.798,
+     "median": 0.854
+    },
+    "shownCount": {
+     "median": 1,
+     "p90": 9,
+     "max": 20
+    }
+   },
+   "unrelatedFixture": {
+    "noMatch": 12,
+    "of": 12,
+    "best": {
+     "max": 0.761,
+     "median": 0.727
+    }
+   },
+   "unrelatedExtended": {
+    "noMatch": 23,
+    "of": 24,
+    "best": {
+     "max": 0.794,
+     "median": 0.729
+    }
+   },
+   "unrelatedRows": [
+    {
+     "q": "recipe for banana bread",
+     "best": 0.719,
+     "bestId": "d720",
+     "shown": 0
+    },
+    {
+     "q": "asdkjh qwezx plmok",
+     "best": 0.731,
+     "bestId": "d181",
+     "shown": 0
+    },
+    {
+     "q": "weather in Berlin tomorrow",
+     "best": 0.74,
+     "bestId": "d921",
+     "shown": 0
+    },
+    {
+     "q": "best hiking trails in the Alps",
+     "best": 0.69,
+     "bestId": "t54",
+     "shown": 0
+    },
+    {
+     "q": "xyz",
+     "best": 0.759,
+     "bestId": "d550",
+     "shown": 0
+    },
+    {
+     "q": "football world cup results",
+     "best": 0.745,
+     "bestId": "d499",
+     "shown": 0
+    },
+    {
+     "q": "how to knit a scarf",
+     "best": 0.727,
+     "bestId": "d720",
+     "shown": 0
+    },
+    {
+     "q": "stock price of apple",
+     "best": 0.761,
+     "bestId": "d642",
+     "shown": 0
+    },
+    {
+     "q": "how long to boil an egg",
+     "best": 0.723,
+     "bestId": "d280",
+     "shown": 0
+    },
+    {
+     "q": "capital city of australia",
+     "best": 0.687,
+     "bestId": "d002",
+     "shown": 0
+    },
+    {
+     "q": "lyrics of a famous love song",
+     "best": 0.676,
+     "bestId": "t37",
+     "shown": 0
+    },
+    {
+     "q": "cheap flights to lisbon",
+     "best": 0.72,
+     "bestId": "t21",
+     "shown": 0
+    },
+    {
+     "q": "how do I bake sourdough",
+     "best": 0.751,
+     "bestId": "d256",
+     "shown": 0
+    },
+    {
+     "q": "translate good morning into Japanese",
+     "best": 0.794,
+     "bestId": "t21",
+     "shown": 1
+    },
+    {
+     "q": "how to change a flat tyre on a bicycle",
+     "best": 0.734,
+     "bestId": "d300",
+     "shown": 0
+    },
+    {
+     "q": "best time of year to plant tomatoes",
+     "best": 0.765,
+     "bestId": "d129",
+     "shown": 0
+    },
+    {
+     "q": "convert 5 miles to kilometers",
+     "best": 0.746,
+     "bestId": "t03",
+     "shown": 0
+    },
+    {
+     "q": "qwertyuiop asdfgh",
+     "best": 0.748,
+     "bestId": "d792",
+     "shown": 0
+    },
+    {
+     "q": "who painted the Mona Lisa",
+     "best": 0.683,
+     "bestId": "t25",
+     "shown": 0
+    },
+    {
+     "q": "symptoms of a common cold",
+     "best": 0.723,
+     "bestId": "d543",
+     "shown": 0
+    },
+    {
+     "q": "train timetable from Munich to Vienna",
+     "best": 0.729,
+     "bestId": "t43",
+     "shown": 0
+    },
+    {
+     "q": "how many calories in an avocado",
+     "best": 0.688,
+     "bestId": "t03",
+     "shown": 0
+    },
+    {
+     "q": "rules of chess castling",
+     "best": 0.728,
+     "bestId": "d572",
+     "shown": 0
+    },
+    {
+     "q": "top rated sushi restaurants nearby",
+     "best": 0.719,
+     "bestId": "d463",
+     "shown": 0
+    }
+   ],
+   "paraphraseMisses": [
+    {
+     "q": "interface in castellano",
+     "best": 0.773,
+     "target": 0.763,
+     "rank": 10,
+     "shownRank": 0,
+     "shown": 0
+    },
+    {
+     "q": "my assistant config silently disappears and I don't know what is wrong with it",
+     "best": 0.842,
+     "target": 0.806,
+     "rank": 128,
+     "shownRank": 0,
+     "shown": 20
+    },
+    {
+     "q": "which crew member burned the most money",
+     "best": 0.741,
+     "target": 0.741,
+     "rank": 1,
+     "shownRank": 0,
+     "shown": 0
+    },
+    {
+     "q": "explain what a project is about on its kanban",
+     "best": 0.798,
+     "target": 0.773,
+     "rank": 16,
+     "shownRank": 0,
+     "shown": 11
+    }
+   ]
+  },
+  "repo": {
+   "tasks": 1000,
+   "paraphrases": {
+    "top5": 0.952,
+    "shownInFirst5": 0.921,
+    "bestScore": {
+     "min": 0.741,
+     "p05": 0.806,
+     "median": 0.854
+    },
+    "shownCount": {
+     "median": 1,
+     "p90": 5,
+     "max": 15
+    }
+   },
+   "unrelatedFixture": {
+    "noMatch": 12,
+    "of": 12,
+    "best": {
+     "max": 0.776,
+     "median": 0.75
+    }
+   },
+   "unrelatedExtended": {
+    "noMatch": 23,
+    "of": 24,
+    "best": {
+     "max": 0.794,
+     "median": 0.74
+    }
+   },
+   "unrelatedRows": [
+    {
+     "q": "recipe for banana bread",
+     "best": 0.734,
+     "bestId": "r683",
+     "shown": 0
+    },
+    {
+     "q": "asdkjh qwezx plmok",
+     "best": 0.754,
+     "bestId": "r245",
+     "shown": 0
+    },
+    {
+     "q": "weather in Berlin tomorrow",
+     "best": 0.74,
+     "bestId": "r724",
+     "shown": 0
+    },
+    {
+     "q": "best hiking trails in the Alps",
+     "best": 0.702,
+     "bestId": "r691",
+     "shown": 0
+    },
+    {
+     "q": "xyz",
+     "best": 0.776,
+     "bestId": "r017",
+     "shown": 0
+    },
+    {
+     "q": "football world cup results",
+     "best": 0.759,
+     "bestId": "r698",
+     "shown": 0
+    },
+    {
+     "q": "how to knit a scarf",
+     "best": 0.75,
+     "bestId": "r773",
+     "shown": 0
+    },
+    {
+     "q": "stock price of apple",
+     "best": 0.76,
+     "bestId": "r754",
+     "shown": 0
+    },
+    {
+     "q": "how long to boil an egg",
+     "best": 0.724,
+     "bestId": "r745",
+     "shown": 0
+    },
+    {
+     "q": "capital city of australia",
+     "best": 0.689,
+     "bestId": "r050",
+     "shown": 0
+    },
+    {
+     "q": "lyrics of a famous love song",
+     "best": 0.69,
+     "bestId": "r040",
+     "shown": 0
+    },
+    {
+     "q": "cheap flights to lisbon",
+     "best": 0.757,
+     "bestId": "r267",
+     "shown": 0
+    },
+    {
+     "q": "how do I bake sourdough",
+     "best": 0.739,
+     "bestId": "r683",
+     "shown": 0
+    },
+    {
+     "q": "translate good morning into Japanese",
+     "best": 0.794,
+     "bestId": "t21",
+     "shown": 1
+    },
+    {
+     "q": "how to change a flat tyre on a bicycle",
+     "best": 0.748,
+     "bestId": "r627",
+     "shown": 0
+    },
+    {
+     "q": "best time of year to plant tomatoes",
+     "best": 0.757,
+     "bestId": "t43",
+     "shown": 0
+    },
+    {
+     "q": "convert 5 miles to kilometers",
+     "best": 0.754,
+     "bestId": "r050",
+     "shown": 0
+    },
+    {
+     "q": "qwertyuiop asdfgh",
+     "best": 0.764,
+     "bestId": "r017",
+     "shown": 0
+    },
+    {
+     "q": "who painted the Mona Lisa",
+     "best": 0.71,
+     "bestId": "r544",
+     "shown": 0
+    },
+    {
+     "q": "symptoms of a common cold",
+     "best": 0.723,
+     "bestId": "r439",
+     "shown": 0
+    },
+    {
+     "q": "train timetable from Munich to Vienna",
+     "best": 0.729,
+     "bestId": "t43",
+     "shown": 0
+    },
+    {
+     "q": "how many calories in an avocado",
+     "best": 0.706,
+     "bestId": "r267",
+     "shown": 0
+    },
+    {
+     "q": "rules of chess castling",
+     "best": 0.735,
+     "bestId": "r313",
+     "shown": 0
+    },
+    {
+     "q": "top rated sushi restaurants nearby",
+     "best": 0.737,
+     "bestId": "r522",
+     "shown": 0
+    }
+   ],
+   "paraphraseMisses": [
+    {
+     "q": "apple blocks the downloaded app because it was not signed properly",
+     "best": 0.852,
+     "target": 0.826,
+     "rank": 2,
+     "shownRank": 0,
+     "shown": 1
+    },
+    {
+     "q": "interface in castellano",
+     "best": 0.818,
+     "target": 0.763,
+     "rank": 57,
+     "shownRank": 0,
+     "shown": 1
+    },
+    {
+     "q": "my assistant config silently disappears and I don't know what is wrong with it",
+     "best": 0.846,
+     "target": 0.806,
+     "rank": 53,
+     "shownRank": 0,
+     "shown": 6
+    },
+    {
+     "q": "which crew member burned the most money",
+     "best": 0.741,
+     "target": 0.741,
+     "rank": 1,
+     "shownRank": 0,
+     "shown": 0
+    },
+    {
+     "q": "explain what a project is about on its kanban",
+     "best": 0.833,
+     "target": 0.773,
+     "rank": 36,
+     "shownRank": 0,
+     "shown": 1
+    }
+   ]
+  }
+ }
+}

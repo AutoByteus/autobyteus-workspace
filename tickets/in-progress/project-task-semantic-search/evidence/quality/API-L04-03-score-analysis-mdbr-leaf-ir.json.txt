@@ -1,0 +1,682 @@
+# API-L04: output of the step named in the execution report Cases row for API-L04; commit 722b9b3918; ENV-2 (app GraphQL) / ENV-4 (production runner from dist); 2026-10-18
+{
+ "model": "mdbr-leaf-ir",
+ "calibration": {
+  "clearMatchFloor": 0.24,
+  "nearBestMargin": 0.045
+ },
+ "repoDistractors": 940,
+ "sets": {
+  "fixture": {
+   "tasks": 60,
+   "paraphrases": {
+    "top5": 0.984,
+    "shownInFirst5": 0.968,
+    "bestScore": {
+     "min": 0.208,
+     "p05": 0.322,
+     "median": 0.448
+    },
+    "shownCount": {
+     "median": 1,
+     "p90": 2,
+     "max": 4
+    }
+   },
+   "unrelatedFixture": {
+    "noMatch": 11,
+    "of": 12,
+    "best": {
+     "max": 0.273,
+     "median": 0.2
+    }
+   },
+   "unrelatedExtended": {
+    "noMatch": 22,
+    "of": 24,
+    "best": {
+     "max": 0.328,
+     "median": 0.199
+    }
+   },
+   "unrelatedRows": [
+    {
+     "q": "recipe for banana bread",
+     "best": 0.193,
+     "bestId": "t44",
+     "shown": 0
+    },
+    {
+     "q": "asdkjh qwezx plmok",
+     "best": 0.222,
+     "bestId": "t30",
+     "shown": 0
+    },
+    {
+     "q": "weather in Berlin tomorrow",
+     "best": 0.273,
+     "bestId": "t44",
+     "shown": 2
+    },
+    {
+     "q": "best hiking trails in the Alps",
+     "best": 0.165,
+     "bestId": "t32",
+     "shown": 0
+    },
+    {
+     "q": "xyz",
+     "best": 0.21,
+     "bestId": "t44",
+     "shown": 0
+    },
+    {
+     "q": "football world cup results",
+     "best": 0.2,
+     "bestId": "t44",
+     "shown": 0
+    },
+    {
+     "q": "how to knit a scarf",
+     "best": 0.162,
+     "bestId": "t37",
+     "shown": 0
+    },
+    {
+     "q": "stock price of apple",
+     "best": 0.232,
+     "bestId": "t41",
+     "shown": 0
+    },
+    {
+     "q": "how long to boil an egg",
+     "best": 0.231,
+     "bestId": "t28",
+     "shown": 0
+    },
+    {
+     "q": "capital city of australia",
+     "best": 0.127,
+     "bestId": "t06",
+     "shown": 0
+    },
+    {
+     "q": "lyrics of a famous love song",
+     "best": 0.175,
+     "bestId": "t37",
+     "shown": 0
+    },
+    {
+     "q": "cheap flights to lisbon",
+     "best": 0.198,
+     "bestId": "t21",
+     "shown": 0
+    },
+    {
+     "q": "how do I bake sourdough",
+     "best": 0.222,
+     "bestId": "t43",
+     "shown": 0
+    },
+    {
+     "q": "translate good morning into Japanese",
+     "best": 0.328,
+     "bestId": "t21",
+     "shown": 1
+    },
+    {
+     "q": "how to change a flat tyre on a bicycle",
+     "best": 0.168,
+     "bestId": "t19",
+     "shown": 0
+    },
+    {
+     "q": "best time of year to plant tomatoes",
+     "best": 0.237,
+     "bestId": "t44",
+     "shown": 0
+    },
+    {
+     "q": "convert 5 miles to kilometers",
+     "best": 0.157,
+     "bestId": "t46",
+     "shown": 0
+    },
+    {
+     "q": "qwertyuiop asdfgh",
+     "best": 0.235,
+     "bestId": "t13",
+     "shown": 0
+    },
+    {
+     "q": "who painted the Mona Lisa",
+     "best": 0.097,
+     "bestId": "t04",
+     "shown": 0
+    },
+    {
+     "q": "symptoms of a common cold",
+     "best": 0.192,
+     "bestId": "t35",
+     "shown": 0
+    },
+    {
+     "q": "train timetable from Munich to Vienna",
+     "best": 0.199,
+     "bestId": "t13",
+     "shown": 0
+    },
+    {
+     "q": "how many calories in an avocado",
+     "best": 0.113,
+     "bestId": "t46",
+     "shown": 0
+    },
+    {
+     "q": "rules of chess castling",
+     "best": 0.199,
+     "bestId": "t36",
+     "shown": 0
+    },
+    {
+     "q": "top rated sushi restaurants nearby",
+     "best": 0.114,
+     "bestId": "t40",
+     "shown": 0
+    }
+   ],
+   "paraphraseMisses": [
+    {
+     "q": "my assistant config silently disappears and I don't know what is wrong with it",
+     "best": 0.377,
+     "target": 0.284,
+     "rank": 15,
+     "shownRank": 0,
+     "shown": 4
+    },
+    {
+     "q": "which crew member burned the most money",
+     "best": 0.208,
+     "target": 0.208,
+     "rank": 1,
+     "shownRank": 0,
+     "shown": 0
+    }
+   ]
+  },
+  "templated": {
+   "tasks": 1000,
+   "paraphrases": {
+    "top5": 0.889,
+    "shownInFirst5": 0.873,
+    "bestScore": {
+     "min": 0.208,
+     "p05": 0.356,
+     "median": 0.452
+    },
+    "shownCount": {
+     "median": 2,
+     "p90": 15,
+     "max": 20
+    }
+   },
+   "unrelatedFixture": {
+    "noMatch": 6,
+    "of": 12,
+    "best": {
+     "max": 0.321,
+     "median": 0.248
+    }
+   },
+   "unrelatedExtended": {
+    "noMatch": 14,
+    "of": 24,
+    "best": {
+     "max": 0.328,
+     "median": 0.231
+    }
+   },
+   "unrelatedRows": [
+    {
+     "q": "recipe for banana bread",
+     "best": 0.195,
+     "bestId": "d424",
+     "shown": 0
+    },
+    {
+     "q": "asdkjh qwezx plmok",
+     "best": 0.248,
+     "bestId": "d369",
+     "shown": 20
+    },
+    {
+     "q": "weather in Berlin tomorrow",
+     "best": 0.282,
+     "bestId": "d527",
+     "shown": 20
+    },
+    {
+     "q": "best hiking trails in the Alps",
+     "best": 0.259,
+     "bestId": "d625",
+     "shown": 4
+    },
+    {
+     "q": "xyz",
+     "best": 0.281,
+     "bestId": "d050",
+     "shown": 20
+    },
+    {
+     "q": "football world cup results",
+     "best": 0.286,
+     "bestId": "d266",
+     "shown": 5
+    },
+    {
+     "q": "how to knit a scarf",
+     "best": 0.166,
+     "bestId": "d898",
+     "shown": 0
+    },
+    {
+     "q": "stock price of apple",
+     "best": 0.321,
+     "bestId": "d642",
+     "shown": 12
+    },
+    {
+     "q": "how long to boil an egg",
+     "best": 0.231,
+     "bestId": "t28",
+     "shown": 0
+    },
+    {
+     "q": "capital city of australia",
+     "best": 0.187,
+     "bestId": "d388",
+     "shown": 0
+    },
+    {
+     "q": "lyrics of a famous love song",
+     "best": 0.225,
+     "bestId": "d416",
+     "shown": 0
+    },
+    {
+     "q": "cheap flights to lisbon",
+     "best": 0.198,
+     "bestId": "t21",
+     "shown": 0
+    },
+    {
+     "q": "how do I bake sourdough",
+     "best": 0.222,
+     "bestId": "t43",
+     "shown": 0
+    },
+    {
+     "q": "translate good morning into Japanese",
+     "best": 0.328,
+     "bestId": "t21",
+     "shown": 18
+    },
+    {
+     "q": "how to change a flat tyre on a bicycle",
+     "best": 0.202,
+     "bestId": "d635",
+     "shown": 0
+    },
+    {
+     "q": "best time of year to plant tomatoes",
+     "best": 0.237,
+     "bestId": "t44",
+     "shown": 0
+    },
+    {
+     "q": "convert 5 miles to kilometers",
+     "best": 0.182,
+     "bestId": "d379",
+     "shown": 0
+    },
+    {
+     "q": "qwertyuiop asdfgh",
+     "best": 0.298,
+     "bestId": "d517",
+     "shown": 2
+    },
+    {
+     "q": "who painted the Mona Lisa",
+     "best": 0.115,
+     "bestId": "d927",
+     "shown": 0
+    },
+    {
+     "q": "symptoms of a common cold",
+     "best": 0.268,
+     "bestId": "d380",
+     "shown": 20
+    },
+    {
+     "q": "train timetable from Munich to Vienna",
+     "best": 0.242,
+     "bestId": "d831",
+     "shown": 20
+    },
+    {
+     "q": "how many calories in an avocado",
+     "best": 0.136,
+     "bestId": "d153",
+     "shown": 0
+    },
+    {
+     "q": "rules of chess castling",
+     "best": 0.2,
+     "bestId": "d337",
+     "shown": 0
+    },
+    {
+     "q": "top rated sushi restaurants nearby",
+     "best": 0.156,
+     "bestId": "d027",
+     "shown": 0
+    }
+   ],
+   "paraphraseMisses": [
+    {
+     "q": "apple blocks the downloaded app because it was not signed properly",
+     "best": 0.432,
+     "target": 0.414,
+     "rank": 7,
+     "shownRank": 7,
+     "shown": 12
+    },
+    {
+     "q": "interface in castellano",
+     "best": 0.28,
+     "target": 0.233,
+     "rank": 31,
+     "shownRank": 0,
+     "shown": 20
+    },
+    {
+     "q": "company network gateway blocks access to the AI services",
+     "best": 0.416,
+     "target": 0.322,
+     "rank": 22,
+     "shownRank": 0,
+     "shown": 6
+    },
+    {
+     "q": "tell me plainly that my provider key is invalid",
+     "best": 0.532,
+     "target": 0.462,
+     "rank": 21,
+     "shownRank": 0,
+     "shown": 14
+    },
+    {
+     "q": "updates should only fetch what changed instead of everything",
+     "best": 0.469,
+     "target": 0.409,
+     "rank": 34,
+     "shownRank": 0,
+     "shown": 19
+    },
+    {
+     "q": "timestamps look different on every screen",
+     "best": 0.445,
+     "target": 0.365,
+     "rank": 82,
+     "shownRank": 0,
+     "shown": 20
+    },
+    {
+     "q": "my assistant config silently disappears and I don't know what is wrong with it",
+     "best": 0.413,
+     "target": 0.284,
+     "rank": 814,
+     "shownRank": 0,
+     "shown": 20
+    },
+    {
+     "q": "which crew member burned the most money",
+     "best": 0.208,
+     "target": 0.208,
+     "rank": 1,
+     "shownRank": 0,
+     "shown": 0
+    }
+   ]
+  },
+  "repo": {
+   "tasks": 1000,
+   "paraphrases": {
+    "top5": 0.921,
+    "shownInFirst5": 0.905,
+    "bestScore": {
+     "min": 0.208,
+     "p05": 0.356,
+     "median": 0.449
+    },
+    "shownCount": {
+     "median": 1,
+     "p90": 9,
+     "max": 20
+    }
+   },
+   "unrelatedFixture": {
+    "noMatch": 4,
+    "of": 12,
+    "best": {
+     "max": 0.343,
+     "median": 0.273
+    }
+   },
+   "unrelatedExtended": {
+    "noMatch": 10,
+    "of": 24,
+    "best": {
+     "max": 0.343,
+     "median": 0.257
+    }
+   },
+   "unrelatedRows": [
+    {
+     "q": "recipe for banana bread",
+     "best": 0.29,
+     "bestId": "r937",
+     "shown": 1
+    },
+    {
+     "q": "asdkjh qwezx plmok",
+     "best": 0.285,
+     "bestId": "r537",
+     "shown": 17
+    },
+    {
+     "q": "weather in Berlin tomorrow",
+     "best": 0.273,
+     "bestId": "t44",
+     "shown": 7
+    },
+    {
+     "q": "best hiking trails in the Alps",
+     "best": 0.247,
+     "bestId": "r848",
+     "shown": 1
+    },
+    {
+     "q": "xyz",
+     "best": 0.31,
+     "bestId": "r225",
+     "shown": 20
+    },
+    {
+     "q": "football world cup results",
+     "best": 0.284,
+     "bestId": "r245",
+     "shown": 16
+    },
+    {
+     "q": "how to knit a scarf",
+     "best": 0.177,
+     "bestId": "r497",
+     "shown": 0
+    },
+    {
+     "q": "stock price of apple",
+     "best": 0.343,
+     "bestId": "r854",
+     "shown": 8
+    },
+    {
+     "q": "how long to boil an egg",
+     "best": 0.241,
+     "bestId": "r225",
+     "shown": 4
+    },
+    {
+     "q": "capital city of australia",
+     "best": 0.179,
+     "bestId": "r811",
+     "shown": 0
+    },
+    {
+     "q": "lyrics of a famous love song",
+     "best": 0.2,
+     "bestId": "r742",
+     "shown": 0
+    },
+    {
+     "q": "cheap flights to lisbon",
+     "best": 0.238,
+     "bestId": "r754",
+     "shown": 0
+    },
+    {
+     "q": "how do I bake sourdough",
+     "best": 0.299,
+     "bestId": "r634",
+     "shown": 2
+    },
+    {
+     "q": "translate good morning into Japanese",
+     "best": 0.328,
+     "bestId": "t21",
+     "shown": 1
+    },
+    {
+     "q": "how to change a flat tyre on a bicycle",
+     "best": 0.208,
+     "bestId": "r190",
+     "shown": 0
+    },
+    {
+     "q": "best time of year to plant tomatoes",
+     "best": 0.237,
+     "bestId": "t44",
+     "shown": 0
+    },
+    {
+     "q": "convert 5 miles to kilometers",
+     "best": 0.257,
+     "bestId": "r308",
+     "shown": 4
+    },
+    {
+     "q": "qwertyuiop asdfgh",
+     "best": 0.301,
+     "bestId": "r247",
+     "shown": 3
+    },
+    {
+     "q": "who painted the Mona Lisa",
+     "best": 0.206,
+     "bestId": "r353",
+     "shown": 0
+    },
+    {
+     "q": "symptoms of a common cold",
+     "best": 0.275,
+     "bestId": "r245",
+     "shown": 10
+    },
+    {
+     "q": "train timetable from Munich to Vienna",
+     "best": 0.213,
+     "bestId": "r318",
+     "shown": 0
+    },
+    {
+     "q": "how many calories in an avocado",
+     "best": 0.147,
+     "bestId": "r733",
+     "shown": 0
+    },
+    {
+     "q": "rules of chess castling",
+     "best": 0.277,
+     "bestId": "r095",
+     "shown": 2
+    },
+    {
+     "q": "top rated sushi restaurants nearby",
+     "best": 0.189,
+     "bestId": "r287",
+     "shown": 0
+    }
+   ],
+   "paraphraseMisses": [
+    {
+     "q": "interface in castellano",
+     "best": 0.259,
+     "target": 0.233,
+     "rank": 10,
+     "shownRank": 10,
+     "shown": 20
+    },
+    {
+     "q": "company network gateway blocks access to the AI services",
+     "best": 0.406,
+     "target": 0.322,
+     "rank": 29,
+     "shownRank": 0,
+     "shown": 5
+    },
+    {
+     "q": "updates should only fetch what changed instead of everything",
+     "best": 0.439,
+     "target": 0.409,
+     "rank": 6,
+     "shownRank": 6,
+     "shown": 7
+    },
+    {
+     "q": "my assistant config silently disappears and I don't know what is wrong with it",
+     "best": 0.406,
+     "target": 0.284,
+     "rank": 399,
+     "shownRank": 0,
+     "shown": 20
+    },
+    {
+     "q": "which crew member burned the most money",
+     "best": 0.208,
+     "target": 0.208,
+     "rank": 1,
+     "shownRank": 0,
+     "shown": 0
+    },
+    {
+     "q": "explain what a project is about on its kanban",
+     "best": 0.464,
+     "target": 0.361,
+     "rank": 20,
+     "shownRank": 0,
+     "shown": 3
+    }
+   ]
+  }
+ }
+}

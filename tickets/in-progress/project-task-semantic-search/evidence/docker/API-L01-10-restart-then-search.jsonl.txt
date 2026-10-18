@@ -1,0 +1,4 @@
+# API-L01: output of the step named in the execution report Cases row for API-L01; commit 722b9b3918; ENV-3 (Docker linux/arm64, image ab-pts-validation:722b9b3918); 2026-10-18
+{"t":0.046,"ms":45,"state":"PREPARING","phase":"DOWNLOADING","done":0,"total":23888539,"reason":null,"matches":0,"kinds":""}
+{"t":1.1,"ms":52,"state":"READY","phase":null,"done":null,"total":null,"reason":null,"matches":1,"kinds":"M"}
+{"final":true,"t":1.1,"ms":52,"matches":[{"taskId":"project_task_2dae2810-0f65-4443-b6e6-380bbfac8b95","match":"MEANING"}],"meaningSearch":{"state":"READY","phase":null,"done":null,"total":null,"reason":null}}

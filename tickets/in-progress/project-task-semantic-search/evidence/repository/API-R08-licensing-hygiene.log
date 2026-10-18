@@ -1,0 +1,15 @@
+# API-R08: output of the step named in the execution report Cases row for API-R08; commit 722b9b3918; ENV-1 (macOS arm64 host, Node 22.23.1); 2026-10-18
+== check_licensing
+Licensing is consistent.
+Tracked files scanned: 6727
+exit=0
+== hygiene
+Repository artifact hygiene check passed.
+Tracked files scanned: 71899
+Path-length threshold: 200
+Longest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js
+exit=0
+== pytest licensing
+............                                                             [100%]
+12 passed in 2.27s
+exit=0

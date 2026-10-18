@@ -1,0 +1,61 @@
+# API-L02d: output of the step named in the execution report Cases row for API-L02d; commit 722b9b3918; ENV-2 (packaged macOS arm64 desktop, isolated instance); 2026-10-18
+{
+ "query": "restart",
+ "placeholder": "Describe the task you're looking for",
+ "status": null,
+ "retry": false,
+ "noMatch": false,
+ "cancelledToggle": "Cancelled (1)",
+ "lanes": {
+  "TODO": {
+   "count": 5,
+   "tasks": [
+    {
+     "taskId": "project_task_ecb99b73-0fd4-4a6d-895f-984a9e841f58",
+     "title": "Let users choose where app data is stored",
+     "located": false
+    },
+    {
+     "taskId": "project_task_23831c59-fd46-403a-b582-5a4fb761225f",
+     "title": "Sidebar collapse state is lost after restart",
+     "located": false
+    },
+    {
+     "taskId": "project_task_b59181fe-c7b5-4a0f-91de-cbcbdcb62fb4",
+     "title": "Pin important conversations in history",
+     "located": false
+    },
+    {
+     "taskId": "project_task_6f653bba-5d62-40d4-8527-d1948a188ae3",
+     "title": "Let users rename a team run from the history list",
+     "located": false
+    },
+    {
+     "taskId": "project_task_f032aee3-8540-462d-ac16-2d9a35d47b68",
+     "title": "Agents keep retrying a failing tool forever",
+     "located": false
+    }
+   ]
+  },
+  "IN_PROGRESS": {
+   "count": 1,
+   "tasks": [
+    {
+     "taskId": "project_task_87da7f75-f5d5-4ca7-939c-c50d0b77e2ac",
+     "title": "Agent run stops streaming when the laptop wakes from sleep",
+     "located": false
+    }
+   ]
+  },
+  "DONE": {
+   "count": 1,
+   "tasks": [
+    {
+     "taskId": "project_task_3f89698a-962c-43dd-8c08-ddd1afeecad6",
+     "title": "Settings page freezes when a provider is unreachable",
+     "located": false
+    }
+   ]
+  }
+ }
+}

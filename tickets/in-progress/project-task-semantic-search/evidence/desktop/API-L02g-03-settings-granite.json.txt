@@ -1,0 +1,7 @@
+# API-L02g: output of the step named in the execution report Cases row for API-L02g; commit 722b9b3918; ENV-2 (packaged macOS arm64 desktop, isolated instance); 2026-10-18
+{
+ "mode": "add-row",
+ "toast": null,
+ "row": "AUTOBYTEUS_EMBEDDING_MODEL Embedding model for meaning search of Project Tasks. Blank uses the default (mdbr-leaf-ir). The model is downloaded on first use and the search index is rebuilt in the background after a change. Allowed values: mdbr-leaf-ir: MongoDB LEAF-IR. Default. English. About 23 MB to download; the fastest to index (about 0.1 s per Task on a fast laptop CPU). granite-embedding-small-english-r2: IBM Granite Embedding Small English R2. English; reads more of long Tasks. About 55 MB to download; about 5x slower to index than the default (about 0.5 s per Task). embeddinggemma-2: Google EmbeddingGemma 2. Multilingual (100+ languages). Heavy: about 346 MB to download, about 4 s per Task to index and up to 1.5 GB of memory while indexing. ",
+ "value": "granite-embedding-small-english-r2"
+}

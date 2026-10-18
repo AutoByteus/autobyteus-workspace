@@ -1,0 +1,77 @@
+# API-L02b: output of the step named in the execution report Cases row for API-L02b; commit 722b9b3918; ENV-2 (packaged macOS arm64 desktop, isolated instance); 2026-10-18
+{
+ "elapsedMs": 93895,
+ "statusesSeen": [
+  "Preparing meaning search… 136 of 1000 Tasks",
+  "Preparing meaning search… 144 of 1000 Tasks",
+  "Preparing meaning search… 160 of 1000 Tasks",
+  "Preparing meaning search… 168 of 1000 Tasks",
+  "Preparing meaning search… 184 of 1000 Tasks",
+  "Preparing meaning search… 200 of 1000 Tasks",
+  "Preparing meaning search… 216 of 1000 Tasks",
+  "Preparing meaning search… 232 of 1000 Tasks",
+  "Preparing meaning search… 240 of 1000 Tasks",
+  "Preparing meaning search… 256 of 1000 Tasks",
+  "Preparing meaning search… 272 of 1000 Tasks",
+  "Preparing meaning search… 296 of 1000 Tasks",
+  "Preparing meaning search… 320 of 1000 Tasks",
+  "Preparing meaning search… 344 of 1000 Tasks",
+  "Preparing meaning search… 368 of 1000 Tasks",
+  "Preparing meaning search… 392 of 1000 Tasks",
+  "Preparing meaning search… 400 of 1000 Tasks",
+  "Preparing meaning search… 424 of 1000 Tasks",
+  "Preparing meaning search… 440 of 1000 Tasks",
+  "Preparing meaning search… 456 of 1000 Tasks",
+  "Preparing meaning search… 488 of 1000 Tasks",
+  "Preparing meaning search… 512 of 1000 Tasks",
+  "Preparing meaning search… 536 of 1000 Tasks",
+  "Preparing meaning search… 560 of 1000 Tasks",
+  "Preparing meaning search… 584 of 1000 Tasks",
+  "Preparing meaning search… 608 of 1000 Tasks",
+  "Preparing meaning search… 632 of 1000 Tasks",
+  "Preparing meaning search… 656 of 1000 Tasks",
+  "Preparing meaning search… 680 of 1000 Tasks",
+  "Preparing meaning search… 704 of 1000 Tasks",
+  "Preparing meaning search… 728 of 1000 Tasks",
+  "Preparing meaning search… 744 of 1000 Tasks",
+  "Preparing meaning search… 760 of 1000 Tasks",
+  "Preparing meaning search… 784 of 1000 Tasks",
+  "Preparing meaning search… 816 of 1000 Tasks",
+  "Preparing meaning search… 840 of 1000 Tasks",
+  "Preparing meaning search… 864 of 1000 Tasks",
+  "Preparing meaning search… 888 of 1000 Tasks",
+  "Preparing meaning search… 912 of 1000 Tasks",
+  "Preparing meaning search… 936 of 1000 Tasks",
+  "Preparing meaning search… 968 of 1000 Tasks",
+  "Preparing meaning search… 992 of 1000 Tasks",
+  null
+ ],
+ "state": {
+  "query": "the navigation panel on the left forgets that I folded it when I reopen the program",
+  "placeholder": "Describe the task you're looking for",
+  "status": null,
+  "retry": false,
+  "noMatch": false,
+  "cancelledToggle": "Cancelled (94)",
+  "lanes": {
+   "TODO": {
+    "count": 1,
+    "tasks": [
+     {
+      "taskId": "project_task_87d1cab5-3b34-48ea-ba70-bc30346d3909",
+      "title": "Sidebar collapse state is lost after restart",
+      "located": false
+     }
+    ]
+   },
+   "IN_PROGRESS": {
+    "count": 0,
+    "tasks": []
+   },
+   "DONE": {
+    "count": 0,
+    "tasks": []
+   }
+  }
+ }
+}

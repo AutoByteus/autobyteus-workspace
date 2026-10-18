@@ -1,0 +1,29 @@
+# API-R04: pnpm -C autobyteus-server-ts test:integration:prepare && pnpm -C autobyteus-server-ts test:integration; commit 722b9b3918; ENV-1 (macOS arm64, Node 22.23.1, host load average ~200); Sun Oct 18 13:10:50 CEST 2026
+# Excerpt (full log not committed: /tmp/pts-api/r04-integration.log, removed at cleanup)
+Integration test prerequisites are present.
+prepare-exit=0
+SEND_MESSAGE command not accepted for agent run agent-e2e: [ACTIVATION_FAILED] Failed to prepare agent run 'agent-e2e'.
+     × AC-001/AC-015(a): a new agent and a new Team written on disk are listed and delegable within 5 s, without Reload 5452ms
+     × coalesces a representative fine-grained canonical stream into one default-window content frame 399ms
+     × uses a changed interval only for the active socket's next newly opened window 372ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > coalesces a representative fine-grained canonical stream into one default-window content frame
+ FAIL  tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > uses a changed interval only for the active socket's next newly opened window
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-001/AC-015(a): a new agent and a new Team written on disk are listed and delegable within 5 s, without Reload
+ Test Files  2 failed | 74 passed | 18 skipped (94)
+      Tests  3 failed | 392 passed | 66 skipped (461)
+exit=1
+
+# Rerun of the two failing files alone (same commit and host, Sun Oct 18 13:10:50 CEST 2026)
+     ✓ AC-001/AC-015(a): a new agent and a new Team written on disk are listed and delegable within 5 s, without Reload  644ms
+     × coalesces a representative fine-grained canonical stream into one default-window content frame 365ms
+     × uses a changed interval only for the active socket's next newly opened window 361ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected [ { type: 'SEGMENT_CONTENT', …(1) } ] to have a length of +0 but got 1
+AssertionError: expected [ { type: 'SEGMENT_CONTENT', …(1) } ] to have a length of +0 but got 1
+ Test Files  1 failed | 1 passed (2)
+      Tests  2 failed | 19 passed (21)
+exit=1
+
+# Changed files of this branch touching streaming/status paths (git diff --name-only 55bff1f5ee..722b9b3918 | grep -i "stream|websocket|status"):
+(none)

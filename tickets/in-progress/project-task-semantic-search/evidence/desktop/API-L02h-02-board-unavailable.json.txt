@@ -1,0 +1,43 @@
+# API-L02h: output of the step named in the execution report Cases row for API-L02h; commit 722b9b3918; ENV-2 (packaged macOS arm64 desktop, isolated instance); 2026-10-18
+{
+ "elapsedMs": 2124,
+ "statusesSeen": [
+  null,
+  "Preparing meaning search: downloading the model (0 of 55 MB)…",
+  "Meaning search is unavailable: EACCES: permission denied, mkdir '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6x1LUC/server-data/embeddings/models/granite-embedding-small-english-r2'. Exact matches still work.Try again"
+ ],
+ "state": {
+  "query": "docker",
+  "placeholder": "Describe the task you're looking for",
+  "status": "Meaning search is unavailable: EACCES: permission denied, mkdir '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6x1LUC/server-data/embeddings/models/granite-embedding-small-english-r2'. Exact matches still work.Try again",
+  "retry": true,
+  "noMatch": false,
+  "cancelledToggle": "Cancelled (1)",
+  "lanes": {
+   "TODO": {
+    "count": 1,
+    "tasks": [
+     {
+      "taskId": "project_task_48fa0c16-5384-436a-a3cc-f2d83a486c9a",
+      "title": "Docker logs fill the disk on long-running nodes",
+      "located": false
+     }
+    ]
+   },
+   "IN_PROGRESS": {
+    "count": 0,
+    "tasks": []
+   },
+   "DONE": {
+    "count": 1,
+    "tasks": [
+     {
+      "taskId": "project_task_82f93e88-d7a0-4d88-be1f-32d50ac3e679",
+      "title": "Docker image fails to start on ARM servers",
+      "located": false
+     }
+    ]
+   }
+  }
+ }
+}
