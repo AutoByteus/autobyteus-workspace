@@ -1,0 +1,3 @@
+# API-L02f: output of the step named in the execution report Cases row for API-L02f; commit 722b9b3918; ENV-2 (packaged macOS arm64 desktop, isolated instance); 2026-10-18
+{"t":0.209,"ms":207,"state":"PREPARING","phase":"INDEXING","done":0,"total":1000,"reason":null,"matches":1,"kinds":"E"}
+{"t":10.682,"ms":100,"state":"PREPARING","phase":"INDEXING","done":24,"total":1000,"reason":null,"matches":7,"kinds":"EMMMMMM"}

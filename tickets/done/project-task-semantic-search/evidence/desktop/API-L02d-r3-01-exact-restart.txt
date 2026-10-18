@@ -1,0 +1,70 @@
+# API-L02d (round 3): board + GraphQL for "restart" on Representative 60; commit 600d079b9c; ENV-2c; Sun Oct 18 21:21:33 CEST 2026
+{"ms":29,"matches":[{"taskId":"project_task_4a72d64e-6ce6-4548-9121-b0c9a3edabe8","match":"EXACT"},{"taskId":"project_task_4303875e-6deb-4cf9-8a21-0f67acc84ba4","match":"EXACT"},{"taskId":"project_task_b6a65a60-3ed9-4e3a-b853-050a60922eef","match":"EXACT"},{"taskId":"project_task_a0c39691-a9fe-49c5-97bb-47c53e513327","match":"EXACT"},{"taskId":"project_task_780dffa1-8db0-42ee-9408-be3cfb760d91","match":"MEANING"},{"taskId":"project_task_98b7fd93-4a5a-427d-97eb-7c4086269f89","match":"MEANING"},{"taskId":"project_task_7a512ba8-b08b-4d8b-83d5-1eb5c8831ae3","match":"MEANING"},{"taskId":"project_task_8b5ab7d3-8303-4921-8f78-a25fecca3d16","match":"MEANING"},{"taskId":"project_task_e2410ad9-553d-4537-a492-433d14c572fa","match":"MEANING"}],"meaningSearch":{"state":"READY","phase":null,"done":null,"total":null,"reason":null}}
+{
+ "query": "restart",
+ "placeholder": "Describe the task you're looking for",
+ "status": null,
+ "retry": false,
+ "noMatch": false,
+ "cancelledToggle": null,
+ "lanes": {
+  "TODO": {
+   "count": 9,
+   "tasks": [
+    {
+     "taskId": "project_task_4a72d64e-6ce6-4548-9121-b0c9a3edabe8",
+     "title": "Sidebar collapse state is lost after restart",
+     "located": false
+    },
+    {
+     "taskId": "project_task_4303875e-6deb-4cf9-8a21-0f67acc84ba4",
+     "title": "Let users choose where app data is stored",
+     "located": false
+    },
+    {
+     "taskId": "project_task_b6a65a60-3ed9-4e3a-b853-050a60922eef",
+     "title": "Pin important conversations in history",
+     "located": false
+    },
+    {
+     "taskId": "project_task_a0c39691-a9fe-49c5-97bb-47c53e513327",
+     "title": "Let users rename a team run from the history list",
+     "located": false
+    },
+    {
+     "taskId": "project_task_780dffa1-8db0-42ee-9408-be3cfb760d91",
+     "title": "Agents keep retrying a failing tool forever",
+     "located": false
+    },
+    {
+     "taskId": "project_task_98b7fd93-4a5a-427d-97eb-7c4086269f89",
+     "title": "Agent run stops streaming when the laptop wakes from sleep",
+     "located": false
+    },
+    {
+     "taskId": "project_task_7a512ba8-b08b-4d8b-83d5-1eb5c8831ae3",
+     "title": "Backup and restore of all app data",
+     "located": false
+    },
+    {
+     "taskId": "project_task_8b5ab7d3-8303-4921-8f78-a25fecca3d16",
+     "title": "Schedule an agent to run every morning",
+     "located": false
+    },
+    {
+     "taskId": "project_task_e2410ad9-553d-4537-a492-433d14c572fa",
+     "title": "Node connection drops after changing networks",
+     "located": false
+    }
+   ]
+  },
+  "IN_PROGRESS": {
+   "count": 0,
+   "tasks": []
+  },
+  "DONE": {
+   "count": 0,
+   "tasks": []
+  }
+ }
+}

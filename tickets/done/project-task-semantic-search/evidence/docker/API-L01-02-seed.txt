@@ -1,0 +1,2 @@
+# API-L01: output of the step named in the execution report Cases row for API-L01; commit 722b9b3918; ENV-3 (Docker linux/arm64, image ab-pts-validation:722b9b3918); 2026-10-18
+{"projectId":"project_357b758a-426d-4428-bd41-33b1659a7300","created":60,"seconds":2.091}

@@ -1,0 +1,2 @@
+# API-L03c/QR-004: footprint during user-paced searching (one board search per second for 60 s, 1,000 Tasks, READY) in the restarted process; baseline before any search 186 MB
+footprint before: 516 MB; during 63 s: max 516 MB (+330 MB over baseline), median 326 MB (+140 MB)

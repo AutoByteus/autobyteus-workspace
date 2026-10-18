@@ -49,6 +49,7 @@ type Dependencies = {
   changes?: ProjectChangeMarks;
   /** A Task root's live status from its hosting root (composition-bound); absent means `offline`. */
   workerStatus?: TaskWorkerStatusResolver;
+  /** Search index cleanup after a committed delete (composition-bound; never throws or waits); absent means no index. */ searchCleanup?: import("../search/project-task-search-service.js").ProjectTaskSearchCleanup;
 };
 const normalizeDescription = (description: unknown): string => {
   if (typeof description !== "string" || !description.trim()) throw new ProjectError("TASK_DESCRIPTION_REQUIRED", "Task description is required.");
@@ -199,6 +200,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
   async deleteTask(command: DeleteProjectTaskCommand): Promise<boolean> {
     if (!(await this.store.deleteTask(command.projectId, command.taskId))) return false;
     this.changes.taskRemoved({ projectId: command.projectId, taskId: command.taskId });
+    this.deps.searchCleanup?.forgetTask(command.projectId, command.taskId);
     this.revertUnfinishedAdoptionsOfDeleted({ projectId: command.projectId, taskId: command.taskId });
     await this.dependencies.removeDeleted(command.projectId, command.taskId);
     return true;
@@ -487,7 +489,7 @@ let singleton: ProjectTaskService | null = null;
 /** The process instance; an uninitialized process (tests, tool-only contexts) gets an unbound instance. */
 export const getProjectTaskService = (): ProjectTaskService => singleton ??= new ProjectTaskService();
 /** Called once by the process composition before any getProjectTaskService(); fails fast otherwise. */
-export const initializeProjectTaskServiceProcessInstance = (deps: Pick<Dependencies, "taskExecutionResources" | "adHocTasks" | "requestRelease" | "revertUnfinishedAdoption" | "workerStatus">): ProjectTaskService => {
+export const initializeProjectTaskServiceProcessInstance = (deps: Pick<Dependencies, "taskExecutionResources" | "adHocTasks" | "requestRelease" | "revertUnfinishedAdoption" | "workerStatus" | "searchCleanup">): ProjectTaskService => {
   if (singleton) throw new Error("The process ProjectTaskService is already initialized.");
   return singleton = new ProjectTaskService(deps);
 };

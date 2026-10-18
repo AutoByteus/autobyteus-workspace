@@ -1,0 +1,5 @@
+# API-L02f AC-009/REQ-008: after `isolated-app restart`, one Task (d007) is edited through GraphQL before any search, then the first search runs; commit 722b9b3918; iso-65187-14ae; Sun Oct 18 12:45:29 CEST 2026
+{"data":{"updateProjectTask":{"taskKey":"backlog-1000-7"}}}
+{"t":0.106,"ms":105,"state":"PREPARING","phase":"DOWNLOADING","done":0,"total":23888539,"reason":null,"matches":0,"kinds":""}
+{"t":1.192,"ms":85,"state":"READY","phase":null,"done":null,"total":null,"reason":null,"matches":1,"kinds":"M"}
+{"final":true,"t":1.192,"ms":85,"matches":[{"taskId":"project_task_352382c4-743d-4e63-aa41-cb90fadc9945","match":"MEANING"}],"meaningSearch":{"state":"READY","phase":null,"done":null,"total":null,"reason":null}}

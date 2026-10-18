@@ -1,0 +1,24 @@
+# API-L01 (round 3): docker run -d --name pts-api-docker3 -p 127.0.0.1:65082:8000 ab-pts-validation:600d079b9c (no volumes); /etc/hosts blocks huggingface.co before the first search, then restored + retryEmbeddingModel; quality on the 60 fixture Tasks; docker restart; commit 600d079b9c; ENV-3b; Sun Oct 18 21:16:24 CEST 2026
+mounts=0 ports={"8000/tcp":[{"HostIp":"127.0.0.1","HostPort":"65082"}]}
+v22.23.3
+0
+{"projectId":"project_8186030d-0bde-4e23-ba3f-6fd16c0ad3ca","created":60,"seconds":2.202}
+== offline first use
+{"t":1.155,"ms":17,"state":"UNAVAILABLE","phase":null,"done":null,"total":null,"reason":"Could not reach huggingface.co to download the model: fetch failed","matches":1,"kinds":"E"}
+{"final":true,"t":1.155,"ms":17,"matches":[{"taskId":"project_task_c74079f3-41df-436c-937a-a31a9fb1a9c0","match":"EXACT"}],"meaningSearch":{"state":"UNAVAILABLE","phase":null,"done":null,"total":null,"reason":"Could not reach huggingface.co to download the model: fetch failed"}}
+== restore network, retry
+{"data":{"retryEmbeddingModel":true}}
+{"t":0.047,"ms":47,"state":"PREPARING","phase":"DOWNLOADING","done":0,"total":54633923,"reason":null,"matches":0,"kinds":""}
+{"t":6.24,"ms":15,"state":"PREPARING","phase":"LOADING","done":0,"total":0,"reason":null,"matches":0,"kinds":""}
+{"t":7.29,"ms":48,"state":"PREPARING","phase":"INDEXING","done":0,"total":60,"reason":null,"matches":0,"kinds":""}
+{"t":10.545,"ms":85,"state":"PREPARING","phase":"INDEXING","done":16,"total":60,"reason":null,"matches":0,"kinds":""}
+{"t":18.847,"ms":56,"state":"READY","phase":null,"done":null,"total":null,"reason":null,"matches":1,"kinds":"M"}
+{"final":true,"t":18.847,"ms":56,"matches":[{"taskId":"project_task_525c96d9-1eef-4ed7-b066-eb0d2f164dc4","match":"MEANING"}],"meaningSearch":{"state":"READY","phase":null,"done":null,"total":null,"reason":null}}
+== quality (60)
+{"paraphrases":63,"targetShownInFirst5":61,"targetShownInFirst5Pct":96.8,"targetShownAtAll":61,"targetShownPct":96.8,"matchCount":{"p50":1,"p90":2,"max":5},"fixtureUnrelatedNoMatch":23,"fixtureUnrelated":24,"extendedUnrelatedNoMatch":34,"extendedUnrelated":36}
+== restart
+{"t":0.075,"ms":73,"state":"PREPARING","phase":"LOADING","done":0,"total":0,"reason":null,"matches":1,"kinds":"E"}
+{"t":2.198,"ms":96,"state":"READY","phase":null,"done":null,"total":null,"reason":null,"matches":1,"kinds":"E"}
+{"final":true,"t":2.198,"ms":96,"matches":[{"taskId":"project_task_c74079f3-41df-436c-937a-a31a9fb1a9c0","match":"EXACT"}],"meaningSearch":{"state":"READY","phase":null,"done":null,"total":null,"reason":null}}
+granite-embedding-small-english-r2
+136M	/app/node_modules/.pnpm/onnxruntime-web@1.30.0/node_modules/onnxruntime-web/dist

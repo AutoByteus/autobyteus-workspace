@@ -1,0 +1,2 @@
+# API-L03c: GraphQL search latency at 1,000 Tasks, fresh process after restart (no indexing in this process), 3 rounds x 78 queries; commit 722b9b3918; iso-65187-14ae; Sun Oct 18 12:45:40 CEST 2026
+{"projectId":"project_060dbe1f-4610-4194-8721-7ec516c25faa","searches":234,"ms":{"p50":67,"p90":89,"p99":305,"max":362}}

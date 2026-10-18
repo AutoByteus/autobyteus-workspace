@@ -1,0 +1,8 @@
+# API-L03d (round 2): footprint during 12 idle minutes (no searches or edits) after the last search at the idle start; baseline after start 185 MB; commit 9f0df7eab3; ENV-2 iso-60493-231f; Sun Oct 18 20:16:06 CEST 2026
+idle + 0 min: footprint 453 MB (+268 MB vs 185 MB baseline)
+idle + 2 min: footprint 405 MB (+220 MB vs 185 MB baseline)
+idle + 5 min: footprint 404 MB (+219 MB vs 185 MB baseline)
+idle + 9 min: footprint 405 MB (+220 MB vs 185 MB baseline)
+idle +10 min: footprint 158 MB (-27 MB vs 185 MB baseline)
+idle +11 min: footprint 137 MB (-48 MB vs 185 MB baseline)
+idle +12 min: footprint 137 MB (-48 MB vs 185 MB baseline)

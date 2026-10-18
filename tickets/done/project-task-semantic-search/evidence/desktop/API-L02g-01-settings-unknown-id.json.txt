@@ -1,0 +1,7 @@
+# API-L02g: output of the step named in the execution report Cases row for API-L02g; commit 722b9b3918; ENV-2 (packaged macOS arm64 desktop, isolated instance); 2026-10-18
+{
+ "mode": "add-row",
+ "toast": null,
+ "row": null,
+ "value": null
+}

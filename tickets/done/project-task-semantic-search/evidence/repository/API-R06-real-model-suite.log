@@ -1,0 +1,8 @@
+# API-R06: output of the step named in the execution report Cases row for API-R06; commit 722b9b3918; ENV-1 (macOS arm64 host, Node 22.23.1); 2026-10-18
+ [32m✓[39m tests/integration/embeddings/embedding-model-quality.integration.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 159782[2mms[22m[39m
+     [33m[2m✓[22m[39m mdbr-leaf-ir meets QR-007, AC-001 and AC-004 [33m 6134[2mms[22m[39m
+     [33m[2m✓[22m[39m granite-embedding-small-english-r2 meets QR-007, AC-001 and AC-004 [33m 24678[2mms[22m[39m
+     [33m[2m✓[22m[39m embeddinggemma-2 meets QR-007, AC-001 and AC-004 [33m 128967[2mms[22m[39m
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m3 passed[39m[22m[90m (3)[39m
+exit=0

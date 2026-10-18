@@ -1,0 +1,19 @@
+# API-R07: output of the step named in the execution report Cases row for API-R07; commit 722b9b3918; ENV-1 (macOS arm64 host, Node 22.23.1); 2026-10-18
+== guard:web-boundary
+> autobyteus@1.5.6-beta.1 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+exit=0
+== guard:localization-boundary
+> autobyteus@1.5.6-beta.1 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+exit=0
+== audit:localization-literals
+(node:67289) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+exit=0

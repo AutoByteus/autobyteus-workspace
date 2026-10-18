@@ -1,0 +1,10 @@
+# API-L01: output of the step named in the execution report Cases row for API-L01; commit 722b9b3918; ENV-3 (Docker linux/arm64, image ab-pts-validation:722b9b3918); 2026-10-18
+379072 ./embeddings.sqlite-wal
+32768 ./embeddings.sqlite-shm
+4096 ./embeddings.sqlite
+1529 ./models/mdbr-leaf-ir/tokenizer_config.json
+220597 ./models/mdbr-leaf-ir/onnx/model_quantized.onnx
+22954752 ./models/mdbr-leaf-ir/onnx/model_quantized.onnx_data
+711661 ./models/mdbr-leaf-ir/tokenizer.json
+  PID   RSS COMMAND
+   42 611520 node dist/app.js --host 0.0.0.0 --port 8000 --data-dir /home/autobyteus/data

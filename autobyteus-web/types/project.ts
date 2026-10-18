@@ -94,6 +94,21 @@ export interface TaskWorkerTask {
 /** Where a Task lives in the change feed. */
 export type TaskScope = { kind: 'project'; projectId: string } | { kind: 'no_project' }
 
+/** A Project Task search match: an exact text match, or related by meaning. */
+export interface ProjectTaskSearchMatch { taskId: string; match: 'EXACT' | 'MEANING' }
+/**
+ * Readiness of meaning search for a Project. While preparing, `done`/`total` count bytes when downloading the model
+ * and Tasks when indexing; `reason` says why it is unavailable.
+ */
+export interface MeaningSearchStatus {
+  state: 'READY' | 'PREPARING' | 'UNAVAILABLE'
+  phase: 'DOWNLOADING' | 'LOADING' | 'INDEXING' | null
+  done: number | null
+  total: number | null
+  reason: string | null
+}
+export interface ProjectTaskSearchResult { matches: ProjectTaskSearchMatch[]; meaningSearch: MeaningSearchStatus }
+
 /** One `/ws/projects` change-feed message (mirrors the server contract). */
 export type ProjectChangeMessage =
   | { type: 'connected' }

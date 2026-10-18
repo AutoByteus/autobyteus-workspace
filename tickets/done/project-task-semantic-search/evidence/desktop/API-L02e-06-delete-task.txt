@@ -1,0 +1,9 @@
+# API-L02e: output of the step named in the execution report Cases row for API-L02e; commit 722b9b3918; ENV-2 (packaged macOS arm64 desktop, isolated instance); 2026-10-18
+before delete:
+{"ms":110,"matches":[{"taskId":"project_task_759f88a4-8d4c-402e-852f-37ed5c9cbbb8","match":"MEANING"},{"taskId":"project_task_bc70f6de-0fef-4d4f-93e5-c6ecb7c1eff8","match":"MEANING"}],"meaningSearch":
+[{"n":1}]
+{"data":{"deleteProjectTask":true}}
+after delete:
+[{"n":0}]
+{"ms":114,"matches":[{"taskId":"project_task_bc70f6de-0fef-4d4f-93e5-c6ecb7c1eff8","match":"MEANING"},{"taskId":"project_task_7aac3f70-33f4-4f96-8ef8-be6a4875bffe","match":"MEANING"}],"meaningSearch":
+{"ms":209,"matches":[],"meaningSearch":{"state":"READY","phase":null,"done":null,"total":null,"reason":null}}

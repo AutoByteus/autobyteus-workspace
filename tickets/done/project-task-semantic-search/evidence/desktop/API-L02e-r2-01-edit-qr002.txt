@@ -1,0 +1,4 @@
+# API-L02e (round 2): QR-002 with Granite on Backlog 1000: updateProjectTask t02 to a new topic, then poll searchProjectTasks for the new-topic paraphrase until t02 is a MEANING match; old-topic paraphrase checked after; commit 9f0df7eab3; ENV-2; Sun Oct 18 20:03:53 CEST 2026
+old topic before edit, t02 shown: true
+edit -> found by meaning (ms): 270 {"state":"READY","phase":null,"done":null,"total":null}
+old topic after edit, t02 shown: false

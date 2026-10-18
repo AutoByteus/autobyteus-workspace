@@ -1,0 +1,29 @@
+# API-L02c (round 3): right-panel board, real-text 1,000-Task Project, first search "docker"; Refresh while preparing; "Show Task in Projects" (taskLocator.locate) for a Task the search hides; commit 600d079b9c; ENV-2c; Sun Oct 18 21:15:47 CEST 2026
+{
+ "task": {
+  "id": "r001",
+  "taskId": "project_task_01ec6776-e929-421e-8ed5-9cd88bacfc48"
+ },
+ "beforeLocate": {
+  "t": 1792350950570,
+  "query": "docker",
+  "status": "Preparing meaning search… 0 of 1000 Tasks",
+  "rowPresent": false,
+  "located": false
+ },
+ "afterRefresh": {
+  "t": 1792350953072,
+  "query": "docker",
+  "status": "Preparing meaning search… 8 of 1000 Tasks",
+  "rowPresent": false,
+  "located": false
+ },
+ "locatedAfterMs": 115,
+ "atLocate": {
+  "t": 1792350953187,
+  "query": "",
+  "status": null,
+  "rowPresent": true,
+  "located": true
+ }
+}

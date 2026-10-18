@@ -1,0 +1,57 @@
+# API-L02e: output of the step named in the execution report Cases row for API-L02e; commit 722b9b3918; ENV-2 (packaged macOS arm64 desktop, isolated instance); 2026-10-18
+{
+ "elapsedMs": 203,
+ "statusesSeen": [
+  null,
+  "Preparing meaning search… 59 of 60 Tasks"
+ ],
+ "state": {
+  "query": "answer stops appearing after my computer was asleep",
+  "placeholder": "Describe the task you're looking for",
+  "status": "Preparing meaning search… 59 of 60 Tasks",
+  "retry": false,
+  "noMatch": false,
+  "cancelledToggle": "Cancelled (1)",
+  "lanes": {
+   "TODO": {
+    "count": 3,
+    "tasks": [
+     {
+      "taskId": "project_task_f172e33d-740c-4b36-b65c-aa56bd688014",
+      "title": "Notifications when a long run finishes",
+      "located": false
+     },
+     {
+      "taskId": "project_task_a4cd832f-5ae3-4915-8174-6308bc3fabeb",
+      "title": "Terminal loses its scrollback when switching tabs",
+      "located": false
+     },
+     {
+      "taskId": "project_task_23831c59-fd46-403a-b582-5a4fb761225f",
+      "title": "Sidebar collapse state is lost after restart",
+      "located": false
+     }
+    ]
+   },
+   "IN_PROGRESS": {
+    "count": 0,
+    "tasks": []
+   },
+   "DONE": {
+    "count": 2,
+    "tasks": [
+     {
+      "taskId": "project_task_3f89698a-962c-43dd-8c08-ddd1afeecad6",
+      "title": "Settings page freezes when a provider is unreachable",
+      "located": false
+     },
+     {
+      "taskId": "project_task_dcc87d6e-d4b3-46b3-aec5-5bedd4bdf309",
+      "title": "Node connection drops after changing networks",
+      "located": false
+     }
+    ]
+   }
+  }
+ }
+}

@@ -30,6 +30,11 @@ import {
   TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_SETTING_KEY,
 } from "../config/task-execution-idle-shutdown-setting.js";
 import { getModelCatalogService } from "../llm-management/services/model-catalog-service.js";
+import {
+  EMBEDDING_MODEL_SETTING_DESCRIPTION,
+  EMBEDDING_MODEL_SETTING_KEY,
+  normalizeEmbeddingModelSettingForPersistence,
+} from "../embeddings/catalog/embedding-model-setting.js";
 
 export {
   DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
@@ -165,6 +170,15 @@ export class ServerSettingsService {
       true,
       {
         normalizeForPersistence: normalizeTaskExecutionIdleShutdownGraceForPersistence,
+      },
+    );
+
+    this.registerPredefinedSetting(
+      EMBEDDING_MODEL_SETTING_KEY,
+      EMBEDDING_MODEL_SETTING_DESCRIPTION,
+      true,
+      {
+        normalizeForPersistence: normalizeEmbeddingModelSettingForPersistence,
       },
     );
 

@@ -1,0 +1,25 @@
+# API-L02a: output of the step named in the execution report Cases row for API-L02a; commit 722b9b3918; ENV-2 (packaged macOS arm64 desktop, isolated instance); 2026-10-18
+server stage: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+total 27920
+drwxr-xr-x@ 5 normy  staff       160 Oct 18 11:50 .
+drwxr-xr-x@ 8 normy  staff       256 Oct 18 11:50 ..
+-rw-r--r--@ 1 normy  staff     24381 Oct 18 11:50 ort-wasm-simd-threaded.mjs
+-rw-r--r--@ 1 normy  staff  14239897 Oct 18 11:50 ort-wasm-simd-threaded.wasm
+-rw-r--r--@ 1 normy  staff     27061 Oct 18 11:50 ort.node.min.mjs
+README.md
+dist
+docs
+lib
+package.json
+types.d.ts
+LICENSE
+README.md
+dist
+package.json
+types
+embedding-model-runner.d.ts
+embedding-model-runner.d.ts.map
+embedding-model-runner.js
+embedding-worker.d.ts
+embedding-worker.d.ts.map
+embedding-worker.js

@@ -1,0 +1,30 @@
+# API-L02a (round 2): pnpm --silent isolated-app start --build; commit 9f0df7eab3; ENV-2; Sun Oct 18 19:51:50 CEST 2026
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-60493-231f",
+    "pid": 86957,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:60494",
+    "graphqlUrl": "http://127.0.0.1:60494/graphql",
+    "controlEndpoint": "http://127.0.0.1:60493",
+    "controlPort": 60493,
+    "serverPort": 60494,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-fIJb3y",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-fIJb3y/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-60493-231f.log"
+  }
+}
+
+Removed 127 MB of onnxruntime-web browser builds
+Embedding runtime validation passed
+packaged dist onnxruntime-web:
+ort-wasm-simd-threaded.mjs
+ort-wasm-simd-threaded.wasm
+ort.node.min.mjs
+packaged default model:
+DEFAULT_EMBEDDING_MODEL_ID = GRANITE_SMALL_ENGLISH_R2.id

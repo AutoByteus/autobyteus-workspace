@@ -1,0 +1,23 @@
+# API-R05: output of the step named in the execution report Cases row for API-R05; commit 722b9b3918; ENV-1 (macOS arm64 host, Node 22.23.1); 2026-10-18
+ [32m✓[39m tests/e2e/projects/project-task-boundaries.e2e.test.ts [2m([22m[2m14 tests[22m[2m)[22m[33m 5901[2mms[22m[39m
+     [33m[2m✓[22m[39m API-FILES: multipart bytes, saved ownership, typed deltas and Done survive reader reconstruction [33m 538[2mms[22m[39m
+     [33m[2m✓[22m[39m E-005: selected HTTP and native Project create/patch save defaults and reject invalid input atomically [33m 548[2mms[22m[39m
+     [33m[2m✓[22m[39m E-006: path links retain descriptions; lists replace, blanks and [] clear only associations [33m 733[2mms[22m[39m
+     [33m[2m✓[22m[39m CTX-E2E-001: context_files create/patch over MCP and native are saved, readable through GraphQL/REST/list and outlive their sources (AC-001..004, 006, 009, 011) [33m 313[2mms[22m[39m
+     [33m[2m✓[22m[39m CTX-E2E-002: invalid context_files fail with a path-naming error and change nothing, including no DONE closure (AC-004, 005, 008) [33m 739[2mms[22m[39m
+     [33m[2m✓[22m[39m TKD-API-001: keys as Task IDs, depends_on by key / any case / long ID, rejected dependencies write nothing, blocked Tasks start, a deleted Project's keys stay unknown (AC-020, 022, 024, 025, 027) [33m 1852[2mms[22m[39m
+ [32m✓[39m tests/e2e/projects/projects-graphql.e2e.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 1369[2mms[22m[39m
+ [32m✓[39m tests/e2e/projects/projects-startup-migration.e2e.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 39877[2mms[22m[39m
+     [33m[2m✓[22m[39m Studio: moves rows, saved files and drafts, retains the original, skips invalid/residue/duplicate/conflict, then no-ops on restart [33m 6965[2mms[22m[39m
+     [33m[2m✓[22m[39m Studio: an unreadable source or a failed move keeps only Projects gated; a restart retries and completes without duplication [33m 8236[2mms[22m[39m
+     [33m[2m✓[22m[39m Standalone host: never locked out by a broken source, migrates once on a valid one, composes per start and releases on close [33m 6693[2mms[22m[39m
+     [33m[2m✓[22m[39m Studio: released per-folder Projects get Task keys at startup; an unkeyable Project is preserved and hidden without lockout until a restart finishes it [33m 9100[2mms[22m[39m
+     [33m[2m✓[22m[39m Studio: existing per-folder path supersets start/read without rewriting; ordinary Save alone removes extras [33m 3555[2mms[22m[39m
+     [33m[2m✓[22m[39m Standalone: existing per-folder path supersets start/read without rewriting; ordinary Save alone removes extras [33m 5327[2mms[22m[39m
+ [32m✓[39m tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 602[2mms[22m[39m
+ [32m✓[39m tests/e2e/projects/project-mutation-node-locality.e2e.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 8186[2mms[22m[39m
+   [33m[2m✓[22m[39m E-008: separate built nodes accept the same local path but cannot patch remote Project identities; restart preserves bytes [33m 8185[2mms[22m[39m
+ [32m✓[39m tests/e2e/projects/project-task-search.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 465[2mms[22m[39m
+[2m Test Files [22m [1m[32m6 passed[39m[22m[2m | [22m[33m14 skipped[39m[90m (20)[39m
+[2m      Tests [22m [1m[32m36 passed[39m[22m[2m | [22m[33m61 skipped[39m[90m (97)[39m
+exit=0

@@ -1,0 +1,847 @@
+# API-L01: output of the step named in the execution report Cases row for API-L01; commit 722b9b3918; ENV-3 (Docker linux/arm64, image ab-pts-validation:722b9b3918); 2026-10-18
+{
+ "projectId": "project_357b758a-426d-4428-bd41-33b1659a7300",
+ "set": "rep60",
+ "tasks": 60,
+ "summary": {
+  "paraphrases": 63,
+  "targetShownInFirst5": 61,
+  "targetShownInFirst5Pct": 96.8,
+  "targetShownAtAll": 61,
+  "targetShownPct": 96.8,
+  "matchCount": {
+   "p50": 1,
+   "p90": 2,
+   "max": 4
+  },
+  "fixtureUnrelatedNoMatch": 11,
+  "fixtureUnrelated": 12,
+  "extendedUnrelatedNoMatch": 22,
+  "extendedUnrelated": 24
+ },
+ "misses": [
+  {
+   "q": "my assistant config silently disappears and I don't know what is wrong with it",
+   "targets": [
+    "t48"
+   ],
+   "rank": null,
+   "matches": 4,
+   "top": [
+    "t12",
+    "t02",
+    "t30",
+    "t04"
+   ],
+   "kinds": "MMMM"
+  },
+  {
+   "q": "which crew member burned the most money",
+   "targets": [
+    "t54"
+   ],
+   "rank": null,
+   "matches": 0,
+   "top": [],
+   "kinds": ""
+  }
+ ],
+ "unrelatedWithMatches": [
+  {
+   "q": "weather in Berlin tomorrow",
+   "matches": 2,
+   "top": [
+    "t44",
+    "t43"
+   ],
+   "kinds": "MM"
+  },
+  {
+   "q": "translate good morning into Japanese",
+   "matches": 1,
+   "top": [
+    "t21"
+   ],
+   "kinds": "M"
+  }
+ ],
+ "rows": [
+  {
+   "q": "the navigation panel on the left forgets that I folded it when I reopen the program",
+   "targets": [
+    "t01"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t01"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "answer stops appearing after my computer was asleep",
+   "targets": [
+    "t02"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t02"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "how much did this chat cost me",
+   "targets": [
+    "t03",
+    "t54"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t03"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "console output history vanishes when I go to another tab",
+   "targets": [
+    "t04"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t04"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "snippets are hard to read with the night theme",
+   "targets": [
+    "t05"
+   ],
+   "rank": 1,
+   "matches": 2,
+   "top": [
+    "t05",
+    "t58"
+   ],
+   "kinds": "MM"
+  },
+  {
+   "q": "stop companies from selling a closed modified copy of our code",
+   "targets": [
+    "t06"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t06"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "documents written by the assistant do not show up in the folder tree",
+   "targets": [
+    "t07"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t07"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "the program opens very slowly on PCs",
+   "targets": [
+    "t08"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t08"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "give my group conversation a custom title",
+   "targets": [
+    "t09"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t09"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "container crashes on raspberry pi style processors",
+   "targets": [
+    "t10"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t10"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "hotkey to jump to the text box where I type",
+   "targets": [
+    "t11"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t11"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "leaked credentials when sharing my configuration file",
+   "targets": [
+    "t12"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t12"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "dictation produces gibberish when I speak in a different tongue",
+   "targets": [
+    "t13"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t13"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "clone an existing assistant to make a variant",
+   "targets": [
+    "t14"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t14"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "apple blocks the downloaded app because it was not signed properly",
+   "targets": [
+    "t15"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t15"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "wide grids make the whole chat scroll horizontally",
+   "targets": [
+    "t16"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t16"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "connect to tool servers that require logging in through the browser",
+   "targets": [
+    "t17"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t17"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "finding text across a huge codebase takes forever",
+   "targets": [
+    "t18"
+   ],
+   "rank": 1,
+   "matches": 2,
+   "top": [
+    "t18",
+    "t28"
+   ],
+   "kinds": "MM"
+  },
+  {
+   "q": "collaborating agents overwrite each other's edits",
+   "targets": [
+    "t19"
+   ],
+   "rank": 3,
+   "matches": 3,
+   "top": [
+    "t39",
+    "t14",
+    "t19"
+   ],
+   "kinds": "MMM"
+  },
+  {
+   "q": "app dies when I drop in a huge screenshot",
+   "targets": [
+    "t20"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t20"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "interface in castellano",
+   "targets": [
+    "t21"
+   ],
+   "rank": 2,
+   "matches": 4,
+   "top": [
+    "t23",
+    "t21",
+    "t60",
+    "t41"
+   ],
+   "kinds": "MMMM"
+  },
+  {
+   "q": "assistant loops calling the same broken command",
+   "targets": [
+    "t22"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t22"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "put apps in the left menu so people can find them",
+   "targets": [
+    "t23"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t23"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "migrate everything to my new laptop",
+   "targets": [
+    "t24",
+    "t51"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t24"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "group symbol turned into a lightning bolt",
+   "targets": [
+    "t25"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t25"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "which LLM is each member of the crew running",
+   "targets": [
+    "t26"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t26"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "company network gateway blocks access to the AI services",
+   "targets": [
+    "t27"
+   ],
+   "rank": 1,
+   "matches": 3,
+   "top": [
+    "t27",
+    "t47",
+    "t59"
+   ],
+   "kinds": "MMM"
+  },
+  {
+   "q": "very long chats are sluggish to load",
+   "targets": [
+    "t28"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t28"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "subagent should tell its boss how far along it is",
+   "targets": [
+    "t29"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t29"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "preferences screen hangs if a local model host is down",
+   "targets": [
+    "t30"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t30"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "start new sessions in my projects directory instead of home",
+   "targets": [
+    "t31"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t31"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "get a paper copy of open work items",
+   "targets": [
+    "t32"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t32"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "backend leaks RAM over a day",
+   "targets": [
+    "t33"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t33"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "let the assistant understand attached documents like reports in pdf form",
+   "targets": [
+    "t34"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t34"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "tell me plainly that my provider key is invalid",
+   "targets": [
+    "t35"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t35"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "guidelines for people who want to help build the project",
+   "targets": [
+    "t36"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t36"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "keep my favourite chats at the top",
+   "targets": [
+    "t37"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t37"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "updates should only fetch what changed instead of everything",
+   "targets": [
+    "t38"
+   ],
+   "rank": 2,
+   "matches": 2,
+   "top": [
+    "t55",
+    "t38"
+   ],
+   "kinds": "MM"
+  },
+  {
+   "q": "review the changes before the bot replaces my file",
+   "targets": [
+    "t39",
+    "t19"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t39"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "too many requests should back off and try again",
+   "targets": [
+    "t40"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t40"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "deleting a folder of work items should warn me how much disappears",
+   "targets": [
+    "t42"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t42"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "run my assistant automatically at 8 am each day",
+   "targets": [
+    "t43"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t43"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "timestamps look different on every screen",
+   "targets": [
+    "t44"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t44"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "the shipping role should read the repository's publishing rules",
+   "targets": [
+    "t45"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t45"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "the setup file is far too big to download",
+   "targets": [
+    "t46",
+    "t38"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t46"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "let the AI read a link I give it",
+   "targets": [
+    "t47"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t47"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "my assistant config silently disappears and I don't know what is wrong with it",
+   "targets": [
+    "t48"
+   ],
+   "rank": null,
+   "matches": 4,
+   "top": [
+    "t12",
+    "t02",
+    "t30",
+    "t04"
+   ],
+   "kinds": "MMMM"
+  },
+  {
+   "q": "one click to grab the snippet",
+   "targets": [
+    "t49"
+   ],
+   "rank": 1,
+   "matches": 2,
+   "top": [
+    "t49",
+    "t47"
+   ],
+   "kinds": "MM"
+  },
+  {
+   "q": "switching wifi makes the remote machine look offline",
+   "targets": [
+    "t50"
+   ],
+   "rank": 1,
+   "matches": 2,
+   "top": [
+    "t50",
+    "t60"
+   ],
+   "kinds": "MM"
+  },
+  {
+   "q": "put my data on the external drive",
+   "targets": [
+    "t51"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t51"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "save a chat as a text document to send to coworkers",
+   "targets": [
+    "t52"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t52"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "permission requests pop up in the other window when two are open side by side",
+   "targets": [
+    "t53"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t53"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "which crew member burned the most money",
+   "targets": [
+    "t54"
+   ],
+   "rank": null,
+   "matches": 0,
+   "top": [],
+   "kinds": ""
+  },
+  {
+   "q": "refresh installed abilities from their git origin",
+   "targets": [
+    "t55"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t55"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "ping me when the long job is done",
+   "targets": [
+    "t56"
+   ],
+   "rank": 1,
+   "matches": 2,
+   "top": [
+    "t56",
+    "t29"
+   ],
+   "kinds": "MM"
+  },
+  {
+   "q": "random port clashes break the pipeline tests",
+   "targets": [
+    "t57"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t57"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "explain what a project is about on its kanban",
+   "targets": [
+    "t58"
+   ],
+   "rank": 1,
+   "matches": 3,
+   "top": [
+    "t58",
+    "t32",
+    "t42"
+   ],
+   "kinds": "MMM"
+  },
+  {
+   "q": "sandbox the commands the AI runs to its own folder",
+   "targets": [
+    "t59"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t59"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "use on-device models without internet",
+   "targets": [
+    "t60"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t60"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "speaking into the microphone gives english words for my german",
+   "targets": [
+    "t13"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t13"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "the terminal forgets what was printed earlier",
+   "targets": [
+    "t04"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t04"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "make the publish pipeline refuse to ship an unsigned mac build",
+   "targets": [
+    "t15"
+   ],
+   "rank": 1,
+   "matches": 1,
+   "top": [
+    "t15"
+   ],
+   "kinds": "M"
+  },
+  {
+   "q": "budget breakdown of tokens for a single run",
+   "targets": [
+    "t03"
+   ],
+   "rank": 2,
+   "matches": 2,
+   "top": [
+    "t54",
+    "t03"
+   ],
+   "kinds": "MM"
+  }
+ ]
+}

@@ -1,0 +1,35 @@
+# API-L03c (round 3): board at 1,000 Tasks: one input event with a full paraphrase, ms until the target row shows (incl. 250 ms debounce); commit 600d079b9c; ENV-2c; Sun Oct 18 21:23:39 CEST 2026
+[
+ {
+  "q": "how much did this chat cost me",
+  "msAfterTypingStopped": 336
+ },
+ {
+  "q": "documents written by the assistant do not show up ",
+  "msAfterTypingStopped": 317
+ },
+ {
+  "q": "container crashes on raspberry pi style processors",
+  "msAfterTypingStopped": 306
+ },
+ {
+  "q": "leaked credentials when sharing my configuration f",
+  "msAfterTypingStopped": 331
+ },
+ {
+  "q": "finding text across a huge codebase takes forever",
+  "msAfterTypingStopped": 309
+ },
+ {
+  "q": "group symbol turned into a lightning bolt",
+  "msAfterTypingStopped": 310
+ },
+ {
+  "q": "too many requests should back off and try again",
+  "msAfterTypingStopped": 309
+ },
+ {
+  "q": "switching wifi makes the remote machine look offli",
+  "msAfterTypingStopped": 304
+ }
+]
