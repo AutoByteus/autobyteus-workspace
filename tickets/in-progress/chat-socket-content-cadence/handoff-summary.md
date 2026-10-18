@@ -1,69 +1,86 @@
 # Handoff Summary — autobyteus-139 `chat-socket-content-cadence`
 
-- Result classification: `Architecture Design Complete`
-- task_size: `Large`; architectural_risk: `High` (rationale in `design-spec.md` › Task Size And Architectural Risk)
-- Route: independent architecture review → `/software_engineering_team/architecture_reviewer`
-- Current SR: `SR-002` (ARCH-REV-001 round 1 corrections: AR-001, AR-002, AR-003)
-- Approval: requirements `Approved` by Solution Designer within the direction. The direction is DEC-004 of PB-001 ("every chat follows Live response streaming"), decided under the user's explicit delegation on 2026-10-18; the user is informed. No `Needs user` decisions.
-- Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`)
+- Result classification: `Delivery Completed` (see `release-deployment-report.md` › Final Status; delivery revision `DR-002`)
+- task_size: `Large`; architectural_risk: `High`; route: `Reviewed`.
+  - Architecture review: ARCH-REV-002 Pass.
+  - Source review: CRR-001 Pass (9.4/10); CRR-003 Pass on the IR-002 merge fix.
+  - API/E2E: API-REV-001 then API-REV-002 Pass, 95.9%.
+  - Test-code review: CRR-002/CRR-004 `Not Applicable` (API/E2E changed no durable test code).
+- Requirements: `Approved` by Solution Designer within the direction of PB-001 DEC-004 (user delegation, 2026-10-18).
+- Requested by: `/project_task_manager` (Task autobyteus-139)
+- The design-stage summary (validity probe, SR-001/SR-002 rationale, route record) is kept in `solution-revision-record.md`, `investigation-notes.md` and `design-spec.md`.
 
-## Workspace
+## What changed for users
 
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence`, branch `codex/chat-socket-content-cadence` (local; ticket files uncommitted)
-- Base: `origin/personal` @ `f3124db10fb0448e72c01be20920930670bac277` (includes PB-001)
-- Finalization target: `origin/personal`; release with the next beta when the user asks, then the user's check.
-- Install and prebuild done; `test:integration:prepare` not run.
+The **Live response streaming** setting now applies to every chat, not only standalone Agent chats.
+- Team chats, Org chats and the delegated agents of a standalone run update once per window (default 500 ms), as the standalone chat already did.
+- With several agents streaming at once, one update carries all of their text, each agent's text in order.
+- A changed setting applies from the next window.
+- Stop, errors, tool steps and segment ends still deliver the text written so far first.
 
-## Original request (summary)
+## Design and code
 
-Task autobyteus-139: verify on current `origin/personal` that the Live response streaming cadence applies only to standalone Agent chats, then fix it. Give every chat socket the same egress and cadence with unchanged ordering rules, add a cadence integration case per socket and update the stale streaming docs. Done when there is a real-app check (isolated instance with a test data package) with a Team, an Org and a delegated-agent chat, followed by a beta and the user's check.
+- Server (`43b685b906`): every chat socket gets the per-connection `AgentStreamWebSocketEgress`.
+  - The Team, Org and collaboration sockets use a sequenced mode (`sequenced-content-cadence-scheduler.ts`, the `*-sequenced-shape.ts` files, `root-execution-stream-egress.ts`).
+  - Content joins one pending batch per window; identical "running" statuses are absorbed into the batch's range.
+  - Only `CONNECTED`/`AGENT_COMMAND_ACK` may pass a pending batch. Every other message flushes it first.
+  - The Org and collaboration handlers no longer call `connection.send` directly.
+  - Root consumers (applications, the Team lifecycle observer, inspections) stay unthrottled.
+- Contracts (`be00680819`): `SEGMENT_CONTENT_BATCH` (Team) and the `agent_presentation_batch` root event (Org and collaboration) cover `[change_sequence, change_sequence_through]`. Contract `dist/` is tracked in this repository and was updated with its source.
+- Web (`3e3b437274`):
+  - `advanceSequencedStream` accepts a frame only at the next expected sequence and continues after its last.
+  - The Team view state, Org context and collaboration context apply each batch item as one `SEGMENT_CONTENT`.
+- Tests (`b8eed1387f`, `335f065cd1`): `chat-socket-content-cadence.integration.test.ts` (18 cases), plus scheduler/shape/handler units, contract tests and web specs.
+- Docs:
+  - Implementation (`e24ff6b333`): the server protocol doc and `agent_streaming.md`.
+  - Delivery: the web architecture doc and its copy in `settings.md`.
 
-## Validity result
+## Delivery integration
 
-**Valid on 3 of 4 sockets.** The temporary probe (`evidence/validity-probe.log`) pushed 30 deltas through the real egress and handlers with a 500 ms window:
+- Round 1 (DR-001): the merge of `origin/personal` conflicted with `fbc0f805bf` (run adoption) in `agentRunCollaborationStreamingService.ts` and its spec. Routed as a `Local Fix`. IR-002 resolved it (merge `b3666d458f` of `cf14704473`, test fix `335f065cd1`); CRR-003 Pass; API/E2E round 2 Pass.
+- Round 2 (DR-002):
+  - Checkpoint `4231e492b7`.
+  - Merged `origin/personal` @ `8367f6cae3` (only another ticket's delivery records) as `1840d55268`, with no conflicts.
+  - Reruns on the integrated state (`evidence/DLV-*.log`): see `release-deployment-report.md` › Initial Delivery Integration Refresh.
 
-| Socket | Frames for 30 deltas | Within 350 ms |
-| --- | --- | --- |
-| standalone `/ws/agent` | 1 | 0 |
-| Team `/ws/agent-team` | 30 | 30 |
-| Org `/ws/agent-org` | 30 (sequences 1..30) | 30 |
-| collaboration `/ws/agent-collaboration` | 30 | 30 |
+## Verification (from evidence)
 
-## Key findings that shape the design
+Sufficient; no user check is needed to finalize. Each critical AC was followed to its cases and files (table in `release-deployment-report.md` › Verification). Highlights:
+- Every live and renderer socket shows `"gaps": []` and no plain `SEGMENT_CONTENT` on the sequenced sockets.
+- The final text equals the persisted projections on Team, Org, delegated agents and adoption.
+- Team window gaps are 504–668 ms, median 535–537, 0 under 350 ms.
+- In the Org run, the interval change takes effect at 1004–1081 ms, and Stop flushes the tail at the same ms as the inactive lifecycle, with 0 frames after.
+- In both desktop runs: 0 gap/reopen console lines, and long tasks only at load.
+- The tests detect the defect on base (15 of 18 fail).
 
-1. **Clients require gap-free `change_sequence`** on Team, Org and collaboration streams (web contexts reopen or reject on a gap). Plain coalescing would create gaps, and the `/ws/agent` rule "safe companions overtake pending content" would reorder sequences.
-2. **Applications, the Team lifecycle observer and inspections read the same root events**, so the cadence cannot sit before `RootEventPublisher` (that would delay application output).
-3. **The canonical pipeline emits a "running" status before every delta**, and each status is its own sequenced root event (read from code; UNK-001 asks for live confirmation). So sequenced streams send about 2 frames per delta.
+## Release decision
 
-## Design (DEC-001, DEC-002)
+`No release` in this delivery. DEC-003: "Merge, then ship with the next beta when the user asks; the user's check follows." `RELEASE.md` default.
+- When the user asks for the beta, its notes should mention RSK-003: a newer remote node paired with an older desktop client fails, because the older client rejects batch frames under its strict DTOs. Desktop and embedded server ship together.
+- Betas use GitHub generated notes, so RSK-003 has to be added to the release text by hand or stated in the user handoff.
+- The user's check of the beta follows the release (DEC-003).
 
-The same per-connection `AgentStreamWebSocketEgress` on every chat socket, with a sequenced mode for Team, Org and collaboration:
-- a coalesced content frame carries `change_sequence` (first) plus `change_sequence_through` (last);
-- identical repeated status companions inside a pending group are absorbed into that range;
-- no sequenced frame overtakes pending content.
+## Residual risks (non-blocking)
 
-Clients accept `first === next` and advance to `through + 1`. Root sequencing, the snapshot barrier and inspection bases are unchanged. Rejected alternatives are recorded in `design-spec.md` (cadence before the publisher; a second presentation sequence space).
+- Only the native AutoByteus runtime ran live; Codex/Claude/AGY did not. The egress sits after the root publisher for every runtime.
+- The D-1 Team root rebind snapshot path is covered by unit tests only.
+- Smoothness was measured (long tasks, frames per second) rather than judged by eye; the user's beta check covers the impression.
 
-## Open risks
+## Follow-ups (outside this ticket)
 
-- UNK-001: live status interleaving (API/E2E to measure).
-- RSK-003: remote-node version skew (strict DTOs already; mention in the beta's release notes).
+- FU-A: delete or rewrite the stale, excluded `agent-team-websocket.integration.test.js`.
+- FU-B: stale Team identity sections in both server streaming docs (they predate this ticket).
+- FU-C: the wall-clock wait in `run-file-change-service.test.ts` is flaky under load.
+- FU-API-1 (already forwarded to `/project_task_manager` by the Code Reviewer): a standalone run's host Stop waits for the in-flight LLM turn.
+- API/E2E observations (a)–(c) in the execution report: `Segment not found for end event` after a mid-turn reconnect; the Org socket connect race; `createAgentOrgRun` rejects `llmConfig`.
 
 ## Artifacts
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-socket-content-cadence/tickets/in-progress/chat-socket-content-cadence/requirements-doc.md`
-- `.../investigation-notes.md`
-- `.../design-spec.md`
-- `.../solution-revision-record.md`
-- `.../evidence/validity-probe.log`, `.../evidence/validity-probe.test.ts.txt`
-
-## Route record
-
-`get_handoff_rules` (2026-10-18): matched the rule "Architecture Design Complete with task_size=Large or architectural_risk=High" → `/software_engineering_team/architecture_reviewer`.
-
-## SR-002 (re-review round 2)
-
-- AR-001: one pending **batch** per window with ordered per-identity items, sent as one batch frame (`agent_presentation_batch` on the root envelope, `SEGMENT_CONTENT_BATCH` on Team) covering the contiguous range. Cross-identity regrouping happens only inside a window; nothing crosses a non-absorbed sequenced event. The interleaved example and AC-009 (an interleaved two-agent case per socket) are added. The range field on single `SEGMENT_CONTENT` is replaced by the batch frame.
-- AR-002: the dead `convertTeamEvent` and private `getTeamRun` are in the removal plan.
-- AR-003: the status baseline is the last status this connection forwarded or absorbed for the same agent run; no snapshot seeding; absorption only while a batch is pending.
-- Route: re-review → `/software_engineering_team/architecture_reviewer` (same rule; classification unchanged).
+Ticket folder: `tickets/done/chat-socket-content-cadence/` on `origin/personal`.
+- `requirements-doc.md`, `investigation-notes.md`, `design-spec.md`, `solution-revision-record.md`
+- `design-review-report.md`, `architecture-review-revision-record.md`
+- `implementation-handoff.md`, `implementation-revision-record.md`
+- `code-review-report.md`, `code-review-revision-record.md`, `api-e2e-test-review-report.md`
+- `api-e2e-coverage-investigation.md`, `api-e2e-test-progress.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`
+- `docs-sync-report.md`, `release-deployment-report.md`, `delivery-revision-record.md`
+- `evidence/`
