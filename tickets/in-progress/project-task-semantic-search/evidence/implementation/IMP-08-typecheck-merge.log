@@ -1,0 +1,11 @@
+# IMP-08-typecheck-merge
+# Command: pnpm -C autobyteus-server-ts typecheck (prepare:shared + tsc --noEmit)
+# Commit: 600d079b9c (merge of origin/personal 2b04a9971d)
+# Environment: macOS 26 (Darwin 25.5), Node 22.23.1
+# Date: 2026-10-18 (start/end UTC in the exit line)
+
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+> tsc -p tsconfig.build.json --noEmit
+exit=0 start=2026-10-18T18:39:14Z end=2026-10-18T18:39:27Z

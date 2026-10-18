@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-001 | Architecture reviewer pass, ARCH-REV-002 (`design-review-report.md`, round 2) | N/A | `Initial Baseline` | SR-004 (requirements), SR-006 (design), ARCH-REV-002 | Implemented; all three catalog entries verified on the production stack; local checks green; ready for code review |
 | IR-002 | Code reviewer, CRR-001 (`code-review-report.md`, round 1, Fail, Local Fix) | CR-001, CR-002 (+ optional C-03) | `Local Fix` | SR-006, ARCH-REV-002, CRR-001 | Locator works while meaning search prepares; dead export removed; back to code review |
 | IR-003 | Architecture reviewer pass ARCH-REV-003 on SR-007 (failure origin FO-001 from API-REV-001 F-001 / code review) | FO-001, O-1 | `Design Impact` (resolved upstream; implemented here) | SR-007, ARCH-REV-003, CRR-002, API-REV-001 | Granite is the default; LEAF-IR floor 0.30; O-1; reproducible 1,000-Task check passes for the default |
+| IR-004 | Delivery engineer, DR-001 (`release-deployment-report.md`, Blocked: Local Fix) | DR-001 latest-base integration | `Local Fix` | DR-001, SR-007, CRR-004, API-REV-002 | `origin/personal` @ `2b04a9971d` merged (merge `600d079b9c`); 5 conflicts resolved; checks green on the merge |
 
 ## Revision Entries
 
@@ -105,3 +106,34 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - R-11: QR-004 peak-memory margin;
   - RSK-002, RSK-005, RSK-008 unchanged;
   - EmbeddingGemma 2 is not measured at 1,000 Tasks.
+
+### IR-004 — Latest-base integration for delivery (DR-001)
+
+- Triggering role, report path, and round: `/software_engineering_team/delivery_engineer`, `release-deployment-report.md` and `delivery-revision-record.md` (DR-001, Blocked: Local Fix).
+- Triggering finding IDs: DR-001 (merge conflicts with `origin/personal` @ `2b04a9971d`: `create_or_update_project` removal; Task adoption reverts on delete).
+- Classification: `Local Fix`
+- Prior authoritative result: IR-003 (`9f0df7eab3`), code review Pass (CRR-004), API/E2E Pass (API-REV-002).
+- Current authoritative result: merge commit `600d079b9c`.
+- Related solution revision IDs: SR-007 (unchanged)
+- Related architecture-review revision IDs: ARCH-REV-003 (unchanged)
+- Related code-review revision IDs: CRR-004
+- Related API/E2E revision IDs: API-REV-002
+- Related delivery revision IDs: DR-001
+- Why this implementation revision is recorded: delivery needs the ticket branch on the latest base. The merge touched the search feature's tool contract and delete paths.
+- Approved behavior or requirement IDs affected: none changed. REQ-005/REQ-006 (tool set), REQ-007 (delete cleanup) were rechecked.
+- Implementation delta: see `implementation-handoff.md` § IR-004. In short:
+  - a seven-tool contract dispatching on `name`;
+  - the manifest's `tool` → `name` fix;
+  - native registration without `CreateOrUpdateProjectTool`;
+  - both delete follow-ups kept, with search cleanup first and never waiting;
+  - initializer dependencies for both;
+  - the MCP docs list;
+  - the base's tool-set test now counts seven.
+- Changed files or areas:
+  - `autobyteus-server-ts/src/agent-tools/project-tasks/{project-task-tool-contract,project-task-tool-manifest,project-task-native-tools}.ts`;
+  - `autobyteus-server-ts/src/projects/services/{project-service,project-task-service}.ts`;
+  - `autobyteus-server-ts/docs/modules/agent_tools_mcp_server.md`;
+  - `autobyteus-server-ts/tests/unit/agent-tools/project-tasks/project-task-tools.test.ts`.
+- Local validation and result: IMP-08…IMP-12 (typecheck; server unit 737 files; Projects E2E 6 files plus the two gated delete-path suites; web Projects 111 files), all Pass. One unreproduced intermittent failure in base compaction code is reported in the handoff.
+- Next recipient or routing: per `get_handoff_rules` (Large / High Local Fix → code review). After that, an API/E2E rerun on the merged state, as delivery noted.
+- Remaining limitations or risks: unchanged from IR-003. The intermittent `native-compaction-terminal-drain` failure is outside this ticket.

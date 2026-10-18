@@ -16,14 +16,14 @@ All paths are relative to the worktree `/Users/normy/autobyteus_org/autobyteus-w
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (IR-003: default model change after failure origin FO-001 / SR-007; earlier IR-002: CRR-001 local fix)
+- Implementation cycle: `Rework` (IR-004: latest-base integration for delivery DR-001; earlier IR-003: default model change after FO-001 / SR-007; IR-002: CRR-001 local fix)
 - Implementation revision record: `tickets/in-progress/project-task-semantic-search/implementation-revision-record.md`
-- Current implementation revision ID: `IR-003`
+- Current implementation revision ID: `IR-004`
 - Related solution revision IDs: SR-004, SR-006, SR-007
 - Related architecture-review revision IDs: ARCH-REV-002, ARCH-REV-003
 - Related code-review revision IDs: CRR-001, CRR-002 (Pass); FO-001 and C-08/O-1 in `code-review-report.md`
-- Related API/E2E revision IDs: API-REV-001 (Fail, F-001 / API-L04)
-- Related delivery revision IDs: N/A
+- Related API/E2E revision IDs: API-REV-001 (Fail, F-001 / API-L04), API-REV-002 (Pass)
+- Related delivery revision IDs: DR-001 (Blocked: Local Fix, latest-base integration)
 - Triggering finding IDs: FO-001 (API-REV-001 F-001; code review Design Impact), optional O-1 (IR-003); CR-001, CR-002, C-03 (IR-002)
 - Code: branch `codex/project-task-semantic-search`, commit recorded at the end of this file (base `origin/personal` @ `55bff1f5ee`).
 - Companion: `/Users/normy/autobyteus_org/autobyteus-agents-project-task-semantic-search`, branch `codex/project-task-semantic-search` @ `344da76` (from `origin/main` @ `887e79d`; a separate worktree because the main checkout holds someone else's uncommitted changes). Not pushed.
@@ -391,3 +391,44 @@ Evidence: `tickets/in-progress/project-task-semantic-search/evidence/implementat
   - QR-003/QR-004 cost measurements with Granite as the default (API-L03b/c/d), API-L04 and API-R06: these belong to API/E2E, which reruns them.
 
 - CRR-004: **Pass** (targeted delta review of IR-003; FO-001 resolved, O-1 applied). Report: `code-review-report.md`. The code reviewer hands off to `/software_engineering_team/api_e2e_engineer`.
+
+## IR-004 (DR-001: latest-base integration)
+
+Merge commit `600d079b9c` on `codex/project-task-semantic-search`: `origin/personal` @ `2b04a9971d` merged into the ticket branch, whose validated source was `9f0df7eab3`. Details are in `implementation-revision-record.md` § IR-004. Nothing is pushed.
+
+Conflict resolutions (5 files), plus one auto-merge fix:
+
+- **`project-task-tool-contract.ts`:** the base removed `create_or_update_project` and `effectiveProjectTaskToolName`. There are now seven tools: the base's six plus `search_project_tasks`. The parser dispatches on `name`, with the search parser added.
+- **`project-task-tool-manifest.ts`** (auto-merged, but did not compile): the search branch used the removed `tool` variable; it now uses `name`.
+- **`project-task-native-tools.ts`:** registers `SearchProjectTasksTool`; no `CreateOrUpdateProjectTool`.
+- **`project-service.ts`:** Project delete does `projectRemoved`, then the search `forgetProject` (synchronous, never waits), then awaits the base's adoption revert (`afterDelete` → `afterProjectDeleted`, best effort and logged). Both imports are kept.
+- **`project-task-service.ts`:**
+  - Task delete calls `forgetTask` and `revertUnfinishedAdoptionsOfDeleted`;
+  - the composition initializer accepts both `revertUnfinishedAdoption` and `searchCleanup`, and the auto-merged composition wires both;
+  - the file is at 492 effective lines (the base has 490).
+- **`docs/modules/agent_tools_mcp_server.md`:** the base's tool list plus `search_project_tasks`.
+- **Base test** `tests/unit/agent-tools/project-tasks/project-task-tools.test.ts`: counts seven tools and still proves `create_or_update_project` is unknown. `project-tool-runtime-parity.test.ts` needed no change: it asserts the removed name's absence and selected subsets, not a fixed count.
+
+The intended behavior is unchanged. The ticket's own delete cleanup still never throws or waits, and the base's adoption-revert order and failure semantics are kept. Classification: unchanged (Large / High).
+
+### Checks Run (IR-004)
+
+Evidence: `evidence/implementation/`.
+
+| Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| IMP-08 | `pnpm -C autobyteus-server-ts typecheck` | 600d079b9c | macOS 26, Node 22.23.1 | server `src` after the merge | — | Pass | `IMP-08-typecheck-merge.log` | `exit=0` |
+| IMP-09 | `pnpm -C autobyteus-server-ts test:unit` | 600d079b9c | same | all server unit tests, incl. Project/Task tools (seven-tool set), embeddings and search, adoption | REQ-005, REQ-006, REQ-007 | Pass | `IMP-09-server-unit-merge.log` (excerpt) | `Test Files  737 passed \| 4 skipped (741)` |
+| IMP-10 | `env -i … vitest run tests/e2e/projects` | 600d079b9c | same, clean env | Projects HTTP/GraphQL/MCP boundaries, both search E2E tests, startup migration | REQ-004, REQ-005, REQ-010 | Pass (6 files; 16 gated files skipped) | `IMP-10-e2e-projects-merge.log` | `Test Files  6 passed \| 16 skipped (22)`; `project-task-search.e2e.test.ts (2 tests)`; `project-task-boundaries.e2e.test.ts (13 tests)` |
+| IMP-11 | `pnpm -C autobyteus-web test:nuxt components/projects composables/projects stores --run` | 600d079b9c | same | board search, composable, locator, Projects stores (base web changes included) | REQ-001…REQ-004, AC-005 | Pass | `IMP-11-web-projects-merge.log` | `Test Files  111 passed (111)` |
+| IMP-12 | `env -i … RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=…/agy-failure-cli.mjs vitest run tests/e2e/projects/{hand-started-run-adoption,project-change-feed}.e2e.test.ts` | 600d079b9c | same, scripted AGY CLI | the merged delete paths: adoption revert on Task/Project delete; delete change marks | REQ-007 (delete), base adoption behavior | Pass | `IMP-12-e2e-adoption-feed-merge.log` | `Tests  11 passed (11)` |
+
+- Not run, and why:
+  - The gated real-model quality check: the merge changed no embedding code, model or calibration, so IMP-03…IMP-05 still apply (`git diff 9f0df7eab3 600d079b9c -- autobyteus-server-ts/src/embeddings` is empty).
+  - The other 14 gated `tests/e2e/projects` suites: they exercise collaboration runtimes this ticket and the merge resolution do not touch.
+  - Packaging: unchanged.
+  - The full web suite: only the Projects-related web tests were rerun.
+- Intermittent failure observed and not reproduced:
+  - `tests/unit/agent-execution/native-compaction-terminal-drain.test.ts` (base compaction code; not touched by the ticket or the merge) failed once in a batch run (`tests/unit/agent-tools tests/unit/agent-execution tests/unit/projects tests/unit/embeddings`) after about 3.1 s. That run's log was not kept.
+  - It then passed 10 times: the same batch again, 3 times alone and 6 times under 6-core CPU load. It also passed in the full suite (IMP-09).
+  - Its cause is not known. The test includes a real 1 s + 2 s summarizer backoff and asserts exact compaction phases, so it is timing-sensitive. I am reporting it, not counting it as pass or fail for this ticket.

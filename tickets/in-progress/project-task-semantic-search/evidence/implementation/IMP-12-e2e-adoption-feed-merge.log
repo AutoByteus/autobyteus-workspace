@@ -1,0 +1,11 @@
+# IMP-12-e2e-adoption-feed-merge
+# Command: env -i PATH=$PATH HOME=<temp> TMPDIR=$TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/hand-started-run-adoption.e2e.test.ts tests/e2e/projects/project-change-feed.e2e.test.ts --no-watch
+# Commit: 600d079b9c (merge of origin/personal 2b04a9971d)
+# Environment: macOS 26 (Darwin 25.5), Node 22.23.1, clean environment, scripted AGY CLI (no provider calls)
+# Date: 2026-10-18 (start/end UTC in the exit line)
+
+ ✓ tests/e2e/projects/hand-started-run-adoption.e2e.test.ts (4 tests) 37404ms
+ ✓ tests/e2e/projects/project-change-feed.e2e.test.ts (7 tests) 20437ms
+ Test Files  2 passed (2)
+      Tests  11 passed (11)
+exit=0 start=2026-10-18T18:52:57Z end=2026-10-18T18:54:36Z
