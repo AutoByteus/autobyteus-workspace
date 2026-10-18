@@ -1,0 +1,35 @@
+{
+  "sun001": {
+    "next": {
+      "teamUser": "[Platform notice — skill updated]\n\nYour skill package `roots-probe` has been updated (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-ttZzzc/skills/roots-probe).\n\nChanged files:\n- SKILL.md (changed)\n\nRe-read the updated files before continuing work that relies on this skill.\n\nECHO_INPUT team user second",
+      "teamPlain": "ECHO_INPUT team plain second",
+      "org": "[Platform notice — skill updated]\n\nYour skill package `roots-probe` has been updated (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-ttZzzc/skills/roots-probe).\n\nChanged files:\n- SKILL.md (changed)\n\nRe-read the updated files before continuing work that relies on this skill.\n\nECHO_INPUT org second",
+      "copy": "[Platform notice — skill updated]\n\nYour skill package `roots-probe` has been updated (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-ttZzzc/skills/roots-probe).\n\nChanged files:\n- SKILL.md (changed)\n\nRe-read the updated files before continuing work that relies on this skill.\n\nYou received a message from the agent with sender address \"/sun_manager_d68a83\" and sender run id \"sun_manager_d68a83_5c473d8e228f474b9948bef29791a3b7\".\nmessage:\nECHO_INPUT copy second"
+    }
+  },
+  "sun002": {
+    "offlineAfterMs": 60066,
+    "echoed": "[Platform notice — skill updated]\n\nYour skill package `roots-probe` has been updated (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-ttZzzc/skills/roots-probe).\n\nChanged files:\n- SKILL.md (changed)\n\nRe-read the updated files before continuing work that relies on this skill.\n\nYou received a message from the agent with sender address \"/sun_manager_d68a83\" and sender run id \"sun_manager_d68a83_7ac75f9ff37c49dca1ebb980c6eed9b3\".\nmessage:\nECHO_INPUT after restore"
+  },
+  "sun003": {
+    "firstRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-ttZzzc/skill-sources/github/dbdf5f83-0b42-490e-b99d-982cd031ecce/generations/b3109f4f-d47f-4afd-a186-4d6f122d53d1/repository",
+    "secondRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-ttZzzc/skill-sources/github/dbdf5f83-0b42-490e-b99d-982cd031ecce/generations/15ae245f-1909-4da4-9c24-7cf7a9b9d003/repository",
+    "afterUpdate": "[Platform notice — skill updated]\n\nYour skill package `gh-probe` has been updated (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-ttZzzc/skill-sources/github/dbdf5f83-0b42-490e-b99d-982cd031ecce/generations/15ae245f-1909-4da4-9c24-7cf7a9b9d003/repository).\n\nChanged files:\n- SKILL.md (changed)\n\nRe-read the updated files before continuing work that relies on this skill.\n\nECHO_INPUT gh after update",
+    "afterEdit": "[Platform notice — skill updated]\n\nYour skill package `gh-probe` has been updated (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-ttZzzc/skill-sources/github/dbdf5f83-0b42-490e-b99d-982cd031ecce/generations/15ae245f-1909-4da4-9c24-7cf7a9b9d003/repository).\n\nChanged files:\n- SKILL.md (changed)\n\nRe-read the updated files before continuing work that relies on this skill.\n\nECHO_INPUT gh after local edit"
+  },
+  "githubRequests": [
+    "https://api.github.com/repos/apar-sun-e2e/skills",
+    "https://api.github.com/repos/apar-sun-e2e/skills/branches/main",
+    "https://codeload.github.com/apar-sun-e2e/skills/tar.gz/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "https://api.github.com/repos/apar-sun-e2e/skills",
+    "https://api.github.com/repos/apar-sun-e2e/skills/branches/main",
+    "https://api.github.com/repos/apar-sun-e2e/skills",
+    "https://api.github.com/repos/apar-sun-e2e/skills/branches/main",
+    "https://codeload.github.com/apar-sun-e2e/skills/tar.gz/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  ],
+  "cleanup": {
+    "dataRemoved": true,
+    "serverClosed": true,
+    "errors": []
+  }
+}

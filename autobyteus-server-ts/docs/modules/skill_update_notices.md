@@ -8,7 +8,7 @@ Every runtime already reads skill files from disk:
 - Native AutoByteus advertises absolute `SKILL.md` paths.
 - Codex, Claude and Grok symlink the skill folders into the run workspace.
 
-What goes stale is only the skill text an agent already read into its conversation. This subsystem sends each affected run **one platform notice** naming the changed skills and files, plus the current `SKILL.md` path, and asks the agent to re-read them.
+What goes stale is only the skill text an agent already read into its conversation. This subsystem sends each affected run **one platform notice** naming each changed skill package with its current folder and listing exactly the files that changed, and asks the agent to re-read them.
 
 Out of scope:
 - Skill catalog management (see [Skills](./skills.md)).
@@ -67,17 +67,26 @@ Each affected run gets one notice per settled burst. The text has this shape:
 
 ```
 [Platform notice — skill updated]
-The following skills you use changed on disk since you last read them:
-- code-review (/…/skills/code-review/SKILL.md): SKILL.md, references/checklist.md
-- deep-research: no longer available
 
-Re-read the updated SKILL.md (and any files it points to) before continuing work that relies on these skills.
+Your skill package `code-review` has been updated (/…/skills/code-review).
+
+Changed files:
+- SKILL.md (changed)
+- references/new-checklist.md (added)
+- scripts/old.sh (removed)
+
+Your skill package `deep-research` is no longer available.
+
+Re-read the updated files before continuing work that relies on this skill.
+Removed files are no longer available.
 Do not rely on a skill that is no longer available.
 ```
 
-- At most 10 files are listed per skill, followed by "and N more"; `SKILL.md` is listed first.
-- The re-read line appears only when a skill was updated.
-- The last line appears only when a skill was removed.
+- One block per skill, in skill-name order. An updated skill names its current folder once; its files are listed relative to that folder, one per line, each marked `(changed)`, `(added)` or `(removed)`.
+- `SKILL.md` appears only when it changed, and then first; the other files follow by path. At most 10 files are listed per skill, followed by "- …and N more files".
+- The re-read line appears only when a skill was updated ("this skill", or "these skills" when several were).
+- "Removed files are no longer available." appears only when a listed file was removed; the last line only when a skill was removed.
+- The header line is fixed: the web labels the card "Skill updated" by it (or by the sender).
 
 **Busy run** (status `running`):
 - The notice is posted now through `AgentRun.postUserMessage` as a SYSTEM input (`sender_id: "system.skill_update_notifier"`, `suppress_system_task_notification: true`). That is the call agent-to-agent messages use, so delivery follows each runtime's agent-message semantics:
