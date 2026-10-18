@@ -16,15 +16,32 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: `IR-001`
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: `1`
-- Review Scope: `Full Review`
-- Review Scope Evidence (round >1): N/A
-- Trigger: Implementation Engineer `Implementation Complete` (IR-001), Large/High
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: `1`
-- Code under review: branch `codex/chat-socket-content-cadence`, HEAD `e24ff6b333`, base `origin/personal` `f3124db10f` (5 commits `be00680819`..`e24ff6b333`)
+- Current Code Review Revision ID: `CRR-003`
+- Current Review Round: `2`
+- Review Scope: `Targeted Delta Review`
+- Review Scope Evidence (round >1):
+  - The delta since round 1 is the base merge `b3666d458f` (origin/personal `cf14704473`) and the test-only commit `335f065cd1`.
+  - `git diff --name-only dd91d72633 b3666d458f`, filtered to this ticket's areas, touches only the 2 conflicted files: `agentRunCollaborationStreamingService.ts` and its spec. The areas are server agent-streaming and websocket, the root publisher, the 3 contract packages, the web stream services and contexts, and the presentation adapter and status transformer.
+  - The resolved file changes the ROOT_EXECUTION_EVENT branch only. No shared interface or data shape changed, and the data-flow spine is unchanged.
+- Trigger: Implementation Engineer `Local Fix complete` (IR-002) for delivery DR-001 (integration merge conflict)
+- Delivery Revision Record Reviewed: `delivery-revision-record.md` (DR-001), `release-deployment-report.md` › Escalation / Reroute
+- Prior Review Round Reviewed: `1` (CRR-001 Pass; CRR-002 test review Not Applicable)
+- Latest Authoritative Round: `2`
+- Code under review: branch `codex/chat-socket-content-cadence`, code HEAD `335f065cd1` (ticket docs `002d28586b`), merged base `origin/personal` `cf14704473` (merge `b3666d458f`). Round 1 reviewed `e24ff6b333` on base `f3124db10f`
 - Failure-origin fields: N/A
+
+## Round 2 — Targeted Delta Review (DR-001 Integration Merge)
+
+| Delta | Evidence | Result |
+| --- | --- | --- |
+| `b3666d458f`, `agentRunCollaborationStreamingService.ts` ROOT_EXECUTION_EVENT branch | Both sides are kept: the base's `const event` local, its `task_executions_closed` check and its `onTaskExecutionStarted` callback, plus this ticket's third `applyEvent` argument `change_sequence_through` | Pass |
+| Batch can never be `task_execution_started` | Contract `agentPresentationBatchEventDtoSchema`: items allow only `SEGMENT_CONTENT`; the event `kind` is the literal `agent_presentation_batch`. Server: only `contentOf` (SEGMENT_CONTENT) joins a batch. `task_execution_started` is a non-content sequenced event, so rule 5 flushes the batch and forwards the event as its own frame | Confirmed; the callback needs no look inside batches |
+| `b3666d458f`, spec | Both new tests are kept: the content batch frame (autobyteus-139) and the started task execution (SR-009) | Pass |
+| `335f065cd1`, `TeamStreamingService.spec.ts` | Same text assertion through `toMatchObject({ segments: [{ content }] })`, avoiding `.segments` on the `AIMessage \| UserMessage` union (web tsc) | Pass; assertion strength unchanged |
+| Base overlap with ticket areas | Only the 2 conflicted files. The merge adds no `connection.send` to server source. Contract `src`/`dist`, the root publisher and the agent-streaming server are untouched by the base | Pass |
+| Checks recorded by implementation (IMP-01..13, evidence `evidence/IMP-*`) | Contracts 33/33 and 19/19; typecheck; cadence integration 18/18 ×3; server unit 5894; server integration 415; web touched specs 151; web full 4493; web tsc shows no new errors from this ticket (the remaining 3 lines come from an untracked `electron-dist` duplicate) | Accepted; not rerun (the code each check exercises has not changed since it ran) |
+
+Structural checks, scorecard and file-size audit are carried forward from round 1. The delta adds 2 lines to a 269-line file and changes no owner, boundary, interface or shape.
 
 ## Routing Classification Review
 
@@ -231,10 +248,11 @@ No new follow-ups from this review. The implementation engineer recorded FU-A (s
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.4/10 (every category ≥ 9.3)
+- Score Summary: 9.4/10 (every category ≥ 9.3; carried forward, the round-2 delta changes no category)
 - Failure Origin: N/A
-- Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
+- Recommended Recipient: `/software_engineering_team/api_e2e_engineer`, by handoff rule; delivery asked for the package back after the fix (DR-001), which the handoff records
 - Notes:
+  - Round 2 (CRR-003, Targeted Delta Review): Pass. The conflict resolution in the DR-001 merge is correct and mechanical; the test-only fix keeps assertion strength. Code HEAD `335f065cd1`.
   - The implementation follows SR-002 DS-002 rules 1-5 and the contract rows.
   - D-1 (snapshot clears baselines), D-2 (shared root-execution egress factory) and D-3 (filter guard) are accepted.
   - Reviewer reruns are green: server focused 54/54, streaming unit folder 166/166, typecheck, web changed specs 53/53.
