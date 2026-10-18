@@ -81,3 +81,10 @@
 - Notes: `beta-v1.5.6-beta.7-release-notes.md`, curated, covering all three; it states the beta.5 adoption feature was withdrawn (RM-004). Applied after all workflows finished; the tag, assets and pre-release flag are unchanged. Deviation: curated notes on a beta (as before).
 - Cleanup: the release worktree, the `withdraw-adoption` worktree, the local `finalize/` and `codex/` branches and the remote `codex/withdraw-adoption` are removed after this record is pushed.
 - Result: **Delivery Completed** for SR-018. Terminal return sent to `/software_engineering_team/solution_designer` after this record is pushed.
+
+### DR-006 — Receipt correction: the cancelled full-adoption worktree removed
+
+- Trigger: the Solution Designer's receipt check of DR-004/DR-005 named a cleanup gap. The cancelled, unmerged worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/link-existing-run-to-task-full-adoption` and its local branch `codex/link-existing-run-to-task-full-adoption` (at `7e215cdf49`) still existed.
+- Checked before removal: the branch had 0 commits not on `origin/personal`; there was no remote branch; the uncommitted changes were the cancelled full-adoption implementation (SR-010 … SR-017). Those revisions' history is in this folder's `solution-revision-record.md` (SR-010, SR-014, SR-017 and SR-018 are present).
+- Done: `git worktree remove --force` (discarding the cancelled uncommitted changes, as instructed), `git worktree prune`, `git branch -D`. Verified: the worktree is not listed, the folder does not exist, there is no local or remote branch.
+- Nothing else replayed. Result: Delivery Completed; corrected receipt sent to `/software_engineering_team/solution_designer`.
