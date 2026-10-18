@@ -1,18 +1,14 @@
 import { ParameterSchema, ParameterDefinition, ParameterType } from "autobyteus-ts/utils/parameter-schema.js";
 import { ProjectError } from "../../projects/domain/project-errors.js";
 import { PROJECT_TASK_STATUSES, validateTaskStatus } from "../../projects/domain/task-status.js";
-export const PROJECT_TASK_TOOL_NAMES = new Set(["list_projects", "list_project_tasks", "create_project", "update_project", "create_or_update_project", "create_task", "update_task"] as const);
-export type ProjectTaskToolName = "list_projects" | "list_project_tasks" | "create_project" | "update_project" | "create_or_update_project" | "create_task" | "update_task";
-/** What a call runs as: the deprecated `create_or_update_project` always runs as `create_project` or `update_project`. */
-export type EffectiveProjectTaskToolName = Exclude<ProjectTaskToolName, "create_or_update_project">;
+export const PROJECT_TASK_TOOL_NAMES = new Set(["list_projects", "list_project_tasks", "create_project", "update_project", "create_task", "update_task"] as const);
+export type ProjectTaskToolName = "list_projects" | "list_project_tasks" | "create_project" | "update_project" | "create_task" | "update_task";
 export const isProjectTaskToolName = (name: string): name is ProjectTaskToolName =>
   PROJECT_TASK_TOOL_NAMES.has(name as ProjectTaskToolName);
 const statuses: string[] = [...PROJECT_TASK_STATUSES];
 export const PROJECT_TASK_TOOL_DESCRIPTIONS: Record<ProjectTaskToolName, string> = {
   create_project: "Create a Project on the current node: required name, optional description and workspaces (absolute node-local folder paths; registration not required). Returns the saved Project (projectId, name, description, workspaces). Does not delegate work.",
   update_project: "Update a known Project by its project_id: name, description and/or workspaces. Omitted fields are kept; blank description clears. A supplied workspaces list replaces ALL links ([] unlinks all, folders are not deleted); retained links keep omitted descriptions. Returns the saved Project.",
-  // Deprecated: kept unchanged for the transition; removed in a later release (project-tool-split FU-2).
-  create_or_update_project: "Create a required-name Project or patch a known project_id on the current node. Omitted fields are preserved; blank description clears. Optional workspaces reference absolute node-local folder paths: a supplied list replaces ALL links, [] unlinks only. Retained links preserve omitted descriptions. Returns saved metadata and links; does not register/delete workspaces or delegate work.",
   list_projects: "List every Project on the current node with its stable projectId, name and description. Does not select or change a Project.",
   list_project_tasks: "List all Tasks in the explicit project_id, optionally filtered by exact TODO, IN_PROGRESS, DONE or CANCELLED status (CANCELLED = dropped as not needed). Each Task's taskId is its key (e.g. autobyteus-42): use it as the Task's ID in every tool. Returns descriptions, the Tasks each one depends on (dependsOn, by taskId), saved context-file references, each Task's open assignments (assignments) and its closed ones (closedAssignments, one per earlier assignment period, so you can find the task agent that did a DONE Task). Each assignment names the task agent: {kind: agent, agentRunId} for a task agent, or {kind: team, teamRunId, teamCoordinatorAgentRunId} for a task agent team; plus who assigned it (assignedBy) and whether the work was accepted (outcome); accepted work is not necessarily finished. Give a follow-up Task to a task agent with delegate_task and its target_agent_run_id (agentRunId) or target_team_run_id (teamRunId); talk with it using send_message_to and its run id (agentRunId, or teamCoordinatorAgentRunId for a task agent team). A Task whose assignments can't be read is marked assignments unavailable.",
   create_task: "Create a Project Task: supply project_id and a required description (omit status and task_id); the new Task is TODO and gets the Project's next key as its taskId (e.g. autobyteus-42). Optional context_files: absolute local file paths copied into the new Task as context files. Same file types and 25 MiB limit as the app. Any invalid file fails the whole call with no change. Optional depends_on: the taskIds of Tasks of the same Project that come first (or that this Task follows up); it only informs and never stops work. Returns the recorded Task identity (projectId, taskId, status, dependsOn) plus attachedContextFiles [{storedFilename, displayName}] when files were attached. Does not delegate work; to give the Task to an agent, use delegate_task.",
@@ -27,7 +23,7 @@ const dependsOnDefinition = (description: string) => new ParameterDefinition({
 const p = (name: string, description: string, required = false, enumValues?: string[]) => new ParameterDefinition({
   name, description, required, type: enumValues ? ParameterType.ENUM : ParameterType.STRING, ...(enumValues ? { enumValues } : {}),
 });
-/** The one `workspaces` definition of the three Project mutation tools; only the texts differ. */
+/** The one `workspaces` definition of both Project mutation tools; only the texts differ. */
 const workspacesDefinition = (description: string, linkDescription: string) => new ParameterDefinition({
   name: "workspaces", type: ParameterType.ARRAY, description,
   arrayItemSchema: new ParameterSchema([
@@ -48,13 +44,6 @@ export function buildProjectTaskToolSchema(name: ProjectTaskToolName): Parameter
     p("description", "Project description; omit to keep, blank to clear."),
     workspacesDefinition("Complete desired workspace links, not append. Omit to keep; [] unlinks all without deleting folders. Use absolute folder paths on this node; registration and existence are not required.",
       "Link description; omit to keep a retained link's description, blank to clear. New links default to blank."),
-  ]);
-  if (name === "create_or_update_project") return new ParameterSchema([
-    p("project_id", "Known Project identity for patch; omit to create. Never resolved by name."),
-    p("name", "Trimmed non-empty Project name; required for create, optional for patch."),
-    p("description", "Project description; omit to preserve on patch, blank to clear."),
-    workspacesDefinition("Complete desired workspace links, not append. Omit to preserve on patch; [] unlinks all without deleting folders. Use absolute folder paths on this node; registration and existence are not required.",
-      "Link description; omit to preserve a retained link, blank to clear. New links default to blank."),
   ]);
   if (name === "create_task") return new ParameterSchema([
     p("project_id", "Project identity on the current node.", true),
@@ -122,7 +111,7 @@ function addProjectFields(input: Record<string, unknown>, result: Record<string,
 }
 
 /** `create_project`: `{name, description?, workspaces?}`; `project_id` is rejected as unsupported. */
-export function parseCreateProjectInput(raw: unknown): Record<string, unknown> {
+function parseCreateProjectInput(raw: unknown): Record<string, unknown> {
   const input = projectInput(raw);
   rejectUnsupported(input, ["name", "description", "workspaces"]);
   const result: Record<string, unknown> = {};
@@ -132,7 +121,7 @@ export function parseCreateProjectInput(raw: unknown): Record<string, unknown> {
 }
 
 /** `update_project`: `{project_id, name?, description?, workspaces?}`. At least one change is required. */
-export function parseUpdateProjectInput(raw: unknown): Record<string, unknown> {
+function parseUpdateProjectInput(raw: unknown): Record<string, unknown> {
   const input = projectInput(raw);
   rejectUnsupported(input, ["project_id", "name", "description", "workspaces"]);
   const result: Record<string, unknown> = {project_id: id(input, "project_id")};
@@ -141,15 +130,6 @@ export function parseUpdateProjectInput(raw: unknown): Record<string, unknown> {
     throw new ProjectError("PROJECT_PATCH_REQUIRED", "Supply name, description and/or workspaces to update a Project.");
   }
   return result;
-}
-
-/**
- * The only place that decides what the deprecated `create_or_update_project` runs as:
- * `update_project` when `project_id` is present, otherwise `create_project`. Other names run as themselves.
- */
-export function effectiveProjectTaskToolName(name: ProjectTaskToolName, raw: unknown): EffectiveProjectTaskToolName {
-  if (name !== "create_or_update_project") return name;
-  return Object.hasOwn(projectInput(raw), "project_id") ? "update_project" : "create_project";
 }
 
 const plainInput = (raw: unknown): Record<string, unknown> => {
@@ -221,14 +201,13 @@ export function parseUpdateTaskInput(raw: unknown): Record<string, unknown> {
 
 /** Presence matters: no coercion or hidden keys. Project and Task mutation tools have one parser each. */
 export function parseProjectTaskToolInput(name: ProjectTaskToolName, raw: unknown): Record<string, unknown> {
-  const tool = effectiveProjectTaskToolName(name, raw);
-  if (tool === "create_project") return parseCreateProjectInput(raw);
-  if (tool === "update_project") return parseUpdateProjectInput(raw);
-  if (tool === "create_task") return parseCreateTaskInput(raw);
-  if (tool === "update_task") return parseUpdateTaskInput(raw);
+  if (name === "create_project") return parseCreateProjectInput(raw);
+  if (name === "update_project") return parseUpdateProjectInput(raw);
+  if (name === "create_task") return parseCreateTaskInput(raw);
+  if (name === "update_task") return parseUpdateTaskInput(raw);
   const input = plainInput(raw);
-  rejectUnsupported(input, tool === "list_projects" ? [] : ["project_id", "status"]);
-  if (tool === "list_projects") return {};
+  rejectUnsupported(input, name === "list_projects" ? [] : ["project_id", "status"]);
+  if (name === "list_projects") return {};
   const result: Record<string, unknown> = {project_id: id(input, "project_id")};
   if (Object.hasOwn(input, "status")) result.status = validateTaskStatus(input.status);
   return result;

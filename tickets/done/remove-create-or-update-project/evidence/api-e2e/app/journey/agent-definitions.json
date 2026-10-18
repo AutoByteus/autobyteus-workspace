@@ -1,0 +1,32 @@
+[
+  {
+    "id": "pts-new-tools",
+    "name": "PTS New Tools",
+    "toolNames": [
+      "list_projects",
+      "create_project",
+      "update_project"
+    ]
+  },
+  {
+    "id": "pts-old-alone",
+    "name": "PTS Old Alone",
+    "toolNames": [
+      "create_or_update_project"
+    ]
+  },
+  {
+    "id": "pts-old-listed",
+    "name": "PTS Old Listed",
+    "toolNames": [
+      "list_projects",
+      "create_or_update_project",
+      "create_project",
+      "update_project",
+      "list_project_tasks",
+      "create_task",
+      "update_task",
+      "read_file"
+    ]
+  }
+]
