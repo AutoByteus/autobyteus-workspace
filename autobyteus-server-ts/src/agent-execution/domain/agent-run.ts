@@ -91,7 +91,7 @@ export class AgentRun {
     this.compactionRecovery = new AgentRunCompactionRecovery({ runInstanceId: this.runInstanceId, backend: this.backend,
       highWaterMark: () => this.inputAdmissionState.highWaterMark,
       serialize: action => this.dispatchQueue.enqueue(this.runId, action),
-      changed: () => { this.reconcileRecovery(); this.publishInputState(); void this.drainInputAfterLifecycleChange(); },
+      changed: () => { this.reconcileAndPublishInputState(); void this.drainInputAfterLifecycleChange(); },
     });
     this.interruptState = new AgentRunInterruptState({
       runId: this.runId,
@@ -163,7 +163,7 @@ export class AgentRun {
     void this.dispatchQueue.enqueue(this.runId, () => {
       if (closed) return;
       this.reconcileRecovery();
-      const snapshot = this.inputStateEvent();
+      const snapshot = this.inputStateEvent(this.refreshInputState());
       this.broadcastUnpublishedInputState(snapshot);
       this.listeners.add(listener);
       try { listener(snapshot); } catch (error) { logger.warn(`[AgentRun] snapshot listener failed: ${String(error)}`); }
@@ -288,7 +288,7 @@ export class AgentRun {
       onCanonicalEventsDispatched: (canonicalEvents) => {
         observeAgentRunInputEvents(canonicalEvents, this.inputAdmissionState, this.interruptState);
         this.reconcileUncertainDispatch();
-        this.reconcileRecovery(); this.publishInputState();
+        this.reconcileAndPublishInputState();
         this.termination.scheduleRootShutdownEvaluation();
       },
       onListenerError: (error) => {
@@ -380,7 +380,7 @@ export class AgentRun {
         if (input.commandToken !== null) this.lifecycleState.rollbackCommand(input.commandToken);
         this.inputAdmissionState.applyDispatchFailure(input.claim, failure);
       }
-      this.reconcileRecovery(); this.publishInputState();
+      this.reconcileAndPublishInputState();
       this.dispatchCanonicalStatus();
       this.termination.scheduleRootShutdownEvaluation();
     });
@@ -418,19 +418,47 @@ export class AgentRun {
 
   getInputStateSnapshot(): AgentInputStateDto {
     this.reconcileRecovery();
-    return this.inputStateEvent().payload as AgentInputStateDto;
+    return this.refreshInputState();
   }
 
-  private inputStateEvent(): AgentRunEvent {
-    const state: AgentInputStateDto = { run_instance_id: this.runInstanceId, revision: this.inputRevision,
-      entries: this.inputAdmissionState.pendingSnapshot(), recoverableBlock: this.compactionRecovery.reconcile() };
-    const signature = JSON.stringify({ entries: state.entries, recoverableBlock: state.recoverableBlock });
-    if (signature !== this.lastInputSignature) { this.lastInputSignature = signature; state.revision = ++this.inputRevision; }
+  /**
+   * The current input content. Side effect: `compactionRecovery.reconcile()` runs here, after the
+   * pending entries are read and before the revision check, as it always has.
+   */
+  private readInputStateContent(): Pick<AgentInputStateDto, "entries" | "recoverableBlock"> {
+    const entries = this.inputAdmissionState.pendingSnapshot();
+    const recoverableBlock = this.compactionRecovery.reconcile();
+    return { entries, recoverableBlock };
+  }
+
+  /** The only writer of the input revision: a new revision when the content changed, else the current one. */
+  private advanceInputRevision(content: Pick<AgentInputStateDto, "entries" | "recoverableBlock">): number {
+    const signature = JSON.stringify({ entries: content.entries, recoverableBlock: content.recoverableBlock });
+    if (signature !== this.lastInputSignature) {
+      this.lastInputSignature = signature;
+      this.inputRevision += 1;
+    }
+    return this.inputRevision;
+  }
+
+  /** Reads the input content and advances its revision when it changed. */
+  private refreshInputState(): AgentInputStateDto {
+    const content = this.readInputStateContent();
+    const revision = this.advanceInputRevision(content);
+    return { run_instance_id: this.runInstanceId, revision, entries: content.entries, recoverableBlock: content.recoverableBlock };
+  }
+
+  private inputStateEvent(state: AgentInputStateDto): AgentRunEvent {
     return { eventType: AgentRunEventType.AGENT_INPUT_STATE, runId: this.runId, payload: state, statusHint: null };
   }
 
   private publishInputState(): void {
-    this.broadcastUnpublishedInputState(this.inputStateEvent());
+    this.broadcastUnpublishedInputState(this.inputStateEvent(this.refreshInputState()));
+  }
+
+  private reconcileAndPublishInputState(): void {
+    this.reconcileRecovery();
+    this.publishInputState();
   }
 
   /** Sends each input-state revision once: a revision listeners already have is not repeated. */
