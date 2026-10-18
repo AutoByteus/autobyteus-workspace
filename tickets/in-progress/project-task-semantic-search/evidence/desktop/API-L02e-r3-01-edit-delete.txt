@@ -1,0 +1,23 @@
+# API-L02e (round 3): merged delete paths (search cleanup + base adoption revert). QR-002 edit timing; deleteProjectTask t05; deleteProject of an indexed 8-Task Project; rows in embeddings.sqlite; commit 600d079b9c; ENV-2c; Sun Oct 18 21:21:57 CEST 2026
+QR-002 edit -> found by meaning (ms): 185
+old topic still shows edited Task: false
+t05 rows before delete:
+[{"n":1}]
+deleteProjectTask:
+{"data":{"deleteProjectTask":true}}
+t05 rows right after:
+[{"n":0}]
+t05 paraphrase after delete (t05 must not appear):
+0
+{"projectId":"project_cdd42c26-ad51-4498-a5cb-bb81b46f07a0","created":8,"seconds":0.184}
+{"final":true,"t":1.032,"ms":8,"matches":[],"meaningSearch":{"state":"READY","ph
+Project rows before:
+[{"n":8}]
+deleteProject:
+{"data":{"deleteProject":true}}
+Project rows right after:
+[{"n":0}]
+search after delete:
+{"data":null,"errors":[{"message":"Project 'project_cdd42c26-ad51-4498-a5cb-bb81b46f07a0' was not found.","locations":[{"line":1,"column":7}],"path":["searchProjectTasks"],"extensions":{"code":"PROJEC
+server log lines about cleanup/revert failures:
+(none above = no failure logged)

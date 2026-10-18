@@ -1,0 +1,17 @@
+# API-R04 (round 3): pnpm -C autobyteus-server-ts test:integration:prepare && pnpm -C autobyteus-server-ts test:integration; commit 600d079b9c; ENV-1; run finished 2026-10-18 21:44
+# Note: the saved excerpt of this run missed the summary (filter cut at 12 lines) and the full log was already removed.
+# The summary lines below were copied from the console output of that same run, as displayed at the time:
+Integration test prerequisites are present.
+prepare-exit=0
+ Test Files  77 passed | 19 skipped (96)
+      Tests  415 passed | 70 skipped (485)
+exit=0
+
+# Direct, saved rerun of the file that failed in round 1 (agent-status-websocket cadence cases); same commit; Sun Oct 18 21:44:28 CEST 2026
+ ✓ tests/integration/agent/agent-status-websocket.integration.test.ts (8 tests) 3450ms
+     ✓ coalesces a representative fine-grained canonical stream into one default-window content frame  660ms
+     ✓ uses a changed interval only for the active socket's next newly opened window  1818ms
+     ✓ sends no repeated input state during a content window and a queued message's new revision right after the pending content  823ms
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+exit=0

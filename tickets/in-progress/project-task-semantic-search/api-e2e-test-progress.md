@@ -85,3 +85,38 @@
 | 20:17 | API-L02g | Completed | Pass | unknown id rejected; LEAF-IR then blank (Granite); only active model kept |
 | 20:17 | (process) | Checkpoint | — | round 2 cleanup: instance stopped, data root removed, /tmp/pts-api2 removed |
 | 20:19 | (round 2) | Completed | Pass | report, revision record API-REV-002 and investigation updated; committing and handing off |
+| 20:58 | (round 3) | Checkpoint | — | round 3 started for IR-004 merge (600d079b9c); plan in the investigation § Round 3 Rerun Plan (foundation change → all cases rerun or reused on 600d079b9c) |
+| 20:59 | API-L02a | Started | — | round 3 isolated-app start --build (background) |
+| 20:59 | API-L01 | Started | — | round 3 Docker image build ab-pts-validation:600d079b9c (background) |
+| 20:59 | API-R08 | Completed | Pass | round 3 licensing + hygiene |
+| 20:59 | API-R05 | Started | — | round 3 e2e projects, clean env, resolved HOME |
+| 21:03 | API-R05 | Checkpoint | — | 5 files pass (incl. both search E2E, boundaries 13 with the seven-tool MCP list); projects-startup-migration 6 failures: spawns dist/app.js while my concurrent desktop build rebuilt dist (run-order error, TESTING 'serialize builds'); rerun that file after the build |
+| 21:08 | API-R05 | Completed | Pass | 5 files pass in the folder run; startup-migration 6/6 when rerun after the build |
+| 21:08 | API-L02a | Completed | Pass | round 3 build iso-64674-76e2 |
+| 21:10 | API-L03a | Completed | Pass | round 3 seeding |
+| 21:10 | API-L02b | Started | — | round 3 first use on Backlog 1000 |
+| 21:15 | API-L02b | Completed | Pass | 291 s / 1,000 Tasks; target shown without retyping |
+| 21:15 | API-L03b | Completed | Pass | round 3 first-use time/footprint |
+| 21:15 | API-L02c | Started | — | round 3 right panel, real-text Project first search |
+| 21:16 | API-L02c | Completed | Pass | round 3 locate while preparing 115 ms; Refresh kept the search |
+| 21:16 | API-L04 | Started | — | round 3 in-app quality (background) |
+| 21:17 | API-L01 | Completed | Pass | round 3 Docker: offline→Retry→ready, quality 96.8%/23 of 24, restart LOADING→READY; container+image removed |
+| 21:21 | API-L04 | Checkpoint | — | round 3 in-app quality 96.8/93.7/92.1, 23/24 all |
+| 21:21 | API-L04 | Completed | Pass | board no-match on both 1,000-Task Projects |
+| 21:21 | API-L02d | Completed | Pass | exact first |
+| 21:21 | API-L02c2 | Completed | Pass | create cleared search |
+| 21:22 | API-L02e | Completed | Pass | round 3 QR-002 185 ms; delete Task/Project vectors removed; no failure logged |
+| 21:24 | API-L03c | Completed | Pass | round 3 p90 45 ms; board 304–336 ms; +306 MB searching |
+| 21:24 | API-L05 | Completed | Pass | companion definition selects the tool in the merged app |
+| 21:24 | API-L02g/L02h | Started | — | round 3 Settings switch with models folder unwritable, board Retry, back to blank |
+| 21:25 | API-L02g/L02h | Completed | Pass | round 3 unknown id rejected; unavailable + board Retry; LEAF-IR then blank; only active model kept |
+| 21:25 | API-L02f | Started | — | round 3 rebuild Backlog 1000, restart, edit, first search |
+| 21:29 | API-L02f | Completed | Pass | round 3 LOADING then READY 1.24 s; edited Task found |
+| 21:29 | API-L03d | Started | — | round 3 idle window (no instance interaction); suites run meanwhile |
+| 21:29 | API-R06 | Started | — | round 3 gated scale (background chain R06 → R07 → R04) |
+| 21:41 | API-L03d | Completed | Pass | round 3 idle (see evidence) |
+| 21:41 | API-R06 | Completed | Pass | round 3 gated scale |
+| 21:41 | (process) | Checkpoint | — | round 3 instance stopped, data root removed |
+| 21:44 | API-R07 | Completed | Pass | round 3 web 636 files / 4,519 tests; guards pass |
+| 21:44 | API-R04 | Completed | Pass | round 3 integration 77 passed, no failures |
+| 21:46 | (round 3) | Completed | Pass | report, revision record API-REV-003 written; committing and handing off |

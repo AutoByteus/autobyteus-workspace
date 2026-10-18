@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code reviewer pass handoff, `code-review-report.md` CRR-002; round 1 | SR-004, SR-006, ARCH-REV-002, IR-002, CRR-002 | N/A | Fail / 87% (requirement proof 50%) |
 | API-REV-002 | Code reviewer pass handoff CRR-004 (IR-003); round 2 | SR-007, ARCH-REV-003, IR-003, CRR-004 | Fail / 87% | Pass / 95% |
+| API-REV-003 | Code reviewer pass handoff CRR-006 (IR-004, delivery DR-001 merge); round 3 | SR-007, ARCH-REV-003, IR-004, CRR-006, DR-001 | Pass / 95% | Pass / 95% |
 
 ## Revision Entries
 
@@ -60,6 +61,41 @@ None.
 - Remaining risks, blocked evidence, or untested scope:
   - C-12: AC-001 margin of 2.1 points on the real-text backlog;
   - C-10: drift of the real-text backlog;
+  - Windows, Linux and macOS x64 packaging and Docker amd64 untested;
+  - RSK-002 proxy downloads;
+  - observations O-2…O-4.
+
+### API-REV-003 — Full rerun on the latest-base merge (`600d079b9c`)
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md` (CRR-006, Pass), round 3; delivery `delivery-revision-record.md` DR-001.
+- Triggering finding or case IDs: DR-001 latest-base integration (IR-004). Merge resolutions: the seven-tool Project tool set (base removed `create_or_update_project`); delete paths running the search cleanup and the base's adoption revert together; composition. Reviewer focus: the tool surface (native and MCP) and both delete paths.
+- Related revision IDs: IR-004, CRR-005, CRR-006, DR-001 (SR-007 / ARCH-REV-003 unchanged).
+- Why this revision was recorded: the round-3 result on `600d079b9c`.
+- Coverage decisions or durable test paths changed: none by API/E2E (API-D01 unchanged since round 2).
+- Cases added, changed, removed, or rechecked (plan: investigation § Round 3 Rerun Plan): the contract packages changed (a shared foundation), so every case was rerun or reused from a check on `600d079b9c`.
+  - Reused: IMP-08 (API-R01), IMP-09 (API-R02/R03), IMP-12 (new case API-T01, the merged delete paths with adoption).
+  - Rerun: API-R04…R08, API-D01, API-L01 (new image), API-L02a…h, API-L03a…d, API-L04, API-L05.
+- Commands, environment, fixture, or broader-validation delta:
+  - E2E with a resolved temp `HOME` (TESTING.md change in the merge);
+  - packaged build `1.5.6-beta.6` of `600d079b9c`;
+  - Docker image `ab-pts-validation:600d079b9c`;
+  - real-text backlog sha256 `42ecbb90f855e02e` (the merge's 10 new tickets).
+- Run-order note: the first API-R05 folder run overlapped my desktop build, which rewrote `dist` under `projects-startup-migration`. The file was rerun alone and passed 6/6.
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| Round 1/2 out-of-scope integration failures (`agent-status-websocket` cadence cases) | Out of scope (pre-existing base defect) | Pass on the merged base | API-R04 |
+
+- Canonical artifacts and sections updated: `api-e2e-coverage-investigation.md` (§ Round 3 Rerun Plan, meta), `api-e2e-execution-coverage-report.md` (whole report, latest round), `api-e2e-test-progress.md`, `evidence/` (`*r3*`, `*round3*` files).
+- Prior result and confidence: Pass, 95%.
+- Current result and confidence: Pass, 95%.
+- New or remaining failure IDs: none.
+- Recommended owner: code reviewer (proportional test-code review; API-D01 unchanged since round 2).
+- Remaining risks, blocked evidence, or untested scope:
+  - C-12: thin AC-001 margin, unchanged on the new real-text set;
+  - C-10: drift of the real-text set;
   - Windows, Linux and macOS x64 packaging and Docker amd64 untested;
   - RSK-002 proxy downloads;
   - observations O-2…O-4.

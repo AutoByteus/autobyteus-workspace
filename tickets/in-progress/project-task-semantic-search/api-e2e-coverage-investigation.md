@@ -16,13 +16,13 @@
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record: `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-002` (round 2; `API-REV-001` = round 1, Fail F-001)
+- Current API/E2E Revision ID: `API-REV-003` (round 3; `API-REV-002` = round 2 Pass; `API-REV-001` = round 1 Fail F-001)
 - Test progress log: `api-e2e-test-progress.md`
 - Execution coverage report (the record, results, confidence and broader-validation decision): `api-e2e-execution-coverage-report.md`
-- Current Investigation Round: 2
-- Trigger: round 1 — code reviewer pass CRR-002; round 2 — code reviewer pass CRR-004 of IR-003 (FO-001 → SR-007: Granite default, DEC-011, re-based QR-003/QR-004, O-1)
+- Current Investigation Round: 3
+- Trigger: round 1 — code reviewer pass CRR-002; round 2 — code reviewer pass CRR-004 of IR-003 (FO-001 → SR-007: Granite default, DEC-011, re-based QR-003/QR-004, O-1); round 3 — code reviewer pass CRR-006 of IR-004 (delivery DR-001: latest `origin/personal` @ `2b04a9971d` merged, merge commit `600d079b9c`)
 - Prior Investigation Reviewed: round 1 (this file)
-- Latest Authoritative Investigation: this file, round 2 (see § Round 2 Rerun Plan)
+- Latest Authoritative Investigation: this file, round 3 (see § Round 3 Rerun Plan)
 
 All paths are relative to the worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-semantic-search` unless absolute. Code under validation: branch `codex/project-task-semantic-search`, source commit `722b9b3918` (ticket docs `358b7f0123`); companion `/Users/normy/autobyteus_org/autobyteus-agents-project-task-semantic-search` @ `344da76`.
 
@@ -233,6 +233,41 @@ Validated in round 1: `722b9b3918`. Changed since (`git diff --name-only 722b9b3
 | API-L02f | Rerun | Restart with the Granite index; O-1 readiness (`loading`, not `downloading 0 of N`) |
 | API-L02g | Rerun | Switch from the Granite default to LEAF-IR and back to blank (AC-016) |
 | API-L02c, API-L02c2, API-L02d, API-L02e (delete parts), API-L02h, API-L05 | Still valid (round 1) | Board, search service, delete hooks, failure path and companion unchanged; readiness shape unchanged |
+
+
+## Round 3 Rerun Plan (IR-004 merge, commit `600d079b9c`)
+
+Validated in round 2: `9f0df7eab3`. `git diff --name-only 9f0df7eab3 600d079b9c` lists 1,683 files.
+- **Shared foundations changed:** `autobyteus-collaboration-stream-contracts` and `autobyteus-team-stream-contracts` (src and dist). The lockfile did not change. `autobyteus-web/package.json` changed only its version and one probe script. TESTING.md "Rerun by impact" step 4 therefore marks **every case Rerun**.
+- **Ticket-relevant merge changes:**
+  - the Project tool set is now seven tools (`create_or_update_project` removed by the base);
+  - `ProjectService.deleteProject` and `ProjectTaskService.deleteTask` now also run the base's adoption revert after the search cleanup;
+  - the composition changed;
+  - 10 newly finished tickets (1,275 files under `tickets/done`) change the real-text 1,000-Task backlog (C-10). The AC-001 margin there was 2.1 points (C-12).
+- **No change:** embedding code, the board/composable, packaging.
+- **TESTING.md change:** the temp `HOME` for clean-env E2E must be a resolved path (`HOME="$(cd "$(mktemp -d)" && pwd -P)"`).
+
+| Case ID | Round 3 | How |
+| --- | --- | --- |
+| API-R01 | Reused: IMP-08 | Typecheck on `600d079b9c` (`implementation/IMP-08-typecheck-merge.log`) |
+| API-R02, API-R03 | Reused: IMP-09 | Unit suite on `600d079b9c` incl. the seven-tool unit test (`IMP-09-server-unit-merge.log`) |
+| API-R04 | Rerun | `test:integration:prepare` + `test:integration` |
+| API-D01, API-R05 | Rerun | `tests/e2e/projects` in a clean env with a resolved temp HOME (also proves the seven-tool MCP list in `project-task-boundaries`) |
+| API-R06 | Rerun | Gated default model at scale: the real-text backlog changed |
+| API-R07 | Rerun | Full web suite + guards (IMP-11 covered only the Projects folders) |
+| API-R08 | Rerun | Licensing + hygiene |
+| API-T01 (new) | Reused: IMP-12 | Gated adoption-revert/change-feed E2E on the merged delete paths (`IMP-12-e2e-adoption-feed-merge.log`) |
+| API-L01 | Rerun | Docker image from `600d079b9c`; offline first use → Retry → ready; quality spot check; restart |
+| API-L02a, API-L03a | Rerun | Packaged build of the merge; seed |
+| API-L02b, API-L03b | Rerun | First use (Granite) on 1,000 Tasks; time and footprint |
+| API-L04 | Rerun | In-app quality on 60, generated 1,000 and the new real-text 1,000; board no-match |
+| API-L02c | Rerun | Locate while preparing on the right-panel board (first search of a second 1,000-Task Project); Refresh; open/return |
+| API-L02c2, API-L02d | Rerun | Create clears search; exact order |
+| API-L02e | Rerun | Edit (QR-002), delete Task, delete Project in the merged delete paths (vectors gone, no error) |
+| API-L02f, API-L02g | Rerun | Restart (O-1); switch through Settings |
+| API-L02h | Rerun | Unavailable + Retry on the board |
+| API-L03c, API-L03d | Rerun | Latency, searching footprint, idle |
+| API-L05 | Rerun | Companion definition in the merged app |
 
 ## Not Tested / Infeasible / Deferred
 
