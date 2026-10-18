@@ -166,11 +166,20 @@ const ensureWorkspace = async () => {
     await gql('mutation($input:CreateWorkspaceInput!){createWorkspace(input:$input){workspaceId}}', { input: { rootPath: workspace() } });
   }
 };
+/** Each created Task's key: agent-facing texts name Project Tasks by key, not by taskId (task-keys REQ-018). */
+const taskKeys = new Map();
+const createTask = async (projectId, description) => {
+  const created = (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId taskKey}}',
+    { input: { projectId, description } })).createProjectTask;
+  taskKeys.set(created.taskId, created.taskKey);
+  return created.taskId;
+};
+/** The text a reused copy receives with a follow-up Task. */
+const assignedText = (taskId) => `New Task assigned to you: ${taskKeys.get(taskId)}`;
 const createProject = async (label) => {
   const projectId = (await gql('mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}',
     { input: { name: `Prototype Launch ${label} ${randomUUID().slice(0, 6)}` } })).createProject.projectId;
-  const task = async (description) => (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}',
-    { input: { projectId, description } })).createProjectTask.taskId;
+  const task = (description) => createTask(projectId, description);
   return { projectId, task };
 };
 const taskStatus = async (projectId, taskId) => (await gql('query($id:String!){projectTasks(projectId:$id){taskId status}}', { id: projectId }))
@@ -743,8 +752,7 @@ const existingCopyAssignment = async (kind, label) => {
   const board = await newPage();
   try {
     await openRoot(page, s.root, s.names);
-    const task = async (description) => (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}',
-      { input: { projectId: s.projectId, description } })).createProjectTask.taskId;
+    const task = (description) => createTask(s.projectId, description);
     const taskB2 = await task('Tidy the docs-site review wording you proposed.');
     const taskA2 = await task('Follow up on the release-notes draft.');
     const teamSel = rowSelector(kind, s.bRef);
@@ -793,9 +801,9 @@ const existingCopyAssignment = async (kind, label) => {
     assert(LIVE.includes((await boardRoot(board.page, taskB2))?.state), 'B2 board root no longer live after a repeated close of B');
     // The conversation continues: the earlier exchange, then the new Task from the Manager.
     await page.locator(rowSelector(kind, { agentRunId: coordinator.agentRunId })).click();
-    await until('continued coordinator conversation', async () => { const t = await centerText(page); return t.includes('PRE-B-6610') && t.includes(`New Task assigned to you: ${taskB2}`); }, 30000);
+    await until('continued coordinator conversation', async () => { const t = await centerText(page); return t.includes('PRE-B-6610') && t.includes(assignedText(taskB2)); }, 30000);
     const text = await centerText(page);
-    assert(text.indexOf('PRE-B-6610') < text.indexOf(`New Task assigned to you: ${taskB2}`), 'earlier conversation not before the new Task');
+    assert(text.indexOf('PRE-B-6610') < text.indexOf(assignedText(taskB2)), 'earlier conversation not before the new Task');
     await shot(page, `${kind}-existing-copy-conversation`);
     // A fresh page load keeps the row.
     const fresh = await newPage();
@@ -817,7 +825,7 @@ const existingCopyAssignment = async (kind, label) => {
     for (const sel of helperSel) assert(await page.locator(sel).count() === 0, `helper row reappeared: ${sel}`);
     await until('board: A2 root live', async () => LIVE.includes((await boardRoot(board.page, taskA2))?.state), 30000);
     await page.locator(workerSel).click();
-    await until('continued worker conversation', async () => { const t = await centerText(page); return t.includes('PRE-A-6620') && t.includes(`New Task assigned to you: ${taskA2}`); }, 30000);
+    await until('continued worker conversation', async () => { const t = await centerText(page); return t.includes('PRE-A-6620') && t.includes(assignedText(taskA2)); }, 30000);
     await shot(page, `${kind}-existing-copy-agent-back`);
     s.input.send(callTool('update_task', { task_id: taskA2, status: 'DONE' }));
     await until('worker row gone at A2 DONE', goneAll(page, [workerSel]), 60000);
@@ -840,8 +848,7 @@ const existingCopyAcrossRestart = async () => {
   const out = {};
   for (const kind of kinds) {
     const r = assignedCopies[kind];
-    const taskB3 = (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}',
-      { input: { projectId: r.projectId, description: 'After the restart: one more docs-site pass.' } })).createProjectTask.taskId;
+    const taskB3 = await createTask(r.projectId, 'After the restart: one more docs-site pass.');
     r.taskB3 = taskB3;
     const { page, errors, context } = await newPage();
     await restoreRoot(r.root);
@@ -856,7 +863,7 @@ const existingCopyAcrossRestart = async () => {
       await expandTaskTeam(page, kind, r.teamRef);
       await page.locator(rowSelector(kind, { agentRunId: r.coordinator })).click();
       await until(`${kind}: conversation continues after restart`, async () => { const t = await centerText(page);
-        return t.includes('PRE-B-6610') && t.includes(`New Task assigned to you: ${r.taskB2}`) && t.includes(`New Task assigned to you: ${taskB3}`); }, 90000);
+        return t.includes('PRE-B-6610') && t.includes(assignedText(r.taskB2)) && t.includes(assignedText(taskB3)); }, 90000);
       // The entry is committed `starting`, the work delivered, then marked `started`: the message can show first.
       let g;
       await until(`${kind}: B3 root started`, async () => (g = await graphqlRoot(r.projectId, taskB3))?.root?.start === 'started', 30000)
@@ -898,8 +905,7 @@ const damagedTaskData = async () => {
   const r = assignedCopies.agent; assert(r, 'BR-016 needs BR-012 in the same run');
   const file = path.join(stack.dataRoot, 'projects', encodeURIComponent(r.projectId), 'tasks', encodeURIComponent(r.taskB), 'agent_run_resources.json');
   const original = await fsp.readFile(file, 'utf8');
-  const taskA3 = (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}',
-    { input: { projectId: r.projectId, description: 'A third pass on the release notes.' } })).createProjectTask.taskId;
+  const taskA3 = await createTask(r.projectId, 'A third pass on the release notes.');
   const a3Dir = path.join(stack.dataRoot, 'projects', encodeURIComponent(r.projectId), 'tasks', encodeURIComponent(taskA3));
   await stopGroup(stack.backend);
   await fsp.writeFile(file, '{"agentRunResources": [ {"broken": ');
