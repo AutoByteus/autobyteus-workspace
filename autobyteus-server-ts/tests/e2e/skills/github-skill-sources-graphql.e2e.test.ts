@@ -193,21 +193,21 @@ describe("GitHub skill sources through production GraphQL documents", () => {
       const runtime = await runtimeFixture(root, adapter, scope);
       try {
         const first = await runtime.start("run-a");
-        expect(fs.readFileSync(path.join(first.link, "SKILL.md"), "utf8")).toContain("v1");
+        expect(fs.readFileSync(path.join(runtime.link, "SKILL.md"), "utf8")).toContain("v1");
         if (retain) vi.spyOn(GitHubSkillRepository.prototype, "cleanup").mockResolvedValue();
         writeSkill(upstream, "api-writer", "v2"); revision = b;
         await exec(documents.UPDATE_GITHUB_SKILL_SOURCE, { sourceId: row.sourceId });
         expect(fs.existsSync(first.root)).toBe(retain);
+        // Codex's native-discovery branch must still reconcile an existing owned old link.
+        if (adapter === "codex" && retain) runtime.setDiscoverCurrent();
         const second = await runtime.start("run-b");
         expect(second.root).not.toBe(first.root);
-        expect(fs.readFileSync(path.join(second.link, "SKILL.md"), "utf8")).toContain("v2");
+        expect(fs.readFileSync(path.join(runtime.link, "SKILL.md"), "utf8")).toContain("v2");
         const order = reverse ? [second, first] : [first, second];
         await order[0]!.cleanup();
-        expect(fs.existsSync(order[0]!.link)).toBe(false);
-        expect(fs.lstatSync(order[1]!.link).isSymbolicLink()).toBe(true);
+        expect(fs.lstatSync(runtime.link).isSymbolicLink()).toBe(true);
         await order[1]!.cleanup();
-        expect(fs.existsSync(order[1]!.link)).toBe(false);
-        expect(fs.readdirSync(runtime.workspace)).toEqual([]);
+        expect(fs.existsSync(runtime.link)).toBe(false);
       } finally { await runtime.close(); }
     }, 20000);
 

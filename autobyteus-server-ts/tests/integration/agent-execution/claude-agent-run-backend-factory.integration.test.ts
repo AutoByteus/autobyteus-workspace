@@ -28,6 +28,7 @@ import {
 import { createAgentProviderFactoryBuilder } from "../../../src/agent-execution/providers/agent-provider-factory-builder.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 import { getClaudeSdkClient } from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
+import { getClaudeWorkspaceSkillMaterializer } from "../../../src/agent-execution/backends/claude/claude-workspace-skill-materializer.js";
 
 const claudeBinaryReady = spawnSync("claude", ["--version"], {
   stdio: "ignore",
@@ -166,7 +167,7 @@ const createFactory = (input: {
   toolNames?: string[];
 }) => {
   const inert = Object.freeze({}) as never;
-
+  const workspaceSkillMaterializer = getClaudeWorkspaceSkillMaterializer();
   const builder = createAgentProviderFactoryBuilder({
     workspaceManager: getWorkspaceManager(),
     skillService: {
@@ -185,16 +186,17 @@ const createFactory = (input: {
       waitForIdle: inert,
     },
     codex: {
-
+      workspaceSkillMaterializer: inert,
       workspaceResolver: inert,
       clientManager: inert,
       threadManager: inert,
-
+      threadCleanup: inert,
     },
     claude: {
       workspaceResolver: {
         resolveWorkingDirectory: async () => input.workspaceRoot,
       } as never,
+      workspaceSkillMaterializer,
       sdkClient: getClaudeSdkClient(),
     },
   });

@@ -21,6 +21,7 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 import { getClaudeSdkClient } from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
+import { getClaudeWorkspaceSkillMaterializer } from "../../../src/agent-execution/backends/claude/claude-workspace-skill-materializer.js";
 import { createFakeClaudeSdkClient, flushClaudeSession } from "../../helpers/fake-claude-streaming-sdk.js";
 import type { AgentToolMcpRunSessionActivationInput } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 
@@ -147,7 +148,11 @@ const buildExactWriteToolPrompt = (input: {
 const normalizeWrittenText = (value: string): string => value.replace(/\r?\n$/u, "");
 
 const createExplicitSessionManager = (): ClaudeSessionManager =>
-  new ClaudeSessionManager({ activateForRun: () => ({ kind: "not_exposed" as const }) }, getWorkspaceManager(), getClaudeSdkClient()
+  new ClaudeSessionManager(
+    { activateForRun: () => ({ kind: "not_exposed" as const }) },
+    getWorkspaceManager(),
+    getClaudeSdkClient(),
+    getClaudeWorkspaceSkillMaterializer(),
   );
 
 const startTurn = async (
@@ -196,7 +201,13 @@ describe("ClaudeSessionManager explicit Agent Tools activator", () => {
       })),
       deactivateForRun: vi.fn(),
     };
-    const manager = new ClaudeSessionManager(activator, getWorkspaceManager(), sdkClient as never
+    const manager = new ClaudeSessionManager(
+      activator,
+      getWorkspaceManager(),
+      sdkClient as never,
+      {
+        cleanupMaterializedWorkspaceSkills: vi.fn(async () => undefined),
+      } as never,
     );
     const runId = `claude-manager-activator-${randomUUID()}`;
     const session = await manager.createRunSession(createRunContext({
