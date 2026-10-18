@@ -16,15 +16,15 @@ All paths are relative to the worktree `/Users/normy/autobyteus_org/autobyteus-w
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002: local fix for CRR-001 findings CR-001, CR-002)
 - Implementation revision record: `tickets/in-progress/project-task-semantic-search/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: SR-004, SR-006
 - Related architecture-review revision IDs: ARCH-REV-002
-- Related code-review revision IDs: N/A
+- Related code-review revision IDs: CRR-001
 - Related API/E2E revision IDs: N/A
 - Related delivery revision IDs: N/A
-- Triggering finding IDs: N/A
+- Triggering finding IDs: CR-001, CR-002 (IR-002); optional C-03 applied
 - Code: branch `codex/project-task-semantic-search`, commit recorded at the end of this file (base `origin/personal` @ `55bff1f5ee`).
 - Companion: `/Users/normy/autobyteus_org/autobyteus-agents-project-task-semantic-search`, branch `codex/project-task-semantic-search` @ `344da76` (from `origin/main` @ `887e79d`; a separate worktree because the main checkout holds someone else's uncommitted changes). Not pushed.
 
@@ -45,7 +45,7 @@ What was built, following the design's spines:
   - the setting registration.
 - **Web:**
   - `useProjectTaskSearch`: 250 ms debounce, latest request wins, 2 s polling while preparing, a new request when the list changes, Retry;
-  - board: server results ranked in lanes, a status line, and the locator waiting for settled results;
+  - board: server results ranked in lanes, a status line, and the locator waiting for settled results. A readiness poll refreshes a settled answer and never unsettles it (IR-002);
   - the client predicate is removed.
 - **Packaging:** the `onnxruntime-web` prune (139 MB → 18 MB) plus a threaded runtime check in the stage, on every desktop platform.
 - **Docs** and the **companion** Project Task Manager change.
@@ -320,3 +320,12 @@ Implementation-scoped only; these are not API/E2E sign-off.
   - `pnpm -C autobyteus-web test:nuxt --run`: 632 files passed, 2 skipped; 4,476 tests passed, 5 skipped.
   - `tests/e2e/projects/project-task-search.e2e.test.ts` (clean environment): 2/2.
   - The gated real-model suite was run earlier for all three models (results above). It is skipped in `test:unit` (it lives under `tests/integration`) unless `RUN_EMBEDDING_MODEL_E2E=1`.
+
+## IR-002 (CRR-001 Local Fix)
+
+- Commit `722b9b3918`. Details are in `implementation-revision-record.md` § IR-002.
+- CR-001: readiness polls no longer make the search unsettled, so the locator acts while meaning search prepares. There is a new failing-then-passing spec in `ProjectsPanelTaskLocate.spec.ts`.
+- CR-002: the dead `isSettledReadiness` export is removed.
+- C-03: the worker type-imports `EmbeddingModelOutput`.
+- Checks: web `components/projects` 113/113; web guards; server embeddings, search and tool 38/38; typecheck; the real-model LEAF-IR check.
+- Classification: unchanged (Large / High).
