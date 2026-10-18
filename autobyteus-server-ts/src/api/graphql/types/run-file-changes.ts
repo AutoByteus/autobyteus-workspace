@@ -2,7 +2,7 @@ import { Arg, Field, ObjectType, Query, Resolver } from "type-graphql";
 import { getRunFileChangeProjectionService } from "../../../run-history/services/run-file-change-projection-service.js";
 
 @ObjectType()
-class RunFileChangeEntryObject {
+export class RunFileChangeEntryObject {
   @Field(() => String)
   id!: string;
 
