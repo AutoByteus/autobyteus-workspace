@@ -30,6 +30,7 @@ const target = (task: ProjectTask | TaskWithoutProject): TaskWorkerTask =>
 /** Server lists by list id; a list set to `deferred` answers when `release(id)` is called. */
 let server: Record<string, unknown[]>
 const deferred = new Map<string, () => void>()
+let searchServer: ReturnType<typeof createProjectTaskSearchServer>
 const hold = (id: string) => { deferred.set(id, () => undefined) }
 const release = (id: string) => { deferred.get(id)?.(); deferred.delete(id) }
 const answer = (id: string) => (id === TEMP_TASKS_LIST_ID ? { data: { tasksWithoutProject: server[id] ?? [] } } : { data: { projectTasks: server[id] ?? [] } })
@@ -59,7 +60,7 @@ describe('Projects tab: locating a Task (delegated-copy-task-locator DS-002)', (
   beforeEach(() => {
     setActivePinia(createPinia()); window.localStorage.clear(); vi.clearAllMocks(); deferred.clear()
     server = {}
-    const searchServer = createProjectTaskSearchServer((projectId) => (server[projectId] ?? []) as ProjectTask[])
+    searchServer = createProjectTaskSearchServer((projectId) => (server[projectId] ?? []) as ProjectTask[])
     io.query.mockImplementation((options: { variables: { projectId?: string; query?: string } }) => {
       if (searchServer.isSearch(options)) return searchServer.respond(options as { variables: { projectId: string; query: string } })
       const { variables } = options
@@ -134,6 +135,31 @@ describe('Projects tab: locating a Task (delegated-copy-task-locator DS-002)', (
     expect(row(wrapper, 'a2').classes()).toContain('is-located')
     // Only the latest located card is highlighted (AC-013).
     expect(row(wrapper, 'a1').classes()).not.toContain('is-located')
+  })
+
+  it('locates while meaning search is preparing: the readiness polls never hold the locator back (CR-001)', async () => {
+    server = { p1: [projectTask('a1', 'p1', 'Release notes'), projectTask('a2', 'p1', 'Design review', 'IN_PROGRESS', 1)] }
+    searchServer.meaningSearch = { state: 'PREPARING', phase: 'INDEXING', done: 1, total: 2, reason: null }
+    const wrapper = await mountPanel()
+    const search = wrapper.get('[data-testid="project-tasks-search-input"]')
+    await search.setValue('release')
+    await afterSearchDebounce()
+    await settle()
+    expect(wrapper.get('[data-testid="project-tasks-meaning-status"]').text()).toContain('1 of 2 Tasks')
+
+    locate(target(server.p1![0] as ProjectTask))
+    await settle()
+    expect((search.element as HTMLInputElement).value).toBe('release')
+    expect(row(wrapper, 'a1').classes()).toContain('is-located')
+
+    // Across a readiness poll (every 2 s), well inside the request's 10 s expiry, a hidden Task is still revealed.
+    await new Promise((resolve) => setTimeout(resolve, 2100))
+    const polls = searchServer.requests.length
+    expect(polls).toBeGreaterThan(1)
+    locate(target(server.p1![1] as ProjectTask))
+    await settle()
+    expect((search.element as HTMLInputElement).value).toBe('')
+    expect(row(wrapper, 'a2').classes()).toContain('is-located')
   })
 
   it('returns from an open Task to the board, and leaves a Task absent from the list alone until the request expires (AC-007)', async () => {

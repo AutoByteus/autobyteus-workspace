@@ -4,16 +4,15 @@
  * configured output, L2-normalize.
  *
  * It must run as a standalone entry from `src` (Node type stripping) and from `dist`, so it imports only `node:*`,
- * `onnxruntime-web` and `@huggingface/tokenizers`, uses erasable TypeScript only, and has no per-model branches:
- * everything model-specific arrives in `workerData`.
+ * `onnxruntime-web`, `@huggingface/tokenizers` and type-only imports (erased), uses erasable TypeScript only, and has
+ * no per-model branches: everything model-specific arrives in `workerData`.
  */
 import fs from "node:fs";
 import path from "node:path";
 import { parentPort, workerData } from "node:worker_threads";
 import * as ort from "onnxruntime-web";
 import { Tokenizer } from "@huggingface/tokenizers";
-
-export type EmbeddingWorkerOutput = "sentence_embedding" | { pool: "cls" | "mean" | "last" };
+import type { EmbeddingModelOutput } from "../catalog/embedding-model-definition.js";
 export type EmbeddingWorkerData = {
   modelDir: string;
   onnxFile: string;
@@ -24,7 +23,7 @@ export type EmbeddingWorkerData = {
   maxTokens: number;
   queryPrefix: string;
   documentPrefix: string;
-  output: EmbeddingWorkerOutput;
+  output: EmbeddingModelOutput;
   threads: number;
 };
 export type EmbeddingTextKind = "query" | "document";

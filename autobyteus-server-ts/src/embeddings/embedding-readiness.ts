@@ -10,6 +10,3 @@ export type EmbeddingReadiness =
 export const READY: EmbeddingReadiness = { state: "ready" };
 
 export const unavailable = (reason: string): EmbeddingReadiness => ({ state: "unavailable", reason });
-
-/** A readiness that will not change without a new search: ready, or unavailable until a retry or model change. */
-export const isSettledReadiness = (readiness: EmbeddingReadiness): boolean => readiness.state !== "preparing";

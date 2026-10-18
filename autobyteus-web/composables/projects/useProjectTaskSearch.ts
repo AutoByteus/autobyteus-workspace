@@ -36,17 +36,22 @@ export const useProjectTaskSearch = (source: { projectId: () => string; query: (
   const active = computed(() => query.value.length > 0)
 
   const clearTimer = () => { if (timer) clearTimeout(timer); timer = null }
-  const schedule = (delay: number) => {
+  /**
+   * A new query, Project or Task list makes the shown answer unsettled until its request answers. A readiness poll
+   * (`refresh`) asks the same question again for a settled answer, so it never makes it unsettled: the locator can act
+   * on the answer while meaning search prepares.
+   */
+  const schedule = (delay: number, refresh = false) => {
     clearTimer()
-    pending.value = true
-    timer = setTimeout(() => { timer = null; void run() }, delay)
+    if (!refresh) pending.value = true
+    timer = setTimeout(() => { timer = null; void run(refresh) }, delay)
   }
 
-  const run = async () => {
+  const run = async (refresh = false) => {
     const seq = ++latest
     const projectId = source.projectId(), text = query.value, revision = node.bindingRevision
     if (!text) return
-    pending.value = true
+    if (!refresh) pending.value = true
     const current = () => seq === latest && node.bindingRevision === revision
     try {
       if (!await node.waitForBoundBackendReady()) throw new Error(node.lastReadyError || 'Bound backend is not ready')
@@ -58,7 +63,7 @@ export const useProjectTaskSearch = (source: { projectId: () => string; query: (
       answer.value = { projectId, query: text, ranks: new Map(result.matches.map((match, index) => [match.taskId, index])), meaningSearch: result.meaningSearch }
       error.value = null
       pending.value = false
-      if (result.meaningSearch.state === 'PREPARING') schedule(PREPARING_POLL_MS)
+      if (result.meaningSearch.state === 'PREPARING') schedule(PREPARING_POLL_MS, true)
     } catch (cause) {
       if (!current()) return
       error.value = toProjectRequestError(cause).message
