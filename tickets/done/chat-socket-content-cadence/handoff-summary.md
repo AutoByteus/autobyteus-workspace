@@ -1,6 +1,6 @@
 # Handoff Summary — autobyteus-139 `chat-socket-content-cadence`
 
-- Result classification: `Blocked` (DR-002: re-integration with `origin/personal` `8945d0c8a2` broke the cadence integration test's import; `Local Fix` to implementation. See `release-deployment-report.md` › Escalation)
+- Result classification: `Delivery Completed` (see `release-deployment-report.md` › Final Status; delivery revision `DR-003`)
 - task_size: `Large`; architectural_risk: `High`; route: `Reviewed`.
   - Architecture review: ARCH-REV-002 Pass.
   - Source review: CRR-001 Pass (9.4/10); CRR-003 Pass on the IR-002 merge fix.
@@ -42,6 +42,11 @@ The **Live response streaming** setting now applies to every chat, not only stan
   - Checkpoint `4231e492b7`.
   - Merged `origin/personal` @ `8367f6cae3` (only another ticket's delivery records) as `1840d55268`, with no conflicts.
   - Reruns on the integrated state (`evidence/DLV-*.log`): see `release-deployment-report.md` › Initial Delivery Integration Refresh.
+  - After verification, `origin/personal` advanced to `8945d0c8a2` (append-only-message-logs). Re-integration `8f91efb2cd` left the cadence integration test importing a removed module. `Blocked`; routed as a `Local Fix`.
+- Round 3 (DR-003): IR-003 fixed the test (`4b3c8a08ef`, assertions unchanged); CRR-005 Pass; API-REV-003 Pass.
+  - Delivery reruns at `7b6bb525ec`: cadence file 18/18 ×3; `test:integration` 415 passed.
+  - At `8f91efb2cd`: typecheck OK; streaming units 166; `test:unit` 5950.
+  - The web suite (4493) and the contracts (33/19) stand; the new base and the fix touch neither.
 
 ## Verification (from evidence)
 

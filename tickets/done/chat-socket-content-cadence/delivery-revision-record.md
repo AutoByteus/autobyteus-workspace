@@ -8,6 +8,7 @@ The latest docs sync report, handoff summary, and release/publication/deployment
 | --- | --- | --- | --- | --- |
 | DR-001 | Delivery package from `/software_engineering_team/code_reviewer` (CRR-002, API-REV-001 Pass) | N/A | `Blocked`: integration merge conflict, routed as `Local Fix` to implementation | `release-deployment-report.md` |
 | DR-002 | Package back after the Local Fix (IR-002; CRR-003 Pass, CRR-004 N/A; API-REV-002 Pass) | `Blocked` (DR-001) | `Blocked`: verified from evidence and docs synced on `1840d55268`; `origin/personal` then advanced (`8945d0c8a2`, append-only-message-logs); re-integration `8f91efb2cd` breaks the ticket's cadence integration test (removed module), routed as `Local Fix` | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md` |
+| DR-003 | Package back after the DR-002 Local Fix (IR-003 `4b3c8a08ef`; CRR-005 Pass, CRR-006 N/A; API-REV-003 Pass) | `Blocked` (DR-002) | `Delivery Completed`: reruns pass at `7b6bb525ec`, re-verified, finalized to `personal`, no release | `handoff-summary.md`, `release-deployment-report.md` |
 
 ## Revision Entries
 
@@ -60,5 +61,26 @@ The latest docs sync report, handoff summary, and release/publication/deployment
 - Next recipient/action: `/software_engineering_team/implementation_engineer` fixes the test's import on `8f91efb2cd` and reruns the cadence file and `test:integration`, then the package returns to delivery. Delivery then reruns and finalizes; re-verification is limited to the test fix.
 - Remaining blockers, rollback concerns, or untested scope:
   - Blockers: the broken test import above.
+  - No release (DEC-003); the beta, with RSK-003 stated, follows when the user asks, then the user's check.
+  - Untested scope: live non-native runtimes; the D-1 path (unit-only).
+
+### DR-003 — Delivery after the test-only fix: rerun, re-verify, finalize without release
+
+- Delivery round and trigger: round 3. The code reviewer reported the package back after the DR-002 Local Fix (run `code_reviewer_bea3015eddde49a595f9495604660664`), 2026-10-18. Revisits DR-002.
+- Triggering upstream report, verification, or evidence: IR-003 (`4b3c8a08ef`, test only); `code-review-report.md` CRR-005 Pass; `api-e2e-test-review-report.md` CRR-006 Not Applicable; `api-e2e-execution-coverage-report.md` API-REV-003 (REPO-11).
+- Prior authoritative result: `Blocked` (DR-002)
+- Current authoritative result: `Delivery Completed`
+- Docs sync report: `docs-sync-report.md` (unchanged since DR-002: the fix is test-only and the base adds no streaming docs)
+- Handoff summary: `handoff-summary.md`
+- Release/publication/deployment report: `release-deployment-report.md`
+- Integration and post-integration verification:
+  - `origin/personal` was still `8945d0c8a2`, already merged in `8f91efb2cd`. Checkpoint `7b6bb525ec`.
+  - Delivery reruns: cadence file 18/18 ×3 (`DLV-11`); `test:integration` 415 passed / 69 skipped (`DLV-12`).
+- Verification and finalization state: re-verified from evidence (behavior evidence unchanged, assertions unchanged; sufficient; no user check needed). Finalization results are in the release report's Finalization Record.
+- Terminal return to `/solution_designer`: `Sent` after finalization and cleanup (see the release report's Final Status).
+- Why this revision was recorded: the DR-002 blocker was resolved and delivery completed.
+- Next recipient/action: Solution Designer verifies the receipt and returns `Terminal`.
+- Remaining blockers, rollback concerns, or untested scope:
+  - Blockers: none.
   - No release (DEC-003); the beta, with RSK-003 stated, follows when the user asks, then the user's check.
   - Untested scope: live non-native runtimes; the D-1 path (unit-only).
