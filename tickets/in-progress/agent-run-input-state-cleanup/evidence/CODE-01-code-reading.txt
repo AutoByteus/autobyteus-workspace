@@ -1,0 +1,174 @@
+# Case: CODE-01 — code reading for AC-001..AC-004 (direct route)
+# Commands: git diff 2763e7c678 c2e8335c42 -- autobyteus-server-ts/src; call sites: grep -n on base (git show 2763e7c678:…/agent-run.ts) and HEAD; git diff 2763e7c678 a3c4982721 -- autobyteus-server-ts/tests (+/- lines); grep -rn start_only autobyteus-server-ts/tests
+# Commit: a3c4982721 (HEAD 24b6017a7e); Date: 2026-10-18 16:30
+
+## Call sites, base 2763e7c678
+94:      changed: () => { this.reconcileRecovery(); this.publishInputState(); void this.drainInputAfterLifecycleChange(); },
+120:      reconcileRecovery: () => this.reconcileRecovery(),
+121:      publishInputState: () => this.publishInputState(),
+165:      this.reconcileRecovery();
+194:      this.reconcileRecovery();
+207:      this.publishInputState();
+291:        this.reconcileRecovery(); this.publishInputState();
+304:    this.reconcileRecovery();
+360:        this.uncertainInputDispatch = input; this.reconcileUncertainDispatch(); this.publishInputState();
+383:      this.reconcileRecovery(); this.publishInputState();
+414:  private reconcileRecovery(): void {
+420:    this.reconcileRecovery();
+
+## Call sites, HEAD
+94:      changed: () => { this.reconcileAndPublishInputState(); void this.drainInputAfterLifecycleChange(); },
+120:      reconcileRecovery: () => this.reconcileRecovery(),
+121:      publishInputState: () => this.publishInputState(),
+165:      this.reconcileRecovery();
+166:      const snapshot = this.inputStateEvent(this.refreshInputState());
+194:      this.reconcileRecovery();
+207:      this.publishInputState();
+291:        this.reconcileAndPublishInputState();
+304:    this.reconcileRecovery();
+360:        this.uncertainInputDispatch = input; this.reconcileUncertainDispatch(); this.publishInputState();
+383:      this.reconcileAndPublishInputState();
+414:  private reconcileRecovery(): void {
+420:    this.reconcileRecovery();
+421:    return this.refreshInputState();
+445:  private refreshInputState(): AgentInputStateDto {
+456:    this.broadcastUnpublishedInputState(this.inputStateEvent(this.refreshInputState()));
+459:  private reconcileAndPublishInputState(): void {
+460:    this.reconcileRecovery();
+461:    this.publishInputState();
+
+## Production diff
+diff --git a/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts b/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts
+index 10fd50ea70..1a37677ed6 100644
+--- a/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts
++++ b/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts
+@@ -91,7 +91,7 @@ export class AgentRun {
+     this.compactionRecovery = new AgentRunCompactionRecovery({ runInstanceId: this.runInstanceId, backend: this.backend,
+       highWaterMark: () => this.inputAdmissionState.highWaterMark,
+       serialize: action => this.dispatchQueue.enqueue(this.runId, action),
+-      changed: () => { this.reconcileRecovery(); this.publishInputState(); void this.drainInputAfterLifecycleChange(); },
++      changed: () => { this.reconcileAndPublishInputState(); void this.drainInputAfterLifecycleChange(); },
+     });
+     this.interruptState = new AgentRunInterruptState({
+       runId: this.runId,
+@@ -163,7 +163,7 @@ export class AgentRun {
+     void this.dispatchQueue.enqueue(this.runId, () => {
+       if (closed) return;
+       this.reconcileRecovery();
+-      const snapshot = this.inputStateEvent();
++      const snapshot = this.inputStateEvent(this.refreshInputState());
+       this.broadcastUnpublishedInputState(snapshot);
+       this.listeners.add(listener);
+       try { listener(snapshot); } catch (error) { logger.warn(`[AgentRun] snapshot listener failed: ${String(error)}`); }
+@@ -288,7 +288,7 @@ export class AgentRun {
+       onCanonicalEventsDispatched: (canonicalEvents) => {
+         observeAgentRunInputEvents(canonicalEvents, this.inputAdmissionState, this.interruptState);
+         this.reconcileUncertainDispatch();
+-        this.reconcileRecovery(); this.publishInputState();
++        this.reconcileAndPublishInputState();
+         this.termination.scheduleRootShutdownEvaluation();
+       },
+       onListenerError: (error) => {
+@@ -380,7 +380,7 @@ export class AgentRun {
+         if (input.commandToken !== null) this.lifecycleState.rollbackCommand(input.commandToken);
+         this.inputAdmissionState.applyDispatchFailure(input.claim, failure);
+       }
+-      this.reconcileRecovery(); this.publishInputState();
++      this.reconcileAndPublishInputState();
+       this.dispatchCanonicalStatus();
+       this.termination.scheduleRootShutdownEvaluation();
+     });
+@@ -418,19 +418,47 @@ export class AgentRun {
+ 
+   getInputStateSnapshot(): AgentInputStateDto {
+     this.reconcileRecovery();
+-    return this.inputStateEvent().payload as AgentInputStateDto;
++    return this.refreshInputState();
+   }
+ 
+-  private inputStateEvent(): AgentRunEvent {
+-    const state: AgentInputStateDto = { run_instance_id: this.runInstanceId, revision: this.inputRevision,
+-      entries: this.inputAdmissionState.pendingSnapshot(), recoverableBlock: this.compactionRecovery.reconcile() };
+-    const signature = JSON.stringify({ entries: state.entries, recoverableBlock: state.recoverableBlock });
+-    if (signature !== this.lastInputSignature) { this.lastInputSignature = signature; state.revision = ++this.inputRevision; }
++  /**
++   * The current input content. Side effect: `compactionRecovery.reconcile()` runs here, after the
++   * pending entries are read and before the revision check, as it always has.
++   */
++  private readInputStateContent(): Pick<AgentInputStateDto, "entries" | "recoverableBlock"> {
++    const entries = this.inputAdmissionState.pendingSnapshot();
++    const recoverableBlock = this.compactionRecovery.reconcile();
++    return { entries, recoverableBlock };
++  }
++
++  /** The only writer of the input revision: a new revision when the content changed, else the current one. */
++  private advanceInputRevision(content: Pick<AgentInputStateDto, "entries" | "recoverableBlock">): number {
++    const signature = JSON.stringify({ entries: content.entries, recoverableBlock: content.recoverableBlock });
++    if (signature !== this.lastInputSignature) {
++      this.lastInputSignature = signature;
++      this.inputRevision += 1;
++    }
++    return this.inputRevision;
++  }
++
++  /** Reads the input content and advances its revision when it changed. */
++  private refreshInputState(): AgentInputStateDto {
++    const content = this.readInputStateContent();
++    const revision = this.advanceInputRevision(content);
++    return { run_instance_id: this.runInstanceId, revision, entries: content.entries, recoverableBlock: content.recoverableBlock };
++  }
++
++  private inputStateEvent(state: AgentInputStateDto): AgentRunEvent {
+     return { eventType: AgentRunEventType.AGENT_INPUT_STATE, runId: this.runId, payload: state, statusHint: null };
+   }
+ 
+   private publishInputState(): void {
+-    this.broadcastUnpublishedInputState(this.inputStateEvent());
++    this.broadcastUnpublishedInputState(this.inputStateEvent(this.refreshInputState()));
++  }
++
++  private reconcileAndPublishInputState(): void {
++    this.reconcileRecovery();
++    this.publishInputState();
+   }
+ 
+   /** Sends each input-state revision once: a revision listeners already have is not repeated. */
+
+## Test diff (+/- lines only)
+-    inputCapabilities: { kind: "start_only" },
++    inputCapabilities: { activeTurnAppend: "unsupported" },
++    inputCapabilities: { activeTurnAppend: "unsupported" },
++import type { AgentRunBackendInputDispatchResult } from "../../../src/agent-execution/input/agent-run-input-contract.js";
+-  readonly inputCapabilities = { kind: "start_only" } as const;
++  readonly inputCapabilities = { activeTurnAppend: "unsupported" } as const;
+-  async postUserMessage(): Promise<{ accepted: true }> {
+-    return { accepted: true };
++  hasRunningBackgroundTasks(): boolean {
++    return false;
++  }
++
++  async dispatchUserInput(): Promise<AgentRunBackendInputDispatchResult> {
++    throw new Error("dispatchUserInput is not used by this harness.");
+- * Status and content frames in arrival order. AGENT_INPUT_STATE companions (the input-queue
+- * projection) are not part of this status/content contract and are left out of the trace.
++ * Status and content frames in arrival order. `AGENT_INPUT_STATE` frames are left out of this
++ * status/content trace on purpose. A changed input state is a cadence boundary (it flushes pending
++ * content first); the PB-001 cases below assert that directly.
+-    inputCapabilities: { kind: "start_only" },
++    inputCapabilities: { activeTurnAppend: "unsupported" },
+-      inputCapabilities: { kind: "start_only" },
++      inputCapabilities: { activeTurnAppend: "unsupported" },
++      inputCapabilities: { activeTurnAppend: "unsupported" as const },
+
+## grep -rn start_only autobyteus-server-ts/tests
+(no matches)
+
+## grep expect( in the +/- test lines
+0
+
+## Conclusions (API/E2E reading, direct route)
+- AC-001: `advanceInputRevision` is the only writer of `inputRevision`/`lastInputSignature`. `inputStateEvent(state)` is pure. `getInputStateSnapshot` = `reconcileRecovery()` + `refreshInputState()`. Subscribe = `reconcileRecovery()` → `inputStateEvent(refreshInputState())`. Publish = `broadcastUnpublishedInputState(inputStateEvent(refreshInputState()))`.
+- Order and equivalence: `readInputStateContent` calls `pendingSnapshot()` then `compactionRecovery.reconcile()`. This is the same order as the base's object-literal evaluation (`entries` before `recoverableBlock`), and both happen before the signature check. The signature JSON keys `{entries, recoverableBlock}` are unchanged, and so is the DTO key order (`run_instance_id`, `revision`, `entries`, `recoverableBlock`). So revisions and payloads are identical.
+- AC-002: the base's three consecutive pairs (L94, L291, L383) now call `reconcileAndPublishInputState()`. L207 and L360 still call `publishInputState()` only, and the termination callbacks L120 `reconcileRecovery` / L121 `publishInputState` are unchanged.
+- AC-003: the comment says input-state frames are left out of the trace on purpose, and that a changed input state is a cadence boundary asserted by the PB-001 cases.
+- AC-004: no `start_only` in tests. The 6 doubles use `{ activeTurnAppend: "unsupported" }`. `ScriptedAgentRunBackend` adds `hasRunningBackgroundTasks` and a rejecting `dispatchUserInput`, and drops the non-contract `postUserMessage`. Zero `expect(` lines changed.
