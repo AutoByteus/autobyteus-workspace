@@ -275,18 +275,31 @@ const seed = async () => {
     toCopy(t.coordinator.agentRunId, `CALL_TOOLS:${JSON.stringify(calls)}`);
     if (i % 10 === 9) await sleep(2000);
   }
-  const messagesFile = path.join(stack.dataDir, 'memory', 'agents', hostId, 'collaboration', 'communication_messages.json');
+  // The hub's stored log (append-only message logs): sealed communication_messages_<6 digits>.jsonl files in order, then
+  // communication_messages_active.jsonl; one message per complete line, each id once (as the server's MessageLog reads it).
+  const collaborationDir = path.join(stack.dataDir, 'memory', 'agents', hostId, 'collaboration');
+  const hubLog = async () => {
+    const names = (await fsp.readdir(collaborationDir).catch(() => [])).filter((n) => /^communication_messages_(\d{6}|active)\.jsonl$/.test(n))
+      .sort((a, b) => (a.endsWith('_active.jsonl') ? 1 : 0) - (b.endsWith('_active.jsonl') ? 1 : 0) || a.localeCompare(b));
+    const byId = new Map(); let bytes = 0;
+    for (const name of names) {
+      const text = await fsp.readFile(path.join(collaborationDir, name), 'utf8'); bytes += Buffer.byteLength(text);
+      const lines = text.split('\n'); lines.pop();
+      for (const line of lines) { const m = JSON.parse(line); if (!byId.has(m.messageId)) byId.set(m.messageId, m); }
+    }
+    return { files: names, bytes, messages: [...byId.values()] };
+  };
   await sleep(8000);
   console.log(`  report commands: ${toCopy.acks().length} acks; problems: ${JSON.stringify(toCopy.problems().slice(0, 3))}; first ack: ${toCopy.acks()[0]}`);
   assert(toCopy.problems().length === 0, 'Copy commands were not accepted', toCopy.problems().slice(0, 5));
   const reportsIn = (messages) => (messages ?? []).filter((m) => /^Report \d+ of Team/.test(String(m.content))).length;
-  const storedReports = async () => reportsIn(JSON.parse(await fsp.readFile(messagesFile, 'utf8').catch(() => '{}')).messages);
+  const storedReports = async () => reportsIn((await hubLog()).messages);
   await until('hub message log complete (stored)', async () => (await storedReports()) >= TEAMS * MESSAGES_PER_TEAM, 10 * 60_000 + TEAMS * 20_000);
   await sleep(10000);
   // Recorded for the report: the running hub's live view against its stored log at the same moment.
   const liveViewMessages = (await viewFor(hostId)).communication_messages?.messages ?? [];
   const messageLogObservation = { at: new Date().toISOString(), liveViewMessages: liveViewMessages.length, liveViewReports: reportsIn(liveViewMessages),
-    storedMessages: JSON.parse(await fsp.readFile(messagesFile, 'utf8')).messages.length, storedReports: await storedReports() };
+    storedMessages: (await hubLog()).messages.length, storedReports: await storedReports(), storedFiles: (await hubLog()).files };
   console.log(`  message log: ${JSON.stringify(messageLogObservation)}`);
 
   // Unrelated stored team runs in another workspace (what the generic run-id lookup scanned).
@@ -308,7 +321,7 @@ const seed = async () => {
   const storedViewReports = reportsIn((await viewFor(hostId)).communication_messages?.messages);
   return { hostId, otherHostId, projectId, managerName: MANAGER, workspace, archive, taskIds, otherTaskIds, teams: teamRows, otherTeams, markers,
     messageLogObservation: { ...messageLogObservation, storedViewReportsAfterStop: storedViewReports },
-    shape: { teams: TEAMS, childAgents: TEAMS * 6, unrelatedTeamRuns: unrelated, hubMessageLogBytes: (await fsp.stat(messagesFile).catch(() => ({ size: null }))).size,
+    shape: { teams: TEAMS, childAgents: TEAMS * 6, unrelatedTeamRuns: unrelated, hubMessageLogBytes: (await hubLog()).bytes,
       hubViewBytes: (await gqlRaw('query($id:String!){agentRunCollaboration(runId:$id)}', { id: hostId })).bytes, memoryBytes: await dirBytes(memoryDir), memoryFolders: counts } };
 };
 
