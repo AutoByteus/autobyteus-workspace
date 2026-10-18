@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code Reviewer, `code-review-report.md` (CRR-001 Pass), round 1 | SR-002, ARCH-REV-002, IR-001, CRR-001 | N/A | Pass / 95.9% |
 | API-REV-002 | Code Reviewer, `code-review-report.md` (CRR-003 Pass on IR-002 / DR-001 merge), round 2 | SR-002, IR-002, CRR-003, DR-001 | Pass / 95.9% | Pass / 95.9% |
+| API-REV-003 | Code Reviewer, `code-review-report.md` (CRR-005 Pass on IR-003 / DR-002 re-integration), round 3 | SR-002, IR-003, CRR-005, DR-002 | Pass / 95.9% | Pass / 95.9% |
 
 ## Revision Entries
 
@@ -50,3 +51,23 @@ None (round 1 passed).
 - New or remaining failure IDs: none in scope. FU-API-1 (slow Stop of a host mid-turn, cause found, outside this ticket) for the Task manager.
 - Recommended owner: Code Reviewer (route), then Delivery.
 - Remaining risks: as API-REV-001, plus FU-API-1.
+
+### API-REV-003 — Round 3: DR-002 re-integration (append-only message logs base) with a test-only fix
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md` (CRR-005, Targeted Delta Review Pass on IR-003), round 3.
+- Triggering finding or case IDs: none failed. Delta: merge `8f91efb2cd` (base `8945d0c8a2`) + test-only `4b3c8a08ef` (Team fixture snapshot built with `validateCollaborationCommunicationMessageArray`).
+- Related revision IDs: SR-002, IR-003, CRR-005, DR-002.
+- Why recorded: the code under test changed (base re-integration and a durable test fix).
+- Coverage decisions: the fixed cadence test is `Still Valid` (fixture-only hunk; assertions unchanged). No durable test change by API/E2E.
+- Cases: REPO-11 new (own: cadence ×3, streaming units, typecheck, `test:unit` 5950 at HEAD). IMP-14..16 reused (same commit). Web, LIVE-* and DESK-* still valid: the base changed only message persistence/validation, and no socket, publication or client code.
+- Environment delta: ENV-1c.
+
+#### Prior Failure Resolution
+
+None (round 2 passed).
+
+- Canonical artifacts and sections updated: investigation › Round 3; progress log; execution report (Round, Environments, REPO-11 row, AC-006, Scorecard note, Result); `evidence/REPO-11-*`.
+- Prior result and confidence: Pass / 95.9% (API-REV-002, `335f065cd1`)
+- Current result and confidence: Pass / 95.9% (`4b3c8a08ef`)
+- New or remaining failure IDs: none. FU-API-1 unchanged (outside this ticket).
+- Recommended owner: Code Reviewer (route), then Delivery.

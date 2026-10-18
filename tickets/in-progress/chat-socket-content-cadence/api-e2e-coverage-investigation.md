@@ -17,9 +17,9 @@ Paths are relative to the ticket folder `/Users/normy/autobyteus_org/autobyteus-
 - Code Review Revision Record: `code-review-revision-record.md`
 - Delivery Revision Record: N/A
 - API/E2E Revision Record: `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-002`
+- Current API/E2E Revision ID: `API-REV-003`
 - API/E2E Test Progress Log: `api-e2e-test-progress.md`
-- Current Investigation Round: 2 (see Planned Cases › Round 2)
+- Current Investigation Round: 3 (see Planned Cases › Round 2 and Round 3)
 - Trigger: Code Reviewer implementation-review Pass (CRR-001), Large/High
 - Prior Investigation Reviewed: None
 - Latest Authoritative Investigation: this file
@@ -188,6 +188,20 @@ Progress while running: `api-e2e-test-progress.md`.
 | LIVE-ADOPT (new) | Run | The base's adoption makes a hand-started run join the PM's root next to the batch path (`task_execution_started`, then its content as batches); the Code Reviewer asked for a focused check |
 | DESK-01 Team/Org parts | Still valid | Team/Org web contexts and services are unchanged (only a Team spec changed) |
 | DESK-02 (new) | Run | The merged web collaboration service on a fresh packaged build at HEAD: delegation (and adoption if reachable from the UI), with renderer recording |
+
+### Round 3 (CRR-005 after IR-003, DR-002 re-integration) — rerun by impact
+
+- Validated commit (round 2): `335f065cd1`. Code under test now: `4b3c8a08ef` (merge `8f91efb2cd` of `origin/personal` `8945d0c8a2`, plus the test-only `4b3c8a08ef`).
+- `git diff --name-only 335f065cd1 4b3c8a08ef`: 102 files outside `tickets/`. 42 server `src` files, all from the base's append-only message logs: persistence/validation of communication messages, app-data migrations, the run-package store. Plus 49 server test files, 8 server docs and 3 web docs.
+- Not touched: `services/agent-streaming/` (egress, scheduler, shapes, handlers), the event projectors, `RootEventPublisher`, both contract packages, all web code, `autobyteus-ts`, the lockfile and build config. The base's `root-communication-engine.ts` and the Org/standalone communication adapters now validate a new message once and append it, instead of re-validating and rewriting the array. Communication event publication and root sequencing are unchanged, so the frames on the sequenced sockets are unchanged.
+- Durable test changed: `tests/integration/agent/chat-socket-content-cadence.integration.test.ts`. One hunk in the Team scenario's fixture builds the root's in-memory message snapshot with `validateCollaborationCommunicationMessageArray` (the base removed `team-communication-messages-schema.ts`). Cadence assertions are unchanged, so the test stays `Still Valid`.
+
+| Case ID | Decision | Reason |
+| --- | --- | --- |
+| REPO-11 (new) | Run | Own: the fixed cadence file ×3, the streaming unit folder (2 base-edited tests), typecheck and `test:unit` at HEAD (the base's src changes make the earlier unit result stale) |
+| IMP-14..16 | Reused | Ran at `4b3c8a08ef`: cadence ×3, integration prepare, `test:integration` 415 passed |
+| REPO-09 (web) | Still valid | Web code unchanged since IMP-10/IMP-12 (docs only) |
+| LIVE-TEAM, LIVE-ORG, LIVE-COLLAB (r2), LIVE-ADOPT, DESK-01, DESK-02 | Still valid | Socket path, publication and clients are unchanged; the base changed only message persistence |
 
 
 ## Post-Repository Confidence Scorecard (Mandatory)
